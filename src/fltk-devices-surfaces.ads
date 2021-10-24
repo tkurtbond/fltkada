@@ -8,6 +8,11 @@ with
 package FLTK.Devices.Surfaces is
 
 
+    pragma Elaborate_Body (FLTK.Devices.Surfaces);
+
+
+
+
     type Surface_Device is new Device with private;
 
     type Surface_Device_Reference (Data : not null access Surface_Device'Class) is
