@@ -36,7 +36,7 @@ package FLTK.Widgets.Menus is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Menu;
 
     end Forge;

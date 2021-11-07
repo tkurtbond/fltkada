@@ -41,7 +41,7 @@ package FLTK.Widgets is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Widget;
 
     end Forge;
@@ -402,10 +402,21 @@ private
            (W : in System.Address)
         return System.Address;
     pragma Import (C, fl_widget_get_user_data, "fl_widget_get_user_data");
+    pragma Inline (fl_widget_get_user_data);
 
     procedure fl_widget_set_user_data
            (W, D : in System.Address);
     pragma Import (C, fl_widget_set_user_data, "fl_widget_set_user_data");
+    pragma Inline (fl_widget_set_user_data);
+
+
+
+
+    procedure fl_widget_set_label
+           (W : in System.Address;
+            T : in Interfaces.C.char_array);
+    pragma Import (C, fl_widget_set_label, "fl_widget_set_label");
+    pragma Inline (fl_widget_set_label);
 
 
 

@@ -15,7 +15,7 @@ package FLTK.Widgets.Valuators.Dials.Line is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Line_Dial;
 
     end Forge;

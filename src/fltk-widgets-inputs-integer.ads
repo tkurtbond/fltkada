@@ -15,7 +15,7 @@ package FLTK.Widgets.Inputs.Integer is
 
         function Create
                (X, Y, W, H : in Standard.Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Integer_Input;
 
     end Forge;

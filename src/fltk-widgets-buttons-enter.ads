@@ -18,7 +18,7 @@ package FLTK.Widgets.Buttons.Enter is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Enter_Button;
 
     end Forge;

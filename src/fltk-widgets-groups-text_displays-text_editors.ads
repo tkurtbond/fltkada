@@ -39,7 +39,7 @@ package FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Text_Editor;
 
     end Forge;

@@ -484,7 +484,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Text_Display is
         begin
             return This : Text_Display do
@@ -500,6 +500,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
                         Widget_Convert.To_Address (This'Unchecked_Access));
                 text_display_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
                 text_display_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;
 

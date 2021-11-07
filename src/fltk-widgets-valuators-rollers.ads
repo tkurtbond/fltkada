@@ -15,7 +15,7 @@ package FLTK.Widgets.Valuators.Rollers is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Roller;
 
     end Forge;

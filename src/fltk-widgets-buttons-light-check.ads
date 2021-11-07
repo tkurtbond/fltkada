@@ -15,7 +15,7 @@ package FLTK.Widgets.Buttons.Light.Check is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Check_Button;
 
     end Forge;

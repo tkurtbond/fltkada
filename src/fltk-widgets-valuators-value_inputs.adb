@@ -177,7 +177,7 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Value_Input is
         begin
             return This : Value_Input do
@@ -192,6 +192,7 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
                         Widget_Convert.To_Address (This'Unchecked_Access));
                 value_input_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
                 value_input_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
 
                 This.My_Input := new INP.Input;
                 Wrapper (This.My_Input.all).Void_Ptr :=

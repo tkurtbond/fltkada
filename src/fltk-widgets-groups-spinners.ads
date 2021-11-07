@@ -17,7 +17,7 @@ package FLTK.Widgets.Groups.Spinners is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Spinner;
 
     end Forge;

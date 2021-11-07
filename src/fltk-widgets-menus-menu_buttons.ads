@@ -23,7 +23,7 @@ package FLTK.Widgets.Menus.Menu_Buttons is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Menu_Button;
 
     end Forge;

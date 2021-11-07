@@ -75,7 +75,7 @@ package body FLTK.Widgets.Valuators.Sliders.Hor_Fill is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Hor_Fill_Slider is
         begin
             return This : Hor_Fill_Slider do
@@ -90,6 +90,7 @@ package body FLTK.Widgets.Valuators.Sliders.Hor_Fill is
                         Widget_Convert.To_Address (This'Unchecked_Access));
                 hor_fill_slider_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
                 hor_fill_slider_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;
 

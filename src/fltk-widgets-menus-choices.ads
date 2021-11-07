@@ -15,7 +15,7 @@ package FLTK.Widgets.Menus.Choices is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Choice;
 
     end Forge;

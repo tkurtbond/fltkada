@@ -15,7 +15,7 @@ package FLTK.Widgets.Clocks.Updated.Round is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Round_Clock;
 
     end Forge;

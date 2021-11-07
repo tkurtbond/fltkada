@@ -15,13 +15,13 @@ package FLTK.Widgets.Clocks.Updated is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Updated_Clock;
 
         function Create
                (Kind       : in Box_Kind;
                 X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Updated_Clock;
 
     end Forge;

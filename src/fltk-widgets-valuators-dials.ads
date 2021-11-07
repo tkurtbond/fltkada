@@ -17,7 +17,7 @@ package FLTK.Widgets.Valuators.Dials is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Dial;
 
     end Forge;

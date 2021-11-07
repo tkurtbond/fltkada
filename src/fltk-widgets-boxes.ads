@@ -15,7 +15,7 @@ package FLTK.Widgets.Boxes is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Box;
 
     end Forge;

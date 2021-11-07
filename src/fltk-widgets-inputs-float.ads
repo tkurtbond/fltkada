@@ -15,7 +15,7 @@ package FLTK.Widgets.Inputs.Float is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Float_Input;
 
     end Forge;

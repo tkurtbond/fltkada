@@ -15,12 +15,12 @@ package FLTK.Widgets.Groups.Windows.Single is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Single_Window;
 
         function Create
                (W, H : in Integer;
-                Text : in String)
+                Text : in String := "")
             return Single_Window;
 
     end Forge;

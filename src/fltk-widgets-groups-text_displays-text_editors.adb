@@ -434,7 +434,7 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Text_Editor
         is
             use type Interfaces.C.int;
@@ -452,6 +452,7 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
                         Widget_Convert.To_Address (This'Unchecked_Access));
                 text_editor_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
                 text_editor_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
 
                 --  change things over so key bindings are all handled from the Ada side
                 This.Bindings := Binding_Vectors.Empty_Vector;

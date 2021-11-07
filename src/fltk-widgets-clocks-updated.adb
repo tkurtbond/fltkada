@@ -89,7 +89,7 @@ package body FLTK.Widgets.Clocks.Updated is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Updated_Clock is
         begin
             return This : Updated_Clock do
@@ -104,6 +104,7 @@ package body FLTK.Widgets.Clocks.Updated is
                         Widget_Convert.To_Address (This'Unchecked_Access));
                 clock_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
                 clock_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;
 
@@ -111,7 +112,7 @@ package body FLTK.Widgets.Clocks.Updated is
         function Create
                (Kind       : in Box_Kind;
                 X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Updated_Clock is
         begin
             return This : Updated_Clock do
@@ -127,6 +128,7 @@ package body FLTK.Widgets.Clocks.Updated is
                         Widget_Convert.To_Address (This'Unchecked_Access));
                 clock_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
                 clock_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;
 

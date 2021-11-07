@@ -21,7 +21,7 @@ package FLTK.Widgets.Clocks is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Clock;
 
     end Forge;

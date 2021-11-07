@@ -15,7 +15,7 @@ package FLTK.Widgets.Groups.Tiled is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Tiled_Group;
 
     end Forge;

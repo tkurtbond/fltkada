@@ -118,7 +118,7 @@ package body FLTK.Widgets.Groups.Tabbed is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Tabbed_Group is
         begin
             return This : Tabbed_Group do
@@ -134,6 +134,7 @@ package body FLTK.Widgets.Groups.Tabbed is
                         Widget_Convert.To_Address (This'Unchecked_Access));
                 tabs_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
                 tabs_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;
 

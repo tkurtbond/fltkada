@@ -35,7 +35,7 @@ package FLTK.Widgets.Groups is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Group;
 
     end Forge;

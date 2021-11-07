@@ -100,7 +100,7 @@ package body FLTK.Widgets.Menus.Choices is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Choice is
         begin
             return This : Choice do
@@ -115,6 +115,7 @@ package body FLTK.Widgets.Menus.Choices is
                         Widget_Convert.To_Address (This'Unchecked_Access));
                 choice_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
                 choice_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;
 

@@ -130,7 +130,7 @@ package body FLTK.Widgets.Valuators.Value_Outputs is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Value_Output is
         begin
             return This : Value_Output do
@@ -145,6 +145,7 @@ package body FLTK.Widgets.Valuators.Value_Outputs is
                         Widget_Convert.To_Address (This'Unchecked_Access));
                 value_output_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
                 value_output_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;
 

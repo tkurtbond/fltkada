@@ -301,7 +301,7 @@ package body FLTK.Widgets.Menus is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Menu is
         begin
             return This : Menu do
@@ -317,6 +317,7 @@ package body FLTK.Widgets.Menus is
                 menu_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
                 menu_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
                 This.My_Items := Item_Vectors.Empty_Vector;
+                fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;
 

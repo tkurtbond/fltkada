@@ -15,7 +15,7 @@ package FLTK.Widgets.Buttons.Light.Round.Radio is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Radio_Round_Button;
 
     end Forge;

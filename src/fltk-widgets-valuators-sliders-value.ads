@@ -15,7 +15,7 @@ package FLTK.Widgets.Valuators.Sliders.Value is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Value_Slider;
 
     end Forge;

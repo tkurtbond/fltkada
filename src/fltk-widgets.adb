@@ -296,12 +296,6 @@ package body FLTK.Widgets is
     pragma Import (C, fl_widget_get_label, "fl_widget_get_label");
     pragma Inline (fl_widget_get_label);
 
-    procedure fl_widget_set_label
-           (W : in System.Address;
-            T : in Interfaces.C.char_array);
-    pragma Import (C, fl_widget_set_label, "fl_widget_set_label");
-    pragma Inline (fl_widget_set_label);
-
     function fl_widget_get_labelcolor
            (W : in System.Address)
         return Interfaces.C.unsigned;
@@ -522,7 +516,7 @@ package body FLTK.Widgets is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Widget is
         begin
             return This : Widget do
@@ -537,6 +531,7 @@ package body FLTK.Widgets is
                         Widget_Convert.To_Address (This'Unchecked_Access));
                 widget_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
                 widget_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;
 

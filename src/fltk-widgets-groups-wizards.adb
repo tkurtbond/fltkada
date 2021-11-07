@@ -103,7 +103,7 @@ package body FLTK.Widgets.Groups.Wizards is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Wizard is
         begin
             return This : Wizard do
@@ -119,6 +119,7 @@ package body FLTK.Widgets.Groups.Wizards is
                         Widget_Convert.To_Address (This'Unchecked_Access));
                 wizard_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
                 wizard_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;
 

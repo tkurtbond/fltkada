@@ -15,7 +15,7 @@ package FLTK.Widgets.Valuators.Sliders.Value.Horizontal is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Hor_Value_Slider;
 
     end Forge;

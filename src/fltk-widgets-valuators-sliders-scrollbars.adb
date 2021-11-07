@@ -108,7 +108,7 @@ package body FLTK.Widgets.Valuators.Sliders.Scrollbars is
 
         function Create
                (X, Y, W, H : in Integer;
-                Text       : in String)
+                Text       : in String := "")
             return Scrollbar is
         begin
             return This : Scrollbar do
@@ -123,6 +123,7 @@ package body FLTK.Widgets.Valuators.Sliders.Scrollbars is
                         Widget_Convert.To_Address (This'Unchecked_Access));
                 scrollbar_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
                 scrollbar_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;
 
