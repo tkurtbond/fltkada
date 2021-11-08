@@ -26,9 +26,15 @@ package FLTK is
 
 
 
-    type Color is new Natural;
+    type Color is mod 2**32;
     type Color_Component is mod 256;
-    No_Color : constant Color;
+
+    No_Color    : constant Color := 16#00000000#;
+
+    Red_Color   : constant Color := 16#ff000000#;
+    Green_Color : constant Color := 16#00ff0000#;
+    Blue_Color  : constant Color := 16#0000ff00#;
+    White_Color : constant Color := 16#ffffff00#;
 
 
 
@@ -310,11 +316,6 @@ private
 
     overriding procedure Initialize
            (This : in out Wrapper);
-
-
-
-
-    No_Color : constant Color := 0;
 
 
 
