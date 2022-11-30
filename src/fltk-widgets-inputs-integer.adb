@@ -106,7 +106,9 @@ package body FLTK.Widgets.Inputs.Integer is
     is
         Ptr : Interfaces.C.Strings.chars_ptr := fl_input_get_value (This.Void_Ptr);
     begin
-        if Ptr = Interfaces.C.Strings.Null_Ptr then
+        if Ptr = Interfaces.C.Strings.Null_Ptr or else
+            Interfaces.C.Strings.Value (Ptr) = ""
+        then
             return 0;
         else
             return Standard.Integer'Value (Interfaces.C.Strings.Value (Ptr));
