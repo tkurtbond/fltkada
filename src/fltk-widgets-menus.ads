@@ -25,7 +25,9 @@ package FLTK.Widgets.Menus is
 
     subtype Index is Positive;
     subtype Extended_Index is Natural;
+
     No_Index : constant Extended_Index := Extended_Index'First;
+    No_Reference : exception;
 
     type Cursor is private;
 
@@ -241,7 +243,8 @@ private
     type Item_Access is access FLTK.Menu_Items.Menu_Item;
 
     package Item_Vectors is new Ada.Containers.Vectors
-        (Index_Type => Positive, Element_Type => Item_Access);
+       (Index_Type => Positive,
+        Element_Type => Item_Access);
 
     type Menu is new Widget with record
         My_Items : Item_Vectors.Vector;

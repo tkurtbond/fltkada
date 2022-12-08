@@ -333,27 +333,26 @@ package body FLTK.Widgets.Menus is
             Shortcut : in     Key_Combo := No_Key;
             Flags    : in     Menu_Flag := Flag_Normal)
     is
-        Place : Interfaces.C.int;
+        Ret_Place : Interfaces.C.int;
         Callback, User_Data : System.Address := System.Null_Address;
-        New_Item : Item_Access;
     begin
         if Action /= null then
             Callback := Item_Hook'Address;
             User_Data := Callback_Convert.To_Address (Action);
         end if;
-
-        Place := fl_menu_add
+        Ret_Place := fl_menu_add
            (This.Void_Ptr,
             Interfaces.C.To_C (Text),
             To_C (Shortcut),
             Callback,
             User_Data,
             Interfaces.C.unsigned_long (Flags));
-
-        New_Item := new FLTK.Menu_Items.Menu_Item;
-        Wrapper (New_Item.all).Void_Ptr := fl_menu_get_item (This.Void_Ptr, Place);
-        Wrapper (New_Item.all).Needs_Dealloc := False;
-        This.My_Items.Append (New_Item);
+        This.My_Items.Append (new FLTK.Menu_Items.Menu_Item);
+        Wrapper (This.My_Items.Last_Element.all).Needs_Dealloc := False;
+        if Flags + Flag_Submenu = Flags then
+            This.My_Items.Append (new FLTK.Menu_Items.Menu_Item);
+            Wrapper (This.My_Items.Last_Element.all).Needs_Dealloc := False;
+        end if;
     end Add;
 
 
@@ -367,13 +366,11 @@ package body FLTK.Widgets.Menus is
     is
         Ret_Place : Interfaces.C.int;
         Callback, User_Data : System.Address := System.Null_Address;
-        New_Item : Item_Access;
     begin
         if Action /= null then
             Callback := Item_Hook'Address;
             User_Data := Callback_Convert.To_Address (Action);
         end if;
-
         Ret_Place := fl_menu_insert
            (This.Void_Ptr,
             Interfaces.C.int (Place) - 1,
@@ -382,11 +379,12 @@ package body FLTK.Widgets.Menus is
             Callback,
             User_Data,
             Interfaces.C.unsigned_long (Flags));
-
-        New_Item := new FLTK.Menu_Items.Menu_Item;
-        Wrapper (New_Item.all).Void_Ptr := fl_menu_get_item (This.Void_Ptr, Ret_Place);
-        Wrapper (New_Item.all).Needs_Dealloc := False;
-        This.My_Items.Insert (Positive (Ret_Place + 1), New_Item);
+        This.My_Items.Append (new FLTK.Menu_Items.Menu_Item);
+        Wrapper (This.My_Items.Last_Element.all).Needs_Dealloc := False;
+        if Flags + Flag_Submenu = Flags then
+            This.My_Items.Append (new FLTK.Menu_Items.Menu_Item);
+            Wrapper (This.My_Items.Last_Element.all).Needs_Dealloc := False;
+        end if;
     end Insert;
 
 
@@ -406,7 +404,7 @@ package body FLTK.Widgets.Menus is
         for Item of This.My_Items loop
             Free_Item (Item);
         end loop;
-        This.My_Items := Item_Vectors.Empty_Vector;
+        This.My_Items.Clear;
         fl_menu_clear (This.Void_Ptr);
     end Clear;
 
@@ -435,7 +433,9 @@ package body FLTK.Widgets.Menus is
             Place : in Index)
         return FLTK.Menu_Items.Menu_Item_Reference is
     begin
-        return (Data => This.My_Items.Element (Place));
+        Wrapper (This.My_Items (Place).all).Void_Ptr :=
+            fl_menu_get_item (This.Void_Ptr, Interfaces.C.int (Place) - 1);
+        return (Data => This.My_Items (Place));
     end Item;
 
 
@@ -451,18 +451,32 @@ package body FLTK.Widgets.Menus is
     function Find_Item
            (This : in Menu;
             Name : in String)
-        return FLTK.Menu_Items.Menu_Item_Reference is
+        return FLTK.Menu_Items.Menu_Item_Reference
+    is
+        Place : Extended_Index := This.Find_Index (Name);
     begin
-        return (Data => This.My_Items.Element (This.Find_Index (Name)));
+        if Place = No_Index then
+            raise No_Reference;
+        end if;
+        Wrapper (This.My_Items (Place).all).Void_Ptr :=
+            fl_menu_find_item (This.Void_Ptr, Interfaces.C.To_C (Name));
+        return (Data => This.My_Items (Place));
     end Find_Item;
 
 
     function Find_Item
            (This   : in Menu;
             Action : in Widget_Callback)
-        return FLTK.Menu_Items.Menu_Item_Reference is
+        return FLTK.Menu_Items.Menu_Item_Reference
+    is
+        Place : Extended_Index := This.Find_Index (Action);
     begin
-        return (Data => This.My_Items.Element (This.Find_Index (Action)));
+        if Place = No_Index then
+            raise No_Reference;
+        end if;
+        Wrapper (This.My_Items (Place).all).Void_Ptr :=
+            fl_menu_find_item2 (This.Void_Ptr, Callback_Convert.To_Address (Action));
+        return (Data => This.My_Items (Place));
     end Find_Item;
 
 
@@ -568,9 +582,15 @@ package body FLTK.Widgets.Menus is
 
     function Chosen
            (This : in Menu)
-        return FLTK.Menu_Items.Menu_Item_Reference is
+        return FLTK.Menu_Items.Menu_Item_Reference
+    is
+        Place : Extended_Index := This.Chosen_Index;
     begin
-        return (Data => This.My_Items.Element (This.Chosen_Index));
+        if Place = No_Index then
+            raise No_Reference;
+        end if;
+        Wrapper (This.My_Items (Place).all).Void_Ptr := fl_menu_mvalue (This.Void_Ptr);
+        return (Data => This.My_Items (Place));
     end Chosen;
 
 
@@ -719,9 +739,13 @@ package body FLTK.Widgets.Menus is
             Interfaces.C.int (Y),
             Interfaces.C.To_C (Title),
             Interfaces.C.int (Initial) - 1);
-        Place : Index := Index (fl_menu_find_index2 (This.Void_Ptr, Ptr) + 1);
+        Place : Extended_Index := Extended_Index (fl_menu_find_index2 (This.Void_Ptr, Ptr) + 1);
     begin
-        return (Data => This.My_Items.Element (Place));
+        if Place = No_Index then
+            raise No_Reference;
+        end if;
+        Wrapper (This.My_Items (Place).all).Void_Ptr := Ptr;
+        return (Data => This.My_Items (Place));
     end Popup;
 
 
@@ -738,9 +762,13 @@ package body FLTK.Widgets.Menus is
             Interfaces.C.int (W),
             Interfaces.C.int (H),
             Interfaces.C.int (Initial) - 1);
-        Place : Index := Index (fl_menu_find_index2 (This.Void_Ptr, Ptr) + 1);
+        Place : Extended_Index := Extended_Index (fl_menu_find_index2 (This.Void_Ptr, Ptr) + 1);
     begin
-        return (Data => This.My_Items.Element (Place));
+        if Place = No_Index then
+            raise No_Reference;
+        end if;
+        Wrapper (This.My_Items (Place).all).Void_Ptr := Ptr;
+        return (Data => This.My_Items (Place));
     end Pulldown;
 
 
