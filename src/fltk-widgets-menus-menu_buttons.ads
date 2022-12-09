@@ -37,7 +37,7 @@ package FLTK.Widgets.Menus.Menu_Buttons is
 
     function Popup
            (This : in out Menu_Button)
-        return FLTK.Menu_Items.Menu_Item;
+        return Extended_Index;
 
 
 

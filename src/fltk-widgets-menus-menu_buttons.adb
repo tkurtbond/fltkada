@@ -53,6 +53,12 @@ package body FLTK.Widgets.Menus.Menu_Buttons is
     pragma Import (C, fl_menu_button_popup, "fl_menu_button_popup");
     pragma Inline (fl_menu_button_popup);
 
+    function fl_menu_find_index2
+           (M, I : in System.Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_menu_find_index2, "fl_menu_find_index2");
+    pragma Inline (fl_menu_find_index2);
+
 
 
 
@@ -126,11 +132,12 @@ package body FLTK.Widgets.Menus.Menu_Buttons is
 
     function Popup
            (This : in out Menu_Button)
-        return FLTK.Menu_Items.Menu_Item is
+        return Extended_Index
+    is
+        use type Interfaces.C.int;
+        Ptr : System.Address := fl_menu_button_popup (This.Void_Ptr);
     begin
-        return Item : FLTK.Menu_Items.Menu_Item do
-            Wrapper (Item).Void_Ptr := fl_menu_button_popup (This.Void_Ptr);
-        end return;
+        return Extended_Index (fl_menu_find_index2 (This.Void_Ptr, Ptr) + 1);
     end Popup;
 
 

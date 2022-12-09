@@ -206,13 +206,13 @@ package FLTK.Widgets.Menus is
             X, Y    : in Integer;
             Title   : in String := "";
             Initial : in Extended_Index := No_Index)
-        return FLTK.Menu_Items.Menu_Item_Reference;
+        return Extended_Index;
 
     function Pulldown
            (This       : in Menu;
             X, Y, W, H : in Integer;
             Initial    : in Extended_Index := No_Index)
-        return FLTK.Menu_Items.Menu_Item_Reference;
+        return Extended_Index;
 
 
 

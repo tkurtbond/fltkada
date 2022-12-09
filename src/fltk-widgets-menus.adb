@@ -731,7 +731,7 @@ package body FLTK.Widgets.Menus is
             X, Y    : in Integer;
             Title   : in String := "";
             Initial : in Extended_Index := No_Index)
-        return FLTK.Menu_Items.Menu_Item_Reference
+        return Extended_Index
     is
         Ptr : System.Address := fl_menu_popup
            (This.Void_Ptr,
@@ -739,13 +739,8 @@ package body FLTK.Widgets.Menus is
             Interfaces.C.int (Y),
             Interfaces.C.To_C (Title),
             Interfaces.C.int (Initial) - 1);
-        Place : Extended_Index := Extended_Index (fl_menu_find_index2 (This.Void_Ptr, Ptr) + 1);
     begin
-        if Place = No_Index then
-            raise No_Reference;
-        end if;
-        Wrapper (This.My_Items (Place).all).Void_Ptr := Ptr;
-        return (Data => This.My_Items (Place));
+        return Extended_Index (fl_menu_find_index2 (This.Void_Ptr, Ptr) + 1);
     end Popup;
 
 
@@ -753,7 +748,7 @@ package body FLTK.Widgets.Menus is
            (This       : in Menu;
             X, Y, W, H : in Integer;
             Initial    : in Extended_Index := No_Index)
-        return FLTK.Menu_Items.Menu_Item_Reference
+        return Extended_Index
     is
         Ptr : System.Address := fl_menu_pulldown
            (This.Void_Ptr,
@@ -762,13 +757,8 @@ package body FLTK.Widgets.Menus is
             Interfaces.C.int (W),
             Interfaces.C.int (H),
             Interfaces.C.int (Initial) - 1);
-        Place : Extended_Index := Extended_Index (fl_menu_find_index2 (This.Void_Ptr, Ptr) + 1);
     begin
-        if Place = No_Index then
-            raise No_Reference;
-        end if;
-        Wrapper (This.My_Items (Place).all).Void_Ptr := Ptr;
-        return (Data => This.My_Items (Place));
+        return Extended_Index (fl_menu_find_index2 (This.Void_Ptr, Ptr) + 1);
     end Pulldown;
 
 
