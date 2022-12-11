@@ -362,8 +362,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
         Ada_Editor : access Text_Editor'Class :=
             Editor_Convert.To_Pointer (fl_widget_get_user_data (E));
         Modi : Modifier := FLTK.Event.Last_Modifier;
-        Ada_Key : Key_Combo :=
-            To_Ada (Interfaces.C.unsigned_long (K) + To_C (Modi));
+        Actual_Key : Keypress := FLTK.Event.Last_Key; --  fuck you FLTK, give me the real code
+        Ada_Key : Key_Combo := To_Ada (To_C (Actual_Key) + To_C (Modi));
 
         Found_Binding : Boolean := False;
     begin
