@@ -910,24 +910,34 @@ package body FLTK.Text_Buffers is
     function Get_Selection
            (This          : in     Text_Buffer;
             Start, Finish :    out Position)
-        return Boolean is
+        return Boolean
+    is
+        S, F : Interfaces.C.int;
     begin
-        return fl_text_buffer_selection_position
-               (This.Void_Ptr,
-                Interfaces.C.int (Start),
-                Interfaces.C.int (Finish)) /= 0;
+        if fl_text_buffer_selection_position (This.Void_Ptr, S, F) /= 0 then
+            Start := Position (S);
+            Finish := Position (F);
+            return True;
+        else
+            return False;
+        end if;
     end Get_Selection;
 
 
     function Get_Secondary_Selection
            (This          : in     Text_Buffer;
             Start, Finish :    out Position)
-        return Boolean is
+        return Boolean
+    is
+        S, F : Interfaces.C.int;
     begin
-        return fl_text_buffer_secondary_selection_position
-           (This.Void_Ptr,
-            Interfaces.C.int (Start),
-            Interfaces.C.int (Finish)) /= 0;
+        if fl_text_buffer_secondary_selection_position (This.Void_Ptr, S, F) /= 0 then
+            Start := Position (S);
+            Finish := Position (F);
+            return True;
+        else
+            return False;
+        end if;
     end Get_Secondary_Selection;
 
 
@@ -1111,13 +1121,21 @@ package body FLTK.Text_Buffers is
             Start_At : in     Position;
             Item     : in     Character;
             Found_At :    out Position)
-        return Boolean is
+        return Boolean
+    is
+        Place : Interfaces.C.int;
     begin
-        return fl_text_buffer_findchar_forward
+        if fl_text_buffer_findchar_forward
            (This.Void_Ptr,
             Interfaces.C.int (Start_At),
             Character'Pos (Item),
-            Interfaces.C.int (Found_At)) /= 0;
+            Place) /= 0
+        then
+            Found_At := Position (Place);
+            return True;
+        else
+            return False;
+        end if;
     end Findchar_Forward;
 
 
@@ -1126,13 +1144,21 @@ package body FLTK.Text_Buffers is
             Start_At : in     Position;
             Item     : in     Character;
             Found_At :    out Position)
-        return Boolean is
+        return Boolean
+    is
+        Place : Interfaces.C.int;
     begin
-        return fl_text_buffer_findchar_backward
+        if fl_text_buffer_findchar_backward
            (This.Void_Ptr,
             Interfaces.C.int (Start_At),
             Character'Pos (Item),
-            Interfaces.C.int (Found_At)) /= 0;
+            Place) /= 0
+        then
+            Found_At := Position (Place);
+            return True;
+        else
+            return False;
+        end if;
     end Findchar_Backward;
 
 
@@ -1142,14 +1168,22 @@ package body FLTK.Text_Buffers is
             Item       : in     String;
             Found_At   :    out Position;
             Match_Case : in     Boolean := False)
-        return Boolean is
+        return Boolean
+    is
+        Place : Interfaces.C.int;
     begin
-        return fl_text_buffer_search_forward
-               (This.Void_Ptr,
-                Interfaces.C.int (Start_At),
-                Interfaces.C.To_C (Item),
-                Interfaces.C.int (Found_At),
-                Boolean'Pos (Match_Case)) /= 0;
+        if fl_text_buffer_search_forward
+           (This.Void_Ptr,
+            Interfaces.C.int (Start_At),
+            Interfaces.C.To_C (Item),
+            Place,
+            Boolean'Pos (Match_Case)) /= 0
+        then
+            Found_At := Position (Place);
+            return True;
+        else
+            return False;
+        end if;
     end Search_Forward;
 
 
@@ -1159,14 +1193,22 @@ package body FLTK.Text_Buffers is
             Item       : in     String;
             Found_At   :    out Position;
             Match_Case : in     Boolean := False)
-        return Boolean is
+        return Boolean
+    is
+        Place : Interfaces.C.int;
     begin
-        return fl_text_buffer_search_backward
-               (This.Void_Ptr,
-                Interfaces.C.int (Start_At),
-                Interfaces.C.To_C (Item),
-                Interfaces.C.int (Found_At),
-                Boolean'Pos (Match_Case)) /= 0;
+        if fl_text_buffer_search_backward
+           (This.Void_Ptr,
+            Interfaces.C.int (Start_At),
+            Interfaces.C.To_C (Item),
+            Place,
+            Boolean'Pos (Match_Case)) /= 0
+        then
+            Found_At := Position (Place);
+            return True;
+        else
+            return False;
+        end if;
     end Search_Backward;
 
 
