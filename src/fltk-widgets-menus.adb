@@ -435,7 +435,9 @@ package body FLTK.Widgets.Menus is
     begin
         Wrapper (This.My_Items (Place).all).Void_Ptr :=
             fl_menu_get_item (This.Void_Ptr, Interfaces.C.int (Place) - 1);
-        return (Data => This.My_Items (Place));
+        return R : FLTK.Menu_Items.Menu_Item_Reference := (Data => This.My_Items (Place)) do
+            null;
+        end return;
     end Item;
 
 
@@ -460,7 +462,9 @@ package body FLTK.Widgets.Menus is
         end if;
         Wrapper (This.My_Items (Place).all).Void_Ptr :=
             fl_menu_find_item (This.Void_Ptr, Interfaces.C.To_C (Name));
-        return (Data => This.My_Items (Place));
+        return R : FLTK.Menu_Items.Menu_Item_Reference := (Data => This.My_Items (Place)) do
+            null;
+        end return;
     end Find_Item;
 
 
@@ -476,7 +480,9 @@ package body FLTK.Widgets.Menus is
         end if;
         Wrapper (This.My_Items (Place).all).Void_Ptr :=
             fl_menu_find_item2 (This.Void_Ptr, Callback_Convert.To_Address (Action));
-        return (Data => This.My_Items (Place));
+        return R : FLTK.Menu_Items.Menu_Item_Reference := (Data => This.My_Items (Place)) do
+            null;
+        end return;
     end Find_Item;
 
 
@@ -590,7 +596,9 @@ package body FLTK.Widgets.Menus is
             raise No_Reference;
         end if;
         Wrapper (This.My_Items (Place).all).Void_Ptr := fl_menu_mvalue (This.Void_Ptr);
-        return (Data => This.My_Items (Place));
+        return R : FLTK.Menu_Items.Menu_Item_Reference := (Data => This.My_Items (Place)) do
+            null;
+        end return;
     end Chosen;
 
 
