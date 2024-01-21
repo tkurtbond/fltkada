@@ -53,7 +53,11 @@ package body FLTK.Images.Bitmaps.XBM is
                        (Interfaces.C.To_C (Filename));
                 case fl_image_fail (This.Void_Ptr) is
                     when 1 =>
-                        raise No_Image_Error;
+                        --  raise No_Image_Error;
+                        null;
+                        --  Since the image depth and line data are both zero here,
+                        --  the fail method will think there's no image even though
+                        --  nothing is wrong. This is a bug in FLTK.
                     when 2 =>
                         raise File_Access_Error;
                     when 3 =>
