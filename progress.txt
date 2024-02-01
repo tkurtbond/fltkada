@@ -27,6 +27,7 @@ FLTK.Devices.Surfaces.Image
 FLTK.Devices.Surfaces.Paged
 FLTK.Devices.Surfaces.Paged.Printers
 FLTK.Dialogs
+FLTK.Draw
 FLTK.Event
 FLTK.Images
 FLTK.Images.Bitmaps

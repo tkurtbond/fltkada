@@ -26,15 +26,50 @@ package FLTK is
 
 
 
+    --  Values scale from A/Black to X/White
+    type Greyscale is new Character range 'A' .. 'X';
+
     type Color is mod 2**32;
     type Color_Component is mod 256;
 
-    No_Color    : constant Color := 16#00000000#;
+    --  Examples of RGB colors
+    --  The lowest byte has to be 00 for the color to be RGB
+    RGB_Red_Color   : constant Color := 16#ff000000#;
+    RGB_Green_Color : constant Color := 16#00ff0000#;
+    RGB_Blue_Color  : constant Color := 16#0000ff00#;
+    RGB_White_Color : constant Color := 16#ffffff00#;
 
-    Red_Color   : constant Color := 16#ff000000#;
-    Green_Color : constant Color := 16#00ff0000#;
-    Blue_Color  : constant Color := 16#0000ff00#;
-    White_Color : constant Color := 16#ffffff00#;
+    --  Standard colors used in widgets
+    Foreground_Color  : constant Color := 0;
+    Background2_Color : constant Color := 7;
+    Inactive_Color    : constant Color := 8;
+    Selection_Color   : constant Color := 15;
+
+    --  Standard boxtype colors
+    Grey0_Color      : constant Color := 32;
+    Dark3_Color      : constant Color := 39;
+    Dark2_Color      : constant Color := 45;
+    Dark1_Color      : constant Color := 47;
+    Background_Color : constant Color := 49;
+    Light1_Color     : constant Color := 50;
+    Light2_Color     : constant Color := 52;
+    Light3_Color     : constant Color := 54;
+
+    --  Color cube colors
+    Black_Color        : constant Color := 56;
+    Red_Color          : constant Color := 88;
+    Green_Color        : constant Color := 63;
+    Yellow_Color       : constant Color := 95;
+    Blue_Color         : constant Color := 216;
+    Magenta_Color      : constant Color := 248;
+    Cyan_Color         : constant Color := 223;
+    Dark_Red_Color     : constant Color := 72;
+    Dark_Green_Color   : constant Color := 60;
+    Dark_Yellow_Color  : constant Color := 76;
+    Dark_Blue_Color    : constant Color := 136;
+    Dark_Magenta_Color : constant Color := 152;
+    Dark_Cyan_Color    : constant Color := 140;
+    White_Color        : constant Color := 255;
 
 
 

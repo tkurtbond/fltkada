@@ -231,7 +231,7 @@ package body FLTK.Widgets.Charts is
            (This       : in out Chart;
             Data_Value : in     Long_Float;
             Data_Label : in     String := "";
-            Data_Color : in     Color := No_Color) is
+            Data_Color : in     Color := Foreground_Color) is
     begin
         fl_chart_add
            (This.Void_Ptr,
@@ -246,7 +246,7 @@ package body FLTK.Widgets.Charts is
             Position   : in     Natural;
             Data_Value : in     Long_Float;
             Data_Label : in     String := "";
-            Data_Color : in     Color := No_Color) is
+            Data_Color : in     Color := Foreground_Color) is
     begin
         fl_chart_insert
            (This.Void_Ptr,
@@ -262,7 +262,7 @@ package body FLTK.Widgets.Charts is
             Position   : in     Natural;
             Data_Value : in     Long_Float;
             Data_Label : in     String := "";
-            Data_Color : in     Color := No_Color) is
+            Data_Color : in     Color := Foreground_Color) is
     begin
         fl_chart_replace
            (This.Void_Ptr,

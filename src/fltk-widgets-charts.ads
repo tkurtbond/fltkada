@@ -27,21 +27,21 @@ package FLTK.Widgets.Charts is
            (This       : in out Chart;
             Data_Value : in     Long_Float;
             Data_Label : in     String := "";
-            Data_Color : in     Color := No_Color);
+            Data_Color : in     Color := Foreground_Color);
 
     procedure Insert
            (This       : in out Chart;
             Position   : in     Natural;
             Data_Value : in     Long_Float;
             Data_Label : in     String := "";
-            Data_Color : in     Color := No_Color);
+            Data_Color : in     Color := Foreground_Color);
 
     procedure Replace
            (This       : in out Chart;
             Position   : in     Natural;
             Data_Value : in     Long_Float;
             Data_Label : in     String := "";
-            Data_Color : in     Color := No_Color);
+            Data_Color : in     Color := Foreground_Color);
 
     procedure Clear
            (This : in out Chart);
