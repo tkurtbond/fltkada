@@ -1,0 +1,538 @@
+
+
+with
+
+    Interfaces.C,
+    System;
+
+use type
+
+    Interfaces.C.int,
+    Interfaces.C.signed_char,
+    Interfaces.C.unsigned,
+    System.Address;
+
+
+package body FLTK.Widgets.Groups.Windows.OpenGL is
+
+
+    procedure gl_window_set_draw_hook
+           (W, D : in System.Address);
+    pragma Import (C, gl_window_set_draw_hook, "gl_window_set_draw_hook");
+    pragma Inline (gl_window_set_draw_hook);
+
+    procedure gl_window_set_handle_hook
+           (W, H : in System.Address);
+    pragma Import (C, gl_window_set_handle_hook, "gl_window_set_handle_hook");
+    pragma Inline (gl_window_set_handle_hook);
+
+
+
+
+    function new_fl_gl_window
+           (X, Y, W, H : in Interfaces.C.int;
+            Text       : in Interfaces.C.char_array)
+        return System.Address;
+    pragma Import (C, new_fl_gl_window, "new_fl_gl_window");
+    pragma Inline (new_fl_gl_window);
+
+    function new_fl_gl_window2
+           (W, H : in Interfaces.C.int;
+            Text : in Interfaces.C.char_array)
+        return System.Address;
+    pragma Import (C, new_fl_gl_window2, "new_fl_gl_window2");
+    pragma Inline (new_fl_gl_window2);
+
+    procedure free_fl_gl_window
+           (S : in System.Address);
+    pragma Import (C, free_fl_gl_window, "free_fl_gl_window");
+    pragma Inline (free_fl_gl_window);
+
+
+
+
+    procedure fl_gl_window_show
+           (S : in System.Address);
+    pragma Import (C, fl_gl_window_show, "fl_gl_window_show");
+    pragma Inline (fl_gl_window_show);
+
+    procedure fl_gl_window_hide
+           (S : in System.Address);
+    pragma Import (C, fl_gl_window_hide, "fl_gl_window_hide");
+    pragma Inline (fl_gl_window_hide);
+
+    procedure fl_gl_window_hide_overlay
+           (S : in System.Address);
+    pragma Import (C, fl_gl_window_hide_overlay, "fl_gl_window_hide_overlay");
+    pragma Inline (fl_gl_window_hide_overlay);
+
+    procedure fl_gl_window_flush
+           (S : in System.Address);
+    pragma Import (C, fl_gl_window_flush, "fl_gl_window_flush");
+    pragma Inline (fl_gl_window_flush);
+
+
+
+
+    function fl_gl_window_pixel_h
+           (S : in System.Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_gl_window_pixel_h, "fl_gl_window_pixel_h");
+    pragma Inline (fl_gl_window_pixel_h);
+
+    function fl_gl_window_pixel_w
+           (S : in System.Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_gl_window_pixel_w, "fl_gl_window_pixel_w");
+    pragma Inline (fl_gl_window_pixel_w);
+
+    function fl_gl_window_pixels_per_unit
+           (S : in System.Address)
+        return Interfaces.C.C_float;
+    pragma Import (C, fl_gl_window_pixels_per_unit, "fl_gl_window_pixels_per_unit");
+    pragma Inline (fl_gl_window_pixels_per_unit);
+
+
+
+
+    function fl_gl_window_get_mode
+           (S : in System.Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_gl_window_get_mode, "fl_gl_window_get_mode");
+    pragma Inline (fl_gl_window_get_mode);
+
+    procedure fl_gl_window_set_mode
+           (S : in System.Address;
+            M : in Interfaces.C.int);
+    pragma Import (C, fl_gl_window_set_mode, "fl_gl_window_set_mode");
+    pragma Inline (fl_gl_window_set_mode);
+
+    function fl_gl_window_static_can_do
+           (M : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_gl_window_static_can_do, "fl_gl_window_static_can_do");
+    pragma Inline (fl_gl_window_static_can_do);
+
+    function fl_gl_window_can_do
+           (S : in System.Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_gl_window_can_do, "fl_gl_window_can_do");
+    pragma Inline (fl_gl_window_can_do);
+
+    function fl_gl_window_can_do_overlay
+           (S : in System.Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_gl_window_can_do_overlay, "fl_gl_window_can_do_overlay");
+    pragma Inline (fl_gl_window_can_do_overlay);
+
+
+
+
+    function fl_gl_window_get_context
+           (S : in System.Address)
+        return System.Address;
+    pragma Import (C, fl_gl_window_get_context, "fl_gl_window_get_context");
+    pragma Inline (fl_gl_window_get_context);
+
+    procedure fl_gl_window_set_context
+           (S, P : in System.Address;
+            D    : in Interfaces.C.int);
+    pragma Import (C, fl_gl_window_set_context, "fl_gl_window_set_context");
+    pragma Inline (fl_gl_window_set_context);
+
+    function fl_gl_window_context_valid
+           (S : in System.Address)
+        return Interfaces.C.signed_char;
+    pragma Import (C, fl_gl_window_context_valid, "fl_gl_window_context_valid");
+    pragma Inline (fl_gl_window_context_valid);
+
+    procedure fl_gl_window_set_context_valid
+           (S : in System.Address;
+            V : in Interfaces.C.signed_char);
+    pragma Import (C, fl_gl_window_set_context_valid, "fl_gl_window_set_context_valid");
+    pragma Inline (fl_gl_window_set_context_valid);
+
+    function fl_gl_window_valid
+           (S : in System.Address)
+        return Interfaces.C.signed_char;
+    pragma Import (C, fl_gl_window_valid, "fl_gl_window_valid");
+    pragma Inline (fl_gl_window_valid);
+
+    procedure fl_gl_window_set_valid
+           (S : in System.Address;
+            V : in Interfaces.C.signed_char);
+    pragma Import (C, fl_gl_window_set_valid, "fl_gl_window_set_valid");
+    pragma Inline (fl_gl_window_set_valid);
+
+    procedure fl_gl_window_make_current
+           (S : in System.Address);
+    pragma Import (C, fl_gl_window_make_current, "fl_gl_window_make_current");
+    pragma Inline (fl_gl_window_make_current);
+
+    procedure fl_gl_window_make_overlay_current
+           (S : in System.Address);
+    pragma Import (C, fl_gl_window_make_overlay_current, "fl_gl_window_make_overlay_current");
+    pragma Inline (fl_gl_window_make_overlay_current);
+
+
+
+
+    procedure fl_gl_window_ortho
+           (W : in System.Address);
+    pragma Import (C, fl_gl_window_ortho, "fl_gl_window_ortho");
+    pragma Inline (fl_gl_window_ortho);
+
+    procedure fl_gl_window_redraw_overlay
+           (W : in System.Address);
+    pragma Import (C, fl_gl_window_redraw_overlay, "fl_gl_window_redraw_overlay");
+    pragma Inline (fl_gl_window_redraw_overlay);
+
+    procedure fl_gl_window_swap_buffers
+           (W : in System.Address);
+    pragma Import (C, fl_gl_window_swap_buffers, "fl_gl_window_swap_buffers");
+    pragma Inline (fl_gl_window_swap_buffers);
+
+    procedure fl_gl_window_draw
+           (W : in System.Address);
+    pragma Import (C, fl_gl_window_draw, "fl_gl_window_draw");
+    pragma Inline (fl_gl_window_draw);
+
+    function fl_gl_window_handle
+           (W : in System.Address;
+            E : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_gl_window_handle, "fl_gl_window_handle");
+    pragma Inline (fl_gl_window_handle);
+
+
+
+
+    procedure Finalize
+           (This : in out GL_Window) is
+    begin
+        if  This.Void_Ptr /= System.Null_Address and then
+            This in GL_Window'Class
+        then
+            This.Clear;
+            free_fl_gl_window (This.Void_Ptr);
+            This.Void_Ptr := System.Null_Address;
+        end if;
+        Finalize (Window (This));
+    end Finalize;
+
+
+
+
+    --------------------
+    --  Constructors  --
+    --------------------
+
+    package body Forge is
+
+        function Create
+               (X, Y, W, H : in Integer;
+                Text       : in String := "")
+            return GL_Window is
+        begin
+            return This : GL_Window do
+                This.Void_Ptr := new_fl_gl_window
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
+                fl_group_end (This.Void_Ptr);
+                fl_widget_set_user_data
+                   (This.Void_Ptr,
+                    Widget_Convert.To_Address (This'Unchecked_Access));
+                gl_window_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
+                gl_window_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
+            end return;
+        end Create;
+
+
+        function Create
+               (W, H : in Integer;
+                Text : in String := "")
+            return GL_Window is
+        begin
+            return This : GL_Window do
+                This.Void_Ptr := new_fl_gl_window2
+                   (Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
+                fl_group_end (This.Void_Ptr);
+                fl_widget_set_user_data
+                   (This.Void_Ptr,
+                    Widget_Convert.To_Address (This'Unchecked_Access));
+                gl_window_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
+                gl_window_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
+            end return;
+        end Create;
+
+    end Forge;
+
+
+
+
+    ---------------
+    --  Display  --
+    ---------------
+
+    procedure Show
+           (This : in out GL_Window) is
+    begin
+        fl_gl_window_show (This.Void_Ptr);
+    end Show;
+
+
+    procedure Hide
+           (This : in out GL_Window) is
+    begin
+        fl_gl_window_hide (This.Void_Ptr);
+    end Hide;
+
+
+    procedure Hide_Overlay
+           (This : in out GL_Window) is
+    begin
+        fl_gl_window_hide_overlay (This.Void_Ptr);
+    end Hide_Overlay;
+
+
+    procedure Flush
+           (This : in out GL_Window) is
+    begin
+        fl_gl_window_flush (This.Void_Ptr);
+    end Flush;
+
+
+
+
+    ------------------
+    --  Dimensions  --
+    ------------------
+
+    function Pixel_H
+           (This : in GL_Window)
+        return Integer is
+    begin
+        return Integer (fl_gl_window_pixel_h (This.Void_Ptr));
+    end Pixel_H;
+
+
+    function Pixel_W
+           (This : in GL_Window)
+        return Integer is
+    begin
+        return Integer (fl_gl_window_pixel_w (This.Void_Ptr));
+    end Pixel_W;
+
+
+    function Pixels_Per_Unit
+           (This : in GL_Window)
+        return Float is
+    begin
+        return Float (fl_gl_window_pixels_per_unit (This.Void_Ptr));
+    end Pixels_Per_Unit;
+
+
+
+
+    --------------------
+    --  OpenGL Modes  --
+    --------------------
+
+    function Get_Mode
+           (This : in GL_Window)
+        return Mode_Mask
+    is
+        Raw : Interfaces.C.unsigned := Interfaces.C.unsigned
+            (fl_gl_window_get_mode (This.Void_Ptr));
+    begin
+        return
+           (Index       => (Raw and 1) /= 0,
+            Double      => (Raw and 2) /= 0,
+            Accum       => (Raw and 4) /= 0,
+            Alpha       => (Raw and 8) /= 0,
+            Depth       => (Raw and 16) /= 0,
+            Stencil     => (Raw and 32) /= 0,
+            RGB8        => (Raw and 64) /= 0,
+            Multisample => (Raw and 128) /= 0,
+            Stereo      => (Raw and 256) /= 0,
+            Fake_Single => (Raw and 512) /= 0,
+            OpenGL3     => (Raw and 1024) /= 0);
+    end Get_Mode;
+
+
+    procedure Set_Mode
+           (This : in out GL_Window;
+            Mask : in     Mode_Mask) is
+    begin
+        fl_gl_window_set_mode (This.Void_Ptr,
+            Boolean'Pos (Mask.Index) * 1 +
+            Boolean'Pos (Mask.Double) * 2 +
+            Boolean'Pos (Mask.Accum) * 4 +
+            Boolean'Pos (Mask.Alpha) * 8 +
+            Boolean'Pos (Mask.Depth) * 16 +
+            Boolean'Pos (Mask.Stencil) * 32 +
+            Boolean'Pos (Mask.RGB8) * 64 +
+            Boolean'Pos (Mask.Multisample) * 128 +
+            Boolean'Pos (Mask.Stereo) * 256 +
+            Boolean'Pos (Mask.Fake_Single) * 512 +
+            Boolean'Pos (Mask.OpenGL3) * 1024);
+    end Set_Mode;
+
+
+    function Can_Do
+           (Mask : in Mode_Mask)
+        return Boolean is
+    begin
+        return fl_gl_window_static_can_do
+           (Boolean'Pos (Mask.Index) * 1 +
+            Boolean'Pos (Mask.Double) * 2 +
+            Boolean'Pos (Mask.Accum) * 4 +
+            Boolean'Pos (Mask.Alpha) * 8 +
+            Boolean'Pos (Mask.Depth) * 16 +
+            Boolean'Pos (Mask.Stencil) * 32 +
+            Boolean'Pos (Mask.RGB8) * 64 +
+            Boolean'Pos (Mask.Multisample) * 128 +
+            Boolean'Pos (Mask.Stereo) * 256 +
+            Boolean'Pos (Mask.Fake_Single) * 512 +
+            Boolean'Pos (Mask.OpenGL3) * 1024) /= 0;
+    end Can_Do;
+
+
+    function Can_Do
+           (This : in GL_Window)
+        return Boolean is
+    begin
+        return fl_gl_window_can_do (This.Void_Ptr) /= 0;
+    end Can_Do;
+
+
+    function Can_Do_Overlay
+           (This : in GL_Window)
+        return Boolean is
+    begin
+        return fl_gl_window_can_do_overlay (This.Void_Ptr) /= 0;
+    end Can_Do_Overlay;
+
+
+
+
+    -----------------------
+    --  OpenGL Contexts  --
+    -----------------------
+
+    function Get_Context
+           (This : in GL_Window)
+        return System.Address is
+    begin
+        return fl_gl_window_get_context (This.Void_Ptr);
+    end Get_Context;
+
+
+    procedure Set_Context
+           (This    : in out GL_Window;
+            Struct  : in     System.Address;
+            Destroy : in     Boolean := False) is
+    begin
+        fl_gl_window_set_context (This.Void_Ptr, Struct, Boolean'Pos (Destroy));
+    end Set_Context;
+
+
+    function Get_Context_Valid
+           (This : in GL_Window)
+        return Boolean is
+    begin
+        return fl_gl_window_context_valid (This.Void_Ptr) /= 0;
+    end Get_Context_Valid;
+
+
+    procedure Set_Context_Valid
+           (This  : in out GL_Window;
+            Value : in     Boolean) is
+    begin
+        fl_gl_window_set_context_valid (This.Void_Ptr, Boolean'Pos (Value));
+    end Set_Context_Valid;
+
+
+    function Get_Valid
+           (This : in GL_Window)
+        return Boolean is
+    begin
+        return fl_gl_window_valid (This.Void_Ptr) /= 0;
+    end Get_Valid;
+
+
+    procedure Set_Valid
+           (This  : in out GL_Window;
+            Value : in     Boolean) is
+    begin
+        fl_gl_window_set_valid (This.Void_Ptr, Boolean'Pos (Value));
+    end Set_Valid;
+
+
+    procedure Make_Current
+           (This : in out GL_Window) is
+    begin
+        fl_gl_window_make_current (This.Void_Ptr);
+    end Make_Current;
+
+
+    procedure Make_Overlay_Current
+           (This : in out GL_Window) is
+    begin
+        fl_gl_window_make_overlay_current (This.Void_Ptr);
+    end Make_Overlay_Current;
+
+
+
+
+    ----------------------------------
+    --  Drawing and Event Handling  --
+    ----------------------------------
+
+    procedure Ortho
+           (This : in out GL_Window) is
+    begin
+        fl_gl_window_ortho (This.Void_Ptr);
+    end Ortho;
+
+
+    procedure Redraw_Overlay
+           (This : in out GL_Window) is
+    begin
+        fl_gl_window_redraw_overlay (This.Void_Ptr);
+    end Redraw_Overlay;
+
+
+    procedure Swap_Buffers
+           (This : in out GL_Window) is
+    begin
+        fl_gl_window_swap_buffers (This.Void_Ptr);
+    end Swap_Buffers;
+
+
+    procedure Draw
+           (This : in out GL_Window) is
+    begin
+        fl_gl_window_draw (This.Void_Ptr);
+    end Draw;
+
+
+    function Handle
+           (This  : in out GL_Window;
+            Event : in     Event_Kind)
+        return Event_Outcome is
+    begin
+        return Event_Outcome'Val
+               (fl_gl_window_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
+    end Handle;
+
+
+end FLTK.Widgets.Groups.Windows.OpenGL;
+

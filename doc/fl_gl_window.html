@@ -1,0 +1,394 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title> Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Gl_Window Binding Map</h2>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Gl_Window</td>
+    <td>FLTK.Widgets.Groups.Windows.OpenGL</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Gl_Window</td>
+    <td>GL_Window</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>GL_Window_Reference</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Mode_Mask</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+static int can_do(const int *m);
+</pre></td>
+<td>
+Not applicable due to not being part of the public stable API
+</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int can_do(int m);
+</pre></td>
+<td><pre>
+function Can_Do
+       (Mask : in Mode_Mask)
+    return Boolean;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Gl_Window(int W, int H, const char *l=0);
+</pre></td>
+<td><pre>
+function Create
+       (W, H : in Integer;
+        Text : in String := "")
+    return GL_Window;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Gl_Window(int X, int Y, int W, int H, const char *l=0);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return GL_Window;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual Fl_Gl_Window * as_gl_window();
+</pre></td>
+<td>
+Use view conversion and tag membership tests instead
+</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int can_do();
+</pre></td>
+<td><pre>
+function Can_Do
+       (This : in GL_Window)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int can_do_overlay();
+</pre></td>
+<td><pre>
+function Can_Do_Overlay
+       (This : in GL_Window)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void * context() const;
+</pre></td>
+<td><pre>
+function Get_Context
+       (This : in GL_Window)
+    return System.Address;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void context(void *, int destroy_flag=0);
+</pre></td>
+<td><pre>
+procedure Set_Context
+       (This    : in out GL_Window;
+        Struct  : in     System.Address;
+        Destroy : in     Boolean := False);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+char context_valid() const;
+</pre></td>
+<td><pre>
+function Get_Context_Valid
+       (This : in GL_Window)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void context_valid(char v);
+</pre></td>
+<td><pre>
+procedure Set_Context_Valid
+       (This  : in out GL_Window;
+        Valud : in     Boolean);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void flush();
+</pre></td>
+<td><pre>
+procedure Flush
+       (This : in out GL_Window);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int handle(int);
+</pre></td>
+<td><pre>
+function Handle
+       (This  : in out GL_Window;
+        Event : in     Event_Kind)
+    return Event_Outcome;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void hide();
+</pre></td>
+<td><pre>
+procedure Hide
+       (This : in out GL_Window);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void hide_overlay();
+</pre></td>
+<td><pre>
+procedure Hide_Overlay
+       (This : in out GL_Window);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void invalidate();
+</pre></td>
+<td>
+Use Set_Valid instead
+</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void make_current();
+</pre></td>
+<td><pre>
+procedure Make_Current
+       (This : in out GL_Window);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void make_overlay_current();
+</pre></td>
+<td><pre>
+procedure Make_Overlay_Current
+       (This : in out GL_Window);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Mode mode() const;
+</pre></td>
+<td><pre>
+function Get_Mode
+       (This : in GL_Window)
+    return Mode_Mask;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int mode(const int *a);
+</pre></td>
+<td>
+Not applicable due to not being part of the public stable API
+</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int mode(int a);
+</pre></td>
+<td><pre>
+procedure Set_Mode
+       (This : in out GL_Window;
+        Mask : in     Mode_Mask);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void ortho();
+</pre></td>
+<td><pre>
+procedure Ortho
+       (This : in out GL_Window);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int pixel_h();
+</pre></td>
+<td><pre>
+function Pixel_H
+       (This : in GL_Window)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int pixel_w();
+</pre></td>
+<td><pre>
+function Pixel_W
+       (This : in GL_Window)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+float pixels_per_unit();
+</pre></td>
+<td><pre>
+function Pixels_Per_Unit
+       (This : in GL_Window)
+    return Float;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void Redraw_Overlay();
+</pre></td>
+<td><pre>
+procedure Redraw_Overlay
+       (This : in out GL_Window);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void resize(int, int, int, int);
+</pre></td>
+<td>
+Use Resize/Reposition from FLTK.Widgets instead
+</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void show();
+
+void show(int a, char **b);
+</pre></td>
+<td><pre>
+procedure Show
+       (This : in out GL_Window);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void swap_buffers();
+</pre></td>
+<td><pre>
+procedure Swap_Buffers
+       (This : in out GL_Window);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+char valid() const;
+</pre></td>
+<td><pre>
+function Get_Valid
+       (This : in GL_Window)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void valid(char v);
+</pre></td>
+<td><pre>
+procedure Set_Valid
+       (This  : in out GL_Window;
+        Value : in     Boolean);
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
+
