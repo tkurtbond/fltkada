@@ -168,6 +168,14 @@ package FLTK.Draw is
     procedure Set_Color
            (R, G, B : in Color_Component);
 
+    procedure Set_Cursor
+           (To : in Mouse_Cursor);
+
+    procedure Set_Cursor
+           (To   : in Mouse_Cursor;
+            Fore : in Color;
+            Back : in Color := White_Color);
+
     function Get_Font
         return Font_Kind;
 

@@ -139,6 +139,17 @@ package body FLTK.Draw is
     pragma Import (C, fl_draw_set_color2, "fl_draw_set_color2");
     pragma Inline (fl_draw_set_color2);
 
+    procedure fl_draw_set_cursor
+           (M : in Interfaces.C.int);
+    pragma Import (C, fl_draw_set_cursor, "fl_draw_set_cursor");
+    pragma Inline (fl_draw_set_cursor);
+
+    procedure fl_draw_set_cursor2
+           (M    : in Interfaces.C.int;
+            F, B : in Interfaces.C.unsigned);
+    pragma Import (C, fl_draw_set_cursor2, "fl_draw_set_cursor2");
+    pragma Inline (fl_draw_set_cursor2);
+
     function fl_draw_get_font
         return Interfaces.C.unsigned;
     pragma Import (C, fl_draw_get_font, "fl_draw_get_font");
@@ -796,6 +807,24 @@ package body FLTK.Draw is
             Interfaces.C.unsigned_char (G),
             Interfaces.C.unsigned_char (B));
     end Set_Color;
+
+
+    procedure Set_Cursor
+           (To : in Mouse_Cursor) is
+    begin
+        fl_draw_set_cursor (Cursor_Values (To));
+    end Set_Cursor;
+
+    procedure Set_Cursor
+           (To   : in Mouse_Cursor;
+            Fore : in Color;
+            Back : in Color := White_Color) is
+    begin
+        fl_draw_set_cursor2
+           (Cursor_Values (To),
+            Interfaces.C.unsigned (Fore),
+            Interfaces.C.unsigned (Back));
+    end Set_Cursor;
 
 
     function Get_Font

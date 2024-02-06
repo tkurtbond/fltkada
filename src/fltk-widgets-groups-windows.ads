@@ -21,13 +21,6 @@ package FLTK.Widgets.Groups.Windows is
 
     type Modal_State is (Normal, Non_Modal, Modal);
 
-    type Cursor is
-           (Default, Arrow, Crosshair, Wait,
-            Insert, Hand, Help, Move,
-            NS, WE, NWSE, NESW,
-            N, NE, E, SE, S, SW, W, NW,
-            None);
-
 
 
 
@@ -114,7 +107,7 @@ package FLTK.Widgets.Groups.Windows is
 
     procedure Set_Cursor
            (This : in out Window;
-            To   : in     Cursor);
+            To   : in     Mouse_Cursor);
 
     procedure Set_Cursor
            (This         : in out Window;
@@ -123,7 +116,7 @@ package FLTK.Widgets.Groups.Windows is
 
     procedure Set_Default_Cursor
            (This : in out Window;
-            To   : in     Cursor);
+            To   : in     Mouse_Cursor);
 
 
 
@@ -271,34 +264,6 @@ private
 
     pragma Inline (Draw);
     pragma Inline (Handle);
-
-
-
-
-    --  What delightful magic numbers FLTK cursors are!
-    --  (These correspond to the enum found in Enumerations.H)
-    Cursor_Values : array (Cursor) of Interfaces.C.int :=
-           (Default   => 0,
-            Arrow     => 35,
-            Crosshair => 66,
-            Wait      => 76,
-            Insert    => 77,
-            Hand      => 31,
-            Help      => 47,
-            Move      => 27,
-            NS        => 78,
-            WE        => 79,
-            NWSE      => 80,
-            NESW      => 81,
-            N         => 70,
-            NE        => 69,
-            E         => 49,
-            SE        => 8,
-            S         => 9,
-            SW        => 7,
-            W         => 36,
-            NW        => 68,
-            None      => 255);
 
 
 

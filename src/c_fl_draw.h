@@ -36,6 +36,8 @@ extern "C" void fl_draw_overlay_rect(int x, int y, int w, int h);
 extern "C" unsigned int fl_draw_get_color();
 extern "C" void fl_draw_set_color(unsigned int c);
 extern "C" void fl_draw_set_color2(uchar r, uchar g, uchar b);
+extern "C" void fl_draw_set_cursor(int m);
+extern "C" void fl_draw_set_cursor2(int m, unsigned int f, unsigned int b);
 extern "C" unsigned int fl_draw_get_font();
 extern "C" int fl_draw_size();
 extern "C" void fl_draw_set_font(unsigned int f, int s);

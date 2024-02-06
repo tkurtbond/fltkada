@@ -84,6 +84,32 @@ package FLTK is
 
 
 
+    type Mouse_Cursor is
+       (Default_Mouse,
+        Arrow_Mouse,
+        Crosshair_Mouse,
+        Wait_Mouse,
+        Insert_Mouse,
+        Hand_Mouse,
+        Help_Mouse,
+        Move_Mouse,
+        NS_Mouse,
+        WE_Mouse,
+        NWSE_Mouse,
+        NESW_Mouse,
+        N_Mouse,
+        NE_Mouse,
+        E_Mouse,
+        SE_Mouse,
+        S_Mouse,
+        SW_Mouse,
+        W_Mouse,
+        NW_Mouse,
+        None_Mouse);
+
+
+
+
     type Keypress is private;
     subtype Pressable_Key is Character range Character'Val (32) .. Character'Val (126);
     function Press (Key : in Pressable_Key) return Keypress;
@@ -361,6 +387,34 @@ private
     Align_Bottom : constant Alignment := 2;
     Align_Left   : constant Alignment := 4;
     Align_Right  : constant Alignment := 8;
+
+
+
+
+    --  What delightful magic numbers FLTK cursors are!
+    --  (These correspond to the enum found in Enumerations.H)
+    Cursor_Values : array (Mouse_Cursor) of Interfaces.C.int :=
+           (Default_Mouse   => 0,
+            Arrow_Mouse     => 35,
+            Crosshair_Mouse => 66,
+            Wait_Mouse      => 76,
+            Insert_Mouse    => 77,
+            Hand_Mouse      => 31,
+            Help_Mouse      => 47,
+            Move_Mouse      => 27,
+            NS_Mouse        => 78,
+            WE_Mouse        => 79,
+            NWSE_Mouse      => 80,
+            NESW_Mouse      => 81,
+            N_Mouse         => 70,
+            NE_Mouse        => 69,
+            E_Mouse         => 49,
+            SE_Mouse        => 8,
+            S_Mouse         => 9,
+            SW_Mouse        => 7,
+            W_Mouse         => 36,
+            NW_Mouse        => 68,
+            None_Mouse      => 255);
 
 
 

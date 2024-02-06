@@ -102,6 +102,14 @@ void fl_draw_set_color2(uchar r, uchar g, uchar b) {
     fl_color(r, g, b);
 }
 
+void fl_draw_set_cursor(int m) {
+    fl_cursor((Fl_Cursor)m);
+}
+
+void fl_draw_set_cursor2(int m, unsigned int f, unsigned int b) {
+    fl_cursor((Fl_Cursor)m, f, b);
+}
+
 unsigned int fl_draw_get_font() {
     return (unsigned int)fl_font();
 }

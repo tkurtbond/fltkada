@@ -269,11 +269,22 @@ procedure Set_Color
   <tr>
 <td><pre>
 void fl_cursor(Fl_Cursor);
+</pre></td>
+<td><pre>
+procedure Set_Cursor
+       (To : in Mouse_Cursor);
+</pre></td>
+  </tr>
 
+  <tr>
+<td><pre>
 void fl_cursor(Fl_Cursor, Fl_Color fg, Fl_Color bg=FL_WHITE);
 </pre></td>
 <td><pre>
-
+procedure Set_Cursor
+       (To   : in Mouse_Cursor;
+        Fore : in Color;
+        Back : in Color := White_Color);
 </pre></td>
   </tr>
 
