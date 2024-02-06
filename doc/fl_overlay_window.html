@@ -1,0 +1,150 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Overlay_Window Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Overlay_Window Binding Map</h2>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Overlay_Window</td>
+    <td>FLTK.Widgets.Groups.Windows.Double.Overlay</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Overlay_Window</td>
+    <td>Overlay_Window</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Overlay_Window_Reference</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Overlay_Window(int W, int H, const char *l=0);
+</pre></td>
+<td><pre>
+function Create
+       (W, H : in Integer;
+        Text : in String := "")
+    return Overlay_Window;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Overlay_Window(int X, int Y, int W, int H, const char *l=0);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return Overlay_Window;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int can_do_overlay();
+</pre></td>
+<td><pre>
+function Can_Do_Overlay
+       (This : in Overlay_Window)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual void draw_overlay()=0;
+</pre></td>
+<td><pre>
+procedure Draw_Overlay
+       (This : in out Overlay_Window) is null;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void flush();
+</pre></td>
+<td><pre>
+procedure Flush
+       (This : in out Overlay_Window);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void hide();
+</pre></td>
+<td><pre>
+procedure Hide
+       (This : in out Overlay_Window);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void redraw_overlay();
+</pre></td>
+<td><pre>
+procedure Redraw_Overlay
+       (This : in out Overlay_Window);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void resize(int, int, int, int);
+</pre></td>
+<td>
+Use Resize/Reposition from FLTK.Widgets instead
+</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void show();
+
+void show(int a, char **b);
+</pre></td>
+<td><pre>
+procedure Show
+       (This : in out Overlay_Window);
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
+
