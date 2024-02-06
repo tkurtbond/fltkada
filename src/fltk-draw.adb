@@ -637,6 +637,10 @@ package body FLTK.Draw is
 
 
 
+    --------------------------
+    --  Charset Conversion  --
+    --------------------------
+
     function Latin1_To_Local
            (From : in String)
         return String is
@@ -674,6 +678,10 @@ package body FLTK.Draw is
 
 
 
+
+    ----------------
+    --  Clipping  --
+    ----------------
 
     function Clip_Box
            (X, Y, W, H     : in     Integer;
@@ -739,6 +747,10 @@ package body FLTK.Draw is
 
 
 
+    ---------------
+    --  Overlay  --
+    ---------------
+
     procedure Overlay_Clear is
     begin
         fl_draw_overlay_clear;
@@ -757,6 +769,10 @@ package body FLTK.Draw is
 
 
 
+
+    ----------------
+    --  Settings  --
+    ----------------
 
     function Get_Color
         return Color is
@@ -860,6 +876,10 @@ package body FLTK.Draw is
 
 
 
+
+    -------------------------
+    --  Matrix Operations  --
+    -------------------------
 
     procedure Mult_Matrix
            (A, B, C, D, X, Y : in Long_Float) is
@@ -977,6 +997,10 @@ package body FLTK.Draw is
 
 
 
+
+    -----------------------
+    --  Special Drawing  --
+    -----------------------
 
     procedure Add_Symbol
            (Text     : in String;
@@ -1260,6 +1284,10 @@ package body FLTK.Draw is
 
 
 
+    ----------------------
+    --  Manual Drawing  --
+    ----------------------
+
     procedure Begin_Complex_Polygon is
     begin
         fl_draw_begin_complex_polygon;
@@ -1284,8 +1312,6 @@ package body FLTK.Draw is
     begin
         fl_draw_begin_polygon;
     end Begin_Polygon;
-
-
 
 
     procedure Arc
@@ -1532,17 +1558,17 @@ package body FLTK.Draw is
     end Rect_Fill;
 
 
-    procedure XY_Line
+    procedure Ecks_Why_Line
            (X0, Y0, X1 : in Integer) is
     begin
         fl_draw_xy_line
            (Interfaces.C.int (X0),
             Interfaces.C.int (Y0),
             Interfaces.C.int (X1));
-    end XY_Line;
+    end Ecks_Why_Line;
 
 
-    procedure XY_Line
+    procedure Ecks_Why_Line
            (X0, Y0, X1, Y2 : in Integer) is
     begin
         fl_draw_xy_line2
@@ -1550,10 +1576,10 @@ package body FLTK.Draw is
             Interfaces.C.int (Y0),
             Interfaces.C.int (X1),
             Interfaces.C.int (Y2));
-    end XY_Line;
+    end Ecks_Why_Line;
 
 
-    procedure XY_Line
+    procedure Ecks_Why_Line
            (X0, Y0, X1, Y2, X3 : in Integer) is
     begin
         fl_draw_xy_line3
@@ -1562,20 +1588,20 @@ package body FLTK.Draw is
             Interfaces.C.int (X1),
             Interfaces.C.int (Y2),
             Interfaces.C.int (X3));
-    end XY_Line;
+    end Ecks_Why_Line;
 
 
-    procedure YX_Line
+    procedure Why_Ecks_Line
            (X0, Y0, Y1 : in Integer) is
     begin
         fl_draw_yx_line
            (Interfaces.C.int (X0),
             Interfaces.C.int (Y0),
             Interfaces.C.int (Y1));
-    end YX_Line;
+    end Why_Ecks_Line;
 
 
-    procedure YX_Line
+    procedure Why_Ecks_Line
            (X0, Y0, Y1, X2 : in Integer) is
     begin
         fl_draw_yx_line2
@@ -1583,10 +1609,10 @@ package body FLTK.Draw is
             Interfaces.C.int (Y0),
             Interfaces.C.int (Y1),
             Interfaces.C.int (X2));
-    end YX_Line;
+    end Why_Ecks_Line;
 
 
-    procedure YX_Line
+    procedure Why_Ecks_Line
            (X0, Y0, Y1, X2, Y3 : in Integer) is
     begin
         fl_draw_yx_line3
@@ -1595,9 +1621,7 @@ package body FLTK.Draw is
             Interfaces.C.int (Y1),
             Interfaces.C.int (X2),
             Interfaces.C.int (Y3));
-    end YX_Line;
-
-
+    end Why_Ecks_Line;
 
 
     procedure End_Complex_Polygon is

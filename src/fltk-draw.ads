@@ -435,22 +435,22 @@ package FLTK.Draw is
            (X, Y, W, H : in Integer;
             R, G, B    : in Color_Component);
 
-    procedure XY_Line
+    procedure Ecks_Why_Line
            (X0, Y0, X1 : in Integer);
 
-    procedure XY_Line
+    procedure Ecks_Why_Line
            (X0, Y0, X1, Y2 : in Integer);
 
-    procedure XY_Line
+    procedure Ecks_Why_Line
            (X0, Y0, X1, Y2, X3 : in Integer);
 
-    procedure YX_Line
+    procedure Why_Ecks_Line
            (X0, Y0, Y1 : in Integer);
 
-    procedure YX_Line
+    procedure Why_Ecks_Line
            (X0, Y0, Y1, X2 : in Integer);
 
-    procedure YX_Line
+    procedure Why_Ecks_Line
            (X0, Y0, Y1, X2, Y3 : in Integer);
 
     procedure End_Complex_Polygon;
@@ -466,16 +466,65 @@ private
     pragma Convention (C, Symbol_Draw_Function);
 
 
+    pragma Inline (Reset_Spot);
+    pragma Inline (Set_Spot);
+    pragma Inline (Set_Status);
+
+
     pragma Inline (Can_Do_Alpha_Blending);
+    pragma Inline (Shortcut_Label);
+
+
+    pragma Inline (Latin1_To_Local);
+    pragma Inline (Local_To_Latin1);
+    pragma Inline (Mac_Roman_To_Local);
+    pragma Inline (Local_To_Mac_Roman);
+
+
+    pragma Inline (Clip_Intersects);
+    pragma Inline (Pop_Clip);
+    pragma Inline (Push_Clip);
+    pragma Inline (Push_No_Clip);
+    pragma Inline (Restore_Clip);
+
+
+    pragma Inline (Overlay_Clear);
+    pragma Inline (Overlay_Rect);
 
 
     pragma Inline (Get_Color);
     pragma Inline (Set_Color);
     pragma Inline (Get_Font);
+    pragma Inline (Get_Font_Size);
     pragma Inline (Set_Font);
+    pragma Inline (Font_Line_Spacing);
+    pragma Inline (Font_Descent);
+    pragma Inline (Font_Height);
 
 
+    pragma Inline (Mult_Matrix);
+    pragma Inline (Pop_Matrix);
+    pragma Inline (Push_Matrix);
+    pragma Inline (Rotate);
+    pragma Inline (Scale);
+    pragma Inline (Transform_DX);
+    pragma Inline (Transform_DY);
+    pragma Inline (Transform_X);
+    pragma Inline (Transform_Y);
+    pragma Inline (Transformed_Vertex);
+    pragma Inline (Translate);
+    pragma Inline (Vertex);
+
+
+    pragma Inline (Add_Symbol);
+    pragma Inline (Draw_Text);
+    pragma Inline (Draw_Text_Right_Left);
     pragma Inline (Draw_Box);
+    pragma Inline (Draw_Symbol);
+    pragma Inline (Measure);
+    pragma Inline (Scroll);
+    pragma Inline (Text_Extents);
+    pragma Inline (Width);
 
 
     pragma Inline (Begin_Complex_Polygon);
@@ -486,10 +535,20 @@ private
 
 
     pragma Inline (Arc);
+    pragma Inline (Chord);
     pragma Inline (Circle);
+    pragma Inline (Curve);
     pragma Inline (Frame);
     pragma Inline (Gap);
     pragma Inline (Line);
+    pragma Inline (Outline);
+    pragma Inline (Pie);
+    pragma Inline (Point);
+    pragma Inline (Polygon);
+    pragma Inline (Rect);
+    pragma Inline (Rect_Fill);
+    pragma Inline (Ecks_Why_Line);
+    pragma Inline (Why_Ecks_Line);
 
 
     pragma Inline (End_Complex_Polygon);
