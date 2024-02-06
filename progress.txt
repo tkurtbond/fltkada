@@ -5,7 +5,7 @@ Approximate Progress List
 
 
 
-Overall estimate: 80%
+Overall estimate: 81%
 
 
 
@@ -74,6 +74,8 @@ FLTK.Widgets.Groups.Text_Displays.Text_Editors
 FLTK.Widgets.Groups.Tiled
 FLTK.Widgets.Groups.Windows
 FLTK.Widgets.Groups.Windows.Double
+FLTK.Widgets.Groups.Windows.Double.Overlay
+FLTK.Widgets.Groups.Windows.OpenGL
 FLTK.Widgets.Groups.Windows.Single
 FLTK.Widgets.Groups.Windows.Single.Menu
 FLTK.Widgets.Groups.Wizards
@@ -136,14 +138,12 @@ Fl_Check_Browser
 Fl_Display_Device
 Fl_File_Browser
 Fl_File_Chooser
-Fl_Gl_Window
 Fl_Glut_Window
 Fl_Help_Dialog
 Fl_Help_View
 Fl_Hold_Browser
 Fl_Label
 Fl_Multi_Browser
-Fl_Overlay_Window
 Fl_Postscript_File_Device
 Fl_Select_Browser
 Fl_Table
