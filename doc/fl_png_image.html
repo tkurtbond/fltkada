@@ -62,9 +62,15 @@ function Create
 
   <tr>
 <td><pre>
-Fl_PNG_Image(const char *name, const unsigned char *buffer, int datasize);
+Fl_PNG_Image(const char *name, const unsigned char *buffer,
+    int datasize);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Create
+       (Name : in String := "";
+        Data : in Color_Component_Array)
+    return PNG_Image;
+</pre></td>
   </tr>
 
 </table>

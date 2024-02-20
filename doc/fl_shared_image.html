@@ -47,28 +47,90 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
-
-  <tr>
-<td><pre>
-Fl_Shared_Image();
-</pre></td>
-<td>&nbsp;</td>
-  </tr>
-
-  <tr>
-<td><pre>
-Fl_Shared_Image(const char *n, Fl_Image *img=0);
-</pre></td>
-<td>&nbsp;</td>
-  </tr>
+  <tr><th colspan="2">Static Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
 static void add_handler(Fl_Shared_Handler f);
 </pre></td>
+<td>Documentation lacking, claims to be a test function yet used for adding extra formats?</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static Fl_Shared_Image * find(const char *name, int W=0, int H=0);
+</pre></td>
+<td><pre>
+function Find
+       (Name : in String;
+        W, H : in Integer := 0)
+    return Shared_Image;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static Fl_Shared_Image * get(const char *name, int W=0, int H=0);
+</pre></td>
+<td><pre>
+function Create
+       (Filename : in String;
+        W, H     : in Integer)
+    return Shared_Image;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static Fl_Shared_Image * get(Fl_RGB_Image *rgb, int own_it=1);
+</pre></td>
+<td><pre>
+function Create
+       (From : in FLTK.Images.RGB.RGB_Image'Class)
+    return Shared_Image;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static Fl_Shared_Image ** images();
+</pre></td>
 <td>&nbsp;</td>
   </tr>
+
+  <tr>
+<td><pre>
+static int num_images();
+</pre></td>
+<td><pre>
+function Number_Of_Images
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void remove_handler(Fl_Shared_Handler f);
+</pre></td>
+<td>Documentation lacking, claims to be a test function yet used for adding extra formats?</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void scaling_algorithm(Fl_RGB_Scaling algorithm);
+</pre></td>
+<td><pre>
+procedure Set_Scaling_Algorithm
+       (To : in Scaling_Kind);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
@@ -140,48 +202,6 @@ procedure Draw
 
   <tr>
 <td><pre>
-static Fl_Shared_Image * find(const char *name, int W=0, int H=0);
-</pre></td>
-<td><pre>
-function Find
-       (Name : in String;
-        W, H : in Integer := 0)
-    return Shared_Image;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-static Fl_Shared_Image * get(const char *name, int W=0, int H=0);
-</pre></td>
-<td><pre>
-function Create
-       (Filename : in String;
-        W, H     : in Integer)
-    return Shared_Image;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-static Fl_Shared_Image * get(Fl_RGB_Image *rgb, int own_it=1);
-</pre></td>
-<td><pre>
-function Create
-       (From : in FLTK.Images.RGB.RGB_Image'Class)
-    return Shared_Image;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-static Fl_Shared_Image ** images();
-</pre></td>
-<td>&nbsp;</td>
-  </tr>
-
-  <tr>
-<td><pre>
 const char * name();
 </pre></td>
 <td><pre>
@@ -193,16 +213,24 @@ function Name
 
   <tr>
 <td><pre>
-static int num_images();
+int original();
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Original
+       (This : in Shared_Image)
+    return Boolean;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 int refcount();
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Reference_Count
+       (This : in Shared_Image)
+    return Natural;
+</pre></td>
   </tr>
 
   <tr>
@@ -224,14 +252,8 @@ procedure Reload
 
   <tr>
 <td><pre>
-static void remove_handler(Fl_Shared_Handler f);
-</pre></td>
-<td>&nbsp;</td>
-  </tr>
-
-  <tr>
-<td><pre>
-void scale(int width, int height, int proportional=1, int can_expand=0);
+void scale(int width, int height,
+    int proportional=1, int can_expand=0);
 </pre></td>
 <td><pre>
 procedure Scale
@@ -244,19 +266,12 @@ procedure Scale
 
   <tr>
 <td><pre>
-static void scaling_algorithm(Fl_RGB_Scaling algorithm);
-</pre></td>
-<td><pre>
-procedure Set_Scaling_Algorithm
-       (To : in Scaling_Kind);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
 virtual void uncache();
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Uncache
+       (This : in out Shared_Image);
+</pre></td>
   </tr>
 
 </table>

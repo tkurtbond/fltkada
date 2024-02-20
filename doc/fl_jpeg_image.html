@@ -64,7 +64,12 @@ function Create
 <td><pre>
 Fl_JPEG_Image(const char *name, const unsigned char *data);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Create
+       (Name : in String := "";
+        Data : in Color_Component_Array)
+    return JPEG_Image;
+</pre></td>
   </tr>
 
 </table>

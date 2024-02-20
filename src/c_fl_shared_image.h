@@ -25,14 +25,16 @@ extern "C" void fl_shared_image_color_average(SHARED_IMAGE i, int c, float b);
 extern "C" void fl_shared_image_desaturate(SHARED_IMAGE i);
 
 
+extern "C" int fl_shared_image_num_images();
 extern "C" const char * fl_shared_image_name(SHARED_IMAGE i);
+extern "C" int fl_shared_image_original(SHARED_IMAGE i);
+extern "C" int fl_shared_image_refcount(SHARED_IMAGE i);
 extern "C" void fl_shared_image_reload(SHARED_IMAGE i);
+extern "C" void fl_shared_image_uncache(SHARED_IMAGE i);
 
 
 extern "C" void fl_shared_image_scaling_algorithm(int v);
 extern "C" void fl_shared_image_scale(SHARED_IMAGE i, int w, int h, int p, int e);
-
-
 extern "C" void fl_shared_image_draw(SHARED_IMAGE i, int x, int y, int w, int h, int cx, int cy);
 extern "C" void fl_shared_image_draw2(SHARED_IMAGE i, int x, int y);
 

@@ -48,12 +48,29 @@ void fl_shared_image_desaturate(SHARED_IMAGE i) {
 
 
 
+int fl_shared_image_num_images() {
+    return Fl_Shared_Image::num_images();
+}
+
 const char * fl_shared_image_name(SHARED_IMAGE i) {
     return reinterpret_cast<Fl_Shared_Image*>(i)->name();
 }
 
+int fl_shared_image_original(SHARED_IMAGE i) {
+    return reinterpret_cast<Fl_Shared_Image*>(i)->original();
+}
+
+int fl_shared_image_refcount(SHARED_IMAGE i) {
+    return reinterpret_cast<Fl_Shared_Image*>(i)->refcount();
+}
+
 void fl_shared_image_reload(SHARED_IMAGE i) {
     reinterpret_cast<Fl_Shared_Image*>(i)->reload();
+}
+
+void fl_shared_image_uncache(SHARED_IMAGE i) {
+    //  virtual so disable dispatch
+    reinterpret_cast<Fl_Shared_Image*>(i)->uncache();
 }
 
 
@@ -66,9 +83,6 @@ void fl_shared_image_scaling_algorithm(int v) {
 void fl_shared_image_scale(SHARED_IMAGE i, int w, int h, int p, int e) {
     reinterpret_cast<Fl_Shared_Image*>(i)->scale(w, h, p, e);
 }
-
-
-
 
 void fl_shared_image_draw(SHARED_IMAGE i, int x, int y, int w, int h, int cx, int cy) {
     //  virtual so disable dispatch

@@ -42,6 +42,10 @@ package body FLTK.Images.Bitmaps.XBM is
 
 
 
+    --------------------
+    --  Construction  --
+    --------------------
+
     package body Forge is
 
         function Create
@@ -58,12 +62,9 @@ package body FLTK.Images.Bitmaps.XBM is
                         --  Since the image depth and line data are both zero here,
                         --  the fail method will think there's no image even though
                         --  nothing is wrong. This is a bug in FLTK.
-                    when 2 =>
-                        raise File_Access_Error;
-                    when 3 =>
-                        raise Format_Error;
-                    when others =>
-                        null;
+                    when 2 => raise File_Access_Error;
+                    when 3 => raise Format_Error;
+                    when others => null;
                 end case;
             end return;
         end Create;

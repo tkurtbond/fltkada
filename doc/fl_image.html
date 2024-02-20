@@ -56,6 +56,55 @@
 
 
 
+<table class="type">
+  <tr><th colspan="2">Errors</th></tr>
+
+  <tr>
+    <td>ERR_FILE_ACCESS</td>
+    <td>File_Access_Error</td>
+  </tr>
+
+  <tr>
+    <td>ERR_FORMAT</td>
+    <td>Format_Error</td>
+  </tr>
+
+  <tr>
+    <td>ERR_NO_IMAGE</td>
+    <td>No_Image_Error</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+static void RGB_scaling(Fl_RGB_Scaling);
+</pre></td>
+<td><pre>
+procedure Set_Copy_Algorithm
+       (To : in Scaling_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static Fl_RGB_Scaling RGB_scaling();
+</pre></td>
+<td><pre>
+function Get_Copy_Algorithm
+    return Scaling_Kind;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
 <table class="function">
   <tr><th colspan="2">Functions and Procedures</th></tr>
 
@@ -109,7 +158,20 @@ function Copy
 <td><pre>
 int count() const;
 </pre></td>
+<td><pre>
+function Get_Data_Count
+       (This : in Image)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
 <td>&nbsp;</td>
+<td><pre>
+function Get_Data_Size
+       (This : in Image)
+    return Natural;
+</pre></td>
   </tr>
 
   <tr>
@@ -127,7 +189,53 @@ function Get_D
 <td><pre>
 const char * const * data() const;
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Get_Datum
+       (This     : in Image;
+        Data     : in Positive;
+        Position : in Positive)
+    return Color_Component
+with Pre =>
+        Data <= Get_Data_Count (This) and
+        Position <= Get_Data_Size (This);
+
+procedure Set_Datum
+       (This     : in out Image;
+        Data     : in     Positive;
+        Position : in     Positive;
+        Value    : in     Color_Component)
+with Pre =>
+        Data <= Get_Data_Count (This) and
+        Position <= Get_Data_Size (This);
+
+function Get_Data
+       (This     : in Image;
+        Data     : in Positive;
+        Position : in Positive;
+        Count    : in Natural)
+    return Color_Component_Array
+with Pre =>
+        Data <= Get_Data_Count (This) and
+        Position <= Get_Data_Size (This) and
+        Count <= Get_Data_Size (This) - Position + 1;
+
+function All_Data
+       (This : in Image;
+        Data : in Positive)
+    return Color_Component_Array
+with Pre =>
+        Data <= Get_Data_Count (This);
+
+procedure Update_Data
+       (This     : in out Image;
+        Data     : in     Positive;
+        Position : in     Positive;
+        Values   : in     Color_Component_Array)
+with Pre =>
+        Data <= Get_Data_Count (This) and
+        Position <= Get_Data_Size (This) and
+        Values'Length <= Get_Data_Size (This) - Position + 1;
+</pre></td>
   </tr>
 
   <tr>
@@ -142,7 +250,8 @@ procedure Desaturate
 
   <tr>
 <td><pre>
-virtual void draw(int X, int Y, int W, int H, int cx=0, int cy=0);
+virtual void draw(int X, int Y, int W, int H,
+    int cx=0, int cy=0);
 </pre></td>
 <td><pre>
 procedure Draw
@@ -210,40 +319,24 @@ procedure Inactive
 <td><pre>
 virtual void label(Fl_Widget *w);
 </pre></td>
-<td>&nbsp;</td>
+<td>Not applicable as the original is marked as obsolete</td>
   </tr>
 
   <tr>
 <td><pre>
 virtual void label(Fl_Menu_Item *m);
 </pre></td>
-<td>&nbsp;</td>
+<td>Not applicable as the original is marked as obsolete</td>
   </tr>
 
   <tr>
 <td><pre>
 int ld() const;
 </pre></td>
-<td>&nbsp;</td>
-  </tr>
-
-  <tr>
 <td><pre>
-static void RGB_scaling(Fl_RGB_Scaling);
-</pre></td>
-<td><pre>
-procedure Set_Copy_Algorithm
-       (To : in Scaling_Kind);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-static Fl_RGB_Scaling RGB_scaling();
-</pre></td>
-<td><pre>
-function Get_Copy_Algorithm
-    return Scaling_Kind;
+function Get_Line_Data
+       (This : in Image)
+    return Natural;
 </pre></td>
   </tr>
 
@@ -251,7 +344,10 @@ function Get_Copy_Algorithm
 <td><pre>
 virtual void uncache();
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Uncache
+       (This : in out Image);
+</pre></td>
   </tr>
 
   <tr>

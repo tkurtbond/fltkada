@@ -3,6 +3,10 @@
 package FLTK.Images.Bitmaps is
 
 
+    -------------
+    --  Types  --
+    -------------
+
     type Bitmap is new Image with private;
 
     type Bitmap_Reference (Data : not null access Bitmap'Class) is limited null record
@@ -10,6 +14,22 @@ package FLTK.Images.Bitmaps is
 
 
 
+
+    --------------------
+    --  Construction  --
+    --------------------
+
+    package Forge is
+
+        --  Please note that I'm pretty sure (?) input data here should be some
+        --  declared item that lives at least as long as the resulting Bitmap
+
+        function Create
+               (Data          : in Color_Component_Array;
+                Width, Height : in Natural)
+            return Bitmap;
+
+    end Forge;
 
     function Copy
            (This          : in Bitmap;
@@ -22,6 +42,20 @@ package FLTK.Images.Bitmaps is
 
 
 
+
+    ----------------
+    --  Activity  --
+    ----------------
+
+    procedure Uncache
+           (This : in out Bitmap);
+
+
+
+
+    ---------------
+    --  Drawing  --
+    ---------------
 
     procedure Draw
            (This : in Bitmap;
@@ -42,9 +76,8 @@ private
            (This : in out Bitmap);
 
 
-
-
     pragma Inline (Copy);
+    pragma Inline (Uncache);
     pragma Inline (Draw);
 
 

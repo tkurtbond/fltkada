@@ -3,6 +3,10 @@
 package FLTK.Images is
 
 
+    -------------
+    --  Types  --
+    -------------
+
     type Image is new Wrapper with private;
 
     type Image_Reference (Data : not null access Image'Class) is limited null record
@@ -17,6 +21,10 @@ package FLTK.Images is
 
 
 
+    --------------------
+    --  Construction  --
+    --------------------
+
     package Forge is
 
         function Create
@@ -24,9 +32,6 @@ package FLTK.Images is
             return Image;
 
     end Forge;
-
-
-
 
     function Get_Copy_Algorithm
         return Scaling_Kind;
@@ -46,6 +51,10 @@ package FLTK.Images is
 
 
 
+    --------------
+    --  Colors  --
+    --------------
+
     procedure Color_Average
            (This   : in out Image;
             Col    : in     Color;
@@ -57,6 +66,10 @@ package FLTK.Images is
 
 
 
+    ----------------
+    --  Activity  --
+    ----------------
+
     procedure Inactive
            (This : in out Image);
 
@@ -64,8 +77,15 @@ package FLTK.Images is
            (This : in Image)
         return Boolean;
 
+    procedure Uncache
+           (This : in out Image);
 
 
+
+
+    ------------------
+    --  Dimensions  --
+    ------------------
 
     function Get_W
            (This : in Image)
@@ -79,8 +99,77 @@ package FLTK.Images is
            (This : in Image)
         return Natural;
 
+    function Get_Line_Data
+           (This : in Image)
+        return Natural;
+
+    function Get_Data_Count
+           (This : in Image)
+        return Natural;
+
+    function Get_Data_Size
+           (This : in Image)
+        return Natural;
 
 
+
+
+    ------------------
+    --  Pixel Data  --
+    ------------------
+
+    function Get_Datum
+           (This     : in Image;
+            Data     : in Positive;
+            Position : in Positive)
+        return Color_Component
+    with Pre =>
+            Data <= Get_Data_Count (This) and
+            Position <= Get_Data_Size (This);
+
+    procedure Set_Datum
+           (This     : in out Image;
+            Data     : in     Positive;
+            Position : in     Positive;
+            Value    : in     Color_Component)
+    with Pre =>
+            Data <= Get_Data_Count (This) and
+            Position <= Get_Data_Size (This);
+
+    function Get_Data
+           (This     : in Image;
+            Data     : in Positive;
+            Position : in Positive;
+            Count    : in Natural)
+        return Color_Component_Array
+    with Pre =>
+            Data <= Get_Data_Count (This) and
+            Position <= Get_Data_Size (This) and
+            Count <= Get_Data_Size (This) - Position + 1;
+
+    function All_Data
+           (This : in Image;
+            Data : in Positive)
+        return Color_Component_Array
+    with Pre =>
+            Data <= Get_Data_Count (This);
+
+    procedure Update_Data
+           (This     : in out Image;
+            Data     : in     Positive;
+            Position : in     Positive;
+            Values   : in     Color_Component_Array)
+    with Pre =>
+            Data <= Get_Data_Count (This) and
+            Position <= Get_Data_Size (This) and
+            Values'Length <= Get_Data_Size (This) - Position + 1;
+
+
+
+
+    ---------------
+    --  Drawing  --
+    ---------------
 
     procedure Draw
            (This : in Image;
@@ -107,6 +196,8 @@ private
 
 
 
+    pragma Inline (Get_Copy_Algorithm);
+    pragma Inline (Set_Copy_Algorithm);
     pragma Inline (Copy);
 
 
@@ -116,11 +207,14 @@ private
 
     pragma Inline (Inactive);
     pragma Inline (Is_Empty);
+    pragma Inline (Uncache);
 
 
     pragma Inline (Get_W);
     pragma Inline (Get_H);
     pragma Inline (Get_D);
+    pragma Inline (Get_Line_Data);
+    pragma Inline (Get_Data_Count);
 
 
     pragma Inline (Draw);

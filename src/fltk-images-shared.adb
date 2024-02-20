@@ -7,6 +7,7 @@ with
 
 use type
 
+    Interfaces.C.int,
     Interfaces.C.Strings.chars_ptr,
     System.Address;
 
@@ -70,16 +71,38 @@ package body FLTK.Images.Shared is
 
 
 
+    function fl_shared_image_num_images
+        return Interfaces.C.int;
+    pragma Import (C, fl_shared_image_num_images, "fl_shared_image_num_images");
+    pragma Inline (fl_shared_image_num_images);
+
     function fl_shared_image_name
            (I : in System.Address)
         return Interfaces.C.Strings.chars_ptr;
     pragma Import (C, fl_shared_image_name, "fl_shared_image_name");
     pragma Inline (fl_shared_image_name);
 
+    function fl_shared_image_original
+           (I : in System.Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_shared_image_original, "fl_shared_image_original");
+    pragma Inline (fl_shared_image_original);
+
+    function fl_shared_image_refcount
+           (I : in System.Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_shared_image_refcount, "fl_shared_image_refcount");
+    pragma Inline (fl_shared_image_refcount);
+
     procedure fl_shared_image_reload
            (I : in System.Address);
     pragma Import (C, fl_shared_image_reload, "fl_shared_image_reload");
     pragma Inline (fl_shared_image_reload);
+
+    procedure fl_shared_image_uncache
+           (I : in System.Address);
+    pragma Import (C, fl_shared_image_uncache, "fl_shared_image_uncache");
+    pragma Inline (fl_shared_image_uncache);
 
 
 
@@ -94,9 +117,6 @@ package body FLTK.Images.Shared is
             W, H, P, E : in Interfaces.C.int);
     pragma Import (C, fl_shared_image_scale, "fl_shared_image_scale");
     pragma Inline (fl_shared_image_scale);
-
-
-
 
     procedure fl_shared_image_draw
            (I                  : in System.Address;
@@ -127,6 +147,10 @@ package body FLTK.Images.Shared is
 
 
 
+
+    --------------------
+    --  Construction  --
+    --------------------
 
     package body Forge is
 
@@ -173,8 +197,6 @@ package body FLTK.Images.Shared is
     end Forge;
 
 
-
-
     function Copy
            (This          : in Shared_Image;
             Width, Height : in Natural)
@@ -201,6 +223,10 @@ package body FLTK.Images.Shared is
 
 
 
+    --------------
+    --  Colors  --
+    --------------
+
     procedure Color_Average
            (This   : in out Shared_Image;
             Col    : in     Color;
@@ -222,6 +248,17 @@ package body FLTK.Images.Shared is
 
 
 
+    ----------------
+    --  Activity  --
+    ----------------
+
+    function Number_Of_Images
+        return Natural is
+    begin
+        return Natural (fl_shared_image_num_images);
+    end Number_Of_Images;
+
+
     function Name
            (This : in Shared_Image)
         return String
@@ -236,6 +273,22 @@ package body FLTK.Images.Shared is
     end Name;
 
 
+    function Original
+           (This : in Shared_Image)
+        return Boolean is
+    begin
+        return fl_shared_image_original (This.Void_Ptr) /= 0;
+    end Original;
+
+
+    function Reference_Count
+           (This : in Shared_Image)
+        return Natural is
+    begin
+        return Natural (fl_shared_image_refcount (This.Void_Ptr));
+    end Reference_Count;
+
+
     procedure Reload
            (This : in out Shared_Image) is
     begin
@@ -243,7 +296,18 @@ package body FLTK.Images.Shared is
     end Reload;
 
 
+    procedure Uncache
+           (This : in out Shared_Image) is
+    begin
+        fl_shared_image_uncache (This.Void_Ptr);
+    end Uncache;
 
+
+
+
+    ---------------
+    --  Drawing  --
+    ---------------
 
     procedure Set_Scaling_Algorithm
            (To : in Scaling_Kind) is
@@ -265,8 +329,6 @@ package body FLTK.Images.Shared is
             Boolean'Pos (Proportional),
             Boolean'Pos (Can_Expand));
     end Scale;
-
-
 
 
     procedure Draw

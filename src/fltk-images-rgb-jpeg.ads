@@ -3,6 +3,10 @@
 package FLTK.Images.RGB.JPEG is
 
 
+    -------------
+    --  Types  --
+    -------------
+
     type JPEG_Image is new RGB_Image with private;
 
     type JPEG_Image_Reference (Data : not null access JPEG_Image'Class) is
@@ -11,10 +15,19 @@ package FLTK.Images.RGB.JPEG is
 
 
 
+    --------------------
+    --  Construction  --
+    --------------------
+
     package Forge is
 
         function Create
                (Filename : in String)
+            return JPEG_Image;
+
+        function Create
+               (Name : in String := "";
+                Data : in Color_Component_Array)
             return JPEG_Image;
 
     end Forge;

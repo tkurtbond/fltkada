@@ -11,6 +11,7 @@ void free_fl_pixmap(PIXMAP b) {
 }
 
 PIXMAP fl_pixmap_copy(PIXMAP b, int w, int h) {
+    //  virtual so disable dispatch
     return reinterpret_cast<Fl_Pixmap*>(b)->Fl_Pixmap::copy(w, h);
 }
 
@@ -34,11 +35,20 @@ void fl_pixmap_desaturate(PIXMAP p) {
 
 
 
+void fl_pixmap_uncache(PIXMAP p) {
+    //  virtual so disable dispatch
+    reinterpret_cast<Fl_Pixmap*>(p)->Fl_Pixmap::uncache();
+}
+
+
+
+
 void fl_pixmap_draw2(PIXMAP b, int x, int y) {
     reinterpret_cast<Fl_Pixmap*>(b)->draw(x, y);
 }
 
 void fl_pixmap_draw(PIXMAP b, int x, int y, int w, int h, int cx, int cy) {
+    //  virtual so disable dispatch
     reinterpret_cast<Fl_Pixmap*>(b)->Fl_Pixmap::draw(x, y, w, h, cx, cy);
 }
 

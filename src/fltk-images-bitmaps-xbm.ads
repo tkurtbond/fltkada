@@ -3,6 +3,10 @@
 package FLTK.Images.Bitmaps.XBM is
 
 
+    -------------
+    --  Types  --
+    -------------
+
     type XBM_Image is new Bitmap with private;
 
     type XBM_Image_Reference (Data : not null access XBM_Image'Class) is limited null record
@@ -10,6 +14,10 @@ package FLTK.Images.Bitmaps.XBM is
 
 
 
+
+    --------------------
+    --  Construction  --
+    --------------------
 
     package Forge is
 

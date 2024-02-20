@@ -29,11 +29,19 @@ extern "C" void fl_image_desaturate(IMAGE i);
 
 extern "C" void fl_image_inactive(IMAGE i);
 extern "C" int fl_image_fail(IMAGE i);
+extern "C" void fl_image_uncache(IMAGE i);
 
 
 extern "C" int fl_image_w(IMAGE i);
 extern "C" int fl_image_h(IMAGE i);
 extern "C" int fl_image_d(IMAGE i);
+extern "C" int fl_image_ld(IMAGE i);
+extern "C" int fl_image_count(IMAGE i);
+
+
+extern "C" const void * fl_image_data(IMAGE i);
+extern "C" char fl_image_get_pixel(char *c, int off);
+extern "C" void fl_image_set_pixel(char *c, int off, char val);
 
 
 extern "C" void fl_image_draw(IMAGE i, int x, int y);

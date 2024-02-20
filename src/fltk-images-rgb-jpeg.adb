@@ -19,6 +19,13 @@ package body FLTK.Images.RGB.JPEG is
     pragma Import (C, new_fl_jpeg_image, "new_fl_jpeg_image");
     pragma Inline (new_fl_jpeg_image);
 
+    function new_fl_jpeg_image2
+           (N : in Interfaces.C.char_array;
+            D : in System.Address)
+        return System.Address;
+    pragma Import (C, new_fl_jpeg_image2, "new_fl_jpeg_image2");
+    pragma Inline (new_fl_jpeg_image2);
+
     procedure free_fl_jpeg_image
            (P : in System.Address);
     pragma Import (C, free_fl_jpeg_image, "free_fl_jpeg_image");
@@ -42,6 +49,10 @@ package body FLTK.Images.RGB.JPEG is
 
 
 
+    --------------------
+    --  Construction  --
+    --------------------
+
     package body Forge is
 
         function Create
@@ -50,16 +61,30 @@ package body FLTK.Images.RGB.JPEG is
         begin
             return This : JPEG_Image do
                 This.Void_Ptr := new_fl_jpeg_image
-                       (Interfaces.C.To_C (Filename));
+                   (Interfaces.C.To_C (Filename));
                 case fl_image_fail (This.Void_Ptr) is
-                    when 1 =>
-                        raise No_Image_Error;
-                    when 2 =>
-                        raise File_Access_Error;
-                    when 3 =>
-                        raise Format_Error;
-                    when others =>
-                        null;
+                    when 1 => raise No_Image_Error;
+                    when 2 => raise File_Access_Error;
+                    when 3 => raise Format_Error;
+                    when others => null;
+                end case;
+            end return;
+        end Create;
+
+        function Create
+               (Name : in String := "";
+                Data : in Color_Component_Array)
+            return JPEG_Image is
+        begin
+            return This : JPEG_Image do
+                This.Void_Ptr := new_fl_jpeg_image2
+                   (Interfaces.C.To_C (Name),
+                    Data (Data'First)'Address);
+                case fl_image_fail (This.Void_Ptr) is
+                    when 1 => raise No_Image_Error;
+                    when 2 => raise File_Access_Error;
+                    when 3 => raise Format_Error;
+                    when others => null;
                 end case;
             end return;
         end Create;

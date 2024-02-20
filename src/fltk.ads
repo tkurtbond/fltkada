@@ -30,7 +30,9 @@ package FLTK is
     type Greyscale is new Character range 'A' .. 'X';
 
     type Color is mod 2**32;
+
     type Color_Component is mod 256;
+    type Color_Component_Array is array (Positive range <>) of aliased Color_Component;
 
     --  Examples of RGB colors
     --  The lowest byte has to be 00 for the color to be RGB
@@ -377,6 +379,12 @@ private
 
     overriding procedure Initialize
            (This : in out Wrapper);
+
+
+
+
+    for Color_Component_Array'Component_Size use Interfaces.C.CHAR_BIT;
+    pragma Convention (C, Color_Component_Array);
 
 
 

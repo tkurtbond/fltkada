@@ -3,6 +3,10 @@
 package FLTK.Images.Pixmaps is
 
 
+    -------------
+    --  Types  --
+    -------------
+
     type Pixmap is new Image with private;
 
     type Pixmap_Reference (Data : not null access Pixmap'Class) is limited null record
@@ -10,6 +14,10 @@ package FLTK.Images.Pixmaps is
 
 
 
+
+    --------------------
+    --  Construction  --
+    --------------------
 
     function Copy
            (This          : in Pixmap;
@@ -23,6 +31,10 @@ package FLTK.Images.Pixmaps is
 
 
 
+    --------------
+    --  Colors  --
+    --------------
+
     procedure Color_Average
            (This   : in out Pixmap;
             Col    : in     Color;
@@ -33,6 +45,20 @@ package FLTK.Images.Pixmaps is
 
 
 
+
+    ----------------
+    --  Activity  --
+    ----------------
+
+    procedure Uncache
+           (This : in out Pixmap);
+
+
+
+
+    ---------------
+    --  Drawing  --
+    ---------------
 
     procedure Draw
            (This : in Pixmap;
@@ -53,10 +79,11 @@ private
            (This : in out Pixmap);
 
 
-
-
     pragma Inline (Color_Average);
     pragma Inline (Desaturate);
+
+
+    pragma Inline (Uncache);
 
 
     pragma Inline (Copy);

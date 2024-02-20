@@ -11,9 +11,13 @@ typedef void* BITMAP;
 
 
 
+extern "C" BITMAP new_fl_bitmap(void *data, int w, int h);
 extern "C" void free_fl_bitmap(BITMAP b);
 extern "C" BITMAP fl_bitmap_copy(BITMAP b, int w, int h);
 extern "C" BITMAP fl_bitmap_copy2(BITMAP b);
+
+
+extern "C" void fl_bitmap_uncache(BITMAP b);
 
 
 extern "C" void fl_bitmap_draw2(BITMAP b, int x, int y);

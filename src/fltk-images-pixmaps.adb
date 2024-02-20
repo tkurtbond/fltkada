@@ -49,6 +49,14 @@ package body FLTK.Images.Pixmaps is
 
 
 
+    procedure fl_pixmap_uncache
+           (I : in System.Address);
+    pragma Import (C, fl_pixmap_uncache, "fl_pixmap_uncache");
+    pragma Inline (fl_pixmap_uncache);
+
+
+
+
     procedure fl_pixmap_draw2
            (I    : in System.Address;
             X, Y : in Interfaces.C.int);
@@ -79,6 +87,10 @@ package body FLTK.Images.Pixmaps is
 
 
 
+    --------------------
+    --  Construction  --
+    --------------------
+
     function Copy
            (This          : in Pixmap;
             Width, Height : in Natural)
@@ -86,9 +98,9 @@ package body FLTK.Images.Pixmaps is
     begin
         return Copied : Pixmap do
             Copied.Void_Ptr := fl_pixmap_copy
-                   (This.Void_Ptr,
-                    Interfaces.C.int (Width),
-                    Interfaces.C.int (Height));
+               (This.Void_Ptr,
+                Interfaces.C.int (Width),
+                Interfaces.C.int (Height));
         end return;
     end Copy;
 
@@ -105,15 +117,19 @@ package body FLTK.Images.Pixmaps is
 
 
 
+    --------------
+    --  Colors  --
+    --------------
+
     procedure Color_Average
            (This   : in out Pixmap;
             Col    : in     Color;
             Amount : in     Blend) is
     begin
         fl_pixmap_color_average
-               (This.Void_Ptr,
-                Interfaces.C.int (Col),
-                Interfaces.C.C_float (Amount));
+           (This.Void_Ptr,
+            Interfaces.C.int (Col),
+            Interfaces.C.C_float (Amount));
     end Color_Average;
 
 
@@ -126,14 +142,31 @@ package body FLTK.Images.Pixmaps is
 
 
 
+    ----------------
+    --  Activity  --
+    ----------------
+
+    procedure Uncache
+           (This : in out Pixmap) is
+    begin
+        fl_pixmap_uncache (This.Void_Ptr);
+    end Uncache;
+
+
+
+
+    ---------------
+    --  Drawing  --
+    ---------------
+
     procedure Draw
            (This : in Pixmap;
             X, Y : in Integer) is
     begin
         fl_pixmap_draw2
-               (This.Void_Ptr,
-                Interfaces.C.int (X),
-                Interfaces.C.int (Y));
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y));
     end Draw;
 
 
@@ -143,13 +176,13 @@ package body FLTK.Images.Pixmaps is
             CX, CY     : in Integer := 0) is
     begin
         fl_pixmap_draw
-               (This.Void_Ptr,
-                Interfaces.C.int (X),
-                Interfaces.C.int (Y),
-                Interfaces.C.int (W),
-                Interfaces.C.int (H),
-                Interfaces.C.int (CX),
-                Interfaces.C.int (CY));
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H),
+            Interfaces.C.int (CX),
+            Interfaces.C.int (CY));
     end Draw;
 
 

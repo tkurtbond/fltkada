@@ -13,6 +13,13 @@ use type
 package body FLTK.Images.Bitmaps is
 
 
+    function new_fl_bitmap
+           (D    : in System.Address;
+            W, H : in Interfaces.C.int)
+        return System.Address;
+    pragma Import (C, new_fl_bitmap, "new_fl_bitmap");
+    pragma Inline (new_fl_bitmap);
+
     procedure free_fl_bitmap
            (I : in System.Address);
     pragma Import (C, free_fl_bitmap, "free_fl_bitmap");
@@ -30,6 +37,14 @@ package body FLTK.Images.Bitmaps is
         return System.Address;
     pragma Import (C, fl_bitmap_copy2, "fl_bitmap_copy2");
     pragma Inline (fl_bitmap_copy2);
+
+
+
+
+    procedure fl_bitmap_uncache
+           (I : in System.Address);
+    pragma Import (C, fl_bitmap_uncache, "fl_bitmap_uncache");
+    pragma Inline (fl_bitmap_uncache);
 
 
 
@@ -64,6 +79,39 @@ package body FLTK.Images.Bitmaps is
 
 
 
+    --------------------
+    --  Construction  --
+    --------------------
+
+    package body Forge is
+
+        function Create
+               (Data          : in Color_Component_Array;
+                Width, Height : in Natural)
+            return Bitmap is
+        begin
+            return This : Bitmap do
+                This.Void_Ptr := new_fl_bitmap
+                   (Data (Data'First)'Address,
+                    Interfaces.C.int (Width),
+                    Interfaces.C.int (Height));
+                case fl_image_fail (This.Void_Ptr) is
+                    when 1 =>
+                        --  raise No_Image_Error;
+                        null;
+                        --  Since the image depth and line data are both zero here,
+                        --  the fail method will think there's no image even though
+                        --  nothing is wrong. This is a bug in FLTK.
+                    when 2 => raise File_Access_Error;
+                    when 3 => raise Format_Error;
+                    when others => null;
+                end case;
+            end return;
+        end Create;
+
+    end Forge;
+
+
     function Copy
            (This          : in Bitmap;
             Width, Height : in Natural)
@@ -71,9 +119,9 @@ package body FLTK.Images.Bitmaps is
     begin
         return Copied : Bitmap do
             Copied.Void_Ptr := fl_bitmap_copy
-                   (This.Void_Ptr,
-                    Interfaces.C.int (Width),
-                    Interfaces.C.int (Height));
+               (This.Void_Ptr,
+                Interfaces.C.int (Width),
+                Interfaces.C.int (Height));
         end return;
     end Copy;
 
@@ -90,14 +138,30 @@ package body FLTK.Images.Bitmaps is
 
 
 
+    ----------------
+    --  Activity  --
+    ----------------
+
+    procedure Uncache
+           (This : in out Bitmap) is
+    begin
+        fl_bitmap_uncache (This.Void_Ptr);
+    end Uncache;
+
+
+
+    ---------------
+    --  Drawing  --
+    ---------------
+
     procedure Draw
            (This : in Bitmap;
             X, Y : in Integer) is
     begin
         fl_bitmap_draw2
-               (This.Void_Ptr,
-                Interfaces.C.int (X),
-                Interfaces.C.int (Y));
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y));
     end Draw;
 
 
@@ -107,13 +171,13 @@ package body FLTK.Images.Bitmaps is
             CX, CY     : in Integer := 0) is
     begin
         fl_bitmap_draw
-               (This.Void_Ptr,
-                Interfaces.C.int (X),
-                Interfaces.C.int (Y),
-                Interfaces.C.int (W),
-                Interfaces.C.int (H),
-                Interfaces.C.int (CX),
-                Interfaces.C.int (CY));
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H),
+            Interfaces.C.int (CX),
+            Interfaces.C.int (CY));
     end Draw;
 
 

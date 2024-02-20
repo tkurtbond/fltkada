@@ -52,15 +52,15 @@
   <tr>
 <td><pre>
 Fl_Bitmap(const uchar *bits, int W, int H);
-</pre></td>
-<td>&nbsp;</td>
-  </tr>
 
-  <tr>
-<td><pre>
 Fl_Bitmap(const char *bits, int W, int H);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Create
+       (Data          : in Color_Component_Array;
+        Width, Height : in Natural)
+    return Bitmap;
+</pre></td>
   </tr>
 
   <tr>
@@ -113,21 +113,24 @@ procedure Draw
 <td><pre>
 virtual void label(Fl_Widget *w);
 </pre></td>
-<td>&nbsp;</td>
+<td>Not applicable as the original is marked as obsolete</td>
   </tr>
 
   <tr>
 <td><pre>
 virtual void label(Fl_Menu_Item *m);
 </pre></td>
-<td>&nbsp;</td>
+<td>Not applicable as the original is marked as obsolete</td>
   </tr>
 
   <tr>
 <td><pre>
 virtual void uncache();
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Uncache
+       (This : in out Bitmap);
+</pre></td>
   </tr>
 
 </table>

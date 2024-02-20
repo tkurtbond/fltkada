@@ -8,6 +8,10 @@ with
 package FLTK.Images.Shared is
 
 
+    -------------
+    --  Types  --
+    -------------
+
     type Shared_Image is new Image with private;
 
     type Shared_Image_Reference (Data : not null access Shared_Image'Class) is
@@ -15,6 +19,10 @@ package FLTK.Images.Shared is
 
 
 
+
+    --------------------
+    --  Construction  --
+    --------------------
 
     package Forge is
 
@@ -34,9 +42,6 @@ package FLTK.Images.Shared is
 
     end Forge;
 
-
-
-
     function Copy
            (This          : in Shared_Image;
             Width, Height : in Natural)
@@ -49,6 +54,10 @@ package FLTK.Images.Shared is
 
 
 
+    --------------
+    --  Colors  --
+    --------------
+
     procedure Color_Average
            (This   : in out Shared_Image;
             Col    : in     Color;
@@ -60,15 +69,37 @@ package FLTK.Images.Shared is
 
 
 
+    ----------------
+    --  Activity  --
+    ----------------
+
+    function Number_Of_Images
+        return Natural;
+
     function Name
            (This : in Shared_Image)
         return String;
 
+    function Original
+           (This : in Shared_Image)
+        return Boolean;
+
+    function Reference_Count
+           (This : in Shared_Image)
+        return Natural;
+
     procedure Reload
+           (This : in out Shared_Image);
+
+    procedure Uncache
            (This : in out Shared_Image);
 
 
 
+
+    ---------------
+    --  Drawing  --
+    ---------------
 
     procedure Set_Scaling_Algorithm
            (To : in Scaling_Kind);
@@ -78,9 +109,6 @@ package FLTK.Images.Shared is
             W, H         : in     Integer;
             Proportional : in     Boolean := True;
             Can_Expand   : in     Boolean := False);
-
-
-
 
     procedure Draw
            (This       : in Shared_Image;
@@ -101,8 +129,6 @@ private
            (This : in out Shared_Image);
 
 
-
-
     pragma Inline (Copy);
 
 
@@ -110,14 +136,16 @@ private
     pragma Inline (Desaturate);
 
 
+    pragma Inline (Number_Of_Images);
     pragma Inline (Name);
+    pragma Inline (Original);
+    pragma Inline (Reference_Count);
     pragma Inline (Reload);
+    pragma Inline (Uncache);
 
 
     pragma Inline (Set_Scaling_Algorithm);
     pragma Inline (Scale);
-
-
     pragma Inline (Draw);
 
 

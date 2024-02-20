@@ -47,20 +47,59 @@
 
 
 <table class="function">
+  <tr><th colspan="2">Static Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+static void max_size(size_t size);
+</pre></td>
+<td><pre>
+procedure Set_Max_Size
+       (Value : in Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static size_t max_size();
+</pre></td>
+<td><pre>
+function Get_Max_Size
+    return Natural;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
   <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
 Fl_RGB_Image(const uchar *bits, int W, int H, int D=3, int LD=0);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Create
+       (Data          : in Color_Component_Array;
+        Width, Height : in Natural;
+        Depth         : in Natural := 3;
+        Line_Data     : in Natural := 0)
+    return RGB_Image;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 Fl_RGB_Image(const Fl_Pixmap *pxm, Fl_Color bg=FL_GRAY);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Create
+       (Data       : in FLTK.Images.Pixmaps.Pixmap;
+        Background : in Color := Background_Color)
+    return RGB_Image;
+</pre></td>
   </tr>
 
   <tr>
@@ -135,35 +174,24 @@ procedure Draw
 <td><pre>
 virtual void label(Fl_Widget *w);
 </pre></td>
-<td>&nbsp;</td>
+<td>Not applicable as the original is marked as obsolete</td>
   </tr>
 
   <tr>
 <td><pre>
 virtual void label(Fl_Menu_Item *m);
 </pre></td>
-<td>&nbsp;</td>
-  </tr>
-
-  <tr>
-<td><pre>
-static void max_size(size_t size);
-</pre></td>
-<td>&nbsp;</td>
-  </tr>
-
-  <tr>
-<td><pre>
-static size_t max_size();
-</pre></td>
-<td>&nbsp;</td>
+<td>Not applicable as the original is marked as obsolete</td>
   </tr>
 
   <tr>
 <td><pre>
 virtual void uncache();
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Uncache
+       (This : in out RGB_Image);
+</pre></td>
   </tr>
 
 </table>

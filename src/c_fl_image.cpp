@@ -77,6 +77,11 @@ int fl_image_fail(IMAGE i) {
     }
 }
 
+void fl_image_uncache(IMAGE i) {
+    //  virtual so disable dispatch
+    reinterpret_cast<Fl_Image*>(i)->Fl_Image::uncache();
+}
+
 
 
 
@@ -90,6 +95,29 @@ int fl_image_h(IMAGE i) {
 
 int fl_image_d(IMAGE i) {
     return reinterpret_cast<Fl_Image*>(i)->d();
+}
+
+int fl_image_ld(IMAGE i) {
+    return reinterpret_cast<Fl_Image*>(i)->ld();
+}
+
+int fl_image_count(IMAGE i) {
+    return reinterpret_cast<Fl_Image*>(i)->count();
+}
+
+
+
+
+const void * fl_image_data(IMAGE i) {
+    return reinterpret_cast<Fl_Image*>(i)->data();
+}
+
+char fl_image_get_pixel(char *c, int off) {
+    return c[off];
+}
+
+void fl_image_set_pixel(char *c, int off, char val) {
+    c[off] = val;
 }
 
 
