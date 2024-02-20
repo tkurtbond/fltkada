@@ -107,7 +107,7 @@ package FLTK.Widgets.Groups.Windows is
 
     procedure Set_Cursor
            (This : in out Window;
-            To   : in     Mouse_Cursor);
+            To   : in     Mouse_Cursor_Kind);
 
     procedure Set_Cursor
            (This         : in out Window;
@@ -116,7 +116,7 @@ package FLTK.Widgets.Groups.Windows is
 
     procedure Set_Default_Cursor
            (This : in out Window;
-            To   : in     Mouse_Cursor);
+            To   : in     Mouse_Cursor_Kind);
 
 
 

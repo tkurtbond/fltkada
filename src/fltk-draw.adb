@@ -810,13 +810,13 @@ package body FLTK.Draw is
 
 
     procedure Set_Cursor
-           (To : in Mouse_Cursor) is
+           (To : in Mouse_Cursor_Kind) is
     begin
         fl_draw_set_cursor (Cursor_Values (To));
     end Set_Cursor;
 
     procedure Set_Cursor
-           (To   : in Mouse_Cursor;
+           (To   : in Mouse_Cursor_Kind;
             Fore : in Color;
             Back : in Color := White_Color) is
     begin

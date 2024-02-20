@@ -516,7 +516,7 @@ package body FLTK.Widgets.Groups.Windows is
 
     procedure Set_Cursor
            (This : in out Window;
-            To   : in     Mouse_Cursor) is
+            To   : in     Mouse_Cursor_Kind) is
     begin
         fl_window_set_cursor (This.Void_Ptr, Cursor_Values (To));
     end Set_Cursor;
@@ -537,7 +537,7 @@ package body FLTK.Widgets.Groups.Windows is
 
     procedure Set_Default_Cursor
            (This : in out Window;
-            To   : in     Mouse_Cursor) is
+            To   : in     Mouse_Cursor_Kind) is
     begin
         fl_window_set_default_cursor (This.Void_Ptr, Cursor_Values (To));
     end Set_Default_Cursor;

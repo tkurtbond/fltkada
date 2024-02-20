@@ -169,10 +169,10 @@ package FLTK.Draw is
            (R, G, B : in Color_Component);
 
     procedure Set_Cursor
-           (To : in Mouse_Cursor);
+           (To : in Mouse_Cursor_Kind);
 
     procedure Set_Cursor
-           (To   : in Mouse_Cursor;
+           (To   : in Mouse_Cursor_Kind;
             Fore : in Color;
             Back : in Color := White_Color);
 

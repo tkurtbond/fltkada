@@ -86,7 +86,7 @@ package FLTK is
 
 
 
-    type Mouse_Cursor is
+    type Mouse_Cursor_Kind is
        (Default_Mouse,
         Arrow_Mouse,
         Crosshair_Mouse,
@@ -401,7 +401,7 @@ private
 
     --  What delightful magic numbers FLTK cursors are!
     --  (These correspond to the enum found in Enumerations.H)
-    Cursor_Values : array (Mouse_Cursor) of Interfaces.C.int :=
+    Cursor_Values : array (Mouse_Cursor_Kind) of Interfaces.C.int :=
            (Default_Mouse   => 0,
             Arrow_Mouse     => 35,
             Crosshair_Mouse => 66,
