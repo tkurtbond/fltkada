@@ -5,7 +5,7 @@ Approximate Progress List
 
 
 
-Overall estimate: 81%
+Overall estimate: 82%
 
 
 
@@ -41,6 +41,7 @@ FLTK.Images.RGB.JPEG
 FLTK.Images.RGB.PNG
 FLTK.Images.RGB.PNM
 FLTK.Images.Shared
+FLTK.Images.Tiled
 FLTK.Menu_Items
 FLTK.Screen
 FLTK.Static
@@ -148,7 +149,6 @@ Fl_Postscript_File_Device
 Fl_Select_Browser
 Fl_Table
 Fl_Table_Row
-Fl_Tiled_Image
 Fl_Tree
 
 
