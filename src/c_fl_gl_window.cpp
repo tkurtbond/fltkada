@@ -109,15 +109,15 @@ float fl_gl_window_pixels_per_unit(GLWINDOW w) {
 
 
 
-int fl_gl_window_get_mode(GLWINDOW w) {
+unsigned int fl_gl_window_get_mode(GLWINDOW w) {
     return reinterpret_cast<Fl_Gl_Window*>(w)->mode();
 }
 
-void fl_gl_window_set_mode(GLWINDOW w, int a) {
+void fl_gl_window_set_mode(GLWINDOW w, unsigned int a) {
     reinterpret_cast<Fl_Gl_Window*>(w)->mode(a);
 }
 
-int fl_gl_window_static_can_do(int m) {
+int fl_gl_window_static_can_do(unsigned int m) {
     return Fl_Gl_Window::can_do(m);
 }
 

@@ -37,9 +37,9 @@ extern "C" int fl_gl_window_pixel_w(GLWINDOW w);
 extern "C" float fl_gl_window_pixels_per_unit(GLWINDOW w);
 
 
-extern "C" int fl_gl_window_get_mode(GLWINDOW w);
-extern "C" void fl_gl_window_set_mode(GLWINDOW w, int a);
-extern "C" int fl_gl_window_static_can_do(int m);
+extern "C" unsigned int fl_gl_window_get_mode(GLWINDOW w);
+extern "C" void fl_gl_window_set_mode(GLWINDOW w, unsigned int a);
+extern "C" int fl_gl_window_static_can_do(unsigned int m);
 extern "C" int fl_gl_window_can_do(GLWINDOW w);
 extern "C" int fl_gl_window_can_do_overlay(GLWINDOW w);
 

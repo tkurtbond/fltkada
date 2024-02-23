@@ -97,18 +97,18 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
 
     function fl_gl_window_get_mode
            (S : in System.Address)
-        return Interfaces.C.int;
+        return Mode_Mask;
     pragma Import (C, fl_gl_window_get_mode, "fl_gl_window_get_mode");
     pragma Inline (fl_gl_window_get_mode);
 
     procedure fl_gl_window_set_mode
            (S : in System.Address;
-            M : in Interfaces.C.int);
+            M : in Mode_Mask);
     pragma Import (C, fl_gl_window_set_mode, "fl_gl_window_set_mode");
     pragma Inline (fl_gl_window_set_mode);
 
     function fl_gl_window_static_can_do
-           (M : in Interfaces.C.int)
+           (M : in Mode_Mask)
         return Interfaces.C.int;
     pragma Import (C, fl_gl_window_static_can_do, "fl_gl_window_static_can_do");
     pragma Inline (fl_gl_window_static_can_do);
@@ -347,23 +347,9 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
 
     function Get_Mode
            (This : in GL_Window)
-        return Mode_Mask
-    is
-        Raw : Interfaces.C.unsigned := Interfaces.C.unsigned
-            (fl_gl_window_get_mode (This.Void_Ptr));
+        return Mode_Mask is
     begin
-        return
-           (Index       => (Raw and 1) /= 0,
-            Double      => (Raw and 2) /= 0,
-            Accum       => (Raw and 4) /= 0,
-            Alpha       => (Raw and 8) /= 0,
-            Depth       => (Raw and 16) /= 0,
-            Stencil     => (Raw and 32) /= 0,
-            RGB8        => (Raw and 64) /= 0,
-            Multisample => (Raw and 128) /= 0,
-            Stereo      => (Raw and 256) /= 0,
-            Fake_Single => (Raw and 512) /= 0,
-            OpenGL3     => (Raw and 1024) /= 0);
+        return fl_gl_window_get_mode (This.Void_Ptr);
     end Get_Mode;
 
 
@@ -371,18 +357,7 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
            (This : in out GL_Window;
             Mask : in     Mode_Mask) is
     begin
-        fl_gl_window_set_mode (This.Void_Ptr,
-            Boolean'Pos (Mask.Index) * 1 +
-            Boolean'Pos (Mask.Double) * 2 +
-            Boolean'Pos (Mask.Accum) * 4 +
-            Boolean'Pos (Mask.Alpha) * 8 +
-            Boolean'Pos (Mask.Depth) * 16 +
-            Boolean'Pos (Mask.Stencil) * 32 +
-            Boolean'Pos (Mask.RGB8) * 64 +
-            Boolean'Pos (Mask.Multisample) * 128 +
-            Boolean'Pos (Mask.Stereo) * 256 +
-            Boolean'Pos (Mask.Fake_Single) * 512 +
-            Boolean'Pos (Mask.OpenGL3) * 1024);
+        fl_gl_window_set_mode (This.Void_Ptr, Mask);
     end Set_Mode;
 
 
@@ -390,18 +365,7 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
            (Mask : in Mode_Mask)
         return Boolean is
     begin
-        return fl_gl_window_static_can_do
-           (Boolean'Pos (Mask.Index) * 1 +
-            Boolean'Pos (Mask.Double) * 2 +
-            Boolean'Pos (Mask.Accum) * 4 +
-            Boolean'Pos (Mask.Alpha) * 8 +
-            Boolean'Pos (Mask.Depth) * 16 +
-            Boolean'Pos (Mask.Stencil) * 32 +
-            Boolean'Pos (Mask.RGB8) * 64 +
-            Boolean'Pos (Mask.Multisample) * 128 +
-            Boolean'Pos (Mask.Stereo) * 256 +
-            Boolean'Pos (Mask.Fake_Single) * 512 +
-            Boolean'Pos (Mask.OpenGL3) * 1024) /= 0;
+        return fl_gl_window_static_can_do (Mask) /= 0;
     end Can_Do;
 
 

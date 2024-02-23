@@ -21,18 +21,20 @@ package FLTK.Widgets.Groups.Windows.OpenGL is
     type GL_Window_Reference (Data : not null access GL_Window'Class) is
         limited null record with Implicit_Dereference => Data;
 
+    --  RGB mode is achieved by Index being set to False
+    --  Single buffer mode is achieved by Double being set to False
     type Mode_Mask is record
-        Index       : Boolean;
-        Double      : Boolean;
-        Accum       : Boolean;
-        Alpha       : Boolean;
-        Depth       : Boolean;
-        Stencil     : Boolean;
-        RGB8        : Boolean;
-        Multisample : Boolean;
-        Stereo      : Boolean;
-        Fake_Single : Boolean;
-        OpenGL3     : Boolean;
+        Index       : Boolean := False;
+        Double      : Boolean := False;
+        Accum       : Boolean := False;
+        Alpha       : Boolean := False;
+        Depth       : Boolean := False;
+        Stencil     : Boolean := False;
+        RGB8        : Boolean := False;
+        Multisample : Boolean := False;
+        Stereo      : Boolean := False;
+        Fake_Single : Boolean := False;
+        OpenGL3     : Boolean := False;
     end record;
 
 
@@ -193,6 +195,23 @@ private
            (This : in out GL_Window);
 
 
+    for Mode_Mask use record
+        Index       at 0 range 0 .. 0;
+        Double      at 0 range 1 .. 1;
+        Accum       at 0 range 2 .. 2;
+        Alpha       at 0 range 3 .. 3;
+        Depth       at 0 range 4 .. 4;
+        Stencil     at 0 range 5 .. 5;
+        RGB8        at 0 range 6 .. 6;
+        Multisample at 0 range 7 .. 7;
+        Stereo      at 0 range 8 .. 8;
+        Fake_Single at 0 range 9 .. 9;
+        OpenGL3     at 0 range 10 .. Interfaces.C.unsigned'Size - 1;
+    end record;
+
+    for Mode_Mask'Size use Interfaces.C.unsigned'Size;
+
+    pragma Convention (C_Pass_By_Copy, Mode_Mask);
 
 
     pragma Inline (Show);
@@ -206,6 +225,9 @@ private
     pragma Inline (Pixels_Per_Unit);
 
 
+    pragma Inline (Get_Mode);
+    pragma Inline (Set_Mode);
+    pragma Inline (Can_Do);
     pragma Inline (Can_Do_Overlay);
 
 
