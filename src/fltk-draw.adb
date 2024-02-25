@@ -9,7 +9,8 @@ with
 use type
 
     Interfaces.C.int,
-    Interfaces.C.size_t;
+    Interfaces.C.size_t,
+    System.Address;
 
 
 package body FLTK.Draw is
@@ -259,6 +260,43 @@ package body FLTK.Draw is
            (X, Y : in Interfaces.C.double);
     pragma Import (C, fl_draw_vertex, "fl_draw_vertex");
     pragma Inline (fl_draw_vertex);
+
+
+
+
+    procedure fl_draw_draw_image
+           (Buf        : in System.Address;
+            X, Y, W, H : in Interfaces.C.int;
+            D, L       : in Interfaces.C.int);
+    pragma Import (C, fl_draw_draw_image, "fl_draw_draw_image");
+    pragma Inline (fl_draw_draw_image);
+
+    procedure fl_draw_draw_image2
+           (Call, User    : in System.Address;
+            X, Y, W, H, D : in Interfaces.C.int);
+    pragma Import (C, fl_draw_draw_image2, "fl_draw_draw_image2");
+    pragma Inline (fl_draw_draw_image2);
+
+    procedure fl_draw_draw_image_mono
+           (Buf        : in System.Address;
+            X, Y, W, H : in Interfaces.C.int;
+            D, L       : in Interfaces.C.int);
+    pragma Import (C, fl_draw_draw_image_mono, "fl_draw_draw_image_mono");
+    pragma Inline (fl_draw_draw_image_mono);
+
+    procedure fl_draw_draw_image_mono2
+           (Call, User    : in System.Address;
+            X, Y, W, H, D : in Interfaces.C.int);
+    pragma Import (C, fl_draw_draw_image_mono2, "fl_draw_draw_image_mono2");
+    pragma Inline (fl_draw_draw_image_mono2);
+
+    function fl_draw_read_image
+           (Buf        : in System.Address;
+            X, Y, W, H : in Interfaces.C.int;
+            Alpha      : in Interfaces.C.int)
+        return System.Address;
+    pragma Import (C, fl_draw_read_image, "fl_draw_read_image");
+    pragma Inline (fl_draw_read_image);
 
 
 
@@ -1023,6 +1061,161 @@ package body FLTK.Draw is
            (Interfaces.C.double (X),
             Interfaces.C.double (Y));
     end Vertex;
+
+
+
+
+    ---------------------
+    --  Image Drawing  --
+    ---------------------
+
+    procedure Draw_Image
+           (X, Y, W, H      : in Integer;
+            Data            : in Color_Component_Array;
+            Depth           : in Positive := 3;
+            Line_Data       : in Natural := 0;
+            Flip_Horizontal : in Boolean := False;
+            Flip_Vertical   : in Boolean := False)
+    is
+        Real_Depth : Integer := Depth;
+        Real_Line_Data : Integer := Line_Data;
+    begin
+        if Flip_Horizontal then
+            Real_Depth := Real_Depth * (-1);
+        end if;
+        if Flip_Vertical then
+            if Real_Line_Data = 0 then
+                Real_Line_Data := W * Depth * (-1);
+            else
+                Real_Line_Data := Real_Line_Data * (-1);
+            end if;
+        end if;
+        fl_draw_draw_image
+           (Data (Data'First)'Address,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H),
+            Interfaces.C.int (Real_Depth),
+            Interfaces.C.int (Real_Line_Data));
+    end Draw_Image;
+
+
+    Image_Func_Ptr : Image_Draw_Function;
+
+    procedure Draw_Image_Hook
+           (User    : in System.Address;
+            X, Y, W : in Interfaces.C.int;
+            Buf_Ptr : in System.Address)
+    is
+        Data_Buffer : Color_Component_Array (1 .. Integer (W));
+        for Data_Buffer'Address use Buf_Ptr;
+        pragma Import (Ada, Data_Buffer);
+    begin
+        Image_Func_Ptr (Integer (X), Integer (Y), Data_Buffer);
+    end Draw_Image_Hook;
+
+    procedure Draw_Image
+           (X, Y, W, H : in Integer;
+            Callback   : in Image_Draw_Function;
+            Depth      : in Positive := 3) is
+    begin
+        Image_Func_Ptr := Callback;
+        fl_draw_draw_image2
+           (Draw_Image_Hook'Address,
+            System.Null_Address,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H),
+            Interfaces.C.int (Depth));
+    end Draw_Image;
+
+
+    procedure Draw_Image_Mono
+           (X, Y, W, H      : in Integer;
+            Data            : in Color_Component_Array;
+            Depth           : in Positive := 1;
+            Line_Data       : in Natural := 0;
+            Flip_Horizontal : Boolean := False;
+            Flip_Vertical   : Boolean := False)
+    is
+        Real_Depth : Integer := Depth;
+        Real_Line_Data : Integer := Line_Data;
+    begin
+        if Flip_Horizontal then
+            Real_Depth := Real_Depth * (-1);
+        end if;
+        if Flip_Vertical then
+            if Real_Line_Data = 0 then
+                Real_Line_Data := W * Depth * (-1);
+            else
+                Real_Line_Data := Real_Line_Data * (-1);
+            end if;
+        end if;
+        fl_draw_draw_image_mono
+           (Data (Data'First)'Address,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H),
+            Interfaces.C.int (Real_Depth),
+            Interfaces.C.int (Real_Line_Data));
+    end Draw_Image_Mono;
+
+
+    Mono_Image_Func_Ptr : Image_Draw_Function;
+
+    procedure Draw_Image_Mono_Hook
+           (User    : in System.Address;
+            X, Y, W : in Interfaces.C.int;
+            Buf_Ptr : in System.Address)
+    is
+        Data_Buffer : Color_Component_Array (1 .. Integer (W));
+        for Data_Buffer'Address use Buf_Ptr;
+        pragma Import (Ada, Data_Buffer);
+    begin
+        Mono_Image_Func_Ptr (Integer (X), Integer (Y), Data_Buffer);
+    end Draw_Image_Mono_Hook;
+
+    procedure Draw_Image_Mono
+           (X, Y, W, H : in Integer;
+            Callback   : in Image_Draw_Function;
+            Depth      : in Positive := 1) is
+    begin
+        Mono_Image_Func_Ptr := Callback;
+        fl_draw_draw_image_mono2
+           (Draw_Image_Mono_Hook'Address,
+            System.Null_Address,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H),
+            Interfaces.C.int (Depth));
+    end Draw_Image_Mono;
+
+
+    function Read_Image
+           (X, Y, W, H : in Integer;
+            Alpha      : in Integer := 0)
+        return Color_Component_Array
+    is
+        My_Len : Integer := (if Alpha = 0 then W * H * 3 else W * H * 4);
+        Result : Color_Component_Array (1 .. My_Len);
+        Buffer : System.Address;
+    begin
+        Buffer := fl_draw_read_image
+           (Result (Result'First)'Address,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H),
+            Interfaces.C.int (Alpha));
+        if Buffer /= Result (Result'First)'Address then
+            raise Program_Error;
+        end if;
+        return Result;
+    end Read_Image;
 
 
 

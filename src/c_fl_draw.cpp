@@ -196,6 +196,29 @@ void fl_draw_vertex(double x, double y) {
 
 
 
+void fl_draw_draw_image(void * data, int x, int y, int w, int h, int d, int l) {
+    fl_draw_image(reinterpret_cast<uchar*>(data), x, y, w, h, d, l);
+}
+
+void fl_draw_draw_image2(void * func, void * data, int x, int y, int w, int h, int d) {
+    fl_draw_image(reinterpret_cast<Fl_Draw_Image_Cb>(func), data, x, y, w, h, d);
+}
+
+void fl_draw_draw_image_mono(void * data, int x, int y, int w, int h, int d, int l) {
+    fl_draw_image_mono(reinterpret_cast<uchar*>(data), x, y, w, h, d, l);
+}
+
+void fl_draw_draw_image_mono2(void * func, void * data, int x, int y, int w, int h, int d) {
+    fl_draw_image_mono(reinterpret_cast<Fl_Draw_Image_Cb>(func), data, x, y, w, h, d);
+}
+
+void * fl_draw_read_image(void * data, int x, int y, int w, int h, int alpha) {
+    return fl_read_image(reinterpret_cast<uchar*>(data), x, y, w, h, alpha);
+}
+
+
+
+
 typedef void (sym_hook)(Fl_Color);
 typedef sym_hook* sym_hook_p;
 

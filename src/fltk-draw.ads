@@ -43,12 +43,16 @@ package FLTK.Draw is
 
     Empty_Dashes : constant Dash_Gap_Array (1 .. 0) := (others => (1, 1));
 
-    type Text_Draw_Function is access procedure
-           (X, Y : in Integer;
-            Text : in String);
+    type Image_Draw_Function is access procedure
+           (X, Y : in     Natural;
+            Data :    out Color_Component_Array);
 
     type Symbol_Draw_Function is access procedure
            (Hue : in Color);
+
+    type Text_Draw_Function is access procedure
+           (X, Y : in Integer;
+            Text : in String);
 
     type Area_Draw_Function is access procedure
            (X, Y, W, H : in Integer);
@@ -251,6 +255,48 @@ package FLTK.Draw is
 
     procedure Vertex
            (X, Y : in Long_Float);
+
+
+
+
+    ---------------------
+    --  Image Drawing  --
+    ---------------------
+
+    procedure Draw_Image
+           (X, Y, W, H      : in Integer;
+            Data            : in Color_Component_Array;
+            Depth           : in Positive := 3;
+            Line_Data       : in Natural := 0;
+            Flip_Horizontal : in Boolean := False;
+            Flip_Vertical   : in Boolean := False);
+
+    procedure Draw_Image
+           (X, Y, W, H : in Integer;
+            Callback   : in Image_Draw_Function;
+            Depth      : in Positive := 3);
+
+    procedure Draw_Image_Mono
+           (X, Y, W, H      : in Integer;
+            Data            : in Color_Component_Array;
+            Depth           : in Positive := 1;
+            Line_Data       : in Natural := 0;
+            Flip_Horizontal : Boolean := False;
+            Flip_Vertical   : Boolean := False);
+
+    procedure Draw_Image_Mono
+           (X, Y, W, H : in Integer;
+            Callback   : in Image_Draw_Function;
+            Depth      : in Positive := 1);
+
+    function Read_Image
+           (X, Y, W, H : in Integer;
+            Alpha      : in Integer := 0)
+        return Color_Component_Array
+    with Post =>
+           (if Alpha = 0
+            then Read_Image'Result'Length = W * H * 3
+            else Read_Image'Result'Length = W * H * 4);
 
 
 

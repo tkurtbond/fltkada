@@ -62,6 +62,13 @@ extern "C" void fl_draw_translate(double x, double y);
 extern "C" void fl_draw_vertex(double x, double y);
 
 
+extern "C" void fl_draw_draw_image(void * data, int x, int y, int w, int h, int d, int l);
+extern "C" void fl_draw_draw_image2(void * func, void * data, int x, int y, int w, int h, int d);
+extern "C" void fl_draw_draw_image_mono(void * data, int x, int y, int w, int h, int d, int l);
+extern "C" void fl_draw_draw_image_mono2(void * func, void * data, int x, int y, int w, int h, int d);
+extern "C" void * fl_draw_read_image(void * data, int x, int y, int w, int h, int alpha);
+
+
 extern "C" int fl_draw_add_symbol(const char *name, void *func, int scalable);
 extern "C" void fl_draw_draw_text(const char *str, int n, int x, int y);
 extern "C" void fl_draw_draw_text2(const char *str, int x, int y, int w, int h,
