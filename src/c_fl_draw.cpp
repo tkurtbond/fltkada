@@ -318,9 +318,11 @@ void fl_draw_arc2(int x, int y, int w, int h, double a1, double a2) {
     fl_arc(x, y, w, h, a1, a2);
 }
 
-void fl_draw_chord(int x, int y, int w, int h, double a1, double a2) {
-    fl_chord(x, y, w, h, a1, a2);
-}
+//  function does not yet exist
+//  void fl_draw_chord(int x, int y, int w, int h, double a1, double a2) {
+//      function does not yet exist
+//      fl_chord(x, y, w, h, a1, a2);
+//  }
 
 void fl_draw_circle(double x, double y, double r) {
     fl_circle(x, y, r);

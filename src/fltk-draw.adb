@@ -433,11 +433,12 @@ package body FLTK.Draw is
     pragma Import (C, fl_draw_arc2, "fl_draw_arc2");
     pragma Inline (fl_draw_arc2);
 
-    procedure fl_draw_chord
-           (X, Y, W, H : in Interfaces.C.int;
-            A1, A2     : in Interfaces.C.double);
-    pragma Import (C, fl_draw_chord, "fl_draw_chord");
-    pragma Inline (fl_draw_chord);
+    --  this function does not yet exist
+    --  procedure fl_draw_chord
+    --         (X, Y, W, H : in Interfaces.C.int;
+    --          A1, A2     : in Interfaces.C.double);
+    --  pragma Import (C, fl_draw_chord, "fl_draw_chord");
+    --  pragma Inline (fl_draw_chord);
 
     procedure fl_draw_circle
            (X, Y, R : in Interfaces.C.double);
@@ -1566,13 +1567,15 @@ package body FLTK.Draw is
            (X, Y, W, H     : in Integer;
             Angle1, Angle2 : in Long_Float) is
     begin
-        fl_draw_chord
-           (Interfaces.C.int (X),
-            Interfaces.C.int (Y),
-            Interfaces.C.int (W),
-            Interfaces.C.int (H),
-            Interfaces.C.double (Angle1),
-            Interfaces.C.double (Angle2));
+        null;
+        --  this function does not yet exist
+        --  fl_draw_chord
+        --     (Interfaces.C.int (X),
+        --      Interfaces.C.int (Y),
+        --      Interfaces.C.int (W),
+        --      Interfaces.C.int (H),
+        --      Interfaces.C.double (Angle1),
+        --      Interfaces.C.double (Angle2));
     end Chord;
 
 

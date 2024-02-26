@@ -367,6 +367,7 @@ private
 
     pragma Linker_Options ("-lfltk");
     pragma Linker_Options ("-lfltk_images");
+    pragma Linker_Options ("-lfltk_gl");
 
 
 

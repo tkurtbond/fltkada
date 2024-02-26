@@ -96,7 +96,7 @@ extern "C" void fl_draw_begin_polygon();
 
 extern "C" void fl_draw_arc(double x, double y, double r, double start, double end);
 extern "C" void fl_draw_arc2(int x, int y, int w, int h, double a1, double a2);
-extern "C" void fl_draw_chord(int x, int y, int w, int h, double a1, double a2);
+//  extern "C" void fl_draw_chord(int x, int y, int w, int h, double a1, double a2);
 extern "C" void fl_draw_circle(double x, double y, double r);
 extern "C" void fl_draw_curve(double x0, double y0, double x1, double y1,
                               double x2, double y2, double x3, double y3);
