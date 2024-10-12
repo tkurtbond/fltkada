@@ -2,6 +2,7 @@
 
 with
 
+    Ada.Containers.Vectors,
     Interfaces.C.Strings,
     System.Address_To_Access_Conversions,
     FLTK.Static_Callback_Conversions;
@@ -503,7 +504,11 @@ package body FLTK.Static is
     --  This is handled on the Ada side because otherwise there would be
     --  no way to specify which callback to remove in FLTK once one was
     --  added. The hook is passed during package init.
-    Current_Clipboard_Notify : Clipboard_Notify_Handler;
+    package Clipboard_Notify_Vectors is new Ada.Containers.Vectors
+       (Index_Type   => Positive,
+        Element_Type => Clipboard_Notify_Handler);
+
+    Current_Clip_Notes : Clipboard_Notify_Vectors.Vector;
 
     procedure Clipboard_Notify_Hook
            (S : in Interfaces.C.int;
@@ -514,23 +519,28 @@ package body FLTK.Static is
            (S : in Interfaces.C.int;
             U : in Storage.Integer_Address) is
     begin
-        if Current_Clipboard_Notify /= null then
-            Current_Clipboard_Notify.all (Buffer_Kind'Val (S));
-        end if;
+        for Call of Current_Clip_Notes loop
+            Call.all (Buffer_Kind'Val (S));
+        end loop;
     end Clipboard_Notify_Hook;
 
 
     procedure Add_Clipboard_Notify
            (Func : in Clipboard_Notify_Handler) is
     begin
-        Current_Clipboard_Notify := Func;
+        Current_Clip_Notes.Append (Func);
     end Add_Clipboard_Notify;
 
 
     procedure Remove_Clipboard_Notify
            (Func : in Clipboard_Notify_Handler) is
     begin
-        Current_Clipboard_Notify := null;
+        for Index in Current_Clip_Notes.First_Index .. Current_Clip_Notes.Last_Index loop
+            if Current_Clip_Notes (Index) = Func then
+                Current_Clip_Notes.Delete (Index);
+                return;
+            end if;
+        end loop;
     end Remove_Clipboard_Notify;
 
 
