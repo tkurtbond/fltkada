@@ -12,6 +12,7 @@ typedef void* TEXTBUFFER;
 
 
 extern "C" TEXTBUFFER new_fl_text_buffer(int rs, int pgs);
+extern "C" void upref_fl_text_buffer(TEXTBUFFER tb);
 extern "C" void free_fl_text_buffer(TEXTBUFFER tb);
 
 

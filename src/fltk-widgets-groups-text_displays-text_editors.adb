@@ -388,6 +388,7 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
         then
             This.Clear;
             free_fl_text_editor (This.Void_Ptr);
+            free_fl_text_buffer (This.Raw_Buffer);
             This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Text_Display (This));

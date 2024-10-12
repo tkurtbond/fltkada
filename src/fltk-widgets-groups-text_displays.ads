@@ -359,6 +359,7 @@ private
     type Text_Display is new Group with
         record
             Buffer         : access FLTK.Text_Buffers.Text_Buffer;
+            Raw_Buffer     : Storage.Integer_Address := Null_Pointer;
             Style_Callback : Styles.Unfinished_Style_Callback;
         end record;
 
@@ -369,6 +370,21 @@ private
 
 
     package Text_Display_Convert is new System.Address_To_Access_Conversions (Text_Display'Class);
+
+
+
+
+    --  Adds some basic reference counting on the C side to help ensure any Text_Buffers
+    --  do not get deallocated before all Text_Displays they might be attached to.
+    procedure upref_fl_text_buffer
+           (TB : in Storage.Integer_Address);
+    pragma Import (C, upref_fl_text_buffer, "upref_fl_text_buffer");
+    pragma Inline (upref_fl_text_buffer);
+
+    procedure free_fl_text_buffer
+           (TB : in Storage.Integer_Address);
+    pragma Import (C, free_fl_text_buffer, "free_fl_text_buffer");
+    pragma Inline (free_fl_text_buffer);
 
 
 

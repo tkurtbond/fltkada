@@ -470,6 +470,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
         then
             This.Clear;
             free_fl_text_display (This.Void_Ptr);
+            free_fl_text_buffer (This.Raw_Buffer);
             This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Group (This));
@@ -546,6 +547,11 @@ package body FLTK.Widgets.Groups.Text_Displays is
     begin
         This.Buffer := Buff'Unchecked_Access;
         fl_text_display_set_buffer (This.Void_Ptr, Wrapper (Buff).Void_Ptr);
+        if This.Raw_Buffer /= Null_Pointer then
+            free_fl_text_buffer (This.Raw_Buffer);
+        end if;
+        This.Raw_Buffer := Wrapper (Buff).Void_Ptr;
+        upref_fl_text_buffer (This.Raw_Buffer);
     end Set_Buffer;
 
 

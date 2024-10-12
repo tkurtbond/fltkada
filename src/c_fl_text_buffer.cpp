@@ -6,13 +6,30 @@
 
 
 
+class My_Text_Buffer : public Fl_Text_Buffer {
+    public:
+        using Fl_Text_Buffer::Fl_Text_Buffer;
+        int reference_count = 0;
+};
+
+
+
+
 TEXTBUFFER new_fl_text_buffer(int rs, int pgs) {
-    Fl_Text_Buffer *tb = new Fl_Text_Buffer(rs, pgs);
+    My_Text_Buffer *tb = new My_Text_Buffer(rs, pgs);
     return tb;
 }
 
+void upref_fl_text_buffer(TEXTBUFFER tb) {
+    reinterpret_cast<My_Text_Buffer*>(tb)->reference_count += 1;
+}
+
 void free_fl_text_buffer(TEXTBUFFER tb) {
-    delete reinterpret_cast<Fl_Text_Buffer*>(tb);
+    if (reinterpret_cast<My_Text_Buffer*>(tb)->reference_count <= 0) {
+        delete reinterpret_cast<My_Text_Buffer*>(tb);
+    } else {
+        reinterpret_cast<My_Text_Buffer*>(tb)->reference_count -= 1;
+    }
 }
 
 
