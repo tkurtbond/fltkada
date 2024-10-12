@@ -2,24 +2,19 @@
 
 with
 
-    Interfaces.C,
-    System;
-
-use type
-
-    System.Address;
+    Interfaces.C;
 
 
 package body FLTK.Widgets.Groups.Wizards is
 
 
     procedure wizard_set_draw_hook
-           (W, D : in System.Address);
+           (W, D : in Storage.Integer_Address);
     pragma Import (C, wizard_set_draw_hook, "wizard_set_draw_hook");
     pragma Inline (wizard_set_draw_hook);
 
     procedure wizard_set_handle_hook
-           (W, H : in System.Address);
+           (W, H : in Storage.Integer_Address);
     pragma Import (C, wizard_set_handle_hook, "wizard_set_handle_hook");
     pragma Inline (wizard_set_handle_hook);
 
@@ -29,12 +24,12 @@ package body FLTK.Widgets.Groups.Wizards is
     function new_fl_wizard
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_wizard, "new_fl_wizard");
     pragma Inline (new_fl_wizard);
 
     procedure free_fl_wizard
-           (S : in System.Address);
+           (S : in Storage.Integer_Address);
     pragma Import (C, free_fl_wizard, "free_fl_wizard");
     pragma Inline (free_fl_wizard);
 
@@ -42,12 +37,12 @@ package body FLTK.Widgets.Groups.Wizards is
 
 
     procedure fl_wizard_next
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_wizard_next, "fl_wizard_next");
     pragma Inline (fl_wizard_next);
 
     procedure fl_wizard_prev
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_wizard_prev, "fl_wizard_prev");
     pragma Inline (fl_wizard_prev);
 
@@ -55,13 +50,13 @@ package body FLTK.Widgets.Groups.Wizards is
 
 
     function fl_wizard_get_visible
-           (W : in System.Address)
-        return System.Address;
+           (W : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_wizard_get_visible, "fl_wizard_get_visible");
     pragma Inline (fl_wizard_get_visible);
 
     procedure fl_wizard_set_visible
-           (W, I : in System.Address);
+           (W, I : in Storage.Integer_Address);
     pragma Import (C, fl_wizard_set_visible, "fl_wizard_set_visible");
     pragma Inline (fl_wizard_set_visible);
 
@@ -69,12 +64,12 @@ package body FLTK.Widgets.Groups.Wizards is
 
 
     procedure fl_wizard_draw
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_wizard_draw, "fl_wizard_draw");
     pragma Inline (fl_wizard_draw);
 
     function fl_wizard_handle
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_wizard_handle, "fl_wizard_handle");
@@ -86,12 +81,12 @@ package body FLTK.Widgets.Groups.Wizards is
     procedure Finalize
            (This : in out Wizard) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Wizard'Class
         then
             This.Clear;
             free_fl_wizard (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Group (This));
     end Finalize;
@@ -116,9 +111,9 @@ package body FLTK.Widgets.Groups.Wizards is
                 fl_group_end (This.Void_Ptr);
                 fl_widget_set_user_data
                        (This.Void_Ptr,
-                        Widget_Convert.To_Address (This'Unchecked_Access));
-                wizard_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
-                wizard_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                wizard_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                wizard_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;
@@ -148,10 +143,10 @@ package body FLTK.Widgets.Groups.Wizards is
            (This : in Wizard)
         return access Widget'Class
     is
-        Widget_Ptr : System.Address :=
+        Widget_Ptr : Storage.Integer_Address :=
             fl_wizard_get_visible (This.Void_Ptr);
         Actual_Widget : access Widget'Class :=
-            Widget_Convert.To_Pointer (fl_widget_get_user_data (Widget_Ptr));
+            Widget_Convert.To_Pointer (Storage.To_Address (fl_widget_get_user_data (Widget_Ptr)));
     begin
         return Actual_Widget;
     end Get_Visible;

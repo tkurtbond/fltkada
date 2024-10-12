@@ -2,24 +2,19 @@
 
 with
 
-    Interfaces.C.Strings,
-    System;
-
-use type
-
-    System.Address;
+    Interfaces.C.Strings;
 
 
 package body FLTK.Widgets.Valuators is
 
 
     procedure valuator_set_draw_hook
-           (W, D : in System.Address);
+           (W, D : in Storage.Integer_Address);
     pragma Import (C, valuator_set_draw_hook, "valuator_set_draw_hook");
     pragma Inline (valuator_set_draw_hook);
 
     procedure valuator_set_handle_hook
-           (W, H : in System.Address);
+           (W, H : in Storage.Integer_Address);
     pragma Import (C, valuator_set_handle_hook, "valuator_set_handle_hook");
     pragma Inline (valuator_set_handle_hook);
 
@@ -29,12 +24,12 @@ package body FLTK.Widgets.Valuators is
     function new_fl_valuator
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_valuator, "new_fl_valuator");
     pragma Inline (new_fl_valuator);
 
     procedure free_fl_valuator
-           (V : in System.Address);
+           (V : in Storage.Integer_Address);
     pragma Import (C, free_fl_valuator, "free_fl_valuator");
     pragma Inline (free_fl_valuator);
 
@@ -42,21 +37,21 @@ package body FLTK.Widgets.Valuators is
 
 
     function fl_valuator_clamp
-           (V : in System.Address;
+           (V : in Storage.Integer_Address;
             D : in Interfaces.C.double)
         return Interfaces.C.double;
     pragma Import (C, fl_valuator_clamp, "fl_valuator_clamp");
     pragma Inline (fl_valuator_clamp);
 
     function fl_valuator_round
-           (V : in System.Address;
+           (V : in Storage.Integer_Address;
             D : in Interfaces.C.double)
         return Interfaces.C.double;
     pragma Import (C, fl_valuator_round, "fl_valuator_round");
     pragma Inline (fl_valuator_round);
 
     function fl_valuator_increment
-           (V : in System.Address;
+           (V : in Storage.Integer_Address;
             D : in Interfaces.C.double;
             S : in Interfaces.C.int)
         return Interfaces.C.double;
@@ -67,67 +62,67 @@ package body FLTK.Widgets.Valuators is
 
 
     function fl_valuator_get_minimum
-           (V : in System.Address)
+           (V : in Storage.Integer_Address)
         return Interfaces.C.double;
     pragma Import (C, fl_valuator_get_minimum, "fl_valuator_get_minimum");
     pragma Inline (fl_valuator_get_minimum);
 
     procedure fl_valuator_set_minimum
-           (V : in System.Address;
+           (V : in Storage.Integer_Address;
             D : in Interfaces.C.double);
     pragma Import (C, fl_valuator_set_minimum, "fl_valuator_set_minimum");
     pragma Inline (fl_valuator_set_minimum);
 
     function fl_valuator_get_maximum
-           (V : in System.Address)
+           (V : in Storage.Integer_Address)
         return Interfaces.C.double;
     pragma Import (C, fl_valuator_get_maximum, "fl_valuator_get_maximum");
     pragma Inline (fl_valuator_get_maximum);
 
     procedure fl_valuator_set_maximum
-           (V : in System.Address;
+           (V : in Storage.Integer_Address;
             D : in Interfaces.C.double);
     pragma Import (C, fl_valuator_set_maximum, "fl_valuator_set_maximum");
     pragma Inline (fl_valuator_set_maximum);
 
     function fl_valuator_get_step
-           (V : in System.Address)
+           (V : in Storage.Integer_Address)
         return Interfaces.C.double;
     pragma Import (C, fl_valuator_get_step, "fl_valuator_get_step");
     pragma Inline (fl_valuator_get_step);
 
     procedure fl_valuator_set_step
-           (V : in System.Address;
+           (V : in Storage.Integer_Address;
             T : in Interfaces.C.double);
     pragma Import (C, fl_valuator_set_step, "fl_valuator_set_step");
     pragma Inline (fl_valuator_set_step);
 
     function fl_valuator_get_value
-           (V : in System.Address)
+           (V : in Storage.Integer_Address)
         return Interfaces.C.double;
     pragma Import (C, fl_valuator_get_value, "fl_valuator_get_value");
     pragma Inline (fl_valuator_get_value);
 
     procedure fl_valuator_set_value
-           (V : in System.Address;
+           (V : in Storage.Integer_Address;
             D : in Interfaces.C.double);
     pragma Import (C, fl_valuator_set_value, "fl_valuator_set_value");
     pragma Inline (fl_valuator_set_value);
 
     procedure fl_valuator_bounds
-           (V    : in System.Address;
+           (V    : in Storage.Integer_Address;
             A, B : in Interfaces.C.double);
     pragma Import (C, fl_valuator_bounds, "fl_valuator_bounds");
     pragma Inline (fl_valuator_bounds);
 
     procedure fl_valuator_precision
-           (V : in System.Address;
+           (V : in Storage.Integer_Address;
             D : in Interfaces.C.int);
     pragma Import (C, fl_valuator_precision, "fl_valuator_precision");
     pragma Inline (fl_valuator_precision);
 
     procedure fl_valuator_range
-           (V    : in System.Address;
+           (V    : in Storage.Integer_Address;
             A, B : in Interfaces.C.double);
     pragma Import (C, fl_valuator_range, "fl_valuator_range");
     pragma Inline (fl_valuator_range);
@@ -136,7 +131,7 @@ package body FLTK.Widgets.Valuators is
 
 
     function fl_valuator_handle
-           (V : in System.Address;
+           (V : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_valuator_handle, "fl_valuator_handle");
@@ -148,11 +143,11 @@ package body FLTK.Widgets.Valuators is
     procedure Finalize
            (This : in out Valuator) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Valuator'Class
         then
             free_fl_valuator (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Widget (This));
     end Finalize;
@@ -176,9 +171,9 @@ package body FLTK.Widgets.Valuators is
                         Interfaces.C.To_C (Text));
                 fl_widget_set_user_data
                        (This.Void_Ptr,
-                        Widget_Convert.To_Address (This'Unchecked_Access));
-                valuator_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
-                valuator_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                valuator_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                valuator_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;

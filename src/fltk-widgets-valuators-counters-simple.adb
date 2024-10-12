@@ -2,24 +2,19 @@
 
 with
 
-    Interfaces.C.Strings,
-    System;
-
-use type
-
-    System.Address;
+    Interfaces.C.Strings;
 
 
 package body FLTK.Widgets.Valuators.Counters.Simple is
 
 
     procedure simple_counter_set_draw_hook
-           (W, D : in System.Address);
+           (W, D : in Storage.Integer_Address);
     pragma Import (C, simple_counter_set_draw_hook, "simple_counter_set_draw_hook");
     pragma Inline (simple_counter_set_draw_hook);
 
     procedure simple_counter_set_handle_hook
-           (W, H : in System.Address);
+           (W, H : in Storage.Integer_Address);
     pragma Import (C, simple_counter_set_handle_hook, "simple_counter_set_handle_hook");
     pragma Inline (simple_counter_set_handle_hook);
 
@@ -29,12 +24,12 @@ package body FLTK.Widgets.Valuators.Counters.Simple is
     function new_fl_simple_counter
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_simple_counter, "new_fl_simple_counter");
     pragma Inline (new_fl_simple_counter);
 
     procedure free_fl_simple_counter
-           (A : in System.Address);
+           (A : in Storage.Integer_Address);
     pragma Import (C, free_fl_simple_counter, "free_fl_simple_counter");
     pragma Inline (free_fl_simple_counter);
 
@@ -42,12 +37,12 @@ package body FLTK.Widgets.Valuators.Counters.Simple is
 
 
     procedure fl_simple_counter_draw
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_simple_counter_draw, "fl_simple_counter_draw");
     pragma Inline (fl_simple_counter_draw);
 
     function fl_simple_counter_handle
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_simple_counter_handle, "fl_simple_counter_handle");
@@ -59,11 +54,11 @@ package body FLTK.Widgets.Valuators.Counters.Simple is
     procedure Finalize
            (This : in out Simple_Counter) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Simple_Counter'Class
         then
             free_fl_simple_counter (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Counter (This));
     end Finalize;
@@ -87,9 +82,11 @@ package body FLTK.Widgets.Valuators.Counters.Simple is
                         Interfaces.C.To_C (Text));
                 fl_widget_set_user_data
                        (This.Void_Ptr,
-                        Widget_Convert.To_Address (This'Unchecked_Access));
-                simple_counter_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
-                simple_counter_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                simple_counter_set_draw_hook
+                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                simple_counter_set_handle_hook
+                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;

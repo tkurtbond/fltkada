@@ -2,12 +2,7 @@
 
 with
 
-    Interfaces.C,
-    System;
-
-use type
-
-    System.Address;
+    Interfaces.C;
 
 
 package body FLTK.Devices.Surfaces.Copy is
@@ -15,12 +10,12 @@ package body FLTK.Devices.Surfaces.Copy is
 
     function new_fl_copy_surface
            (W, H : in Interfaces.C.int)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_copy_surface, "new_fl_copy_surface");
     pragma Inline (new_fl_copy_surface);
 
     procedure free_fl_copy_surface
-           (S : in System.Address);
+           (S : in Storage.Integer_Address);
     pragma Import (C, free_fl_copy_surface, "free_fl_copy_surface");
     pragma Inline (free_fl_copy_surface);
 
@@ -28,13 +23,13 @@ package body FLTK.Devices.Surfaces.Copy is
 
 
     function fl_copy_surface_get_w
-           (S : in System.Address)
+           (S : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_copy_surface_get_w, "fl_copy_surface_get_w");
     pragma Inline (fl_copy_surface_get_w);
 
     function fl_copy_surface_get_h
-           (S : in System.Address)
+           (S : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_copy_surface_get_h, "fl_copy_surface_get_h");
     pragma Inline (fl_copy_surface_get_h);
@@ -43,13 +38,13 @@ package body FLTK.Devices.Surfaces.Copy is
 
 
     procedure fl_copy_surface_draw
-           (S, W   : in System.Address;
+           (S, W   : in Storage.Integer_Address;
             OX, OY : in Interfaces.C.int);
     pragma Import (C, fl_copy_surface_draw, "fl_copy_surface_draw");
     pragma Inline (fl_copy_surface_draw);
 
     procedure fl_copy_surface_draw_decorated_window
-           (S, W   : in System.Address;
+           (S, W   : in Storage.Integer_Address;
             OX, OY : in Interfaces.C.int);
     pragma Import (C, fl_copy_surface_draw_decorated_window,
         "fl_copy_surface_draw_decorated_window");
@@ -59,7 +54,7 @@ package body FLTK.Devices.Surfaces.Copy is
 
 
     procedure fl_copy_surface_set_current
-           (S : in System.Address);
+           (S : in Storage.Integer_Address);
     pragma Import (C, fl_copy_surface_set_current, "fl_copy_surface_set_current");
     pragma Inline (fl_copy_surface_set_current);
 
@@ -69,11 +64,11 @@ package body FLTK.Devices.Surfaces.Copy is
     procedure Finalize
            (This : in out Copy_Surface) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Copy_Surface'Class
         then
             free_fl_copy_surface (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Surface_Device (This));
     end Finalize;

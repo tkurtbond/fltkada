@@ -11,8 +11,7 @@ use type
 
     Interfaces.C.int,
     Interfaces.C.unsigned,
-    Interfaces.C.Strings.chars_ptr,
-    System.Address;
+    Interfaces.C.Strings.chars_ptr;
 
 
 package body FLTK.Widgets is
@@ -38,12 +37,12 @@ package body FLTK.Widgets is
 
 
     procedure widget_set_draw_hook
-           (W, D : in System.Address);
+           (W, D : in Storage.Integer_Address);
     pragma Import (C, widget_set_draw_hook, "widget_set_draw_hook");
     pragma Inline (widget_set_draw_hook);
 
     procedure widget_set_handle_hook
-           (W, H : in System.Address);
+           (W, H : in Storage.Integer_Address);
     pragma Import (C, widget_set_handle_hook, "widget_set_handle_hook");
     pragma Inline (widget_set_handle_hook);
 
@@ -53,12 +52,12 @@ package body FLTK.Widgets is
     function new_fl_widget
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_widget, "new_fl_widget");
     pragma Inline (new_fl_widget);
 
     procedure free_fl_widget
-           (F : in System.Address);
+           (F : in Storage.Integer_Address);
     pragma Import (C, free_fl_widget, "free_fl_widget");
     pragma Inline (free_fl_widget);
 
@@ -66,34 +65,34 @@ package body FLTK.Widgets is
 
 
     procedure fl_widget_activate
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_widget_activate, "fl_widget_activate");
     pragma Inline (fl_widget_activate);
 
     procedure fl_widget_deactivate
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_widget_deactivate, "fl_widget_deactivate");
     pragma Inline (fl_widget_deactivate);
 
     function fl_widget_active
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_widget_active, "fl_widget_active");
     pragma Inline (fl_widget_active);
 
     function fl_widget_active_r
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_widget_active_r, "fl_widget_active_r");
     pragma Inline (fl_widget_active_r);
 
     procedure fl_widget_set_active
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_widget_set_active, "fl_widget_set_active");
     pragma Inline (fl_widget_set_active);
 
     procedure fl_widget_clear_active
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_widget_clear_active, "fl_widget_clear_active");
     pragma Inline (fl_widget_clear_active);
 
@@ -101,56 +100,56 @@ package body FLTK.Widgets is
 
 
     function fl_widget_changed
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_widget_changed, "fl_widget_changed");
     pragma Inline (fl_widget_changed);
 
     procedure fl_widget_set_changed
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_widget_set_changed, "fl_widget_set_changed");
     pragma Inline (fl_widget_set_changed);
 
     procedure fl_widget_clear_changed
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_widget_clear_changed, "fl_widget_clear_changed");
     pragma Inline (fl_widget_clear_changed);
 
     function fl_widget_output
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_widget_output, "fl_widget_output");
     pragma Inline (fl_widget_output);
 
     procedure fl_widget_set_output
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_widget_set_output, "fl_widget_set_output");
     pragma Inline (fl_widget_set_output);
 
     procedure fl_widget_clear_output
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_widget_clear_output, "fl_widget_clear_output");
     pragma Inline (fl_widget_clear_output);
 
     function fl_widget_visible
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_widget_visible, "fl_widget_visible");
     pragma Inline (fl_widget_visible);
 
     function fl_widget_visible_r
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_widget_visible_r, "fl_widget_visible_r");
     pragma Inline (fl_widget_visible_r);
 
     procedure fl_widget_set_visible
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_widget_set_visible, "fl_widget_set_visible");
     pragma Inline (fl_widget_set_visible);
 
     procedure fl_widget_clear_visible
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_widget_clear_visible, "fl_widget_clear_visible");
     pragma Inline (fl_widget_clear_visible);
 
@@ -158,25 +157,25 @@ package body FLTK.Widgets is
 
 
     function fl_widget_get_visible_focus
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_widget_get_visible_focus, "fl_widget_get_visible_focus");
     pragma Inline (fl_widget_get_visible_focus);
 
     procedure fl_widget_set_visible_focus
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             T : in Interfaces.C.int);
     pragma Import (C, fl_widget_set_visible_focus, "fl_widget_set_visible_focus");
     pragma Inline (fl_widget_set_visible_focus);
 
     function fl_widget_take_focus
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_widget_take_focus, "fl_widget_take_focus");
     pragma Inline (fl_widget_take_focus);
 
     function fl_widget_takesevents
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_widget_takesevents, "fl_widget_takesevents");
     pragma Inline (fl_widget_takesevents);
@@ -185,25 +184,25 @@ package body FLTK.Widgets is
 
 
     function fl_widget_get_color
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_widget_get_color, "fl_widget_get_color");
     pragma Inline (fl_widget_get_color);
 
     procedure fl_widget_set_color
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             T : in Interfaces.C.unsigned);
     pragma Import (C, fl_widget_set_color, "fl_widget_set_color");
     pragma Inline (fl_widget_set_color);
 
     function fl_widget_get_selection_color
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_widget_get_selection_color, "fl_widget_get_selection_color");
     pragma Inline (fl_widget_get_selection_color);
 
     procedure fl_widget_set_selection_color
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             T : in Interfaces.C.unsigned);
     pragma Import (C, fl_widget_set_selection_color, "fl_widget_set_selection_color");
     pragma Inline (fl_widget_set_selection_color);
@@ -212,39 +211,39 @@ package body FLTK.Widgets is
 
 
     function fl_widget_get_parent
-           (W : in System.Address)
-        return System.Address;
+           (W : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_widget_get_parent, "fl_widget_get_parent");
     pragma Inline (fl_widget_get_parent);
 
     function fl_widget_contains
-           (W, I : in System.Address)
+           (W, I : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_widget_contains, "fl_widget_contains");
     pragma Inline (fl_widget_contains);
 
     function fl_widget_inside
-           (W, P : in System.Address)
+           (W, P : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_widget_inside, "fl_widget_inside");
     pragma Inline (fl_widget_inside);
 
     function fl_widget_window
-           (W : in System.Address)
-        return System.Address;
+           (W : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_widget_window, "fl_widget_window");
     pragma Inline (fl_widget_window);
 
     function fl_widget_top_window
-           (W : in System.Address)
-        return System.Address;
+           (W : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_widget_top_window, "fl_widget_top_window");
     pragma Inline (fl_widget_top_window);
 
     function fl_widget_top_window_offset
-           (W    : in     System.Address;
+           (W    : in     Storage.Integer_Address;
             X, Y :    out Interfaces.C.int)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, fl_widget_top_window_offset, "fl_widget_top_window_offset");
     pragma Inline (fl_widget_top_window_offset);
 
@@ -252,37 +251,37 @@ package body FLTK.Widgets is
 
 
     function fl_widget_get_align
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_widget_get_align, "fl_widget_get_align");
     pragma Inline (fl_widget_get_align);
 
     procedure fl_widget_set_align
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             A : in Interfaces.C.unsigned);
     pragma Import (C, fl_widget_set_align, "fl_widget_set_align");
     pragma Inline (fl_widget_set_align);
 
     function fl_widget_get_box
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_widget_get_box, "fl_widget_get_box");
     pragma Inline (fl_widget_get_box);
 
     procedure fl_widget_set_box
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             B : in Interfaces.C.int);
     pragma Import (C, fl_widget_set_box, "fl_widget_set_box");
     pragma Inline (fl_widget_set_box);
 
     function fl_widget_tooltip
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.Strings.chars_ptr;
     pragma Import (C, fl_widget_tooltip, "fl_widget_tooltip");
     pragma Inline (fl_widget_tooltip);
 
     procedure fl_widget_copy_tooltip
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             T : in Interfaces.C.char_array);
     pragma Import (C, fl_widget_copy_tooltip, "fl_widget_copy_tooltip");
     pragma Inline (fl_widget_copy_tooltip);
@@ -291,61 +290,61 @@ package body FLTK.Widgets is
 
 
     function fl_widget_get_label
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.Strings.chars_ptr;
     pragma Import (C, fl_widget_get_label, "fl_widget_get_label");
     pragma Inline (fl_widget_get_label);
 
     function fl_widget_get_labelcolor
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_widget_get_labelcolor, "fl_widget_get_labelcolor");
     pragma Inline (fl_widget_get_labelcolor);
 
     procedure fl_widget_set_labelcolor
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             V : in Interfaces.C.unsigned);
     pragma Import (C, fl_widget_set_labelcolor, "fl_widget_set_labelcolor");
     pragma Inline (fl_widget_set_labelcolor);
 
     function fl_widget_get_labelfont
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_widget_get_labelfont, "fl_widget_get_labelfont");
     pragma Inline (fl_widget_get_labelfont);
 
     procedure fl_widget_set_labelfont
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             F : in Interfaces.C.int);
     pragma Import (C, fl_widget_set_labelfont, "fl_widget_set_labelfont");
     pragma Inline (fl_widget_set_labelfont);
 
     function fl_widget_get_labelsize
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_widget_get_labelsize, "fl_widget_get_labelsize");
     pragma Inline (fl_widget_get_labelsize);
 
     procedure fl_widget_set_labelsize
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             S : in Interfaces.C.int);
     pragma Import (C, fl_widget_set_labelsize, "fl_widget_set_labelsize");
     pragma Inline (fl_widget_set_labelsize);
 
     function fl_widget_get_labeltype
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_widget_get_labeltype, "fl_widget_get_labeltype");
     pragma Inline (fl_widget_get_labeltype);
 
     procedure fl_widget_set_labeltype
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             L : in Interfaces.C.int);
     pragma Import (C, fl_widget_set_labeltype, "fl_widget_set_labeltype");
     pragma Inline (fl_widget_set_labeltype);
 
     procedure fl_widget_measure_label
-           (W    : in     System.Address;
+           (W    : in     Storage.Integer_Address;
             D, H :    out Interfaces.C.int);
     pragma Import (C, fl_widget_measure_label, "fl_widget_measure_label");
     pragma Inline (fl_widget_measure_label);
@@ -354,18 +353,18 @@ package body FLTK.Widgets is
 
 
     procedure fl_widget_set_callback
-           (W, C : in System.Address);
+           (W, C : in Storage.Integer_Address);
     pragma Import (C, fl_widget_set_callback, "fl_widget_set_callback");
     pragma Inline (fl_widget_set_callback);
 
     function fl_widget_get_when
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_widget_get_when, "fl_widget_get_when");
     pragma Inline (fl_widget_get_when);
 
     procedure fl_widget_set_when
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             T : in Interfaces.C.unsigned);
     pragma Import (C, fl_widget_set_when, "fl_widget_set_when");
     pragma Inline (fl_widget_set_when);
@@ -374,37 +373,37 @@ package body FLTK.Widgets is
 
 
     function fl_widget_get_x
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_widget_get_x, "fl_widget_get_x");
     pragma Inline (fl_widget_get_x);
 
     function fl_widget_get_y
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_widget_get_y, "fl_widget_get_y");
     pragma Inline (fl_widget_get_y);
 
     function fl_widget_get_w
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_widget_get_w, "fl_widget_get_w");
     pragma Inline (fl_widget_get_w);
 
     function fl_widget_get_h
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_widget_get_h, "fl_widget_get_h");
     pragma Inline (fl_widget_get_h);
 
     procedure fl_widget_size
-           (W    : in System.Address;
+           (W    : in Storage.Integer_Address;
             D, H : in Interfaces.C.int);
     pragma Import (C, fl_widget_size, "fl_widget_size");
     pragma Inline (fl_widget_size);
 
     procedure fl_widget_position
-           (W    : in System.Address;
+           (W    : in Storage.Integer_Address;
             X, Y : in Interfaces.C.int);
     pragma Import (C, fl_widget_position, "fl_widget_position");
     pragma Inline (fl_widget_position);
@@ -413,12 +412,12 @@ package body FLTK.Widgets is
 
 
     procedure fl_widget_set_image
-           (W, I : in System.Address);
+           (W, I : in Storage.Integer_Address);
     pragma Import (C, fl_widget_set_image, "fl_widget_set_image");
     pragma Inline (fl_widget_set_image);
 
     procedure fl_widget_set_deimage
-           (W, I : in System.Address);
+           (W, I : in Storage.Integer_Address);
     pragma Import (C, fl_widget_set_deimage, "fl_widget_set_deimage");
     pragma Inline (fl_widget_set_deimage);
 
@@ -426,38 +425,38 @@ package body FLTK.Widgets is
 
 
     function fl_widget_damage
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_widget_damage, "fl_widget_damage");
     pragma Inline (fl_widget_damage);
 
     procedure fl_widget_set_damage
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             T : in Interfaces.C.int);
     pragma Import (C, fl_widget_set_damage, "fl_widget_set_damage");
     pragma Inline (fl_widget_set_damage);
 
     procedure fl_widget_set_damage2
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             T : in Interfaces.C.int;
             X, Y, D, H : in Interfaces.C.int);
     pragma Import (C, fl_widget_set_damage2, "fl_widget_set_damage2");
     pragma Inline (fl_widget_set_damage2);
 
     procedure fl_widget_draw_label
-           (W          : in System.Address;
+           (W          : in Storage.Integer_Address;
             X, Y, D, H : in Interfaces.C.int;
             A          : in Interfaces.C.unsigned);
     pragma Import (C, fl_widget_draw_label, "fl_widget_draw_label");
     pragma Inline (fl_widget_draw_label);
 
     procedure fl_widget_redraw
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_widget_redraw, "fl_widget_redraw");
     pragma Inline (fl_widget_redraw);
 
     procedure fl_widget_redraw_label
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_widget_redraw_label, "fl_widget_redraw_label");
     pragma Inline (fl_widget_redraw_label);
 
@@ -465,32 +464,32 @@ package body FLTK.Widgets is
 
 
     procedure Callback_Hook
-           (W, U : in System.Address)
+           (W, U : in Storage.Integer_Address)
     is
         Ada_Widget : access Widget'Class :=
-            Widget_Convert.To_Pointer (U);
+            Widget_Convert.To_Pointer (Storage.To_Address (U));
     begin
         Ada_Widget.Callback.all (Ada_Widget.all);
     end Callback_Hook;
 
 
     procedure Draw_Hook
-           (U : in System.Address)
+           (U : in Storage.Integer_Address)
     is
         Ada_Widget : access Widget'Class :=
-            Widget_Convert.To_Pointer (U);
+            Widget_Convert.To_Pointer (Storage.To_Address (U));
     begin
         Ada_Widget.Draw;
     end Draw_Hook;
 
 
     function Handle_Hook
-           (U : in System.Address;
+           (U : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int
     is
         Ada_Widget : access Widget'Class :=
-            Widget_Convert.To_Pointer (U);
+            Widget_Convert.To_Pointer (Storage.To_Address (U));
     begin
         return Event_Outcome'Pos (Ada_Widget.Handle (Event_Kind'Val (E)));
     end Handle_Hook;
@@ -501,11 +500,11 @@ package body FLTK.Widgets is
     procedure Finalize
            (This : in out Widget) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Widget'Class
         then
             free_fl_widget (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;
 
@@ -528,9 +527,9 @@ package body FLTK.Widgets is
                         Interfaces.C.To_C (Text));
                 fl_widget_set_user_data
                        (This.Void_Ptr,
-                        Widget_Convert.To_Address (This'Unchecked_Access));
-                widget_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
-                widget_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                widget_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                widget_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;
@@ -726,12 +725,13 @@ package body FLTK.Widgets is
            (This : in Widget)
         return access FLTK.Widgets.Groups.Group'Class
     is
-        Parent_Ptr : System.Address;
+        Parent_Ptr : Storage.Integer_Address;
         Actual_Parent : access FLTK.Widgets.Groups.Group'Class;
     begin
         Parent_Ptr := fl_widget_get_parent (This.Void_Ptr);
-        if Parent_Ptr /= System.Null_Address then
-            Actual_Parent := Group_Convert.To_Pointer (fl_widget_get_user_data (Parent_Ptr));
+        if Parent_Ptr /= Null_Pointer then
+            Actual_Parent := Group_Convert.To_Pointer
+                (Storage.To_Address (fl_widget_get_user_data (Parent_Ptr)));
         end if;
         return Actual_Parent;
     end Parent;
@@ -759,12 +759,13 @@ package body FLTK.Widgets is
            (This : in Widget)
         return access FLTK.Widgets.Groups.Windows.Window'Class
     is
-        Window_Ptr : System.Address;
+        Window_Ptr : Storage.Integer_Address;
         Actual_Window : access FLTK.Widgets.Groups.Windows.Window'Class;
     begin
         Window_Ptr := fl_widget_window (This.Void_Ptr);
-        if Window_Ptr /= System.Null_Address then
-            Actual_Window := Window_Convert.To_Pointer (fl_widget_get_user_data (Window_Ptr));
+        if Window_Ptr /= Null_Pointer then
+            Actual_Window := Window_Convert.To_Pointer
+                (Storage.To_Address (fl_widget_get_user_data (Window_Ptr)));
         end if;
         return Actual_Window;
     end Nearest_Window;
@@ -774,12 +775,13 @@ package body FLTK.Widgets is
            (This : in Widget)
         return access FLTK.Widgets.Groups.Windows.Window'Class
     is
-        Window_Ptr : System.Address;
+        Window_Ptr : Storage.Integer_Address;
         Actual_Window : access FLTK.Widgets.Groups.Windows.Window'Class;
     begin
         Window_Ptr := fl_widget_top_window (This.Void_Ptr);
-        if Window_Ptr /= System.Null_Address then
-            Actual_Window := Window_Convert.To_Pointer (fl_widget_get_user_data (Window_Ptr));
+        if Window_Ptr /= Null_Pointer then
+            Actual_Window := Window_Convert.To_Pointer
+                (Storage.To_Address (fl_widget_get_user_data (Window_Ptr)));
         end if;
         return Actual_Window;
     end Top_Window;
@@ -790,15 +792,16 @@ package body FLTK.Widgets is
             Offset_X, Offset_Y : out Integer)
         return access FLTK.Widgets.Groups.Windows.Window'Class
     is
-        Window_Ptr : System.Address;
+        Window_Ptr : Storage.Integer_Address;
         Actual_Window : access FLTK.Widgets.Groups.Windows.Window'Class;
     begin
         Window_Ptr := fl_widget_top_window_offset
            (This.Void_Ptr,
             Interfaces.C.int (Offset_X),
             Interfaces.C.int (Offset_Y));
-        if Window_Ptr /= System.Null_Address then
-            Actual_Window := Window_Convert.To_Pointer (fl_widget_get_user_data (Window_Ptr));
+        if Window_Ptr /= Null_Pointer then
+            Actual_Window := Window_Convert.To_Pointer
+                (Storage.To_Address (fl_widget_get_user_data (Window_Ptr)));
         end if;
         return Actual_Window;
     end Top_Window_Offset;
@@ -976,7 +979,7 @@ package body FLTK.Widgets is
     begin
         if Func /= null then
             This.Callback := Func;
-            fl_widget_set_callback (This.Void_Ptr, Callback_Hook'Address);
+            fl_widget_set_callback (This.Void_Ptr, Storage.To_Integer (Callback_Hook'Address));
         end if;
     end Set_Callback;
 

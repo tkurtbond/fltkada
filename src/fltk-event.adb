@@ -2,33 +2,31 @@
 
 with
 
-    Interfaces.C.Strings,
-    System;
+    Interfaces.C.Strings;
 
 use type
 
     Interfaces.C.int,
-    Interfaces.C.Strings.chars_ptr,
-    System.Address;
+    Interfaces.C.Strings.chars_ptr;
 
 
 package body FLTK.Event is
 
 
     procedure fl_event_add_handler
-           (F : in System.Address);
+           (F : in Storage.Integer_Address);
     pragma Import (C, fl_event_add_handler, "fl_event_add_handler");
     pragma Inline (fl_event_add_handler);
 
     procedure fl_event_set_event_dispatch
-           (F : in System.Address);
+           (F : in Storage.Integer_Address);
     pragma Import (C, fl_event_set_event_dispatch, "fl_event_set_event_dispatch");
     pragma Inline (fl_event_set_event_dispatch);
 
     --  actually handle_ but can't have an underscore on the end of an identifier
     function fl_event_handle
            (E : in Interfaces.C.int;
-            W : in System.Address)
+            W : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_event_handle, "fl_event_handle");
     pragma Inline (fl_event_handle);
@@ -37,42 +35,42 @@ package body FLTK.Event is
 
 
     function fl_event_get_grab
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, fl_event_get_grab, "fl_event_get_grab");
     pragma Inline (fl_event_get_grab);
 
     procedure fl_event_set_grab
-           (T : in System.Address);
+           (T : in Storage.Integer_Address);
     pragma Import (C, fl_event_set_grab, "fl_event_set_grab");
     pragma Inline (fl_event_set_grab);
 
     function fl_event_get_pushed
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, fl_event_get_pushed, "fl_event_get_pushed");
     pragma Inline (fl_event_get_pushed);
 
     procedure fl_event_set_pushed
-           (T : in System.Address);
+           (T : in Storage.Integer_Address);
     pragma Import (C, fl_event_set_pushed, "fl_event_set_pushed");
     pragma Inline (fl_event_set_pushed);
 
     function fl_event_get_belowmouse
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, fl_event_get_belowmouse, "fl_event_get_belowmouse");
     pragma Inline (fl_event_get_belowmouse);
 
     procedure fl_event_set_belowmouse
-           (T : in System.Address);
+           (T : in Storage.Integer_Address);
     pragma Import (C, fl_event_set_belowmouse, "fl_event_set_belowmouse");
     pragma Inline (fl_event_set_belowmouse);
 
     function fl_event_get_focus
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, fl_event_get_focus, "fl_event_get_focus");
     pragma Inline (fl_event_get_focus);
 
     procedure fl_event_set_focus
-           (To : in System.Address);
+           (To : in Storage.Integer_Address);
     pragma Import (C, fl_event_set_focus, "fl_event_set_focus");
     pragma Inline (fl_event_set_focus);
 
@@ -263,14 +261,15 @@ package body FLTK.Event is
 
     --  function Dispatch_Hook
     --         (Num : in Interfaces.C.int;
-    --          Ptr : in System.Address)
+    --          Ptr : in Storage.Integer_Address)
     --      return Interfaces.C.int
     --  is
     --      Ret_Val : Event_Outcome;
     --      Actual_Window : access FLTK.Widgets.Groups.Windows.Window'Class;
     --  begin
-    --      if Ptr /= System.Null_Address then
-    --          Actual_Window := Window_Convert.To_Pointer (fl_widget_get_user_data (Ptr));
+    --      if Ptr /= Null_Pointer then
+    --          Actual_Window := Window_Convert.To_Pointer
+    --              (Storage.To_Address (fl_widget_get_user_data (Ptr)));
     --      end if;
     --      if Current_Dispatch = null then
     --          Ret_Val := Default_Dispatch (Event_Kind'Val (Num), Actual_Window);
@@ -327,7 +326,7 @@ package body FLTK.Event is
     --  begin
     --      if Win = null then
     --          return Event_Outcome'Val (fl_event_handle
-    --             (Event_Kind'Pos (Event), System.Null_Address));
+    --             (Event_Kind'Pos (Event), Null_Pointer));
     --      else
     --          return Event_Outcome'Val (fl_event_handle
     --             (Event_Kind'Pos (Event),
@@ -341,7 +340,8 @@ package body FLTK.Event is
     function Get_Grab
         return access FLTK.Widgets.Groups.Windows.Window'Class is
     begin
-        return Window_Convert.To_Pointer (fl_widget_get_user_data (fl_event_get_grab));
+        return Window_Convert.To_Pointer
+            (Storage.To_Address (fl_widget_get_user_data (fl_event_get_grab)));
     end Get_Grab;
 
 
@@ -354,14 +354,15 @@ package body FLTK.Event is
 
     procedure Release_Grab is
     begin
-        fl_event_set_grab (System.Null_Address);
+        fl_event_set_grab (Null_Pointer);
     end Release_Grab;
 
 
     function Get_Pushed
         return access FLTK.Widgets.Widget'Class is
     begin
-        return Widget_Convert.To_Pointer (fl_widget_get_user_data (fl_event_get_pushed));
+        return Widget_Convert.To_Pointer
+            (Storage.To_Address (fl_widget_get_user_data (fl_event_get_pushed)));
     end Get_Pushed;
 
 
@@ -375,7 +376,8 @@ package body FLTK.Event is
     function Get_Below_Mouse
         return access FLTK.Widgets.Widget'Class is
     begin
-        return Widget_Convert.To_Pointer (fl_widget_get_user_data (fl_event_get_belowmouse));
+        return Widget_Convert.To_Pointer
+            (Storage.To_Address (fl_widget_get_user_data (fl_event_get_belowmouse)));
     end Get_Below_Mouse;
 
 
@@ -389,7 +391,8 @@ package body FLTK.Event is
     function Get_Focus
         return access FLTK.Widgets.Widget'Class is
     begin
-        return Widget_Convert.To_Pointer (fl_widget_get_user_data (fl_event_get_focus));
+        return Widget_Convert.To_Pointer
+            (Storage.To_Address (fl_widget_get_user_data (fl_event_get_focus)));
     end Get_Focus;
 
 
@@ -635,8 +638,8 @@ package body FLTK.Event is
 begin
 
 
-    fl_event_add_handler (Event_Handler_Hook'Address);
-    --  fl_event_set_event_dispatch (Dispatch_Hook'Address);
+    fl_event_add_handler (Storage.To_Integer (Event_Handler_Hook'Address));
+    --  fl_event_set_event_dispatch (Storage.To_Integer (Dispatch_Hook'Address));
 
 
 end FLTK.Event;

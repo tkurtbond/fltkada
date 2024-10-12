@@ -4,8 +4,7 @@ with
 
     Interfaces.C.Strings,
     Ada.Strings.Unbounded,
-    Ada.Containers,
-    System;
+    Ada.Containers;
 
 use
 
@@ -13,7 +12,6 @@ use
 
 use type
 
-    System.Address,
     Interfaces.C.int,
     Interfaces.C.Strings.chars_ptr,
     Ada.Containers.Count_Type;
@@ -24,12 +22,12 @@ package body FLTK.Text_Buffers is
 
     function new_fl_text_buffer
            (RS, PGS : in Interfaces.C.int)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_text_buffer, "new_fl_text_buffer");
     pragma Inline (new_fl_text_buffer);
 
     procedure free_fl_text_buffer
-           (TB : in System.Address);
+           (TB : in Storage.Integer_Address);
     pragma Import (C, free_fl_text_buffer, "free_fl_text_buffer");
     pragma Inline (free_fl_text_buffer);
 
@@ -37,25 +35,25 @@ package body FLTK.Text_Buffers is
 
 
     procedure fl_text_buffer_add_modify_callback
-           (TB, CB, UD : in System.Address);
+           (TB, CB, UD : in Storage.Integer_Address);
     pragma Import (C, fl_text_buffer_add_modify_callback,
                     "fl_text_buffer_add_modify_callback");
     pragma Inline (fl_text_buffer_add_modify_callback);
 
     procedure fl_text_buffer_add_predelete_callback
-           (TB, CB, UD : in System.Address);
+           (TB, CB, UD : in Storage.Integer_Address);
     pragma Import (C, fl_text_buffer_add_predelete_callback,
                     "fl_text_buffer_add_predelete_callback");
     pragma Inline (fl_text_buffer_add_predelete_callback);
 
     procedure fl_text_buffer_call_modify_callbacks
-           (TB : in System.Address);
+           (TB : in Storage.Integer_Address);
     pragma Import (C, fl_text_buffer_call_modify_callbacks,
                     "fl_text_buffer_call_modify_callbacks");
     pragma Inline (fl_text_buffer_call_modify_callbacks);
 
     procedure fl_text_buffer_call_predelete_callbacks
-           (TB : in System.Address);
+           (TB : in Storage.Integer_Address);
     pragma Import (C, fl_text_buffer_call_predelete_callbacks,
                     "fl_text_buffer_call_predelete_callbacks");
     pragma Inline (fl_text_buffer_call_predelete_callbacks);
@@ -64,7 +62,7 @@ package body FLTK.Text_Buffers is
 
 
     function fl_text_buffer_loadfile
-           (TB : in System.Address;
+           (TB : in Storage.Integer_Address;
             N  : in Interfaces.C.char_array;
             B  : in Interfaces.C.int)
         return Interfaces.C.int;
@@ -72,7 +70,7 @@ package body FLTK.Text_Buffers is
     pragma Inline (fl_text_buffer_loadfile);
 
     function fl_text_buffer_appendfile
-           (TB : in System.Address;
+           (TB : in Storage.Integer_Address;
             N  : in Interfaces.C.char_array;
             B  : in Interfaces.C.int)
         return Interfaces.C.int;
@@ -80,7 +78,7 @@ package body FLTK.Text_Buffers is
     pragma Inline (fl_text_buffer_appendfile);
 
     function fl_text_buffer_insertfile
-           (TB   : in System.Address;
+           (TB   : in Storage.Integer_Address;
             N    : in Interfaces.C.char_array;
             P, B : in Interfaces.C.int)
         return Interfaces.C.int;
@@ -88,7 +86,7 @@ package body FLTK.Text_Buffers is
     pragma Inline (fl_text_buffer_insertfile);
 
     function fl_text_buffer_outputfile
-           (TB   : in System.Address;
+           (TB   : in Storage.Integer_Address;
             N    : in Interfaces.C.char_array;
             F, T : in Interfaces.C.int;
             B    : in Interfaces.C.int)
@@ -97,7 +95,7 @@ package body FLTK.Text_Buffers is
     pragma Inline (fl_text_buffer_outputfile);
 
     function fl_text_buffer_savefile
-           (TB : in System.Address;
+           (TB : in Storage.Integer_Address;
             N  : in Interfaces.C.char_array;
             B  : in Interfaces.C.int)
         return Interfaces.C.int;
@@ -108,73 +106,73 @@ package body FLTK.Text_Buffers is
 
 
     procedure fl_text_buffer_insert
-           (TB : in System.Address;
+           (TB : in Storage.Integer_Address;
             P  : in Interfaces.C.int;
             I  : in Interfaces.C.char_array);
     pragma Import (C, fl_text_buffer_insert, "fl_text_buffer_insert");
     pragma Inline (fl_text_buffer_insert);
 
     procedure fl_text_buffer_append
-           (TB : in System.Address;
+           (TB : in Storage.Integer_Address;
             I  : in Interfaces.C.char_array);
     pragma Import (C, fl_text_buffer_append, "fl_text_buffer_append");
     pragma Inline (fl_text_buffer_append);
 
     procedure fl_text_buffer_replace
-           (TB   : in System.Address;
+           (TB   : in Storage.Integer_Address;
             S, F : in Interfaces.C.int;
             T    : in Interfaces.C.char_array);
     pragma Import (C, fl_text_buffer_replace, "fl_text_buffer_replace");
     pragma Inline (fl_text_buffer_replace);
 
     procedure fl_text_buffer_remove
-           (TB   : in System.Address;
+           (TB   : in Storage.Integer_Address;
             S, F : in Interfaces.C.int);
     pragma Import (C, fl_text_buffer_remove, "fl_text_buffer_remove");
     pragma Inline (fl_text_buffer_remove);
 
     function fl_text_buffer_get_text
-           (TB : in System.Address)
+           (TB : in Storage.Integer_Address)
         return Interfaces.C.Strings.chars_ptr;
     pragma Import (C, fl_text_buffer_get_text, "fl_text_buffer_get_text");
     pragma Inline (fl_text_buffer_get_text);
 
     procedure fl_text_buffer_set_text
-           (TB : in System.Address;
+           (TB : in Storage.Integer_Address;
             T  : in Interfaces.C.char_array);
     pragma Import (C, fl_text_buffer_set_text, "fl_text_buffer_set_text");
     pragma Inline (fl_text_buffer_set_text);
 
     function fl_text_buffer_byte_at
-           (TB : in System.Address;
+           (TB : in Storage.Integer_Address;
             P  : in Interfaces.C.int)
         return Interfaces.C.char;
     pragma Import (C, fl_text_buffer_byte_at, "fl_text_buffer_byte_at");
     pragma Inline (fl_text_buffer_byte_at);
 
     function fl_text_buffer_char_at
-           (TB : in System.Address;
+           (TB : in Storage.Integer_Address;
             P  : in Interfaces.C.int)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_text_buffer_char_at, "fl_text_buffer_char_at");
     pragma Inline (fl_text_buffer_char_at);
 
     function fl_text_buffer_text_range
-           (TB   : in System.Address;
+           (TB   : in Storage.Integer_Address;
             S, F : in Interfaces.C.int)
         return Interfaces.C.Strings.chars_ptr;
     pragma Import (C, fl_text_buffer_text_range, "fl_text_buffer_text_range");
     pragma Inline (fl_text_buffer_text_range);
 
     function fl_text_buffer_next_char
-           (TB : in System.Address;
+           (TB : in Storage.Integer_Address;
             P  : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_text_buffer_next_char, "fl_text_buffer_next_char");
     pragma Inline (fl_text_buffer_next_char);
 
     function fl_text_buffer_prev_char
-           (TB : in System.Address;
+           (TB : in Storage.Integer_Address;
             P  : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_text_buffer_prev_char, "fl_text_buffer_prev_char");
@@ -184,7 +182,7 @@ package body FLTK.Text_Buffers is
 
 
     function fl_text_buffer_count_displayed_characters
-           (TB   : in System.Address;
+           (TB   : in Storage.Integer_Address;
             S, F : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_text_buffer_count_displayed_characters,
@@ -192,26 +190,26 @@ package body FLTK.Text_Buffers is
     pragma Inline (fl_text_buffer_count_displayed_characters);
 
     function fl_text_buffer_count_lines
-           (TB   : in System.Address;
+           (TB   : in Storage.Integer_Address;
             S, F : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_text_buffer_count_lines, "fl_text_buffer_count_lines");
     pragma Inline (fl_text_buffer_count_lines);
 
     function fl_text_buffer_length
-           (TB : in System.Address)
+           (TB : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_text_buffer_length, "fl_text_buffer_length");
     pragma Inline (fl_text_buffer_length);
 
     function fl_text_buffer_get_tab_distance
-           (TB : in System.Address)
+           (TB : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_text_buffer_get_tab_distance, "fl_text_buffer_get_tab_distance");
     pragma Inline (fl_text_buffer_get_tab_distance);
 
     procedure fl_text_buffer_set_tab_distance
-           (TB : in System.Address;
+           (TB : in Storage.Integer_Address;
             T  : in Interfaces.C.int);
     pragma Import (C, fl_text_buffer_set_tab_distance, "fl_text_buffer_set_tab_distance");
     pragma Inline (fl_text_buffer_set_tab_distance);
@@ -220,14 +218,14 @@ package body FLTK.Text_Buffers is
 
 
     function fl_text_buffer_selection_position
-           (TB   : in     System.Address;
+           (TB   : in     Storage.Integer_Address;
             S, E :    out Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_text_buffer_selection_position, "fl_text_buffer_selection_position");
     pragma Inline (fl_text_buffer_selection_position);
 
     function fl_text_buffer_secondary_selection_position
-           (TB   : in     System.Address;
+           (TB   : in     Storage.Integer_Address;
             S, E :    out Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_text_buffer_secondary_selection_position,
@@ -235,73 +233,73 @@ package body FLTK.Text_Buffers is
     pragma Inline (fl_text_buffer_secondary_selection_position);
 
     procedure fl_text_buffer_select
-           (TB   : in System.Address;
+           (TB   : in Storage.Integer_Address;
             S, E : in Interfaces.C.int);
     pragma Import (C, fl_text_buffer_select, "fl_text_buffer_select");
     pragma Inline (fl_text_buffer_select);
 
     procedure fl_text_buffer_secondary_select
-           (TB   : in System.Address;
+           (TB   : in Storage.Integer_Address;
             S, E : in Interfaces.C.int);
     pragma Import (C, fl_text_buffer_secondary_select, "fl_text_buffer_secondary_select");
     pragma Inline (fl_text_buffer_secondary_select);
 
     function fl_text_buffer_selected
-           (TB : in System.Address)
+           (TB : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_text_buffer_selected, "fl_text_buffer_selected");
     pragma Inline (fl_text_buffer_selected);
 
     function fl_text_buffer_secondary_selected
-           (TB : in System.Address)
+           (TB : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_text_buffer_secondary_selected, "fl_text_buffer_secondary_selected");
     pragma Inline (fl_text_buffer_secondary_selected);
 
     function fl_text_buffer_selection_text
-           (TB : in System.Address)
+           (TB : in Storage.Integer_Address)
         return Interfaces.C.Strings.chars_ptr;
     pragma Import (C, fl_text_buffer_selection_text, "fl_text_buffer_selection_text");
     pragma Inline (fl_text_buffer_selection_text);
 
     function fl_text_buffer_secondary_selection_text
-           (TB : in System.Address)
+           (TB : in Storage.Integer_Address)
         return Interfaces.C.Strings.chars_ptr;
     pragma Import (C, fl_text_buffer_secondary_selection_text,
         "fl_text_buffer_secondary_selection_text");
     pragma Inline (fl_text_buffer_secondary_selection_text);
 
     procedure fl_text_buffer_replace_selection
-           (TB : in System.Address;
+           (TB : in Storage.Integer_Address;
             T  : in Interfaces.C.char_array);
     pragma Import (C, fl_text_buffer_replace_selection, "fl_text_buffer_replace_selection");
     pragma Inline (fl_text_buffer_replace_selection);
 
     procedure fl_text_buffer_replace_secondary_selection
-           (TB : in System.Address;
+           (TB : in Storage.Integer_Address;
             T  : in Interfaces.C.char_array);
     pragma Import (C, fl_text_buffer_replace_secondary_selection,
         "fl_text_buffer_replace_secondary_selection");
     pragma Inline (fl_text_buffer_replace_secondary_selection);
 
     procedure fl_text_buffer_remove_selection
-           (TB : in System.Address);
+           (TB : in Storage.Integer_Address);
     pragma Import (C, fl_text_buffer_remove_selection, "fl_text_buffer_remove_selection");
     pragma Inline (fl_text_buffer_remove_selection);
 
     procedure fl_text_buffer_remove_secondary_selection
-           (TB : in System.Address);
+           (TB : in Storage.Integer_Address);
     pragma Import (C, fl_text_buffer_remove_secondary_selection,
         "fl_text_buffer_remove_secondary_selection");
     pragma Inline (fl_text_buffer_remove_secondary_selection);
 
     procedure fl_text_buffer_unselect
-           (TB : in System.Address);
+           (TB : in Storage.Integer_Address);
     pragma Import (C, fl_text_buffer_unselect, "fl_text_buffer_unselect");
     pragma Inline (fl_text_buffer_unselect);
 
     procedure fl_text_buffer_secondary_unselect
-           (TB : in System.Address);
+           (TB : in Storage.Integer_Address);
     pragma Import (C, fl_text_buffer_secondary_unselect, "fl_text_buffer_secondary_unselect");
     pragma Inline (fl_text_buffer_secondary_unselect);
 
@@ -309,19 +307,19 @@ package body FLTK.Text_Buffers is
 
 
     procedure fl_text_buffer_highlight
-           (TB   : in System.Address;
+           (TB   : in Storage.Integer_Address;
             F, T : in Interfaces.C.int);
     pragma Import (C, fl_text_buffer_highlight, "fl_text_buffer_highlight");
     pragma Inline (fl_text_buffer_highlight);
 
     function fl_text_buffer_highlight_text
-           (TB : in System.Address)
+           (TB : in Storage.Integer_Address)
         return Interfaces.C.Strings.chars_ptr;
     pragma Import (C, fl_text_buffer_highlight_text, "fl_text_buffer_highlight_text");
     pragma Inline (fl_text_buffer_highlight_text);
 
     procedure fl_text_buffer_unhighlight
-           (TB : in System.Address);
+           (TB : in Storage.Integer_Address);
     pragma Import (C, fl_text_buffer_unhighlight, "fl_text_buffer_unhighlight");
     pragma Inline (fl_text_buffer_unhighlight);
 
@@ -329,7 +327,7 @@ package body FLTK.Text_Buffers is
 
 
     function fl_text_buffer_findchar_forward
-           (TB : in     System.Address;
+           (TB : in     Storage.Integer_Address;
             SP : in     Interfaces.C.int;
             IT : in     Interfaces.C.unsigned;
             FP :    out Interfaces.C.int)
@@ -338,7 +336,7 @@ package body FLTK.Text_Buffers is
     pragma Inline (fl_text_buffer_findchar_forward);
 
     function fl_text_buffer_findchar_backward
-           (TB : in     System.Address;
+           (TB : in     Storage.Integer_Address;
             SP : in     Interfaces.C.int;
             IT : in     Interfaces.C.unsigned;
             FP :    out Interfaces.C.int)
@@ -347,7 +345,7 @@ package body FLTK.Text_Buffers is
     pragma Inline (fl_text_buffer_findchar_backward);
 
     function fl_text_buffer_search_forward
-           (TB : in     System.Address;
+           (TB : in     Storage.Integer_Address;
             SP : in     Interfaces.C.int;
             IT : in     Interfaces.C.char_array;
             FP :    out Interfaces.C.int;
@@ -357,7 +355,7 @@ package body FLTK.Text_Buffers is
     pragma Inline (fl_text_buffer_search_forward);
 
     function fl_text_buffer_search_backward
-           (TB : in     System.Address;
+           (TB : in     Storage.Integer_Address;
             SP : in     Interfaces.C.int;
             IT : in     Interfaces.C.char_array;
             FP :    out Interfaces.C.int;
@@ -370,56 +368,56 @@ package body FLTK.Text_Buffers is
 
 
     function fl_text_buffer_word_start
-           (TB : in System.Address;
+           (TB : in Storage.Integer_Address;
             P  : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_text_buffer_word_start, "fl_text_buffer_word_start");
     pragma Inline (fl_text_buffer_word_start);
 
     function fl_text_buffer_word_end
-           (TB : in System.Address;
+           (TB : in Storage.Integer_Address;
             P  : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_text_buffer_word_end, "fl_text_buffer_word_end");
     pragma Inline (fl_text_buffer_word_end);
 
     function fl_text_buffer_line_start
-           (TB : in System.Address;
+           (TB : in Storage.Integer_Address;
             P  : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_text_buffer_line_start, "fl_text_buffer_line_start");
     pragma Inline (fl_text_buffer_line_start);
 
     function fl_text_buffer_line_end
-           (TB : in System.Address;
+           (TB : in Storage.Integer_Address;
             P  : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_text_buffer_line_end, "fl_text_buffer_line_end");
     pragma Inline (fl_text_buffer_line_end);
 
     function fl_text_buffer_line_text
-           (TB : in System.Address;
+           (TB : in Storage.Integer_Address;
             P  : in Interfaces.C.int)
         return Interfaces.C.Strings.chars_ptr;
     pragma Import (C, fl_text_buffer_line_text, "fl_text_buffer_line_text");
     pragma Inline (fl_text_buffer_line_text);
 
     function fl_text_buffer_skip_lines
-           (TB   : in System.Address;
+           (TB   : in Storage.Integer_Address;
             S, L : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_text_buffer_skip_lines, "fl_text_buffer_skip_lines");
     pragma Inline (fl_text_buffer_skip_lines);
 
     function fl_text_buffer_rewind_lines
-           (TB   : in System.Address;
+           (TB   : in Storage.Integer_Address;
             S, L : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_text_buffer_rewind_lines, "fl_text_buffer_rewind_lines");
     pragma Inline (fl_text_buffer_rewind_lines);
 
     function fl_text_buffer_skip_displayed_characters
-           (TB   : in System.Address;
+           (TB   : in Storage.Integer_Address;
             S, N : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_text_buffer_skip_displayed_characters,
@@ -430,19 +428,19 @@ package body FLTK.Text_Buffers is
 
 
     procedure fl_text_buffer_canundo
-           (TB : in System.Address;
+           (TB : in Storage.Integer_Address;
             F  : in Interfaces.C.char);
     pragma Import (C, fl_text_buffer_canundo, "fl_text_buffer_canundo");
     pragma Inline (fl_text_buffer_canundo);
 
     procedure fl_text_buffer_copy
-           (TB, TB2 : in System.Address;
+           (TB, TB2 : in Storage.Integer_Address;
             S, F, I : in Interfaces.C.int);
     pragma Import (C, fl_text_buffer_copy, "fl_text_buffer_copy");
     pragma Inline (fl_text_buffer_copy);
 
     function fl_text_buffer_utf8_align
-           (TB : in System.Address;
+           (TB : in Storage.Integer_Address;
             P  : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_text_buffer_utf8_align, "fl_text_buffer_utf8_align");
@@ -455,7 +453,7 @@ package body FLTK.Text_Buffers is
            (Pos                         : in Interfaces.C.int;
             Inserted, Deleted, Restyled : in Interfaces.C.int;
             Text                        : in Interfaces.C.Strings.chars_ptr;
-            UD                          : in System.Address)
+            UD                          : in Storage.Integer_Address)
     is
         Action : Modification;
         Place : Position := Position (Pos);
@@ -463,7 +461,7 @@ package body FLTK.Text_Buffers is
         Deleted_Text : Unbounded_String := To_Unbounded_String ("");
 
         Ada_Text_Buffer : access Text_Buffer :=
-            Text_Buffer_Convert.To_Pointer (UD);
+            Text_Buffer_Convert.To_Pointer (Storage.To_Address (UD));
     begin
         if Ada_Text_Buffer.CB_Active then
             if Inserted > 0 then
@@ -492,13 +490,13 @@ package body FLTK.Text_Buffers is
 
     procedure Predelete_Callback_Hook
            (Pos, Deleted : in Interfaces.C.int;
-            UD           : in System.Address)
+            UD           : in Storage.Integer_Address)
     is
         Place : Position := Position (Pos);
         Length : Natural := Natural (Deleted);
 
         Ada_Text_Buffer : access Text_Buffer :=
-            Text_Buffer_Convert.To_Pointer (UD);
+            Text_Buffer_Convert.To_Pointer (Storage.To_Address (UD));
     begin
         if Ada_Text_Buffer.CB_Active then
             for CB of Ada_Text_Buffer.Predelete_CBs loop
@@ -513,11 +511,11 @@ package body FLTK.Text_Buffers is
     procedure Finalize
            (This : in out Text_Buffer) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Text_Buffer'Class
         then
             free_fl_text_buffer (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;
 
@@ -542,12 +540,12 @@ package body FLTK.Text_Buffers is
 
                 fl_text_buffer_add_modify_callback
                    (This.Void_Ptr,
-                    Modify_Callback_Hook'Address,
-                    This'Address);
+                    Storage.To_Integer (Modify_Callback_Hook'Address),
+                    Storage.To_Integer (This'Address));
                 fl_text_buffer_add_predelete_callback
                    (This.Void_Ptr,
-                    Predelete_Callback_Hook'Address,
-                    This'Address);
+                    Storage.To_Integer (Predelete_Callback_Hook'Address),
+                    Storage.To_Integer (This'Address));
             end return;
         end Create;
 

@@ -11,8 +11,8 @@ limited with
 private with
 
     System.Address_To_Access_Conversions,
-    Ada.Unchecked_Conversion,
-    Interfaces.C;
+    Interfaces.C,
+    FLTK.Widget_Callback_Conversions;
 
 
 package FLTK.Widgets is
@@ -373,15 +373,15 @@ private
 
     --  the user data portion should always be a reference back to the Ada binding
     procedure Callback_Hook
-           (W, U : in System.Address);
+           (W, U : in Storage.Integer_Address);
     pragma Convention (C, Callback_Hook);
 
     procedure Draw_Hook
-           (U : in System.Address);
+           (U : in Storage.Integer_Address);
     pragma Convention (C, Draw_Hook);
 
     function Handle_Hook
-           (U : in System.Address;
+           (U : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Convention (C, Handle_Hook);
@@ -390,22 +390,19 @@ private
 
 
     package Widget_Convert is new System.Address_To_Access_Conversions (Widget'Class);
-    package Callback_Convert is
-        function To_Pointer is new Ada.Unchecked_Conversion (System.Address, Widget_Callback);
-        function To_Address is new Ada.Unchecked_Conversion (Widget_Callback, System.Address);
-    end Callback_Convert;
+    package Callback_Convert renames FLTK.Widget_Callback_Conversions;
 
 
 
 
     function fl_widget_get_user_data
-           (W : in System.Address)
-        return System.Address;
+           (W : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_widget_get_user_data, "fl_widget_get_user_data");
     pragma Inline (fl_widget_get_user_data);
 
     procedure fl_widget_set_user_data
-           (W, D : in System.Address);
+           (W, D : in Storage.Integer_Address);
     pragma Import (C, fl_widget_set_user_data, "fl_widget_set_user_data");
     pragma Inline (fl_widget_set_user_data);
 
@@ -413,7 +410,7 @@ private
 
 
     procedure fl_widget_set_label
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             T : in Interfaces.C.char_array);
     pragma Import (C, fl_widget_set_label, "fl_widget_set_label");
     pragma Inline (fl_widget_set_label);

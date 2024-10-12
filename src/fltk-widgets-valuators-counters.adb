@@ -2,24 +2,19 @@
 
 with
 
-    Interfaces.C.Strings,
-    System;
-
-use type
-
-    System.Address;
+    Interfaces.C.Strings;
 
 
 package body FLTK.Widgets.Valuators.Counters is
 
 
     procedure counter_set_draw_hook
-           (W, D : in System.Address);
+           (W, D : in Storage.Integer_Address);
     pragma Import (C, counter_set_draw_hook, "counter_set_draw_hook");
     pragma Inline (counter_set_draw_hook);
 
     procedure counter_set_handle_hook
-           (W, H : in System.Address);
+           (W, H : in Storage.Integer_Address);
     pragma Import (C, counter_set_handle_hook, "counter_set_handle_hook");
     pragma Inline (counter_set_handle_hook);
 
@@ -29,12 +24,12 @@ package body FLTK.Widgets.Valuators.Counters is
     function new_fl_counter
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_counter, "new_fl_counter");
     pragma Inline (new_fl_counter);
 
     procedure free_fl_counter
-           (A : in System.Address);
+           (A : in Storage.Integer_Address);
     pragma Import (C, free_fl_counter, "free_fl_counter");
     pragma Inline (free_fl_counter);
 
@@ -42,19 +37,19 @@ package body FLTK.Widgets.Valuators.Counters is
 
 
     function fl_counter_get_step
-           (C : in System.Address)
+           (C : in Storage.Integer_Address)
         return Interfaces.C.double;
     pragma Import (C, fl_counter_get_step, "fl_counter_get_step");
     pragma Inline (fl_counter_get_step);
 
     procedure fl_counter_set_step
-           (C : in System.Address;
+           (C : in Storage.Integer_Address;
             T : in Interfaces.C.double);
     pragma Import (C, fl_counter_set_step, "fl_counter_set_step");
     pragma Inline (fl_counter_set_step);
 
     procedure fl_counter_set_lstep
-           (C : in System.Address;
+           (C : in Storage.Integer_Address;
             T : in Interfaces.C.double);
     pragma Import (C, fl_counter_set_lstep, "fl_counter_set_lstep");
     pragma Inline (fl_counter_set_lstep);
@@ -63,37 +58,37 @@ package body FLTK.Widgets.Valuators.Counters is
 
 
     function fl_counter_get_textcolor
-           (C : in System.Address)
+           (C : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_counter_get_textcolor, "fl_counter_get_textcolor");
     pragma Inline (fl_counter_get_textcolor);
 
     procedure fl_counter_set_textcolor
-           (C : in System.Address;
+           (C : in Storage.Integer_Address;
             T : in Interfaces.C.unsigned);
     pragma Import (C, fl_counter_set_textcolor, "fl_counter_set_textcolor");
     pragma Inline (fl_counter_set_textcolor);
 
     function fl_counter_get_textfont
-           (C : in System.Address)
+           (C : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_counter_get_textfont, "fl_counter_get_textfont");
     pragma Inline (fl_counter_get_textfont);
 
     procedure fl_counter_set_textfont
-           (C : in System.Address;
+           (C : in Storage.Integer_Address;
             T : in Interfaces.C.int);
     pragma Import (C, fl_counter_set_textfont, "fl_counter_set_textfont");
     pragma Inline (fl_counter_set_textfont);
 
     function fl_counter_get_textsize
-           (C : in System.Address)
+           (C : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_counter_get_textsize, "fl_counter_get_textsize");
     pragma Inline (fl_counter_get_textsize);
 
     procedure fl_counter_set_textsize
-           (C : in System.Address;
+           (C : in Storage.Integer_Address;
             T : in Interfaces.C.int);
     pragma Import (C, fl_counter_set_textsize, "fl_counter_set_textsize");
     pragma Inline (fl_counter_set_textsize);
@@ -102,12 +97,12 @@ package body FLTK.Widgets.Valuators.Counters is
 
 
     procedure fl_counter_draw
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_counter_draw, "fl_counter_draw");
     pragma Inline (fl_counter_draw);
 
     function fl_counter_handle
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_counter_handle, "fl_counter_handle");
@@ -119,11 +114,11 @@ package body FLTK.Widgets.Valuators.Counters is
     procedure Finalize
            (This : in out Counter) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Counter'Class
         then
             free_fl_counter (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Valuator (This));
     end Finalize;
@@ -147,9 +142,9 @@ package body FLTK.Widgets.Valuators.Counters is
                         Interfaces.C.To_C (Text));
                 fl_widget_set_user_data
                        (This.Void_Ptr,
-                        Widget_Convert.To_Address (This'Unchecked_Access));
-                counter_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
-                counter_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                counter_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                counter_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;

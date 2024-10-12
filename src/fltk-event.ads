@@ -196,8 +196,8 @@ private
 
 
     function fl_widget_get_user_data
-           (W : in System.Address)
-        return System.Address;
+           (W : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_widget_get_user_data, "fl_widget_get_user_data");
     pragma Inline (fl_widget_get_user_data);
 

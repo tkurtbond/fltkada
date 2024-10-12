@@ -2,13 +2,11 @@
 
 with
 
-    System,
-    Interfaces.C.Strings,
-    Ada.Unchecked_Conversion;
+    FLTK.Widget_Callback_Conversions,
+    Interfaces.C.Strings;
 
 use type
 
-    System.Address,
     Interfaces.C.int,
     Interfaces.C.Strings.chars_ptr;
 
@@ -16,16 +14,21 @@ use type
 package body FLTK.Menu_Items is
 
 
+    package Callback_Convert renames FLTK.Widget_Callback_Conversions;
+
+
+
+
     function new_fl_menu_item
            (T    : in Interfaces.C.char_array;
-            C    : in System.Address;
+            C    : in Storage.Integer_Address;
             S, F : in Interfaces.C.unsigned_long)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_menu_item, "new_fl_menu_item");
     pragma Inline (new_fl_menu_item);
 
     procedure free_fl_menu_item
-           (MI : in System.Address);
+           (MI : in Storage.Integer_Address);
     pragma Import (C, free_fl_menu_item, "free_fl_menu_item");
     pragma Inline (free_fl_menu_item);
 
@@ -33,18 +36,18 @@ package body FLTK.Menu_Items is
 
 
     function fl_menu_item_get_user_data
-           (MI : in System.Address)
-        return System.Address;
+           (MI : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_menu_item_get_user_data, "fl_menu_item_get_user_data");
     pragma Inline (fl_menu_item_get_user_data);
 
     procedure fl_menu_item_set_user_data
-           (MI, C : in System.Address);
+           (MI, C : in Storage.Integer_Address);
     pragma Import (C, fl_menu_item_set_user_data, "fl_menu_item_set_user_data");
     pragma Inline (fl_menu_item_set_user_data);
 
     procedure fl_menu_item_do_callback
-           (MI, W : in System.Address);
+           (MI, W : in Storage.Integer_Address);
     pragma Import (C, fl_menu_item_do_callback, "fl_menu_item_do_callback");
     pragma Inline (fl_menu_item_do_callback);
 
@@ -52,35 +55,35 @@ package body FLTK.Menu_Items is
 
 
     function fl_menu_item_checkbox
-           (MI : in System.Address)
+           (MI : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_menu_item_checkbox, "fl_menu_item_checkbox");
     pragma Inline (fl_menu_item_checkbox);
 
     function fl_menu_item_radio
-           (MI : in System.Address)
+           (MI : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_menu_item_radio, "fl_menu_item_radio");
     pragma Inline (fl_menu_item_radio);
 
     function fl_menu_item_value
-           (MI : in System.Address)
+           (MI : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_menu_item_value, "fl_menu_item_value");
     pragma Inline (fl_menu_item_value);
 
     procedure fl_menu_item_set
-           (MI : in System.Address);
+           (MI : in Storage.Integer_Address);
     pragma Import (C, fl_menu_item_set, "fl_menu_item_set");
     pragma Inline (fl_menu_item_set);
 
     procedure fl_menu_item_clear
-           (MI : in System.Address);
+           (MI : in Storage.Integer_Address);
     pragma Import (C, fl_menu_item_clear, "fl_menu_item_clear");
     pragma Inline (fl_menu_item_clear);
 
     procedure fl_menu_item_setonly
-           (MI : in System.Address);
+           (MI : in Storage.Integer_Address);
     pragma Import (C, fl_menu_item_setonly, "fl_menu_item_setonly");
     pragma Inline (fl_menu_item_setonly);
 
@@ -88,61 +91,61 @@ package body FLTK.Menu_Items is
 
 
     function fl_menu_item_get_label
-           (MI : in System.Address)
+           (MI : in Storage.Integer_Address)
         return Interfaces.C.Strings.chars_ptr;
     pragma Import (C, fl_menu_item_get_label, "fl_menu_item_get_label");
     pragma Inline (fl_menu_item_get_label);
 
     procedure fl_menu_item_set_label
-           (MI : in System.Address;
+           (MI : in Storage.Integer_Address;
             T  : in Interfaces.C.char_array);
     pragma Import (C, fl_menu_item_set_label, "fl_menu_item_set_label");
     pragma Inline (fl_menu_item_set_label);
 
     function fl_menu_item_get_labelcolor
-           (MI : in System.Address)
+           (MI : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_menu_item_get_labelcolor, "fl_menu_item_get_labelcolor");
     pragma Inline (fl_menu_item_get_labelcolor);
 
     procedure fl_menu_item_set_labelcolor
-           (MI : in System.Address;
+           (MI : in Storage.Integer_Address;
             C  : in Interfaces.C.unsigned);
     pragma Import (C, fl_menu_item_set_labelcolor, "fl_menu_item_set_labelcolor");
     pragma Inline (fl_menu_item_set_labelcolor);
 
     function fl_menu_item_get_labelfont
-           (MI : in System.Address)
+           (MI : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_menu_item_get_labelfont, "fl_menu_item_get_labelfont");
     pragma Inline (fl_menu_item_get_labelfont);
 
     procedure fl_menu_item_set_labelfont
-           (MI : in System.Address;
+           (MI : in Storage.Integer_Address;
             F  : in Interfaces.C.int);
     pragma Import (C, fl_menu_item_set_labelfont, "fl_menu_item_set_labelfont");
     pragma Inline (fl_menu_item_set_labelfont);
 
     function fl_menu_item_get_labelsize
-           (MI : in System.Address)
+           (MI : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_menu_item_get_labelsize, "fl_menu_item_get_labelsize");
     pragma Inline (fl_menu_item_get_labelsize);
 
     procedure fl_menu_item_set_labelsize
-           (MI : in System.Address;
+           (MI : in Storage.Integer_Address;
             S  : in Interfaces.C.int);
     pragma Import (C, fl_menu_item_set_labelsize, "fl_menu_item_set_labelsize");
     pragma Inline (fl_menu_item_set_labelsize);
 
     function fl_menu_item_get_labeltype
-           (MI : in System.Address)
+           (MI : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_menu_item_get_labeltype, "fl_menu_item_get_labeltype");
     pragma Inline (fl_menu_item_get_labeltype);
 
     procedure fl_menu_item_set_labeltype
-           (MI : in System.Address;
+           (MI : in Storage.Integer_Address;
             T  : in Interfaces.C.int);
     pragma Import (C, fl_menu_item_set_labeltype, "fl_menu_item_set_labeltype");
     pragma Inline (fl_menu_item_set_labeltype);
@@ -151,25 +154,25 @@ package body FLTK.Menu_Items is
 
 
     function fl_menu_item_get_shortcut
-           (MI : in System.Address)
+           (MI : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_menu_item_get_shortcut, "fl_menu_item_get_shortcut");
     pragma Inline (fl_menu_item_get_shortcut);
 
     procedure fl_menu_item_set_shortcut
-           (MI : in System.Address;
+           (MI : in Storage.Integer_Address;
             S  : in Interfaces.C.int);
     pragma Import (C, fl_menu_item_set_shortcut, "fl_menu_item_set_shortcut");
     pragma Inline (fl_menu_item_set_shortcut);
 
     function fl_menu_item_get_flags
-           (MI : in System.Address)
+           (MI : in Storage.Integer_Address)
         return Interfaces.C.unsigned_long;
     pragma Import (C, fl_menu_item_get_flags, "fl_menu_item_get_flags");
     pragma Inline (fl_menu_item_get_flags);
 
     procedure fl_menu_item_set_flags
-           (MI : in System.Address;
+           (MI : in Storage.Integer_Address;
             F  : in Interfaces.C.unsigned_long);
     pragma Import (C, fl_menu_item_set_flags, "fl_menu_item_set_flags");
     pragma Inline (fl_menu_item_set_flags);
@@ -178,39 +181,39 @@ package body FLTK.Menu_Items is
 
 
     procedure fl_menu_item_activate
-           (MI : in System.Address);
+           (MI : in Storage.Integer_Address);
     pragma Import (C, fl_menu_item_activate, "fl_menu_item_activate");
     pragma Inline (fl_menu_item_activate);
 
     procedure fl_menu_item_deactivate
-           (MI : in System.Address);
+           (MI : in Storage.Integer_Address);
     pragma Import (C, fl_menu_item_deactivate, "fl_menu_item_deactivate");
     pragma Inline (fl_menu_item_deactivate);
 
     procedure fl_menu_item_show
-           (MI : in System.Address);
+           (MI : in Storage.Integer_Address);
     pragma Import (C, fl_menu_item_show, "fl_menu_item_show");
     pragma Inline (fl_menu_item_show);
 
     procedure fl_menu_item_hide
-           (MI : in System.Address);
+           (MI : in Storage.Integer_Address);
     pragma Import (C, fl_menu_item_hide, "fl_menu_item_hide");
     pragma Inline (fl_menu_item_hide);
 
     function fl_menu_item_active
-           (MI : in System.Address)
+           (MI : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_menu_item_active, "fl_menu_item_active");
     pragma Inline (fl_menu_item_active);
 
     function fl_menu_item_visible
-           (MI : in System.Address)
+           (MI : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_menu_item_visible, "fl_menu_item_visible");
     pragma Inline (fl_menu_item_visible);
 
     function fl_menu_item_activevisible
-           (MI : in System.Address)
+           (MI : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_menu_item_activevisible, "fl_menu_item_activevisible");
     pragma Inline (fl_menu_item_activevisible);
@@ -221,25 +224,15 @@ package body FLTK.Menu_Items is
     procedure Finalize
            (This : in out Menu_Item) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Menu_Item'Class
         then
             if This.Needs_Dealloc then
                 free_fl_menu_item (This.Void_Ptr);
             end if;
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;
-
-
-
-
-    package Callback_Convert is
-        function To_Pointer is new Ada.Unchecked_Conversion
-            (System.Address, FLTK.Widgets.Widget_Callback);
-        function To_Address is new Ada.Unchecked_Conversion
-            (FLTK.Widgets.Widget_Callback, System.Address);
-    end Callback_Convert;
 
 
 
@@ -273,8 +266,7 @@ package body FLTK.Menu_Items is
            (Item : in Menu_Item)
         return FLTK.Widgets.Widget_Callback is
     begin
-        return Callback_Convert.To_Pointer
-            (fl_menu_item_get_user_data (Item.Void_Ptr));
+        return Callback_Convert.To_Access (fl_menu_item_get_user_data (Item.Void_Ptr));
     end Get_Callback;
 
 

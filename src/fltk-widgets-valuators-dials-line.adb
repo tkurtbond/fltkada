@@ -2,24 +2,19 @@
 
 with
 
-    Interfaces.C.Strings,
-    System;
-
-use type
-
-    System.Address;
+    Interfaces.C.Strings;
 
 
 package body FLTK.Widgets.Valuators.Dials.Line is
 
 
     procedure line_dial_set_draw_hook
-           (W, D : in System.Address);
+           (W, D : in Storage.Integer_Address);
     pragma Import (C, line_dial_set_draw_hook, "line_dial_set_draw_hook");
     pragma Inline (line_dial_set_draw_hook);
 
     procedure line_dial_set_handle_hook
-           (W, H : in System.Address);
+           (W, H : in Storage.Integer_Address);
     pragma Import (C, line_dial_set_handle_hook, "line_dial_set_handle_hook");
     pragma Inline (line_dial_set_handle_hook);
 
@@ -29,12 +24,12 @@ package body FLTK.Widgets.Valuators.Dials.Line is
     function new_fl_line_dial
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_line_dial, "new_fl_line_dial");
     pragma Inline (new_fl_line_dial);
 
     procedure free_fl_line_dial
-           (D : in System.Address);
+           (D : in Storage.Integer_Address);
     pragma Import (C, free_fl_line_dial, "free_fl_line_dial");
     pragma Inline (free_fl_line_dial);
 
@@ -42,12 +37,12 @@ package body FLTK.Widgets.Valuators.Dials.Line is
 
 
     procedure fl_line_dial_draw
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_line_dial_draw, "fl_line_dial_draw");
     pragma Inline (fl_line_dial_draw);
 
     function fl_line_dial_handle
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_line_dial_handle, "fl_line_dial_handle");
@@ -59,11 +54,11 @@ package body FLTK.Widgets.Valuators.Dials.Line is
     procedure Finalize
            (This : in out Line_Dial) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Line_Dial'Class
         then
             free_fl_line_dial (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Dial (This));
     end Finalize;
@@ -87,9 +82,9 @@ package body FLTK.Widgets.Valuators.Dials.Line is
                         Interfaces.C.To_C (Text));
                 fl_widget_set_user_data
                        (This.Void_Ptr,
-                        Widget_Convert.To_Address (This'Unchecked_Access));
-                line_dial_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
-                line_dial_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                line_dial_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                line_dial_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;

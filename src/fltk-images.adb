@@ -2,13 +2,11 @@
 
 with
 
-    Interfaces.C.Strings,
-    System;
+    Interfaces.C.Strings;
 
 use type
 
-    Interfaces.C.int,
-    System.Address;
+    Interfaces.C.int;
 
 
 package body FLTK.Images is
@@ -16,12 +14,12 @@ package body FLTK.Images is
 
     function new_fl_image
            (W, H, D : in Interfaces.C.int)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_image, "new_fl_image");
     pragma Inline (new_fl_image);
 
     procedure free_fl_image
-           (I : in System.Address);
+           (I : in Storage.Integer_Address);
     pragma Import (C, free_fl_image, "free_fl_image");
     pragma Inline (free_fl_image);
 
@@ -39,15 +37,15 @@ package body FLTK.Images is
     pragma Inline (fl_image_set_rgb_scaling);
 
     function fl_image_copy
-           (I    : in System.Address;
+           (I    : in Storage.Integer_Address;
             W, H : in Interfaces.C.int)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, fl_image_copy, "fl_image_copy");
     pragma Inline (fl_image_copy);
 
     function fl_image_copy2
-           (I : in System.Address)
-        return System.Address;
+           (I : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_image_copy2, "fl_image_copy2");
     pragma Inline (fl_image_copy2);
 
@@ -55,14 +53,14 @@ package body FLTK.Images is
 
 
     procedure fl_image_color_average
-           (I : in System.Address;
+           (I : in Storage.Integer_Address;
             C : in Interfaces.C.int;
             B : in Interfaces.C.C_float);
     pragma Import (C, fl_image_color_average, "fl_image_color_average");
     pragma Inline (fl_image_color_average);
 
     procedure fl_image_desaturate
-           (I : in System.Address);
+           (I : in Storage.Integer_Address);
     pragma Import (C, fl_image_desaturate, "fl_image_desaturate");
     pragma Inline (fl_image_desaturate);
 
@@ -70,12 +68,12 @@ package body FLTK.Images is
 
 
     procedure fl_image_inactive
-           (I : in System.Address);
+           (I : in Storage.Integer_Address);
     pragma Import (C, fl_image_inactive, "fl_image_inactive");
     pragma Inline (fl_image_inactive);
 
     procedure fl_image_uncache
-           (I : in System.Address);
+           (I : in Storage.Integer_Address);
     pragma Import (C, fl_image_uncache, "fl_image_uncache");
     pragma Inline (fl_image_uncache);
 
@@ -83,31 +81,31 @@ package body FLTK.Images is
 
 
     function fl_image_w
-           (I : in System.Address)
+           (I : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_image_w, "fl_image_w");
     pragma Inline (fl_image_w);
 
     function fl_image_h
-           (I : in System.Address)
+           (I : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_image_h, "fl_image_h");
     pragma Inline (fl_image_h);
 
     function fl_image_d
-           (I : in System.Address)
+           (I : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_image_d, "fl_image_d");
     pragma Inline (fl_image_d);
 
     function fl_image_ld
-           (I : in System.Address)
+           (I : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_image_ld, "fl_image_ld");
     pragma Inline (fl_image_ld);
 
     function fl_image_count
-           (I : in System.Address)
+           (I : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_image_count, "fl_image_count");
     pragma Inline (fl_image_count);
@@ -116,8 +114,8 @@ package body FLTK.Images is
 
 
     function fl_image_data
-           (I : in System.Address)
-        return System.Address;
+           (I : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_image_data, "fl_image_data");
     pragma Inline (fl_image_data);
 
@@ -139,19 +137,19 @@ package body FLTK.Images is
 
 
     procedure fl_image_draw
-           (I    : in System.Address;
+           (I    : in Storage.Integer_Address;
             X, Y : in Interfaces.C.int);
     pragma Import (C, fl_image_draw, "fl_image_draw");
     pragma Inline (fl_image_draw);
 
     procedure fl_image_draw2
-           (I                  : in System.Address;
+           (I                  : in Storage.Integer_Address;
             X, Y, W, H, CX, CY : in Interfaces.C.int);
     pragma Import (C, fl_image_draw2, "fl_image_draw2");
     pragma Inline (fl_image_draw2);
 
     procedure fl_image_draw_empty
-           (I    : in System.Address;
+           (I    : in Storage.Integer_Address;
             X, Y : in Interfaces.C.int);
     pragma Import (C, fl_image_draw_empty, "fl_image_draw_empty");
     pragma Inline (fl_image_draw_empty);
@@ -162,13 +160,13 @@ package body FLTK.Images is
     overriding procedure Finalize
            (This : in out Image) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Image'Class
         then
             if This.Needs_Dealloc then
                 free_fl_image (This.Void_Ptr);
             end if;
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;
 
@@ -369,7 +367,7 @@ package body FLTK.Images is
         return Color_Component
     is
         Pointers : array (1 .. This.Get_Data_Count) of Interfaces.C.Strings.chars_ptr;
-        for Pointers'Address use fl_image_data (This.Void_Ptr);
+        for Pointers'Address use Storage.To_Address (fl_image_data (This.Void_Ptr));
         pragma Import (Ada, Pointers);
     begin
         return Color_Component
@@ -384,7 +382,7 @@ package body FLTK.Images is
             Value    : in     Color_Component)
     is
         Pointers : array (1 .. This.Get_Data_Count) of Interfaces.C.Strings.chars_ptr;
-        for Pointers'Address use fl_image_data (This.Void_Ptr);
+        for Pointers'Address use Storage.To_Address (fl_image_data (This.Void_Ptr));
         pragma Import (Ada, Pointers);
     begin
         fl_image_set_pixel
@@ -402,7 +400,7 @@ package body FLTK.Images is
         return Color_Component_Array
     is
         Pointers : array (1 .. This.Get_Data_Count) of Interfaces.C.Strings.chars_ptr;
-        for Pointers'Address use fl_image_data (This.Void_Ptr);
+        for Pointers'Address use Storage.To_Address (fl_image_data (This.Void_Ptr));
         pragma Import (Ada, Pointers);
         Result : Color_Component_Array := (1 .. Count => 0);
     begin
@@ -431,7 +429,7 @@ package body FLTK.Images is
             Values   : in     Color_Component_Array)
     is
         Pointers : array (1 .. This.Get_Data_Count) of Interfaces.C.Strings.chars_ptr;
-        for Pointers'Address use fl_image_data (This.Void_Ptr);
+        for Pointers'Address use Storage.To_Address (fl_image_data (This.Void_Ptr));
         pragma Import (Ada, Pointers);
     begin
         for Counter in Integer range 0 .. Values'Length - 1 loop

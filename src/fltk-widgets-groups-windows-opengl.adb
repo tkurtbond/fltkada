@@ -9,20 +9,19 @@ use type
 
     Interfaces.C.int,
     Interfaces.C.signed_char,
-    Interfaces.C.unsigned,
-    System.Address;
+    Interfaces.C.unsigned;
 
 
 package body FLTK.Widgets.Groups.Windows.OpenGL is
 
 
     procedure gl_window_set_draw_hook
-           (W, D : in System.Address);
+           (W, D : in Storage.Integer_Address);
     pragma Import (C, gl_window_set_draw_hook, "gl_window_set_draw_hook");
     pragma Inline (gl_window_set_draw_hook);
 
     procedure gl_window_set_handle_hook
-           (W, H : in System.Address);
+           (W, H : in Storage.Integer_Address);
     pragma Import (C, gl_window_set_handle_hook, "gl_window_set_handle_hook");
     pragma Inline (gl_window_set_handle_hook);
 
@@ -32,19 +31,19 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
     function new_fl_gl_window
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_gl_window, "new_fl_gl_window");
     pragma Inline (new_fl_gl_window);
 
     function new_fl_gl_window2
            (W, H : in Interfaces.C.int;
             Text : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_gl_window2, "new_fl_gl_window2");
     pragma Inline (new_fl_gl_window2);
 
     procedure free_fl_gl_window
-           (S : in System.Address);
+           (S : in Storage.Integer_Address);
     pragma Import (C, free_fl_gl_window, "free_fl_gl_window");
     pragma Inline (free_fl_gl_window);
 
@@ -52,22 +51,22 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
 
 
     procedure fl_gl_window_show
-           (S : in System.Address);
+           (S : in Storage.Integer_Address);
     pragma Import (C, fl_gl_window_show, "fl_gl_window_show");
     pragma Inline (fl_gl_window_show);
 
     procedure fl_gl_window_hide
-           (S : in System.Address);
+           (S : in Storage.Integer_Address);
     pragma Import (C, fl_gl_window_hide, "fl_gl_window_hide");
     pragma Inline (fl_gl_window_hide);
 
     procedure fl_gl_window_hide_overlay
-           (S : in System.Address);
+           (S : in Storage.Integer_Address);
     pragma Import (C, fl_gl_window_hide_overlay, "fl_gl_window_hide_overlay");
     pragma Inline (fl_gl_window_hide_overlay);
 
     procedure fl_gl_window_flush
-           (S : in System.Address);
+           (S : in Storage.Integer_Address);
     pragma Import (C, fl_gl_window_flush, "fl_gl_window_flush");
     pragma Inline (fl_gl_window_flush);
 
@@ -75,19 +74,19 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
 
 
     function fl_gl_window_pixel_h
-           (S : in System.Address)
+           (S : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_gl_window_pixel_h, "fl_gl_window_pixel_h");
     pragma Inline (fl_gl_window_pixel_h);
 
     function fl_gl_window_pixel_w
-           (S : in System.Address)
+           (S : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_gl_window_pixel_w, "fl_gl_window_pixel_w");
     pragma Inline (fl_gl_window_pixel_w);
 
     function fl_gl_window_pixels_per_unit
-           (S : in System.Address)
+           (S : in Storage.Integer_Address)
         return Interfaces.C.C_float;
     pragma Import (C, fl_gl_window_pixels_per_unit, "fl_gl_window_pixels_per_unit");
     pragma Inline (fl_gl_window_pixels_per_unit);
@@ -96,13 +95,13 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
 
 
     function fl_gl_window_get_mode
-           (S : in System.Address)
+           (S : in Storage.Integer_Address)
         return Mode_Mask;
     pragma Import (C, fl_gl_window_get_mode, "fl_gl_window_get_mode");
     pragma Inline (fl_gl_window_get_mode);
 
     procedure fl_gl_window_set_mode
-           (S : in System.Address;
+           (S : in Storage.Integer_Address;
             M : in Mode_Mask);
     pragma Import (C, fl_gl_window_set_mode, "fl_gl_window_set_mode");
     pragma Inline (fl_gl_window_set_mode);
@@ -114,13 +113,13 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
     pragma Inline (fl_gl_window_static_can_do);
 
     function fl_gl_window_can_do
-           (S : in System.Address)
+           (S : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_gl_window_can_do, "fl_gl_window_can_do");
     pragma Inline (fl_gl_window_can_do);
 
     function fl_gl_window_can_do_overlay
-           (S : in System.Address)
+           (S : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_gl_window_can_do_overlay, "fl_gl_window_can_do_overlay");
     pragma Inline (fl_gl_window_can_do_overlay);
@@ -129,48 +128,48 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
 
 
     function fl_gl_window_get_context
-           (S : in System.Address)
-        return System.Address;
+           (S : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_gl_window_get_context, "fl_gl_window_get_context");
     pragma Inline (fl_gl_window_get_context);
 
     procedure fl_gl_window_set_context
-           (S, P : in System.Address;
+           (S, P : in Storage.Integer_Address;
             D    : in Interfaces.C.int);
     pragma Import (C, fl_gl_window_set_context, "fl_gl_window_set_context");
     pragma Inline (fl_gl_window_set_context);
 
     function fl_gl_window_context_valid
-           (S : in System.Address)
+           (S : in Storage.Integer_Address)
         return Interfaces.C.signed_char;
     pragma Import (C, fl_gl_window_context_valid, "fl_gl_window_context_valid");
     pragma Inline (fl_gl_window_context_valid);
 
     procedure fl_gl_window_set_context_valid
-           (S : in System.Address;
+           (S : in Storage.Integer_Address;
             V : in Interfaces.C.signed_char);
     pragma Import (C, fl_gl_window_set_context_valid, "fl_gl_window_set_context_valid");
     pragma Inline (fl_gl_window_set_context_valid);
 
     function fl_gl_window_valid
-           (S : in System.Address)
+           (S : in Storage.Integer_Address)
         return Interfaces.C.signed_char;
     pragma Import (C, fl_gl_window_valid, "fl_gl_window_valid");
     pragma Inline (fl_gl_window_valid);
 
     procedure fl_gl_window_set_valid
-           (S : in System.Address;
+           (S : in Storage.Integer_Address;
             V : in Interfaces.C.signed_char);
     pragma Import (C, fl_gl_window_set_valid, "fl_gl_window_set_valid");
     pragma Inline (fl_gl_window_set_valid);
 
     procedure fl_gl_window_make_current
-           (S : in System.Address);
+           (S : in Storage.Integer_Address);
     pragma Import (C, fl_gl_window_make_current, "fl_gl_window_make_current");
     pragma Inline (fl_gl_window_make_current);
 
     procedure fl_gl_window_make_overlay_current
-           (S : in System.Address);
+           (S : in Storage.Integer_Address);
     pragma Import (C, fl_gl_window_make_overlay_current, "fl_gl_window_make_overlay_current");
     pragma Inline (fl_gl_window_make_overlay_current);
 
@@ -178,27 +177,27 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
 
 
     procedure fl_gl_window_ortho
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_gl_window_ortho, "fl_gl_window_ortho");
     pragma Inline (fl_gl_window_ortho);
 
     procedure fl_gl_window_redraw_overlay
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_gl_window_redraw_overlay, "fl_gl_window_redraw_overlay");
     pragma Inline (fl_gl_window_redraw_overlay);
 
     procedure fl_gl_window_swap_buffers
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_gl_window_swap_buffers, "fl_gl_window_swap_buffers");
     pragma Inline (fl_gl_window_swap_buffers);
 
     procedure fl_gl_window_draw
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_gl_window_draw, "fl_gl_window_draw");
     pragma Inline (fl_gl_window_draw);
 
     function fl_gl_window_handle
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_gl_window_handle, "fl_gl_window_handle");
@@ -210,12 +209,12 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
     procedure Finalize
            (This : in out GL_Window) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in GL_Window'Class
         then
             This.Clear;
             free_fl_gl_window (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Window (This));
     end Finalize;
@@ -244,9 +243,9 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
                 fl_group_end (This.Void_Ptr);
                 fl_widget_set_user_data
                    (This.Void_Ptr,
-                    Widget_Convert.To_Address (This'Unchecked_Access));
-                gl_window_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
-                gl_window_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                    Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                gl_window_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                gl_window_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;
@@ -265,9 +264,9 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
                 fl_group_end (This.Void_Ptr);
                 fl_widget_set_user_data
                    (This.Void_Ptr,
-                    Widget_Convert.To_Address (This'Unchecked_Access));
-                gl_window_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
-                gl_window_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                    Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                gl_window_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                gl_window_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;
@@ -395,7 +394,7 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
            (This : in GL_Window)
         return System.Address is
     begin
-        return fl_gl_window_get_context (This.Void_Ptr);
+        return Storage.To_Address (fl_gl_window_get_context (This.Void_Ptr));
     end Get_Context;
 
 
@@ -404,7 +403,8 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
             Struct  : in     System.Address;
             Destroy : in     Boolean := False) is
     begin
-        fl_gl_window_set_context (This.Void_Ptr, Struct, Boolean'Pos (Destroy));
+        fl_gl_window_set_context
+            (This.Void_Ptr, Storage.To_Integer (Struct), Boolean'Pos (Destroy));
     end Set_Context;
 
 

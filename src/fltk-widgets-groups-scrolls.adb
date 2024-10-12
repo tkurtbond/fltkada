@@ -2,24 +2,19 @@
 
 with
 
-    Interfaces.C,
-    System;
-
-use type
-
-    System.Address;
+    Interfaces.C;
 
 
 package body FLTK.Widgets.Groups.Scrolls is
 
 
     procedure scroll_set_draw_hook
-           (S, D : in System.Address);
+           (S, D : in Storage.Integer_Address);
     pragma Import (C, scroll_set_draw_hook, "scroll_set_draw_hook");
     pragma Inline (scroll_set_draw_hook);
 
     procedure scroll_set_handle_hook
-           (S, H : in System.Address);
+           (S, H : in Storage.Integer_Address);
     pragma Import (C, scroll_set_handle_hook, "scroll_set_handle_hook");
     pragma Inline (scroll_set_handle_hook);
 
@@ -29,12 +24,12 @@ package body FLTK.Widgets.Groups.Scrolls is
     function new_fl_scroll
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_scroll, "new_fl_scroll");
     pragma Inline (new_fl_scroll);
 
     procedure free_fl_scroll
-           (S : in System.Address);
+           (S : in Storage.Integer_Address);
     pragma Import (C, free_fl_scroll, "free_fl_scroll");
     pragma Inline (free_fl_scroll);
 
@@ -42,7 +37,7 @@ package body FLTK.Widgets.Groups.Scrolls is
 
 
     procedure fl_scroll_clear
-           (S : in System.Address);
+           (S : in Storage.Integer_Address);
     pragma Import (C, fl_scroll_clear, "fl_scroll_clear");
     pragma Inline (fl_scroll_clear);
 
@@ -50,13 +45,13 @@ package body FLTK.Widgets.Groups.Scrolls is
 
 
     procedure fl_scroll_to
-           (S    : in System.Address;
+           (S    : in Storage.Integer_Address;
             X, Y : in Interfaces.C.int);
     pragma Import (C, fl_scroll_to, "fl_scroll_to");
     pragma Inline (fl_scroll_to);
 
     procedure fl_scroll_set_type
-           (S : in System.Address;
+           (S : in Storage.Integer_Address;
             T : in Interfaces.C.int);
     pragma Import (C, fl_scroll_set_type, "fl_scroll_set_type");
     pragma Inline (fl_scroll_set_type);
@@ -65,25 +60,25 @@ package body FLTK.Widgets.Groups.Scrolls is
 
 
     function fl_scroll_get_size
-           (S : in System.Address)
+           (S : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_scroll_get_size, "fl_scroll_get_size");
     pragma Inline (fl_scroll_get_size);
 
     procedure fl_scroll_set_size
-           (S : in System.Address;
+           (S : in Storage.Integer_Address;
             T : in Interfaces.C.int);
     pragma Import (C, fl_scroll_set_size, "fl_scroll_set_size");
     pragma Inline (fl_scroll_set_size);
 
     function fl_scroll_xposition
-           (S : in System.Address)
+           (S : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_scroll_xposition, "fl_scroll_xposition");
     pragma Inline (fl_scroll_xposition);
 
     function fl_scroll_yposition
-           (S : in System.Address)
+           (S : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_scroll_yposition, "fl_scroll_yposition");
     pragma Inline (fl_scroll_yposition);
@@ -92,12 +87,12 @@ package body FLTK.Widgets.Groups.Scrolls is
 
 
     procedure fl_scroll_draw
-           (S : in System.Address);
+           (S : in Storage.Integer_Address);
     pragma Import (C, fl_scroll_draw, "fl_scroll_draw");
     pragma Inline (fl_scroll_draw);
 
     function fl_scroll_handle
-           (S : in System.Address;
+           (S : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_scroll_handle, "fl_scroll_handle");
@@ -109,12 +104,12 @@ package body FLTK.Widgets.Groups.Scrolls is
     procedure Finalize
            (This : in out Scroll) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Scroll'Class
         then
             This.Clear;
             free_fl_scroll (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Group (This));
     end Finalize;
@@ -139,9 +134,9 @@ package body FLTK.Widgets.Groups.Scrolls is
                 fl_group_end (This.Void_Ptr);
                 fl_widget_set_user_data
                        (This.Void_Ptr,
-                        Widget_Convert.To_Address (This'Unchecked_Access));
-                scroll_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
-                scroll_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                scroll_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                scroll_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;

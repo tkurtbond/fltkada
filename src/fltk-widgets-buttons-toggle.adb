@@ -2,24 +2,19 @@
 
 with
 
-    Interfaces.C,
-    System;
-
-use type
-
-    System.Address;
+    Interfaces.C;
 
 
 package body FLTK.Widgets.Buttons.Toggle is
 
 
     procedure toggle_button_set_draw_hook
-           (W, D : in System.Address);
+           (W, D : in Storage.Integer_Address);
     pragma Import (C, toggle_button_set_draw_hook, "toggle_button_set_draw_hook");
     pragma Inline (toggle_button_set_draw_hook);
 
     procedure toggle_button_set_handle_hook
-           (W, H : in System.Address);
+           (W, H : in Storage.Integer_Address);
     pragma Import (C, toggle_button_set_handle_hook, "toggle_button_set_handle_hook");
     pragma Inline (toggle_button_set_handle_hook);
 
@@ -29,12 +24,12 @@ package body FLTK.Widgets.Buttons.Toggle is
     function new_fl_toggle_button
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_toggle_button, "new_fl_toggle_button");
     pragma Inline (new_fl_toggle_button);
 
     procedure free_fl_toggle_button
-           (B : in System.Address);
+           (B : in Storage.Integer_Address);
     pragma Import (C, free_fl_toggle_button, "free_fl_toggle_button");
     pragma Inline (free_fl_toggle_button);
 
@@ -42,12 +37,12 @@ package body FLTK.Widgets.Buttons.Toggle is
 
 
     procedure fl_toggle_button_draw
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_toggle_button_draw, "fl_toggle_button_draw");
     pragma Inline (fl_toggle_button_draw);
 
     function fl_toggle_button_handle
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_toggle_button_handle, "fl_toggle_button_handle");
@@ -59,11 +54,11 @@ package body FLTK.Widgets.Buttons.Toggle is
     procedure Finalize
            (This : in out Toggle_Button) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Toggle_Button'Class
         then
             free_fl_toggle_button (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Button (This));
     end Finalize;
@@ -87,9 +82,11 @@ package body FLTK.Widgets.Buttons.Toggle is
                         Interfaces.C.To_C (Text));
                 fl_widget_set_user_data
                        (This.Void_Ptr,
-                        Widget_Convert.To_Address (This'Unchecked_Access));
-                toggle_button_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
-                toggle_button_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                toggle_button_set_draw_hook
+                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                toggle_button_set_handle_hook
+                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;

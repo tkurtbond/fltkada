@@ -3,25 +3,23 @@
 with
 
     Interfaces.C,
-    System,
     FLTK.Text_Buffers;
 
 use type
 
-    Interfaces.C.int,
-    System.Address;
+    Interfaces.C.int;
 
 
 package body FLTK.Widgets.Groups.Text_Displays is
 
 
     procedure text_display_set_draw_hook
-           (W, D : in System.Address);
+           (W, D : in Storage.Integer_Address);
     pragma Import (C, text_display_set_draw_hook, "text_display_set_draw_hook");
     pragma Inline (text_display_set_draw_hook);
 
     procedure text_display_set_handle_hook
-           (W, H : in System.Address);
+           (W, H : in Storage.Integer_Address);
     pragma Import (C, text_display_set_handle_hook, "text_display_set_handle_hook");
     pragma Inline (text_display_set_handle_hook);
 
@@ -31,12 +29,12 @@ package body FLTK.Widgets.Groups.Text_Displays is
     function new_fl_text_display
            (X, Y, W, H : in Interfaces.C.int;
             Label      : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_text_display, "new_fl_text_display");
     pragma Inline (new_fl_text_display);
 
     procedure free_fl_text_display
-           (TD : in System.Address);
+           (TD : in Storage.Integer_Address);
     pragma Import (C, free_fl_text_display, "free_fl_text_display");
     pragma Inline (free_fl_text_display);
 
@@ -44,13 +42,13 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
     function fl_text_display_get_buffer
-           (TD : in System.Address)
-        return System.Address;
+           (TD : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_text_display_get_buffer, "fl_text_display_get_buffer");
     pragma Inline (fl_text_display_get_buffer);
 
     procedure fl_text_display_set_buffer
-           (TD, TB : in System.Address);
+           (TD, TB : in Storage.Integer_Address);
     pragma Import (C, fl_text_display_set_buffer, "fl_text_display_set_buffer");
     pragma Inline (fl_text_display_set_buffer);
 
@@ -58,16 +56,16 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
     procedure fl_text_display_highlight_data
-           (TD, TB, ST : in System.Address;
+           (TD, TB, ST : in Storage.Integer_Address;
             L          : in Interfaces.C.int);
     pragma Import (C, fl_text_display_highlight_data, "fl_text_display_highlight_data");
     pragma Inline (fl_text_display_highlight_data);
 
     procedure fl_text_display_highlight_data2
-           (TD, TB, ST : in System.Address;
+           (TD, TB, ST : in Storage.Integer_Address;
             L          : in Interfaces.C.int;
             C          : in Interfaces.C.unsigned;
-            B, A       : in System.Address);
+            B, A       : in Storage.Integer_Address);
     pragma Import (C, fl_text_display_highlight_data2, "fl_text_display_highlight_data2");
     pragma Inline (fl_text_display_highlight_data2);
 
@@ -75,28 +73,28 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
     function fl_text_display_col_to_x
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             C  : in Interfaces.C.double)
         return Interfaces.C.double;
     pragma Import (C, fl_text_display_col_to_x, "fl_text_display_col_to_x");
     pragma Inline (fl_text_display_col_to_x);
 
     function fl_text_display_x_to_col
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             X  : in Interfaces.C.double)
         return Interfaces.C.double;
     pragma Import (C, fl_text_display_x_to_col, "fl_text_display_x_to_col");
     pragma Inline (fl_text_display_x_to_col);
 
     function fl_text_display_in_selection
-           (TD   : in System.Address;
+           (TD   : in Storage.Integer_Address;
             X, Y : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_text_display_in_selection, "fl_text_display_in_selection");
     pragma Inline (fl_text_display_in_selection);
 
     function fl_text_display_position_to_xy
-           (TD   : in     System.Address;
+           (TD   : in     Storage.Integer_Address;
             P    : in     Interfaces.C.int;
             X, Y :    out Interfaces.C.int)
         return Interfaces.C.int;
@@ -107,30 +105,30 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
     function fl_text_display_get_cursor_color
-           (TD : in System.Address)
+           (TD : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_text_display_get_cursor_color, "fl_text_display_get_cursor_color");
     pragma Inline (fl_text_display_get_cursor_color);
 
     procedure fl_text_display_set_cursor_color
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             C  : in Interfaces.C.unsigned);
     pragma Import (C, fl_text_display_set_cursor_color, "fl_text_display_set_cursor_color");
     pragma Inline (fl_text_display_set_cursor_color);
 
     procedure fl_text_display_set_cursor_style
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             S  : in Interfaces.C.int);
     pragma Import (C, fl_text_display_set_cursor_style, "fl_text_display_set_cursor_style");
     pragma Inline (fl_text_display_set_cursor_style);
 
     procedure fl_text_display_hide_cursor
-           (TD : in System.Address);
+           (TD : in Storage.Integer_Address);
     pragma Import (C, fl_text_display_hide_cursor, "fl_text_display_hide_cursor");
     pragma Inline (fl_text_display_hide_cursor);
 
     procedure fl_text_display_show_cursor
-           (TD : in System.Address);
+           (TD : in Storage.Integer_Address);
     pragma Import (C, fl_text_display_show_cursor, "fl_text_display_show_cursor");
     pragma Inline (fl_text_display_show_cursor);
 
@@ -138,37 +136,37 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
     function fl_text_display_get_text_color
-           (TD : in System.Address)
+           (TD : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_text_display_get_text_color, "fl_text_display_get_text_color");
     pragma Inline (fl_text_display_get_text_color);
 
     procedure fl_text_display_set_text_color
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             C  : in Interfaces.C.unsigned);
     pragma Import (C, fl_text_display_set_text_color, "fl_text_display_set_text_color");
     pragma Inline (fl_text_display_set_text_color);
 
     function fl_text_display_get_text_font
-           (TD : in System.Address)
+           (TD : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_text_display_get_text_font, "fl_text_display_get_text_font");
     pragma Inline (fl_text_display_get_text_font);
 
     procedure fl_text_display_set_text_font
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             F  : in Interfaces.C.int);
     pragma Import (C, fl_text_display_set_text_font, "fl_text_display_set_text_font");
     pragma Inline (fl_text_display_set_text_font);
 
     function fl_text_display_get_text_size
-           (TD : in System.Address)
+           (TD : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_text_display_get_text_size, "fl_text_display_get_text_size");
     pragma Inline (fl_text_display_get_text_size);
 
     procedure fl_text_display_set_text_size
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             S  : in Interfaces.C.int);
     pragma Import (C, fl_text_display_set_text_size, "fl_text_display_set_text_size");
     pragma Inline (fl_text_display_set_text_size);
@@ -177,31 +175,31 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
     procedure fl_text_display_insert
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             I  : in Interfaces.C.char_array);
     pragma Import (C, fl_text_display_insert, "fl_text_display_insert");
     pragma Inline (fl_text_display_insert);
 
     procedure fl_text_display_overstrike
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             T  : in Interfaces.C.char_array);
     pragma Import (C, fl_text_display_overstrike, "fl_text_display_overstrike");
     pragma Inline (fl_text_display_overstrike);
 
     function fl_text_display_get_insert_pos
-           (TD : in System.Address)
+           (TD : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_text_display_get_insert_pos, "fl_text_display_get_insert_pos");
     pragma Inline (fl_text_display_get_insert_pos);
 
     procedure fl_text_display_set_insert_pos
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             P  : in Interfaces.C.int);
     pragma Import (C, fl_text_display_set_insert_pos, "fl_text_display_set_insert_pos");
     pragma Inline (fl_text_display_set_insert_pos);
 
     procedure fl_text_display_show_insert_pos
-           (TD : in System.Address);
+           (TD : in Storage.Integer_Address);
     pragma Import (C, fl_text_display_show_insert_pos, "fl_text_display_show_insert_pos");
     pragma Inline (fl_text_display_show_insert_pos);
 
@@ -209,31 +207,31 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
     function fl_text_display_word_start
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             P  : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_text_display_word_start, "fl_text_display_word_start");
     pragma Inline (fl_text_display_word_start);
 
     function fl_text_display_word_end
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             P  : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_text_display_word_end, "fl_text_display_word_end");
     pragma Inline (fl_text_display_word_end);
 
     procedure fl_text_display_next_word
-           (TD : in System.Address);
+           (TD : in Storage.Integer_Address);
     pragma Import (C, fl_text_display_next_word, "fl_text_display_next_word");
     pragma Inline (fl_text_display_next_word);
 
     procedure fl_text_display_previous_word
-           (TD : in System.Address);
+           (TD : in Storage.Integer_Address);
     pragma Import (C, fl_text_display_previous_word, "fl_text_display_previous_word");
     pragma Inline (fl_text_display_previous_word);
 
     procedure fl_text_display_wrap_mode
-           (TD    : in System.Address;
+           (TD    : in Storage.Integer_Address;
             W, M  : in Interfaces.C.int);
     pragma Import (C, fl_text_display_wrap_mode, "fl_text_display_wrap_mode");
     pragma Inline (fl_text_display_wrap_mode);
@@ -242,35 +240,35 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
     function fl_text_display_line_start
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             S  : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_text_display_line_start, "fl_text_display_line_start");
     pragma Inline (fl_text_display_line_start);
 
     function fl_text_display_line_end
-           (TD   : in System.Address;
+           (TD   : in Storage.Integer_Address;
             S, P : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_text_display_line_end, "fl_text_display_line_end");
     pragma Inline (fl_text_display_line_end);
 
     function fl_text_display_count_lines
-           (TD      : in System.Address;
+           (TD      : in Storage.Integer_Address;
             S, F, P : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_text_display_count_lines, "fl_text_display_count_lines");
     pragma Inline (fl_text_display_count_lines);
 
     function fl_text_display_skip_lines
-           (TD      : in System.Address;
+           (TD      : in Storage.Integer_Address;
             S, L, P : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_text_display_skip_lines, "fl_text_display_skip_lines");
     pragma Inline (fl_text_display_skip_lines);
 
     function fl_text_display_rewind_lines
-           (TD   : in System.Address;
+           (TD   : in Storage.Integer_Address;
             S, L : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_text_display_rewind_lines, "fl_text_display_rewind_lines");
@@ -280,84 +278,84 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
     function fl_text_display_get_linenumber_align
-           (TD : in System.Address)
+           (TD : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_text_display_get_linenumber_align,
         "fl_text_display_get_linenumber_align");
     pragma Inline (fl_text_display_get_linenumber_align);
 
     procedure fl_text_display_set_linenumber_align
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             A  : in Interfaces.C.unsigned);
     pragma Import (C, fl_text_display_set_linenumber_align,
         "fl_text_display_set_linenumber_align");
     pragma Inline (fl_text_display_set_linenumber_align);
 
     function fl_text_display_get_linenumber_bgcolor
-           (TD : in System.Address)
+           (TD : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_text_display_get_linenumber_bgcolor,
         "fl_text_display_get_linenumber_bgcolor");
     pragma Inline (fl_text_display_get_linenumber_bgcolor);
 
     procedure fl_text_display_set_linenumber_bgcolor
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             C  : in Interfaces.C.unsigned);
     pragma Import (C, fl_text_display_set_linenumber_bgcolor,
         "fl_text_display_set_linenumber_bgcolor");
     pragma Inline (fl_text_display_set_linenumber_bgcolor);
 
     function fl_text_display_get_linenumber_fgcolor
-           (TD : in System.Address)
+           (TD : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_text_display_get_linenumber_fgcolor,
         "fl_text_display_get_linenumber_fgcolor");
     pragma Inline (fl_text_display_get_linenumber_fgcolor);
 
     procedure fl_text_display_set_linenumber_fgcolor
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             C  : in Interfaces.C.unsigned);
     pragma Import (C, fl_text_display_set_linenumber_fgcolor,
         "fl_text_display_set_linenumber_fgcolor");
     pragma Inline (fl_text_display_set_linenumber_fgcolor);
 
     function fl_text_display_get_linenumber_font
-           (TD : in System.Address)
+           (TD : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_text_display_get_linenumber_font,
         "fl_text_display_get_linenumber_font");
     pragma Inline (fl_text_display_get_linenumber_font);
 
     procedure fl_text_display_set_linenumber_font
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             F  : in Interfaces.C.int);
     pragma Import (C, fl_text_display_set_linenumber_font,
         "fl_text_display_set_linenumber_font");
     pragma Inline (fl_text_display_set_linenumber_font);
 
     function fl_text_display_get_linenumber_size
-           (TD : in System.Address)
+           (TD : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_text_display_get_linenumber_size,
         "fl_text_display_get_linenumber_size");
     pragma Inline (fl_text_display_get_linenumber_size);
 
     procedure fl_text_display_set_linenumber_size
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             S  : in Interfaces.C.int);
     pragma Import (C, fl_text_display_set_linenumber_size,
         "fl_text_display_set_linenumber_size");
     pragma Inline (fl_text_display_set_linenumber_size);
 
     function fl_text_display_get_linenumber_width
-           (TD : in System.Address)
+           (TD : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_text_display_get_linenumber_width,
         "fl_text_display_get_linenumber_width");
     pragma Inline (fl_text_display_get_linenumber_width);
 
     procedure fl_text_display_set_linenumber_width
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             W  : in Interfaces.C.int);
     pragma Import (C, fl_text_display_set_linenumber_width,
         "fl_text_display_set_linenumber_width");
@@ -367,25 +365,25 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
     function fl_text_display_move_down
-           (TD : in System.Address)
+           (TD : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_text_display_move_down, "fl_text_display_move_down");
     pragma Inline (fl_text_display_move_down);
 
     function fl_text_display_move_left
-           (TD : in System.Address)
+           (TD : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_text_display_move_left, "fl_text_display_move_left");
     pragma Inline (fl_text_display_move_left);
 
     function fl_text_display_move_right
-           (TD : in System.Address)
+           (TD : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_text_display_move_right, "fl_text_display_move_right");
     pragma Inline (fl_text_display_move_right);
 
     function fl_text_display_move_up
-           (TD : in System.Address)
+           (TD : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_text_display_move_up, "fl_text_display_move_up");
     pragma Inline (fl_text_display_move_up);
@@ -394,31 +392,31 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
     procedure fl_text_display_scroll
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             L  : in Interfaces.C.int);
     pragma Import (C, fl_text_display_scroll, "fl_text_display_scroll");
     pragma Inline (fl_text_display_scroll);
 
     function fl_text_display_get_scrollbar_align
-           (TD : in System.Address)
+           (TD : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_text_display_get_scrollbar_align, "fl_text_display_get_scrollbar_align");
     pragma Inline (fl_text_display_get_scrollbar_align);
 
     procedure fl_text_display_set_scrollbar_align
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             A  : in Interfaces.C.unsigned);
     pragma Import (C, fl_text_display_set_scrollbar_align, "fl_text_display_set_scrollbar_align");
     pragma Inline (fl_text_display_set_scrollbar_align);
 
     function fl_text_display_get_scrollbar_width
-           (TD : in System.Address)
+           (TD : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_text_display_get_scrollbar_width, "fl_text_display_get_scrollbar_width");
     pragma Inline (fl_text_display_get_scrollbar_width);
 
     procedure fl_text_display_set_scrollbar_width
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             W  : in Interfaces.C.int);
     pragma Import (C, fl_text_display_set_scrollbar_width, "fl_text_display_set_scrollbar_width");
     pragma Inline (fl_text_display_set_scrollbar_width);
@@ -427,18 +425,18 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
     procedure fl_text_display_redisplay_range
-           (TD   : in System.Address;
+           (TD   : in Storage.Integer_Address;
             S, F : in Interfaces.C.int);
     pragma Import (C, fl_text_display_redisplay_range, "fl_text_display_redisplay_range");
     pragma Inline (fl_text_display_redisplay_range);
 
     procedure fl_text_display_draw
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_text_display_draw, "fl_text_display_draw");
     pragma Inline (fl_text_display_draw);
 
     function fl_text_display_handle
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_text_display_handle, "fl_text_display_handle");
@@ -449,12 +447,12 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
     procedure Style_Hook
            (C : in Interfaces.C.int;
-            D : in System.Address)
+            D : in Storage.Integer_Address)
     is
         use Styles;  --  for maximum stylin'
 
         Ada_Widget : access Text_Display'Class :=
-            Text_Display_Convert.To_Pointer (D);
+            Text_Display_Convert.To_Pointer (Storage.To_Address (D));
     begin
         if Ada_Widget.Style_Callback /= null then
             Ada_Widget.Style_Callback (Character'Val (C), Text_Display (Ada_Widget.all));
@@ -467,12 +465,12 @@ package body FLTK.Widgets.Groups.Text_Displays is
     procedure Finalize
            (This : in out Text_Display) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Text_Display'Class
         then
             This.Clear;
             free_fl_text_display (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Group (This));
     end Finalize;
@@ -497,9 +495,11 @@ package body FLTK.Widgets.Groups.Text_Displays is
                 fl_group_end (This.Void_Ptr);
                 fl_widget_set_user_data
                        (This.Void_Ptr,
-                        Widget_Convert.To_Address (This'Unchecked_Access));
-                text_display_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
-                text_display_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                text_display_set_draw_hook
+                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                text_display_set_handle_hook
+                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;
@@ -559,7 +559,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
         fl_text_display_highlight_data
            (This.Void_Ptr,
             Wrapper (Buff).Void_Ptr,
-            Table'Address,
+            Storage.To_Integer (Table'Address),
             Table'Length);
     end Highlight_Data;
 
@@ -575,11 +575,11 @@ package body FLTK.Widgets.Groups.Text_Displays is
         fl_text_display_highlight_data2
            (This.Void_Ptr,
             Wrapper (Buff).Void_Ptr,
-            Table'Address,
+            Storage.To_Integer (Table'Address),
             Table'Length,
             Character'Pos (Character (Unfinished)),
-            Style_Hook'Address,
-            This'Address);
+            Storage.To_Integer (Style_Hook'Address),
+            Storage.To_Integer (This'Address));
     end Highlight_Data;
 
 

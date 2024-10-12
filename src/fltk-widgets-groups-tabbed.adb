@@ -2,24 +2,19 @@
 
 with
 
-    Interfaces.C,
-    System;
-
-use type
-
-    System.Address;
+    Interfaces.C;
 
 
 package body FLTK.Widgets.Groups.Tabbed is
 
 
     procedure tabs_set_draw_hook
-           (W, D : in System.Address);
+           (W, D : in Storage.Integer_Address);
     pragma Import (C, tabs_set_draw_hook, "tabs_set_draw_hook");
     pragma Inline (tabs_set_draw_hook);
 
     procedure tabs_set_handle_hook
-           (W, H : in System.Address);
+           (W, H : in Storage.Integer_Address);
     pragma Import (C, tabs_set_handle_hook, "tabs_set_handle_hook");
     pragma Inline (tabs_set_handle_hook);
 
@@ -29,12 +24,12 @@ package body FLTK.Widgets.Groups.Tabbed is
     function new_fl_tabs
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_tabs, "new_fl_tabs");
     pragma Inline (new_fl_tabs);
 
     procedure free_fl_tabs
-           (S : in System.Address);
+           (S : in Storage.Integer_Address);
     pragma Import (C, free_fl_tabs, "free_fl_tabs");
     pragma Inline (free_fl_tabs);
 
@@ -42,7 +37,7 @@ package body FLTK.Widgets.Groups.Tabbed is
 
 
     procedure fl_tabs_client_area
-           (T          : in     System.Address;
+           (T          : in     Storage.Integer_Address;
             X, Y, W, H :    out Interfaces.C.int;
             I          : in     Interfaces.C.int);
     pragma Import (C, fl_tabs_client_area, "fl_tabs_client_area");
@@ -52,31 +47,31 @@ package body FLTK.Widgets.Groups.Tabbed is
 
 
     function fl_tabs_get_push
-           (T : in System.Address)
-        return System.Address;
+           (T : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_tabs_get_push, "fl_tabs_get_push");
     pragma Inline (fl_tabs_get_push);
 
     procedure fl_tabs_set_push
-           (T, I : in System.Address);
+           (T, I : in Storage.Integer_Address);
     pragma Import (C, fl_tabs_set_push, "fl_tabs_set_push");
     pragma Inline (fl_tabs_set_push);
 
     function fl_tabs_get_value
-           (T : in System.Address)
-        return System.Address;
+           (T : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_tabs_get_value, "fl_tabs_get_value");
     pragma Inline (fl_tabs_get_value);
 
     procedure fl_tabs_set_value
-           (T, V : in System.Address);
+           (T, V : in Storage.Integer_Address);
     pragma Import (C, fl_tabs_set_value, "fl_tabs_set_value");
     pragma Inline (fl_tabs_set_value);
 
     function fl_tabs_which
-           (T    : in System.Address;
+           (T    : in Storage.Integer_Address;
             X, Y : in Interfaces.C.int)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, fl_tabs_which, "fl_tabs_which");
     pragma Inline (fl_tabs_which);
 
@@ -84,12 +79,12 @@ package body FLTK.Widgets.Groups.Tabbed is
 
 
     procedure fl_tabs_draw
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_tabs_draw, "fl_tabs_draw");
     pragma Inline (fl_tabs_draw);
 
     function fl_tabs_handle
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_tabs_handle, "fl_tabs_handle");
@@ -101,12 +96,12 @@ package body FLTK.Widgets.Groups.Tabbed is
     procedure Finalize
            (This : in out Tabbed_Group) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Tabbed_Group'Class
         then
             This.Clear;
             free_fl_tabs (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Group (This));
     end Finalize;
@@ -131,9 +126,9 @@ package body FLTK.Widgets.Groups.Tabbed is
                 fl_group_end (This.Void_Ptr);
                 fl_widget_set_user_data
                        (This.Void_Ptr,
-                        Widget_Convert.To_Address (This'Unchecked_Access));
-                tabs_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
-                tabs_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                tabs_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                tabs_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;
@@ -164,10 +159,10 @@ package body FLTK.Widgets.Groups.Tabbed is
            (This : in Tabbed_Group)
         return access Widget'Class
     is
-        Widget_Ptr : System.Address :=
+        Widget_Ptr : Storage.Integer_Address :=
             fl_tabs_get_push (This.Void_Ptr);
         Actual_Widget : access Widget'Class :=
-            Widget_Convert.To_Pointer (fl_widget_get_user_data (Widget_Ptr));
+            Widget_Convert.To_Pointer (Storage.To_Address (fl_widget_get_user_data (Widget_Ptr)));
     begin
         return Actual_Widget;
     end Get_Push;
@@ -185,10 +180,10 @@ package body FLTK.Widgets.Groups.Tabbed is
            (This : in Tabbed_Group)
         return access Widget'Class
     is
-        Widget_Ptr : System.Address :=
+        Widget_Ptr : Storage.Integer_Address :=
             fl_tabs_get_value (This.Void_Ptr);
         Actual_Widget : access Widget'Class :=
-            Widget_Convert.To_Pointer (fl_widget_get_user_data (Widget_Ptr));
+            Widget_Convert.To_Pointer (Storage.To_Address (fl_widget_get_user_data (Widget_Ptr)));
     begin
         return Actual_Widget;
     end Get_Visible;
@@ -207,10 +202,10 @@ package body FLTK.Widgets.Groups.Tabbed is
             Event_X, Event_Y : in Integer)
         return access Widget'Class
     is
-        Widget_Ptr : System.Address :=
+        Widget_Ptr : Storage.Integer_Address :=
             fl_tabs_which (This.Void_Ptr, Interfaces.C.int (Event_X), Interfaces.C.int (Event_Y));
         Actual_Widget : access Widget'Class :=
-            Widget_Convert.To_Pointer (fl_widget_get_user_data (Widget_Ptr));
+            Widget_Convert.To_Pointer (Storage.To_Address (fl_widget_get_user_data (Widget_Ptr)));
     begin
         return Actual_Widget;
     end Get_Which;

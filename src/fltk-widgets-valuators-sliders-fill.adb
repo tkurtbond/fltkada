@@ -2,24 +2,19 @@
 
 with
 
-    Interfaces.C.Strings,
-    System;
-
-use type
-
-    System.Address;
+    Interfaces.C.Strings;
 
 
 package body FLTK.Widgets.Valuators.Sliders.Fill is
 
 
     procedure fill_slider_set_draw_hook
-           (W, D : in System.Address);
+           (W, D : in Storage.Integer_Address);
     pragma Import (C, fill_slider_set_draw_hook, "fill_slider_set_draw_hook");
     pragma Inline (fill_slider_set_draw_hook);
 
     procedure fill_slider_set_handle_hook
-           (W, H : in System.Address);
+           (W, H : in Storage.Integer_Address);
     pragma Import (C, fill_slider_set_handle_hook, "fill_slider_set_handle_hook");
     pragma Inline (fill_slider_set_handle_hook);
 
@@ -29,12 +24,12 @@ package body FLTK.Widgets.Valuators.Sliders.Fill is
     function new_fl_fill_slider
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_fill_slider, "new_fl_fill_slider");
     pragma Inline (new_fl_fill_slider);
 
     procedure free_fl_fill_slider
-           (D : in System.Address);
+           (D : in Storage.Integer_Address);
     pragma Import (C, free_fl_fill_slider, "free_fl_fill_slider");
     pragma Inline (free_fl_fill_slider);
 
@@ -42,12 +37,12 @@ package body FLTK.Widgets.Valuators.Sliders.Fill is
 
 
     procedure fl_fill_slider_draw
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_fill_slider_draw, "fl_fill_slider_draw");
     pragma Inline (fl_fill_slider_draw);
 
     function fl_fill_slider_handle
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_fill_slider_handle, "fl_fill_slider_handle");
@@ -59,11 +54,11 @@ package body FLTK.Widgets.Valuators.Sliders.Fill is
     procedure Finalize
            (This : in out Fill_Slider) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Fill_Slider'Class
         then
             free_fl_fill_slider (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Slider (This));
     end Finalize;
@@ -87,9 +82,11 @@ package body FLTK.Widgets.Valuators.Sliders.Fill is
                         Interfaces.C.To_C (Text));
                 fl_widget_set_user_data
                        (This.Void_Ptr,
-                        Widget_Convert.To_Address (This'Unchecked_Access));
-                fill_slider_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
-                fill_slider_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                fill_slider_set_draw_hook
+                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                fill_slider_set_handle_hook
+                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;

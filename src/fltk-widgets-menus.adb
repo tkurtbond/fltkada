@@ -3,12 +3,10 @@
 with
 
     Interfaces.C.Strings,
-    Ada.Unchecked_Deallocation,
-    System;
+    Ada.Unchecked_Deallocation;
 
 use type
 
-    System.Address,
     Interfaces.C.int,
     Interfaces.C.unsigned_long,
     Interfaces.C.Strings.chars_ptr;
@@ -18,12 +16,12 @@ package body FLTK.Widgets.Menus is
 
 
     procedure menu_set_draw_hook
-           (W, D : in System.Address);
+           (W, D : in Storage.Integer_Address);
     pragma Import (C, menu_set_draw_hook, "menu_set_draw_hook");
     pragma Inline (menu_set_draw_hook);
 
     procedure menu_set_handle_hook
-           (W, H : in System.Address);
+           (W, H : in Storage.Integer_Address);
     pragma Import (C, menu_set_handle_hook, "menu_set_handle_hook");
     pragma Inline (menu_set_handle_hook);
 
@@ -33,12 +31,12 @@ package body FLTK.Widgets.Menus is
     function new_fl_menu
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_menu, "new_fl_menu");
     pragma Inline (new_fl_menu);
 
     procedure free_fl_menu
-           (F : in System.Address);
+           (F : in Storage.Integer_Address);
     pragma Import (C, free_fl_menu, "free_fl_menu");
     pragma Inline (free_fl_menu);
 
@@ -46,34 +44,34 @@ package body FLTK.Widgets.Menus is
 
 
     function fl_menu_add
-           (M    : in System.Address;
+           (M    : in Storage.Integer_Address;
             T    : in Interfaces.C.char_array;
             S    : in Interfaces.C.unsigned_long;
-            C, U : in System.Address;
+            C, U : in Storage.Integer_Address;
             F    : in Interfaces.C.unsigned_long)
         return Interfaces.C.int;
     pragma Import (C, fl_menu_add, "fl_menu_add");
     pragma Inline (fl_menu_add);
 
     function fl_menu_insert
-           (M    : in System.Address;
+           (M    : in Storage.Integer_Address;
             P    : in Interfaces.C.int;
             T    : in Interfaces.C.char_array;
             S    : in Interfaces.C.unsigned_long;
-            C, U : in System.Address;
+            C, U : in Storage.Integer_Address;
             F    : in Interfaces.C.unsigned_long)
         return Interfaces.C.int;
     pragma Import (C, fl_menu_insert, "fl_menu_insert");
     pragma Inline (fl_menu_insert);
 
     procedure fl_menu_remove
-           (M : in System.Address;
+           (M : in Storage.Integer_Address;
             P : in Interfaces.C.int);
     pragma Import (C, fl_menu_remove, "fl_menu_remove");
     pragma Inline (fl_menu_remove);
 
     procedure fl_menu_clear
-           (M : in System.Address);
+           (M : in Storage.Integer_Address);
     pragma Import (C, fl_menu_clear, "fl_menu_clear");
     pragma Inline (fl_menu_clear);
 
@@ -81,46 +79,46 @@ package body FLTK.Widgets.Menus is
 
 
     function fl_menu_get_item
-           (M : in System.Address;
+           (M : in Storage.Integer_Address;
             I : in Interfaces.C.int)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, fl_menu_get_item, "fl_menu_get_item");
     pragma Inline (fl_menu_get_item);
 
     function fl_menu_find_item
-           (M : in System.Address;
+           (M : in Storage.Integer_Address;
             T : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, fl_menu_find_item, "fl_menu_find_item");
     pragma Inline (fl_menu_find_item);
 
     function fl_menu_find_item2
-           (M, C : in System.Address)
-        return System.Address;
+           (M, C : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_menu_find_item2, "fl_menu_find_item2");
     pragma Inline (fl_menu_find_item2);
 
     function fl_menu_find_index
-           (M : in System.Address;
+           (M : in Storage.Integer_Address;
             T : in Interfaces.C.char_array)
         return Interfaces.C.int;
     pragma Import (C, fl_menu_find_index, "fl_menu_find_index");
     pragma Inline (fl_menu_find_index);
 
     function fl_menu_find_index2
-           (M, I : in System.Address)
+           (M, I : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_menu_find_index2, "fl_menu_find_index2");
     pragma Inline (fl_menu_find_index2);
 
     function fl_menu_find_index3
-           (M, C : in System.Address)
+           (M, C : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_menu_find_index3, "fl_menu_find_index3");
     pragma Inline (fl_menu_find_index3);
 
     function fl_menu_size
-           (M : in System.Address)
+           (M : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_menu_size, "fl_menu_size");
     pragma Inline (fl_menu_size);
@@ -129,32 +127,32 @@ package body FLTK.Widgets.Menus is
 
 
     function fl_menu_mvalue
-           (M : in System.Address)
-        return System.Address;
+           (M : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_menu_mvalue, "fl_menu_mvalue");
     pragma Inline (fl_menu_mvalue);
 
     function fl_menu_text
-           (M : in System.Address)
+           (M : in Storage.Integer_Address)
         return Interfaces.C.Strings.chars_ptr;
     pragma Import (C, fl_menu_text, "fl_menu_text");
     pragma Inline (fl_menu_text);
 
     function fl_menu_value
-           (M : in System.Address)
+           (M : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_menu_value, "fl_menu_value");
     pragma Inline (fl_menu_value);
 
     function fl_menu_set_value
-           (M : in System.Address;
+           (M : in Storage.Integer_Address;
             I : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_menu_set_value, "fl_menu_set_value");
     pragma Inline (fl_menu_set_value);
 
     function fl_menu_set_value2
-           (M, I : in System.Address)
+           (M, I : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_menu_set_value2, "fl_menu_set_value2");
     pragma Inline (fl_menu_set_value2);
@@ -163,37 +161,37 @@ package body FLTK.Widgets.Menus is
 
 
     function fl_menu_get_textcolor
-           (M : in System.Address)
+           (M : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_menu_get_textcolor, "fl_menu_get_textcolor");
     pragma Inline (fl_menu_get_textcolor);
 
     procedure fl_menu_set_textcolor
-           (M : in System.Address;
+           (M : in Storage.Integer_Address;
             C : in Interfaces.C.unsigned);
     pragma Import (C, fl_menu_set_textcolor, "fl_menu_set_textcolor");
     pragma Inline (fl_menu_set_textcolor);
 
     function fl_menu_get_textfont
-           (M : in System.Address)
+           (M : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_menu_get_textfont, "fl_menu_get_textfont");
     pragma Inline (fl_menu_get_textfont);
 
     procedure fl_menu_set_textfont
-           (M : in System.Address;
+           (M : in Storage.Integer_Address;
             F : in Interfaces.C.int);
     pragma Import (C, fl_menu_set_textfont, "fl_menu_set_textfont");
     pragma Inline (fl_menu_set_textfont);
 
     function fl_menu_get_textsize
-           (M : in System.Address)
+           (M : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_menu_get_textsize, "fl_menu_get_textsize");
     pragma Inline (fl_menu_get_textsize);
 
     procedure fl_menu_set_textsize
-           (M : in System.Address;
+           (M : in Storage.Integer_Address;
             S : in Interfaces.C.int);
     pragma Import (C, fl_menu_set_textsize, "fl_menu_set_textsize");
     pragma Inline (fl_menu_set_textsize);
@@ -202,24 +200,24 @@ package body FLTK.Widgets.Menus is
 
 
     function fl_menu_get_down_box
-           (M : in System.Address)
+           (M : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_menu_get_down_box, "fl_menu_get_down_box");
     pragma Inline (fl_menu_get_down_box);
 
     procedure fl_menu_set_down_box
-           (M : in System.Address;
+           (M : in Storage.Integer_Address;
             T : in Interfaces.C.int);
     pragma Import (C, fl_menu_set_down_box, "fl_menu_set_down_box");
     pragma Inline (fl_menu_set_down_box);
 
     procedure fl_menu_global
-           (M : in System.Address);
+           (M : in Storage.Integer_Address);
     pragma Import (C, fl_menu_global, "fl_menu_global");
     pragma Inline (fl_menu_global);
 
     function fl_menu_measure
-           (M : in     System.Address;
+           (M : in     Storage.Integer_Address;
             I : in     Interfaces.C.int;
             H :    out Interfaces.C.int)
         return Interfaces.C.int;
@@ -230,19 +228,19 @@ package body FLTK.Widgets.Menus is
 
 
     function fl_menu_popup
-           (M    : in System.Address;
+           (M    : in Storage.Integer_Address;
             X, Y : in Interfaces.C.int;
             T    : in Interfaces.C.char_array;
             N    : in Interfaces.C.int)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, fl_menu_popup, "fl_menu_popup");
     pragma Inline (fl_menu_popup);
 
     function fl_menu_pulldown
-           (M          : in System.Address;
+           (M          : in Storage.Integer_Address;
             X, Y, W, H : in Interfaces.C.int;
             N          : in Interfaces.C.int)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, fl_menu_pulldown, "fl_menu_pulldown");
     pragma Inline (fl_menu_pulldown);
 
@@ -250,7 +248,7 @@ package body FLTK.Widgets.Menus is
 
 
     procedure fl_menu_draw_item
-           (M          : in System.Address;
+           (M          : in Storage.Integer_Address;
             I          : in Interfaces.C.int;
             X, Y, W, H : in Interfaces.C.int;
             S          : in Interfaces.C.int);
@@ -261,11 +259,11 @@ package body FLTK.Widgets.Menus is
 
 
     procedure Item_Hook
-           (M, U : in System.Address)
+           (M, U : in Storage.Integer_Address)
     is
         Ada_Widget : access Widget'Class :=
-            Widget_Convert.To_Pointer (fl_widget_get_user_data (M));
-        Action : Widget_Callback := Callback_Convert.To_Pointer (U);
+            Widget_Convert.To_Pointer (Storage.To_Address (fl_widget_get_user_data (M)));
+        Action : Widget_Callback := Callback_Convert.To_Access (U);
     begin
         Action.all (Ada_Widget.all);
     end Item_Hook;
@@ -282,14 +280,14 @@ package body FLTK.Widgets.Menus is
     procedure Finalize
            (This : in out Menu) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Menu'Class
         then
             for Item of This.My_Items loop
                 Free_Item (Item);
             end loop;
             free_fl_menu (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Widget (This));
     end Finalize;
@@ -313,9 +311,9 @@ package body FLTK.Widgets.Menus is
                         Interfaces.C.To_C (Text));
                 fl_widget_set_user_data
                        (This.Void_Ptr,
-                        Widget_Convert.To_Address (This'Unchecked_Access));
-                menu_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
-                menu_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                menu_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                menu_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 This.My_Items := Item_Vectors.Empty_Vector;
                 fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
@@ -334,10 +332,10 @@ package body FLTK.Widgets.Menus is
             Flags    : in     Menu_Flag := Flag_Normal)
     is
         Ret_Place : Interfaces.C.int;
-        Callback, User_Data : System.Address := System.Null_Address;
+        Callback, User_Data : Storage.Integer_Address := Null_Pointer;
     begin
         if Action /= null then
-            Callback := Item_Hook'Address;
+            Callback := Storage.To_Integer (Item_Hook'Address);
             User_Data := Callback_Convert.To_Address (Action);
         end if;
         Ret_Place := fl_menu_add
@@ -365,10 +363,10 @@ package body FLTK.Widgets.Menus is
             Flags    : in     Menu_Flag := Flag_Normal)
     is
         Ret_Place : Interfaces.C.int;
-        Callback, User_Data : System.Address := System.Null_Address;
+        Callback, User_Data : Storage.Integer_Address := Null_Pointer;
     begin
         if Action /= null then
-            Callback := Item_Hook'Address;
+            Callback := Storage.To_Integer (Item_Hook'Address);
             User_Data := Callback_Convert.To_Address (Action);
         end if;
         Ret_Place := fl_menu_insert
@@ -478,8 +476,8 @@ package body FLTK.Widgets.Menus is
         if Place = No_Index then
             raise No_Reference;
         end if;
-        Wrapper (This.My_Items (Place).all).Void_Ptr :=
-            fl_menu_find_item2 (This.Void_Ptr, Callback_Convert.To_Address (Action));
+        Wrapper (This.My_Items (Place).all).Void_Ptr := fl_menu_find_item2
+            (This.Void_Ptr, Callback_Convert.To_Address (Action));
         return R : FLTK.Menu_Items.Menu_Item_Reference := (Data => This.My_Items (Place)) do
             null;
         end return;
@@ -741,7 +739,7 @@ package body FLTK.Widgets.Menus is
             Initial : in Extended_Index := No_Index)
         return Extended_Index
     is
-        Ptr : System.Address := fl_menu_popup
+        Ptr : Storage.Integer_Address := fl_menu_popup
            (This.Void_Ptr,
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
@@ -758,7 +756,7 @@ package body FLTK.Widgets.Menus is
             Initial    : in Extended_Index := No_Index)
         return Extended_Index
     is
-        Ptr : System.Address := fl_menu_pulldown
+        Ptr : Storage.Integer_Address := fl_menu_pulldown
            (This.Void_Ptr,
             Interfaces.C.int (X),
             Interfaces.C.int (Y),

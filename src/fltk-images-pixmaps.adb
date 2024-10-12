@@ -2,32 +2,27 @@
 
 with
 
-    Interfaces.C,
-    System;
-
-use type
-
-    System.Address;
+    Interfaces.C;
 
 
 package body FLTK.Images.Pixmaps is
 
 
     procedure free_fl_pixmap
-           (I : in System.Address);
+           (I : in Storage.Integer_Address);
     pragma Import (C, free_fl_pixmap, "free_fl_pixmap");
     pragma Inline (free_fl_pixmap);
 
     function fl_pixmap_copy
-           (I    : in System.Address;
+           (I    : in Storage.Integer_Address;
             W, H : in Interfaces.C.int)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, fl_pixmap_copy, "fl_pixmap_copy");
     pragma Inline (fl_pixmap_copy);
 
     function fl_pixmap_copy2
-           (I : in System.Address)
-        return System.Address;
+           (I : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_pixmap_copy2, "fl_pixmap_copy2");
     pragma Inline (fl_pixmap_copy2);
 
@@ -35,14 +30,14 @@ package body FLTK.Images.Pixmaps is
 
 
     procedure fl_pixmap_color_average
-           (I : in System.Address;
+           (I : in Storage.Integer_Address;
             C : in Interfaces.C.int;
             B : in Interfaces.C.C_float);
     pragma Import (C, fl_pixmap_color_average, "fl_pixmap_color_average");
     pragma Inline (fl_pixmap_color_average);
 
     procedure fl_pixmap_desaturate
-           (I : in System.Address);
+           (I : in Storage.Integer_Address);
     pragma Import (C, fl_pixmap_desaturate, "fl_pixmap_desaturate");
     pragma Inline (fl_pixmap_desaturate);
 
@@ -50,7 +45,7 @@ package body FLTK.Images.Pixmaps is
 
 
     procedure fl_pixmap_uncache
-           (I : in System.Address);
+           (I : in Storage.Integer_Address);
     pragma Import (C, fl_pixmap_uncache, "fl_pixmap_uncache");
     pragma Inline (fl_pixmap_uncache);
 
@@ -58,13 +53,13 @@ package body FLTK.Images.Pixmaps is
 
 
     procedure fl_pixmap_draw2
-           (I    : in System.Address;
+           (I    : in Storage.Integer_Address;
             X, Y : in Interfaces.C.int);
     pragma Import (C, fl_pixmap_draw2, "fl_pixmap_draw2");
     pragma Inline (fl_pixmap_draw2);
 
     procedure fl_pixmap_draw
-           (I                  : in System.Address;
+           (I                  : in Storage.Integer_Address;
             X, Y, W, H, CX, CY : in Interfaces.C.int);
     pragma Import (C, fl_pixmap_draw, "fl_pixmap_draw");
     pragma Inline (fl_pixmap_draw);
@@ -75,11 +70,11 @@ package body FLTK.Images.Pixmaps is
     overriding procedure Finalize
            (This : in out Pixmap) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Pixmap'Class
         then
             free_fl_pixmap (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Image (This));
     end Finalize;

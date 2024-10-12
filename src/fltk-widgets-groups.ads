@@ -169,7 +169,7 @@ private
 
 
     procedure fl_group_end
-           (G : in System.Address);
+           (G : in Storage.Integer_Address);
     pragma Import (C, fl_group_end, "fl_group_end");
 
 

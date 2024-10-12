@@ -3,25 +3,23 @@
 with
 
     Ada.Unchecked_Deallocation,
-    Interfaces.C.Strings,
-    System;
+    Interfaces.C.Strings;
 
 use type
 
-    Interfaces.C.int,
-    System.Address;
+    Interfaces.C.int;
 
 
 package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
     procedure value_input_set_draw_hook
-           (W, D : in System.Address);
+           (W, D : in Storage.Integer_Address);
     pragma Import (C, value_input_set_draw_hook, "value_input_set_draw_hook");
     pragma Inline (value_input_set_draw_hook);
 
     procedure value_input_set_handle_hook
-           (W, H : in System.Address);
+           (W, H : in Storage.Integer_Address);
     pragma Import (C, value_input_set_handle_hook, "value_input_set_handle_hook");
     pragma Inline (value_input_set_handle_hook);
 
@@ -31,12 +29,12 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
     function new_fl_value_input
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_value_input, "new_fl_value_input");
     pragma Inline (new_fl_value_input);
 
     procedure free_fl_value_input
-           (A : in System.Address);
+           (A : in Storage.Integer_Address);
     pragma Import (C, free_fl_value_input, "free_fl_value_input");
     pragma Inline (free_fl_value_input);
 
@@ -44,8 +42,8 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
     function fl_value_input_get_input
-           (V : in System.Address)
-        return System.Address;
+           (V : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_value_input_get_input, "fl_value_input_get_input");
     pragma Inline (fl_value_input_get_input);
 
@@ -53,13 +51,13 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
     function fl_value_input_get_cursor_color
-           (TD : in System.Address)
+           (TD : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_value_input_get_cursor_color, "fl_value_input_get_cursor_color");
     pragma Inline (fl_value_input_get_cursor_color);
 
     procedure fl_value_input_set_cursor_color
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             C  : in Interfaces.C.unsigned);
     pragma Import (C, fl_value_input_set_cursor_color, "fl_value_input_set_cursor_color");
     pragma Inline (fl_value_input_set_cursor_color);
@@ -68,13 +66,13 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
     function fl_value_input_get_shortcut
-           (B : in System.Address)
+           (B : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_value_input_get_shortcut, "fl_value_input_get_shortcut");
     pragma Inline (fl_value_input_get_shortcut);
 
     procedure fl_value_input_set_shortcut
-           (B : in System.Address;
+           (B : in Storage.Integer_Address;
             T : in Interfaces.C.int);
     pragma Import (C, fl_value_input_set_shortcut, "fl_value_input_set_shortcut");
     pragma Inline (fl_value_input_set_shortcut);
@@ -83,13 +81,13 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
     function fl_value_input_is_soft
-           (A : in System.Address)
+           (A : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_value_input_is_soft, "fl_value_input_is_soft");
     pragma Inline (fl_value_input_is_soft);
 
     procedure fl_value_input_set_soft
-           (A : in System.Address;
+           (A : in Storage.Integer_Address;
             T : in Interfaces.C.int);
     pragma Import (C, fl_value_input_set_soft, "fl_value_input_set_soft");
     pragma Inline (fl_value_input_set_soft);
@@ -98,37 +96,37 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
     function fl_value_input_get_text_color
-           (TD : in System.Address)
+           (TD : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_value_input_get_text_color, "fl_value_input_get_text_color");
     pragma Inline (fl_value_input_get_text_color);
 
     procedure fl_value_input_set_text_color
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             C  : in Interfaces.C.unsigned);
     pragma Import (C, fl_value_input_set_text_color, "fl_value_input_set_text_color");
     pragma Inline (fl_value_input_set_text_color);
 
     function fl_value_input_get_text_font
-           (TD : in System.Address)
+           (TD : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_value_input_get_text_font, "fl_value_input_get_text_font");
     pragma Inline (fl_value_input_get_text_font);
 
     procedure fl_value_input_set_text_font
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             F  : in Interfaces.C.int);
     pragma Import (C, fl_value_input_set_text_font, "fl_value_input_set_text_font");
     pragma Inline (fl_value_input_set_text_font);
 
     function fl_value_input_get_text_size
-           (TD : in System.Address)
+           (TD : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_value_input_get_text_size, "fl_value_input_get_text_size");
     pragma Inline (fl_value_input_get_text_size);
 
     procedure fl_value_input_set_text_size
-           (TD : in System.Address;
+           (TD : in Storage.Integer_Address;
             S  : in Interfaces.C.int);
     pragma Import (C, fl_value_input_set_text_size, "fl_value_input_set_text_size");
     pragma Inline (fl_value_input_set_text_size);
@@ -137,12 +135,12 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
     procedure fl_value_input_draw
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_value_input_draw, "fl_value_input_draw");
     pragma Inline (fl_value_input_draw);
 
     function fl_value_input_handle
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_value_input_handle, "fl_value_input_handle");
@@ -160,12 +158,12 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
     procedure Finalize
            (This : in out Value_Input) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Value_Input'Class
         then
             free_fl_value_input (This.Void_Ptr);
             Free (This.My_Input);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Valuator (This));
     end Finalize;
@@ -189,9 +187,11 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
                         Interfaces.C.To_C (Text));
                 fl_widget_set_user_data
                        (This.Void_Ptr,
-                        Widget_Convert.To_Address (This'Unchecked_Access));
-                value_input_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
-                value_input_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                value_input_set_draw_hook
+                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                value_input_set_handle_hook
+                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
 
                 This.My_Input := new INP.Input;

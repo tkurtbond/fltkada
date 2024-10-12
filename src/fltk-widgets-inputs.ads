@@ -305,7 +305,7 @@ private
 
 
     function fl_input_get_value
-           (F : in System.Address)
+           (F : in Storage.Integer_Address)
         return Interfaces.C.Strings.chars_ptr;
     pragma Import (C, fl_input_get_value, "fl_input_get_value");
     pragma Inline (fl_input_get_value);

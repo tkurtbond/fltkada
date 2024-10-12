@@ -1,25 +1,16 @@
 
 
-with
-
-    System;
-
-use type
-
-    System.Address;
-
-
 package body FLTK.Devices.Surfaces is
 
 
     function new_fl_surface
-           (G : in System.Address)
-        return System.Address;
+           (G : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_surface, "new_fl_surface");
     pragma Inline (new_fl_surface);
 
     procedure free_fl_surface
-           (S : in System.Address);
+           (S : in Storage.Integer_Address);
     pragma Import (C, free_fl_surface, "free_fl_surface");
     pragma Inline (free_fl_surface);
 
@@ -27,12 +18,12 @@ package body FLTK.Devices.Surfaces is
 
 
     procedure fl_surface_set_current
-           (S : in System.Address);
+           (S : in Storage.Integer_Address);
     pragma Import (C, fl_surface_set_current, "fl_surface_set_current");
     pragma Inline (fl_surface_set_current);
 
     function fl_surface_get_surface
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, fl_surface_get_surface, "fl_surface_get_surface");
     pragma Inline (fl_surface_get_surface);
 
@@ -42,13 +33,13 @@ package body FLTK.Devices.Surfaces is
     procedure Finalize
            (This : in out Surface_Device) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Surface_Device'Class
         then
             if This.Needs_Dealloc then
                 free_fl_surface (This.Void_Ptr);
             end if;
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Device (This));
     end Finalize;

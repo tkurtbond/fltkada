@@ -7,7 +7,7 @@ with
 private with
 
     Interfaces.C,
-    System;
+    System.Storage_Elements;
 
 
 package FLTK is
@@ -365,16 +365,34 @@ package FLTK is
 private
 
 
+    package Storage renames System.Storage_Elements;
+    use type Interfaces.C.size_t, Storage.Integer_Address;
+
+
+    Null_Pointer : constant Storage.Integer_Address := Storage.To_Integer (System.Null_Address);
+
+
     pragma Linker_Options ("-lfltk");
     pragma Linker_Options ("-lfltk_images");
     pragma Linker_Options ("-lfltk_gl");
+
+
+    function c_pointer_size
+        return Interfaces.C.size_t;
+    pragma Import (C, c_pointer_size, "c_pointer_size");
+
+    --  If this fails then we are on an architecture that for whatever reason
+    --  has significant problems interfacing between C and Ada
+    pragma Assert
+       (c_pointer_size * Interfaces.C.CHAR_BIT = Storage.Integer_Address'Size,
+        "Size of C void pointers and size of Ada address values do not match");
 
 
 
 
     type Wrapper is new Ada.Finalization.Limited_Controlled with
         record
-            Void_Ptr      : System.Address;
+            Void_Ptr      : Storage.Integer_Address;
             Needs_Dealloc : Boolean := True;
         end record;
 

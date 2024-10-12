@@ -2,25 +2,23 @@
 
 with
 
-    Interfaces.C.Strings,
-    System;
+    Interfaces.C.Strings;
 
 use type
 
-    Interfaces.C.Strings.chars_ptr,
-    System.Address;
+    Interfaces.C.Strings.chars_ptr;
 
 
 package body FLTK.Widgets.Inputs.File is
 
 
     procedure file_input_set_draw_hook
-           (W, D : in System.Address);
+           (W, D : in Storage.Integer_Address);
     pragma Import (C, file_input_set_draw_hook, "file_input_set_draw_hook");
     pragma Inline (file_input_set_draw_hook);
 
     procedure file_input_set_handle_hook
-           (W, H : in System.Address);
+           (W, H : in Storage.Integer_Address);
     pragma Import (C, file_input_set_handle_hook, "file_input_set_handle_hook");
     pragma Inline (file_input_set_handle_hook);
 
@@ -30,12 +28,12 @@ package body FLTK.Widgets.Inputs.File is
     function new_fl_file_input
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_file_input, "new_fl_file_input");
     pragma Inline (new_fl_file_input);
 
     procedure free_fl_file_input
-           (F : in System.Address);
+           (F : in Storage.Integer_Address);
     pragma Import (C, free_fl_file_input, "free_fl_file_input");
     pragma Inline (free_fl_file_input);
 
@@ -43,25 +41,25 @@ package body FLTK.Widgets.Inputs.File is
 
 
     function fl_file_input_get_down_box
-           (F : in System.Address)
+           (F : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_file_input_get_down_box, "fl_file_input_get_down_box");
     pragma Inline (fl_file_input_get_down_box);
 
     procedure fl_file_input_set_down_box
-           (F : in System.Address;
+           (F : in Storage.Integer_Address;
             T : in Interfaces.C.int);
     pragma Import (C, fl_file_input_set_down_box, "fl_file_input_set_down_box");
     pragma Inline (fl_file_input_set_down_box);
 
     function fl_file_input_get_errorcolor
-           (F : in System.Address)
+           (F : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_file_input_get_errorcolor, "fl_file_input_get_errorcolor");
     pragma Inline (fl_file_input_get_errorcolor);
 
     procedure fl_file_input_set_errorcolor
-           (F : in System.Address;
+           (F : in Storage.Integer_Address;
             T : in Interfaces.C.unsigned);
     pragma Import (C, fl_file_input_set_errorcolor, "fl_file_input_set_errorcolor");
     pragma Inline (fl_file_input_set_errorcolor);
@@ -70,13 +68,13 @@ package body FLTK.Widgets.Inputs.File is
 
 
     function fl_file_input_get_value
-           (F : in System.Address)
+           (F : in Storage.Integer_Address)
         return Interfaces.C.Strings.chars_ptr;
     pragma Import (C, fl_file_input_get_value, "fl_file_input_get_value");
     pragma Inline (fl_file_input_get_value);
 
     procedure fl_file_input_set_value
-           (I : in System.Address;
+           (I : in Storage.Integer_Address;
             T : in Interfaces.C.char_array;
             L : in Interfaces.C.int);
     pragma Import (C, fl_file_input_set_value, "fl_file_input_set_value");
@@ -86,12 +84,12 @@ package body FLTK.Widgets.Inputs.File is
 
 
     procedure fl_file_input_draw
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_file_input_draw, "fl_file_input_draw");
     pragma Inline (fl_file_input_draw);
 
     function fl_file_input_handle
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_file_input_handle, "fl_file_input_handle");
@@ -103,11 +101,11 @@ package body FLTK.Widgets.Inputs.File is
     procedure Finalize
            (This : in out File_Input) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in File_Input'Class
         then
             free_fl_file_input (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Input (This));
     end Finalize;
@@ -131,9 +129,11 @@ package body FLTK.Widgets.Inputs.File is
                         Interfaces.C.To_C (Text));
                 fl_widget_set_user_data
                        (This.Void_Ptr,
-                        Widget_Convert.To_Address (This'Unchecked_Access));
-                file_input_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
-                file_input_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                file_input_set_draw_hook
+                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                file_input_set_handle_hook
+                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;

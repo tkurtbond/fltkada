@@ -7,20 +7,19 @@ with
 
 use type
 
-    Interfaces.C.int,
-    System.Address;
+    Interfaces.C.int;
 
 
 package body FLTK.Widgets.Menus.Choices is
 
 
     procedure choice_set_draw_hook
-           (W, D : in System.Address);
+           (W, D : in Storage.Integer_Address);
     pragma Import (C, choice_set_draw_hook, "choice_set_draw_hook");
     pragma Inline (choice_set_draw_hook);
 
     procedure choice_set_handle_hook
-           (W, H : in System.Address);
+           (W, H : in Storage.Integer_Address);
     pragma Import (C, choice_set_handle_hook, "choice_set_handle_hook");
     pragma Inline (choice_set_handle_hook);
 
@@ -30,12 +29,12 @@ package body FLTK.Widgets.Menus.Choices is
     function new_fl_choice
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_choice, "new_fl_choice");
     pragma Inline (new_fl_choice);
 
     procedure free_fl_choice
-           (B : in System.Address);
+           (B : in Storage.Integer_Address);
     pragma Import (C, free_fl_choice, "free_fl_choice");
     pragma Inline (free_fl_choice);
 
@@ -43,20 +42,20 @@ package body FLTK.Widgets.Menus.Choices is
 
 
     function fl_choice_value
-           (M : in System.Address)
+           (M : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_choice_value, "fl_choice_value");
     pragma Inline (fl_choice_value);
 
     function fl_choice_set_value
-           (M : in System.Address;
+           (M : in Storage.Integer_Address;
             I : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_choice_set_value, "fl_choice_set_value");
     pragma Inline (fl_choice_set_value);
 
     function fl_choice_set_value2
-           (M, I : in System.Address)
+           (M, I : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_choice_set_value2, "fl_choice_set_value2");
     pragma Inline (fl_choice_set_value2);
@@ -65,12 +64,12 @@ package body FLTK.Widgets.Menus.Choices is
 
 
     procedure fl_choice_draw
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_choice_draw, "fl_choice_draw");
     pragma Inline (fl_choice_draw);
 
     function fl_choice_handle
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_choice_handle, "fl_choice_handle");
@@ -82,13 +81,13 @@ package body FLTK.Widgets.Menus.Choices is
     procedure Finalize
            (This : in out Choice) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Choice'Class
         then
             if This.Needs_Dealloc then
                 free_fl_choice (This.Void_Ptr);
             end if;
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Widget (This));
     end Finalize;
@@ -112,9 +111,9 @@ package body FLTK.Widgets.Menus.Choices is
                         Interfaces.C.To_C (Text));
                 fl_widget_set_user_data
                        (This.Void_Ptr,
-                        Widget_Convert.To_Address (This'Unchecked_Access));
-                choice_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
-                choice_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                choice_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                choice_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;

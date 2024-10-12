@@ -3,27 +3,25 @@
 with
 
     Interfaces.C.Strings,
-    System,
     FLTK.Images.RGB;
 
 use type
 
     Interfaces.C.int,
     Interfaces.C.unsigned,
-    Interfaces.C.Strings.chars_ptr,
-    System.Address;
+    Interfaces.C.Strings.chars_ptr;
 
 
 package body FLTK.Widgets.Groups.Windows is
 
 
     procedure window_set_draw_hook
-           (W, D : in System.Address);
+           (W, D : in Storage.Integer_Address);
     pragma Import (C, window_set_draw_hook, "window_set_draw_hook");
     pragma Inline (window_set_draw_hook);
 
     procedure window_set_handle_hook
-           (W, H : in System.Address);
+           (W, H : in Storage.Integer_Address);
     pragma Import (C, window_set_handle_hook, "window_set_handle_hook");
     pragma Inline (window_set_handle_hook);
 
@@ -33,19 +31,19 @@ package body FLTK.Widgets.Groups.Windows is
     function new_fl_window
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_window, "new_fl_window");
     pragma Inline (new_fl_window);
 
     function new_fl_window2
            (W, H : in Interfaces.C.int;
             Text : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_window2, "new_fl_window2");
     pragma Inline (new_fl_window2);
 
     procedure free_fl_window
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, free_fl_window, "free_fl_window");
     pragma Inline (free_fl_window);
 
@@ -53,38 +51,38 @@ package body FLTK.Widgets.Groups.Windows is
 
 
     procedure fl_window_show
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_window_show, "fl_window_show");
     pragma Inline (fl_window_show);
 
     procedure fl_window_hide
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_window_hide, "fl_window_hide");
     pragma Inline (fl_window_hide);
 
     function fl_window_shown
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_window_shown, "fl_window_shown");
     pragma Inline (fl_window_shown);
 
     procedure fl_window_wait_for_expose
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_window_wait_for_expose, "fl_window_wait_for_expose");
     pragma Inline (fl_window_wait_for_expose);
 
     procedure fl_window_iconize
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_window_iconize, "fl_window_iconize");
     pragma Inline (fl_window_iconize);
 
     procedure fl_window_make_current
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_window_make_current, "fl_window_make_current");
     pragma Inline (fl_window_make_current);
 
     procedure fl_window_free_position
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_window_free_position, "fl_window_free_position");
     pragma Inline (fl_window_free_position);
 
@@ -92,29 +90,29 @@ package body FLTK.Widgets.Groups.Windows is
 
 
     function fl_window_fullscreen_active
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_window_fullscreen_active, "fl_window_fullscreen_active");
     pragma Inline (fl_window_fullscreen_active);
 
     procedure fl_window_fullscreen
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_window_fullscreen, "fl_window_fullscreen");
     pragma Inline (fl_window_fullscreen);
 
     procedure fl_window_fullscreen_off
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_window_fullscreen_off, "fl_window_fullscreen_off");
     pragma Inline (fl_window_fullscreen_off);
 
     procedure fl_window_fullscreen_off2
-           (N          : in System.Address;
+           (N          : in Storage.Integer_Address;
             X, Y, W, H : in Interfaces.C.int);
     pragma Import (C, fl_window_fullscreen_off2, "fl_window_fullscreen_off2");
     pragma Inline (fl_window_fullscreen_off2);
 
     procedure fl_window_fullscreen_screens
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             T, B, L, R : in Interfaces.C.int);
     pragma Import (C, fl_window_fullscreen_screens, "fl_window_fullscreen_screens");
     pragma Inline (fl_window_fullscreen_screens);
@@ -123,41 +121,41 @@ package body FLTK.Widgets.Groups.Windows is
 
 
     procedure fl_window_set_icon
-           (W, P : in System.Address);
+           (W, P : in Storage.Integer_Address);
     pragma Import (C, fl_window_set_icon, "fl_window_set_icon");
     pragma Inline (fl_window_set_icon);
 
     procedure fl_window_default_icon
-           (P : in System.Address);
+           (P : in Storage.Integer_Address);
     pragma Import (C, fl_window_default_icon, "fl_window_default_icon");
     pragma Inline (fl_window_default_icon);
 
     function fl_window_get_iconlabel
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.Strings.chars_ptr;
     pragma Import (C, fl_window_get_iconlabel, "fl_window_get_iconlabel");
     pragma Inline (fl_window_get_iconlabel);
 
     procedure fl_window_set_iconlabel
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             S : in Interfaces.C.char_array);
     pragma Import (C, fl_window_set_iconlabel, "fl_window_set_iconlabel");
     pragma Inline (fl_window_set_iconlabel);
 
     procedure fl_window_set_cursor
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             C : in Interfaces.C.int);
     pragma Import (C, fl_window_set_cursor, "fl_window_set_cursor");
     pragma Inline (fl_window_set_cursor);
 
     procedure fl_window_set_cursor2
-           (W, P : in System.Address;
+           (W, P : in Storage.Integer_Address;
             X, Y : in Interfaces.C.int);
     pragma Import (C, fl_window_set_cursor2, "fl_window_set_cursor2");
     pragma Inline (fl_window_set_cursor2);
 
     procedure fl_window_set_default_cursor
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             C : in Interfaces.C.int);
     pragma Import (C, fl_window_set_default_cursor, "fl_window_set_default_cursor");
     pragma Inline (fl_window_set_default_cursor);
@@ -166,52 +164,52 @@ package body FLTK.Widgets.Groups.Windows is
 
 
     function fl_window_get_border
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_window_get_border, "fl_window_get_border");
     pragma Inline (fl_window_get_border);
 
     procedure fl_window_set_border
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             S : in Interfaces.C.int);
     pragma Import (C, fl_window_set_border, "fl_window_set_border");
     pragma Inline (fl_window_set_border);
 
     function fl_window_get_override
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_window_get_override, "fl_window_get_override");
     pragma Inline (fl_window_get_override);
 
     procedure fl_window_set_override
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_window_set_override, "fl_window_set_override");
     pragma Inline (fl_window_set_override);
 
     function fl_window_modal
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_window_modal, "fl_window_modal");
     pragma Inline (fl_window_modal);
 
     function fl_window_non_modal
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_window_non_modal, "fl_window_non_modal");
     pragma Inline (fl_window_non_modal);
 
     procedure fl_window_clear_modal_states
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_window_clear_modal_states, "fl_window_clear_modal_states");
     pragma Inline (fl_window_clear_modal_states);
 
     procedure fl_window_set_modal
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_window_set_modal, "fl_window_set_modal");
     pragma Inline (fl_window_set_modal);
 
     procedure fl_window_set_non_modal
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_window_set_non_modal, "fl_window_set_non_modal");
     pragma Inline (fl_window_set_non_modal);
 
@@ -219,37 +217,37 @@ package body FLTK.Widgets.Groups.Windows is
 
 
     function fl_window_get_label
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.Strings.chars_ptr;
     pragma Import (C, fl_window_get_label, "fl_window_get_label");
     pragma Inline (fl_window_get_label);
 
     procedure fl_window_set_label
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             T : in Interfaces.C.char_array);
     pragma Import (C, fl_window_set_label, "fl_window_set_label");
     pragma Inline (fl_window_set_label);
 
     procedure fl_window_hotspot
-           (W       : in System.Address;
+           (W       : in Storage.Integer_Address;
             X, Y, S : in Interfaces.C.int);
     pragma Import (C, fl_window_hotspot, "fl_window_hotspot");
     pragma Inline (fl_window_hotspot);
 
     procedure fl_window_hotspot2
-           (W, I : in System.Address;
+           (W, I : in Storage.Integer_Address;
             S    : in Interfaces.C.int);
     pragma Import (C, fl_window_hotspot2, "fl_window_hotspot2");
     pragma Inline (fl_window_hotspot2);
 
     procedure fl_window_size_range
-           (W                         : in System.Address;
+           (W                         : in Storage.Integer_Address;
             LW, LH, HW, HH, DW, DH, A : in Interfaces.C.int);
     pragma Import (C, fl_window_size_range, "fl_window_size_range");
     pragma Inline (fl_window_size_range);
 
     procedure fl_window_shape
-           (W, P : in System.Address);
+           (W, P : in Storage.Integer_Address);
     pragma Import (C, fl_window_shape, "fl_window_shape");
     pragma Inline (fl_window_shape);
 
@@ -257,25 +255,25 @@ package body FLTK.Widgets.Groups.Windows is
 
 
     function fl_window_get_x_root
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_window_get_x_root, "fl_window_get_x_root");
     pragma Inline (fl_window_get_x_root);
 
     function fl_window_get_y_root
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_window_get_y_root, "fl_window_get_y_root");
     pragma Inline (fl_window_get_y_root);
 
     function fl_window_get_decorated_w
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_window_get_decorated_w, "fl_window_get_decorated_w");
     pragma Inline (fl_window_get_decorated_w);
 
     function fl_window_get_decorated_h
-           (W : in System.Address)
+           (W : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_window_get_decorated_h, "fl_window_get_decorated_h");
     pragma Inline (fl_window_get_decorated_h);
@@ -284,12 +282,12 @@ package body FLTK.Widgets.Groups.Windows is
 
 
     procedure fl_window_draw
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_window_draw, "fl_window_draw");
     pragma Inline (fl_window_draw);
 
     function fl_window_handle
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_window_handle, "fl_window_handle");
@@ -301,12 +299,12 @@ package body FLTK.Widgets.Groups.Windows is
     procedure Finalize
            (This : in out Window) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Window'Class
         then
             This.Clear;
             free_fl_window (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Group (This));
     end Finalize;
@@ -331,9 +329,9 @@ package body FLTK.Widgets.Groups.Windows is
                 fl_group_end (This.Void_Ptr);
                 fl_widget_set_user_data
                        (This.Void_Ptr,
-                        Widget_Convert.To_Address (This'Unchecked_Access));
-                window_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
-                window_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                window_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                window_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;
@@ -352,9 +350,9 @@ package body FLTK.Widgets.Groups.Windows is
                 fl_group_end (This.Void_Ptr);
                 fl_widget_set_user_data
                        (This.Void_Ptr,
-                        Widget_Convert.To_Address (This'Unchecked_Access));
-                window_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
-                window_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                window_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                window_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;

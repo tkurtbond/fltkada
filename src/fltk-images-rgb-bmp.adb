@@ -2,12 +2,7 @@
 
 with
 
-    Interfaces.C,
-    System;
-
-use type
-
-    System.Address;
+    Interfaces.C;
 
 
 package body FLTK.Images.RGB.BMP is
@@ -15,12 +10,12 @@ package body FLTK.Images.RGB.BMP is
 
     function new_fl_bmp_image
            (F : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_bmp_image, "new_fl_bmp_image");
     pragma Inline (new_fl_bmp_image);
 
     procedure free_fl_bmp_image
-           (P : in System.Address);
+           (P : in Storage.Integer_Address);
     pragma Import (C, free_fl_bmp_image, "free_fl_bmp_image");
     pragma Inline (free_fl_bmp_image);
 
@@ -30,11 +25,11 @@ package body FLTK.Images.RGB.BMP is
     overriding procedure Finalize
            (This : in out BMP_Image) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in BMP_Image'Class
         then
             free_fl_bmp_image (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (RGB_Image (This));
     end Finalize;

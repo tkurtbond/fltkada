@@ -6,6 +6,13 @@
 
 
 
+size_t c_pointer_size() {
+    return sizeof(void*);
+}
+
+
+
+
 int fl_abi_check(int v) {
     return Fl::abi_check(v);
 }

@@ -2,12 +2,7 @@
 
 with
 
-    Interfaces.C,
-    System;
-
-use type
-
-    System.Address;
+    Interfaces.C;
 
 
 package body FLTK.Devices.Surfaces.Image is
@@ -15,12 +10,12 @@ package body FLTK.Devices.Surfaces.Image is
 
     function new_fl_image_surface
            (W, H, R : in Interfaces.C.int)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_image_surface, "new_fl_image_surface");
     pragma Inline (new_fl_image_surface);
 
     procedure free_fl_image_surface
-           (S : in System.Address);
+           (S : in Storage.Integer_Address);
     pragma Import (C, free_fl_image_surface, "free_fl_image_surface");
     pragma Inline (free_fl_image_surface);
 
@@ -28,13 +23,13 @@ package body FLTK.Devices.Surfaces.Image is
 
 
     procedure fl_image_surface_draw
-           (S, I   : in System.Address;
+           (S, I   : in Storage.Integer_Address;
             OX, OY : in Interfaces.C.int);
     pragma Import (C, fl_image_surface_draw, "fl_image_surface_draw");
     pragma Inline (fl_image_surface_draw);
 
     procedure fl_image_surface_draw_decorated_window
-           (S, I   : in System.Address;
+           (S, I   : in Storage.Integer_Address;
             OX, OY : in Interfaces.C.int);
     pragma Import (C, fl_image_surface_draw_decorated_window,
         "fl_image_surface_draw_decorated_window");
@@ -44,14 +39,14 @@ package body FLTK.Devices.Surfaces.Image is
 
 
     function fl_image_surface_image
-           (S : in System.Address)
-        return System.Address;
+           (S : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_image_surface_image, "fl_image_surface_image");
     pragma Inline (fl_image_surface_image);
 
     function fl_image_surface_highres_image
-           (S : in System.Address)
-        return System.Address;
+           (S : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_image_surface_highres_image, "fl_image_surface_highres_image");
     pragma Inline (fl_image_surface_highres_image);
 
@@ -59,7 +54,7 @@ package body FLTK.Devices.Surfaces.Image is
 
 
     procedure fl_image_surface_set_current
-           (S : in System.Address);
+           (S : in Storage.Integer_Address);
     pragma Import (C, fl_image_surface_set_current, "fl_image_surface_set_current");
     pragma Inline (fl_image_surface_set_current);
 
@@ -69,11 +64,11 @@ package body FLTK.Devices.Surfaces.Image is
     procedure Finalize
            (This : in out Image_Surface) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Image_Surface'Class
         then
             free_fl_image_surface (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Surface_Device (This));
     end Finalize;

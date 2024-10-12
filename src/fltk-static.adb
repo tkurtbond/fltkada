@@ -4,7 +4,7 @@ with
 
     Interfaces.C.Strings,
     System.Address_To_Access_Conversions,
-    Ada.Unchecked_Conversion;
+    FLTK.Static_Callback_Conversions;
 
 use type
 
@@ -15,13 +15,18 @@ use type
 package body FLTK.Static is
 
 
+    package Conv renames FLTK.Static_Callback_Conversions;
+
+
+
+
     procedure fl_static_add_awake_handler
-           (H, F : in System.Address);
+           (H, F : in Storage.Integer_Address);
     pragma Import (C, fl_static_add_awake_handler, "fl_static_add_awake_handler");
     pragma Inline (fl_static_add_awake_handler);
 
     procedure fl_static_get_awake_handler
-           (H, F : out System.Address);
+           (H, F : out Storage.Integer_Address);
     pragma Import (C, fl_static_get_awake_handler, "fl_static_get_awake_handler");
     pragma Inline (fl_static_get_awake_handler);
 
@@ -29,18 +34,18 @@ package body FLTK.Static is
 
 
     procedure fl_static_add_check
-           (H, F : in System.Address);
+           (H, F : in Storage.Integer_Address);
     pragma Import (C, fl_static_add_check, "fl_static_add_check");
     pragma Inline (fl_static_add_check);
 
     function fl_static_has_check
-           (H, F : in System.Address)
+           (H, F : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_static_has_check, "fl_static_has_check");
     pragma Inline (fl_static_has_check);
 
     procedure fl_static_remove_check
-           (H, F : in System.Address);
+           (H, F : in Storage.Integer_Address);
     pragma Import (C, fl_static_remove_check, "fl_static_remove_check");
     pragma Inline (fl_static_remove_check);
 
@@ -49,24 +54,24 @@ package body FLTK.Static is
 
     procedure fl_static_add_timeout
            (S    : in Interfaces.C.double;
-            H, F : in System.Address);
+            H, F : in Storage.Integer_Address);
     pragma Import (C, fl_static_add_timeout, "fl_static_add_timeout");
     pragma Inline (fl_static_add_timeout);
 
     function fl_static_has_timeout
-           (H, F : in System.Address)
+           (H, F : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_static_has_timeout, "fl_static_has_timeout");
     pragma Inline (fl_static_has_timeout);
 
     procedure fl_static_remove_timeout
-           (H, F : in System.Address);
+           (H, F : in Storage.Integer_Address);
     pragma Import (C, fl_static_remove_timeout, "fl_static_remove_timeout");
     pragma Inline (fl_static_remove_timeout);
 
     procedure fl_static_repeat_timeout
            (S    : in Interfaces.C.double;
-            H, F : in System.Address);
+            H, F : in Storage.Integer_Address);
     pragma Import (C, fl_static_repeat_timeout, "fl_static_repeat_timeout");
     pragma Inline (fl_static_repeat_timeout);
 
@@ -74,7 +79,7 @@ package body FLTK.Static is
 
 
     procedure fl_static_add_clipboard_notify
-           (H, F : in System.Address);
+           (H, F : in Storage.Integer_Address);
     pragma Import (C, fl_static_add_clipboard_notify, "fl_static_add_clipboard_notify");
     pragma Inline (fl_static_add_clipboard_notify);
 
@@ -83,13 +88,13 @@ package body FLTK.Static is
 
     procedure fl_static_add_fd
            (D    : in Interfaces.C.int;
-            H, F : in System.Address);
+            H, F : in Storage.Integer_Address);
     pragma Import (C, fl_static_add_fd, "fl_static_add_fd");
     pragma Inline (fl_static_add_fd);
 
     procedure fl_static_add_fd2
            (D, M : in Interfaces.C.int;
-            H, F : in System.Address);
+            H, F : in Storage.Integer_Address);
     pragma Import (C, fl_static_add_fd2, "fl_static_add_fd2");
     pragma Inline (fl_static_add_fd2);
 
@@ -107,18 +112,18 @@ package body FLTK.Static is
 
 
     procedure fl_static_add_idle
-           (H, F : in System.Address);
+           (H, F : in Storage.Integer_Address);
     pragma Import (C, fl_static_add_idle, "fl_static_add_idle");
     pragma Inline (fl_static_add_idle);
 
     function fl_static_has_idle
-           (H, F : in System.Address)
+           (H, F : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_static_has_idle, "fl_static_has_idle");
     pragma Inline (fl_static_has_idle);
 
     procedure fl_static_remove_idle
-           (H, F : in System.Address);
+           (H, F : in Storage.Integer_Address);
     pragma Import (C, fl_static_remove_idle, "fl_static_remove_idle");
     pragma Inline (fl_static_remove_idle);
 
@@ -180,13 +185,13 @@ package body FLTK.Static is
 
     function fl_static_get_font_sizes
            (F : in     Interfaces.C.int;
-            A :    out System.Address)
+            A :    out Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_static_get_font_sizes, "fl_static_get_font_sizes");
     pragma Inline (fl_static_get_font_sizes);
 
     function fl_static_font_size_array_get
-           (A : in System.Address;
+           (A : in Storage.Integer_Address;
             I : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_static_font_size_array_get, "fl_static_font_size_array_get");
@@ -244,13 +249,13 @@ package body FLTK.Static is
     pragma Inline (fl_static_copy);
 
     procedure fl_static_paste
-           (R : in System.Address;
+           (R : in Storage.Integer_Address;
             S : in Interfaces.C.int);
     pragma Import (C, fl_static_paste, "fl_static_paste");
     pragma Inline (fl_static_paste);
 
     procedure fl_static_selection
-           (O : in System.Address;
+           (O : in Storage.Integer_Address;
             T : in Interfaces.C.char_array;
             L : in Interfaces.C.int);
     pragma Import (C, fl_static_selection, "fl_static_selection");
@@ -286,28 +291,28 @@ package body FLTK.Static is
 
 
     procedure fl_static_default_atclose
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_static_default_atclose, "fl_static_default_atclose");
     pragma Inline (fl_static_default_atclose);
 
     function fl_static_get_first_window
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, fl_static_get_first_window, "fl_static_get_first_window");
     pragma Inline (fl_static_get_first_window);
 
     procedure fl_static_set_first_window
-           (T : in System.Address);
+           (T : in Storage.Integer_Address);
     pragma Import (C, fl_static_set_first_window, "fl_static_set_first_window");
     pragma Inline (fl_static_set_first_window);
 
     function fl_static_next_window
-           (W : in System.Address)
-        return System.Address;
+           (W : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_static_next_window, "fl_static_next_window");
     pragma Inline (fl_static_next_window);
 
     function fl_static_modal
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, fl_static_modal, "fl_static_modal");
     pragma Inline (fl_static_modal);
 
@@ -315,7 +320,7 @@ package body FLTK.Static is
 
 
     function fl_static_readqueue
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, fl_static_readqueue, "fl_static_readqueue");
     pragma Inline (fl_static_readqueue);
 
@@ -374,26 +379,21 @@ package body FLTK.Static is
         (FLTK.Widgets.Groups.Windows.Window'Class);
 
     function fl_widget_get_user_data
-           (W : in System.Address)
-        return System.Address;
+           (W : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_widget_get_user_data, "fl_widget_get_user_data");
 
 
 
 
-    package Awake_Convert is
-        function To_Pointer is new Ada.Unchecked_Conversion (System.Address, Awake_Handler);
-        function To_Address is new Ada.Unchecked_Conversion (Awake_Handler, System.Address);
-    end Awake_Convert;
-
     procedure Awake_Hook
-           (U : in System.Address);
+           (U : in Storage.Integer_Address);
     pragma Convention (C, Awake_Hook);
 
     procedure Awake_Hook
-           (U : in System.Address) is
+           (U : in Storage.Integer_Address) is
     begin
-        Awake_Convert.To_Pointer (U).all;
+        Conv.To_Awake_Access (U).all;
     end Awake_Hook;
 
 
@@ -401,36 +401,30 @@ package body FLTK.Static is
            (Func : in Awake_Handler) is
     begin
         fl_static_add_awake_handler
-           (Awake_Hook'Address,
-            Awake_Convert.To_Address (Func));
+           (Storage.To_Integer (Awake_Hook'Address), Conv.To_Address (Func));
     end Add_Awake_Handler;
 
 
     function Get_Awake_Handler
         return Awake_Handler
     is
-        Hook, Func : System.Address;
+        Hook, Func : Storage.Integer_Address;
     begin
         fl_static_get_awake_handler (Hook, Func);
-        return Awake_Convert.To_Pointer (Func);
+        return Conv.To_Awake_Access (Func);
     end Get_Awake_Handler;
 
 
 
 
-    package Timeout_Convert is
-        function To_Pointer is new Ada.Unchecked_Conversion (System.Address, Timeout_Handler);
-        function To_Address is new Ada.Unchecked_Conversion (Timeout_Handler, System.Address);
-    end Timeout_Convert;
-
     procedure Timeout_Hook
-           (U : in System.Address);
+           (U : in Storage.Integer_Address);
     pragma Convention (C, Timeout_Hook);
 
     procedure Timeout_Hook
-           (U : in System.Address) is
+           (U : in Storage.Integer_Address) is
     begin
-        Timeout_Convert.To_Pointer (U).all;
+        Conv.To_Timeout_Access (U).all;
     end Timeout_Hook;
 
 
@@ -438,8 +432,7 @@ package body FLTK.Static is
            (Func : in Timeout_Handler) is
     begin
         fl_static_add_check
-           (Timeout_Hook'Address,
-            Timeout_Convert.To_Address (Func));
+           (Storage.To_Integer (Timeout_Hook'Address), Conv.To_Address (Func));
     end Add_Check;
 
 
@@ -448,8 +441,8 @@ package body FLTK.Static is
         return Boolean is
     begin
         return fl_static_has_check
-           (Timeout_Hook'Address,
-            Timeout_Convert.To_Address (Func)) /= 0;
+           (Storage.To_Integer (Timeout_Hook'Address),
+            Conv.To_Address (Func)) /= 0;
     end Has_Check;
 
 
@@ -457,8 +450,8 @@ package body FLTK.Static is
            (Func : in Timeout_Handler) is
     begin
         fl_static_remove_check
-           (Timeout_Hook'Address,
-            Timeout_Convert.To_Address (Func));
+           (Storage.To_Integer (Timeout_Hook'Address),
+            Conv.To_Address (Func));
     end Remove_Check;
 
 
@@ -470,8 +463,8 @@ package body FLTK.Static is
     begin
         fl_static_add_timeout
            (Interfaces.C.double (Seconds),
-            Timeout_Hook'Address,
-            Timeout_Convert.To_Address (Func));
+            Storage.To_Integer (Timeout_Hook'Address),
+            Conv.To_Address (Func));
     end Add_Timeout;
 
 
@@ -480,8 +473,8 @@ package body FLTK.Static is
         return Boolean is
     begin
         return fl_static_has_timeout
-           (Timeout_Hook'Address,
-            Timeout_Convert.To_Address (Func)) /= 0;
+           (Storage.To_Integer (Timeout_Hook'Address),
+            Conv.To_Address (Func)) /= 0;
     end Has_Timeout;
 
 
@@ -489,8 +482,8 @@ package body FLTK.Static is
            (Func : in Timeout_Handler) is
     begin
         fl_static_remove_timeout
-           (Timeout_Hook'Address,
-            Timeout_Convert.To_Address (Func));
+           (Storage.To_Integer (Timeout_Hook'Address),
+            Conv.To_Address (Func));
     end Remove_Timeout;
 
 
@@ -500,30 +493,26 @@ package body FLTK.Static is
     begin
         fl_static_repeat_timeout
            (Interfaces.C.double (Seconds),
-            Timeout_Hook'Address,
-            Timeout_Convert.To_Address (Func));
+            Storage.To_Integer (Timeout_Hook'Address),
+            Conv.To_Address (Func));
     end Repeat_Timeout;
 
 
 
 
-    package Clipboard_Convert is
-        function To_Pointer is new Ada.Unchecked_Conversion
-            (System.Address, Clipboard_Notify_Handler);
-        function To_Address is new Ada.Unchecked_Conversion
-            (Clipboard_Notify_Handler, System.Address);
-    end Clipboard_Convert;
-
+    --  This is handled on the Ada side because otherwise there would be
+    --  no way to specify which callback to remove in FLTK once one was
+    --  added. The hook is passed during package init.
     Current_Clipboard_Notify : Clipboard_Notify_Handler;
 
     procedure Clipboard_Notify_Hook
            (S : in Interfaces.C.int;
-            U : in System.Address);
+            U : in Storage.Integer_Address);
     pragma Convention (C, Clipboard_Notify_Hook);
 
     procedure Clipboard_Notify_Hook
            (S : in Interfaces.C.int;
-            U : in System.Address) is
+            U : in Storage.Integer_Address) is
     begin
         if Current_Clipboard_Notify /= null then
             Current_Clipboard_Notify.all (Buffer_Kind'Val (S));
@@ -547,21 +536,16 @@ package body FLTK.Static is
 
 
 
-    package FD_Convert is
-        function To_Pointer is new Ada.Unchecked_Conversion (System.Address, File_Handler);
-        function To_Address is new Ada.Unchecked_Conversion (File_Handler, System.Address);
-    end FD_Convert;
-
     procedure FD_Hook
            (FD : in Interfaces.C.int;
-            U  : in System.Address);
+            U  : in Storage.Integer_Address);
     pragma Convention (C, FD_Hook);
 
     procedure FD_Hook
            (FD : in Interfaces.C.int;
-            U  : in System.Address) is
+            U  : in Storage.Integer_Address) is
     begin
-        FD_Convert.To_Pointer (U).all (File_Descriptor (FD));
+        Conv.To_File_Access (U).all (File_Descriptor (FD));
     end FD_Hook;
 
 
@@ -571,8 +555,8 @@ package body FLTK.Static is
     begin
         fl_static_add_fd
            (Interfaces.C.int (FD),
-            FD_Hook'Address,
-            FD_Convert.To_Address (Func));
+            Storage.To_Integer (FD_Hook'Address),
+            Conv.To_Address (Func));
     end Add_File_Descriptor;
 
 
@@ -584,8 +568,8 @@ package body FLTK.Static is
         fl_static_add_fd2
            (Interfaces.C.int (FD),
             File_Mode_Codes (Mode),
-            FD_Hook'Address,
-            FD_Convert.To_Address (Func));
+            Storage.To_Integer (FD_Hook'Address),
+            Conv.To_Address (Func));
     end Add_File_Descriptor;
 
 
@@ -606,19 +590,14 @@ package body FLTK.Static is
 
 
 
-    package Idle_Convert is
-        function To_Pointer is new Ada.Unchecked_Conversion (System.Address, Idle_Handler);
-        function To_Address is new Ada.Unchecked_Conversion (Idle_Handler, System.Address);
-    end Idle_Convert;
-
     procedure Idle_Hook
-           (U : in System.Address);
+           (U : in Storage.Integer_Address);
     pragma Convention (C, Idle_Hook);
 
     procedure Idle_Hook
-           (U : in System.Address) is
+           (U : in Storage.Integer_Address) is
     begin
-        Idle_Convert.To_Pointer (U).all;
+        Conv.To_Idle_Access (U).all;
     end Idle_Hook;
 
 
@@ -626,8 +605,8 @@ package body FLTK.Static is
            (Func : in Idle_Handler) is
     begin
         fl_static_add_idle
-           (Idle_Hook'Address,
-            Idle_Convert.To_Address (Func));
+           (Storage.To_Integer (Idle_Hook'Address),
+            Conv.To_Address (Func));
     end Add_Idle;
 
 
@@ -636,8 +615,8 @@ package body FLTK.Static is
         return Boolean is
     begin
         return fl_static_has_idle
-           (Idle_Hook'Address,
-            Idle_Convert.To_Address (Func)) /= 0;
+           (Storage.To_Integer (Idle_Hook'Address),
+            Conv.To_Address (Func)) /= 0;
     end Has_Idle;
 
 
@@ -645,8 +624,8 @@ package body FLTK.Static is
            (Func : in Idle_Handler) is
     begin
         fl_static_remove_idle
-           (Idle_Hook'Address,
-            Idle_Convert.To_Address (Func));
+           (Storage.To_Integer (Idle_Hook'Address),
+            Conv.To_Address (Func));
     end Remove_Idle;
 
 
@@ -747,7 +726,7 @@ package body FLTK.Static is
            (Kind : in Font_Kind)
         return Font_Size_Array
     is
-        Ptr : System.Address;
+        Ptr : Storage.Integer_Address;
         Arr : Font_Size_Array
             (1 .. Integer (fl_static_get_font_sizes (Font_Kind'Pos (Kind), Ptr)));
     begin
@@ -911,7 +890,7 @@ package body FLTK.Static is
         return access FLTK.Widgets.Groups.Windows.Window'Class is
     begin
         return Window_Convert.To_Pointer
-            (fl_widget_get_user_data (fl_static_get_first_window));
+            (Storage.To_Address (fl_widget_get_user_data (fl_static_get_first_window)));
     end Get_First_Window;
 
 
@@ -926,15 +905,16 @@ package body FLTK.Static is
            (From : in FLTK.Widgets.Groups.Windows.Window'Class)
         return access FLTK.Widgets.Groups.Windows.Window'Class is
     begin
-        return Window_Convert.To_Pointer
-            (fl_widget_get_user_data (fl_static_next_window (Wrapper (From).Void_Ptr)));
+        return Window_Convert.To_Pointer (Storage.To_Address
+            (fl_widget_get_user_data (fl_static_next_window (Wrapper (From).Void_Ptr))));
     end Get_Next_Window;
 
 
     function Get_Top_Modal
         return access FLTK.Widgets.Groups.Windows.Window'Class is
     begin
-        return Window_Convert.To_Pointer (fl_widget_get_user_data (fl_static_modal));
+        return Window_Convert.To_Pointer
+            (Storage.To_Address (fl_widget_get_user_data (fl_static_modal)));
     end Get_Top_Modal;
 
 
@@ -943,7 +923,8 @@ package body FLTK.Static is
     function Read_Queue
         return access FLTK.Widgets.Widget'Class is
     begin
-        return Widget_Convert.To_Pointer (fl_widget_get_user_data (fl_static_readqueue));
+        return Widget_Convert.To_Pointer
+            (Storage.To_Address (fl_widget_get_user_data (fl_static_readqueue)));
     end Read_Queue;
 
 
@@ -1014,7 +995,8 @@ package body FLTK.Static is
 begin
 
 
-    fl_static_add_clipboard_notify (Clipboard_Notify_Hook'Address, System.Null_Address);
+    fl_static_add_clipboard_notify
+        (Storage.To_Integer (Clipboard_Notify_Hook'Address), Null_Pointer);
 
 
 end FLTK.Static;

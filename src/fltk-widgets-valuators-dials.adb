@@ -2,24 +2,19 @@
 
 with
 
-    Interfaces.C.Strings,
-    System;
-
-use type
-
-    System.Address;
+    Interfaces.C.Strings;
 
 
 package body FLTK.Widgets.Valuators.Dials is
 
 
     procedure dial_set_draw_hook
-           (W, D : in System.Address);
+           (W, D : in Storage.Integer_Address);
     pragma Import (C, dial_set_draw_hook, "dial_set_draw_hook");
     pragma Inline (dial_set_draw_hook);
 
     procedure dial_set_handle_hook
-           (W, H : in System.Address);
+           (W, H : in Storage.Integer_Address);
     pragma Import (C, dial_set_handle_hook, "dial_set_handle_hook");
     pragma Inline (dial_set_handle_hook);
 
@@ -29,12 +24,12 @@ package body FLTK.Widgets.Valuators.Dials is
     function new_fl_dial
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_dial, "new_fl_dial");
     pragma Inline (new_fl_dial);
 
     procedure free_fl_dial
-           (D : in System.Address);
+           (D : in Storage.Integer_Address);
     pragma Import (C, free_fl_dial, "free_fl_dial");
     pragma Inline (free_fl_dial);
 
@@ -42,13 +37,13 @@ package body FLTK.Widgets.Valuators.Dials is
 
 
     function fl_dial_get_type
-           (D : in System.Address)
+           (D : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_dial_get_type, "fl_dial_get_type");
     pragma Inline (fl_dial_get_type);
 
     procedure fl_dial_set_type
-           (D : in System.Address;
+           (D : in Storage.Integer_Address;
             T : in Interfaces.C.int);
     pragma Import (C, fl_dial_set_type, "fl_dial_set_type");
     pragma Inline (fl_dial_set_type);
@@ -57,31 +52,31 @@ package body FLTK.Widgets.Valuators.Dials is
 
 
     function fl_dial_get_angle1
-           (D : in System.Address)
+           (D : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_dial_get_angle1, "fl_dial_get_angle1");
     pragma Inline (fl_dial_get_angle1);
 
     procedure fl_dial_set_angle1
-           (D : in System.Address;
+           (D : in Storage.Integer_Address;
             T : in Interfaces.C.int);
     pragma Import (C, fl_dial_set_angle1, "fl_dial_set_angle1");
     pragma Inline (fl_dial_set_angle1);
 
     function fl_dial_get_angle2
-           (D : in System.Address)
+           (D : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_dial_get_angle2, "fl_dial_get_angle2");
     pragma Inline (fl_dial_get_angle2);
 
     procedure fl_dial_set_angle2
-           (D : in System.Address;
+           (D : in Storage.Integer_Address;
             T : in Interfaces.C.int);
     pragma Import (C, fl_dial_set_angle2, "fl_dial_set_angle2");
     pragma Inline (fl_dial_set_angle2);
 
     procedure fl_dial_set_angles
-           (D    : in System.Address;
+           (D    : in Storage.Integer_Address;
             A, B : in Interfaces.C.int);
     pragma Import (C, fl_dial_set_angles, "fl_dial_set_angles");
     pragma Inline (fl_dial_set_angles);
@@ -90,12 +85,12 @@ package body FLTK.Widgets.Valuators.Dials is
 
 
     procedure fl_dial_draw
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_dial_draw, "fl_dial_draw");
     pragma Inline (fl_dial_draw);
 
     function fl_dial_handle
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_dial_handle, "fl_dial_handle");
@@ -107,11 +102,11 @@ package body FLTK.Widgets.Valuators.Dials is
     procedure Finalize
            (This : in out Dial) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Dial'Class
         then
             free_fl_dial (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Valuator (This));
     end Finalize;
@@ -135,9 +130,9 @@ package body FLTK.Widgets.Valuators.Dials is
                         Interfaces.C.To_C (Text));
                 fl_widget_set_user_data
                        (This.Void_Ptr,
-                        Widget_Convert.To_Address (This'Unchecked_Access));
-                dial_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
-                dial_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                dial_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                dial_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;

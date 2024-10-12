@@ -2,14 +2,12 @@
 
 with
 
-    Interfaces.C.Strings,
-    System;
+    Interfaces.C.Strings;
 
 use type
 
     Interfaces.C.int,
-    Interfaces.C.Strings.chars_ptr,
-    System.Address;
+    Interfaces.C.Strings.chars_ptr;
 
 
 package body FLTK.Images.Shared is
@@ -18,38 +16,38 @@ package body FLTK.Images.Shared is
     function fl_shared_image_get
            (F    : in Interfaces.C.char_array;
             W, H : in Interfaces.C.int)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, fl_shared_image_get, "fl_shared_image_get");
     pragma Inline (fl_shared_image_get);
 
     function fl_shared_image_get2
-           (I : in System.Address)
-        return System.Address;
+           (I : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_shared_image_get2, "fl_shared_image_get2");
     pragma Inline (fl_shared_image_get2);
 
     function fl_shared_image_find
            (N    : in Interfaces.C.char_array;
             W, H : in Interfaces.C.int)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, fl_shared_image_find, "fl_shared_image_find");
     pragma Inline (fl_shared_image_find);
 
     procedure fl_shared_image_release
-           (I : in System.Address);
+           (I : in Storage.Integer_Address);
     pragma Import (C, fl_shared_image_release, "fl_shared_image_release");
     pragma Inline (fl_shared_image_release);
 
     function fl_shared_image_copy
-           (I    : in System.Address;
+           (I    : in Storage.Integer_Address;
             W, H : in Interfaces.C.int)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, fl_shared_image_copy, "fl_shared_image_copy");
     pragma Inline (fl_shared_image_copy);
 
     function fl_shared_image_copy2
-           (I : in System.Address)
-        return System.Address;
+           (I : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_shared_image_copy2, "fl_shared_image_copy2");
     pragma Inline (fl_shared_image_copy2);
 
@@ -57,14 +55,14 @@ package body FLTK.Images.Shared is
 
 
     procedure fl_shared_image_color_average
-           (I : in System.Address;
+           (I : in Storage.Integer_Address;
             C : in Interfaces.C.int;
             B : in Interfaces.C.C_float);
     pragma Import (C, fl_shared_image_color_average, "fl_shared_image_color_average");
     pragma Inline (fl_shared_image_color_average);
 
     procedure fl_shared_image_desaturate
-           (I : in System.Address);
+           (I : in Storage.Integer_Address);
     pragma Import (C, fl_shared_image_desaturate, "fl_shared_image_desaturate");
     pragma Inline (fl_shared_image_desaturate);
 
@@ -77,30 +75,30 @@ package body FLTK.Images.Shared is
     pragma Inline (fl_shared_image_num_images);
 
     function fl_shared_image_name
-           (I : in System.Address)
+           (I : in Storage.Integer_Address)
         return Interfaces.C.Strings.chars_ptr;
     pragma Import (C, fl_shared_image_name, "fl_shared_image_name");
     pragma Inline (fl_shared_image_name);
 
     function fl_shared_image_original
-           (I : in System.Address)
+           (I : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_shared_image_original, "fl_shared_image_original");
     pragma Inline (fl_shared_image_original);
 
     function fl_shared_image_refcount
-           (I : in System.Address)
+           (I : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_shared_image_refcount, "fl_shared_image_refcount");
     pragma Inline (fl_shared_image_refcount);
 
     procedure fl_shared_image_reload
-           (I : in System.Address);
+           (I : in Storage.Integer_Address);
     pragma Import (C, fl_shared_image_reload, "fl_shared_image_reload");
     pragma Inline (fl_shared_image_reload);
 
     procedure fl_shared_image_uncache
-           (I : in System.Address);
+           (I : in Storage.Integer_Address);
     pragma Import (C, fl_shared_image_uncache, "fl_shared_image_uncache");
     pragma Inline (fl_shared_image_uncache);
 
@@ -113,19 +111,19 @@ package body FLTK.Images.Shared is
     pragma Inline (fl_shared_image_scaling_algorithm);
 
     procedure fl_shared_image_scale
-           (I : in System.Address;
+           (I : in Storage.Integer_Address;
             W, H, P, E : in Interfaces.C.int);
     pragma Import (C, fl_shared_image_scale, "fl_shared_image_scale");
     pragma Inline (fl_shared_image_scale);
 
     procedure fl_shared_image_draw
-           (I                  : in System.Address;
+           (I                  : in Storage.Integer_Address;
             X, Y, W, H, CX, CY : in Interfaces.C.int);
     pragma Import (C, fl_shared_image_draw, "fl_shared_image_draw");
     pragma Inline (fl_shared_image_draw);
 
     procedure fl_shared_image_draw2
-           (I    : in System.Address;
+           (I    : in Storage.Integer_Address;
             X, Y : in Interfaces.C.int);
     pragma Import (C, fl_shared_image_draw2, "fl_shared_image_draw2");
     pragma Inline (fl_shared_image_draw2);
@@ -136,11 +134,11 @@ package body FLTK.Images.Shared is
     overriding procedure Finalize
            (This : in out Shared_Image) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Shared_Image'Class
         then
             fl_shared_image_release (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Image (This));
     end Finalize;
@@ -188,7 +186,7 @@ package body FLTK.Images.Shared is
                    (Interfaces.C.To_C (Name),
                     Interfaces.C.int (W),
                     Interfaces.C.int (H));
-                if This.Void_Ptr = System.Null_Address then
+                if This.Void_Ptr = Null_Pointer then
                     raise No_Image_Error;
                 end if;
             end return;

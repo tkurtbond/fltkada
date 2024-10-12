@@ -2,25 +2,23 @@
 
 with
 
-    Interfaces.C,
-    System;
+    Interfaces.C;
 
 use type
 
-    Interfaces.C.int,
-    System.Address;
+    Interfaces.C.int;
 
 
 package body FLTK.Widgets.Groups is
 
 
     procedure group_set_draw_hook
-           (W, D : in System.Address);
+           (W, D : in Storage.Integer_Address);
     pragma Import (C, group_set_draw_hook, "group_set_draw_hook");
     pragma Inline (group_set_draw_hook);
 
     procedure group_set_handle_hook
-           (W, H : in System.Address);
+           (W, H : in Storage.Integer_Address);
     pragma Import (C, group_set_handle_hook, "group_set_handle_hook");
     pragma Inline (group_set_handle_hook);
 
@@ -30,12 +28,12 @@ package body FLTK.Widgets.Groups is
     function new_fl_group
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_group, "new_fl_group");
     pragma Inline (new_fl_group);
 
     procedure free_fl_group
-           (G : in System.Address);
+           (G : in Storage.Integer_Address);
     pragma Import (C, free_fl_group, "free_fl_group");
     pragma Inline (free_fl_group);
 
@@ -43,28 +41,28 @@ package body FLTK.Widgets.Groups is
 
 
     procedure fl_group_add
-           (G, W : in System.Address);
+           (G, W : in Storage.Integer_Address);
     pragma Import (C, fl_group_add, "fl_group_add");
     pragma Inline (fl_group_add);
 
     procedure fl_group_insert
-           (G, W : in System.Address;
+           (G, W : in Storage.Integer_Address;
             P    : in Interfaces.C.int);
     pragma Import (C, fl_group_insert, "fl_group_insert");
     pragma Inline (fl_group_insert);
 
     procedure fl_group_insert2
-           (G, W, B : in System.Address);
+           (G, W, B : in Storage.Integer_Address);
     pragma Import (C, fl_group_insert2, "fl_group_insert2");
     pragma Inline (fl_group_insert2);
 
     procedure fl_group_remove
-           (G, W : in System.Address);
+           (G, W : in Storage.Integer_Address);
     pragma Import (C, fl_group_remove, "fl_group_remove");
     pragma Inline (fl_group_remove);
 
     procedure fl_group_remove2
-           (G : in System.Address;
+           (G : in Storage.Integer_Address;
             P : in Interfaces.C.int);
     pragma Import (C, fl_group_remove2, "fl_group_remove2");
     pragma Inline (fl_group_remove2);
@@ -73,20 +71,20 @@ package body FLTK.Widgets.Groups is
 
 
     function fl_group_child
-           (G : in System.Address;
+           (G : in Storage.Integer_Address;
             I : in Interfaces.C.int)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, fl_group_child, "fl_group_child");
     pragma Inline (fl_group_child);
 
     function fl_group_find
-           (G, W : in System.Address)
+           (G, W : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_group_find, "fl_group_find");
     pragma Inline (fl_group_find);
 
     function fl_group_children
-           (G : in System.Address)
+           (G : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_group_children, "fl_group_children");
     pragma Inline (fl_group_children);
@@ -95,13 +93,13 @@ package body FLTK.Widgets.Groups is
 
 
     --  function fl_group_get_clip_children
-    --         (G : in System.Address)
+    --         (G : in Storage.Integer_Address)
     --      return Interfaces.C.unsigned;
     --  pragma Import (C, fl_group_get_clip_children, "fl_group_get_clip_children");
     --  pragma Inline (fl_group_get_clip_children);
 
     --  procedure fl_group_set_clip_children
-    --         (G : in System.Address;
+    --         (G : in Storage.Integer_Address;
     --          C : in Interfaces.C.unsigned);
     --  pragma Import (C, fl_group_set_clip_children, "fl_group_set_clip_children");
     --  pragma Inline (fl_group_set_clip_children);
@@ -110,18 +108,18 @@ package body FLTK.Widgets.Groups is
 
 
     function fl_group_get_resizable
-           (G : in System.Address)
-        return System.Address;
+           (G : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_group_get_resizable, "fl_group_get_resizable");
     pragma Inline (fl_group_get_resizable);
 
     procedure fl_group_set_resizable
-           (G, W : in System.Address);
+           (G, W : in Storage.Integer_Address);
     pragma Import (C, fl_group_set_resizable, "fl_group_set_resizable");
     pragma Inline (fl_group_set_resizable);
 
     procedure fl_group_init_sizes
-           (G : in System.Address);
+           (G : in Storage.Integer_Address);
     pragma Import (C, fl_group_init_sizes, "fl_group_init_sizes");
     pragma Inline (fl_group_init_sizes);
 
@@ -129,12 +127,12 @@ package body FLTK.Widgets.Groups is
 
 
     function fl_group_get_current
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, fl_group_get_current, "fl_group_get_current");
     pragma Inline (fl_group_get_current);
 
     procedure fl_group_set_current
-           (G : in System.Address);
+           (G : in Storage.Integer_Address);
     pragma Import (C, fl_group_set_current, "fl_group_set_current");
     pragma Inline (fl_group_set_current);
 
@@ -142,12 +140,12 @@ package body FLTK.Widgets.Groups is
 
 
     procedure fl_group_draw
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_group_draw, "fl_group_draw");
     pragma Inline (fl_group_draw);
 
     function fl_group_handle
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_group_handle, "fl_group_handle");
@@ -159,12 +157,12 @@ package body FLTK.Widgets.Groups is
     procedure Finalize
            (This : in out Group) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Group'Class
         then
             This.Clear;
             free_fl_group (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Widget (This));
     end Finalize;
@@ -189,9 +187,9 @@ package body FLTK.Widgets.Groups is
                 fl_group_end (This.Void_Ptr);
                 fl_widget_set_user_data
                        (This.Void_Ptr,
-                        Widget_Convert.To_Address (This'Unchecked_Access));
-                group_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
-                group_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                group_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                group_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;
@@ -282,10 +280,10 @@ package body FLTK.Widgets.Groups is
             Place : in Index)
         return Widget_Reference
     is
-        Widget_Ptr : System.Address :=
-                fl_group_child (This.Void_Ptr, Interfaces.C.int (Place) - 1);
+        Widget_Ptr : Storage.Integer_Address :=
+            fl_group_child (This.Void_Ptr, Interfaces.C.int (Place) - 1);
         Actual_Widget : access Widget'Class :=
-                Widget_Convert.To_Pointer (fl_widget_get_user_data (Widget_Ptr));
+            Widget_Convert.To_Pointer (Storage.To_Address (fl_widget_get_user_data (Widget_Ptr)));
     begin
         return (Data => Actual_Widget);
     end Child;
@@ -405,10 +403,10 @@ package body FLTK.Widgets.Groups is
            (This : in Group)
         return access Widget'Class
     is
-        Widget_Ptr : System.Address :=
-                fl_group_get_resizable (This.Void_Ptr);
+        Widget_Ptr : Storage.Integer_Address :=
+            fl_group_get_resizable (This.Void_Ptr);
         Actual_Widget : access Widget'Class :=
-                Widget_Convert.To_Pointer (fl_widget_get_user_data (Widget_Ptr));
+            Widget_Convert.To_Pointer (Storage.To_Address (fl_widget_get_user_data (Widget_Ptr)));
     begin
         return Actual_Widget;
     end Get_Resizable;
@@ -434,11 +432,11 @@ package body FLTK.Widgets.Groups is
     function Get_Current
         return access Group'Class
     is
-        Group_Ptr : System.Address := fl_group_get_current;
+        Group_Ptr : Storage.Integer_Address := fl_group_get_current;
         Actual_Group : access Group'Class;
     begin
-        if Group_Ptr /= System.Null_Address then
-            Actual_Group := Group_Convert.To_Pointer (Group_Ptr);
+        if Group_Ptr /= Null_Pointer then
+            Actual_Group := Group_Convert.To_Pointer (Storage.To_Address (Group_Ptr));
         end if;
         return Actual_Group;
     end Get_Current;

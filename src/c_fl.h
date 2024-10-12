@@ -6,6 +6,9 @@
 
 
 
+size_t c_pointer_size();
+
+
 extern "C" int fl_abi_check(int v);
 extern "C" int fl_abi_version();
 extern "C" int fl_api_version();

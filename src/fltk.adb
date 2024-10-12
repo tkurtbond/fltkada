@@ -2,14 +2,12 @@
 
 with
 
-    Interfaces.C,
-    System;
+    Interfaces.C;
 
 use type
 
     Interfaces.C.int,
-    Interfaces.C.unsigned_long,
-    System.Address;
+    Interfaces.C.unsigned_long;
 
 
 package body FLTK is
@@ -85,14 +83,14 @@ package body FLTK is
            (Object : in Wrapper)
         return Boolean is
     begin
-        return Object.Void_Ptr /= System.Null_Address;
+        return Object.Void_Ptr /= Null_Pointer;
     end Is_Valid;
 
 
     procedure Initialize
            (This : in out Wrapper) is
     begin
-        This.Void_Ptr := System.Null_Address;
+        This.Void_Ptr := Null_Pointer;
     end Initialize;
 
 

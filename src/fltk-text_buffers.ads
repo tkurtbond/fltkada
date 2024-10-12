@@ -386,12 +386,12 @@ private
     procedure Modify_Callback_Hook
            (Pos, Inserted, Deleted, Restyled : in Interfaces.C.int;
             Text                             : in Interfaces.C.Strings.chars_ptr;
-            UD                               : in System.Address);
+            UD                               : in Storage.Integer_Address);
     pragma Convention (C, Modify_Callback_Hook);
 
     procedure Predelete_Callback_Hook
            (Pos, Deleted : in Interfaces.C.int;
-            UD           : in System.Address);
+            UD           : in Storage.Integer_Address);
     pragma Convention (C, Predelete_Callback_Hook);
 
 

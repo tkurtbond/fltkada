@@ -2,39 +2,34 @@
 
 with
 
-    Interfaces.C,
-    System;
-
-use type
-
-    System.Address;
+    Interfaces.C;
 
 
 package body FLTK.Images.Tiled is
 
 
     function new_fl_tiled_image
-           (T    : in System.Address;
+           (T    : in Storage.Integer_Address;
             W, H : in Interfaces.C.int)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_tiled_image, "new_fl_tiled_image");
     pragma Inline (new_fl_tiled_image);
 
     procedure free_fl_tiled_image
-           (T : in System.Address);
+           (T : in Storage.Integer_Address);
     pragma Import (C, free_fl_tiled_image, "free_fl_tiled_image");
     pragma Inline (free_fl_tiled_image);
 
     function fl_tiled_image_copy
-           (T    : in System.Address;
+           (T    : in Storage.Integer_Address;
             W, H : in Interfaces.C.int)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, fl_tiled_image_copy, "fl_tiled_image_copy");
     pragma Inline (fl_tiled_image_copy);
 
     function fl_tiled_image_copy2
-           (T : in System.Address)
-        return System.Address;
+           (T : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_tiled_image_copy2, "fl_tiled_image_copy2");
     pragma Inline (fl_tiled_image_copy2);
 
@@ -42,8 +37,8 @@ package body FLTK.Images.Tiled is
 
 
     function fl_tiled_image_get_image
-           (T : in System.Address)
-        return System.Address;
+           (T : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_tiled_image_get_image, "fl_tiled_image_get_image");
     pragma Inline (fl_tiled_image_get_image);
 
@@ -51,14 +46,14 @@ package body FLTK.Images.Tiled is
 
 
     procedure fl_tiled_image_color_average
-           (T : in System.Address;
+           (T : in Storage.Integer_Address;
             C : in Interfaces.C.int;
             B : in Interfaces.C.C_float);
     pragma Import (C, fl_tiled_image_color_average, "fl_tiled_image_color_average");
     pragma Inline (fl_tiled_image_color_average);
 
     procedure fl_tiled_image_desaturate
-           (T : in System.Address);
+           (T : in Storage.Integer_Address);
     pragma Import (C, fl_tiled_image_desaturate, "fl_tiled_image_desaturate");
     pragma Inline (fl_tiled_image_desaturate);
 
@@ -66,13 +61,13 @@ package body FLTK.Images.Tiled is
 
 
     procedure fl_tiled_image_draw
-           (T    : in System.Address;
+           (T    : in Storage.Integer_Address;
             X, Y : in Interfaces.C.int);
     pragma Import (C, fl_tiled_image_draw, "fl_tiled_image_draw");
     pragma Inline (fl_tiled_image_draw);
 
     procedure fl_tiled_image_draw2
-           (T          : in System.Address;
+           (T          : in Storage.Integer_Address;
             X, Y, W, H : in Interfaces.C.int;
             CX, CY     : in Interfaces.C.int);
     pragma Import (C, fl_tiled_image_draw2, "fl_tiled_image_draw2");
@@ -84,11 +79,11 @@ package body FLTK.Images.Tiled is
     overriding procedure Finalize
            (This : in out Tiled_Image) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Tiled_Image'Class
         then
             free_fl_tiled_image (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Image (This));
     end Finalize;

@@ -2,8 +2,7 @@
 
 with
 
-    Interfaces.C.Strings,
-    System;
+    Interfaces.C.Strings;
 
 use type
 
@@ -105,7 +104,7 @@ package body FLTK.Dialogs is
     pragma Inline (dialog_fl_message_font);
 
     function dialog_fl_message_icon
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, dialog_fl_message_icon, "dialog_fl_message_icon");
     pragma Inline (dialog_fl_message_icon);
 

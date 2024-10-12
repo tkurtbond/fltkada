@@ -2,25 +2,23 @@
 
 with
 
-    Interfaces.C,
-    System;
+    Interfaces.C;
 
 use type
 
-    Interfaces.C.int,
-    System.Address;
+    Interfaces.C.int;
 
 
 package body FLTK.Widgets.Groups.Color_Choosers is
 
 
     procedure color_chooser_set_draw_hook
-           (W, D : in System.Address);
+           (W, D : in Storage.Integer_Address);
     pragma Import (C, color_chooser_set_draw_hook, "color_chooser_set_draw_hook");
     pragma Inline (color_chooser_set_draw_hook);
 
     procedure color_chooser_set_handle_hook
-           (W, H : in System.Address);
+           (W, H : in Storage.Integer_Address);
     pragma Import (C, color_chooser_set_handle_hook, "color_chooser_set_handle_hook");
     pragma Inline (color_chooser_set_handle_hook);
 
@@ -30,12 +28,12 @@ package body FLTK.Widgets.Groups.Color_Choosers is
     function new_fl_color_chooser
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_color_chooser, "new_fl_color_chooser");
     pragma Inline (new_fl_color_chooser);
 
     procedure free_fl_color_chooser
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, free_fl_color_chooser, "free_fl_color_chooser");
     pragma Inline (free_fl_color_chooser);
 
@@ -43,25 +41,25 @@ package body FLTK.Widgets.Groups.Color_Choosers is
 
 
     function fl_color_chooser_r
-           (N : in System.Address)
+           (N : in Storage.Integer_Address)
         return Interfaces.C.double;
     pragma Import (C, fl_color_chooser_r, "fl_color_chooser_r");
     pragma Inline (fl_color_chooser_r);
 
     function fl_color_chooser_g
-           (N : in System.Address)
+           (N : in Storage.Integer_Address)
         return Interfaces.C.double;
     pragma Import (C, fl_color_chooser_g, "fl_color_chooser_g");
     pragma Inline (fl_color_chooser_g);
 
     function fl_color_chooser_b
-           (N : in System.Address)
+           (N : in Storage.Integer_Address)
         return Interfaces.C.double;
     pragma Import (C, fl_color_chooser_b, "fl_color_chooser_b");
     pragma Inline (fl_color_chooser_b);
 
     function fl_color_chooser_rgb
-           (N       : in System.Address;
+           (N       : in Storage.Integer_Address;
             R, G, B : in Interfaces.C.double)
         return Interfaces.C.int;
     pragma Import (C, fl_color_chooser_rgb, "fl_color_chooser_rgb");
@@ -71,25 +69,25 @@ package body FLTK.Widgets.Groups.Color_Choosers is
 
 
     function fl_color_chooser_hue
-           (N : in System.Address)
+           (N : in Storage.Integer_Address)
         return Interfaces.C.double;
     pragma Import (C, fl_color_chooser_hue, "fl_color_chooser_hue");
     pragma Inline (fl_color_chooser_hue);
 
     function fl_color_chooser_saturation
-           (N : in System.Address)
+           (N : in Storage.Integer_Address)
         return Interfaces.C.double;
     pragma Import (C, fl_color_chooser_saturation, "fl_color_chooser_saturation");
     pragma Inline (fl_color_chooser_saturation);
 
     function fl_color_chooser_value
-           (N : in System.Address)
+           (N : in Storage.Integer_Address)
         return Interfaces.C.double;
     pragma Import (C, fl_color_chooser_value, "fl_color_chooser_value");
     pragma Inline (fl_color_chooser_value);
 
     function fl_color_chooser_hsv
-           (N       : in System.Address;
+           (N       : in Storage.Integer_Address;
             H, S, V : in Interfaces.C.double)
         return Interfaces.C.int;
     pragma Import (C, fl_color_chooser_hsv, "fl_color_chooser_hsv");
@@ -114,13 +112,13 @@ package body FLTK.Widgets.Groups.Color_Choosers is
 
 
     function fl_color_chooser_get_mode
-           (N : in System.Address)
+           (N : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_color_chooser_get_mode, "fl_color_chooser_get_mode");
     pragma Inline (fl_color_chooser_get_mode);
 
     procedure fl_color_chooser_set_mode
-           (N : in System.Address;
+           (N : in Storage.Integer_Address;
             M : in Interfaces.C.int);
     pragma Import (C, fl_color_chooser_set_mode, "fl_color_chooser_set_mode");
     pragma Inline (fl_color_chooser_set_mode);
@@ -129,12 +127,12 @@ package body FLTK.Widgets.Groups.Color_Choosers is
 
 
     procedure fl_color_chooser_draw
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_color_chooser_draw, "fl_color_chooser_draw");
     pragma Inline (fl_color_chooser_draw);
 
     function fl_color_chooser_handle
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_color_chooser_handle, "fl_color_chooser_handle");
@@ -146,12 +144,12 @@ package body FLTK.Widgets.Groups.Color_Choosers is
     procedure Finalize
            (This : in out Color_Chooser) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Color_Chooser'Class
         then
             This.Clear;
             free_fl_color_chooser (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Group (This));
     end Finalize;
@@ -176,9 +174,11 @@ package body FLTK.Widgets.Groups.Color_Choosers is
                 fl_group_end (This.Void_Ptr);
                 fl_widget_set_user_data
                        (This.Void_Ptr,
-                        Widget_Convert.To_Address (This'Unchecked_Access));
-                color_chooser_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
-                color_chooser_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                color_chooser_set_draw_hook
+                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                color_chooser_set_handle_hook
+                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;

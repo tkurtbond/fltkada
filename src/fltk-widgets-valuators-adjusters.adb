@@ -2,25 +2,23 @@
 
 with
 
-    Interfaces.C.Strings,
-    System;
+    Interfaces.C.Strings;
 
 use type
 
-    Interfaces.C.int,
-    System.Address;
+    Interfaces.C.int;
 
 
 package body FLTK.Widgets.Valuators.Adjusters is
 
 
     procedure adjuster_set_draw_hook
-           (W, D : in System.Address);
+           (W, D : in Storage.Integer_Address);
     pragma Import (C, adjuster_set_draw_hook, "adjuster_set_draw_hook");
     pragma Inline (adjuster_set_draw_hook);
 
     procedure adjuster_set_handle_hook
-           (W, H : in System.Address);
+           (W, H : in Storage.Integer_Address);
     pragma Import (C, adjuster_set_handle_hook, "adjuster_set_handle_hook");
     pragma Inline (adjuster_set_handle_hook);
 
@@ -30,12 +28,12 @@ package body FLTK.Widgets.Valuators.Adjusters is
     function new_fl_adjuster
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_adjuster, "new_fl_adjuster");
     pragma Inline (new_fl_adjuster);
 
     procedure free_fl_adjuster
-           (A : in System.Address);
+           (A : in Storage.Integer_Address);
     pragma Import (C, free_fl_adjuster, "free_fl_adjuster");
     pragma Inline (free_fl_adjuster);
 
@@ -43,13 +41,13 @@ package body FLTK.Widgets.Valuators.Adjusters is
 
 
     function fl_adjuster_is_soft
-           (A : in System.Address)
+           (A : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_adjuster_is_soft, "fl_adjuster_is_soft");
     pragma Inline (fl_adjuster_is_soft);
 
     procedure fl_adjuster_set_soft
-           (A : in System.Address;
+           (A : in Storage.Integer_Address;
             T : in Interfaces.C.int);
     pragma Import (C, fl_adjuster_set_soft, "fl_adjuster_set_soft");
     pragma Inline (fl_adjuster_set_soft);
@@ -58,12 +56,12 @@ package body FLTK.Widgets.Valuators.Adjusters is
 
 
     procedure fl_adjuster_draw
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_adjuster_draw, "fl_adjuster_draw");
     pragma Inline (fl_adjuster_draw);
 
     function fl_adjuster_handle
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_adjuster_handle, "fl_adjuster_handle");
@@ -75,11 +73,11 @@ package body FLTK.Widgets.Valuators.Adjusters is
     procedure Finalize
            (This : in out Adjuster) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Adjuster'Class
         then
             free_fl_adjuster (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Valuator (This));
     end Finalize;
@@ -103,9 +101,9 @@ package body FLTK.Widgets.Valuators.Adjusters is
                         Interfaces.C.To_C (Text));
                 fl_widget_set_user_data
                        (This.Void_Ptr,
-                        Widget_Convert.To_Address (This'Unchecked_Access));
-                adjuster_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
-                adjuster_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                adjuster_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                adjuster_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;

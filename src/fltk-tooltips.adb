@@ -7,20 +7,19 @@ with
 
 use type
 
-    Interfaces.C.int,
-    System.Address;
+    Interfaces.C.int;
 
 
 package body FLTK.Tooltips is
 
 
     function fl_tooltip_get_current
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, fl_tooltip_get_current, "fl_tooltip_get_current");
     pragma Inline (fl_tooltip_get_current);
 
     procedure fl_tooltip_set_current
-           (I : in System.Address);
+           (I : in Storage.Integer_Address);
     pragma Import (C, fl_tooltip_set_current, "fl_tooltip_set_current");
     pragma Inline (fl_tooltip_set_current);
 
@@ -35,7 +34,7 @@ package body FLTK.Tooltips is
     pragma Inline (fl_tooltip_enable);
 
     procedure fl_tooltip_enter_area
-           (I          : in System.Address;
+           (I          : in Storage.Integer_Address;
             X, Y, W, H : in Interfaces.C.int;
             T          : in Interfaces.C.char_array);
     pragma Import (C, fl_tooltip_enter_area, "fl_tooltip_enter_area");
@@ -144,8 +143,8 @@ package body FLTK.Tooltips is
 
 
     function fl_widget_get_user_data
-           (W : in System.Address)
-        return System.Address;
+           (W : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_widget_get_user_data, "fl_widget_get_user_data");
     pragma Inline (fl_widget_get_user_data);
 
@@ -158,10 +157,11 @@ package body FLTK.Tooltips is
     function Get_Target
         return access FLTK.Widgets.Widget'Class
     is
-        Widget_Ptr : System.Address := fl_tooltip_get_current;
+        Widget_Ptr : Storage.Integer_Address := fl_tooltip_get_current;
     begin
-        if Widget_Ptr /= System.Null_Address then
-            return Widget_Convert.To_Pointer (fl_widget_get_user_data (Widget_Ptr));
+        if Widget_Ptr /= Null_Pointer then
+            return Widget_Convert.To_Pointer
+                (Storage.To_Address (fl_widget_get_user_data (Widget_Ptr)));
         else
             return null;
         end if;

@@ -2,24 +2,19 @@
 
 with
 
-    Interfaces.C,
-    System;
-
-use type
-
-    System.Address;
+    Interfaces.C;
 
 
 package body FLTK.Widgets.Groups.Tiled is
 
 
     procedure tile_set_draw_hook
-           (W, D : in System.Address);
+           (W, D : in Storage.Integer_Address);
     pragma Import (C, tile_set_draw_hook, "tile_set_draw_hook");
     pragma Inline (tile_set_draw_hook);
 
     procedure tile_set_handle_hook
-           (W, H : in System.Address);
+           (W, H : in Storage.Integer_Address);
     pragma Import (C, tile_set_handle_hook, "tile_set_handle_hook");
     pragma Inline (tile_set_handle_hook);
 
@@ -29,12 +24,12 @@ package body FLTK.Widgets.Groups.Tiled is
     function new_fl_tile
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_tile, "new_fl_tile");
     pragma Inline (new_fl_tile);
 
     procedure free_fl_tile
-           (B : in System.Address);
+           (B : in Storage.Integer_Address);
     pragma Import (C, free_fl_tile, "free_fl_tile");
     pragma Inline (free_fl_tile);
 
@@ -42,7 +37,7 @@ package body FLTK.Widgets.Groups.Tiled is
 
 
     procedure fl_tile_position
-           (T              : in System.Address;
+           (T              : in Storage.Integer_Address;
             OX, OY, NX, NY : in Interfaces.C.int);
     pragma Import (C, fl_tile_position, "fl_tile_position");
     pragma Inline (fl_tile_position);
@@ -51,12 +46,12 @@ package body FLTK.Widgets.Groups.Tiled is
 
 
     procedure fl_tile_draw
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_tile_draw, "fl_tile_draw");
     pragma Inline (fl_tile_draw);
 
     function fl_tile_handle
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_tile_handle, "fl_tile_handle");
@@ -68,12 +63,12 @@ package body FLTK.Widgets.Groups.Tiled is
     procedure Finalize
            (This : in out Tiled_Group) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Tiled_Group'Class
         then
             This.Clear;
             free_fl_tile (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Group (This));
     end Finalize;
@@ -98,9 +93,9 @@ package body FLTK.Widgets.Groups.Tiled is
                 fl_group_end (This.Void_Ptr);
                 fl_widget_set_user_data
                        (This.Void_Ptr,
-                        Widget_Convert.To_Address (This'Unchecked_Access));
-                tile_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
-                tile_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                tile_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                tile_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;

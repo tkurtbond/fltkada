@@ -348,7 +348,7 @@ private
 
     function Key_Func_Hook
            (K : in Interfaces.C.int;
-            E : in System.Address)
+            E : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Convention (C, Key_Func_Hook);
 

@@ -2,12 +2,7 @@
 
 with
 
-    Interfaces.C,
-    System;
-
-use type
-
-    System.Address;
+    Interfaces.C;
 
 
 package body FLTK.Images.RGB.JPEG is
@@ -15,19 +10,19 @@ package body FLTK.Images.RGB.JPEG is
 
     function new_fl_jpeg_image
            (F : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_jpeg_image, "new_fl_jpeg_image");
     pragma Inline (new_fl_jpeg_image);
 
     function new_fl_jpeg_image2
            (N : in Interfaces.C.char_array;
-            D : in System.Address)
-        return System.Address;
+            D : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_jpeg_image2, "new_fl_jpeg_image2");
     pragma Inline (new_fl_jpeg_image2);
 
     procedure free_fl_jpeg_image
-           (P : in System.Address);
+           (P : in Storage.Integer_Address);
     pragma Import (C, free_fl_jpeg_image, "free_fl_jpeg_image");
     pragma Inline (free_fl_jpeg_image);
 
@@ -37,11 +32,11 @@ package body FLTK.Images.RGB.JPEG is
     overriding procedure Finalize
            (This : in out JPEG_Image) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in JPEG_Image'Class
         then
             free_fl_jpeg_image (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (RGB_Image (This));
     end Finalize;
@@ -79,7 +74,7 @@ package body FLTK.Images.RGB.JPEG is
             return This : JPEG_Image do
                 This.Void_Ptr := new_fl_jpeg_image2
                    (Interfaces.C.To_C (Name),
-                    Data (Data'First)'Address);
+                    Storage.To_Integer (Data (Data'First)'Address));
                 case fl_image_fail (This.Void_Ptr) is
                     when 1 => raise No_Image_Error;
                     when 2 => raise File_Access_Error;

@@ -2,39 +2,34 @@
 
 with
 
-    Interfaces.C,
-    System;
-
-use type
-
-    System.Address;
+    Interfaces.C;
 
 
 package body FLTK.Images.Bitmaps is
 
 
     function new_fl_bitmap
-           (D    : in System.Address;
+           (D    : in Storage.Integer_Address;
             W, H : in Interfaces.C.int)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_bitmap, "new_fl_bitmap");
     pragma Inline (new_fl_bitmap);
 
     procedure free_fl_bitmap
-           (I : in System.Address);
+           (I : in Storage.Integer_Address);
     pragma Import (C, free_fl_bitmap, "free_fl_bitmap");
     pragma Inline (free_fl_bitmap);
 
     function fl_bitmap_copy
-           (I    : in System.Address;
+           (I    : in Storage.Integer_Address;
             W, H : in Interfaces.C.int)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, fl_bitmap_copy, "fl_bitmap_copy");
     pragma Inline (fl_bitmap_copy);
 
     function fl_bitmap_copy2
-           (I : in System.Address)
-        return System.Address;
+           (I : in Storage.Integer_Address)
+        return Storage.Integer_Address;
     pragma Import (C, fl_bitmap_copy2, "fl_bitmap_copy2");
     pragma Inline (fl_bitmap_copy2);
 
@@ -42,7 +37,7 @@ package body FLTK.Images.Bitmaps is
 
 
     procedure fl_bitmap_uncache
-           (I : in System.Address);
+           (I : in Storage.Integer_Address);
     pragma Import (C, fl_bitmap_uncache, "fl_bitmap_uncache");
     pragma Inline (fl_bitmap_uncache);
 
@@ -50,13 +45,13 @@ package body FLTK.Images.Bitmaps is
 
 
     procedure fl_bitmap_draw2
-           (I    : in System.Address;
+           (I    : in Storage.Integer_Address;
             X, Y : in Interfaces.C.int);
     pragma Import (C, fl_bitmap_draw2, "fl_bitmap_draw2");
     pragma Inline (fl_bitmap_draw2);
 
     procedure fl_bitmap_draw
-           (I                  : in System.Address;
+           (I                  : in Storage.Integer_Address;
             X, Y, W, H, CX, CY : in Interfaces.C.int);
     pragma Import (C, fl_bitmap_draw, "fl_bitmap_draw");
     pragma Inline (fl_bitmap_draw);
@@ -67,11 +62,11 @@ package body FLTK.Images.Bitmaps is
     overriding procedure Finalize
            (This : in out Bitmap) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Bitmap'Class
         then
             free_fl_bitmap (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Image (This));
     end Finalize;
@@ -92,7 +87,7 @@ package body FLTK.Images.Bitmaps is
         begin
             return This : Bitmap do
                 This.Void_Ptr := new_fl_bitmap
-                   (Data (Data'First)'Address,
+                   (Storage.To_Integer (Data (Data'First)'Address),
                     Interfaces.C.int (Width),
                     Interfaces.C.int (Height));
                 case fl_image_fail (This.Void_Ptr) is

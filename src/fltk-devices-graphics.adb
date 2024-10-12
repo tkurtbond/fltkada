@@ -2,15 +2,14 @@
 
 with
 
-    Interfaces.C,
-    System;
+    Interfaces.C;
 
 
 package body FLTK.Devices.Graphics is
 
 
     function fl_graphics_driver_color
-           (G : in System.Address)
+           (G : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_graphics_driver_color, "fl_graphics_driver_color");
     pragma Inline (fl_graphics_driver_color);
@@ -19,26 +18,26 @@ package body FLTK.Devices.Graphics is
 
 
     function fl_graphics_driver_descent
-           (G : in System.Address)
+           (G : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_graphics_driver_descent, "fl_graphics_driver_descent");
     pragma Inline (fl_graphics_driver_descent);
 
     function fl_graphics_driver_height
-           (G : in System.Address)
+           (G : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_graphics_driver_height, "fl_graphics_driver_height");
     pragma Inline (fl_graphics_driver_height);
 
     function fl_graphics_driver_width
-           (G : in System.Address;
+           (G : in Storage.Integer_Address;
             C : in Interfaces.C.unsigned)
         return Interfaces.C.double;
     pragma Import (C, fl_graphics_driver_width, "fl_graphics_driver_width");
     pragma Inline (fl_graphics_driver_width);
 
     function fl_graphics_driver_width2
-           (G : in System.Address;
+           (G : in Storage.Integer_Address;
             S : in Interfaces.C.char_array;
             L : in Interfaces.C.int)
         return Interfaces.C.double;
@@ -46,19 +45,19 @@ package body FLTK.Devices.Graphics is
     pragma Inline (fl_graphics_driver_width2);
 
     function fl_graphics_driver_get_font
-           (G : in System.Address)
+           (G : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_graphics_driver_get_font, "fl_graphics_driver_get_font");
     pragma Inline (fl_graphics_driver_get_font);
 
     function fl_graphics_driver_size
-           (G : in System.Address)
+           (G : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_graphics_driver_size, "fl_graphics_driver_size");
     pragma Inline (fl_graphics_driver_size);
 
     procedure fl_graphics_driver_set_font
-           (G    : in System.Address;
+           (G    : in Storage.Integer_Address;
             K, S : in Interfaces.C.int);
     pragma Import (C, fl_graphics_driver_set_font, "fl_graphics_driver_set_font");
     pragma Inline (fl_graphics_driver_set_font);
@@ -67,7 +66,7 @@ package body FLTK.Devices.Graphics is
 
 
     procedure fl_graphics_driver_draw_scaled
-           (G, I       : in System.Address;
+           (G, I       : in Storage.Integer_Address;
             X, Y, W, H : in Interfaces.C.int);
     pragma Import (C, fl_graphics_driver_draw_scaled, "fl_graphics_driver_draw_scaled");
     pragma Inline (fl_graphics_driver_draw_scaled);

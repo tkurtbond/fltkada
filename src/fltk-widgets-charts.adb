@@ -2,25 +2,23 @@
 
 with
 
-    Interfaces.C,
-    System;
+    Interfaces.C;
 
 use type
 
-    Interfaces.C.int,
-    System.Address;
+    Interfaces.C.int;
 
 
 package body FLTK.Widgets.Charts is
 
 
     procedure chart_set_draw_hook
-           (W, D : in System.Address);
+           (W, D : in Storage.Integer_Address);
     pragma Import (C, chart_set_draw_hook, "chart_set_draw_hook");
     pragma Inline (chart_set_draw_hook);
 
     procedure chart_set_handle_hook
-           (W, H : in System.Address);
+           (W, H : in Storage.Integer_Address);
     pragma Import (C, chart_set_handle_hook, "chart_set_handle_hook");
     pragma Inline (chart_set_handle_hook);
 
@@ -30,12 +28,12 @@ package body FLTK.Widgets.Charts is
     function new_fl_chart
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_chart, "new_fl_chart");
     pragma Inline (new_fl_chart);
 
     procedure free_fl_chart
-           (B : in System.Address);
+           (B : in Storage.Integer_Address);
     pragma Import (C, free_fl_chart, "free_fl_chart");
     pragma Inline (free_fl_chart);
 
@@ -43,7 +41,7 @@ package body FLTK.Widgets.Charts is
 
 
     procedure fl_chart_add
-           (C : in System.Address;
+           (C : in Storage.Integer_Address;
             V : in Interfaces.C.double;
             L : in Interfaces.C.char_array;
             P : in Interfaces.C.unsigned);
@@ -51,7 +49,7 @@ package body FLTK.Widgets.Charts is
     pragma Inline (fl_chart_add);
 
     procedure fl_chart_insert
-           (C : in System.Address;
+           (C : in Storage.Integer_Address;
             I : in Interfaces.C.int;
             V : in Interfaces.C.double;
             L : in Interfaces.C.char_array;
@@ -60,7 +58,7 @@ package body FLTK.Widgets.Charts is
     pragma Inline (fl_chart_insert);
 
     procedure fl_chart_replace
-           (C : in System.Address;
+           (C : in Storage.Integer_Address;
             I : in Interfaces.C.int;
             V : in Interfaces.C.double;
             L : in Interfaces.C.char_array;
@@ -69,7 +67,7 @@ package body FLTK.Widgets.Charts is
     pragma Inline (fl_chart_replace);
 
     procedure fl_chart_clear
-           (C : in System.Address);
+           (C : in Storage.Integer_Address);
     pragma Import (C, fl_chart_clear, "fl_chart_clear");
     pragma Inline (fl_chart_clear);
 
@@ -77,43 +75,43 @@ package body FLTK.Widgets.Charts is
 
 
     function fl_chart_get_autosize
-           (C : in System.Address)
+           (C : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_chart_get_autosize, "fl_chart_get_autosize");
     pragma Inline (fl_chart_get_autosize);
 
     procedure fl_chart_set_autosize
-           (C : in System.Address;
+           (C : in Storage.Integer_Address;
             A : in Interfaces.C.int);
     pragma Import (C, fl_chart_set_autosize, "fl_chart_set_autosize");
     pragma Inline (fl_chart_set_autosize);
 
     procedure fl_chart_get_bounds
-           (C    : in     System.Address;
+           (C    : in     Storage.Integer_Address;
             L, U :    out Interfaces.C.double);
     pragma Import (C, fl_chart_get_bounds, "fl_chart_get_bounds");
     pragma Inline (fl_chart_get_bounds);
 
     procedure fl_chart_set_bounds
-           (C    : in System.Address;
+           (C    : in Storage.Integer_Address;
             L, U : in Interfaces.C.double);
     pragma Import (C, fl_chart_set_bounds, "fl_chart_set_bounds");
     pragma Inline (fl_chart_set_bounds);
 
     function fl_chart_get_maxsize
-           (C : in System.Address)
+           (C : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_chart_get_maxsize, "fl_chart_get_maxsize");
     pragma Inline (fl_chart_get_maxsize);
 
     procedure fl_chart_set_maxsize
-           (C : in System.Address;
+           (C : in Storage.Integer_Address;
             T : in Interfaces.C.int);
     pragma Import (C, fl_chart_set_maxsize, "fl_chart_set_maxsize");
     pragma Inline (fl_chart_set_maxsize);
 
     function fl_chart_size
-           (C : in System.Address)
+           (C : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_chart_size, "fl_chart_size");
     pragma Inline (fl_chart_size);
@@ -122,37 +120,37 @@ package body FLTK.Widgets.Charts is
 
 
     function fl_chart_get_textcolor
-           (C : in System.Address)
+           (C : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_chart_get_textcolor, "fl_chart_get_textcolor");
     pragma Inline (fl_chart_get_textcolor);
 
     procedure fl_chart_set_textcolor
-           (C : in System.Address;
+           (C : in Storage.Integer_Address;
             T : in Interfaces.C.unsigned);
     pragma Import (C, fl_chart_set_textcolor, "fl_chart_set_textcolor");
     pragma Inline (fl_chart_set_textcolor);
 
     function fl_chart_get_textfont
-           (C : in System.Address)
+           (C : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_chart_get_textfont, "fl_chart_get_textfont");
     pragma Inline (fl_chart_get_textfont);
 
     procedure fl_chart_set_textfont
-           (C : in System.Address;
+           (C : in Storage.Integer_Address;
             T : in Interfaces.C.int);
     pragma Import (C, fl_chart_set_textfont, "fl_chart_set_textfont");
     pragma Inline (fl_chart_set_textfont);
 
     function fl_chart_get_textsize
-           (C : in System.Address)
+           (C : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_chart_get_textsize, "fl_chart_get_textsize");
     pragma Inline (fl_chart_get_textsize);
 
     procedure fl_chart_set_textsize
-           (C : in System.Address;
+           (C : in Storage.Integer_Address;
             T : in Interfaces.C.int);
     pragma Import (C, fl_chart_set_textsize, "fl_chart_set_textsize");
     pragma Inline (fl_chart_set_textsize);
@@ -161,7 +159,7 @@ package body FLTK.Widgets.Charts is
 
 
     procedure fl_chart_size2
-           (C    : in System.Address;
+           (C    : in Storage.Integer_Address;
             W, H : in Interfaces.C.int);
     pragma Import (C, fl_chart_size2, "fl_chart_size2");
     pragma Inline (fl_chart_size2);
@@ -170,12 +168,12 @@ package body FLTK.Widgets.Charts is
 
 
     procedure fl_chart_draw
-           (W : in System.Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_chart_draw, "fl_chart_draw");
     pragma Inline (fl_chart_draw);
 
     function fl_chart_handle
-           (W : in System.Address;
+           (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_chart_handle, "fl_chart_handle");
@@ -187,11 +185,11 @@ package body FLTK.Widgets.Charts is
     procedure Finalize
            (This : in out Chart) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in Chart'Class
         then
             free_fl_chart (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Widget (This));
     end Finalize;
@@ -215,9 +213,9 @@ package body FLTK.Widgets.Charts is
                         Interfaces.C.To_C (Text));
                 fl_widget_set_user_data
                        (This.Void_Ptr,
-                        Widget_Convert.To_Address (This'Unchecked_Access));
-                chart_set_draw_hook (This.Void_Ptr, Draw_Hook'Address);
-                chart_set_handle_hook (This.Void_Ptr, Handle_Hook'Address);
+                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                chart_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                chart_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;

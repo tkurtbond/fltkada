@@ -2,12 +2,7 @@
 
 with
 
-    Interfaces.C,
-    System;
-
-use type
-
-    System.Address;
+    Interfaces.C;
 
 
 package body FLTK.Images.Bitmaps.XBM is
@@ -15,12 +10,12 @@ package body FLTK.Images.Bitmaps.XBM is
 
     function new_fl_xbm_image
            (F : in Interfaces.C.char_array)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, new_fl_xbm_image, "new_fl_xbm_image");
     pragma Inline (new_fl_xbm_image);
 
     procedure free_fl_xbm_image
-           (P : in System.Address);
+           (P : in Storage.Integer_Address);
     pragma Import (C, free_fl_xbm_image, "free_fl_xbm_image");
     pragma Inline (free_fl_xbm_image);
 
@@ -30,11 +25,11 @@ package body FLTK.Images.Bitmaps.XBM is
     overriding procedure Finalize
            (This : in out XBM_Image) is
     begin
-        if  This.Void_Ptr /= System.Null_Address and then
+        if  This.Void_Ptr /= Null_Pointer and then
             This in XBM_Image'Class
         then
             free_fl_xbm_image (This.Void_Ptr);
-            This.Void_Ptr := System.Null_Address;
+            This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Bitmap (This));
     end Finalize;

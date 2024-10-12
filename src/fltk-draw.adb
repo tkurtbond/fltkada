@@ -3,14 +3,12 @@
 with
 
     Ada.Unchecked_Deallocation,
-    Interfaces.C.Strings,
-    System;
+    Interfaces.C.Strings;
 
 use type
 
     Interfaces.C.int,
-    Interfaces.C.size_t,
-    System.Address;
+    Interfaces.C.size_t;
 
 
 package body FLTK.Draw is
@@ -23,7 +21,7 @@ package body FLTK.Draw is
     procedure fl_draw_set_spot
            (F, S       : in Interfaces.C.int;
             X, Y, W, H : in Interfaces.C.int;
-            Ptr        : in System.Address);
+            Ptr        : in Storage.Integer_Address);
     pragma Import (C, fl_draw_set_spot, "fl_draw_set_spot");
     pragma Inline (fl_draw_set_spot);
 
@@ -265,36 +263,36 @@ package body FLTK.Draw is
 
 
     procedure fl_draw_draw_image
-           (Buf        : in System.Address;
+           (Buf        : in Storage.Integer_Address;
             X, Y, W, H : in Interfaces.C.int;
             D, L       : in Interfaces.C.int);
     pragma Import (C, fl_draw_draw_image, "fl_draw_draw_image");
     pragma Inline (fl_draw_draw_image);
 
     procedure fl_draw_draw_image2
-           (Call, User    : in System.Address;
+           (Call, User    : in Storage.Integer_Address;
             X, Y, W, H, D : in Interfaces.C.int);
     pragma Import (C, fl_draw_draw_image2, "fl_draw_draw_image2");
     pragma Inline (fl_draw_draw_image2);
 
     procedure fl_draw_draw_image_mono
-           (Buf        : in System.Address;
+           (Buf        : in Storage.Integer_Address;
             X, Y, W, H : in Interfaces.C.int;
             D, L       : in Interfaces.C.int);
     pragma Import (C, fl_draw_draw_image_mono, "fl_draw_draw_image_mono");
     pragma Inline (fl_draw_draw_image_mono);
 
     procedure fl_draw_draw_image_mono2
-           (Call, User    : in System.Address;
+           (Call, User    : in Storage.Integer_Address;
             X, Y, W, H, D : in Interfaces.C.int);
     pragma Import (C, fl_draw_draw_image_mono2, "fl_draw_draw_image_mono2");
     pragma Inline (fl_draw_draw_image_mono2);
 
     function fl_draw_read_image
-           (Buf        : in System.Address;
+           (Buf        : in Storage.Integer_Address;
             X, Y, W, H : in Interfaces.C.int;
             Alpha      : in Interfaces.C.int)
-        return System.Address;
+        return Storage.Integer_Address;
     pragma Import (C, fl_draw_read_image, "fl_draw_read_image");
     pragma Inline (fl_draw_read_image);
 
@@ -303,7 +301,7 @@ package body FLTK.Draw is
 
     function fl_draw_add_symbol
            (Name     : in Interfaces.C.char_array;
-            Drawit   : in System.Address;
+            Drawit   : in Storage.Integer_Address;
             Scalable : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_draw_add_symbol, "fl_draw_add_symbol");
@@ -319,7 +317,7 @@ package body FLTK.Draw is
            (Str        : in Interfaces.C.char_array;
             X, Y, W, H : in Interfaces.C.int;
             Ali        : in Interfaces.Unsigned_16;
-            Img        : in System.Address;
+            Img        : in Storage.Integer_Address;
             Sym        : in Interfaces.C.int);
     pragma Import (C, fl_draw_draw_text2, "fl_draw_draw_text2");
     pragma Inline (fl_draw_draw_text2);
@@ -328,8 +326,8 @@ package body FLTK.Draw is
            (Str        : in Interfaces.C.char_array;
             X, Y, W, H : in Interfaces.C.int;
             Ali        : in Interfaces.Unsigned_16;
-            Func       : in System.Address;
-            Img        : in System.Address;
+            Func       : in Storage.Integer_Address;
+            Img        : in Storage.Integer_Address;
             Sym        : in Interfaces.C.int);
     pragma Import (C, fl_draw_draw_text3, "fl_draw_draw_text3");
     pragma Inline (fl_draw_draw_text3);
@@ -372,7 +370,7 @@ package body FLTK.Draw is
     procedure fl_draw_scroll
            (X, Y, W, H : in Interfaces.C.int;
             DX, DY     : in Interfaces.C.int;
-            Func, Data : in System.Address);
+            Func, Data : in Storage.Integer_Address);
     pragma Import (C, fl_draw_scroll, "fl_draw_scroll");
     pragma Inline (fl_draw_scroll);
 
@@ -623,7 +621,7 @@ package body FLTK.Draw is
             Interfaces.C.int (Y),
             Interfaces.C.int (W),
             Interfaces.C.int (H),
-            System.Null_Address);
+            Null_Pointer);
     end Set_Spot;
 
 
@@ -1092,7 +1090,7 @@ package body FLTK.Draw is
             end if;
         end if;
         fl_draw_draw_image
-           (Data (Data'First)'Address,
+           (Storage.To_Integer (Data (Data'First)'Address),
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
             Interfaces.C.int (W),
@@ -1105,12 +1103,12 @@ package body FLTK.Draw is
     Image_Func_Ptr : Image_Draw_Function;
 
     procedure Draw_Image_Hook
-           (User    : in System.Address;
+           (User    : in Storage.Integer_Address;
             X, Y, W : in Interfaces.C.int;
-            Buf_Ptr : in System.Address)
+            Buf_Ptr : in Storage.Integer_Address)
     is
         Data_Buffer : Color_Component_Array (1 .. Integer (W));
-        for Data_Buffer'Address use Buf_Ptr;
+        for Data_Buffer'Address use Storage.To_Address (Buf_Ptr);
         pragma Import (Ada, Data_Buffer);
     begin
         Image_Func_Ptr (Integer (X), Integer (Y), Data_Buffer);
@@ -1123,8 +1121,8 @@ package body FLTK.Draw is
     begin
         Image_Func_Ptr := Callback;
         fl_draw_draw_image2
-           (Draw_Image_Hook'Address,
-            System.Null_Address,
+           (Storage.To_Integer (Draw_Image_Hook'Address),
+            Null_Pointer,
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
             Interfaces.C.int (W),
@@ -1155,7 +1153,7 @@ package body FLTK.Draw is
             end if;
         end if;
         fl_draw_draw_image_mono
-           (Data (Data'First)'Address,
+           (Storage.To_Integer (Data (Data'First)'Address),
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
             Interfaces.C.int (W),
@@ -1168,12 +1166,12 @@ package body FLTK.Draw is
     Mono_Image_Func_Ptr : Image_Draw_Function;
 
     procedure Draw_Image_Mono_Hook
-           (User    : in System.Address;
+           (User    : in Storage.Integer_Address;
             X, Y, W : in Interfaces.C.int;
-            Buf_Ptr : in System.Address)
+            Buf_Ptr : in Storage.Integer_Address)
     is
         Data_Buffer : Color_Component_Array (1 .. Integer (W));
-        for Data_Buffer'Address use Buf_Ptr;
+        for Data_Buffer'Address use Storage.To_Address (Buf_Ptr);
         pragma Import (Ada, Data_Buffer);
     begin
         Mono_Image_Func_Ptr (Integer (X), Integer (Y), Data_Buffer);
@@ -1186,8 +1184,8 @@ package body FLTK.Draw is
     begin
         Mono_Image_Func_Ptr := Callback;
         fl_draw_draw_image_mono2
-           (Draw_Image_Mono_Hook'Address,
-            System.Null_Address,
+           (Storage.To_Integer (Draw_Image_Mono_Hook'Address),
+            Null_Pointer,
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
             Interfaces.C.int (W),
@@ -1203,16 +1201,16 @@ package body FLTK.Draw is
     is
         My_Len : Integer := (if Alpha = 0 then W * H * 3 else W * H * 4);
         Result : Color_Component_Array (1 .. My_Len);
-        Buffer : System.Address;
+        Buffer : Storage.Integer_Address;
     begin
         Buffer := fl_draw_read_image
-           (Result (Result'First)'Address,
+           (Storage.To_Integer (Result (Result'First)'Address),
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
             Interfaces.C.int (W),
             Interfaces.C.int (H),
             Interfaces.C.int (Alpha));
-        if Buffer /= Result (Result'First)'Address then
+        if Buffer /= Storage.To_Integer (Result (Result'First)'Address) then
             raise Program_Error;
         end if;
         return Result;
@@ -1232,7 +1230,7 @@ package body FLTK.Draw is
     is
         Ret_Val : Interfaces.C.int := fl_draw_add_symbol
            (Interfaces.C.To_C (Text),
-            Callback.all'Address,
+            Storage.To_Integer (Callback.all'Address),
             Boolean'Pos (Scalable));
     begin
         if Ret_Val = 0 then
@@ -1267,7 +1265,7 @@ package body FLTK.Draw is
             Interfaces.C.int (W),
             Interfaces.C.int (H),
             Interfaces.Unsigned_16 (Align),
-            System.Null_Address,
+            Null_Pointer,
             Boolean'Pos (Symbols));
     end Draw_Text;
 
@@ -1294,11 +1292,11 @@ package body FLTK.Draw is
     Text_Func_Ptr : Text_Draw_Function;
 
     procedure Draw_Text_Hook
-           (Ptr       : in System.Address;
+           (Ptr       : in Storage.Integer_Address;
             N, X0, Y0 : in Interfaces.C.int)
     is
         Data : String (1 .. Integer (N));
-        for Data'Address use Ptr;
+        for Data'Address use Storage.To_Address (Ptr);
         pragma Import (Ada, Data);
     begin
         Text_Func_Ptr (Integer (X0), Integer (Y0), Data);
@@ -1320,8 +1318,8 @@ package body FLTK.Draw is
             Interfaces.C.int (W),
             Interfaces.C.int (H),
             Interfaces.Unsigned_16 (Align),
-            Draw_Text_Hook'Address,
-            System.Null_Address,
+            Storage.To_Integer (Draw_Text_Hook'Address),
+            Null_Pointer,
             Boolean'Pos (Symbols));
     end Draw_Text;
 
@@ -1342,7 +1340,7 @@ package body FLTK.Draw is
             Interfaces.C.int (W),
             Interfaces.C.int (H),
             Interfaces.Unsigned_16 (Align),
-            Draw_Text_Hook'Address,
+            Storage.To_Integer (Draw_Text_Hook'Address),
             Wrapper (Picture).Void_Ptr,
             Boolean'Pos (Symbols));
     end Draw_Text;
@@ -1448,8 +1446,8 @@ package body FLTK.Draw is
             Interfaces.C.int (H),
             Interfaces.C.int (DX),
             Interfaces.C.int (DY),
-            Scroll_Hook'Address,
-            Callback.all'Address);
+            Storage.To_Integer (Scroll_Hook'Address),
+            Storage.To_Integer (Callback.all'Address));
     end Scroll;
 
 

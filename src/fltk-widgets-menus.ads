@@ -8,8 +8,7 @@ with
 private with
 
     Ada.Containers.Vectors,
-    Interfaces,
-    System;
+    Interfaces;
 
 
 package FLTK.Widgets.Menus is
@@ -256,7 +255,7 @@ private
 
 
 
-    procedure Item_Hook (M, U : in System.Address);
+    procedure Item_Hook (M, U : in Storage.Integer_Address);
     pragma Convention (C, Item_Hook);
 
 
