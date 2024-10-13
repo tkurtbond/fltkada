@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #ifndef FL_COPY_SURFACE_GUARD
 #define CL_COPY_SURFACE_GUARD
 

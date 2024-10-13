@@ -1,4 +1,9 @@
 
+
+--  Programmed by Jedidiah Barber
+--  Released into the public domain
+
+
 with
 
     FLTK.Widgets;

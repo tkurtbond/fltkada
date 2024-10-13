@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_Pack.H>
 #include "c_fl_pack.h"
 #include "c_fl_type.h"

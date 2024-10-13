@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_Adjuster.H>
 #include "c_fl_adjuster.h"
 #include "c_fl_type.h"

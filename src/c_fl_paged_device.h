@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #ifndef FL_PAGED_DEVICE_GUARD
 #define FL_PAGED_DEVICE_GUARD
 

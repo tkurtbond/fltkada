@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_Tiled_Image.H>
 #include <FL/Fl_Image.H>
 #include "c_fl_tiled_image.h"

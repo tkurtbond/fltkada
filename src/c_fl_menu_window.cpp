@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_Menu_Window.H>
 #include "c_fl_menu_window.h"
 #include "c_fl_type.h"

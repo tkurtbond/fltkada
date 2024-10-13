@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #ifndef FL_VALUE_OUTPUT_GUARD
 #define FL_VALUE_OUTPUT_GUARD
 

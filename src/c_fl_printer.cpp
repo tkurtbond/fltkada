@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_Printer.H>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Window.H>

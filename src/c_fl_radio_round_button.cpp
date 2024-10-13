@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_Radio_Round_Button.H>
 #include "c_fl_radio_round_button.h"
 #include "c_fl_type.h"

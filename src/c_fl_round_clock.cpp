@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_Round_Clock.H>
 #include "c_fl_round_clock.h"
 #include "c_fl_type.h"

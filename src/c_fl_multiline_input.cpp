@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_Multiline_Input.H>
 #include "c_fl_multiline_input.h"
 #include "c_fl_type.h"

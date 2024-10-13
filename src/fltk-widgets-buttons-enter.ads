@@ -1,5 +1,9 @@
 
 
+--  Programmed by Jedidiah Barber
+--  Released into the public domain
+
+
 --  Return Buttons, but return is a reserved word, so they're Enter Buttons instead
 
 

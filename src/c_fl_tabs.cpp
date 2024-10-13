@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_Tabs.H>
 #include "c_fl_tabs.h"
 #include "c_fl_type.h"

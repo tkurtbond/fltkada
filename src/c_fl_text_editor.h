@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #ifndef FL_TEXT_EDITOR_GUARD
 #define FL_TEXT_EDITOR_GUARD
 

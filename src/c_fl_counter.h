@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #ifndef FL_COUNTER_GUARD
 #define FL_COUNTER_GUARD
 

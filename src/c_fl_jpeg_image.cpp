@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_JPEG_Image.H>
 #include "c_fl_jpeg_image.h"
 

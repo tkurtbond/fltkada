@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Widget.H>
 #include "c_fl_group.h"

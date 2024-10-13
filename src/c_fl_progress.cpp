@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_Progress.H>
 #include "c_fl_progress.h"
 #include "c_fl_type.h"

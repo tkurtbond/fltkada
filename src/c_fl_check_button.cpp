@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_Check_Button.H>
 #include "c_fl_check_button.h"
 #include "c_fl_type.h"

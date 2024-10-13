@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #ifndef FL_HOR_NICE_SLIDER_GUARD
 #define FL_HOR_NICE_SLIDER_GUARD
 

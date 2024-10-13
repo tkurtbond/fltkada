@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #ifndef FL_SCROLL_GUARD
 #define FL_SCROLL_GUARD
 

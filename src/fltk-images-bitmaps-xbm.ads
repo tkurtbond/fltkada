@@ -1,5 +1,9 @@
 
 
+--  Programmed by Jedidiah Barber
+--  Released into the public domain
+
+
 package FLTK.Images.Bitmaps.XBM is
 
 

@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_Input_Choice.H>
 #include "c_fl_input_choice.h"
 #include "c_fl_type.h"

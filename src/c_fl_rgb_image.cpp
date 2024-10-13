@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_RGB_Image.H>
 #include <FL/Fl_Pixmap.H>
 #include "c_fl_rgb_image.h"

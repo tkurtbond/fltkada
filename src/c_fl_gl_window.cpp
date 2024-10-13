@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_Gl_Window.H>
 #include "c_fl_gl_window.h"
 #include "c_fl_type.h"

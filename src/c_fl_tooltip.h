@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #ifndef FL_TOOLTIP_GUARD
 #define FL_TOOLTIP_GUARD
 

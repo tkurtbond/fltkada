@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_Secret_Input.H>
 #include "c_fl_secret_input.h"
 #include "c_fl_type.h"

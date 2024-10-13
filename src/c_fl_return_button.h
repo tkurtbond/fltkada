@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #ifndef FL_RETURN_BUTTON_GUARD
 #define FL_RETURN_BUTTON_GUARD
 

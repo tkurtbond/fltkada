@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_Text_Editor.H>
 #include "c_fl_text_editor.h"
 #include "c_fl_type.h"

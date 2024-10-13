@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_Spinner.H>
 #include "c_fl_spinner.h"
 #include "c_fl_type.h"

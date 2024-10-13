@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #ifndef FL_HORIZONTAL_SLIDER_GUARD
 #define FL_HORIZONTAL_SLIDER_GUARD
 

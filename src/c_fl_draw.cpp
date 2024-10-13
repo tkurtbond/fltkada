@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/fl_draw.H>
 #include <FL/Fl_Window.H>
 #include "c_fl_draw.h"

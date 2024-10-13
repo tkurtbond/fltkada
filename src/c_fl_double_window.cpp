@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_Double_Window.H>
 #include "c_fl_double_window.h"
 #include "c_fl_type.h"

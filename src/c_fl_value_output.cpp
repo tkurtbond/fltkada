@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_Value_Output.H>
 #include "c_fl_value_output.h"
 #include "c_fl_type.h"

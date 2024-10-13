@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #ifndef FL_ROUND_CLOCK_GUARD
 #define FL_ROUND_CLOCK_GUARD
 

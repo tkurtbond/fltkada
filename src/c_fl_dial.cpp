@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_Dial.H>
 #include "c_fl_dial.h"
 #include "c_fl_type.h"

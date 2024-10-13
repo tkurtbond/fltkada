@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_Overlay_Window.H>
 #include "c_fl_overlay_window.h"
 #include "c_fl_type.h"

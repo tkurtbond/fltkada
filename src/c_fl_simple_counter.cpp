@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_Simple_Counter.H>
 #include "c_fl_simple_counter.h"
 #include "c_fl_type.h"

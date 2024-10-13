@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_Nice_Slider.H>
 #include "c_fl_nice_slider.h"
 #include "c_fl_type.h"

@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #ifndef FL_DOUBLE_WINDOW_GUARD
 #define FL_DOUBLE_WINDOW_GUARD
 

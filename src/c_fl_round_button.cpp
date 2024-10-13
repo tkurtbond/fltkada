@@ -1,5 +1,9 @@
 
 
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
 #include <FL/Fl_Round_Button.H>
 #include "c_fl_round_button.h"
 #include "c_fl_type.h"
