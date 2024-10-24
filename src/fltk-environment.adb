@@ -17,16 +17,141 @@ use type
 package body FLTK.Environment is
 
 
-    function new_fl_preferences
+    ------------------------
+    --  Constants From C  --
+    ------------------------
+
+    root_fl_prefs_system : constant Interfaces.C.int;
+    pragma Import (C, root_fl_prefs_system, "root_fl_prefs_system");
+
+    root_fl_prefs_user : constant Interfaces.C.int;
+    pragma Import (C, root_fl_prefs_user, "root_fl_prefs_user");
+
+    const_fl_path_max : constant Interfaces.C.int;
+    pragma Import (C, const_fl_path_max, "const_fl_path_max");
+
+
+
+
+    ------------------------
+    --  Functions From C  --
+    ------------------------
+
+    function fl_preferences_new_uuid
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_preferences_new_uuid, "fl_preferences_new_uuid");
+    pragma Inline (fl_preferences_new_uuid);
+
+
+
+
+    function new_fl_pref_database_path
            (P, V, A : in Interfaces.C.char_array)
         return Storage.Integer_Address;
-    pragma Import (C, new_fl_preferences, "new_fl_preferences");
-    pragma Inline (new_fl_preferences);
+    pragma Import (C, new_fl_pref_database_path, "new_fl_pref_database_path");
+    pragma Inline (new_fl_pref_database_path);
 
-    procedure free_fl_preferences
+    function new_fl_pref_database_scope
+           (S    : in Interfaces.C.int;
+            V, A : in Interfaces.C.char_array)
+        return Storage.Integer_Address;
+    pragma Import (C, new_fl_pref_database_scope, "new_fl_pref_database_scope");
+    pragma Inline (new_fl_pref_database_scope);
+
+    procedure upref_fl_pref_database
+           (P : in Storage.Integer_Address);
+    pragma Import (C, upref_fl_pref_database, "upref_fl_pref_database");
+    pragma Inline (upref_fl_pref_database);
+
+    procedure free_fl_pref_database
            (E : in Storage.Integer_Address);
-    pragma Import (C, free_fl_preferences, "free_fl_preferences");
-    pragma Inline (free_fl_preferences);
+    pragma Import (C, free_fl_pref_database, "free_fl_pref_database");
+    pragma Inline (free_fl_pref_database);
+
+
+
+
+    function new_fl_pref_group_copy
+           (D : in Storage.Integer_Address)
+        return Storage.Integer_Address;
+    pragma Import (C, new_fl_pref_group_copy, "new_fl_pref_group_copy");
+    pragma Inline (new_fl_pref_group_copy);
+
+    function new_fl_pref_group_memory
+           (N : in Interfaces.C.char_array)
+        return Storage.Integer_Address;
+    pragma Import (C, new_fl_pref_group_memory, "new_fl_pref_group_memory");
+    pragma Inline (new_fl_pref_group_memory);
+
+    function new_fl_pref_group_name
+           (G : in Storage.Integer_Address;
+            N : in Interfaces.C.char_array)
+        return Storage.Integer_Address;
+    pragma Import (C, new_fl_pref_group_name, "new_fl_pref_group_name");
+    pragma Inline (new_fl_pref_group_name);
+
+    function new_fl_pref_group_index
+           (G : in Storage.Integer_Address;
+            N : in Interfaces.C.int)
+        return Storage.Integer_Address;
+    pragma Import (C, new_fl_pref_group_index, "new_fl_pref_group_index");
+    pragma Inline (new_fl_pref_group_index);
+
+    procedure free_fl_pref_group
+           (G : in Storage.Integer_Address);
+    pragma Import (C, free_fl_pref_group, "free_fl_pref_group");
+    pragma Inline (free_fl_pref_group);
+
+
+
+
+    procedure fl_preferences_flush
+           (E : in Storage.Integer_Address);
+    pragma Import (C, fl_preferences_flush, "fl_preferences_flush");
+    pragma Inline (fl_preferences_flush);
+
+    function fl_preferences_getuserdatapath
+           (E : in Storage.Integer_Address;
+            P : in Interfaces.C.char_array;
+            L : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_preferences_getuserdatapath, "fl_preferences_getuserdatapath");
+    pragma Inline (fl_preferences_getuserdatapath);
+
+
+
+
+    function fl_preferences_deleteentry
+           (E : in Storage.Integer_Address;
+            K : in Interfaces.C.char_array)
+        return Interfaces.C.int;
+    pragma Import (C, fl_preferences_deleteentry, "fl_preferences_deleteentry");
+    pragma Inline (fl_preferences_deleteentry);
+
+    function fl_preferences_deleteallentries
+           (E : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_preferences_deleteallentries, "fl_preferences_deleteallentries");
+    pragma Inline (fl_preferences_deleteallentries);
+
+    function fl_preferences_deletegroup
+           (P : in Storage.Integer_Address;
+            G : in Interfaces.C.char_array)
+        return Interfaces.C.int;
+    pragma Import (C, fl_preferences_deletegroup, "fl_preferences_deletegroup");
+    pragma Inline (fl_preferences_deletegroup);
+
+    function fl_preferences_deleteallgroups
+           (P : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_preferences_deleteallgroups, "fl_preferences_deleteallgroups");
+    pragma Inline (fl_preferences_deleteallgroups);
+
+    function fl_preferences_clear
+           (E : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_preferences_clear, "fl_preferences_clear");
+    pragma Inline (fl_preferences_clear);
 
 
 
@@ -57,6 +182,44 @@ package body FLTK.Environment is
         return Interfaces.C.int;
     pragma Import (C, fl_preferences_size, "fl_preferences_size");
     pragma Inline (fl_preferences_size);
+
+
+
+
+    function fl_preferences_groups
+           (P : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_preferences_groups, "fl_preferences_groups");
+    pragma Inline (fl_preferences_groups);
+
+    function fl_preferences_group
+           (P : in Storage.Integer_Address;
+            N : in Interfaces.C.int)
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_preferences_group, "fl_preferences_group");
+    pragma Inline (fl_preferences_group);
+
+    function fl_preferences_groupexists
+           (P : in Storage.Integer_Address;
+            G : in Interfaces.C.char_array)
+        return Interfaces.C.int;
+    pragma Import (C, fl_preferences_groupexists, "fl_preferences_groupexists");
+    pragma Inline (fl_preferences_groupexists);
+
+
+
+
+    function fl_preferences_name
+           (P : in Storage.Integer_Address)
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_preferences_name, "fl_preferences_name");
+    pragma Inline (fl_preferences_name);
+
+    function fl_preferences_path
+           (P : in Storage.Integer_Address)
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_preferences_path, "fl_preferences_path");
+    pragma Inline (fl_preferences_path);
 
 
 
@@ -96,6 +259,40 @@ package body FLTK.Environment is
         return Interfaces.C.int;
     pragma Import (C, fl_preferences_get_str, "fl_preferences_get_str");
     pragma Inline (fl_preferences_get_str);
+
+    function fl_preferences_get_str_limit
+           (E : in Storage.Integer_Address;
+            K : in Interfaces.C.char_array;
+            V : in Interfaces.C.char_array;
+            D : in Interfaces.C.char_array;
+            M : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_preferences_get_str_limit, "fl_preferences_get_str_limit");
+    pragma Inline (fl_preferences_get_str_limit);
+
+    function fl_preferences_get_void
+           (E  : in     Storage.Integer_Address;
+            K  : in     Interfaces.C.char_array;
+            V  :    out Storage.Integer_Address;
+            D  : in     Storage.Integer_Address;
+            DS : in     Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_preferences_get_void, "fl_preferences_get_void");
+    pragma Inline (fl_preferences_get_void);
+
+    function fl_preferences_get_void_limit
+           (E      : in Storage.Integer_Address;
+            K      : in Interfaces.C.char_array;
+            V, D   : in Storage.Integer_Address;
+            DS, MS : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_preferences_get_void_limit, "fl_preferences_get_void_limit");
+    pragma Inline (fl_preferences_get_void_limit);
+
+    procedure free_fl_preferences_void_data
+           (V : in Storage.Integer_Address);
+    pragma Import (C, free_fl_preferences_void_data, "free_fl_preferences_void_data");
+    pragma Inline (free_fl_preferences_void_data);
 
 
 
@@ -150,119 +347,382 @@ package body FLTK.Environment is
     pragma Import (C, fl_preferences_set_str, "fl_preferences_set_str");
     pragma Inline (fl_preferences_set_str);
 
-
-
-
-    function fl_preferences_deleteentry
-           (E : in Storage.Integer_Address;
-            K : in Interfaces.C.char_array)
+    function fl_preferences_set_void
+           (E  : in Storage.Integer_Address;
+            K  : in Interfaces.C.char_array;
+            D  : in Storage.Integer_Address;
+            DS : in Interfaces.C.int)
         return Interfaces.C.int;
-    pragma Import (C, fl_preferences_deleteentry, "fl_preferences_deleteentry");
-    pragma Inline (fl_preferences_deleteentry);
-
-    function fl_preferences_deleteallentries
-           (E : in Storage.Integer_Address)
-        return Interfaces.C.int;
-    pragma Import (C, fl_preferences_deleteallentries, "fl_preferences_deleteallentries");
-    pragma Inline (fl_preferences_deleteallentries);
-
-    function fl_preferences_clear
-           (E : in Storage.Integer_Address)
-        return Interfaces.C.int;
-    pragma Import (C, fl_preferences_clear, "fl_preferences_clear");
-    pragma Inline (fl_preferences_clear);
+    pragma Import (C, fl_preferences_set_void, "fl_preferences_set_void");
+    pragma Inline (fl_preferences_set_void);
 
 
 
 
-    procedure fl_preferences_flush
-           (E : in Storage.Integer_Address);
-    pragma Import (C, fl_preferences_flush, "fl_preferences_flush");
-    pragma Inline (fl_preferences_flush);
+    ------------------------
+    --  Internal Utility  --
+    ------------------------
+
+    function To_Cint
+           (Extent : in Scope)
+        return Interfaces.C.int is
+    begin
+        case Extent is
+        when Global =>
+            return root_fl_prefs_system;
+        when User =>
+            return root_fl_prefs_user;
+        end case;
+    end To_Cint;
+
+    function To_Scope
+           (Num : in Interfaces.C.int)
+        return Scope is
+    begin
+        if Num = root_fl_prefs_system then
+            return Global;
+        elsif Num = root_fl_prefs_user then
+            return User;
+        else
+            raise Constraint_Error;
+        end if;
+    end To_Scope;
 
 
+
+
+    -----------------------------------
+    --  Controlled Type Subprograms  --
+    -----------------------------------
+
+    procedure Finalize
+           (This : in out Database) is
+    begin
+        if  This.Void_Ptr /= Null_Pointer and then
+            This in Database'Class
+        then
+            free_fl_pref_database (This.Void_Ptr);
+            This.Void_Ptr := Null_Pointer;
+        end if;
+        Finalize (Wrapper (This));
+    end Finalize;
 
 
     procedure Finalize
-           (This : in out Preferences) is
+           (This : in out Pref_Group) is
     begin
         if  This.Void_Ptr /= Null_Pointer and then
-            This in Preferences'Class
+            This in Pref_Group'Class
         then
-            free_fl_preferences (This.Void_Ptr);
+            free_fl_pref_group (This.Void_Ptr);
+            if This.Root_Ptr /= Null_Pointer then
+                free_fl_pref_database (This.Root_Ptr);
+                This.Root_Ptr := Null_Pointer;
+            end if;
             This.Void_Ptr := Null_Pointer;
         end if;
+        Finalize (Wrapper (This));
     end Finalize;
+
+
+
+
+    -----------------------
+    --  Preferences API  --
+    -----------------------
+
+    function New_UUID
+        return String
+    is
+        Text : Interfaces.C.Strings.chars_ptr := fl_preferences_new_uuid;
+    begin
+        return Interfaces.C.Strings.Value (Text);
+    end New_UUID;
 
 
 
 
     package body Forge is
 
+
         function From_Filesystem
-               (Path, Vendor, Application : in String)
-            return Preferences is
+               (Directory, Vendor, Application : in String)
+            return Database is
         begin
-            return This : Preferences do
-                This.Void_Ptr := new_fl_preferences
-                   (Interfaces.C.To_C (Path),
+            return This : Database do
+                This.Void_Ptr := new_fl_pref_database_path
+                   (Interfaces.C.To_C (Directory),
                     Interfaces.C.To_C (Vendor),
                     Interfaces.C.To_C (Application));
             end return;
         end From_Filesystem;
+
+
+        function From_Scope
+               (Extent              : in Scope;
+                Vendor, Application : in String)
+            return Database is
+        begin
+            return This : Database do
+                This.Void_Ptr := new_fl_pref_database_scope
+                   (To_Cint (Extent),
+                    Interfaces.C.To_C (Vendor),
+                    Interfaces.C.To_C (Application));
+            end return;
+        end From_Scope;
+
+
+        function Root
+               (From : in Database)
+            return Pref_Group'Class is
+        begin
+            return Result : Pref_Group do
+                Result.Void_Ptr := new_fl_pref_group_copy (From.Void_Ptr);
+                Result.Root_Ptr := From.Void_Ptr;
+                upref_fl_pref_database (Result.Root_Ptr);
+            end return;
+        end Root;
+
+
+        function In_Memory
+               (Name : in String)
+            return Pref_Group is
+        begin
+            return Result : Pref_Group do
+                Result.Void_Ptr := new_fl_pref_group_memory (Interfaces.C.To_C (Name));
+                Result.Root_Ptr := Null_Pointer;
+            end return;
+        end In_Memory;
+
+
+        function By_Name
+               (From : in Pref_Group;
+                Name : in String)
+            return Pref_Group'Class is
+        begin
+            return Result : Pref_Group do
+                Result.Void_Ptr := new_fl_pref_group_name
+                   (From.Void_Ptr,
+                    Interfaces.C.To_C (Name));
+                Result.Root_Ptr := From.Root_Ptr;
+                if Result.Root_Ptr /= Null_Pointer then
+                    upref_fl_pref_database (Result.Root_Ptr);
+                end if;
+            end return;
+        end By_Name;
+
+
+        function By_Index
+               (From  : in Pref_Group;
+                Index : in Positive)
+            return Pref_Group'Class is
+        begin
+            return Result : Pref_Group do
+                Result.Void_Ptr := new_fl_pref_group_index
+                   (From.Void_Ptr,
+                    Interfaces.C.int (Index - 1));
+                Result.Root_Ptr := From.Root_Ptr;
+                if Result.Root_Ptr /= Null_Pointer then
+                    upref_fl_pref_database (Result.Root_Ptr);
+                end if;
+            end return;
+        end By_Index;
+
 
     end Forge;
 
 
 
 
+    procedure Flush
+           (This : in Database) is
+    begin
+        fl_preferences_flush (This.Void_Ptr);
+    end Flush;
+
+
+    function Userdata_Path
+           (This : in Database)
+        return String
+    is
+        Buffer : Interfaces.C.char_array :=
+            (1 .. Interfaces.C.size_t (const_fl_path_max + 1) => ' ');
+    begin
+        if fl_preferences_getuserdatapath
+           (This.Void_Ptr,
+            Buffer,
+            const_fl_path_max) = 0
+        then
+            raise Preference_Error;
+        end if;
+        return Interfaces.C.To_Ada (Buffer);
+    end Userdata_Path;
+
+
+
+
+    procedure Delete_Entry
+           (This : in out Pref_Group;
+            Key  : in     String) is
+    begin
+        if fl_preferences_deleteentry (This.Void_Ptr, Interfaces.C.To_C (Key)) = 0 then
+            raise Preference_Error;
+        end if;
+    end Delete_Entry;
+
+
+    procedure Delete_All_Entries
+           (This : in out Pref_Group) is
+    begin
+        if fl_preferences_deleteallentries (This.Void_Ptr) = 0 then
+            raise Preference_Error;
+        end if;
+    end Delete_All_Entries;
+
+
+    procedure Delete_Group
+           (This : in out Pref_Group;
+            Name : in     String) is
+    begin
+        if fl_preferences_deletegroup (This.Void_Ptr, Interfaces.C.To_C (Name)) = 0 then
+            raise Preference_Error;
+        end if;
+    end Delete_Group;
+
+
+    procedure Delete_All_Groups
+           (This : in out Pref_Group) is
+    begin
+        if fl_preferences_deleteallgroups (This.Void_Ptr) = 0 then
+            raise Preference_Error;
+        end if;
+    end Delete_All_Groups;
+
+
+    procedure Clear
+           (This : in out Pref_Group) is
+    begin
+        if fl_preferences_clear (This.Void_Ptr) = 0 then
+            raise Preference_Error;
+        end if;
+    end Clear;
+
+
+
+
     function Number_Of_Entries
-           (This : in Preferences)
+           (This : in Pref_Group)
         return Natural is
     begin
         return Natural (fl_preferences_entries (This.Void_Ptr));
     end Number_Of_Entries;
 
 
-    function Get_Key
-           (This  : in Preferences;
-            Index : in Natural)
+    function Entry_Key
+           (This  : in Pref_Group;
+            Index : in Positive)
         return String
     is
         Key : Interfaces.C.Strings.chars_ptr :=
-            fl_preferences_entry (This.Void_Ptr, Interfaces.C.int (Index));
+            fl_preferences_entry (This.Void_Ptr, Interfaces.C.int (Index) - 1);
     begin
         --  no need for dealloc?
         if Key = Interfaces.C.Strings.Null_Ptr then
-            raise Constraint_Error;
+            raise Preference_Error;
         else
             return Interfaces.C.Strings.Value (Key);
         end if;
-    end Get_Key;
+    end Entry_Key;
 
 
-    function Entry_Exists
-           (This : in Preferences;
+    function Key_Exists
+           (This : in Pref_Group;
             Key  : in String)
         return Boolean is
     begin
         return fl_preferences_entryexists (This.Void_Ptr, Interfaces.C.To_C (Key)) /= 0;
-    end Entry_Exists;
+    end Key_Exists;
 
 
-    function Entry_Size
-           (This : in Preferences;
+    function Value_Size
+           (This : in Pref_Group;
             Key  : in String)
         return Natural is
     begin
         return Natural (fl_preferences_size (This.Void_Ptr, Interfaces.C.To_C (Key)));
-    end Entry_Size;
+    end Value_Size;
+
+
+
+
+    function Number_Of_Groups
+           (This : in Pref_Group)
+        return Natural is
+    begin
+        return Natural (fl_preferences_groups (This.Void_Ptr));
+    end Number_Of_Groups;
+
+
+    function Group_Name
+           (This  : in Pref_Group;
+            Index : in Positive)
+        return String
+    is
+        Name : Interfaces.C.Strings.chars_ptr :=
+            fl_preferences_group (This.Void_Ptr, Interfaces.C.int (Index) - 1);
+    begin
+        --  no need for dealloc?
+        if Name = Interfaces.C.Strings.Null_Ptr then
+            raise Preference_Error;
+        else
+            return Interfaces.C.Strings.Value (Name);
+        end if;
+    end Group_Name;
+
+
+    function Group_Exists
+           (This : in Pref_Group;
+            Name : in String)
+        return Boolean is
+    begin
+        return fl_preferences_groupexists (This.Void_Ptr, Interfaces.C.To_C (Name)) /= 0;
+    end Group_Exists;
+
+
+
+
+    function At_Name
+           (This : in Pref_Group)
+        return String
+    is
+        Text : Interfaces.C.Strings.chars_ptr := fl_preferences_name (This.Void_Ptr);
+    begin
+        if Text = Interfaces.C.Strings.Null_Ptr then
+            return "";
+        else
+            return Interfaces.C.Strings.Value (Text);
+        end if;
+    end At_Name;
+
+
+    function At_Path
+           (This : in Pref_Group)
+        return String
+    is
+        Text : Interfaces.C.Strings.chars_ptr := fl_preferences_path (This.Void_Ptr);
+    begin
+        if Text = Interfaces.C.Strings.Null_Ptr then
+            return "";
+        else
+            return Interfaces.C.Strings.Value (Text);
+        end if;
+    end At_Path;
 
 
 
 
     function Get
-           (This : in Preferences;
+           (This : in Pref_Group;
             Key  : in String)
         return Integer
     is
@@ -280,7 +740,24 @@ package body FLTK.Environment is
 
 
     function Get
-           (This : in Preferences;
+           (This    : in Pref_Group;
+            Key     : in String;
+            Default : in Integer)
+        return Integer
+    is
+        Value, X : Interfaces.C.int;
+    begin
+        X := fl_preferences_get_int
+           (This.Void_Ptr,
+            Interfaces.C.To_C (Key),
+            Value,
+            Interfaces.C.int (Default));
+        return Integer (Value);
+    end Get;
+
+
+    function Get
+           (This : in Pref_Group;
             Key  : in String)
         return Float
     is
@@ -298,72 +775,7 @@ package body FLTK.Environment is
 
 
     function Get
-           (This : in Preferences;
-            Key  : in String)
-        return Long_Float
-    is
-        Value : Interfaces.C.double;
-    begin
-        if fl_preferences_get_double
-           (This.Void_Ptr,
-            Interfaces.C.To_C (Key),
-            Value, 0.0) = 0
-        then
-            raise Preference_Error;
-        end if;
-        return Long_Float (Value);
-    end Get;
-
-
-    function Get
-           (This : in Preferences;
-            Key  : in String)
-        return String
-    is
-        Value : Interfaces.C.Strings.chars_ptr;
-        Check : Interfaces.C.int := fl_preferences_get_str
-           (This.Void_Ptr,
-            Interfaces.C.To_C (Key),
-            Value,
-            Interfaces.C.To_C ("default"));
-    begin
-        if Check = 0 then
-            raise Preference_Error;
-        end if;
-        if Value = Interfaces.C.Strings.Null_Ptr then
-            return "";
-        else
-            declare
-                Str : String := Interfaces.C.Strings.Value (Value);
-            begin
-                Interfaces.C.Strings.Free (Value);
-                return Str;
-            end;
-        end if;
-    end Get;
-
-
-
-
-    function Get
-           (This    : in Preferences;
-            Key     : in String;
-            Default : in Integer)
-        return Integer
-    is
-        Value, X : Interfaces.C.int;
-    begin
-        X := fl_preferences_get_int
-           (This.Void_Ptr,
-            Interfaces.C.To_C (Key),
-            Value,
-            Interfaces.C.int (Default));
-        return Integer (Value);
-    end Get;
-
-
-    function Get
-           (This    : in Preferences;
+           (This    : in Pref_Group;
             Key     : in String;
             Default : in Float)
         return Float
@@ -381,7 +793,25 @@ package body FLTK.Environment is
 
 
     function Get
-           (This    : in Preferences;
+           (This : in Pref_Group;
+            Key  : in String)
+        return Long_Float
+    is
+        Value : Interfaces.C.double;
+    begin
+        if fl_preferences_get_double
+           (This.Void_Ptr,
+            Interfaces.C.To_C (Key),
+            Value, 0.0) = 0
+        then
+            raise Preference_Error;
+        end if;
+        return Long_Float (Value);
+    end Get;
+
+
+    function Get
+           (This    : in Pref_Group;
             Key     : in String;
             Default : in Long_Float)
         return Long_Float
@@ -399,35 +829,154 @@ package body FLTK.Environment is
 
 
     function Get
-           (This    : in Preferences;
+           (This : in Pref_Group;
+            Key  : in String)
+        return String
+    is
+        Text : Interfaces.C.Strings.chars_ptr;
+        Check : Interfaces.C.int := fl_preferences_get_str
+           (This.Void_Ptr,
+            Interfaces.C.To_C (Key),
+            Text,
+            Interfaces.C.To_C ("default"));
+    begin
+        if Check = 0 then
+            raise Preference_Error;
+        end if;
+        if Text = Interfaces.C.Strings.Null_Ptr then
+            return "";
+        end if;
+        return Str : String := Interfaces.C.Strings.Value (Text) do
+            Interfaces.C.Strings.Free (Text);
+        end return;
+    end Get;
+
+
+    function Get
+           (This    : in Pref_Group;
             Key     : in String;
             Default : in String)
         return String
     is
-        Value : Interfaces.C.Strings.chars_ptr;
+        Text : Interfaces.C.Strings.chars_ptr;
         X : Interfaces.C.int := fl_preferences_get_str
            (This.Void_Ptr,
             Interfaces.C.To_C (Key),
-            Value,
+            Text,
             Interfaces.C.To_C (Default));
     begin
-        if Value = Interfaces.C.Strings.Null_Ptr then
-            return "";
-        else
-            declare
-                Str : String := Interfaces.C.Strings.Value (Value);
-            begin
-                Interfaces.C.Strings.Free (Value);
-                return Str;
-            end;
+        if Text = Interfaces.C.Strings.Null_Ptr then
+            return Default;
         end if;
+        return Str : String := Interfaces.C.Strings.Value (Text) do
+            Interfaces.C.Strings.Free (Text);
+        end return;
+    end Get;
+
+
+    function Get
+           (This       : in Pref_Group;
+            Key        : in String;
+            Default    : in String;
+            Max_Length : in Natural)
+        return String
+    is
+        Text : Interfaces.C.char_array := (1 .. Interfaces.C.size_t (Max_Length + 1) => ' ');
+        Check : Interfaces.C.int := fl_preferences_get_str_limit
+           (This.Void_Ptr,
+            Interfaces.C.To_C (Key),
+            Text,
+            Interfaces.C.To_C (Default),
+            Interfaces.C.int (Max_Length));
+    begin
+        if Check = 0 then
+            return Default;
+        else
+            return Interfaces.C.To_Ada (Text);
+        end if;
+    end Get;
+
+
+    function Get
+           (This : in Pref_Group;
+            Key  : in String)
+        return Binary_Data
+    is
+        Thing : Storage.Integer_Address;
+        Dummy : Interfaces.C.int := 42;
+        Check : Interfaces.C.int := fl_preferences_get_void
+           (This.Void_Ptr,
+            Interfaces.C.To_C (Key),
+            Thing,
+            Storage.To_Integer (Dummy'Address),
+            1);
+    begin
+        if Check = 0 then
+            free_fl_preferences_void_data (Thing);
+            raise Preference_Error;
+        end if;
+        declare
+            Length : Natural := This.Value_Size (Key) * Natural (c_pointer_size);
+            Actual : Binary_Data (1 .. Length);
+            for Actual'Address use Storage.To_Address (Thing);
+            pragma Import (Ada, Actual);
+        begin
+            return Result : Binary_Data := Actual do
+                free_fl_preferences_void_data (Thing);
+            end return;
+        end;
+    end Get;
+
+
+    function Get
+           (This    : in Pref_Group;
+            Key     : in String;
+            Default : in Binary_Data)
+        return Binary_Data
+    is
+        Thing  : Storage.Integer_Address;
+        Ignore : Interfaces.C.int := fl_preferences_get_void
+           (This.Void_Ptr,
+            Interfaces.C.To_C (Key),
+            Thing,
+            Storage.To_Integer (Default'Address),
+            Default'Length / Interfaces.C.int (c_pointer_size));
+        Length : Natural := This.Value_Size (Key) * Natural (c_pointer_size);
+        Actual : Binary_Data (1 .. Length);
+        for Actual'Address use Storage.To_Address (Thing);
+        pragma Import (Ada, Actual);
+    begin
+        return Result : Binary_Data := Actual do
+            free_fl_preferences_void_data (Thing);
+        end return;
+    end Get;
+
+
+    function Get
+           (This       : in Pref_Group;
+            Key        : in String;
+            Default    : in Binary_Data;
+            Max_Length : in Natural)
+        return Binary_Data
+    is
+        Actual : Binary_Data (1 .. Max_Length);
+        Ignore : Interfaces.C.int := fl_preferences_get_void_limit
+           (This.Void_Ptr,
+            Interfaces.C.To_C (Key),
+            Storage.To_Integer (Actual'Address),
+            Storage.To_Integer (Default'Address),
+            Default'Length / Interfaces.C.int (c_pointer_size),
+            Interfaces.C.int (Max_Length) / Interfaces.C.int (c_pointer_size));
+        Length : Natural := This.Value_Size (Key) * Natural (c_pointer_size);
+    begin
+        return Actual (1 .. Length);
     end Get;
 
 
 
 
     procedure Set
-           (This  : in out Preferences;
+           (This  : in out Pref_Group;
             Key   : in     String;
             Value : in     Integer) is
     begin
@@ -442,7 +991,7 @@ package body FLTK.Environment is
 
 
     procedure Set
-           (This  : in out Preferences;
+           (This  : in out Pref_Group;
             Key   : in     String;
             Value : in     Float) is
     begin
@@ -457,7 +1006,7 @@ package body FLTK.Environment is
 
 
     procedure Set
-           (This      : in out Preferences;
+           (This      : in out Pref_Group;
             Key       : in     String;
             Value     : in     Float;
             Precision : in     Natural) is
@@ -474,7 +1023,7 @@ package body FLTK.Environment is
 
 
     procedure Set
-           (This  : in out Preferences;
+           (This  : in out Pref_Group;
             Key   : in     String;
             Value : in     Long_Float) is
     begin
@@ -489,7 +1038,7 @@ package body FLTK.Environment is
 
 
     procedure Set
-           (This      : in out Preferences;
+           (This      : in out Pref_Group;
             Key       : in     String;
             Value     : in     Long_Float;
             Precision : in     Natural) is
@@ -506,7 +1055,7 @@ package body FLTK.Environment is
 
 
     procedure Set
-           (This  : in out Preferences;
+           (This  : in out Pref_Group;
             Key   : in     String;
             Value : in     String) is
     begin
@@ -520,43 +1069,20 @@ package body FLTK.Environment is
     end Set;
 
 
-
-
-    procedure Delete_Entry
-           (This : in out Preferences;
-            Key  : in     String) is
+    procedure Set
+           (This  : in out Pref_Group;
+            Key   : in     String;
+            Value : in     Binary_Data) is
     begin
-        if fl_preferences_deleteentry (This.Void_Ptr, Interfaces.C.To_C (Key)) = 0 then
+        if fl_preferences_set_void
+           (This.Void_Ptr,
+            Interfaces.C.To_C (Key),
+            Storage.To_Integer (Value'Address),
+            Value'Length / Interfaces.C.int (c_pointer_size)) = 0
+        then
             raise Preference_Error;
         end if;
-    end Delete_Entry;
-
-
-    procedure Delete_All_Entries
-           (This : in out Preferences) is
-    begin
-        if fl_preferences_deleteallentries (This.Void_Ptr) = 0 then
-            raise Preference_Error;
-        end if;
-    end Delete_All_Entries;
-
-
-    procedure Clear
-           (This : in out Preferences) is
-    begin
-        if fl_preferences_clear (This.Void_Ptr) = 0 then
-            raise Preference_Error;
-        end if;
-    end Clear;
-
-
-
-
-    procedure Flush
-           (This : in Preferences) is
-    begin
-        fl_preferences_flush (This.Void_Ptr);
-    end Flush;
+    end Set;
 
 
 end FLTK.Environment;

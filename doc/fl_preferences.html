@@ -34,16 +34,31 @@
 
   <tr>
     <td>Fl_Preferences</td>
-    <td>Preferences</td>
+    <td>Database</td>
   </tr>
 
   <tr>
     <td>&nbsp;</td>
-    <td>Preferences_Reference</td>
+    <td>Database_Reference</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Pref_Group</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Pref_Group_Reference</td>
   </tr>
 
   <tr>
     <td>Entry</td>
+    <td>&nbsp;</td>
+  </tr>
+
+  <tr>
+    <td>Name</td>
     <td>&nbsp;</td>
   </tr>
 
@@ -61,6 +76,42 @@
 
 
 
+<table class="type">
+  <tr><th colspan="2">Errors</th></tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Preference_Error</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+static const char * newUUID();
+</pre></td>
+<td><pre>
+function New_UUID
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static char remove(ID id_);
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+</table>
+
+
+
 <table class="function">
   <tr><th colspan="2">Functions and Procedures</th></tr>
 
@@ -68,17 +119,23 @@
 <td><pre>
 Fl_Preferences(Root root, const char *vendor, const char *application);
 </pre></td>
-<td>TBA</td>
+<td><pre>
+function From_Scope
+       (Extent              : in Scope;
+        Vendor, Application : in String)
+    return Database;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
-Fl_Preferences(const char *path, const char *vendor, const char *application);
+Fl_Preferences(const char *path, const char *vendor,
+    const char *application);
 </pre></td>
 <td><pre>
 function From_Filesystem
-       (Path, Vendor, Application : in String)
-    return Preferences;
+       (Directory, Vendor, Application : in String)
+    return Database;
 </pre></td>
   </tr>
 
@@ -87,7 +144,16 @@ function From_Filesystem
 Fl_Preferences(Fl_Preferences &parent, const char *group);
 Fl_Preferences(Fl_Preferences *parent, const char *group);
 </pre></td>
-<td>TBA</td>
+<td><pre>
+function By_Name
+       (From : in Pref_Group;
+        Name : in String)
+    return Pref_Group'Class;
+
+function In_Memory
+       (Name : in String)
+    return Pref_Group;
+</pre></td>
   </tr>
 
   <tr>
@@ -95,14 +161,23 @@ Fl_Preferences(Fl_Preferences *parent, const char *group);
 Fl_Preferences(Fl_Preferences &parent, int groupIndex);
 Fl_Preferences(Fl_Preferences *parent, int groupIndex);
 </pre></td>
-<td>TBA</td>
+<td><pre>
+function By_Index
+       (From  : in Pref_Group;
+        Index : in Positive)
+    return Pref_Group'Class;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 Fl_Preferences(const Fl_Preferences &);
 </pre></td>
-<td>TBA</td>
+<td><pre>
+function Root
+       (From : in Database)
+    return Pref_Group'Class;
+</pre></td>
   </tr>
 
   <tr>
@@ -111,7 +186,9 @@ char clear();
 </pre></td>
 <td><pre>
 procedure Clear
-       (This : in out Preferences);
+       (This : in out Pref_Group)
+with Post => This.Number_Of_Entries = 0 and
+        This.Number_Of_Groups = 0;
 </pre></td>
   </tr>
 
@@ -121,7 +198,8 @@ char deleteAllEntries();
 </pre></td>
 <td><pre>
 procedure Delete_All_Entries
-       (This : in out Preferences);
+       (This : in out Pref_Group)
+with Post => This.Number_Of_Entries = 0;
 </pre></td>
   </tr>
 
@@ -129,7 +207,11 @@ procedure Delete_All_Entries
 <td><pre>
 char deleteAllGroups();
 </pre></td>
-<td>TBA</td>
+<td><pre>
+procedure Delete_All_Groups
+       (This : in out Pref_Group)
+with Post => This.Number_Of_Groups = 0;
+</pre></td>
   </tr>
 
   <tr>
@@ -138,8 +220,9 @@ char deleteEntry(const char *entry);
 </pre></td>
 <td><pre>
 procedure Delete_Entry
-       (This : in out Preferences;
-        Key  : in     String);
+       (This : in out Pref_Group;
+        Key  : in     String)
+with Post => This.Key_Exists (Key) = False;
 </pre></td>
   </tr>
 
@@ -147,7 +230,12 @@ procedure Delete_Entry
 <td><pre>
 char deleteGroup(const char *group);
 </pre></td>
-<td>TBA</td>
+<td><pre>
+procedure Delete_Group
+       (This : in out Pref_Group;
+        Name : in     String)
+with Post => This.Group_Exists (Name) = False;
+</pre></td>
   </tr>
 
   <tr>
@@ -156,7 +244,7 @@ int entries();
 </pre></td>
 <td><pre>
 function Number_Of_Entries
-       (This : in Preferences)
+       (This : in Pref_Group)
     return Natural;
 </pre></td>
   </tr>
@@ -166,10 +254,11 @@ function Number_Of_Entries
 const char * entry(int index);
 </pre></td>
 <td><pre>
-function Get_Key
-       (This  : in Preferences;
-        Index : in Natural)
-    return String;
+function Entry_Key
+       (This  : in Pref_Group;
+        Index : in Positive)
+    return String
+with Pre => Index in 1 .. This.Number_Of_Entries;
 </pre></td>
   </tr>
 
@@ -178,8 +267,8 @@ function Get_Key
 char entryExists(const char *key);
 </pre></td>
 <td><pre>
-function Entry_Exists
-       (This : in Preferences;
+function Key_Exists
+       (This : in Pref_Group;
         Key  : in String)
     return Boolean;
 </pre></td>
@@ -191,7 +280,7 @@ void flush();
 </pre></td>
 <td><pre>
 procedure Flush
-       (This : in Preferences);
+       (This : in Database);
 </pre></td>
   </tr>
 
@@ -201,12 +290,12 @@ char get(const char *entry, int &value, int defaultValue);
 </pre></td>
 <td><pre>
 function Get
-       (This : in Preferences;
+       (This : in Pref_Group;
         Key  : in String)
     return Integer;
 
 function Get
-       (This    : in Preferences;
+       (This    : in Pref_Group;
         Key     : in String;
         Default : in Integer)
     return Integer;
@@ -219,12 +308,12 @@ char get(const char *entry, float &value, float defaultValue);
 </pre></td>
 <td><pre>
 function Get
-       (This : in Preferences;
+       (This : in Pref_Group;
         Key  : in String)
     return Float;
 
 function Get
-       (This    : in Preferences;
+       (This    : in Pref_Group;
         Key     : in String;
         Default : in Float)
     return Float;
@@ -237,12 +326,12 @@ char get(const char *entry, double &value, double defaultValue);
 </pre></td>
 <td><pre>
 function Get
-       (This : in Preferences;
+       (This : in Pref_Group;
         Key  : in String)
     return Long_Float;
 
 function Get
-       (This    : in Preferences;
+       (This    : in Pref_Group;
         Key     : in String;
         Default : in Long_Float)
     return Long_Float;
@@ -255,12 +344,12 @@ char get(const char *entry, char *&value, const char *defaultValue);
 </pre></td>
 <td><pre>
 function Get
-       (This : in Preferences;
+       (This : in Pref_Group;
         Key  : in String)
     return String;
 
 function Get
-       (This    : in Preferences;
+       (This    : in Pref_Group;
         Key     : in String;
         Default : in String)
     return String;
@@ -269,72 +358,129 @@ function Get
 
   <tr>
 <td><pre>
-char get(const char *entry, char *value, const char *defaultValue, int maxSize);
+char get(const char *entry, char *value, const char *defaultValue,
+    int maxSize);
 </pre></td>
-<td>TBA</td>
+<td><pre>
+function Get
+       (This       : in Pref_Group;
+        Key        : in String;
+        Default    : in String;
+        Max_Length : in Natural)
+    return String
+with Post => Get'Result'Length <= Max_Length;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
-char get(const char *entry, void *&value, const void *defaultValue, int defaultSize);
+char get(const char *entry, void *&value, const void *defaultValue,
+    int defaultSize);
 </pre></td>
-<td>TBA</td>
+<td><pre>
+function Get
+       (This : in Pref_Group;
+        Key  : in String)
+    return Binary_Data;
+
+function Get
+       (This    : in Pref_Group;
+        Key     : in String;
+        Default : in Binary_Data)
+    return Binary_Data;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
-char get(const char *entry, void *value, const void *defaultValue, int defaultSize, int maxSize);
+char get(const char *entry, void *value, const void *defaultValue,
+    int defaultSize, int maxSize);
 </pre></td>
-<td>TBA</td>
+<td><pre>
+function Get
+       (This       : in Pref_Group;
+        Key        : in String;
+        Default    : in Binary_Data;
+        Max_Length : in Natural)
+    return Binary_Data
+with Post => Get'Result'Length <= Max_Length;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 char getUserdataPath(char *path, int pathlen);
 </pre></td>
-<td>TBA</td>
+<td><pre>
+function Userdata_Path
+       (This : in Database)
+    return String;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 const char * group(int num_group);
 </pre></td>
-<td>TBA</td>
+<td><pre>
+function Group_Name
+       (This  : in Pref_Group;
+        Index : in Positive)
+    return String
+with Pre => Index in 1 .. This.Number_Of_Groups;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 char groupExists(const char *key);
 </pre></td>
-<td>TBA</td>
+<td><pre>
+function Group_Exists
+       (This : in Pref_Group;
+        Name : in String)
+    return Boolean;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 int groups();
 </pre></td>
-<td>TBA</td>
+<td><pre>
+function Number_Of_Groups
+       (This : in Pref_Group)
+    return Natural;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 ID id();
 </pre></td>
-<td>TBA</td>
+<td>&nbsp;</td>
   </tr>
 
   <tr>
 <td><pre>
 const char * name();
 </pre></td>
-<td>TBA</td>
+<td><pre>
+function At_Name
+       (This : in Pref_Group)
+    return String;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 const char * path();
 </pre></td>
-<td>TBA</td>
+<td><pre>
+function At_Path
+       (This : in Pref_Group)
+    return String;
+</pre></td>
   </tr>
 
   <tr>
@@ -343,9 +489,10 @@ char set(const char *entry, int value);
 </pre></td>
 <td><pre>
 procedure Set
-       (This  : in out Preferences;
+       (This  : in out Pref_Group;
         Key   : in     String;
-        Value : in     Integer);
+        Value : in     Integer)
+with Post => This.Key_Exists (Key);
 </pre></td>
   </tr>
 
@@ -355,9 +502,10 @@ char set(const char *entry, float value);
 </pre></td>
 <td><pre>
 procedure Set
-       (This  : in out Preferences;
+       (This  : in out Pref_Group;
         Key   : in     String;
-        Value : in     Float);
+        Value : in     Float)
+with Post => This.Key_Exists (Key);
 </pre></td>
   </tr>
 
@@ -367,10 +515,11 @@ char set(const char *entry, float value, int precision);
 </pre></td>
 <td><pre>
 procedure Set
-       (This      : in out Preferences;
+       (This      : in out Pref_Group;
         Key       : in     String;
         Value     : in     Float;
-        Precision : in     Natural);
+        Precision : in     Natural)
+with Post => This.Key_Exists (Key);
 </pre></td>
   </tr>
 
@@ -380,9 +529,10 @@ char set(const char *entry, double value);
 </pre></td>
 <td><pre>
 procedure Set
-       (This  : in out Preferences;
+       (This  : in out Pref_Group;
         Key   : in     String;
-        Value : in     Long_Float);
+        Value : in     Long_Float)
+with Post => This.Key_Exists (Key);
 </pre></td>
   </tr>
 
@@ -392,10 +542,11 @@ char set(const char *entry, double value, int precision);
 </pre></td>
 <td><pre>
 procedure Set
-       (This      : in out Preferences;
+       (This      : in out Pref_Group;
         Key       : in     String;
         Value     : in     Long_Float;
-        Precision : in     Natural);
+        Precision : in     Natural)
+with Post => This.Key_Exists (Key);
 </pre></td>
   </tr>
 
@@ -405,9 +556,10 @@ char set(const char *entry, const char *value);
 </pre></td>
 <td><pre>
 procedure Set
-       (This  : in out Preferences;
+       (This  : in out Pref_Group;
         Key   : in     String;
-        Value : in     String);
+        Value : in     String)
+with Post => This.Key_Exists (Key);
 </pre></td>
   </tr>
 
@@ -415,7 +567,13 @@ procedure Set
 <td><pre>
 char set(const char *entry, const void *value, int size);
 </pre></td>
-<td>TBA</td>
+<td><pre>
+procedure Set
+       (This  : in out Pref_Group;
+        Key   : in     String;
+        Value : in     Binary_Data)
+with Post => This.Key_Exists (Key);
+</pre></td>
   </tr>
 
   <tr>
@@ -423,25 +581,11 @@ char set(const char *entry, const void *value, int size);
 int size(const char *entry);
 </pre></td>
 <td><pre>
-function Entry_Size
-       (This : in Preferences;
+function Value_Size
+       (This : in Pref_Group;
         Key  : in String)
     return Natural;
 </pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-static const char * newUUID();
-</pre></td>
-<td>TBA</td>
-  </tr>
-
-  <tr>
-<td><pre>
-static char remove(ID id_);
-</pre></td>
-<td>TBA</td>
   </tr>
 
 </table>

@@ -28,6 +28,7 @@ FLTK.Devices.Surfaces.Paged
 FLTK.Devices.Surfaces.Paged.Printers
 FLTK.Dialogs
 FLTK.Draw
+FLTK.Environment
 FLTK.Event
 FLTK.Images
 FLTK.Images.Bitmaps
@@ -125,7 +126,6 @@ Partially Done:
 
 FLTK.Devices.Graphics (incomplete API, otherwise polished)
 FLTK.Devices.Surfaces (incomplete API, otherwise polished)
-FLTK.Environment (incomplete API, otherwise polished)
 
 
 
