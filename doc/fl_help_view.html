@@ -1,0 +1,400 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Help_View Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Help_View Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Help_View</td>
+    <td>FLTK.Widgets.Groups.Help_Views</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Help_View</td>
+    <td>Help_View</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Help_View_Reference</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Position</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Extended_Position</td>
+  </tr>
+
+  <tr>
+    <td>Fl_Help_Func</td>
+    <td>Link_Callback</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Errors</th></tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Load_Help_Error</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Help_View(int xx, int yy, int ww, int hh, const char *l=0);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return Help_View;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void clear_selection();
+</pre></td>
+<td><pre>
+procedure Clear_Selection
+       (This : in out Help_View);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char * directory() const;
+</pre></td>
+<td><pre>
+function Current_Directory
+       (This : in Help_View)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Help_View);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char * filename() const;
+</pre></td>
+<td><pre>
+function Current_File
+       (This : in Help_View)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int find(const char *s, int p=0);
+</pre></td>
+<td><pre>
+function Find
+       (This : in Help_View;
+        Item : in String;
+        From : in Position := 1)
+    return Extended_Position;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int handle(int);
+</pre></td>
+<td><pre>
+function Handle
+       (This  : in out Help_View;
+        Event : in     Event_Kind)
+    return Event_Outcome;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int leftline() const;
+</pre></td>
+<td><pre>
+function Get_Leftline_Pixel
+       (This : in Help_View)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void leftline(int);
+</pre></td>
+<td><pre>
+procedure Set_Leftline_Pixel
+       (This  : in out Help_View;
+        Value : in     Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void link(Fl_Help_Func *fn);
+</pre></td>
+<td><pre>
+procedure Set_Link_Callback
+       (This : in out Help_View;
+        Func : in     Link_Callback);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int load(const char *f);
+</pre></td>
+<td><pre>
+procedure Load
+       (This : in out Help_View;
+        Name : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void resize(int, int, int, int);
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int scrollbar_size() const;
+</pre></td>
+<td><pre>
+function Get_Scrollbar_Size
+       (This : in Help_View)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void scrollbar_size(int newSize);
+</pre></td>
+<td><pre>
+procedure Set_Scrollbar_Size
+       (This  : in out Help_View;
+        Value : in     Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void select_all();
+</pre></td>
+<td><pre>
+procedure Select_All
+       (This : in out Help_View);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int size() const;
+</pre></td>
+<td><pre>
+function Get_Size
+       (This : in Help_View)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void size(int W, int H);
+</pre></td>
+<td><pre>
+procedure Resize
+       (This : in out Help_View;
+        W, H : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Color textcolor() const;
+</pre></td>
+<td><pre>
+function Get_Text_Color
+       (This : in Help_View)
+    return Color;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void textcolor(Fl_Color c);
+</pre></td>
+<td><pre>
+procedure Set_Text_Color
+       (This  : in out Help_View;
+        Value : in     Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Font textfont() const;
+</pre></td>
+<td><pre>
+function Get_Text_Font
+       (This : in Help_View)
+    return Font_Kind;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void textfont(Fl_Font f);
+</pre></td>
+<td><pre>
+procedure Set_Text_Font
+       (This : in out Help_View;
+        Font : in     Font_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Fontsize textsize() const;
+</pre></td>
+<td><pre>
+function Get_Text_Size
+       (This : in Help_View)
+    return Font_Size;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void textsize(Fl_Fontsize s);
+</pre></td>
+<td><pre>
+procedure Set_Text_Size
+       (This : in out Help_View;
+        Size : in     Font_Size);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char * title();
+</pre></td>
+<td><pre>
+function Document_Title
+       (This : in Help_View)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int topline() const;
+</pre></td>
+<td><pre>
+function Get_Topline_Pixel
+       (This : in Help_View)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void topline(const char *n);
+</pre></td>
+<td><pre>
+procedure Set_Topline_Target
+       (This  : in out Help_View;
+        Value : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void topline(int);
+</pre></td>
+<td><pre>
+procedure Set_Topline_Pixel
+       (This  : in out Help_View;
+        Value : in     Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char * value() const;
+</pre></td>
+<td><pre>
+function Get_Content
+       (This : in Help_View)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void value(const char *val);
+</pre></td>
+<td><pre>
+procedure Set_Content
+       (This  : in out Help_View;
+        Value : in     String);
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
+
