@@ -43,6 +43,7 @@ FLTK.Images.RGB.PNG
 FLTK.Images.RGB.PNM
 FLTK.Images.Shared
 FLTK.Images.Tiled
+FLTK.Labels
 FLTK.Menu_Items
 FLTK.Screen
 FLTK.Static
@@ -143,7 +144,6 @@ Fl_File_Chooser
 Fl_Glut_Window
 Fl_Help_Dialog
 Fl_Hold_Browser
-Fl_Label
 Fl_Multi_Browser
 Fl_Postscript_File_Device
 Fl_Select_Browser

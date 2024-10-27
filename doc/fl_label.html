@@ -1,0 +1,216 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Label Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Label Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Label</td>
+    <td>FLTK.Labels</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Label</td>
+    <td>Label</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Label_Reference</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td>&nbsp;</td>
+<td><pre>
+function Create
+       (Value    : in     String;
+        Font     : in     Font_Kind               := Helvetica;
+        Size     : in     Font_Size               := Normal_Size;
+        Hue      : in     Color                   := Foreground_Color;
+        Kind     : in     Label_Kind              := Normal_Label;
+        Place    : in     Alignment               := Align_Center;
+        Active   : access FLTK.Images.Image'Class := null;
+        Inactive : access FLTK.Images.Image'Class := null)
+    return Label;
+</pre></td>
+  </tr>
+
+ <tr>
+<td><pre>
+Fl_Align align_;
+</pre></td>
+<td><pre>
+function Get_Alignment
+       (This : in Label)
+    return Alignment;
+
+procedure Set_Alignment
+       (This  : in out Label;
+        Place : in     Alignment);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Color color;
+</pre></td>
+<td><pre>
+function Get_Color
+       (This : in Label)
+    return Color;
+
+procedure Set_Color
+       (This : in out Label;
+        Hue  : in     Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Image * deimage;
+</pre></td>
+<td><pre>
+function Get_Inactive
+       (This : in Label)
+    return access FLTK.Images.Image'Class;
+
+procedure Set_Inactive
+       (This : in out Label;
+        Pic  : access FLTK.Images.Image'Class);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw(int, int, int, int, Fl_Align);
+</pre></td>
+<td><pre>
+procedure Draw
+       (This       : in out Label;
+        X, Y, W, H : in     Integer;
+        Place      : in     Alignment);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Font font;
+</pre></td>
+<td><pre>
+function Get_Font
+       (This : in Label)
+    return Font_Kind;
+
+procedure Set_Font
+       (This : in out Label;
+        Font : in     Font_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Image * image;
+</pre></td>
+<td><pre>
+function Get_Active
+       (This : in Label)
+    return access FLTK.Images.Image'Class;
+
+procedure Set_Active
+       (This : in out Label;
+        Pic  : access FLTK.Images.Image'Class);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void measure(int, &w, int &h) const;
+</pre></td>
+<td><pre>
+procedure Measure
+       (This : in     Label;
+        W, H :    out Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Fontsize size;
+</pre></td>
+<td><pre>
+function Get_Size
+       (This : in Label)
+    return Font_Size;
+
+procedure Set_Size
+       (This : in out Label;
+        Size : in     Font_Size);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+uchar type;
+</pre></td>
+<td><pre>
+function Get_Kind
+       (This : in Label)
+    return Label_Kind;
+
+procedure Set_Kind
+       (This : in out Label;
+        Kind : in     Label_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char * value;
+</pre></td>
+<td><pre>
+function Get_Value
+       (This : in Label)
+    return String;
+
+procedure Set_Value
+       (This : in out Label;
+        Text : in     String);
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
+
