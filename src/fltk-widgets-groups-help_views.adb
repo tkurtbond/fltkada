@@ -273,6 +273,7 @@ package body FLTK.Widgets.Groups.Help_Views is
         if  This.Void_Ptr /= Null_Pointer and then
             This in Help_View'Class
         then
+            This.Clear;
             free_fl_help_view (This.Void_Ptr);
             Interfaces.C.Strings.Free (This.Hilda);
             This.Void_Ptr := Null_Pointer;
