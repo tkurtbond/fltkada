@@ -1,0 +1,252 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Help_Dialog Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Help_Dialog Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Help_Dialog</td>
+    <td>FLTK.Help_Dialogs</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Help_Dialog</td>
+    <td>Help_Dialog</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Help_Dialog_Reference</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Help_Dialog();
+</pre></td>
+<td><pre>
+function Create
+    return Help_Dialog;
+
+function Create
+       (X, Y, W, H : in Integer)
+    return Help_Dialog;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int h();
+</pre></td>
+<td><pre>
+function Get_H
+       (This : in Help_Dialog)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void hide();
+</pre></td>
+<td><pre>
+procedure Hide
+       (This : in out Help_Dialog);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void load(const char *f);
+</pre></td>
+<td><pre>
+procedure Load
+       (This : in out Help_Dialog;
+        Name : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void position(int xx, int yy);
+</pre></td>
+<td><pre>
+procedure Reposition
+       (This : in out Help_Dialog;
+        X, Y : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void resize(int xx, int yy, int ww, int hh);
+</pre></td>
+<td><pre>
+procedure Resize
+       (This       : in out Help_Dialog;
+        X, Y, W, H : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void show();
+</pre></td>
+<td><pre>
+procedure Show
+       (This : in out Help_Dialog);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void show(int argc, char **argv);
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Fontsize textsize();
+</pre></td>
+<td><pre>
+function Get_Text_Size
+       (This : in Help_Dialog)
+    return Font_Size;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void textsize(Fl_Fontsize s);
+</pre></td>
+<td><pre>
+procedure Set_Text_Size
+       (This : in out Help_Dialog;
+        Size : in     Font_Size);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void topline(const char *n);
+</pre></td>
+<td><pre>
+procedure Set_Topline_Target
+       (This  : in out Help_Dialog;
+        Value : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void topline(int n);
+</pre></td>
+<td><pre>
+procedure Set_Topline_Number
+       (This : in out Help_Dialog;
+        Line : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char * value() const;
+</pre></td>
+<td><pre>
+function Get_Content
+       (This : in Help_Dialog)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void value(const char *f);
+</pre></td>
+<td><pre>
+procedure Set_Content
+       (This  : in out Help_Dialog;
+        Value : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int visible();
+</pre></td>
+<td><pre>
+function Is_Visible
+       (This : in Help_Dialog)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int w();
+</pre></td>
+<td><pre>
+function Get_W
+       (This : in Help_Dialog)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int x();
+</pre></td>
+<td><pre>
+function Get_X
+       (This : in Help_Dialog)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int y();
+</pre></td>
+<td><pre>
+function Get_Y
+       (This : in Help_Dialog)
+    return Integer;
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
+

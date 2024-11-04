@@ -1,0 +1,101 @@
+
+
+//  Programmed by Jedidiah Barber
+//  Released into the public domain
+
+
+#include <FL/Fl_Help_Dialog.H>
+#include "c_fl_help_dialog.h"
+
+
+
+
+HELPDIALOG new_fl_help_dialog() {
+    Fl_Help_Dialog *d = new Fl_Help_Dialog();
+    return d;
+}
+
+void free_fl_help_dialog(HELPDIALOG d) {
+    delete reinterpret_cast<Fl_Help_Dialog*>(d);
+}
+
+
+
+
+void fl_help_dialog_show(HELPDIALOG d) {
+    reinterpret_cast<Fl_Help_Dialog*>(d)->show();
+}
+
+void fl_help_dialog_hide(HELPDIALOG d) {
+    reinterpret_cast<Fl_Help_Dialog*>(d)->hide();
+}
+
+int fl_help_dialog_visible(HELPDIALOG d) {
+    return reinterpret_cast<Fl_Help_Dialog*>(d)->visible();
+}
+
+
+
+
+void fl_help_dialog_set_topline_number(HELPDIALOG d, int n) {
+    reinterpret_cast<Fl_Help_Dialog*>(d)->topline(n);
+}
+
+void fl_help_dialog_set_topline_target(HELPDIALOG d, const char * t) {
+    reinterpret_cast<Fl_Help_Dialog*>(d)->topline(t);
+}
+
+
+
+
+void fl_help_dialog_load(HELPDIALOG d, const char * n) {
+    reinterpret_cast<Fl_Help_Dialog*>(d)->load(n);
+}
+
+const char * fl_help_dialog_get_value(HELPDIALOG d) {
+    return reinterpret_cast<Fl_Help_Dialog*>(d)->value();
+}
+
+void fl_help_dialog_set_value(HELPDIALOG d, const char * v) {
+    reinterpret_cast<Fl_Help_Dialog*>(d)->value(v);
+}
+
+
+
+
+int fl_help_dialog_get_textsize(HELPDIALOG d) {
+    return reinterpret_cast<Fl_Help_Dialog*>(d)->textsize();
+}
+
+void fl_help_dialog_set_textsize(HELPDIALOG d, int s) {
+    reinterpret_cast<Fl_Help_Dialog*>(d)->textsize(s);
+}
+
+
+
+
+int fl_help_dialog_get_x(HELPDIALOG d) {
+    return reinterpret_cast<Fl_Help_Dialog*>(d)->x();
+}
+
+int fl_help_dialog_get_y(HELPDIALOG d) {
+    return reinterpret_cast<Fl_Help_Dialog*>(d)->y();
+}
+
+int fl_help_dialog_get_w(HELPDIALOG d) {
+    return reinterpret_cast<Fl_Help_Dialog*>(d)->w();
+}
+
+int fl_help_dialog_get_h(HELPDIALOG d) {
+    return reinterpret_cast<Fl_Help_Dialog*>(d)->h();
+}
+
+void fl_help_dialog_resize(HELPDIALOG d, int xx, int yy, int ww, int hh) {
+    reinterpret_cast<Fl_Help_Dialog*>(d)->resize(xx, yy, ww, hh);
+}
+
+void fl_help_dialog_position(HELPDIALOG d, int xx, int yy) {
+    reinterpret_cast<Fl_Help_Dialog*>(d)->position(xx, yy);
+}
+
+
