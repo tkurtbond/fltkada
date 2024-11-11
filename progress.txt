@@ -67,6 +67,7 @@ FLTK.Widgets.Clocks
 FLTK.Widgets.Clocks.Updated
 FLTK.Widgets.Clocks.Updated.Round
 FLTK.Widgets.Groups
+FLTK.Widgets.Groups.Browsers
 FLTK.Widgets.Groups.Color_Choosers
 FLTK.Widgets.Groups.Help_Views
 FLTK.Widgets.Groups.Input_Choices
@@ -136,7 +137,6 @@ FLTK.Devices.Surfaces (incomplete API, otherwise polished)
 To-Do:
 
 Fl_Browser
-Fl_Browser_
 Fl_Cairo_Window
 Fl_Check_Browser
 Fl_Display_Device

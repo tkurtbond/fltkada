@@ -1,0 +1,744 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Browser_ Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Browser_ Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Browser_</td>
+    <td>FLTK.Widgets.Groups.Browsers</td>
+  </tr>
+
+</table>
+
+<p><b>Note:</b><br /><br />
+As the name suggests, you will likely never actually touch Abstract_Browser directly.
+Only through using or creating types derived from it.</p>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Browser_</td>
+    <td>Abstract_Browser</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Abstract_Browser_Reference</td>
+  </tr>
+
+  <tr>
+    <td>enum mode</td>
+    <td>Scrollbar_Mode</td>
+  </tr>
+
+  <tr>
+    <td>void *</td>
+    <td>Item_Cursor</td>
+  </tr>
+
+  <tr>
+    <td>int flags</td>
+    <td>Sort_Order</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Attributes</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Scrollbar hscrollbar;
+</pre></td>
+<td><pre>
+function H_Bar
+       (This : in out Abstract_Browser)
+    return Valuators.Sliders.Scrollbars.Scrollbar_Reference;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Scrollbar scrollbar;
+</pre></td>
+<td><pre>
+function V_Bar
+       (This : in out Abstract_Browser)
+    return Valuators.Sliders.Scrollbars.Scrollbar_Reference;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Browser_(int X, int Y, int W, int H, const char *L=0);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return Abstract_Browser;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+int deselect(int docallbacks=0);
+</pre></td>
+<td><pre>
+function Deselect
+       (This         : in out Abstract_Browser;
+        Do_Callbacks : in     Boolean := False)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void display(void *item);
+</pre></td>
+<td><pre>
+procedure Display
+       (This : in out Abstract_Browser;
+        Item : in     Item_Cursor);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int handle(int event);
+</pre></td>
+<td><pre>
+function Handle
+       (This  : in out Abstract_Browser;
+        Event : in     Event_Kind)
+    return Event_Outcome;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+uchar has_scrollbar() const;
+</pre></td>
+<td><pre>
+function Get_Scrollbar_Mode
+       (This : in Abstract_Browser)
+    return Scrollbar_Mode;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void has_scrollbar(uchar mode);
+</pre></td>
+<td><pre>
+procedure Set_Scrollbar_Mode
+       (This : in out Abstract_Browser;
+        Mode : in     Scrollbar_Mode);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int hposition() const;
+</pre></td>
+<td><pre>
+function Get_H_Position
+       (This : in Abstract_Browser)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void hposition(int);
+</pre></td>
+<td><pre>
+procedure Set_H_Position
+       (This  : in out Abstract_Browser;
+        Value : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int position() const;
+</pre></td>
+<td><pre>
+function Get_V_Position
+       (This : in Abstract_Browser)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void position(int pos);
+</pre></td>
+<td><pre>
+procedure Set_V_Position
+       (This  : in out Abstract_Browser;
+        Value : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void resize(int X, int Y, int W, int H);
+</pre></td>
+<td><pre>
+procedure Resize
+       (This       : in out Abstract_Browser;
+        X, Y, W, H : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void scrollbar_left();
+</pre></td>
+<td><pre>
+procedure Set_Vertical_Left
+       (This : in out Abstract_Browser);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void scrollbar_right();
+</pre></td>
+<td><pre>
+procedure Set_Vertical_Right
+       (This : in out Abstract_Browser);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int scrollbar_size() const;
+</pre></td>
+<td><pre>
+function Get_Scrollbar_Size
+       (This : in Abstract_Browser)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void scrollbar_size(int newSize);
+</pre></td>
+<td><pre>
+procedure Set_Scrollbar_Size
+       (This  : in out Abstract_Browser;
+        Value : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int scrollbar_width() const;
+</pre></td>
+<td>Deprecated, see scrollbar_size</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void scrollbar_width(int width);
+</pre></td>
+<td>Deprecated, see scrollbar_size</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int select(void *item, int val=1, int docallbacks=0);
+</pre></td>
+<td><pre>
+function Set_Select
+       (This         : in out Abstract_Browser;
+        Item         : in     Item_Cursor;
+        State        : in     Boolean := True;
+        Do_Callbacks : in     Boolean := False)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int select_only(void *item, int docallbacks=0);
+</pre></td>
+<td><pre>
+function Select_Only
+       (This         : in out Abstract_Browser;
+        Item         : in     Item_Cursor;
+        Do_Callbacks : in     Boolean := False)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void sort(int flags=0);
+</pre></td>
+<td><pre>
+procedure Sort
+       (This  : in out Abstract_Browser;
+        Order : in     Sort_Order);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Color textcolor() const;
+</pre></td>
+<td><pre>
+function Get_Text_Color
+       (This : in Abstract_Browser)
+    return Color;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void textcolor(Fl_Color col);
+</pre></td>
+<td><pre>
+procedure Set_Text_Color
+       (This  : in out Abstract_Browser;
+        Value : in     Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Font textfont() const;
+</pre></td>
+<td><pre>
+function Get_Text_Font
+       (This : in Abstract_Browser)
+    return Font_Kind;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void textfont(Fl_Font font);
+</pre></td>
+<td><pre>
+procedure Set_Text_Font
+       (This : in out Abstract_Browser;
+        Font : in     Font_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Fontsize textsize() const;
+</pre></td>
+<td><pre>
+function Get_Text_Size
+       (This : in Abstract_Browser)
+    return Font_Size;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void textsize(Fl_Fontsize newSize);
+</pre></td>
+<td><pre>
+procedure Set_Text_Size
+       (This : in out Abstract_Browser;
+        Size : in     Font_Size);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void bbox(int &X, int &Y, int &W, int &H) const;
+</pre></td>
+<td><pre>
+procedure Bounding_Box
+       (This       : in     Abstract_Browser;
+        X, Y, W, H :    out Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void deleting(void *item);
+</pre></td>
+<td><pre>
+procedure Deleting
+       (This : in out Abstract_Browser;
+        Item : in     Item_Cursor);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int displayed(void *item) const;
+</pre></td>
+<td><pre>
+function Is_Displayed
+       (This : in Abstract_Browser;
+        Item : in Item_Cursor)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Abstract_Browser);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void * find_item(int ypos);
+</pre></td>
+<td><pre>
+function Find_Item
+       (This  : in Abstract_Browser;
+        Y_Pos : in Integer)
+    return Item_Cursor;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual int full_height() const;
+</pre></td>
+<td><pre>
+function Full_List_Height
+       (This : in Abstract_Browser)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual int full_width() const;
+</pre></td>
+<td><pre>
+function Full_List_Width
+       (This : in Abstract_Browser)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual int incr_height() const;
+</pre></td>
+<td><pre>
+function Average_Item_Height
+       (This : in Abstract_Browser)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void inserting(void *a, void *b);
+</pre></td>
+<td><pre>
+procedure Inserting
+       (This : in out Abstract_Browser;
+        A, B : in     Item_Cursor);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual void * item_at(int index) const;
+</pre></td>
+<td><pre>
+function Item_At
+       (This  : in Abstract_Browser;
+        Index : in Positive)
+    return Item_Cursor;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual void item_draw(void *item,
+    int X, int Y, int W, int H) const =0;
+</pre></td>
+<td><pre>
+procedure Item_Draw
+       (This       : in Abstract_Browser;
+        Item       : in Item_Cursor;
+        X, Y, W, H : in Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual void * item_first() const =0;
+</pre></td>
+<td><pre>
+function Item_First
+       (This : in Abstract_Browser)
+    return Item_Cursor;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual int item_height(void *item) const =0;
+</pre></td>
+<td><pre>
+function Item_Height
+       (This : in Abstract_Browser;
+        Item : in Item_Cursor)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual void * item_last() const;
+</pre></td>
+<td><pre>
+function Item_Last
+       (This : in Abstract_Browser)
+    return Item_Cursor;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual void * item_next(void *item) const =0;
+</pre></td>
+<td><pre>
+function Item_Next
+       (This : in Abstract_Browser;
+        Item : in Item_Cursor)
+    return Item_Cursor;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual void * item_prev(void *item) const =0;
+</pre></td>
+<td><pre>
+function Item_Previous
+       (This : in Abstract_Browser;
+        Item : in Item_Cursor)
+    return Item_Cursor;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual int item_quick_height(void *item) const;
+</pre></td>
+<td><pre>
+function Item_Quick_Height
+       (This : in Abstract_Browser;
+        Item : in Item_Cursor)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual void item_select(void *item, int val=1);
+</pre></td>
+<td><pre>
+procedure Item_Select
+       (This  : in out Abstract_Browser;
+        Item  : in     Item_Cursor;
+        State : in     Boolean := True);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual int item_selected(void *item) const;
+</pre></td>
+<td><pre>
+function Item_Selected
+       (This : in Abstract_Browser;
+        Item : in Item_Cursor)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual void item_swap(void *a, void *b);
+</pre></td>
+<td><pre>
+procedure Item_Swap
+       (This : in out Abstract_Browser;
+        A, B : in     Item_Cursor);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual const char * item_text(void *item) const;
+</pre></td>
+<td><pre>
+function Item_Text
+       (This : in Abstract_Browser;
+        Item : in Item_Cursor)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual int item_width(void *item) const =0;
+</pre></td>
+<td><pre>
+function Item_Width
+       (This : in Abstract_Browser;
+        Item : in Item_Cursor)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int leftedge() const;
+</pre></td>
+<td><pre>
+function Left_Edge
+       (This : in Abstract_Browser)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void new_list();
+</pre></td>
+<td><pre>
+procedure New_List
+       (This : in out Abstract_Browser);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void redraw_line(void *item);
+</pre></td>
+<td><pre>
+procedure Redraw_Line
+       (This : in out Abstract_Browser;
+        Item : in     Item_Cursor);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void redraw_lines();
+</pre></td>
+<td><pre>
+procedure Redraw_List
+       (This : in out Abstract_Browser);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void replacing(void *a, void *b);
+</pre></td>
+<td><pre>
+procedure Replacing
+       (This : in out Abstract_Browser;
+        A, B : in     Item_Cursor);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void * selection() const;
+</pre></td>
+<td><pre>
+function Current_Selection
+       (This : in Abstract_Browser)
+    return Item_Cursor;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void swapping(void *a, void *b);
+</pre></td>
+<td><pre>
+procedure Swapping
+       (This : in out Abstract_Browser;
+        A, B : in     Item_Cursor);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void * top() const;
+</pre></td>
+<td><pre>
+function Top_Item
+       (This : in Abstract_Browser)
+    return Item_Cursor;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+  </body>
+</html>
+

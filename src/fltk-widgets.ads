@@ -378,17 +378,17 @@ private
     --  the user data portion should always be a reference back to the Ada binding
     procedure Callback_Hook
            (W, U : in Storage.Integer_Address);
-    pragma Convention (C, Callback_Hook);
+    pragma Export (C, Callback_Hook, "widget_callback_hook");
 
     procedure Draw_Hook
            (U : in Storage.Integer_Address);
-    pragma Convention (C, Draw_Hook);
+    pragma Export (C, Draw_Hook, "widget_draw_hook");
 
     function Handle_Hook
            (U : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
-    pragma Convention (C, Handle_Hook);
+    pragma Export (C, Handle_Hook, "widget_handle_hook");
 
 
 
