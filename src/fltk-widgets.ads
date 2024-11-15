@@ -361,6 +361,11 @@ private
     overriding procedure Finalize
            (This : in out Widget);
 
+    procedure Extra_Init
+           (This       : in out Widget;
+            X, Y, W, H : in     Integer;
+            Text       : in     String);
+
 
 
 

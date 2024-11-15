@@ -6,7 +6,6 @@
 
 with
 
-    Ada.Unchecked_Deallocation,
     Interfaces.C.Strings;
 
 use type
@@ -169,14 +168,6 @@ package body FLTK.Widgets.Groups.Input_Choices is
 
 
 
-    procedure Free is new Ada.Unchecked_Deallocation
-        (INP.Input, Input_Access);
-    procedure Free is new Ada.Unchecked_Deallocation
-        (MB.Menu_Button, Menu_Button_Access);
-
-
-
-
     procedure Finalize
            (This : in out Input_Choice) is
     begin
@@ -185,14 +176,37 @@ package body FLTK.Widgets.Groups.Input_Choices is
         then
             Group (This).Clear;
             free_fl_input_choice (This.Void_Ptr);
-            Free (This.My_Input);
-            Free (This.My_Menu_Button);
             This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Group (This));
     end Finalize;
 
 
+    procedure Extra_Init
+           (This       : in out Input_Choice;
+            X, Y, W, H : in     Integer;
+            Text       : in     String) is
+    begin
+        Wrapper (This.My_Input).Void_Ptr := fl_input_choice_input (This.Void_Ptr);
+        Wrapper (This.My_Input).Needs_Dealloc := False;
+        Extra_Init
+           (Widget (This.My_Input),
+            This.My_Input.Get_X,
+            This.My_Input.Get_Y,
+            This.My_Input.Get_W,
+            This.My_Input.Get_H,
+            This.My_Input.Get_Label);
+        Wrapper (This.My_Menu_Button).Void_Ptr := fl_input_choice_menubutton (This.Void_Ptr);
+        Wrapper (This.My_Menu_Button).Needs_Dealloc := False;
+        Extra_Init
+           (Widget (This.My_Menu_Button),
+            This.My_Menu_Button.Get_X,
+            This.My_Menu_Button.Get_Y,
+            This.My_Menu_Button.Get_W,
+            This.My_Menu_Button.Get_H,
+            This.My_Menu_Button.Get_Label);
+        Extra_Init (Group (This), X, Y, W, H, Text);
+    end Extra_Init;
 
 
     package body Forge is
@@ -209,25 +223,11 @@ package body FLTK.Widgets.Groups.Input_Choices is
                         Interfaces.C.int (W),
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
-                fl_group_end (This.Void_Ptr);
-                fl_widget_set_user_data
-                       (This.Void_Ptr,
-                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                Extra_Init (This, X, Y, W, H, Text);
                 input_choice_set_draw_hook
                     (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
                 input_choice_set_handle_hook
                     (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
-                fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
-
-                This.My_Input := new INP.Input;
-                Wrapper (This.My_Input.all).Void_Ptr :=
-                    fl_input_choice_input (This.Void_Ptr);
-                Wrapper (This.My_Input.all).Needs_Dealloc := False;
-
-                This.My_Menu_Button := new MB.Menu_Button;
-                Wrapper (This.My_Menu_Button.all).Void_Ptr :=
-                    fl_input_choice_menubutton (This.Void_Ptr);
-                Wrapper (This.My_Menu_Button.all).Needs_Dealloc := False;
             end return;
         end Create;
 
@@ -238,17 +238,17 @@ package body FLTK.Widgets.Groups.Input_Choices is
 
     function Input
            (This : in out Input_Choice)
-        return INP.Input_Reference is
+        return FLTK.Widgets.Inputs.Input_Reference is
     begin
-        return (Data => This.My_Input);
+        return (Data => This.My_Input'Unchecked_Access);
     end Input;
 
 
     function Menu_Button
            (This : in out Input_Choice)
-        return MB.Menu_Button_Reference is
+        return FLTK.Widgets.Menus.Menu_Buttons.Menu_Button_Reference is
     begin
-        return (Data => This.My_Menu_Button);
+        return (Data => This.My_Menu_Button'Unchecked_Access);
     end Menu_Button;
 
 

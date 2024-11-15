@@ -182,6 +182,12 @@ private
     overriding procedure Finalize
            (This : in out Help_View);
 
+    procedure Extra_Init
+           (This       : in out Help_View;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
+
 
     pragma Inline (Clear_Selection);
     pragma Inline (Select_All);

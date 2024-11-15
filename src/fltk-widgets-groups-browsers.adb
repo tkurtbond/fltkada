@@ -45,6 +45,21 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
 
+    function fl_abstract_browser_hscrollbar
+           (B : in Storage.Integer_Address)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_abstract_browser_hscrollbar, "fl_abstract_browser_hscrollbar");
+    pragma Inline (fl_abstract_browser_hscrollbar);
+
+    function fl_abstract_browser_scrollbar
+           (B : in Storage.Integer_Address)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_abstract_browser_scrollbar, "fl_abstract_browser_scrollbar");
+    pragma Inline (fl_abstract_browser_scrollbar);
+
+
+
+
     function fl_abstract_browser_select
            (B, I : in Storage.Integer_Address;
             V, C : in Interfaces.C.int)
@@ -643,6 +658,33 @@ package body FLTK.Widgets.Groups.Browsers is
     --  Abstract Browser API --
     ---------------------------
 
+    procedure Extra_Init
+           (This       : in out Abstract_Browser;
+            X, Y, W, H : in     Integer;
+            Text       : in     String) is
+    begin
+        Widget (This.Horizon).Void_Ptr := fl_abstract_browser_hscrollbar (This.Void_Ptr);
+        Widget (This.Horizon).Needs_Dealloc := False;
+        Extra_Init
+           (Widget (This.Horizon),
+            This.Horizon.Get_X,
+            This.Horizon.Get_Y,
+            This.Horizon.Get_W,
+            This.Horizon.Get_H,
+            This.Horizon.Get_Label);
+        Widget (This.Vertigo).Void_Ptr := fl_abstract_browser_scrollbar (This.Void_Ptr);
+        Widget (This.Vertigo).Needs_Dealloc := False;
+        Extra_Init
+           (Widget (This.Vertigo),
+            This.Vertigo.Get_X,
+            This.Vertigo.Get_Y,
+            This.Vertigo.Get_W,
+            This.Vertigo.Get_H,
+            This.Vertigo.Get_Label);
+        Extra_Init (Group (This), X, Y, W, H, Text);
+    end Extra_Init;
+
+
     package body Forge is
 
         function Create
@@ -657,23 +699,7 @@ package body FLTK.Widgets.Groups.Browsers is
                     Interfaces.C.int (W),
                     Interfaces.C.int (H),
                     Interfaces.C.To_C (Text));
-                fl_widget_set_user_data
-                   (This.Void_Ptr,
-                    Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
-
-                Wrapper (This.Horizon).Void_Ptr := fl_abstract_browser_hscrollbar (This.Void_Ptr);
-                Wrapper (This.Horizon).Needs_Dealloc := False;
-                fl_widget_set_user_data
-                   (Wrapper (This.Horizon).Void_Ptr,
-                    Storage.To_Integer (Widget_Convert.To_Address (This.Horizon'Unchecked_Access)));
-
-                Wrapper (This.Vertigo).Void_Ptr := fl_abstract_browser_scrollbar (This.Void_Ptr);
-                Wrapper (This.Vertigo).Needs_Dealloc := False;
-                fl_widget_set_user_data
-                   (Wrapper (This.Vertigo).Void_Ptr,
-                    Storage.To_Integer (Widget_Convert.To_Address (This.Vertigo'Unchecked_Access)));
-
-                fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
+                Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
 

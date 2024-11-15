@@ -86,17 +86,19 @@ private
     overriding procedure Finalize
            (This : in out Clock);
 
-
+    procedure Extra_Init
+           (This       : in out Clock;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Get_Hour);
     pragma Inline (Get_Minute);
     pragma Inline (Get_Second);
 
-
     pragma Inline (Get_Time);
     pragma Inline (Set_Time);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);

@@ -44,7 +44,11 @@ private
     overriding procedure Finalize
            (This : in out Menu_Bar);
 
-
+    procedure Extra_Init
+           (This       : in out Menu_Bar;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Draw);

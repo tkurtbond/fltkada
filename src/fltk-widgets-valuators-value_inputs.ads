@@ -33,7 +33,7 @@ package FLTK.Widgets.Valuators.Value_Inputs is
 
 
     function Input
-           (This : in Value_Input)
+           (This : in out Value_Input)
         return FLTK.Widgets.Inputs.Input_Reference;
 
 
@@ -111,36 +111,29 @@ package FLTK.Widgets.Valuators.Value_Inputs is
 private
 
 
-    package INP renames FLTK.Widgets.Inputs;
-
-
-    type Input_Access is access INP.Input;
-
-
     type Value_Input is new Valuator with record
-        My_Input : Input_Access;
+        My_Input : aliased Inputs.Input;
     end record;
 
     overriding procedure Finalize
            (This : in out Value_Input);
 
-
+    procedure Extra_Init
+           (This       : in out Value_Input;
+            X, Y, W, H : in     Integer;
+            Text       : in     String);
 
 
     pragma Inline (Input);
 
-
     pragma Inline (Get_Cursor_Color);
     pragma Inline (Set_Cursor_Color);
-
 
     pragma Inline (Get_Shortcut);
     pragma Inline (Set_Shortcut);
 
-
     pragma Inline (Is_Soft);
     pragma Inline (Set_Soft);
-
 
     pragma Inline (Get_Text_Color);
     pragma Inline (Set_Text_Color);
@@ -148,7 +141,6 @@ private
     pragma Inline (Set_Text_Font);
     pragma Inline (Get_Text_Size);
     pragma Inline (Set_Text_Size);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);

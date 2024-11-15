@@ -55,12 +55,15 @@ private
     overriding procedure Finalize
            (This : in out Packed_Group);
 
-
+    procedure Extra_Init
+           (This       : in out Packed_Group;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Get_Spacing);
     pragma Inline (Set_Spacing);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);

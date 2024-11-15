@@ -167,16 +167,12 @@ private
     overriding procedure Finalize
            (This : in out Group);
 
+    procedure Extra_Init
+           (This       : in out Group;
+            X, Y, W, H : in     Integer;
+            Text       : in     String);
+
     package Group_Convert is new System.Address_To_Access_Conversions (Group);
-
-
-
-
-    procedure fl_group_end
-           (G : in Storage.Integer_Address);
-    pragma Import (C, fl_group_end, "fl_group_end");
-
-
 
 
     type Cursor is record
@@ -207,35 +203,27 @@ private
         return Cursor;
 
 
-
-
     pragma Inline (Add);
     pragma Inline (Insert);
     pragma Inline (Remove);
     pragma Inline (Clear);
-
 
     pragma Inline (Has_Child);
     pragma Inline (Child);
     pragma Inline (Find);
     pragma Inline (Number_Of_Children);
 
-
     pragma Inline (Iterate);
-
 
     --  pragma Inline (Get_Clip_Mode);
     --  pragma Inline (Set_Clip_Mode);
-
 
     pragma Inline (Get_Resizable);
     pragma Inline (Set_Resizable);
     pragma Inline (Reset_Initial_Sizes);
 
-
     pragma Inline (Get_Current);
     pragma Inline (Set_Current);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);

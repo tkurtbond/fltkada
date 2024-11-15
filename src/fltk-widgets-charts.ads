@@ -135,14 +135,17 @@ private
     overriding procedure Finalize
            (This : in out Chart);
 
-
+    procedure Extra_Init
+           (This       : in out Chart;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Add);
     pragma Inline (Insert);
     pragma Inline (Replace);
     pragma Inline (Clear);
-
 
     pragma Inline (Will_Autosize);
     pragma Inline (Set_Autosize);
@@ -152,7 +155,6 @@ private
     pragma Inline (Set_Maximum_Size);
     pragma Inline (Get_Size);
 
-
     pragma Inline (Get_Text_Color);
     pragma Inline (Set_Text_Color);
     pragma Inline (Get_Text_Font);
@@ -160,9 +162,7 @@ private
     pragma Inline (Get_Text_Size);
     pragma Inline (Set_Text_Size);
 
-
     pragma Inline (Resize);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);

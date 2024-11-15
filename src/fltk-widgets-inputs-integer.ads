@@ -51,11 +51,14 @@ private
     overriding procedure Finalize
            (This : in out Integer_Input);
 
-
+    procedure Extra_Init
+           (This       : in out Integer_Input;
+            X, Y, W, H : in     Standard.Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Get_Value);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);

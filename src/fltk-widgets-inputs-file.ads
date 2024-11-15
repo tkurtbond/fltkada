@@ -74,7 +74,11 @@ private
     overriding procedure Finalize
            (This : in out File_Input);
 
-
+    procedure Extra_Init
+           (This       : in out File_Input;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Get_Down_Box);
@@ -82,10 +86,8 @@ private
     pragma Inline (Get_Error_Color);
     pragma Inline (Set_Error_Color);
 
-
     pragma Inline (Get_Value);
     pragma Inline (Set_Value);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);

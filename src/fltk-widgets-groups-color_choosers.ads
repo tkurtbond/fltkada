@@ -118,7 +118,11 @@ private
     overriding procedure Finalize
            (This : in out Color_Chooser);
 
-
+    procedure Extra_Init
+           (This       : in out Color_Chooser;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Get_Red);
@@ -126,24 +130,19 @@ private
     pragma Inline (Get_Blue);
     pragma Inline (Set_RGB);
 
-
     pragma Inline (Get_Hue);
     pragma Inline (Get_Saturation);
     pragma Inline (Get_Value);
     pragma Inline (Set_HSV);
 
-
     pragma Inline (HSV_To_RGB);
     pragma Inline (RGB_To_HSV);
-
 
     pragma Inline (Color_Was_Changed);
     pragma Inline (Clear_Changed);
 
-
     pragma Inline (Get_Mode);
     pragma Inline (Set_Mode);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);

@@ -79,16 +79,22 @@ private
     overriding procedure Finalize
            (This : in out Button);
 
-
+    procedure Extra_Init
+           (This       : in out Button;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Get_State);
     pragma Inline (Set_State);
     pragma Inline (Set_Only);
+
     pragma Inline (Get_Down_Box);
     pragma Inline (Set_Down_Box);
     pragma Inline (Get_Shortcut);
     pragma Inline (Set_Shortcut);
+
     pragma Inline (Draw);
     pragma Inline (Handle);
 

@@ -237,14 +237,17 @@ private
     overriding procedure Finalize
            (This : in out Input);
 
-
+    procedure Extra_Init
+           (This       : in out Input;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Copy);
     pragma Inline (Cut);
     pragma Inline (Copy_Cuts);
     pragma Inline (Undo);
-
 
     pragma Inline (Has_Changed);
     pragma Inline (Clear_Changed);
@@ -255,7 +258,6 @@ private
     pragma Inline (Is_Wrap);
     pragma Inline (Set_Wrap);
 
-
     pragma Inline (Get_Input_Type);
     pragma Inline (Get_Shortcut_Key);
     pragma Inline (Set_Shortcut_Key);
@@ -264,18 +266,15 @@ private
     pragma Inline (Get_Position);
     pragma Inline (Set_Position);
 
-
     pragma Inline (Index);
     pragma Inline (Insert);
     pragma Inline (Replace);
     pragma Inline (Get_Value);
     pragma Inline (Set_Value);
 
-
     pragma Inline (Get_Maximum_Size);
     pragma Inline (Set_Maximum_Size);
     pragma Inline (Size);
-
 
     pragma Inline (Get_Cursor_Color);
     pragma Inline (Set_Cursor_Color);
@@ -286,14 +285,10 @@ private
     pragma Inline (Get_Text_Size);
     pragma Inline (Set_Text_Size);
 
-
     pragma Inline (Resize);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);
-
-
 
 
     Input_Kind_Values : array (Input_Kind) of Interfaces.C.int :=
@@ -304,8 +299,6 @@ private
         Secret_Kind    => 5,
         Readonly_Kind  => 8,
         Wrap_Kind      => 16);
-
-
 
 
     function fl_input_get_value

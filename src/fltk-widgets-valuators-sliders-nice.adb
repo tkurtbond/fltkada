@@ -70,6 +70,15 @@ package body FLTK.Widgets.Valuators.Sliders.Nice is
 
 
 
+    procedure Extra_Init
+           (This       : in out Nice_Slider;
+            X, Y, W, H : in     Integer;
+            Text       : in     String) is
+    begin
+        Extra_Init (Slider (This), X, Y, W, H, Text);
+    end Extra_Init;
+
+
     package body Forge is
 
         function Create
@@ -84,14 +93,11 @@ package body FLTK.Widgets.Valuators.Sliders.Nice is
                         Interfaces.C.int (W),
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
-                fl_widget_set_user_data
-                       (This.Void_Ptr,
-                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                Extra_Init (This, X, Y, W, H, Text);
                 nice_slider_set_draw_hook
                     (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
                 nice_slider_set_handle_hook
                     (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
-                fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;
 

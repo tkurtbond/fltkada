@@ -394,6 +394,9 @@ private
 
 
 
+    --  Note: This has to be Limited because otherwise the various init subprograms
+    --  wouldn't work, the widget callbacks wouldn't work, deallocation would be
+    --  a mess, really just all sorts of problems.
     type Wrapper is new Ada.Finalization.Limited_Controlled with
         record
             Void_Ptr      : Storage.Integer_Address;

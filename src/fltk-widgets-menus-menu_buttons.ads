@@ -63,12 +63,15 @@ private
     overriding procedure Finalize
            (This : in out Menu_Button);
 
-
+    procedure Extra_Init
+           (This       : in out Menu_Button;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Set_Popup_Kind);
     pragma Inline (Popup);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);

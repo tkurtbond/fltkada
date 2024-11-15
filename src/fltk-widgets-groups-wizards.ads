@@ -64,16 +64,18 @@ private
     overriding procedure Finalize
            (This : in out Wizard);
 
-
+    procedure Extra_Init
+           (This       : in out Wizard;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Next);
     pragma Inline (Prev);
 
-
     pragma Inline (Get_Visible);
     pragma Inline (Set_Visible);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);

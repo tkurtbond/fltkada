@@ -60,13 +60,16 @@ private
     overriding procedure Finalize
            (This : in out Double_Window);
 
-
+    procedure Extra_Init
+           (This       : in out Double_Window;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Show);
     pragma Inline (Hide);
     pragma Inline (Flush);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);

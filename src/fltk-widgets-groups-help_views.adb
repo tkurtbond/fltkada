@@ -288,6 +288,15 @@ package body FLTK.Widgets.Groups.Help_Views is
     --  Help_View API  --
     ---------------------
 
+    procedure Extra_Init
+           (This       : in out Help_View;
+            X, Y, W, H : in     Integer;
+            Text       : in     String) is
+    begin
+        Extra_Init (Group (This), X, Y, W, H, Text);
+    end Extra_Init;
+
+
     package body Forge is
 
         function Create
@@ -302,13 +311,10 @@ package body FLTK.Widgets.Groups.Help_Views is
                     Interfaces.C.int (W),
                     Interfaces.C.int (H),
                     Interfaces.C.To_C (Text));
-                fl_widget_set_user_data
-                   (This.Void_Ptr,
-                    Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                Extra_Init (This, X, Y, W, H, Text);
                 help_view_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
                 help_view_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
                 fl_help_view_link (This.Void_Ptr, Storage.To_Integer (Link_Callback_Hook'Address));
-                fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
             end return;
         end Create;
 

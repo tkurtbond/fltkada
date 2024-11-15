@@ -336,18 +336,18 @@ private
            (Index_Type => Positive, Element_Type => Key_Binding);
 
 
-
-
-    type Text_Editor is new Text_Display with
-        record
-            Bindings     : Binding_Vectors.Vector;
-            Default_Func : Default_Key_Func;
-        end record;
+    type Text_Editor is new Text_Display with record
+        Bindings     : Binding_Vectors.Vector;
+        Default_Func : Default_Key_Func;
+    end record;
 
     overriding procedure Finalize
            (This : in out Text_Editor);
 
-
+    procedure Extra_Init
+           (This       : in out Text_Editor;
+            X, Y, W, H : in     Integer;
+            Text       : in     String);
 
 
     function Key_Func_Hook
@@ -357,15 +357,10 @@ private
     pragma Convention (C, Key_Func_Hook);
 
 
-
-
     package Editor_Convert is new System.Address_To_Access_Conversions (Text_Editor'Class);
 
 
-
-
     pragma Inline (Default);
-
 
     pragma Inline (Undo);
     pragma Inline (Cut);
@@ -374,12 +369,10 @@ private
     pragma Inline (Delete);
     pragma Inline (Select_All);
 
-
     pragma Inline (KF_Backspace);
     pragma Inline (KF_Insert);
     pragma Inline (KF_Enter);
     pragma Inline (KF_Ignore);
-
 
     pragma Inline (KF_Home);
     pragma Inline (KF_End);
@@ -390,7 +383,6 @@ private
     pragma Inline (KF_Right);
     pragma Inline (KF_Up);
 
-
     pragma Inline (KF_Shift_Home);
     pragma Inline (KF_Shift_End);
     pragma Inline (KF_Shift_Page_Down);
@@ -399,7 +391,6 @@ private
     pragma Inline (KF_Shift_Left);
     pragma Inline (KF_Shift_Right);
     pragma Inline (KF_Shift_Up);
-
 
     pragma Inline (KF_Ctrl_Home);
     pragma Inline (KF_Ctrl_End);
@@ -410,7 +401,6 @@ private
     pragma Inline (KF_Ctrl_Right);
     pragma Inline (KF_Ctrl_Up);
 
-
     pragma Inline (KF_Ctrl_Shift_Home);
     pragma Inline (KF_Ctrl_Shift_End);
     pragma Inline (KF_Ctrl_Shift_Page_Down);
@@ -420,20 +410,16 @@ private
     pragma Inline (KF_Ctrl_Shift_Right);
     pragma Inline (KF_Ctrl_Shift_Up);
 
-
     pragma Inline (Add_Key_Binding);
     pragma Inline (Remove_All_Key_Bindings);
     pragma Inline (Get_Default_Key_Function);
     pragma Inline (Set_Default_Key_Function);
 
-
     pragma Inline (Get_Insert_Mode);
     pragma Inline (Set_Insert_Mode);
 
-
     --  pragma Inline (Get_Tab_Nav_Mode);
     --  pragma Inline (Set_Tab_Nav_Mode);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);

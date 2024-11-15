@@ -58,12 +58,15 @@ private
     overriding procedure Finalize
            (This : in out Single_Window);
 
-
+    procedure Extra_Init
+           (This       : in out Single_Window;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Show);
     pragma Inline (Flush);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);

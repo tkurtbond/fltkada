@@ -94,16 +94,18 @@ private
     overriding procedure Finalize
            (This : in out Overlay_Window);
 
-
+    procedure Extra_Init
+           (This       : in out Overlay_Window;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Show);
     pragma Inline (Hide);
     pragma Inline (Flush);
 
-
     pragma Inline (Can_Do_Overlay);
-
 
     pragma Inline (Draw);
     pragma Inline (Redraw_Overlay);

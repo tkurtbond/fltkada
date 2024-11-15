@@ -91,21 +91,22 @@ private
     overriding procedure Finalize
            (This : in out Scroll);
 
-
+    procedure Extra_Init
+           (This       : in out Scroll;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Clear);
 
-
     pragma Inline (Scroll_To);
     pragma Inline (Set_Type);
-
 
     pragma Inline (Get_Scrollbar_Size);
     pragma Inline (Set_Scrollbar_Size);
     pragma Inline (Get_Scroll_X);
     pragma Inline (Get_Scroll_Y);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);

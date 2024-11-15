@@ -94,7 +94,11 @@ private
     overriding procedure Finalize
            (This : in out Counter);
 
-
+    procedure Extra_Init
+           (This       : in out Counter;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Get_Step);
@@ -102,14 +106,12 @@ private
     pragma Inline (Get_Long_Step);
     pragma Inline (Set_Long_Step);
 
-
     pragma Inline (Get_Text_Color);
     pragma Inline (Set_Text_Color);
     pragma Inline (Get_Text_Font);
     pragma Inline (Set_Text_Font);
     pragma Inline (Get_Text_Size);
     pragma Inline (Set_Text_Size);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);

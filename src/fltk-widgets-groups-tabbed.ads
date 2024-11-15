@@ -76,18 +76,20 @@ private
     overriding procedure Finalize
            (This : in out Tabbed_Group);
 
-
+    procedure Extra_Init
+           (This       : in out Tabbed_Group;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Get_Client_Area);
-
 
     pragma Inline (Get_Push);
     pragma Inline (Set_Push);
     pragma Inline (Get_Visible);
     pragma Inline (Set_Visible);
     pragma Inline (Get_Which);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);

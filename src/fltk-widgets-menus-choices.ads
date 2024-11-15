@@ -63,13 +63,16 @@ private
     overriding procedure Finalize
            (This : in out Choice);
 
-
+    procedure Extra_Init
+           (This       : in out Choice;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Chosen);
     pragma Inline (Chosen_Index);
     pragma Inline (Set_Chosen);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);

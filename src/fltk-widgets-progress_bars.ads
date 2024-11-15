@@ -71,7 +71,11 @@ private
     overriding procedure Finalize
            (This : in out Progress_Bar);
 
-
+    procedure Extra_Init
+           (This       : in out Progress_Bar;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Get_Minimum);
@@ -80,7 +84,6 @@ private
     pragma Inline (Set_Maximum);
     pragma Inline (Get_Value);
     pragma Inline (Set_Value);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);

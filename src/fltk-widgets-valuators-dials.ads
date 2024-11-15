@@ -84,18 +84,20 @@ private
     overriding procedure Finalize
            (This : in out Dial);
 
-
+    procedure Extra_Init
+           (This       : in out Dial;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Get_Dial_Type);
-
 
     pragma Inline (Get_First_Angle);
     pragma Inline (Set_First_Angle);
     pragma Inline (Get_Second_Angle);
     pragma Inline (Set_Second_Angle);
     pragma Inline (Set_Angles);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);

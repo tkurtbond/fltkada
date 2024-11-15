@@ -120,28 +120,22 @@ package FLTK.Widgets.Groups.Input_Choices is
 private
 
 
-    package INP renames FLTK.Widgets.Inputs;
-    package MB renames FLTK.Widgets.Menus.Menu_Buttons;
-
-
-    type Input_Access is access INP.Input;
-    type Menu_Button_Access is access MB.Menu_Button;
-
-
     type Input_Choice is new Group with record
-        My_Input       : Input_Access;
-        My_Menu_Button : Menu_Button_Access;
+        My_Input       : aliased Inputs.Input;
+        My_Menu_Button : aliased Menus.Menu_Buttons.Menu_Button;
     end record;
 
     overriding procedure Finalize
            (This : in out Input_Choice);
 
-
+    procedure Extra_Init
+           (This       : in out Input_Choice;
+            X, Y, W, H : in     Integer;
+            Text       : in     String);
 
 
     pragma Inline (Input);
     pragma Inline (Menu_Button);
-
 
     pragma Inline (Has_Changed);
     pragma Inline (Clear_Changed);
@@ -156,7 +150,6 @@ private
     pragma Inline (Get_Input);
     pragma Inline (Set_Input);
     pragma Inline (Set_Item);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);

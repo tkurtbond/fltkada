@@ -47,7 +47,11 @@ private
     overriding procedure Finalize
            (This : in out Enter_Button);
 
-
+    procedure Extra_Init
+           (This       : in out Enter_Button;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Draw);

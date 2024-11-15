@@ -140,7 +140,11 @@ private
     overriding procedure Finalize
            (This : in out Spinner);
 
-
+    procedure Extra_Init
+           (This       : in out Spinner;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Get_Background_Color);
@@ -154,7 +158,6 @@ private
     pragma Inline (Get_Text_Size);
     pragma Inline (Set_Text_Size);
 
-
     pragma Inline (Get_Minimum);
     pragma Inline (Set_Minimum);
     pragma Inline (Get_Maximum);
@@ -166,7 +169,6 @@ private
     pragma Inline (Set_Type);
     pragma Inline (Get_Value);
     pragma Inline (Set_Value);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);

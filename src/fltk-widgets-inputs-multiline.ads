@@ -44,7 +44,11 @@ private
     overriding procedure Finalize
            (This : in out Multiline_Input);
 
-
+    procedure Extra_Init
+           (This       : in out Multiline_Input;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Draw);

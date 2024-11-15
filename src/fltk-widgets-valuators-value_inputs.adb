@@ -6,7 +6,6 @@
 
 with
 
-    Ada.Unchecked_Deallocation,
     Interfaces.C.Strings;
 
 use type
@@ -153,12 +152,6 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
-    procedure Free is new Ada.Unchecked_Deallocation
-        (INP.Input, Input_Access);
-
-
-
-
     procedure Finalize
            (This : in out Value_Input) is
     begin
@@ -166,13 +159,31 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
             This in Value_Input'Class
         then
             free_fl_value_input (This.Void_Ptr);
-            Free (This.My_Input);
             This.Void_Ptr := Null_Pointer;
         end if;
         Finalize (Valuator (This));
     end Finalize;
 
 
+
+
+    procedure Extra_Init
+           (This       : in out Value_Input;
+            X, Y, W, H : in     Integer;
+            Text       : in     String) is
+    begin
+        Wrapper (This.My_Input).Void_Ptr :=
+            fl_value_input_get_input (This.Void_Ptr);
+        Wrapper (This.My_Input).Needs_Dealloc := False;
+        Extra_Init  --  Would be better to call Extra_Init for Inputs here, but alas
+           (Widget (This.My_Input),
+            This.My_Input.Get_X,
+            This.My_Input.Get_Y,
+            This.My_Input.Get_W,
+            This.My_Input.Get_H,
+            This.My_Input.Get_Label);
+        Extra_Init (Valuator (This), X, Y, W, H, Text);
+    end Extra_Init;
 
 
     package body Forge is
@@ -189,19 +200,11 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
                         Interfaces.C.int (W),
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
-                fl_widget_set_user_data
-                       (This.Void_Ptr,
-                        Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
+                Extra_Init (This, X, Y, W, H, Text);
                 value_input_set_draw_hook
                     (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
                 value_input_set_handle_hook
                     (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
-                fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
-
-                This.My_Input := new INP.Input;
-                Wrapper (This.My_Input.all).Void_Ptr :=
-                    fl_value_input_get_input (This.Void_Ptr);
-                Wrapper (This.My_Input.all).Needs_Dealloc := False;
             end return;
         end Create;
 
@@ -211,10 +214,10 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
     function Input
-           (This : in Value_Input)
+           (This : in out Value_Input)
         return FLTK.Widgets.Inputs.Input_Reference is
     begin
-        return (Data => This.My_Input);
+        return (Data => This.My_Input'Unchecked_Access);
     end Input;
 
 

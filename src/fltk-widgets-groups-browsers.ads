@@ -345,6 +345,11 @@ private
     overriding procedure Finalize
            (This : in out Abstract_Browser);
 
+    procedure Extra_Init
+           (This       : in out Abstract_Browser;
+            X, Y, W, H : in     Integer;
+            Text       : in     String);
+
 
     pragma Assert
        (Item_Cursor'Size = Storage.Integer_Address'Size,
@@ -418,19 +423,6 @@ private
 
     pragma Inline (Draw);
     pragma Inline (Handle);
-
-
-    function fl_abstract_browser_hscrollbar
-           (B : in Storage.Integer_Address)
-        return Storage.Integer_Address;
-    pragma Import (C, fl_abstract_browser_hscrollbar, "fl_abstract_browser_hscrollbar");
-    pragma Inline (fl_abstract_browser_hscrollbar);
-
-    function fl_abstract_browser_scrollbar
-           (B : in Storage.Integer_Address)
-        return Storage.Integer_Address;
-    pragma Import (C, fl_abstract_browser_scrollbar, "fl_abstract_browser_scrollbar");
-    pragma Inline (fl_abstract_browser_scrollbar);
 
 
     --  Needed to ensure chars_ptr storage is properly cleaned up

@@ -70,7 +70,11 @@ private
     overriding procedure Finalize
            (This : in out Scrollbar);
 
-
+    procedure Extra_Init
+           (This       : in out Scrollbar;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Get_Line_Size);
@@ -78,7 +82,6 @@ private
     pragma Inline (Get_Position);
     pragma Inline (Set_Position);
     pragma Inline (Set_All);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);

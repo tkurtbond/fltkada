@@ -370,12 +370,14 @@ private
     overriding procedure Finalize
            (This : in out Text_Display);
 
-
+    procedure Extra_Init
+           (This       : in out Text_Display;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     package Text_Display_Convert is new System.Address_To_Access_Conversions (Text_Display'Class);
-
-
 
 
     --  Adds some basic reference counting on the C side to help ensure any Text_Buffers
@@ -391,27 +393,21 @@ private
     pragma Inline (free_fl_text_buffer);
 
 
-
-
     pragma Inline (Get_Buffer);
     pragma Inline (Set_Buffer);
 
-
     pragma Inline (Highlight_Data);
-
 
     pragma Inline (Col_To_X);
     pragma Inline (X_To_Col);
     pragma Inline (In_Selection);
     pragma Inline (Position_To_XY);
 
-
     pragma Inline (Get_Cursor_Color);
     pragma Inline (Set_Cursor_Color);
     pragma Inline (Set_Cursor_Style);
     pragma Inline (Hide_Cursor);
     pragma Inline (Show_Cursor);
-
 
     pragma Inline (Get_Text_Color);
     pragma Inline (Set_Text_Color);
@@ -420,13 +416,11 @@ private
     pragma Inline (Get_Text_Size);
     pragma Inline (Set_Text_Size);
 
-
     pragma Inline (Insert_Text);
     pragma Inline (Overstrike);
     pragma Inline (Get_Insert_Position);
     pragma Inline (Set_Insert_Position);
     pragma Inline (Show_Insert_Position);
-
 
     pragma Inline (Word_Start);
     pragma Inline (Word_End);
@@ -434,13 +428,11 @@ private
     pragma Inline (Previous_Word);
     pragma Inline (Set_Wrap_Mode);
 
-
     pragma Inline (Line_Start);
     pragma Inline (Line_End);
     pragma Inline (Count_Lines);
     pragma Inline (Skip_Lines);
     pragma Inline (Rewind_Lines);
-
 
     pragma Inline (Get_Linenumber_Alignment);
     pragma Inline (Set_Linenumber_Alignment);
@@ -455,19 +447,16 @@ private
     pragma Inline (Get_Linenumber_Width);
     pragma Inline (Set_Linenumber_Width);
 
-
     pragma Inline (Move_Down);
     pragma Inline (Move_Left);
     pragma Inline (Move_Right);
     pragma Inline (Move_Up);
-
 
     pragma Inline (Scroll_To);
     pragma Inline (Get_Scrollbar_Alignment);
     pragma Inline (Set_Scrollbar_Alignment);
     pragma Inline (Get_Scrollbar_Width);
     pragma Inline (Set_Scrollbar_Width);
-
 
     pragma Inline (Redisplay_Range);
     pragma Inline (Draw);

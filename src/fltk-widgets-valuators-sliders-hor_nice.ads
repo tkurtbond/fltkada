@@ -44,7 +44,11 @@ private
     overriding procedure Finalize
            (This : in out Hor_Nice_Slider);
 
-
+    procedure Extra_Init
+           (This       : in out Hor_Nice_Slider;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Draw);

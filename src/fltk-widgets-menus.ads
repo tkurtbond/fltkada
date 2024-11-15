@@ -256,13 +256,15 @@ private
     overriding procedure Finalize
            (This : in out Menu);
 
-
+    procedure Extra_Init
+           (This       : in out Menu;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     procedure Item_Hook (M, U : in Storage.Integer_Address);
     pragma Convention (C, Item_Hook);
-
-
 
 
     type Cursor is record
@@ -293,23 +295,18 @@ private
         return Cursor;
 
 
-
-
     pragma Inline (Has_Item);
     pragma Inline (Item);
     pragma Inline (Find_Item);
     pragma Inline (Find_Index);
     pragma Inline (Number_Of_Items);
 
-
     pragma Inline (Iterate);
-
 
     pragma Inline (Chosen);
     pragma Inline (Chosen_Label);
     pragma Inline (Chosen_Index);
     pragma Inline (Set_Chosen);
-
 
     pragma Inline (Get_Text_Color);
     pragma Inline (Set_Text_Color);
@@ -318,16 +315,13 @@ private
     pragma Inline (Get_Text_Size);
     pragma Inline (Set_Text_Size);
 
-
     pragma Inline (Get_Down_Box);
     pragma Inline (Set_Down_Box);
     pragma Inline (Make_Global);
     pragma Inline (Measure_Item);
 
-
     pragma Inline (Popup);
     pragma Inline (Pulldown);
-
 
     pragma Inline (Draw);
     pragma Inline (Draw_Item);

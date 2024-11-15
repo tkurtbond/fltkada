@@ -107,13 +107,16 @@ private
     overriding procedure Finalize
            (This : in out Valuator);
 
-
+    procedure Extra_Init
+           (This       : in out Valuator;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Clamp);
     pragma Inline (Round);
     pragma Inline (Increment);
-
 
     pragma Inline (Get_Minimum);
     pragma Inline (Set_Minimum);
@@ -126,7 +129,6 @@ private
     pragma Inline (Set_Bounds);
     pragma Inline (Set_Precision);
     pragma Inline (Set_Range);
-
 
     pragma Inline (Handle);
 

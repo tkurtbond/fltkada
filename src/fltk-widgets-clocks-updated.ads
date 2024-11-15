@@ -54,7 +54,11 @@ private
     overriding procedure Finalize
            (This : in out Updated_Clock);
 
-
+    procedure Extra_Init
+           (This       : in out Updated_Clock;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Draw);

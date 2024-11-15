@@ -94,7 +94,11 @@ private
     overriding procedure Finalize
            (This : in out Slider);
 
-
+    procedure Extra_Init
+           (This       : in out Slider;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Get_Slider_Type);
@@ -104,7 +108,6 @@ private
     pragma Inline (Get_Slide_Size);
     pragma Inline (Set_Slide_Size);
     pragma Inline (Set_Scrollvalue);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);

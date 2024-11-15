@@ -218,7 +218,11 @@ private
     overriding procedure Finalize
            (This : in out Window);
 
-
+    procedure Extra_Init
+           (This       : in out Window;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Show);
@@ -230,12 +234,10 @@ private
     pragma Inline (Last_Made_Current);
     pragma Inline (Free_Position);
 
-
     pragma Inline (Is_Fullscreen);
     pragma Inline (Fullscreen_On);
     pragma Inline (Fullscreen_Off);
     pragma Inline (Fullscreen_Screens);
-
 
     pragma Inline (Set_Icon);
     pragma Inline (Set_Default_Icon);
@@ -244,7 +246,6 @@ private
     pragma Inline (Set_Cursor);
     pragma Inline (Set_Default_Cursor);
 
-
     pragma Inline (Get_Border_State);
     pragma Inline (Set_Border_State);
     pragma Inline (Is_Override);
@@ -252,24 +253,19 @@ private
     pragma Inline (Get_Modal_State);
     pragma Inline (Set_Modal_State);
 
-
     pragma Inline (Get_Label);
     pragma Inline (Set_Label);
     pragma Inline (Hotspot);
     pragma Inline (Set_Size_Range);
     pragma Inline (Shape);
 
-
     pragma Inline (Get_X_Root);
     pragma Inline (Get_Y_Root);
     pragma Inline (Get_Decorated_W);
     pragma Inline (Get_Decorated_H);
 
-
     pragma Inline (Draw);
     pragma Inline (Handle);
-
-
 
 
     Last_Current : access Window'Class := null;

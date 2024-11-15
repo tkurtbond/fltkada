@@ -82,12 +82,15 @@ private
     overriding procedure Finalize
            (This : in out Value_Output);
 
-
+    procedure Extra_Init
+           (This       : in out Value_Output;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Is_Soft);
     pragma Inline (Set_Soft);
-
 
     pragma Inline (Get_Text_Color);
     pragma Inline (Set_Text_Color);
@@ -95,7 +98,6 @@ private
     pragma Inline (Set_Text_Font);
     pragma Inline (Get_Text_Size);
     pragma Inline (Set_Text_Size);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);

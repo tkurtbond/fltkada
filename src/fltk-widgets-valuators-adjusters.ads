@@ -55,12 +55,15 @@ private
     overriding procedure Finalize
            (This : in out Adjuster);
 
-
+    procedure Extra_Init
+           (This       : in out Adjuster;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Is_Soft);
     pragma Inline (Set_Soft);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);

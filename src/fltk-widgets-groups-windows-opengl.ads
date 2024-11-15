@@ -198,6 +198,12 @@ private
     overriding procedure Finalize
            (This : in out GL_Window);
 
+    procedure Extra_Init
+           (This       : in out GL_Window;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
+
 
     for Mode_Mask use record
         Index       at 0 range 0 .. 0;
@@ -223,17 +229,14 @@ private
     pragma Inline (Hide_Overlay);
     pragma Inline (Flush);
 
-
     pragma Inline (Pixel_H);
     pragma Inline (Pixel_W);
     pragma Inline (Pixels_Per_Unit);
-
 
     pragma Inline (Get_Mode);
     pragma Inline (Set_Mode);
     pragma Inline (Can_Do);
     pragma Inline (Can_Do_Overlay);
-
 
     pragma Inline (Get_Context);
     pragma Inline (Set_Context);
@@ -243,7 +246,6 @@ private
     pragma Inline (Set_Valid);
     pragma Inline (Make_Current);
     pragma Inline (Make_Overlay_Current);
-
 
     pragma Inline (Ortho);
     pragma Inline (Redraw_Overlay);

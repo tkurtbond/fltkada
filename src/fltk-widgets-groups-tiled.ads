@@ -52,11 +52,14 @@ private
     overriding procedure Finalize
            (This : in out Tiled_Group);
 
-
+    procedure Extra_Init
+           (This       : in out Tiled_Group;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
 
 
     pragma Inline (Position);
-
 
     pragma Inline (Draw);
     pragma Inline (Handle);
