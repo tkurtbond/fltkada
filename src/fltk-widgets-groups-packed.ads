@@ -61,6 +61,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Packed_Group)
+    with Inline;
+
 
     pragma Inline (Get_Spacing);
     pragma Inline (Set_Spacing);

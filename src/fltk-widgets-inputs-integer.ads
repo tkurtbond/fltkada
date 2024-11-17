@@ -57,6 +57,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Integer_Input)
+    with Inline;
+
 
     pragma Inline (Get_Value);
 

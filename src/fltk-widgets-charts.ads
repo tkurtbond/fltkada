@@ -141,6 +141,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Chart)
+    with Inline;
+
 
     pragma Inline (Add);
     pragma Inline (Insert);

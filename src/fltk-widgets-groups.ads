@@ -172,6 +172,10 @@ private
             X, Y, W, H : in     Integer;
             Text       : in     String);
 
+    procedure Extra_Final
+           (This : in out Group);
+
+
     package Group_Convert is new System.Address_To_Access_Conversions (Group);
 
 

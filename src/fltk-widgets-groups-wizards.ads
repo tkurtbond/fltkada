@@ -70,6 +70,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Wizard)
+    with Inline;
+
 
     pragma Inline (Next);
     pragma Inline (Prev);

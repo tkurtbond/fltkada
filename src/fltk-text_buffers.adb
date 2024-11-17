@@ -515,11 +515,8 @@ package body FLTK.Text_Buffers is
     procedure Finalize
            (This : in out Text_Buffer) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Text_Buffer'Class
-        then
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_text_buffer (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;
 
@@ -535,13 +532,8 @@ package body FLTK.Text_Buffers is
         begin
             return This : Text_Buffer do
                 This.Void_Ptr := new_fl_text_buffer
-                       (Interfaces.C.int (Requested_Size),
-                        Interfaces.C.int (Preferred_Gap_Size));
-
-                This.Modify_CBs := Modify_Vectors.Empty_Vector;
-                This.Predelete_CBs := Predelete_Vectors.Empty_Vector;
-                This.CB_Active := True;
-
+                   (Interfaces.C.int (Requested_Size),
+                    Interfaces.C.int (Preferred_Gap_Size));
                 fl_text_buffer_add_modify_callback
                    (This.Void_Ptr,
                     Storage.To_Integer (Modify_Callback_Hook'Address),

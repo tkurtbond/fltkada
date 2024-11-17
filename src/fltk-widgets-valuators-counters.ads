@@ -100,6 +100,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Counter)
+    with Inline;
+
 
     pragma Inline (Get_Step);
     pragma Inline (Set_Step);

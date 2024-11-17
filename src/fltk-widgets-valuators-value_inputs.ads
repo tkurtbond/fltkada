@@ -123,6 +123,10 @@ private
             X, Y, W, H : in     Integer;
             Text       : in     String);
 
+    procedure Extra_Final
+           (This : in out Value_Input)
+    with Inline;
+
 
     pragma Inline (Input);
 

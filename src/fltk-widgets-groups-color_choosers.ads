@@ -124,6 +124,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Color_Chooser)
+    with Inline;
+
 
     pragma Inline (Get_Red);
     pragma Inline (Get_Green);

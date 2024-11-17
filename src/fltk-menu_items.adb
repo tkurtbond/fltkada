@@ -228,13 +228,8 @@ package body FLTK.Menu_Items is
     procedure Finalize
            (This : in out Menu_Item) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Menu_Item'Class
-        then
-            if This.Needs_Dealloc then
-                free_fl_menu_item (This.Void_Ptr);
-            end if;
-            This.Void_Ptr := Null_Pointer;
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
+            free_fl_menu_item (This.Void_Ptr);
         end if;
     end Finalize;
 

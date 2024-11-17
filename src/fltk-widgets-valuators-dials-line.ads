@@ -50,6 +50,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Line_Dial)
+    with Inline;
+
 
     pragma Inline (Draw);
     pragma Inline (Handle);

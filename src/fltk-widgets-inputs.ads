@@ -243,6 +243,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Input)
+    with Inline;
+
 
     pragma Inline (Copy);
     pragma Inline (Cut);

@@ -501,14 +501,19 @@ package body FLTK.Widgets is
 
 
 
+    procedure Extra_Final
+           (This : in out Widget) is
+    begin
+        null;
+    end Extra_Final;
+
+
     procedure Finalize
            (This : in out Widget) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Widget'Class
-        then
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_widget (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;
 

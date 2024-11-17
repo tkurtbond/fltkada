@@ -55,16 +55,20 @@ package body FLTK.Widgets.Inputs.Outputs is
 
 
 
+    procedure Extra_Final
+           (This : in out Output) is
+    begin
+        Extra_Final (Input (This));
+    end Extra_Final;
+
+
     procedure Finalize
            (This : in out Output) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Output'Class
-        then
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_output (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Input (This));
     end Finalize;
 
 

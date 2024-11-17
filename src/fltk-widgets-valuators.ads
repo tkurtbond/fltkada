@@ -113,6 +113,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Valuator)
+    with Inline;
+
 
     pragma Inline (Clamp);
     pragma Inline (Round);

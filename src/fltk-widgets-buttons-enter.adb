@@ -55,16 +55,20 @@ package body FLTK.Widgets.Buttons.Enter is
 
 
 
+    procedure Extra_Final
+           (This : in out Enter_Button) is
+    begin
+        Extra_Final (Button (This));
+    end Extra_Final;
+
+
     procedure Finalize
            (This : in out Enter_Button) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Enter_Button'Class
-        then
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_return_button (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Button (This));
     end Finalize;
 
 

@@ -83,13 +83,9 @@ package body FLTK.Images.Tiled is
     overriding procedure Finalize
            (This : in out Tiled_Image) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Tiled_Image'Class
-        then
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_tiled_image (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Image (This));
     end Finalize;
 
 

@@ -149,13 +149,9 @@ package body FLTK.Help_Dialogs is
     procedure Finalize
            (This : in out Help_Dialog) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Help_Dialog'Class
-        then
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_help_dialog (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Wrapper (This));
     end Finalize;
 
 

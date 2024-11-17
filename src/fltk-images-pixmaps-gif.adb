@@ -29,13 +29,9 @@ package body FLTK.Images.Pixmaps.GIF is
     overriding procedure Finalize
            (This : in out GIF_Image) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in GIF_Image'Class
-        then
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_gif_image (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Pixmap (This));
     end Finalize;
 
 

@@ -29,13 +29,9 @@ package body FLTK.Images.Pixmaps.XPM is
     overriding procedure Finalize
            (This : in out XPM_Image) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in XPM_Image'Class
-        then
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_xpm_image (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Pixmap (This));
     end Finalize;
 
 

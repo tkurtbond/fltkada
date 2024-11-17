@@ -36,13 +36,9 @@ package body FLTK.Images.RGB.JPEG is
     overriding procedure Finalize
            (This : in out JPEG_Image) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in JPEG_Image'Class
-        then
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_jpeg_image (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (RGB_Image (This));
     end Finalize;
 
 

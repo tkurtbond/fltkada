@@ -92,6 +92,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Clock)
+    with Inline;
+
 
     pragma Inline (Get_Hour);
     pragma Inline (Get_Minute);

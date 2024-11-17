@@ -82,6 +82,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Tabbed_Group)
+    with Inline;
+
 
     pragma Inline (Get_Client_Area);
 

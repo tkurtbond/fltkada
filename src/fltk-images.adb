@@ -164,13 +164,8 @@ package body FLTK.Images is
     overriding procedure Finalize
            (This : in out Image) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Image'Class
-        then
-            if This.Needs_Dealloc then
-                free_fl_image (This.Void_Ptr);
-            end if;
-            This.Void_Ptr := Null_Pointer;
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
+            free_fl_image (This.Void_Ptr);
         end if;
     end Finalize;
 

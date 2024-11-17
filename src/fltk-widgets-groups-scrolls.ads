@@ -97,6 +97,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Scroll)
+    with Inline;
+
 
     pragma Inline (Clear);
 

@@ -78,6 +78,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Menu_Window)
+    with Inline;
+
 
     pragma Inline (Show);
     pragma Inline (Hide);

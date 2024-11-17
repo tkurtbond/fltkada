@@ -69,6 +69,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Menu_Button)
+    with Inline;
+
 
     pragma Inline (Set_Popup_Kind);
     pragma Inline (Popup);

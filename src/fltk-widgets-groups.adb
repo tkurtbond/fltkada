@@ -166,17 +166,21 @@ package body FLTK.Widgets.Groups is
 
 
 
+    procedure Extra_Final
+           (This : in out Group) is
+    begin
+        This.Clear;
+        Extra_Final (Widget (This));
+    end Extra_Final;
+
+
     procedure Finalize
            (This : in out Group) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Group'Class
-        then
-            This.Clear;
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_group (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Widget (This));
     end Finalize;
 
 

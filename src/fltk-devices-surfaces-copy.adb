@@ -68,13 +68,9 @@ package body FLTK.Devices.Surfaces.Copy is
     procedure Finalize
            (This : in out Copy_Surface) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Copy_Surface'Class
-        then
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_copy_surface (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Surface_Device (This));
     end Finalize;
 
 
@@ -92,6 +88,8 @@ package body FLTK.Devices.Surfaces.Copy is
                     Interfaces.C.int (H));
             end return;
         end Create;
+
+        pragma Inline (Create);
 
     end Forge;
 

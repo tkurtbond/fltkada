@@ -384,18 +384,21 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+    procedure Extra_Final
+           (This : in out Text_Editor) is
+    begin
+        Extra_Final (Text_Display (This));
+    end Extra_Final;
+
+
     procedure Finalize
            (This : in out Text_Editor) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Text_Editor'Class
-        then
-            This.Clear;
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_text_editor (This.Void_Ptr);
             free_fl_text_buffer (This.Raw_Buffer);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Text_Display (This));
     end Finalize;
 
 

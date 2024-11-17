@@ -77,6 +77,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Value_Slider)
+    with Inline;
+
 
     pragma Inline (Get_Text_Color);
     pragma Inline (Set_Text_Color);

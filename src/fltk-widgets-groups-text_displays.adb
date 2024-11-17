@@ -466,18 +466,21 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    procedure Extra_Final
+           (This : in out Text_Display) is
+    begin
+        Extra_Final (Group (This));
+    end Extra_Final;
+
+
     procedure Finalize
            (This : in out Text_Display) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Text_Display'Class
-        then
-            This.Clear;
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_text_display (This.Void_Ptr);
             free_fl_text_buffer (This.Raw_Buffer);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Group (This));
     end Finalize;
 
 

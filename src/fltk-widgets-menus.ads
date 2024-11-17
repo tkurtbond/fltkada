@@ -262,6 +262,9 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Menu);
+
 
     procedure Item_Hook (M, U : in Storage.Integer_Address);
     pragma Convention (C, Item_Hook);

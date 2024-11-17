@@ -55,16 +55,20 @@ package body FLTK.Widgets.Valuators.Counters.Simple is
 
 
 
+    procedure Extra_Final
+           (This : in out Simple_Counter) is
+    begin
+        Extra_Final (Counter (This));
+    end Extra_Final;
+
+
     procedure Finalize
            (This : in out Simple_Counter) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Simple_Counter'Class
-        then
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_simple_counter (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Counter (This));
     end Finalize;
 
 

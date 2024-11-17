@@ -55,16 +55,20 @@ package body FLTK.Widgets.Inputs.Multiline is
 
 
 
+    procedure Extra_Final
+           (This : in out Multiline_Input) is
+    begin
+        Extra_Final (Input (This));
+    end Extra_Final;
+
+
     procedure Finalize
            (This : in out Multiline_Input) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Multiline_Input'Class
-        then
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_multiline_input (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Input (This));
     end Finalize;
 
 

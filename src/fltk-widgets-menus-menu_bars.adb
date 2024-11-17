@@ -55,16 +55,20 @@ package body FLTK.Widgets.Menus.Menu_Bars is
 
 
 
+    procedure Extra_Final
+           (This : in out Menu_Bar) is
+    begin
+        Extra_Final (Menu (This));
+    end Extra_Final;
+
+
     procedure Finalize
            (This : in out Menu_Bar) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Menu_Bar'Class
-        then
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_menu_bar (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Menu (This));
     end Finalize;
 
 

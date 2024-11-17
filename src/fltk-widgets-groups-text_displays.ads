@@ -376,6 +376,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Text_Display)
+    with Inline;
+
 
     package Text_Display_Convert is new System.Address_To_Access_Conversions (Text_Display'Class);
 

@@ -145,17 +145,20 @@ package body FLTK.Widgets.Groups.Color_Choosers is
 
 
 
+    procedure Extra_Final
+           (This : in out Color_Chooser) is
+    begin
+        Extra_Final (Group (This));
+    end Extra_Final;
+
+
     procedure Finalize
            (This : in out Color_Chooser) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Color_Chooser'Class
-        then
-            This.Clear;
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_color_chooser (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Group (This));
     end Finalize;
 
 

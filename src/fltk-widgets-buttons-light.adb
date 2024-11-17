@@ -55,16 +55,20 @@ package body FLTK.Widgets.Buttons.Light is
 
 
 
+    procedure Extra_Final
+           (This : in out Light_Button) is
+    begin
+        Extra_Final (Button (This));
+    end Extra_Final;
+
+
     procedure Finalize
            (This : in out Light_Button) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Light_Button'Class
-        then
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_light_button (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Button (This));
     end Finalize;
 
 

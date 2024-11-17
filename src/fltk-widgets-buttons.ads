@@ -85,6 +85,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Button)
+    with Inline;
+
 
     pragma Inline (Get_State);
     pragma Inline (Set_State);

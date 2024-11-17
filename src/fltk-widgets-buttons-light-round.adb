@@ -55,16 +55,19 @@ package body FLTK.Widgets.Buttons.Light.Round is
 
 
 
+    procedure Extra_Final
+           (This : in out Round_Button) is
+    begin
+        Extra_Final (Light_Button (This));
+    end Extra_Final;
+
+
     procedure Finalize
            (This : in out Round_Button) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Round_Button'Class
-        then
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_round_button (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Light_Button (This));
     end Finalize;
 
 

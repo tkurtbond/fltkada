@@ -308,18 +308,20 @@ package body FLTK.Widgets.Inputs is
 
 
 
+    procedure Extra_Final
+           (This : in out Input) is
+    begin
+        Extra_Final (Widget (This));
+    end Extra_Final;
+
+
     procedure Finalize
            (This : in out Input) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Input'Class
-        then
-            if This.Needs_Dealloc then
-                free_fl_input (This.Void_Ptr);
-            end if;
-            This.Void_Ptr := Null_Pointer;
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
+            free_fl_input (This.Void_Ptr);
         end if;
-        Finalize (Widget (This));
     end Finalize;
 
 

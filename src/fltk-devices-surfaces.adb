@@ -37,15 +37,9 @@ package body FLTK.Devices.Surfaces is
     procedure Finalize
            (This : in out Surface_Device) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Surface_Device'Class
-        then
-            if This.Needs_Dealloc then
-                free_fl_surface (This.Void_Ptr);
-            end if;
-            This.Void_Ptr := Null_Pointer;
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
+            free_fl_surface (This.Void_Ptr);
         end if;
-        Finalize (Device (This));
     end Finalize;
 
 
@@ -61,6 +55,8 @@ package body FLTK.Devices.Surfaces is
                 This.Void_Ptr := new_fl_surface (Wrapper (Graphics).Void_Ptr);
             end return;
         end Create;
+
+        pragma Inline (Create);
 
     end Forge;
 

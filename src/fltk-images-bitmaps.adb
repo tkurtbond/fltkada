@@ -66,13 +66,9 @@ package body FLTK.Images.Bitmaps is
     overriding procedure Finalize
            (This : in out Bitmap) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Bitmap'Class
-        then
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_bitmap (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Image (This));
     end Finalize;
 
 

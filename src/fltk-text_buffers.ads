@@ -375,7 +375,7 @@ private
 
     type Text_Buffer is new Wrapper with
         record
-            CB_Active          : Boolean;
+            CB_Active          : Boolean := True;
             Modify_CBs         : Modify_Vectors.Vector;
             Predelete_CBs      : Predelete_Vectors.Vector;
             High_From, High_To : Natural := 0;

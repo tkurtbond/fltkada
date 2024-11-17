@@ -80,6 +80,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out File_Input)
+    with Inline;
+
 
     pragma Inline (Get_Down_Box);
     pragma Inline (Set_Down_Box);

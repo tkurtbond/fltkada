@@ -60,6 +60,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Updated_Clock)
+    with Inline;
+
 
     pragma Inline (Draw);
     pragma Inline (Handle);

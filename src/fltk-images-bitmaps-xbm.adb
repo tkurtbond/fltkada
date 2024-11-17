@@ -29,13 +29,9 @@ package body FLTK.Images.Bitmaps.XBM is
     overriding procedure Finalize
            (This : in out XBM_Image) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in XBM_Image'Class
-        then
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_xbm_image (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Bitmap (This));
     end Finalize;
 
 

@@ -399,8 +399,8 @@ private
     --  a mess, really just all sorts of problems.
     type Wrapper is new Ada.Finalization.Limited_Controlled with
         record
-            Void_Ptr      : Storage.Integer_Address;
-            Needs_Dealloc : Boolean := True;
+            Void_Ptr      : Storage.Integer_Address := Null_Pointer;
+            Needs_Dealloc : Boolean                 := True;
         end record;
 
     overriding procedure Initialize

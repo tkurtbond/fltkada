@@ -188,6 +188,9 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Help_View);
+
 
     pragma Inline (Clear_Selection);
     pragma Inline (Select_All);

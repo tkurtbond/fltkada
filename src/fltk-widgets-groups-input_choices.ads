@@ -133,6 +133,9 @@ private
             X, Y, W, H : in     Integer;
             Text       : in     String);
 
+    procedure Extra_Final
+           (This : in out Input_Choice);
+
 
     pragma Inline (Input);
     pragma Inline (Menu_Button);

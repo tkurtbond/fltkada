@@ -204,6 +204,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out GL_Window)
+    with Inline;
+
 
     for Mode_Mask use record
         Index       at 0 range 0 .. 0;

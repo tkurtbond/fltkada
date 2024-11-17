@@ -267,18 +267,21 @@ package body FLTK.Widgets.Groups.Help_Views is
     --  Controlled Type Subprograms  --
     -----------------------------------
 
+    procedure Extra_Final
+           (This : in out Help_View) is
+    begin
+        Interfaces.C.Strings.Free (This.Hilda);
+        Extra_Final (Group (This));
+    end Extra_Final;
+
+
     procedure Finalize
            (This : in out Help_View) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Help_View'Class
-        then
-            This.Clear;
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_help_view (This.Void_Ptr);
-            Interfaces.C.Strings.Free (This.Hilda);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Group (This));
     end Finalize;
 
 

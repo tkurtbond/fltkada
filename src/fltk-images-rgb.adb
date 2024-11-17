@@ -98,13 +98,9 @@ package body FLTK.Images.RGB is
     overriding procedure Finalize
            (This : in out RGB_Image) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in RGB_Image'Class
-        then
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_rgb_image (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Image (This));
     end Finalize;
 
 

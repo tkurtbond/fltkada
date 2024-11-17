@@ -140,13 +140,9 @@ package body FLTK.Devices.Surfaces.Paged.Printers is
     procedure Finalize
            (This : in out Printer) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Printer'Class
-        then
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_printer (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Paged_Surface (This));
     end Finalize;
 
 

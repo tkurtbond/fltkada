@@ -50,6 +50,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Simple_Counter)
+    with Inline;
+
 
     pragma Inline (Draw);
     pragma Inline (Handle);

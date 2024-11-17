@@ -55,16 +55,20 @@ package body FLTK.Widgets.Valuators.Dials.Line is
 
 
 
+    procedure Extra_Final
+           (This : in out Line_Dial) is
+    begin
+        Extra_Final (Dial (This));
+    end Extra_Final;
+
+
     procedure Finalize
            (This : in out Line_Dial) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Line_Dial'Class
-        then
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_line_dial (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Dial (This));
     end Finalize;
 
 

@@ -279,21 +279,23 @@ package body FLTK.Widgets.Menus is
         (Object => FLTK.Menu_Items.Menu_Item, Name => Item_Access);
 
 
+    procedure Extra_Final
+           (This : in out Menu) is
+    begin
+        for Item of This.My_Items loop
+            Free_Item (Item);
+        end loop;
+        Extra_Final (Widget (This));
+    end Extra_Final;
 
 
     procedure Finalize
            (This : in out Menu) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Menu'Class
-        then
-            for Item of This.My_Items loop
-                Free_Item (Item);
-            end loop;
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_menu (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Widget (This));
     end Finalize;
 
 

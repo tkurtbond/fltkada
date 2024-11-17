@@ -77,6 +77,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Progress_Bar)
+    with Inline;
+
 
     pragma Inline (Get_Minimum);
     pragma Inline (Set_Minimum);

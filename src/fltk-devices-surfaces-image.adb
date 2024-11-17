@@ -68,13 +68,9 @@ package body FLTK.Devices.Surfaces.Image is
     procedure Finalize
            (This : in out Image_Surface) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Image_Surface'Class
-        then
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_image_surface (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Surface_Device (This));
     end Finalize;
 
 

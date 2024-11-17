@@ -168,18 +168,24 @@ package body FLTK.Widgets.Groups.Input_Choices is
 
 
 
+    procedure Extra_Final
+           (This : in out Input_Choice) is
+    begin
+        Extra_Final (Widget (This.My_Input));
+        Extra_Final (Widget (This.My_Menu_Button));
+        Extra_Final (Group (This));
+    end Extra_Final;
+
     procedure Finalize
            (This : in out Input_Choice) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Input_Choice'Class
-        then
-            Group (This).Clear;
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_input_choice (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Group (This));
     end Finalize;
+
+
 
 
     procedure Extra_Init

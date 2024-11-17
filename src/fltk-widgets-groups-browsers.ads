@@ -350,6 +350,9 @@ private
             X, Y, W, H : in     Integer;
             Text       : in     String);
 
+    procedure Extra_Final
+           (This : in out Abstract_Browser);
+
 
     pragma Assert
        (Item_Cursor'Size = Storage.Integer_Address'Size,

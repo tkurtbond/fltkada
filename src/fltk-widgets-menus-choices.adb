@@ -82,19 +82,22 @@ package body FLTK.Widgets.Menus.Choices is
 
 
 
+    procedure Extra_Final
+           (This : in out Choice) is
+    begin
+        Extra_Final (Menu (This));
+    end Extra_Final;
+
     procedure Finalize
            (This : in out Choice) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Choice'Class
-        then
-            if This.Needs_Dealloc then
-                free_fl_choice (This.Void_Ptr);
-            end if;
-            This.Void_Ptr := Null_Pointer;
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
+            free_fl_choice (This.Void_Ptr);
         end if;
-        Finalize (Widget (This));
     end Finalize;
+
+
 
 
     procedure Extra_Init

@@ -361,10 +361,23 @@ private
     overriding procedure Finalize
            (This : in out Widget);
 
+    --  Widgets that might cause problems for this setup in the future:
+    --    Valuators.Value_Inputs (has an internal Input)
+    --    Menus (gets various Menu_Items added to it)
+    --    Groups.Text_Displays (gets a Text_Buffer attached)
+    --    Groups.Text_Displays.Text_Editors (also gets a Text_Buffer attached)
+    --    Groups.Input_Choices (has an internal Input and Menu_Button)
+    --    Groups.Browsers (has two internal Scrollbars)
+    --  If weird Init/Final errors start mysteriously occuring then check there first.
+
     procedure Extra_Init
            (This       : in out Widget;
             X, Y, W, H : in     Integer;
             Text       : in     String);
+
+    procedure Extra_Final
+           (This : in out Widget)
+    with Inline;
 
 
 

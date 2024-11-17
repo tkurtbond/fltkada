@@ -137,14 +137,10 @@ package body FLTK.Labels is
     procedure Finalize
            (This : in out Label) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Label'Class
-        then
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_label (This.Void_Ptr);
             Interfaces.C.Strings.Free (This.My_Text);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Wrapper (This));
     end Finalize;
 
 

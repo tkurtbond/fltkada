@@ -55,16 +55,20 @@ package body FLTK.Widgets.Buttons.Light.Check is
 
 
 
+    procedure Extra_Final
+           (This : in out Check_Button) is
+    begin
+        Extra_Final (Light_Button (This));
+    end Extra_Final;
+
+
     procedure Finalize
            (This : in out Check_Button) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Check_Button'Class
-        then
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_check_button (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Light_Button (This));
     end Finalize;
 
 

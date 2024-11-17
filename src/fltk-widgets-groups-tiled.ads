@@ -58,6 +58,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Tiled_Group)
+    with Inline;
+
 
     pragma Inline (Position);
 

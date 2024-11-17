@@ -76,6 +76,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Scrollbar)
+    with Inline;
+
 
     pragma Inline (Get_Line_Size);
     pragma Inline (Set_Line_Size);

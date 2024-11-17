@@ -90,6 +90,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Dial)
+    with Inline;
+
 
     pragma Inline (Get_Dial_Type);
 

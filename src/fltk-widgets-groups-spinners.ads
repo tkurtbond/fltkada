@@ -146,6 +146,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Spinner)
+    with Inline;
+
 
     pragma Inline (Get_Background_Color);
     pragma Inline (Set_Background_Color);

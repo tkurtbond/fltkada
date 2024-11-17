@@ -398,30 +398,21 @@ package body FLTK.Environment is
     procedure Finalize
            (This : in out Database) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Database'Class
-        then
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_pref_database (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Wrapper (This));
     end Finalize;
 
 
     procedure Finalize
            (This : in out Pref_Group) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Pref_Group'Class
-        then
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_pref_group (This.Void_Ptr);
             if This.Root_Ptr /= Null_Pointer then
                 free_fl_pref_database (This.Root_Ptr);
-                This.Root_Ptr := Null_Pointer;
             end if;
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Wrapper (This));
     end Finalize;
 
 

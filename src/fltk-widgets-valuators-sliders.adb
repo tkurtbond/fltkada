@@ -110,16 +110,20 @@ package body FLTK.Widgets.Valuators.Sliders is
 
 
 
+    procedure Extra_Final
+           (This : in out Slider) is
+    begin
+        Extra_Final (Valuator (This));
+    end Extra_Final;
+
+
     procedure Finalize
            (This : in out Slider) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Slider'Class
-        then
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_slider (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Valuator (This));
     end Finalize;
 
 

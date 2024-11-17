@@ -82,17 +82,20 @@ package body FLTK.Widgets.Groups.Wizards is
 
 
 
+    procedure Extra_Final
+           (This : in out Wizard) is
+    begin
+        Extra_Final (Group (This));
+    end Extra_Final;
+
+
     procedure Finalize
            (This : in out Wizard) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Wizard'Class
-        then
-            This.Clear;
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_wizard (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Group (This));
     end Finalize;
 
 

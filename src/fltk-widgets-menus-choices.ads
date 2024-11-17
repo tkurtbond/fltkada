@@ -69,6 +69,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Choice)
+    with Inline;
+
 
     pragma Inline (Chosen);
     pragma Inline (Chosen_Index);

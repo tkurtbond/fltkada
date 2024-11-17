@@ -29,13 +29,9 @@ package body FLTK.Images.RGB.BMP is
     overriding procedure Finalize
            (This : in out BMP_Image) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in BMP_Image'Class
-        then
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_bmp_image (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (RGB_Image (This));
     end Finalize;
 
 

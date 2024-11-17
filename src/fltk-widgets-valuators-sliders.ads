@@ -100,6 +100,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Slider)
+    with Inline;
+
 
     pragma Inline (Get_Slider_Type);
     pragma Inline (Set_Bounds);

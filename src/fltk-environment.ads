@@ -295,7 +295,7 @@ private
 
 
     type Pref_Group is new Wrapper with record
-        Root_Ptr : Storage.Integer_Address;
+        Root_Ptr : Storage.Integer_Address := Null_Pointer;
     end record;
 
     overriding procedure Finalize

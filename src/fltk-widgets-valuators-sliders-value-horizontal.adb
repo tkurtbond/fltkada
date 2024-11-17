@@ -55,16 +55,20 @@ package body FLTK.Widgets.Valuators.Sliders.Value.Horizontal is
 
 
 
+    procedure Extra_Final
+           (This : in out Hor_Value_Slider) is
+    begin
+        Extra_Final (Value_Slider (This));
+    end Extra_Final;
+
+
     procedure Finalize
            (This : in out Hor_Value_Slider) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Hor_Value_Slider'Class
-        then
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_hor_value_slider (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Value_Slider (This));
     end Finalize;
 
 

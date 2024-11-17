@@ -55,16 +55,20 @@ package body FLTK.Widgets.Buttons.Light.Radio is
 
 
 
+    procedure Extra_Final
+           (This : in out Radio_Light_Button) is
+    begin
+        Extra_Final (Light_Button (This));
+    end Extra_Final;
+
+
     procedure Finalize
            (This : in out Radio_Light_Button) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Radio_Light_Button'Class
-        then
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_radio_light_button (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Light_Button (This));
     end Finalize;
 
 

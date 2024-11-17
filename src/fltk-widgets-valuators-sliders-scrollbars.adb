@@ -88,16 +88,20 @@ package body FLTK.Widgets.Valuators.Sliders.Scrollbars is
 
 
 
+    procedure Extra_Final
+           (This : in out Scrollbar) is
+    begin
+        Extra_Final (Slider (This));
+    end Extra_Final;
+
+
     procedure Finalize
            (This : in out Scrollbar) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Scrollbar'Class
-        then
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_scrollbar (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Slider (This));
     end Finalize;
 
 

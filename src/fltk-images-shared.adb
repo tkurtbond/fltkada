@@ -138,13 +138,9 @@ package body FLTK.Images.Shared is
     overriding procedure Finalize
            (This : in out Shared_Image) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Shared_Image'Class
-        then
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             fl_shared_image_release (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Image (This));
     end Finalize;
 
 

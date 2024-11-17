@@ -61,6 +61,10 @@ private
             Text       : in     String)
     with Inline;
 
+    procedure Extra_Final
+           (This : in out Adjuster)
+    with Inline;
+
 
     pragma Inline (Is_Soft);
     pragma Inline (Set_Soft);

@@ -349,6 +349,9 @@ private
             X, Y, W, H : in     Integer;
             Text       : in     String);
 
+    procedure Extra_Final
+           (This : in out Text_Editor);
+
 
     function Key_Func_Hook
            (K : in Interfaces.C.int;

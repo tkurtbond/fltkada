@@ -94,16 +94,20 @@ package body FLTK.Widgets.Progress_Bars is
 
 
 
+    procedure Extra_Final
+           (This : in out Progress_Bar) is
+    begin
+        Extra_Final (Widget (This));
+    end Extra_Final;
+
+
     procedure Finalize
            (This : in out Progress_Bar) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Progress_Bar'Class
-        then
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_progress (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Widget (This));
     end Finalize;
 
 

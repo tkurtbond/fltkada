@@ -629,17 +629,22 @@ package body FLTK.Widgets.Groups.Browsers is
     --  Controlled Type Subprograms  --
     -----------------------------------
 
+    procedure Extra_Final
+           (This : in out Abstract_Browser) is
+    begin
+        Extra_Final (Widget (This.Horizon));
+        Extra_Final (Widget (This.Vertigo));
+        Extra_Final (Group (This));
+    end Extra_Final;
+
+
     procedure Finalize
            (This : in out Abstract_Browser) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Abstract_Browser'Class
-        then
-            This.Clear;
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_abstract_browser (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Group (This));
     end Finalize;
 
 

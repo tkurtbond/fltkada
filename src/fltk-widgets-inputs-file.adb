@@ -102,16 +102,20 @@ package body FLTK.Widgets.Inputs.File is
 
 
 
+    procedure Extra_Final
+           (This : in out File_Input) is
+    begin
+        Extra_Final (Input (This));
+    end Extra_Final;
+
+
     procedure Finalize
            (This : in out File_Input) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in File_Input'Class
-        then
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_file_input (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Input (This));
     end Finalize;
 
 

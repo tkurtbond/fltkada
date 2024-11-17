@@ -120,17 +120,20 @@ package body FLTK.Widgets.Groups.Windows.Double.Overlay is
 
 
 
+    procedure Extra_Final
+           (This : in out Overlay_Window) is
+    begin
+        Extra_Final (Double_Window (This));
+    end Extra_Final;
+
+
     procedure Finalize
            (This : in out Overlay_Window) is
     begin
-        if  This.Void_Ptr /= Null_Pointer and then
-            This in Overlay_Window'Class
-        then
-            This.Clear;
+        Extra_Final (This);
+        if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_overlay_window (This.Void_Ptr);
-            This.Void_Ptr := Null_Pointer;
         end if;
-        Finalize (Double_Window (This));
     end Finalize;
 
 
