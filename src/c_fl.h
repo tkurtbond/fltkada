@@ -10,7 +10,7 @@
 
 
 
-size_t c_pointer_size();
+extern "C" size_t c_pointer_size();
 
 
 extern "C" int fl_abi_check(int v);
