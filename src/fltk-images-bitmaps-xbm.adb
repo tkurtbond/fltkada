@@ -31,6 +31,7 @@ package body FLTK.Images.Bitmaps.XBM is
     begin
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_xbm_image (This.Void_Ptr);
+            This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;
 

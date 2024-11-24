@@ -199,6 +199,7 @@ package body FLTK.Widgets.Charts is
         Extra_Final (This);
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_chart (This.Void_Ptr);
+            This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;
 

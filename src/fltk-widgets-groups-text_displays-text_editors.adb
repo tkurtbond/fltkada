@@ -398,6 +398,7 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_text_editor (This.Void_Ptr);
             free_fl_text_buffer (This.Raw_Buffer);
+            This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;
 

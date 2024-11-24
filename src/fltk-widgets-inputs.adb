@@ -321,6 +321,7 @@ package body FLTK.Widgets.Inputs is
         Extra_Final (This);
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_input (This.Void_Ptr);
+            This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;
 

@@ -158,6 +158,7 @@ package body FLTK.Widgets.Groups.Color_Choosers is
         Extra_Final (This);
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_color_chooser (This.Void_Ptr);
+            This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;
 

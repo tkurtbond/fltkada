@@ -31,6 +31,7 @@ package body FLTK.Images.RGB.PNM is
     begin
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_pnm_image (This.Void_Ptr);
+            This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;
 

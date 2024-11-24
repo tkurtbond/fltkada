@@ -85,6 +85,7 @@ package body FLTK.Images.Tiled is
     begin
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_tiled_image (This.Void_Ptr);
+            This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;
 

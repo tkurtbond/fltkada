@@ -67,6 +67,7 @@ package body FLTK.Widgets.Buttons.Light.Round is
     begin
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_round_button (This.Void_Ptr);
+            This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;
 

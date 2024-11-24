@@ -68,6 +68,7 @@ package body FLTK.Widgets.Valuators.Sliders.Fill is
         Extra_Final (This);
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_fill_slider (This.Void_Ptr);
+            This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;
 

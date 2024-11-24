@@ -74,6 +74,7 @@ package body FLTK.Widgets.Clocks.Updated.Round is
         Extra_Final (This);
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_round_clock (This.Void_Ptr);
+            This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;
 

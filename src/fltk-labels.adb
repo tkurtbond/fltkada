@@ -139,6 +139,7 @@ package body FLTK.Labels is
     begin
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_label (This.Void_Ptr);
+            This.Void_Ptr := Null_Pointer;
             Interfaces.C.Strings.Free (This.My_Text);
         end if;
     end Finalize;
