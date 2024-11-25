@@ -9,7 +9,7 @@ with
     Interfaces.C.Strings;
 
 
-package body FLTK.Widgets.Valuators.Sliders.Hor_Fill is
+package body FLTK.Widgets.Valuators.Sliders.Horizontal_Fill is
 
 
     procedure hor_fill_slider_set_draw_hook
@@ -56,14 +56,14 @@ package body FLTK.Widgets.Valuators.Sliders.Hor_Fill is
 
 
     procedure Extra_Final
-           (This : in out Hor_Fill_Slider) is
+           (This : in out Horizontal_Fill_Slider) is
     begin
         Extra_Final (Slider (This));
     end Extra_Final;
 
 
     procedure Finalize
-           (This : in out Hor_Fill_Slider) is
+           (This : in out Horizontal_Fill_Slider) is
     begin
         Extra_Final (This);
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
@@ -76,7 +76,7 @@ package body FLTK.Widgets.Valuators.Sliders.Hor_Fill is
 
 
     procedure Extra_Init
-           (This       : in out Hor_Fill_Slider;
+           (This       : in out Horizontal_Fill_Slider;
             X, Y, W, H : in     Integer;
             Text       : in     String) is
     begin
@@ -89,9 +89,9 @@ package body FLTK.Widgets.Valuators.Sliders.Hor_Fill is
         function Create
                (X, Y, W, H : in Integer;
                 Text       : in String := "")
-            return Hor_Fill_Slider is
+            return Horizontal_Fill_Slider is
         begin
-            return This : Hor_Fill_Slider do
+            return This : Horizontal_Fill_Slider do
                 This.Void_Ptr := new_fl_hor_fill_slider
                        (Interfaces.C.int (X),
                         Interfaces.C.int (Y),
@@ -112,14 +112,14 @@ package body FLTK.Widgets.Valuators.Sliders.Hor_Fill is
 
 
     procedure Draw
-           (This : in out Hor_Fill_Slider) is
+           (This : in out Horizontal_Fill_Slider) is
     begin
         fl_hor_fill_slider_draw (This.Void_Ptr);
     end Draw;
 
 
     function Handle
-           (This  : in out Hor_Fill_Slider;
+           (This  : in out Horizontal_Fill_Slider;
             Event : in     Event_Kind)
         return Event_Outcome is
     begin
@@ -128,5 +128,5 @@ package body FLTK.Widgets.Valuators.Sliders.Hor_Fill is
     end Handle;
 
 
-end FLTK.Widgets.Valuators.Sliders.Hor_Fill;
+end FLTK.Widgets.Valuators.Sliders.Horizontal_Fill;
 

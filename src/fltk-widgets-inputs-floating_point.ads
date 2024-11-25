@@ -4,12 +4,12 @@
 --  Released into the public domain
 
 
-package FLTK.Widgets.Valuators.Sliders.Hor_Nice is
+package FLTK.Widgets.Inputs.Floating_Point is
 
 
-    type Hor_Nice_Slider is new Slider with private;
+    type Float_Input is new Input with private;
 
-    type Hor_Nice_Slider_Reference (Data : not null access Hor_Nice_Slider'Class) is
+    type Float_Input_Reference (Data : not null access Float_Input'Class) is
         limited null record with Implicit_Dereference => Data;
 
 
@@ -20,18 +20,25 @@ package FLTK.Widgets.Valuators.Sliders.Hor_Nice is
         function Create
                (X, Y, W, H : in Integer;
                 Text       : in String := "")
-            return Hor_Nice_Slider;
+            return Float_Input;
 
     end Forge;
 
 
 
 
+    function Get_Value
+           (This : in Float_Input)
+        return Long_Float;
+
+
+
+
     procedure Draw
-           (This : in out Hor_Nice_Slider);
+           (This : in out Float_Input);
 
     function Handle
-           (This  : in out Hor_Nice_Slider;
+           (This  : in out Float_Input;
             Event : in     Event_Kind)
         return Event_Outcome;
 
@@ -39,25 +46,27 @@ package FLTK.Widgets.Valuators.Sliders.Hor_Nice is
 private
 
 
-    type Hor_Nice_Slider is new Slider with null record;
+    type Float_Input is new Input with null record;
 
     overriding procedure Finalize
-           (This : in out Hor_Nice_Slider);
+           (This : in out Float_Input);
 
     procedure Extra_Init
-           (This       : in out Hor_Nice_Slider;
+           (This       : in out Float_Input;
             X, Y, W, H : in     Integer;
             Text       : in     String)
     with Inline;
 
     procedure Extra_Final
-           (This : in out Hor_Nice_Slider)
+           (This : in out Float_Input)
     with Inline;
 
+
+    pragma Inline (Get_Value);
 
     pragma Inline (Draw);
     pragma Inline (Handle);
 
 
-end FLTK.Widgets.Valuators.Sliders.Hor_Nice;
+end FLTK.Widgets.Inputs.Floating_Point;
 

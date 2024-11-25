@@ -13,65 +13,65 @@ use type
     Interfaces.C.Strings.chars_ptr;
 
 
-package body FLTK.Widgets.Inputs.Float is
+package body FLTK.Widgets.Inputs.Whole_Number is
 
 
-    procedure float_input_set_draw_hook
+    procedure int_input_set_draw_hook
            (W, D : in Storage.Integer_Address);
-    pragma Import (C, float_input_set_draw_hook, "float_input_set_draw_hook");
-    pragma Inline (float_input_set_draw_hook);
+    pragma Import (C, int_input_set_draw_hook, "int_input_set_draw_hook");
+    pragma Inline (int_input_set_draw_hook);
 
-    procedure float_input_set_handle_hook
+    procedure int_input_set_handle_hook
            (W, H : in Storage.Integer_Address);
-    pragma Import (C, float_input_set_handle_hook, "float_input_set_handle_hook");
-    pragma Inline (float_input_set_handle_hook);
+    pragma Import (C, int_input_set_handle_hook, "int_input_set_handle_hook");
+    pragma Inline (int_input_set_handle_hook);
 
 
 
 
-    function new_fl_float_input
+    function new_fl_int_input
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
         return Storage.Integer_Address;
-    pragma Import (C, new_fl_float_input, "new_fl_float_input");
-    pragma Inline (new_fl_float_input);
+    pragma Import (C, new_fl_int_input, "new_fl_int_input");
+    pragma Inline (new_fl_int_input);
 
-    procedure free_fl_float_input
+    procedure free_fl_int_input
            (F : in Storage.Integer_Address);
-    pragma Import (C, free_fl_float_input, "free_fl_float_input");
-    pragma Inline (free_fl_float_input);
+    pragma Import (C, free_fl_int_input, "free_fl_int_input");
+    pragma Inline (free_fl_int_input);
 
 
 
 
-    procedure fl_float_input_draw
+    procedure fl_int_input_draw
            (W : in Storage.Integer_Address);
-    pragma Import (C, fl_float_input_draw, "fl_float_input_draw");
-    pragma Inline (fl_float_input_draw);
+    pragma Import (C, fl_int_input_draw, "fl_int_input_draw");
+    pragma Inline (fl_int_input_draw);
 
-    function fl_float_input_handle
+    function fl_int_input_handle
            (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
-    pragma Import (C, fl_float_input_handle, "fl_float_input_handle");
-    pragma Inline (fl_float_input_handle);
+    pragma Import (C, fl_int_input_handle, "fl_int_input_handle");
+    pragma Inline (fl_int_input_handle);
 
 
 
 
     procedure Extra_Final
-           (This : in out Float_Input) is
+           (This : in out Integer_Input) is
     begin
         Extra_Final (Input (This));
     end Extra_Final;
 
 
     procedure Finalize
-           (This : in out Float_Input) is
+           (This : in out Integer_Input) is
     begin
         Extra_Final (This);
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
-            free_fl_float_input (This.Void_Ptr);
+            free_fl_int_input (This.Void_Ptr);
             This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;
@@ -80,8 +80,8 @@ package body FLTK.Widgets.Inputs.Float is
 
 
     procedure Extra_Init
-           (This       : in out Float_Input;
-            X, Y, W, H : in     Integer;
+           (This       : in out Integer_Input;
+            X, Y, W, H : in     Standard.Integer;
             Text       : in     String) is
     begin
         Extra_Init (Input (This), X, Y, W, H, Text);
@@ -91,22 +91,20 @@ package body FLTK.Widgets.Inputs.Float is
     package body Forge is
 
         function Create
-               (X, Y, W, H : in Integer;
+               (X, Y, W, H : in Standard.Integer;
                 Text       : in String := "")
-            return Float_Input is
+            return Integer_Input is
         begin
-            return This : Float_Input do
-                This.Void_Ptr := new_fl_float_input
+            return This : Integer_Input do
+                This.Void_Ptr := new_fl_int_input
                        (Interfaces.C.int (X),
                         Interfaces.C.int (Y),
                         Interfaces.C.int (W),
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                float_input_set_draw_hook
-                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                float_input_set_handle_hook
-                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
+                int_input_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
+                int_input_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -116,17 +114,17 @@ package body FLTK.Widgets.Inputs.Float is
 
 
     function Get_Value
-           (This : in Float_Input)
-        return Standard.Float
+           (This : in Integer_Input)
+        return Long_Integer
     is
         Ptr : Interfaces.C.Strings.chars_ptr := fl_input_get_value (This.Void_Ptr);
     begin
         if Ptr = Interfaces.C.Strings.Null_Ptr or else
             Interfaces.C.Strings.Value (Ptr) = ""
         then
-            return 0.0;
+            return 0;
         else
-            return Standard.Float'Value (Interfaces.C.Strings.Value (Ptr));
+            return Long_Integer'Value (Interfaces.C.Strings.Value (Ptr));
         end if;
     end Get_Value;
 
@@ -134,21 +132,21 @@ package body FLTK.Widgets.Inputs.Float is
 
 
     procedure Draw
-           (This : in out Float_Input) is
+           (This : in out Integer_Input) is
     begin
-        fl_float_input_draw (This.Void_Ptr);
+        fl_int_input_draw (This.Void_Ptr);
     end Draw;
 
 
     function Handle
-           (This  : in out Float_Input;
+           (This  : in out Integer_Input;
             Event : in     Event_Kind)
         return Event_Outcome is
     begin
         return Event_Outcome'Val
-               (fl_float_input_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
+               (fl_int_input_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
     end Handle;
 
 
-end FLTK.Widgets.Inputs.Float;
+end FLTK.Widgets.Inputs.Whole_Number;
 

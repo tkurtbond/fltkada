@@ -10,7 +10,7 @@ with
     FLTK.Widgets.Groups.Color_Choosers;
 
 
-package FLTK.Dialogs is
+package FLTK.Asks is
 
 
     type Beep_Kind is
@@ -133,5 +133,5 @@ private
     pragma Inline (Set_Message_Title_Default);
 
 
-end FLTK.Dialogs;
+end FLTK.Asks;
 

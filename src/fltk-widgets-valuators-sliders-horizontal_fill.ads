@@ -4,12 +4,12 @@
 --  Released into the public domain
 
 
-package FLTK.Widgets.Inputs.Float is
+package FLTK.Widgets.Valuators.Sliders.Horizontal_Fill is
 
 
-    type Float_Input is new Input with private;
+    type Horizontal_Fill_Slider is new Slider with private;
 
-    type Float_Input_Reference (Data : not null access Float_Input'Class) is
+    type Horizontal_Fill_Slider_Reference (Data : not null access Horizontal_Fill_Slider'Class) is
         limited null record with Implicit_Dereference => Data;
 
 
@@ -20,25 +20,18 @@ package FLTK.Widgets.Inputs.Float is
         function Create
                (X, Y, W, H : in Integer;
                 Text       : in String := "")
-            return Float_Input;
+            return Horizontal_Fill_Slider;
 
     end Forge;
 
 
 
 
-    function Get_Value
-           (This : in Float_Input)
-        return Standard.Float;
-
-
-
-
     procedure Draw
-           (This : in out Float_Input);
+           (This : in out Horizontal_Fill_Slider);
 
     function Handle
-           (This  : in out Float_Input;
+           (This  : in out Horizontal_Fill_Slider;
             Event : in     Event_Kind)
         return Event_Outcome;
 
@@ -46,27 +39,25 @@ package FLTK.Widgets.Inputs.Float is
 private
 
 
-    type Float_Input is new Input with null record;
+    type Horizontal_Fill_Slider is new Slider with null record;
 
     overriding procedure Finalize
-           (This : in out Float_Input);
+           (This : in out Horizontal_Fill_Slider);
 
     procedure Extra_Init
-           (This       : in out Float_Input;
+           (This       : in out Horizontal_Fill_Slider;
             X, Y, W, H : in     Integer;
             Text       : in     String)
     with Inline;
 
     procedure Extra_Final
-           (This : in out Float_Input)
+           (This : in out Horizontal_Fill_Slider)
     with Inline;
 
-
-    pragma Inline (Get_Value);
 
     pragma Inline (Draw);
     pragma Inline (Handle);
 
 
-end FLTK.Widgets.Inputs.Float;
+end FLTK.Widgets.Valuators.Sliders.Horizontal_Fill;
 

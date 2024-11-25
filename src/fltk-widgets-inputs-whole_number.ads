@@ -4,7 +4,7 @@
 --  Released into the public domain
 
 
-package FLTK.Widgets.Inputs.Integer is
+package FLTK.Widgets.Inputs.Whole_Number is
 
 
     type Integer_Input is new Input with private;
@@ -29,7 +29,7 @@ package FLTK.Widgets.Inputs.Integer is
 
     function Get_Value
            (This : in Integer_Input)
-        return Standard.Integer;
+        return Long_Integer;
 
 
 
@@ -68,5 +68,5 @@ private
     pragma Inline (Handle);
 
 
-end FLTK.Widgets.Inputs.Integer;
+end FLTK.Widgets.Inputs.Whole_Number;
 

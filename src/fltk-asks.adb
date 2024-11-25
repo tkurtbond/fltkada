@@ -14,7 +14,7 @@ use type
     Interfaces.C.Strings.chars_ptr;
 
 
-package body FLTK.Dialogs is
+package body FLTK.Asks is
 
 
     procedure dialog_fl_alert
@@ -341,5 +341,5 @@ begin
     Wrapper (Icon_Box).Needs_Dealloc := False;
 
 
-end FLTK.Dialogs;
+end FLTK.Asks;
 

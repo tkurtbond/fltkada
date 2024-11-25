@@ -4,12 +4,12 @@
 --  Released into the public domain
 
 
-package FLTK.Widgets.Valuators.Sliders.Hor_Fill is
+package FLTK.Widgets.Valuators.Sliders.Horizontal_Nice is
 
 
-    type Hor_Fill_Slider is new Slider with private;
+    type Horizontal_Nice_Slider is new Slider with private;
 
-    type Hor_Fill_Slider_Reference (Data : not null access Hor_Fill_Slider'Class) is
+    type Horizontal_Nice_Slider_Reference (Data : not null access Horizontal_Nice_Slider'Class) is
         limited null record with Implicit_Dereference => Data;
 
 
@@ -20,7 +20,7 @@ package FLTK.Widgets.Valuators.Sliders.Hor_Fill is
         function Create
                (X, Y, W, H : in Integer;
                 Text       : in String := "")
-            return Hor_Fill_Slider;
+            return Horizontal_Nice_Slider;
 
     end Forge;
 
@@ -28,10 +28,10 @@ package FLTK.Widgets.Valuators.Sliders.Hor_Fill is
 
 
     procedure Draw
-           (This : in out Hor_Fill_Slider);
+           (This : in out Horizontal_Nice_Slider);
 
     function Handle
-           (This  : in out Hor_Fill_Slider;
+           (This  : in out Horizontal_Nice_Slider;
             Event : in     Event_Kind)
         return Event_Outcome;
 
@@ -39,19 +39,19 @@ package FLTK.Widgets.Valuators.Sliders.Hor_Fill is
 private
 
 
-    type Hor_Fill_Slider is new Slider with null record;
+    type Horizontal_Nice_Slider is new Slider with null record;
 
     overriding procedure Finalize
-           (This : in out Hor_Fill_Slider);
+           (This : in out Horizontal_Nice_Slider);
 
     procedure Extra_Init
-           (This       : in out Hor_Fill_Slider;
+           (This       : in out Horizontal_Nice_Slider;
             X, Y, W, H : in     Integer;
             Text       : in     String)
     with Inline;
 
     procedure Extra_Final
-           (This : in out Hor_Fill_Slider)
+           (This : in out Horizontal_Nice_Slider)
     with Inline;
 
 
@@ -59,5 +59,5 @@ private
     pragma Inline (Handle);
 
 
-end FLTK.Widgets.Valuators.Sliders.Hor_Fill;
+end FLTK.Widgets.Valuators.Sliders.Horizontal_Nice;
 
