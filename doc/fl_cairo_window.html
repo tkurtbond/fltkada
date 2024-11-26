@@ -1,0 +1,138 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Cairo_Window Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Cairo_Window Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Cairo_Window</td>
+    <td>FLTK.Widgets.Groups.Windows.Double.Cairo</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Cairo_Window</td>
+    <td>Cairo_Window</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Cairo_Window_Reference</td>
+  </tr>
+
+  <tr>
+    <td>cairo_draw_cb</td>
+    <td>Cairo_Callback</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Cairo_Window(int w, int h);
+</pre></td>
+<td><pre>
+function Create
+       (W, H : in Integer)
+    return Cairo_Window;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>&nbsp;</td>
+<td><pre>
+function Create
+       (W, H : in Integer;
+        Text : in String := "")
+    return Cairo_Window;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>&nbsp;</td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return Cairo_Window;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td>&nbsp;</td>
+<td><pre>
+function Handle
+       (This  : in out Cairo_Window;
+        Event : in     Event_Kind)
+    return Event_Outcome;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void set_draw_cb(cairo_draw_cb cb);
+</pre></td>
+<td><pre>
+procedure Set_Cairo_Draw
+       (This : in out Cairo_Window;
+        Func : in     Cairo_Callback);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Cairo_Window);
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
+

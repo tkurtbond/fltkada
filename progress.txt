@@ -80,6 +80,7 @@ FLTK.Widgets.Groups.Text_Displays.Text_Editors
 FLTK.Widgets.Groups.Tiled
 FLTK.Widgets.Groups.Windows
 FLTK.Widgets.Groups.Windows.Double
+FLTK.Widgets.Groups.Windows.Double.Cairo
 FLTK.Widgets.Groups.Windows.Double.Overlay
 FLTK.Widgets.Groups.Windows.OpenGL
 FLTK.Widgets.Groups.Windows.Single
@@ -137,7 +138,6 @@ FLTK.Devices.Surfaces (incomplete API, otherwise polished)
 To-Do:
 
 Fl_Browser
-Fl_Cairo_Window
 Fl_Check_Browser
 Fl_Display_Device
 Fl_File_Browser
