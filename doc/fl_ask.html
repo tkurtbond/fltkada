@@ -38,7 +38,17 @@
 
   <tr>
     <td>&nbsp;</td>
-    <td>Choice</td>
+    <td>Confirm_Result</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Choice_Result</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Extended_Choice_Result</td>
   </tr>
 
   <tr>
@@ -49,6 +59,104 @@
   <tr>
     <td>&nbsp;</td>
     <td>RGB_Int</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>File_Chooser_Callback</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Attributes</th></tr>
+
+  <tr>
+<td><pre>
+static void (*Fl::error)(const char *, ...) = ::error;
+</pre></td>
+<td>See FLTK.Errors</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void (*Fl::fatal)(const char *, ...) = ::fatal;
+</pre></td>
+<td>See FLTK.Errors</td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char * fl_cancel = "Cancel";
+</pre></td>
+<td><pre>
+function Get_Cancel_String
+    return String;
+
+procedure Set_Cancel_String
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char * fl_close = "Close";
+</pre></td>
+<td><pre>
+function Get_Close_String
+    return String;
+
+procedure Set_Close_String
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char * fl_no = "No";
+</pre></td>
+<td><pre>
+function Get_No_String
+    return String;
+
+procedure Set_No_String
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char * fl_ok = "OK";
+</pre></td>
+<td><pre>
+function Get_OK_String
+    return String;
+
+procedure Set_OK_String
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char * fl_yes = "Yes";
+</pre></td>
+<td><pre>
+function Get_Yes_String
+    return String;
+
+procedure Set_Yes_String
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void (*Fl::warning)(const char *, ...) = ::warning;
+</pre></td>
+<td>See FLTK.Errors</td>
   </tr>
 
 </table>
@@ -72,7 +180,7 @@ procedure Alert
 <td><pre>
 int fl_ask(const char *fmt,...);
 </pre></td>
-<td>Present but disabled due to fl_ask being deprecated</td>
+<td>Deprecated</td>
   </tr>
 
   <tr>
@@ -81,24 +189,54 @@ void fl_beep(int type);
 </pre></td>
 <td><pre>
 procedure Beep
-       (Kind : in Beep_Kind);
+       (Kind : in Beep_Kind := Default_Beep);
 </pre></td>
   </tr>
 
   <tr>
 <td><pre>
-int fl_choice(const char *fmt, const char *b0, const char *b1, const char *b2,...);
+int fl_choice(const char *fmt, const char *b0, const char *b1,
+    const char *b2, ...);
 </pre></td>
 <td><pre>
-function Three_Way_Choice
+function Choice
+       (Message, Button1 : in String)
+    return Choice_Result;
+
+function Choice
+       (Message, Button1, Button2 : in String)
+    return Choice_Result;
+
+function Choice
        (Message, Button1, Button2, Button3 : in String)
-    return Choice;
+    return Choice_Result;
 </pre></td>
   </tr>
 
   <tr>
 <td><pre>
-int fl_color_chooser(const char *name, double &r, double &g, double &b, int cmode);
+int fl_choice_n(const char *fmt, const char *b0, const char *b1,
+    const char *b2, ...);
+</pre></td>
+<td><pre>
+function Extended_Choice
+       (Message, Button1 : in String)
+    return Extended_Choice_Result;
+
+function Extended_Choice
+       (Message, Button1, Button2 : in String)
+    return Extended_Choice_Result;
+
+function Extended_Choice
+       (Message, Button1, Button2, Button3 : in String)
+    return Extended_Choice_Result;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fl_color_chooser(const char *name, double &r, double &g,
+    double &b, int cmode);
 </pre></td>
 <td><pre>
 function Color_Chooser
@@ -106,13 +244,14 @@ function Color_Chooser
         R, G, B : in out RGB_Float;
         Mode    : in     FLTK.Widgets.Groups.Color_Choosers.Color_Mode :=
             FLTK.Widgets.Groups.Color_Choosers.RGB)
-    return Boolean;
+    return Confirm_Result;
 </pre></td>
   </tr>
 
   <tr>
 <td><pre>
-int fl_color_chooser(const char *name, uchar &r, uchar &g, uchar &b, int cmode);
+int fl_color_chooser(const char *name, uchar &r, uchar &g,
+    uchar &b, int cmode);
 </pre></td>
 <td><pre>
 function Color_Chooser
@@ -120,13 +259,14 @@ function Color_Chooser
         R, G, B : in out RGB_Int;
         Mode    : in     FLTK.Widgets.Groups.Color_Choosers.Color_Mode :=
             FLTK.Widgets.Groups.Color_Choosers.RGB)
-    return Boolean;
+    return Confirm_Result;
 </pre></td>
   </tr>
 
   <tr>
 <td><pre>
-char * fl_dir_chooser(const char *message, const char *fname, int relative);
+char * fl_dir_chooser(const char *message, const char *fname,
+    int relative);
 </pre></td>
 <td><pre>
 function Dir_Chooser
@@ -138,7 +278,8 @@ function Dir_Chooser
 
   <tr>
 <td><pre>
-char * fl_file_chooser(const char *message, const char *pat, const char *fname, int relative);
+char * fl_file_chooser(const char *message, const char *pat,
+    const char *fname, int relative);
 </pre></td>
 <td><pre>
 function File_Chooser
@@ -152,19 +293,25 @@ function File_Chooser
 <td><pre>
 void fl_file_chooser_callback(void(*cb)(const char *));
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Set_File_Chooser_Callback
+       (Func : in File_Chooser_Callback);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 void fl_file_chooser_ok_label(const char *l);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Set_File_Chooser_OK_String
+       (Value : in String);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
-const char * fl_input(const char *fmt, const char *defstr,...);
+const char * fl_input(const char *fmt, const char *defstr, ...);
 </pre></td>
 <td><pre>
 function Text_Input
@@ -176,7 +323,7 @@ function Text_Input
 
   <tr>
 <td><pre>
-void fl_message(const char *fmt,...);
+void fl_message(const char *fmt, ...);
 </pre></td>
 <td><pre>
 procedure Message_Box
@@ -200,7 +347,7 @@ procedure Set_Message_Font
 void fl_message_hotspot(int enable);
 </pre></td>
 <td><pre>
-procedure Set_Hotspot
+procedure Set_Message_Hotspot
        (To : in Boolean);
 </pre></td>
   </tr>
@@ -210,7 +357,7 @@ procedure Set_Hotspot
 int fl_message_hotspot(void);
 </pre></td>
 <td><pre>
-function Get_Hotspot
+function Get_Message_Hotspot
     return Boolean;
 </pre></td>
   </tr>
@@ -247,7 +394,7 @@ procedure Set_Message_Title_Default
 
   <tr>
 <td><pre>
-const char * fl_password(const char *fmt, const char *defstr,...);
+const char * fl_password(const char *fmt, const char *defstr, ...);
 </pre></td>
 <td><pre>
 function Password

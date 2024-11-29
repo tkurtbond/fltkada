@@ -9,6 +9,11 @@ with
     FLTK.Widgets.Boxes,
     FLTK.Widgets.Groups.Color_Choosers;
 
+private with
+
+    Ada.Finalization,
+    Interfaces.C.Strings;
+
 
 package FLTK.Asks is
 
@@ -17,11 +22,51 @@ package FLTK.Asks is
        (Default_Beep, Message_Beep, Error_Beep,
         Question_Beep, Password_Beep, Notification_Beep);
 
-    type Choice is (First, Second, Third);
+    type Confirm_Result is (Cancel, Confirm);
+
+    type Choice_Result is (First, Second, Third);
+
+    type Extended_Choice_Result is (First, Second, Third, Blocked, Closed, Escaped);
 
     type RGB_Float is new Long_Float range 0.0 .. 1.0;
 
     type RGB_Int is mod 256;
+
+    type File_Chooser_Callback is access procedure
+           (Item : in String);
+
+
+
+
+    function Get_Cancel_String
+        return String;
+
+    procedure Set_Cancel_String
+           (Value : in String);
+
+    function Get_Close_String
+        return String;
+
+    procedure Set_Close_String
+           (Value : in String);
+
+    function Get_No_String
+        return String;
+
+    procedure Set_No_String
+           (Value : in String);
+
+    function Get_OK_String
+        return String;
+
+    procedure Set_OK_String
+           (Value : in String);
+
+    function Get_Yes_String
+        return String;
+
+    procedure Set_Yes_String
+           (Value : in String);
 
 
 
@@ -29,16 +74,32 @@ package FLTK.Asks is
     procedure Alert
            (Message : String);
 
-    --  function Ask
-    --         (Message : in String)
-    --      return Boolean;
-
     procedure Beep
-           (Kind : in Beep_Kind);
+           (Kind : in Beep_Kind := Default_Beep);
 
-    function Three_Way_Choice
+    function Choice
+           (Message, Button1 : in String)
+        return Choice_Result;
+
+    function Choice
+           (Message, Button1, Button2 : in String)
+        return Choice_Result;
+
+    function Choice
            (Message, Button1, Button2, Button3 : in String)
-        return Choice;
+        return Choice_Result;
+
+    function Extended_Choice
+           (Message, Button1 : in String)
+        return Extended_Choice_Result;
+
+    function Extended_Choice
+           (Message, Button1, Button2 : in String)
+        return Extended_Choice_Result;
+
+    function Extended_Choice
+           (Message, Button1, Button2, Button3 : in String)
+        return Extended_Choice_Result;
 
     function Text_Input
            (Message : in String;
@@ -61,14 +122,14 @@ package FLTK.Asks is
             R, G, B : in out RGB_Float;
             Mode    : in     FLTK.Widgets.Groups.Color_Choosers.Color_Mode :=
                 FLTK.Widgets.Groups.Color_Choosers.RGB)
-        return Boolean;
+        return Confirm_Result;
 
     function Color_Chooser
            (Title   : in     String;
             R, G, B : in out RGB_Int;
             Mode    : in     FLTK.Widgets.Groups.Color_Choosers.Color_Mode :=
                 FLTK.Widgets.Groups.Color_Choosers.RGB)
-        return Boolean;
+        return Confirm_Result;
 
     function Dir_Chooser
            (Message, Default : in String;
@@ -80,13 +141,19 @@ package FLTK.Asks is
             Relative                         : in Boolean := False)
         return String;
 
+    procedure Set_File_Chooser_Callback
+           (Func : in File_Chooser_Callback);
+
+    procedure Set_File_Chooser_OK_String
+           (Value : in String);
 
 
 
-    function Get_Hotspot
+
+    function Get_Message_Hotspot
         return Boolean;
 
-    procedure Set_Hotspot
+    procedure Set_Message_Hotspot
            (To : in Boolean);
 
     procedure Set_Message_Font
@@ -109,28 +176,44 @@ private
     Icon_Box : aliased FLTK.Widgets.Boxes.Box;
 
 
+    Cancel_Str, Close_Str, No_Str, OK_Str, Yes_Str : Interfaces.C.Strings.chars_ptr;
 
+    Chooser_OK_Str : Interfaces.C.Strings.chars_ptr;
+    Chooser_Func   : File_Chooser_Callback;
+
+
+    pragma Inline (Get_Cancel_String);
+    pragma Inline (Get_Close_String);
+    pragma Inline (Get_No_String);
+    pragma Inline (Get_OK_String);
+    pragma Inline (Get_Yes_String);
 
     pragma Inline (Alert);
-    --  pragma Inline (Ask);
     pragma Inline (Beep);
-    pragma Inline (Three_Way_Choice);
     pragma Inline (Text_Input);
     pragma Inline (Message_Box);
     pragma Inline (Password);
 
-
     pragma Inline (Color_Chooser);
     pragma Inline (Dir_Chooser);
     pragma Inline (File_Chooser);
+    pragma Inline (Set_File_Chooser_Callback);
 
-
-    pragma Inline (Get_Hotspot);
-    pragma Inline (Set_Hotspot);
+    pragma Inline (Get_Message_Hotspot);
+    pragma Inline (Set_Message_Hotspot);
     pragma Inline (Set_Message_Font);
     pragma Inline (Get_Message_Icon);
     pragma Inline (Set_Message_Title);
     pragma Inline (Set_Message_Title_Default);
+
+
+    --  Needed to ensure chars_ptr storage is properly cleaned up
+    type Dialog_String_Final_Controller is new Ada.Finalization.Controlled with null record;
+
+    overriding procedure Finalize
+           (This : in out Dialog_String_Final_Controller);
+
+    Cleanup : Dialog_String_Final_Controller;
 
 
 end FLTK.Asks;
