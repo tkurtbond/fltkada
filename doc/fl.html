@@ -26,6 +26,11 @@
 
   <tr>
     <td>&nbsp;</td>
+    <td>FLTK.Errors</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
     <td>FLTK.Event</td>
   </tr>
 
@@ -224,6 +229,89 @@
   <tr>
     <td>Fl_Cursor</td>
     <td>Mouse_Cursor</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Error_Function</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Attributes</th></tr>
+
+  <tr>
+<td><pre>
+static void (*atclose)(Fl_Window *, void *);
+</pre></td>
+<td>Deprecated, set the callback for the Window instead</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static char const * const clipboard_image = "image";
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static char const * const clipboard_plain_text = "text/plain";
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void (*error)(const char *, ...) = ::error;
+</pre></td>
+<td><pre>
+procedure Default_Error
+       (Message : in String);
+
+Current_Error : Error_Function := Default_Error'Access;
+</pre>(In FLTK.Errors)</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void (*fatal)(const char *, ...) = ::fatal;
+</pre></td>
+<td><pre>
+procedure Default_Fatal
+       (Message : in String);
+
+Current_Fatal : Error_Function := Default_Fatal'Access;
+</pre>(In FLTK.Errors)</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * const help = helpmsg + 13;
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void (*idle)();
+</pre></td>
+<td>Should not be used directly</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void (*warning)(const char *, ...) = ::warning;
+</pre></td>
+<td><pre>
+procedure Default_Warning
+       (Message : in String);
+
+Current_Warning : Error_Function := Default_Warning'Access;
+</pre>(In FLTK.Errors)</td>
   </tr>
 
 </table>
