@@ -750,7 +750,7 @@ package body FLTK.Widgets.Groups.Browsers is
             Boolean'Pos (Do_Callbacks));
     begin
         if Code not in 0 .. 1 then
-            raise Program_Error;
+            raise Internal_FLTK_Error;
         end if;
         return Boolean'Val (Code);
     end Set_Select;
@@ -768,7 +768,7 @@ package body FLTK.Widgets.Groups.Browsers is
             Boolean'Pos (Do_Callbacks));
     begin
         if Code not in 0 .. 1 then
-            raise Program_Error;
+            raise Internal_FLTK_Error;
         end if;
         return Boolean'Val (Code);
     end Select_Only;
@@ -792,7 +792,7 @@ package body FLTK.Widgets.Groups.Browsers is
             Boolean'Pos (Do_Callbacks));
     begin
         if Code not in 0 .. 1 then
-            raise Program_Error;
+            raise Internal_FLTK_Error;
         end if;
         return Boolean'Val (Code);
     end Deselect;
@@ -816,7 +816,7 @@ package body FLTK.Widgets.Groups.Browsers is
             Cursor_To_Address (Item));
     begin
         if Code not in 0 .. 1 then
-            raise Program_Error;
+            raise Internal_FLTK_Error;
         end if;
         return Boolean'Val (Code);
     end Is_Displayed;

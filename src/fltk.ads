@@ -21,11 +21,14 @@ package FLTK is
     --  This is necessary so things like Text_Buffers and
     --  Widgets can talk to each other behind the binding.
     type Wrapper is new Ada.Finalization.Limited_Controlled with private;
-        --  with Type_Invariant => Is_Valid (Wrapper);
 
     function Is_Valid
            (Object : in Wrapper)
         return Boolean;
+
+    --  If this is ever raised it means FLTK has returned a value or otherwise
+    --  acted in a way that the binding really did not expect.
+    Internal_FLTK_Error : exception;
 
 
 

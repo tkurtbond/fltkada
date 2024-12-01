@@ -396,7 +396,7 @@ package body FLTK.Asks is
         case Result is
         when -3 .. -1 => return Extended_Choice_Result'Val (Result + 6);
         when  0 ..  2 => return Extended_Choice_Result'Val (Result);
-        when others   => raise Program_Error;
+        when others   => raise Internal_FLTK_Error;
         end case;
     end Extended_Choice;
 
@@ -415,7 +415,7 @@ package body FLTK.Asks is
         case Result is
         when -3 .. -1 => return Extended_Choice_Result'Val (Result + 6);
         when  0 ..  2 => return Extended_Choice_Result'Val (Result);
-        when others   => raise Program_Error;
+        when others   => raise Internal_FLTK_Error;
         end case;
     end Extended_Choice;
 
@@ -435,7 +435,7 @@ package body FLTK.Asks is
         case Result is
         when -3 .. -1 => return Extended_Choice_Result'Val (Result + 6);
         when  0 ..  2 => return Extended_Choice_Result'Val (Result);
-        when others   => raise Program_Error;
+        when others   => raise Internal_FLTK_Error;
         end case;
     end Extended_Choice;
 
@@ -507,7 +507,7 @@ package body FLTK.Asks is
         elsif Result = 0 then
             return Cancel;
         else
-            raise Program_Error;
+            raise Internal_FLTK_Error;
         end if;
     end Color_Chooser;
 
@@ -534,7 +534,7 @@ package body FLTK.Asks is
         elsif Result = 0 then
             return Cancel;
         else
-            raise Program_Error;
+            raise Internal_FLTK_Error;
         end if;
     end Color_Chooser;
 

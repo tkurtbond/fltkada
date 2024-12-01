@@ -423,7 +423,7 @@ package body FLTK.Widgets.Groups.Help_Views is
         if Code = -1 then
             raise Load_Help_Error;
         elsif Code /= 0 then
-            raise Program_Error;
+            raise Internal_FLTK_Error;
         end if;
     end Load;
 

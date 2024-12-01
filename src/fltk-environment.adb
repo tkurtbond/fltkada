@@ -384,7 +384,7 @@ package body FLTK.Environment is
         elsif Num = root_fl_prefs_user then
             return User;
         else
-            raise Constraint_Error;
+            raise Internal_FLTK_Error;
         end if;
     end To_Scope;
 

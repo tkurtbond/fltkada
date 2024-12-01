@@ -673,7 +673,7 @@ package body FLTK.Draw is
         elsif Result = 0 then
             return False;
         else
-            raise Program_Error;
+            raise Internal_FLTK_Error;
         end if;
     end Can_Do_Alpha_Blending;
 
@@ -1215,7 +1215,7 @@ package body FLTK.Draw is
             Interfaces.C.int (H),
             Interfaces.C.int (Alpha));
         if Buffer /= Storage.To_Integer (Result (Result'First)'Address) then
-            raise Program_Error;
+            raise Internal_FLTK_Error;
         end if;
         return Result;
     end Read_Image;
@@ -1240,7 +1240,7 @@ package body FLTK.Draw is
         if Ret_Val = 0 then
             raise Draw_Error;
         elsif Ret_Val /= 1 then
-            raise Program_Error;
+            raise Internal_FLTK_Error;
         end if;
     end Add_Symbol;
 
@@ -1407,7 +1407,7 @@ package body FLTK.Draw is
         if Ret_Val = 0 then
             raise Draw_Error;
         elsif Ret_Val /= 1 then
-            raise Program_Error;
+            raise Internal_FLTK_Error;
         end if;
     end Draw_Symbol;
 

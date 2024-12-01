@@ -24,6 +24,14 @@ use type
 package body FLTK.Text_Buffers is
 
 
+    function strerror
+           (Errnum : in Interfaces.C.int)
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, strerror, "strerror");
+
+
+
+
     function new_fl_text_buffer
            (RS, PGS : in Interfaces.C.int)
         return Storage.Integer_Address;
@@ -634,7 +642,7 @@ package body FLTK.Text_Buffers is
                 Interfaces.C.int (Buffer));
     begin
         if Err_No /= 0 then
-            raise Storage_Error;
+            raise Storage_Error with Interfaces.C.Strings.Value (strerror (Err_No));
         end if;
     end Load_File;
 
@@ -650,7 +658,7 @@ package body FLTK.Text_Buffers is
             Interfaces.C.int (Buffer));
     begin
         if Err_No /= 0 then
-            raise Storage_Error;
+            raise Storage_Error with Interfaces.C.Strings.Value (strerror (Err_No));
         end if;
     end Append_File;
 
@@ -668,7 +676,7 @@ package body FLTK.Text_Buffers is
             Interfaces.C.int (Buffer));
     begin
         if Err_No /= 0 then
-            raise Storage_Error;
+            raise Storage_Error with Interfaces.C.Strings.Value (strerror (Err_No));
         end if;
     end Insert_File;
 
@@ -687,7 +695,7 @@ package body FLTK.Text_Buffers is
             Interfaces.C.int (Buffer));
     begin
         if Err_No /= 0 then
-            raise Storage_Error;
+            raise Storage_Error with Interfaces.C.Strings.Value (strerror (Err_No));
         end if;
     end Output_File;
 
@@ -703,7 +711,7 @@ package body FLTK.Text_Buffers is
                 Interfaces.C.int (Buffer));
     begin
         if Err_No /= 0 then
-            raise Storage_Error;
+            raise Storage_Error with Interfaces.C.Strings.Value (strerror (Err_No));
         end if;
     end Save_File;
 
