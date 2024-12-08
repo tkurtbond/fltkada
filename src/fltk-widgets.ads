@@ -370,6 +370,10 @@ private
     --    Groups.Browsers (has two internal Scrollbars)
     --  If weird Init/Final errors start mysteriously occuring then check there first.
 
+    --  Extra_Init functionality is also duplicated in FLTK.File_Choosers
+    --  for reasons of hierarchy visibility. Really, the File_Chooser should be in
+    --  the Widget hierarchy like Color_Chooser but for some reason it isn't.
+
     procedure Extra_Init
            (This       : in out Widget;
             X, Y, W, H : in     Integer;

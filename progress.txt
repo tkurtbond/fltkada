@@ -30,6 +30,7 @@ FLTK.Dialogs
 FLTK.Draw
 FLTK.Environment
 FLTK.Event
+FLTK.File_Choosers
 FLTK.Help_Dialogs
 FLTK.Images
 FLTK.Images.Bitmaps
@@ -141,7 +142,6 @@ Fl_Browser
 Fl_Check_Browser
 Fl_Display_Device
 Fl_File_Browser
-Fl_File_Chooser
 Fl_Glut_Window
 Fl_Hold_Browser
 Fl_Multi_Browser

@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_File_Chooser Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_File_Chooser Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_File_Chooser</td>
+    <td>FLTK.File_Choosers</td>
+  </tr>
+
+</table>
+
+<p><b>Note:</b><br /><br />
+See Fl_Ask for related symbols that are not members of the Fl_File_Chooser class.</p>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_File_Chooser</td>
+    <td>File_Chooser</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>File_Chooser_Reference</td>
+  </tr>
+
+  <tr>
+    <td>enum {SINGLE=0, MULTI=1, CREATE=2, DIRECTORY=4}</td>
+    <td>Chooser_Kind</td>
+  </tr>
+
+  <tr>
+    <td>void (*cb)(Fl_File_Chooser *, void *)</td>
+    <td>Chooser_Callback</td>
+  </tr>
+
+  <tr>
+    <td>uchar</td>
+    <td>Icon_Size</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Attributes</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Button * newButton;
+</pre></td>
+<td><pre>
+function New_Button
+       (This : in out File_Chooser)
+    return FLTK.Widgets.Buttons.Button_Reference;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Check_Button * previewButton;
+</pre></td>
+<td><pre>
+function Preview_Button
+       (This : in out File_Chooser)
+    return FLTK.Widgets.Buttons.Light.Check.Check_Button_Reference;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Check_Button * showHiddenButton;
+</pre></td>
+<td><pre>
+function Show_Hidden_Button
+       (This : in out File_Chooser)
+    return FLTK.Widgets.Buttons.Light.Check.Check_Button_Reference;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Attributes</th></tr>
+
+  <tr>
+<td><pre>
+static const char * add_favorites_label = "Add to Favorites";
+</pre></td>
+<td><pre>
+function Get_Add_Favorites_Label
+    return String;
+
+procedure Set_Add_Favorites_Label
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * all_files_label = "All Files (*)";
+</pre></td>
+<td><pre>
+function Get_All_Files_Label
+    return String;
+
+procedure Set_All_Files_Label
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * custom_filter_label = "Custom Filter";
+</pre></td>
+<td><pre>
+function Get_Custom_Filter_Label
+    return String;
+
+procedure Set_Custom_Filter_Label
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * existing_file_label =
+    "Please choose an existing file!";
+</pre></td>
+<td><pre>
+function Get_Existing_File_Label
+    return String;
+
+procedure Set_Existing_File_Label
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * favorites_label = "Favorites";
+</pre></td>
+<td><pre>
+function Get_Favorites_Label
+    return String;
+
+procedure Set_Favorites_Label
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * filename_label = "Filename:";
+</pre></td>
+<td><pre>
+function Get_Filename_Label
+    return String;
+
+procedure Set_Filename_Label
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * filesystems_label = "File Systems";
+</pre></td>
+<td><pre>
+function Get_Filesystems_Label
+    return String;
+
+procedure Set_Filesystems_Label
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * hidden_label = "Show hidden files";
+</pre></td>
+<td><pre>
+function Get_Hidden_Label
+    return String;
+
+procedure Set_Hidden_Label
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * manage_favorites_label =
+    "Manage Favorites";
+</pre></td>
+<td><pre>
+function Get_Manage_Favorites_Label
+    return String;
+
+procedure Set_Manage_Favorites_Label
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * new_directory_label = "New Directory?";
+</pre></td>
+<td><pre>
+function Get_New_Directory_Label
+    return String;
+
+procedure Set_New_Directory_Label
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * new_directory_tooltip =
+    "Create a new directory.";
+</pre></td>
+<td><pre>
+function Get_New_Directory_Tooltip
+    return String;
+
+procedure Set_New_Directory_Tooltip
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * preview_label = "Preview";
+</pre></td>
+<td><pre>
+function Get_Preview_Label
+    return String;
+
+procedure Set_Preview_Label
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * save_label = "Save";
+</pre></td>
+<td><pre>
+function Get_Save_Label
+    return String;
+
+procedure Set_Save_Label
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * show_label = "Show:";
+</pre></td>
+<td><pre>
+function Get_Show_Label
+    return String;
+
+procedure Set_Show_Label
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static Fl_File_Sort_F * sort = fl_numericsort;
+</pre></td>
+<td>TBA</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_File_Chooser(const char *d, const char *p, int t,
+    const char *title);
+</pre></td>
+<td><pre>
+function Create
+       (Title    : in String;
+        Pattern  : in String;
+        Pathname : in String;
+        Kind     : in Chooser_Kind := Single)
+    return File_Chooser;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Widget * add_extra(Fl_Widget *gr);
+</pre></td>
+<td><pre>
+procedure Add_Extra
+       (This : in out File_Chooser;
+        Item : in out Widgets.Widget'Class);
+
+procedure Remove_Extra
+       (This : in out File_Chooser);
+
+function Eject_Extra
+       (This : in out File_Chooser;
+        Item : in out Widgets.Widget'Class)
+    return access Widgets.Widget'Class;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void callback(void(*cb)(Fl_File_Chooser *, void *), void *d=0);
+</pre></td>
+<td><pre>
+procedure Set_Callback
+       (This : in out File_Chooser;
+        Func : in     Chooser_Callback);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Color color();
+</pre></td>
+<td><pre>
+function Get_Background_Color
+       (This : in File_Chooser)
+    return Color;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void color(Fl_Color c);
+</pre></td>
+<td><pre>
+procedure Set_Background_Color
+       (This  : in out File_Chooser;
+        Value : in     Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int count();
+</pre></td>
+<td><pre>
+function Number_Selected
+       (This : in File_Chooser)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+char * directory();
+</pre></td>
+<td><pre>
+function Get_Directory
+       (This : in File_Chooser)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void directory(const char *d);
+</pre></td>
+<td><pre>
+procedure Set_Directory
+       (This  : in out File_Chooser;
+        Value : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char * filter();
+</pre></td>
+<td><pre>
+function Get_Filter
+       (This : in File_Chooser)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void filter(const char *p);
+</pre></td>
+<td><pre>
+procedure Set_Filter
+       (This  : in out File_Chooser;
+        Value : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int filter_value();
+</pre></td>
+<td><pre>
+function Get_Filter_Index
+       (This : in File_Chooser)
+    return Positive;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void filter_value(int f);
+</pre></td>
+<td><pre>
+procedure Set_Filter_Index
+       (This  : in out File_Chooser;
+        Value : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void hide();
+</pre></td>
+<td><pre>
+procedure Hide
+       (This : in out File_Chooser);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+uchar iconsize();
+</pre></td>
+<td><pre>
+function Get_Icon_Size
+       (This : in File_Chooser)
+    return Icon_Size;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void iconsize(uchar s);
+</pre></td>
+<td><pre>
+procedure Set_Icon_Size
+       (This  : in out File_Chooser;
+        Value : in     Icon_Size);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char * label();
+</pre></td>
+<td><pre>
+function Get_Label
+       (This : in File_Chooser)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void label(const char *l);
+</pre></td>
+<td><pre>
+procedure Set_Label
+       (This : in out File_Chooser;
+        Text : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char * ok_label();
+</pre></td>
+<td><pre>
+function Get_OK_Label
+       (This : in File_Chooser)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void ok_label(const char *l);
+</pre></td>
+<td><pre>
+procedure Set_OK_Label
+       (This : in out File_Chooser;
+        Text : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int preview() const;
+</pre></td>
+<td><pre>
+function Has_Preview
+       (This : in File_Chooser)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void preview(int e);
+</pre></td>
+<td><pre>
+procedure Set_Preview
+       (This  : in out File_Chooser;
+        Value : in     Boolean);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void rescan();
+</pre></td>
+<td><pre>
+procedure Rescan
+       (This : in out File_Chooser);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void rescan_keep_filename();
+</pre></td>
+<td><pre>
+procedure Rescan_Keep_Filename
+       (This : in out File_Chooser);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void show();
+</pre></td>
+<td><pre>
+procedure Show
+       (This : in out File_Chooser);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int shown();
+</pre></td>
+<td><pre>
+function Is_Shown
+       (This : in File_Chooser)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Color textcolor();
+</pre></td>
+<td><pre>
+function Get_Text_Color
+       (This : in File_Chooser)
+    return Color;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void textcolor(Fl_Color c);
+</pre></td>
+<td><pre>
+procedure Set_Text_Color
+       (This  : in out File_Chooser;
+        Value : in     Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Font textfont();
+</pre></td>
+<td><pre>
+function Get_Text_Font
+       (This : in File_Chooser)
+    return Font_Kind;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void textfont(Fl_Font f);
+</pre></td>
+<td><pre>
+procedure Set_Text_Font
+       (This : in out File_Chooser;
+        Font : in     Font_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Fontsize textsize();
+</pre></td>
+<td><pre>
+function Get_Text_Size
+       (This : in File_Chooser)
+    return Font_Size;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void textsize(Fl_Fontsize s);
+</pre></td>
+<td><pre>
+procedure Set_Text_Size
+       (This : in out File_Chooser;
+        Size : in     Font_Size);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int type();
+</pre></td>
+<td><pre>
+function Get_Chooser_Kind
+       (This : in File_Chooser)
+    return Chooser_Kind;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void type(int t);
+</pre></td>
+<td><pre>
+procedure Set_Chooser_Kind
+       (This : in out File_Chooser;
+        Kind : in     Chooser_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void * user_data() const;
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void user_data(void *d);
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void value(const char *filename);
+</pre></td>
+<td><pre>
+procedure Set_Selected
+       (This  : in out File_Chooser;
+        Value : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char * value(int f=1);
+</pre></td>
+<td><pre>
+function Get_Selected
+       (This  : in File_Chooser;
+        Index : in Positive := 1)
+    return String
+with Pre => Index <= This.Number_Selected;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int visible();
+</pre></td>
+<td><pre>
+function Is_Visible
+       (This : in File_Chooser)
+    return Boolean;
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
+
