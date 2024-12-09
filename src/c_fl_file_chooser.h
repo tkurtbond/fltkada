@@ -27,7 +27,7 @@ extern "C" void * fl_file_chooser_showhiddenbutton(FILECHOOSER f);
 extern "C" const char * fl_file_chooser_get_add_favorites_label();
 extern "C" void fl_file_chooser_set_add_favorites_label(const char * s);
 extern "C" const char * fl_file_chooser_get_all_files_label();
-extern "C" void fl_file_chooser_set_all_file_label(const char * s);
+extern "C" void fl_file_chooser_set_all_files_label(const char * s);
 extern "C" const char * fl_file_chooser_get_custom_filter_label();
 extern "C" void fl_file_chooser_set_custom_filter_label(const char * s);
 extern "C" const char * fl_file_chooser_get_existing_file_label();
