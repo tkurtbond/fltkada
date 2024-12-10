@@ -295,7 +295,10 @@ procedure Set_Show_Label
 <td><pre>
 static Fl_File_Sort_F * sort = fl_numericsort;
 </pre></td>
-<td>TBA</td>
+<td><pre>
+Sort_Method : not null FLTK.Filenames.Compare_Function :=
+    FLTK.Filenames.Numeric_Sort'Access;
+</pre></td>
   </tr>
 
 </table>
@@ -687,14 +690,14 @@ procedure Set_Chooser_Kind
 <td><pre>
 void * user_data() const;
 </pre></td>
-<td>&nbsp;</td>
+<td>Not used in public API.</td>
   </tr>
 
   <tr>
 <td><pre>
 void user_data(void *d);
 </pre></td>
-<td>&nbsp;</td>
+<td>Not used in public API.</td>
   </tr>
 
   <tr>

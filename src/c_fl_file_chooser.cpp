@@ -11,6 +11,26 @@
 
 
 
+//  Exports from Ada
+
+extern "C" int file_chooser_sort_hook(const char * a, const char * b);
+
+
+
+
+//  Some extra setup
+
+int file_chooser_sort_prehook(struct dirent ** a, struct dirent ** b) {
+    return file_chooser_sort_hook((*a)->d_name, (*b)->d_name);
+}
+
+void file_chooser_setup_sort_hook() {
+    Fl_File_Chooser::sort = &file_chooser_sort_prehook;
+}
+
+
+
+
 //  Flattened C API begins here
 
 FILECHOOSER new_fl_file_chooser(const char * n, const char * p, int k, const char * t) {

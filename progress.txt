@@ -21,16 +21,18 @@ To move from 'Done' to 'Polished' the implementation details must be double chec
 Polished:
 
 FLTK
+FLTK.Asks
 FLTK.Devices
 FLTK.Devices.Surfaces.Copy
 FLTK.Devices.Surfaces.Image
 FLTK.Devices.Surfaces.Paged
 FLTK.Devices.Surfaces.Paged.Printers
-FLTK.Dialogs
 FLTK.Draw
 FLTK.Environment
+FLTK.Errors
 FLTK.Event
 FLTK.File_Choosers
+FLTK.Filenames
 FLTK.Help_Dialogs
 FLTK.Images
 FLTK.Images.Bitmaps
@@ -89,12 +91,12 @@ FLTK.Widgets.Groups.Windows.Single.Menu
 FLTK.Widgets.Groups.Wizards
 FLTK.Widgets.Inputs
 FLTK.Widgets.Inputs.File
-FLTK.Widgets.Inputs.Float
-FLTK.Widgets.Inputs.Integer
+FLTK.Widgets.Inputs.Floating_Point
 FLTK.Widgets.Inputs.Multiline
 FLTK.Widgets.Inputs.Outputs
 FLTK.Widgets.Inputs.Outputs.Multiline
 FLTK.Widgets.Inputs.Secret
+FLTK.Widgets.Inputs.Whole_Number
 FLTK.Widgets.Menus
 FLTK.Widgets.Menus.Choices
 FLTK.Widgets.Menus.Menu_Bars
@@ -110,9 +112,9 @@ FLTK.Widgets.Valuators.Dials.Line
 FLTK.Widgets.Valuators.Rollers
 FLTK.Widgets.Valuators.Sliders
 FLTK.Widgets.Valuators.Sliders.Fill
-FLTK.Widgets.Valuators.Sliders.Hor_Fill
-FLTK.Widgets.Valuators.Sliders.Hor_Nice
 FLTK.Widgets.Valuators.Sliders.Horizontal
+FLTK.Widgets.Valuators.Sliders.Horizontal_Fill
+FLTK.Widgets.Valuators.Sliders.Horizontal_Nice
 FLTK.Widgets.Valuators.Sliders.Nice
 FLTK.Widgets.Valuators.Sliders.Scrollbars
 FLTK.Widgets.Valuators.Sliders.Value

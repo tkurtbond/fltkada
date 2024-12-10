@@ -19,34 +19,34 @@ extern "C" void error_fatal_hook(const char * m);
 
 
 //  This is the size used internally in FLTK anyway
-const int bsize = 1024;
+const int error_bsize = 1024;
 
 
 //  Some prep needed to convert vargs to a single char*
 
 void warning_hook_prep(const char * m, ...) {
     va_list args;
-    char buf[bsize];
+    char buf[error_bsize];
     va_start(args, m);
-    vsnprintf(buf, bsize, m, args);
+    vsnprintf(buf, error_bsize, m, args);
     va_end(args);
     error_warning_hook(buf);
 }
 
 void error_hook_prep(const char * m, ...) {
     va_list args;
-    char buf[bsize];
+    char buf[error_bsize];
     va_start(args, m);
-    vsnprintf(buf, bsize, m, args);
+    vsnprintf(buf, error_bsize, m, args);
     va_end(args);
     error_error_hook(buf);
 }
 
 void fatal_hook_prep(const char * m, ...) {
     va_list args;
-    char buf[bsize];
+    char buf[error_bsize];
     va_start(args, m);
-    vsnprintf(buf, bsize, m, args);
+    vsnprintf(buf, error_bsize, m, args);
     va_end(args);
     error_fatal_hook(buf);
 }

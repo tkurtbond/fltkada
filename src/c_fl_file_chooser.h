@@ -11,6 +11,9 @@
 typedef void* FILECHOOSER;
 
 
+extern "C" void file_chooser_setup_sort_hook();
+
+
 extern "C" FILECHOOSER new_fl_file_chooser(const char * n, const char * p, int k, const char * t);
 extern "C" void free_fl_file_chooser(FILECHOOSER f);
 

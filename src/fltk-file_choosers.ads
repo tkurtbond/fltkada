@@ -6,6 +6,7 @@
 
 with
 
+    FLTK.Filenames,
     FLTK.Widgets.Buttons.Light.Check;
 
 private with
@@ -42,6 +43,12 @@ package FLTK.File_Choosers is
             return File_Chooser;
 
     end Forge;
+
+
+
+
+    Sort_Method : not null FLTK.Filenames.Compare_Function :=
+        FLTK.Filenames.Numeric_Sort'Access;
 
 
 

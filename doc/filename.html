@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Filename Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Filename Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>filename</td>
+    <td>FLTK.Filenames</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>char *</td>
+    <td>Path_String</td>
+  </tr>
+
+  <tr>
+    <td>int</td>
+    <td>Comparison</td>
+  </tr>
+
+  <tr>
+    <td>Fl_File_Sort_F</td>
+    <td>Compare_Function</td>
+  </tr>
+
+  <tr>
+    <td>struct dirent ***</td>
+    <td>File_List</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Errors</th></tr>
+
+  <tr>
+    <td>char * msg</td>
+    <td>Open_URI_Error</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Attributes</th></tr>
+
+  <tr>
+<td><pre>
+#define FL_PATH_MAX 2048
+</pre></td>
+<td><pre>
+Max_Path_Length : constant Natural;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+int fl_alphasort(struct dirent **, struct dirent **);
+</pre></td>
+<td><pre>
+function Alpha_Sort
+       (A, B : in String)
+    return Comparison;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fl_casealphasort(struct dirent **, struct dirent **);
+</pre></td>
+<td><pre>
+function Case_Alpha_Sort
+       (A, B : in String)
+    return Comparison;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fl_casenumericsort(struct dirent **, struct dirent **);
+</pre></td>
+<td><pre>
+function Case_Numeric_Sort
+       (A, B : in String)
+    return Comparison;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void fl_decode_uri(char *uri);
+</pre></td>
+<td><pre>
+function Decode_URI
+       (URI : in Path_String)
+    return Path_String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fl_filename_absolute(char *to, int tolen, const char *from);
+</pre></td>
+<td><pre>
+function Absolute
+       (Name : in Path_String)
+    return Path_String;
+
+function Absolute
+       (Name    : in     Path_String;
+        Changed :    out Boolean)
+    return Path_String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fl_filename_expand(char *to, int tolen, const char *from);
+</pre></td>
+<td><pre>
+function Expand
+       (Name : in Path_String)
+    return Path_String;
+
+function Expand
+       (Name    : in     Path_String;
+        Changed :    out Boolean)
+    return Path_String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char * fl_filename_ext(const char *buf);
+</pre></td>
+<td><pre>
+function Extension
+       (Name : in Path_String)
+    return Path_String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void fl_filename_free_list(struct dirent ***l, int n);
+</pre></td>
+<td>Automatically called when a File_List goes out of scope.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fl_filename_isdir(const char *name);
+</pre></td>
+<td><pre>
+function Is_Directory
+       (Name : in Path_String)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fl_filename_list(const char *d, struct dirent ***l,
+    Fl_File_Sort_F *s=fl_numericsort);
+</pre></td>
+<td><pre>
+function Get_Listing
+       (Name : in Path_String;
+        Sort : in not null Compare_Function :=
+            Numeric_Sort'Access)
+    return File_List;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Tracking of the return value of fl_filename_list must be done manually.</td>
+<td><pre>
+function Length
+       (This : in File_List)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Dereferencing of a dirent struct must be done manually.</td>
+<td><pre>
+function Item
+       (This  : in File_List;
+        Index : in Positive)
+    return Path_String
+with Pre => Index in 1 .. This.Length;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fl_filename_match(const char *name, const char *pattern);
+</pre></td>
+<td><pre>
+function Match
+       (Input, Pattern : in String)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char * fl_filename_name(const char *filename);
+</pre></td>
+<td><pre>
+function Base_Name
+       (Name : in Path_String)
+    return Path_String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fl_filename_relative(char *to, int tolen, const char *from);
+</pre></td>
+<td><pre>
+function Relative
+       (Name : in Path_String)
+    return Path_String;
+
+function Relative
+       (Name    : in     Path_String;
+        Changed :    out Boolean)
+    return Path_String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+char * fl_filename_setext(char *to, int tolen, const char *ext);
+</pre></td>
+<td><pre>
+function Set_Extension
+       (Name   : in Path_String;
+        Suffix : in String)
+    return Path_String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fl_numericsort(struct dirent **, struct dirent **);
+</pre></td>
+<td><pre>
+function Numeric_Sort
+       (A, B : in String)
+    return Comparison;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fl_open_uri(const char *uri, char *msg, int msglen);
+</pre></td>
+<td><pre>
+procedure Open_URI
+       (URI : in Path_String);
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
+

@@ -47,6 +47,13 @@ package body FLTK.File_Choosers is
 
 
 
+    procedure file_chooser_setup_sort_hook;
+    pragma Import (C, file_chooser_setup_sort_hook, "file_chooser_setup_sort_hook");
+    pragma Inline (file_chooser_setup_sort_hook);
+
+
+
+
     function new_fl_file_chooser
            (N, P : in Interfaces.C.char_array;
             K    : in Interfaces.C.int;
@@ -457,6 +464,26 @@ package body FLTK.File_Choosers is
     pragma Inline (fl_file_chooser_visible);
 
 
+
+
+    ----------------------
+    --  Callback Hooks  --
+    ----------------------
+
+    function File_Chooser_Sort_Hook
+           (A, B : in Interfaces.C.Strings.chars_ptr)
+        return Interfaces.C.int;
+
+    pragma Export (C, File_Chooser_Sort_Hook, "file_chooser_sort_hook");
+
+    function File_Chooser_Sort_Hook
+           (A, B : in Interfaces.C.Strings.chars_ptr)
+        return Interfaces.C.int is
+    begin
+        return Filenames.Comparison'Pos (Sort_Method
+           (Interfaces.C.Strings.Value (A),
+            Interfaces.C.Strings.Value (B))) - 1;
+    end File_Chooser_Sort_Hook;
 
 
     procedure File_Chooser_Callback_Hook
@@ -1204,6 +1231,10 @@ package body FLTK.File_Choosers is
         return fl_file_chooser_visible (This.Void_Ptr) /= 0;
     end Is_Visible;
 
+
+begin
+
+    file_chooser_setup_sort_hook;
 
 end FLTK.File_Choosers;
 
