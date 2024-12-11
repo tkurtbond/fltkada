@@ -11,17 +11,16 @@ with
 
 private with
 
-    Ada.Finalization,
     Ada.Unchecked_Conversion,
-    Interfaces.C;
+    Interfaces.C.Strings;
 
 
 package FLTK.Widgets.Groups.Browsers is
 
 
-    type Abstract_Browser is new Group with private;
+    type Browser is new Group with private;
 
-    type Abstract_Browser_Reference (Data : not null access Abstract_Browser'Class) is
+    type Browser_Reference (Data : not null access Browser'Class) is
         limited null record with Implicit_Dereference => Data;
 
     type Item_Cursor is mod System.Memory_Size;
@@ -44,7 +43,7 @@ package FLTK.Widgets.Groups.Browsers is
         function Create
                (X, Y, W, H : in Integer;
                 Text       : in String := "")
-            return Abstract_Browser;
+            return Browser;
 
     end Forge;
 
@@ -54,11 +53,11 @@ package FLTK.Widgets.Groups.Browsers is
     --  Access to the Browser's self contained scrollbars
 
     function H_Bar
-           (This : in out Abstract_Browser)
+           (This : in out Browser)
         return Valuators.Sliders.Scrollbars.Scrollbar_Reference;
 
     function V_Bar
-           (This : in out Abstract_Browser)
+           (This : in out Browser)
         return Valuators.Sliders.Scrollbars.Scrollbar_Reference;
 
 
@@ -67,49 +66,64 @@ package FLTK.Widgets.Groups.Browsers is
     --  Item related settings
 
     function Set_Select
-           (This         : in out Abstract_Browser;
+           (This         : in out Browser;
             Item         : in     Item_Cursor;
             State        : in     Boolean := True;
             Do_Callbacks : in     Boolean := False)
         return Boolean;
 
+    procedure Set_Select
+           (This         : in out Browser;
+            Item         : in     Item_Cursor;
+            State        : in     Boolean := True;
+            Do_Callbacks : in     Boolean := False);
+
     function Select_Only
-           (This         : in out Abstract_Browser;
+           (This         : in out Browser;
             Item         : in     Item_Cursor;
             Do_Callbacks : in     Boolean := False)
         return Boolean;
 
+    procedure Select_Only
+           (This         : in out Browser;
+            Item         : in     Item_Cursor;
+            Do_Callbacks : in     Boolean := False);
+
     function Current_Selection
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Item_Cursor;
 
     function Deselect
-           (This         : in out Abstract_Browser;
+           (This         : in out Browser;
             Do_Callbacks : in     Boolean := False)
         return Boolean;
 
+    procedure Deselect
+           (This         : in out Browser;
+            Do_Callbacks : in     Boolean := False);
+
     procedure Display
-           (This : in out Abstract_Browser;
+           (This : in out Browser;
             Item : in     Item_Cursor);
 
     function Is_Displayed
-           (This : in Abstract_Browser;
+           (This : in Browser;
             Item : in Item_Cursor)
         return Boolean;
 
     function Find_Item
-           (This  : in Abstract_Browser;
+           (This  : in Browser;
             Y_Pos : in Integer)
         return Item_Cursor;
 
     function Top_Item
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Item_Cursor;
 
     --  Not task safe due to internal issues with converting Ada Strings to char* in C.
     --  Unsure how much that matters since unsure how task safe FLTK is anyway.
     procedure Sort
-           (This  : in out Abstract_Browser;
+           (This  : in out Browser;
             Order : in     Sort_Order);
 
 
@@ -118,41 +132,41 @@ package FLTK.Widgets.Groups.Browsers is
     --  Scrollbar related settings
 
     function Get_Scrollbar_Mode
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Scrollbar_Mode;
 
     procedure Set_Scrollbar_Mode
-           (This : in out Abstract_Browser;
+           (This : in out Browser;
             Mode : in     Scrollbar_Mode);
 
     function Get_H_Position
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Integer;
 
     procedure Set_H_Position
-           (This  : in out Abstract_Browser;
+           (This  : in out Browser;
             Value : in     Integer);
 
     function Get_V_Position
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Integer;
 
     procedure Set_V_Position
-           (This  : in out Abstract_Browser;
+           (This  : in out Browser;
             Value : in     Integer);
 
     procedure Set_Vertical_Left
-           (This : in out Abstract_Browser);
+           (This : in out Browser);
 
     procedure Set_Vertical_Right
-           (This : in out Abstract_Browser);
+           (This : in out Browser);
 
     function Get_Scrollbar_Size
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Integer;
 
     procedure Set_Scrollbar_Size
-           (This  : in out Abstract_Browser;
+           (This  : in out Browser;
             Value : in     Integer);
 
 
@@ -161,27 +175,27 @@ package FLTK.Widgets.Groups.Browsers is
     --  Text related settings
 
     function Get_Text_Color
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Color;
 
     procedure Set_Text_Color
-           (This  : in out Abstract_Browser;
+           (This  : in out Browser;
             Value : in     Color);
 
     function Get_Text_Font
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Font_Kind;
 
     procedure Set_Text_Font
-           (This : in out Abstract_Browser;
+           (This : in out Browser;
             Font : in     Font_Kind);
 
     function Get_Text_Size
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Font_Size;
 
     procedure Set_Text_Size
-           (This : in out Abstract_Browser;
+           (This : in out Browser;
             Size : in     Font_Size);
 
 
@@ -190,23 +204,23 @@ package FLTK.Widgets.Groups.Browsers is
     --  Graphical dimensions and redrawing
 
     procedure Resize
-           (This       : in out Abstract_Browser;
+           (This       : in out Browser;
             X, Y, W, H : in     Integer);
 
     procedure Bounding_Box
-           (This       : in     Abstract_Browser;
+           (This       : in     Browser;
             X, Y, W, H :    out Integer);
 
     function Left_Edge
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Integer;
 
     procedure Redraw_Line
-           (This : in out Abstract_Browser;
+           (This : in out Browser;
             Item : in     Item_Cursor);
 
     procedure Redraw_List
-           (This : in out Abstract_Browser);
+           (This : in out Browser);
 
 
 
@@ -215,83 +229,83 @@ package FLTK.Widgets.Groups.Browsers is
     --  even though these are called from within FLTK.
 
     function Full_List_Width
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Integer;
 
     function Full_List_Height
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Integer;
 
     function Average_Item_Height
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Integer;
 
     function Item_Quick_Height
-           (This : in Abstract_Browser;
+           (This : in Browser;
             Item : in Item_Cursor)
         return Integer;
 
 
 
 
-    --  You MUST override these subprograms if deriving a type from Abstract_Browser
-    --  or your program will crash, since they are called from within FLTK and do not
-    --  have any implementations given. By default here they will raise an exception.
+    --  You MUST override these subprograms if deriving a type from Browser or your
+    --  program will crash, since they are called from within FLTK and do not have
+    --  any implementations given. By default here they will raise an exception.
 
     function Item_Width
-           (This : in Abstract_Browser;
+           (This : in Browser;
             Item : in Item_Cursor)
         return Integer;
 
     function Item_Height
-           (This : in Abstract_Browser;
+           (This : in Browser;
             Item : in Item_Cursor)
         return Integer;
 
     function Item_First
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Item_Cursor;
 
     function Item_Last
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Item_Cursor;
 
     function Item_Next
-           (This : in Abstract_Browser;
+           (This : in Browser;
             Item : in Item_Cursor)
         return Item_Cursor;
 
     function Item_Previous
-           (This : in Abstract_Browser;
+           (This : in Browser;
             Item : in Item_Cursor)
         return Item_Cursor;
 
     function Item_At
-           (This  : in Abstract_Browser;
+           (This  : in Browser;
             Index : in Positive)
         return Item_Cursor;
 
     procedure Item_Select
-           (This  : in out Abstract_Browser;
+           (This  : in out Browser;
             Item  : in     Item_Cursor;
             State : in     Boolean := True);
 
     function Item_Selected
-           (This : in Abstract_Browser;
+           (This : in Browser;
             Item : in Item_Cursor)
         return Boolean;
 
     procedure Item_Swap
-           (This : in out Abstract_Browser;
+           (This : in out Browser;
             A, B : in     Item_Cursor);
 
     function Item_Text
-           (This : in Abstract_Browser;
+           (This : in Browser;
             Item : in Item_Cursor)
         return String;
 
     procedure Item_Draw
-           (This       : in Abstract_Browser;
+           (This       : in Browser;
             Item       : in Item_Cursor;
             X, Y, W, H : in Integer);
 
@@ -301,22 +315,22 @@ package FLTK.Widgets.Groups.Browsers is
     --  Cache invalidation
 
     procedure New_List
-           (This : in out Abstract_Browser);
+           (This : in out Browser);
 
     procedure Inserting
-           (This : in out Abstract_Browser;
+           (This : in out Browser;
             A, B : in     Item_Cursor);
 
     procedure Deleting
-           (This : in out Abstract_Browser;
+           (This : in out Browser;
             Item : in     Item_Cursor);
 
     procedure Replacing
-           (This : in out Abstract_Browser;
+           (This : in out Browser;
             A, B : in     Item_Cursor);
 
     procedure Swapping
-           (This : in out Abstract_Browser;
+           (This : in out Browser;
             A, B : in     Item_Cursor);
 
 
@@ -326,10 +340,10 @@ package FLTK.Widgets.Groups.Browsers is
     --  even though these are called from within FLTK.
 
     procedure Draw
-           (This : in out Abstract_Browser);
+           (This : in out Browser);
 
     function Handle
-           (This  : in out Abstract_Browser;
+           (This  : in out Browser;
             Event : in     Event_Kind)
         return Event_Outcome;
 
@@ -337,21 +351,23 @@ package FLTK.Widgets.Groups.Browsers is
 private
 
 
-    type Abstract_Browser is new Group with record
-        Horizon : aliased Valuators.Sliders.Scrollbars.Scrollbar;
-        Vertigo : aliased Valuators.Sliders.Scrollbars.Scrollbar;
+    type Browser is new Group with record
+        Horizon    : aliased Valuators.Sliders.Scrollbars.Scrollbar;
+        Vertigo    : aliased Valuators.Sliders.Scrollbars.Scrollbar;
+        Text_Store : Interfaces.C.Strings.chars_ptr_array (1 .. 2);
+        Current    : Interfaces.C.size_t := 1;
     end record;
 
     overriding procedure Finalize
-           (This : in out Abstract_Browser);
+           (This : in out Browser);
 
     procedure Extra_Init
-           (This       : in out Abstract_Browser;
+           (This       : in out Browser;
             X, Y, W, H : in     Integer;
             Text       : in     String);
 
     procedure Extra_Final
-           (This : in out Abstract_Browser);
+           (This : in out Browser);
 
 
     pragma Assert
@@ -426,15 +442,6 @@ private
 
     pragma Inline (Draw);
     pragma Inline (Handle);
-
-
-    --  Needed to ensure chars_ptr storage is properly cleaned up
-    type Item_Text_Hook_Final_Controller is new Ada.Finalization.Controlled with null record;
-
-    overriding procedure Finalize
-           (This : in out Item_Text_Hook_Final_Controller);
-
-    Cleanup : Item_Text_Hook_Final_Controller;
 
 
 end FLTK.Widgets.Groups.Browsers;

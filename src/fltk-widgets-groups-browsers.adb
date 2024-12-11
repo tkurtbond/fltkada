@@ -330,7 +330,7 @@ package body FLTK.Widgets.Groups.Browsers is
     --  Exported Hooks  --
     ----------------------
 
-    package Browser_Convert is new System.Address_To_Access_Conversions (Abstract_Browser'Class);
+    package Browser_Convert is new System.Address_To_Access_Conversions (Browser'Class);
 
 
     function Full_Width_Hook
@@ -342,7 +342,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr : in Storage.Integer_Address)
         return Interfaces.C.int
     is
-        Ada_Object : access Abstract_Browser'Class :=
+        Ada_Object : access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Interfaces.C.int (Ada_Object.Full_List_Width);
@@ -358,7 +358,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr : in Storage.Integer_Address)
         return Interfaces.C.int
     is
-        Ada_Object : access Abstract_Browser'Class :=
+        Ada_Object : access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Interfaces.C.int (Ada_Object.Full_List_Height);
@@ -374,7 +374,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr : in Storage.Integer_Address)
         return Interfaces.C.int
     is
-        Ada_Object : access Abstract_Browser'Class :=
+        Ada_Object : access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Interfaces.C.int (Ada_Object.Average_Item_Height);
@@ -390,7 +390,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address)
         return Interfaces.C.int
     is
-        Ada_Object : access Abstract_Browser'Class :=
+        Ada_Object : access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Interfaces.C.int (Ada_Object.Item_Quick_Height (Address_To_Cursor (Item_Ptr)));
@@ -406,7 +406,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address)
         return Interfaces.C.int
     is
-        Ada_Object : access Abstract_Browser'Class :=
+        Ada_Object : access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Interfaces.C.int (Ada_Object.Item_Width (Address_To_Cursor (Item_Ptr)));
@@ -422,7 +422,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address)
         return Interfaces.C.int
     is
-        Ada_Object : access Abstract_Browser'Class :=
+        Ada_Object : access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Interfaces.C.int (Ada_Object.Item_Height (Address_To_Cursor (Item_Ptr)));
@@ -438,7 +438,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr : in Storage.Integer_Address)
         return Storage.Integer_Address
     is
-        Ada_Object : access Abstract_Browser'Class :=
+        Ada_Object : access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Cursor_To_Address (Ada_Object.Item_First);
@@ -454,7 +454,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr : in Storage.Integer_Address)
         return Storage.Integer_Address
     is
-        Ada_Object : access Abstract_Browser'Class :=
+        Ada_Object : access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Cursor_To_Address (Ada_Object.Item_Last);
@@ -470,7 +470,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address)
         return Storage.Integer_Address
     is
-        Ada_Object : access Abstract_Browser'Class :=
+        Ada_Object : access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Cursor_To_Address (Ada_Object.Item_Next (Address_To_Cursor (Item_Ptr)));
@@ -486,7 +486,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address)
         return Storage.Integer_Address
     is
-        Ada_Object : access Abstract_Browser'Class :=
+        Ada_Object : access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Cursor_To_Address (Ada_Object.Item_Previous (Address_To_Cursor (Item_Ptr)));
@@ -504,7 +504,7 @@ package body FLTK.Widgets.Groups.Browsers is
             Index    : in Interfaces.C.int)
         return Storage.Integer_Address
     is
-        Ada_Object : access Abstract_Browser'Class :=
+        Ada_Object : access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
         use type Interfaces.C.int;
     begin
@@ -521,7 +521,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address;
             Int_State          : in Interfaces.C.int)
     is
-        Ada_Object : access Abstract_Browser'Class :=
+        Ada_Object : access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
         use type Interfaces.C.int;
     begin
@@ -540,7 +540,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address)
         return Interfaces.C.int
     is
-        Ada_Object : access Abstract_Browser'Class :=
+        Ada_Object : access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Boolean'Pos (Ada_Object.Item_Selected (Address_To_Cursor (Item_Ptr)));
@@ -554,7 +554,7 @@ package body FLTK.Widgets.Groups.Browsers is
     procedure Item_Swap_Hook
            (Ada_Addr, A_Ptr, B_Ptr : in Storage.Integer_Address)
     is
-        Ada_Object : access Abstract_Browser'Class :=
+        Ada_Object : access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         Ada_Object.Item_Swap (Address_To_Cursor (A_Ptr), Address_To_Cursor (B_Ptr));
@@ -573,9 +573,6 @@ package body FLTK.Widgets.Groups.Browsers is
 
     --  At the time of writing this I have no idea how task safe FLTK is anyway.
 
-    Text_Hook_Storage  : Interfaces.C.Strings.chars_ptr_array (1 .. 2);
-    Current_Text_Store : Interfaces.C.size_t := 1;
-
     function Item_Text_Hook
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address)
         return Interfaces.C.Strings.chars_ptr;
@@ -585,18 +582,18 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address)
         return Interfaces.C.Strings.chars_ptr
     is
-        Ada_Object : access Abstract_Browser'Class :=
+        Ada_Object : access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
-        Interfaces.C.Strings.Free (Text_Hook_Storage (Current_Text_Store));
-        Text_Hook_Storage (Current_Text_Store) := Interfaces.C.Strings.New_String
+        Interfaces.C.Strings.Free (Ada_Object.Text_Store (Ada_Object.Current));
+        Ada_Object.Text_Store (Ada_Object.Current) := Interfaces.C.Strings.New_String
             (Ada_Object.Item_Text (Address_To_Cursor (Item_Ptr)));
         return C_Char_Is_Not_A_String : Interfaces.C.Strings.chars_ptr :=
-            Text_Hook_Storage (Current_Text_Store)
+            Ada_Object.Text_Store (Ada_Object.Current)
         do
-            Current_Text_Store := Current_Text_Store + 1;
-            if Current_Text_Store > Text_Hook_Storage'Last then
-                Current_Text_Store := Text_Hook_Storage'First;
+            Ada_Object.Current := Ada_Object.Current + 1;
+            if Ada_Object.Current > Ada_Object.Text_Store'Last then
+                Ada_Object.Current := Ada_Object.Text_Store'First;
             end if;
         end return;
     end Item_Text_Hook;
@@ -611,7 +608,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address;
             X, Y, W, H         : in Interfaces.C.int)
     is
-        Ada_Object : access Abstract_Browser'Class :=
+        Ada_Object : access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         Ada_Object.Item_Draw
@@ -630,31 +627,25 @@ package body FLTK.Widgets.Groups.Browsers is
     -----------------------------------
 
     procedure Extra_Final
-           (This : in out Abstract_Browser) is
+           (This : in out Browser) is
     begin
         Extra_Final (Widget (This.Horizon));
         Extra_Final (Widget (This.Vertigo));
         Extra_Final (Group (This));
+        for Index in This.Text_Store'Range loop
+            Interfaces.C.Strings.Free (This.Text_Store (Index));
+        end loop;
     end Extra_Final;
 
 
     procedure Finalize
-           (This : in out Abstract_Browser) is
+           (This : in out Browser) is
     begin
         Extra_Final (This);
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_abstract_browser (This.Void_Ptr);
             This.Void_Ptr := Null_Pointer;
         end if;
-    end Finalize;
-
-
-    procedure Finalize
-           (This : in out Item_Text_Hook_Final_Controller) is
-    begin
-        for Index in Text_Hook_Storage'Range loop
-            Interfaces.C.Strings.Free (Text_Hook_Storage (Index));
-        end loop;
     end Finalize;
 
 
@@ -665,7 +656,7 @@ package body FLTK.Widgets.Groups.Browsers is
     ---------------------------
 
     procedure Extra_Init
-           (This       : in out Abstract_Browser;
+           (This       : in out Browser;
             X, Y, W, H : in     Integer;
             Text       : in     String) is
     begin
@@ -696,9 +687,9 @@ package body FLTK.Widgets.Groups.Browsers is
         function Create
                (X, Y, W, H : in Integer;
                 Text       : in String := "")
-            return Abstract_Browser is
+            return Browser is
         begin
-            return This : Abstract_Browser do
+            return This : Browser do
                 This.Void_Ptr := new_fl_abstract_browser
                    (Interfaces.C.int (X),
                     Interfaces.C.int (Y),
@@ -717,7 +708,7 @@ package body FLTK.Widgets.Groups.Browsers is
     --  Access to the Browser's self contained scrollbars
 
     function H_Bar
-           (This : in out Abstract_Browser)
+           (This : in out Browser)
         return Valuators.Sliders.Scrollbars.Scrollbar_Reference is
     begin
         return (Data => This.Horizon'Unchecked_Access);
@@ -725,7 +716,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     function V_Bar
-           (This : in out Abstract_Browser)
+           (This : in out Browser)
         return Valuators.Sliders.Scrollbars.Scrollbar_Reference is
     begin
         return (Data => This.Vertigo'Unchecked_Access);
@@ -737,7 +728,7 @@ package body FLTK.Widgets.Groups.Browsers is
     --  Item related settings
 
     function Set_Select
-           (This         : in out Abstract_Browser;
+           (This         : in out Browser;
             Item         : in     Item_Cursor;
             State        : in     Boolean := True;
             Do_Callbacks : in     Boolean := False)
@@ -756,8 +747,26 @@ package body FLTK.Widgets.Groups.Browsers is
     end Set_Select;
 
 
+    procedure Set_Select
+           (This         : in out Browser;
+            Item         : in     Item_Cursor;
+            State        : in     Boolean := True;
+            Do_Callbacks : in     Boolean := False)
+    is
+        Code : Interfaces.C.int := fl_abstract_browser_select
+           (This.Void_Ptr,
+            Cursor_To_Address (Item),
+            Boolean'Pos (State),
+            Boolean'Pos (Do_Callbacks));
+    begin
+        if Code not in 0 .. 1 then
+            raise Internal_FLTK_Error;
+        end if;
+    end Set_Select;
+
+
     function Select_Only
-           (This         : in out Abstract_Browser;
+           (This         : in out Browser;
             Item         : in     Item_Cursor;
             Do_Callbacks : in     Boolean := False)
         return Boolean
@@ -774,8 +783,24 @@ package body FLTK.Widgets.Groups.Browsers is
     end Select_Only;
 
 
+    procedure Select_Only
+           (This         : in out Browser;
+            Item         : in     Item_Cursor;
+            Do_Callbacks : in     Boolean := False)
+    is
+        Code : Interfaces.C.int := fl_abstract_browser_select_only
+           (This.Void_Ptr,
+            Cursor_To_Address (Item),
+            Boolean'Pos (Do_Callbacks));
+    begin
+        if Code not in 0 .. 1 then
+            raise Internal_FLTK_Error;
+        end if;
+    end Select_Only;
+
+
     function Current_Selection
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Item_Cursor is
     begin
         return Address_To_Cursor (fl_abstract_browser_selection (This.Void_Ptr));
@@ -783,7 +808,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     function Deselect
-           (This         : in out Abstract_Browser;
+           (This         : in out Browser;
             Do_Callbacks : in     Boolean := False)
         return Boolean
     is
@@ -798,8 +823,22 @@ package body FLTK.Widgets.Groups.Browsers is
     end Deselect;
 
 
+    procedure Deselect
+           (This         : in out Browser;
+            Do_Callbacks : in     Boolean := False)
+    is
+        Code : Interfaces.C.int := fl_abstract_browser_deselect
+           (This.Void_Ptr,
+            Boolean'Pos (Do_Callbacks));
+    begin
+        if Code not in 0 .. 1 then
+            raise Internal_FLTK_Error;
+        end if;
+    end Deselect;
+
+
     procedure Display
-           (This : in out Abstract_Browser;
+           (This : in out Browser;
             Item : in     Item_Cursor) is
     begin
         fl_abstract_browser_display (This.Void_Ptr, Cursor_To_Address (Item));
@@ -807,7 +846,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     function Is_Displayed
-           (This : in Abstract_Browser;
+           (This : in Browser;
             Item : in Item_Cursor)
         return Boolean
     is
@@ -823,7 +862,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     function Find_Item
-           (This  : in Abstract_Browser;
+           (This  : in Browser;
             Y_Pos : in Integer)
         return Item_Cursor is
     begin
@@ -833,7 +872,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     function Top_Item
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Item_Cursor is
     begin
         return Address_To_Cursor (fl_abstract_browser_top (This.Void_Ptr));
@@ -841,7 +880,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     procedure Sort
-           (This  : in out Abstract_Browser;
+           (This  : in out Browser;
             Order : in     Sort_Order)
     is
         Code : Interfaces.C.int :=
@@ -858,7 +897,7 @@ package body FLTK.Widgets.Groups.Browsers is
     --  Scrollbar related settings
 
     function Get_Scrollbar_Mode
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Scrollbar_Mode is
     begin
         return Uchar_To_Mode (fl_abstract_browser_get_has_scrollbar (This.Void_Ptr));
@@ -866,7 +905,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     procedure Set_Scrollbar_Mode
-           (This : in out Abstract_Browser;
+           (This : in out Browser;
             Mode : in     Scrollbar_Mode) is
     begin
         fl_abstract_browser_set_has_scrollbar (This.Void_Ptr, Mode_To_Uchar (Mode));
@@ -874,7 +913,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     function Get_H_Position
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Integer is
     begin
         return Integer (fl_abstract_browser_get_hposition (This.Void_Ptr));
@@ -882,7 +921,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     procedure Set_H_Position
-           (This  : in out Abstract_Browser;
+           (This  : in out Browser;
             Value : in     Integer) is
     begin
         fl_abstract_browser_set_hposition
@@ -892,7 +931,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     function Get_V_Position
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Integer is
     begin
         return Integer (fl_abstract_browser_get_position (This.Void_Ptr));
@@ -900,7 +939,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     procedure Set_V_Position
-           (This  : in out Abstract_Browser;
+           (This  : in out Browser;
             Value : in     Integer) is
     begin
         fl_abstract_browser_set_position
@@ -910,21 +949,21 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     procedure Set_Vertical_Left
-           (This : in out Abstract_Browser) is
+           (This : in out Browser) is
     begin
         fl_abstract_browser_scrollbar_left (This.Void_Ptr);
     end Set_Vertical_Left;
 
 
     procedure Set_Vertical_Right
-           (This : in out Abstract_Browser) is
+           (This : in out Browser) is
     begin
         fl_abstract_browser_scrollbar_right (This.Void_Ptr);
     end Set_Vertical_Right;
 
 
     function Get_Scrollbar_Size
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Integer is
     begin
         return Integer (fl_abstract_browser_get_scrollbar_size (This.Void_Ptr));
@@ -932,7 +971,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     procedure Set_Scrollbar_Size
-           (This  : in out Abstract_Browser;
+           (This  : in out Browser;
             Value : in     Integer) is
     begin
         fl_abstract_browser_set_scrollbar_size
@@ -946,7 +985,7 @@ package body FLTK.Widgets.Groups.Browsers is
     --  Text related settings
 
     function Get_Text_Color
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Color is
     begin
         return Color (fl_abstract_browser_get_textcolor (This.Void_Ptr));
@@ -954,7 +993,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     procedure Set_Text_Color
-           (This  : in out Abstract_Browser;
+           (This  : in out Browser;
             Value : in     Color) is
     begin
         fl_abstract_browser_set_textcolor (This.Void_Ptr, Interfaces.C.unsigned (Value));
@@ -962,7 +1001,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     function Get_Text_Font
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Font_Kind is
     begin
         return Font_Kind'Val (fl_abstract_browser_get_textfont (This.Void_Ptr));
@@ -970,7 +1009,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     procedure Set_Text_Font
-           (This : in out Abstract_Browser;
+           (This : in out Browser;
             Font : in     Font_Kind) is
     begin
         fl_abstract_browser_set_textfont (This.Void_Ptr, Font_Kind'Pos (Font));
@@ -978,7 +1017,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     function Get_Text_Size
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Font_Size is
     begin
         return Font_Size (fl_abstract_browser_get_textsize (This.Void_Ptr));
@@ -986,7 +1025,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     procedure Set_Text_Size
-           (This : in out Abstract_Browser;
+           (This : in out Browser;
             Size : in     Font_Size) is
     begin
         fl_abstract_browser_set_textsize (This.Void_Ptr, Interfaces.C.int (Size));
@@ -998,7 +1037,7 @@ package body FLTK.Widgets.Groups.Browsers is
     --  Graphical dimensions and redrawing
 
     procedure Resize
-           (This       : in out Abstract_Browser;
+           (This       : in out Browser;
             X, Y, W, H : in     Integer) is
     begin
         fl_abstract_browser_resize
@@ -1011,7 +1050,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     procedure Bounding_Box
-           (This       : in     Abstract_Browser;
+           (This       : in     Browser;
             X, Y, W, H :    out Integer) is
     begin
         fl_abstract_browser_bbox
@@ -1024,7 +1063,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     function Left_Edge
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Integer is
     begin
         return Integer (fl_abstract_browser_leftedge (This.Void_Ptr));
@@ -1032,7 +1071,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     procedure Redraw_Line
-           (This : in out Abstract_Browser;
+           (This : in out Browser;
             Item : in     Item_Cursor) is
     begin
         fl_abstract_browser_redraw_line (This.Void_Ptr, Cursor_To_Address (Item));
@@ -1040,7 +1079,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     procedure Redraw_List
-           (This : in out Abstract_Browser) is
+           (This : in out Browser) is
     begin
         fl_abstract_browser_redraw_lines (This.Void_Ptr);
     end Redraw_List;
@@ -1051,7 +1090,7 @@ package body FLTK.Widgets.Groups.Browsers is
     --  Optional Override API
 
     function Full_List_Width
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Integer is
     begin
         return Integer (fl_abstract_browser_full_width (This.Void_Ptr));
@@ -1059,7 +1098,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     function Full_List_Height
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Integer is
     begin
         return Integer (fl_abstract_browser_full_height (This.Void_Ptr));
@@ -1067,7 +1106,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     function Average_Item_Height
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Integer is
     begin
         return Integer (fl_abstract_browser_incr_height (This.Void_Ptr));
@@ -1075,7 +1114,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     function Item_Quick_Height
-           (This : in Abstract_Browser;
+           (This : in Browser;
             Item : in Item_Cursor)
         return Integer is
     begin
@@ -1090,96 +1129,96 @@ package body FLTK.Widgets.Groups.Browsers is
     --  Mandatory Override API
 
     function Item_Width
-           (This : in Abstract_Browser;
+           (This : in Browser;
             Item : in Item_Cursor)
         return Integer is
     begin
-        return raise Program_Error with "Abstract_Browser Item_Width must be overridden";
+        return raise Program_Error with "Browser Item_Width must be overridden";
     end Item_Width;
 
     function Item_Height
-           (This : in Abstract_Browser;
+           (This : in Browser;
             Item : in Item_Cursor)
         return Integer is
     begin
-        return raise Program_Error with "Abstract_Browser Item_Height must be overridden";
+        return raise Program_Error with "Browser Item_Height must be overridden";
     end Item_Height;
 
     function Item_First
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Item_Cursor is
     begin
-        return raise Program_Error with "Abstract_Browser Item_First must be overridden";
+        return raise Program_Error with "Browser Item_First must be overridden";
     end Item_First;
 
     function Item_Last
-           (This : in Abstract_Browser)
+           (This : in Browser)
         return Item_Cursor is
     begin
-        return raise Program_Error with "Abstract_Browser Item_Last must be overridden";
+        return raise Program_Error with "Browser Item_Last must be overridden";
     end Item_Last;
 
     function Item_Next
-           (This : in Abstract_Browser;
+           (This : in Browser;
             Item : in Item_Cursor)
         return Item_Cursor is
     begin
-        return raise Program_Error with "Abstract_Browser Item_Next must be overridden";
+        return raise Program_Error with "Browser Item_Next must be overridden";
     end Item_Next;
 
     function Item_Previous
-           (This : in Abstract_Browser;
+           (This : in Browser;
             Item : in Item_Cursor)
         return Item_Cursor is
     begin
-        return raise Program_Error with "Abstract_Browser Item_Previous must be overridden";
+        return raise Program_Error with "Browser Item_Previous must be overridden";
     end Item_Previous;
 
     function Item_At
-           (This  : in Abstract_Browser;
+           (This  : in Browser;
             Index : in Positive)
         return Item_Cursor is
     begin
-        return raise Program_Error with "Abstract_Browser Item_At must be overridden";
+        return raise Program_Error with "Browser Item_At must be overridden";
     end Item_At;
 
     procedure Item_Select
-           (This  : in out Abstract_Browser;
+           (This  : in out Browser;
             Item  : in     Item_Cursor;
             State : in     Boolean := True) is
     begin
-        raise Program_Error with "Abstract_Browser Item_Select must be overridden";
+        raise Program_Error with "Browser Item_Select must be overridden";
     end Item_Select;
 
     function Item_Selected
-           (This : in Abstract_Browser;
+           (This : in Browser;
             Item : in Item_Cursor)
         return Boolean is
     begin
-        return raise Program_Error with "Abstract_Browser Item_Selected must be overridden";
+        return raise Program_Error with "Browser Item_Selected must be overridden";
     end Item_Selected;
 
     procedure Item_Swap
-           (This : in out Abstract_Browser;
+           (This : in out Browser;
             A, B : in     Item_Cursor) is
     begin
-        raise Program_Error with "Abstract_Browser Item_Swap must be overridden";
+        raise Program_Error with "Browser Item_Swap must be overridden";
     end Item_Swap;
 
     function Item_Text
-           (This : in Abstract_Browser;
+           (This : in Browser;
             Item : in Item_Cursor)
         return String is
     begin
-        return raise Program_Error with "Abstract_Browser Item_Text must be overridden";
+        return raise Program_Error with "Browser Item_Text must be overridden";
     end Item_Text;
 
     procedure Item_Draw
-           (This       : in Abstract_Browser;
+           (This       : in Browser;
             Item       : in Item_Cursor;
             X, Y, W, H : in Integer) is
     begin
-        raise Program_Error with "Abstract_Browser Item_Draw must be overridden";
+        raise Program_Error with "Browser Item_Draw must be overridden";
     end Item_Draw;
 
 
@@ -1188,14 +1227,14 @@ package body FLTK.Widgets.Groups.Browsers is
     --  Cache invalidation
 
     procedure New_List
-           (This : in out Abstract_Browser) is
+           (This : in out Browser) is
     begin
         fl_abstract_browser_new_list (This.Void_Ptr);
     end New_List;
 
 
     procedure Inserting
-           (This : in out Abstract_Browser;
+           (This : in out Browser;
             A, B : in     Item_Cursor) is
     begin
         fl_abstract_browser_inserting
@@ -1206,7 +1245,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     procedure Deleting
-           (This : in out Abstract_Browser;
+           (This : in out Browser;
             Item : in     Item_Cursor) is
     begin
         fl_abstract_browser_deleting
@@ -1216,7 +1255,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     procedure Replacing
-           (This : in out Abstract_Browser;
+           (This : in out Browser;
             A, B : in     Item_Cursor) is
     begin
         fl_abstract_browser_replacing
@@ -1227,7 +1266,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     procedure Swapping
-           (This : in out Abstract_Browser;
+           (This : in out Browser;
             A, B : in     Item_Cursor) is
     begin
         fl_abstract_browser_swapping
@@ -1242,14 +1281,14 @@ package body FLTK.Widgets.Groups.Browsers is
     --  Standard Override API
 
     procedure Draw
-           (This : in out Abstract_Browser) is
+           (This : in out Browser) is
     begin
         fl_abstract_browser_draw (This.Void_Ptr);
     end Draw;
 
 
     function Handle
-           (This  : in out Abstract_Browser;
+           (This  : in out Browser;
             Event : in     Event_Kind)
         return Event_Outcome is
     begin
