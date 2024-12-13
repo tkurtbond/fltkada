@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Check_Browser Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Check_Browser Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Check_Browser</td>
+    <td>FLTK.Widgets.Groups.Browsers.Check</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Check_Browser</td>
+    <td>Check_Browser</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Check_Browser_Reference</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Check_Browser(int x, int y, int w, int h, const char *l=0);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return Check_Browser;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+int add(char *s);
+
+int add(char *s, int b);
+
+int add(const char *s);
+
+int add(const char *s, int b);
+</pre></td>
+<td><pre>
+procedure Add
+       (This    : in out Check_Browser;
+        Text    : in     String;
+        Checked : in     Boolean := False);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void check_all();
+</pre></td>
+<td><pre>
+procedure Check_All
+       (This : in out Check_Browser);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void check_none();
+</pre></td>
+<td><pre>
+procedure Check_None
+       (This : in out Check_Browser);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int checked(int item) const;
+</pre></td>
+<td><pre>
+function Is_Checked
+       (This  : in Check_Browser;
+        Index : in Positive)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void checked(int item, int b);
+</pre></td>
+<td><pre>
+procedure Set_Checked
+       (This  : in out Check_Browser;
+        Index : in     Positive;
+        State : in     Boolean);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void clear();
+</pre></td>
+<td><pre>
+procedure Clear
+       (This : in out Check_Browser);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int nchecked() const;
+</pre></td>
+<td><pre>
+function Number_Checked
+       (This : in Check_Browser)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int nitems() const;
+</pre></td>
+<td><pre>
+function Number_Of_Items
+       (This : in Check_Browser)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int remove(int item);
+</pre></td>
+<td><pre>
+procedure Remove
+       (This  : in out Check_Browser;
+        Index : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void set_checked(int item);
+</pre></td>
+<td>See checked(int item, int b);</td>
+  </tr>
+
+  <tr>
+<td><pre>
+char * text(int item) const;
+</pre></td>
+<td><pre>
+function Item_Text
+       (This  : in Check_Browser;
+        Index : in Positive)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int value() const;
+</pre></td>
+<td><pre>
+function Selected_Index
+       (This : in Check_Browser)
+    return Positive;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void bbox(int &X, int &Y, int &W, int &H) const;
+</pre>(Inherited from Fl_Browser_)</td>
+<td><pre>
+procedure Bounding_Box
+       (This       : in     Check_Browser;
+        X, Y, W, H :    out Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void deleting(void *item);
+</pre>(Inherited from Fl_Browser_)</td>
+<td><pre>
+procedure Deleting
+       (This : in out Check_Browser;
+        Item : in     Item_Cursor);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int displayed(void *item) const;
+</pre>(Inherited from Fl_Browser_)</td>
+<td><pre>
+function Is_Displayed
+       (This : in Check_Browser;
+        Item : in Item_Cursor)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre>(Inherited from Fl_Browser_)</td>
+<td><pre>
+procedure Draw
+       (This : in out Check_Browser);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void * find_item(int ypos);
+</pre>(Inherited from Fl_Browser_)</td>
+<td><pre>
+function Find_Item
+       (This  : in Check_Browser;
+        Y_Pos : in Integer)
+    return Item_Cursor;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual int full_height() const;
+</pre>(Inherited from Fl_Browser_)</td>
+<td><pre>
+function Full_List_Height
+       (This : in Check_Browser)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual int full_width() const;
+</pre>(Inherited from Fl_Browser_)</td>
+<td><pre>
+function Full_List_Width
+       (This : in Check_Browser)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int handle(int);
+</pre></td>
+<td><pre>
+function Handle
+       (This  : in out Check_Browser;
+        Event : in     Event_Kind)
+    return Event_Outcome;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual int incr_height() const;
+</pre>(Inherited from Fl_Browser_)</td>
+<td><pre>
+function Average_Item_Height
+       (This : in Check_Browser)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void inserting(void *a, void *b);
+</pre>(Inherited from Fl_Browser_)</td>
+<td><pre>
+procedure Inserting
+       (This : in out Check_Browser;
+        A, B : in     Item_Cursor);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual int item_quick_height(void *item) const;
+</pre>(Inherited from Fl_Browser_)</td>
+<td><pre>
+function Item_Quick_Height
+       (This : in Check_Browser;
+        Item : in Item_Cursor)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int leftedge() const;
+</pre>(Inherited from Fl_Browser_)</td>
+<td><pre>
+function Left_Edge
+       (This : in Check_Browser)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void new_list();
+</pre>(Inherited from Fl_Browser_)</td>
+<td><pre>
+procedure New_List
+       (This : in out Check_Browser);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void redraw_line(void *item);
+</pre>(Inherited from Fl_Browser_)</td>
+<td><pre>
+procedure Redraw_Line
+       (This : in out Check_Browser;
+        Item : in     Item_Cursor);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void redraw_lines();
+</pre>(Inherited from Fl_Browser_)</td>
+<td><pre>
+procedure Redraw_List
+       (This : in out Check_Browser);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void replacing(void *a, void *b);
+</pre>(Inherited from Fl_Browser_)</td>
+<td><pre>
+procedure Replacing
+       (This : in out Check_Browser;
+        A, B : in     Item_Cursor);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void * selection() const;
+</pre>(Inherited from Fl_Browser_)</td>
+<td><pre>
+function Current_Selection
+       (This : in Check_Browser)
+    return Item_Cursor;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void swapping(void *a, void *b);
+</pre>(Inherited from Fl_Browser_)</td>
+<td><pre>
+procedure Swapping
+       (This : in out Check_Browser;
+        A, B : in     Item_Cursor);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void * top() const;
+</pre>(Inherited from Fl_Browser_)</td>
+<td><pre>
+function Top_Item
+       (This : in Check_Browser)
+    return Item_Cursor;
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
+
