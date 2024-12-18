@@ -682,6 +682,35 @@ package body FLTK.Widgets.Groups.Browsers is
     end Extra_Init;
 
 
+    procedure Initialize
+           (This : in out Browser) is
+    begin
+        This.Item_Inherit_Ptrs :=
+           (Current_Selection_Ptr => fl_abstract_browser_selection'Address,
+            Is_Displayed_Ptr      => fl_abstract_browser_displayed'Address,
+            Find_Item_Ptr         => fl_abstract_browser_find_item'Address,
+            Top_Item_Ptr          => fl_abstract_browser_top'Address);
+        This.Redrawing_Ptrs :=
+           (Bounding_Box_Ptr => fl_abstract_browser_bbox'Address,
+            Left_Edge_Ptr    => fl_abstract_browser_leftedge'Address,
+            Redraw_Line_Ptr  => fl_abstract_browser_redraw_line'Address,
+            Redraw_List_Ptr  => fl_abstract_browser_redraw_lines'Address);
+        This.Wide_High_Ptrs :=
+           (Full_List_Width_Ptr     => fl_abstract_browser_full_width'Address,
+            Full_List_Height_Ptr    => fl_abstract_browser_full_height'Address,
+            Average_Item_Height_Ptr => fl_abstract_browser_incr_height'Address,
+            Item_Quick_Height_Ptr   => fl_abstract_browser_item_quick_height'Address);
+        This.Cache_Ptrs :=
+           (New_List_Ptr  => fl_abstract_browser_new_list'Address,
+            Inserting_Ptr => fl_abstract_browser_inserting'Address,
+            Deleting_Ptr  => fl_abstract_browser_deleting'Address,
+            Replacing_Ptr => fl_abstract_browser_replacing'Address,
+            Swapping_Ptr  => fl_abstract_browser_swapping'Address);
+        This.Draw_Ptr   := fl_abstract_browser_draw'Address;
+        This.Handle_Ptr := fl_abstract_browser_handle'Address;
+    end Initialize;
+
+
     package body Forge is
 
         function Create
@@ -801,9 +830,15 @@ package body FLTK.Widgets.Groups.Browsers is
 
     function Current_Selection
            (This : in Browser)
-        return Item_Cursor is
+        return Item_Cursor
+    is
+        function my_selection
+               (V : in Storage.Integer_Address)
+            return Storage.Integer_Address;
+        for my_selection'Address use This.Item_Inherit_Ptrs (Current_Selection_Ptr);
+        pragma Import (Ada, my_selection);
     begin
-        return Address_To_Cursor (fl_abstract_browser_selection (This.Void_Ptr));
+        return Address_To_Cursor (my_selection (This.Void_Ptr));
     end Current_Selection;
 
 
@@ -850,9 +885,12 @@ package body FLTK.Widgets.Groups.Browsers is
             Item : in Item_Cursor)
         return Boolean
     is
-        Code : Interfaces.C.int := fl_abstract_browser_displayed
-           (This.Void_Ptr,
-            Cursor_To_Address (Item));
+        function my_displayed
+               (V, I : in Storage.Integer_Address)
+            return Interfaces.C.int;
+        for my_displayed'Address use This.Item_Inherit_Ptrs (Is_Displayed_Ptr);
+        pragma Import (Ada, my_displayed);
+        Code : Interfaces.C.int := my_displayed (This.Void_Ptr, Cursor_To_Address (Item));
     begin
         if Code not in 0 .. 1 then
             raise Internal_FLTK_Error;
@@ -864,18 +902,30 @@ package body FLTK.Widgets.Groups.Browsers is
     function Find_Item
            (This  : in Browser;
             Y_Pos : in Integer)
-        return Item_Cursor is
+        return Item_Cursor
+    is
+        function my_find_item
+               (V : in Storage.Integer_Address;
+                N : in Interfaces.C.int)
+            return Storage.Integer_Address;
+        for my_find_item'Address use This.Item_Inherit_Ptrs (Find_Item_Ptr);
+        pragma Import (Ada, my_find_item);
     begin
-        return Address_To_Cursor
-            (fl_abstract_browser_find_item (This.Void_Ptr, Interfaces.C.int (Y_Pos)));
+        return Address_To_Cursor (my_find_item (This.Void_Ptr, Interfaces.C.int (Y_Pos)));
     end Find_Item;
 
 
     function Top_Item
            (This : in Browser)
-        return Item_Cursor is
+        return Item_Cursor
+    is
+        function my_top
+               (V : in Storage.Integer_Address)
+            return Storage.Integer_Address;
+        for my_top'Address use This.Item_Inherit_Ptrs (Top_Item_Ptr);
+        pragma Import (Ada, my_top);
     begin
-        return Address_To_Cursor (fl_abstract_browser_top (This.Void_Ptr));
+        return Address_To_Cursor (my_top (This.Void_Ptr));
     end Top_Item;
 
 
@@ -1051,9 +1101,15 @@ package body FLTK.Widgets.Groups.Browsers is
 
     procedure Bounding_Box
            (This       : in     Browser;
-            X, Y, W, H :    out Integer) is
+            X, Y, W, H :    out Integer)
+    is
+        procedure my_bbox
+               (V          : in     Storage.Integer_Address;
+                X, Y, W, H :    out Interfaces.C.int);
+        for my_bbox'Address use This.Redrawing_Ptrs (Bounding_Box_Ptr);
+        pragma Import (Ada, my_bbox);
     begin
-        fl_abstract_browser_bbox
+        my_bbox
            (This.Void_Ptr,
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
@@ -1064,24 +1120,40 @@ package body FLTK.Widgets.Groups.Browsers is
 
     function Left_Edge
            (This : in Browser)
-        return Integer is
+        return Integer
+    is
+        function my_leftedge
+               (V : in Storage.Integer_Address)
+            return Interfaces.C.int;
+        for my_leftedge'Address use This.Redrawing_Ptrs (Left_Edge_Ptr);
+        pragma Import (Ada, my_leftedge);
     begin
-        return Integer (fl_abstract_browser_leftedge (This.Void_Ptr));
+        return Integer (my_leftedge (This.Void_Ptr));
     end Left_Edge;
 
 
     procedure Redraw_Line
            (This : in out Browser;
-            Item : in     Item_Cursor) is
+            Item : in     Item_Cursor)
+    is
+        procedure my_redraw_line
+               (V, I : in Storage.Integer_Address);
+        for my_redraw_line'Address use This.Redrawing_Ptrs (Redraw_Line_Ptr);
+        pragma Import (Ada, my_redraw_line);
     begin
-        fl_abstract_browser_redraw_line (This.Void_Ptr, Cursor_To_Address (Item));
+        my_redraw_line (This.Void_Ptr, Cursor_To_Address (Item));
     end Redraw_Line;
 
 
     procedure Redraw_List
-           (This : in out Browser) is
+           (This : in out Browser)
+    is
+        procedure my_redraw_lines
+               (V : in Storage.Integer_Address);
+        for my_redraw_lines'Address use This.Redrawing_Ptrs (Redraw_List_Ptr);
+        pragma Import (Ada, my_redraw_lines);
     begin
-        fl_abstract_browser_redraw_lines (This.Void_Ptr);
+        my_redraw_lines (This.Void_Ptr);
     end Redraw_List;
 
 
@@ -1091,34 +1163,58 @@ package body FLTK.Widgets.Groups.Browsers is
 
     function Full_List_Width
            (This : in Browser)
-        return Integer is
+        return Integer
+    is
+        function my_full_width
+               (V : in Storage.Integer_Address)
+            return Interfaces.C.int;
+        for my_full_width'Address use This.Wide_High_Ptrs (Full_List_Width_Ptr);
+        pragma Import (Ada, my_full_width);
     begin
-        return Integer (fl_abstract_browser_full_width (This.Void_Ptr));
+        return Integer (my_full_width (This.Void_Ptr));
     end Full_List_Width;
 
 
     function Full_List_Height
            (This : in Browser)
-        return Integer is
+        return Integer
+    is
+        function my_full_height
+               (V : in Storage.Integer_Address)
+            return Interfaces.C.int;
+        for my_full_height'Address use This.Wide_High_Ptrs (Full_List_Height_Ptr);
+        pragma Import (Ada, my_full_height);
     begin
-        return Integer (fl_abstract_browser_full_height (This.Void_Ptr));
+        return Integer (my_full_height (This.Void_Ptr));
     end Full_List_Height;
 
 
     function Average_Item_Height
            (This : in Browser)
-        return Integer is
+        return Integer
+    is
+        function my_incr_height
+               (V : in Storage.Integer_Address)
+            return Interfaces.C.int;
+        for my_incr_height'Address use This.Wide_High_Ptrs (Average_Item_Height_Ptr);
+        pragma Import (Ada, my_incr_height);
     begin
-        return Integer (fl_abstract_browser_incr_height (This.Void_Ptr));
+        return Integer (my_incr_height (This.Void_Ptr));
     end Average_Item_Height;
 
 
     function Item_Quick_Height
            (This : in Browser;
             Item : in Item_Cursor)
-        return Integer is
+        return Integer
+    is
+        function my_item_quick_height
+               (V, I : Storage.Integer_Address)
+            return Interfaces.C.int;
+        for my_item_quick_height'Address use This.Wide_High_Ptrs (Item_Quick_Height_Ptr);
+        pragma Import (Ada, my_item_quick_height);
     begin
-        return Integer (fl_abstract_browser_item_quick_height
+        return Integer (my_item_quick_height
            (This.Void_Ptr,
             Cursor_To_Address (Item)));
     end Item_Quick_Height;
@@ -1227,17 +1323,27 @@ package body FLTK.Widgets.Groups.Browsers is
     --  Cache invalidation
 
     procedure New_List
-           (This : in out Browser) is
+           (This : in out Browser)
+    is
+        procedure my_new_list
+               (V : in Storage.Integer_Address);
+        for my_new_list'Address use This.Cache_Ptrs (New_List_Ptr);
+        pragma Import (Ada, my_new_list);
     begin
-        fl_abstract_browser_new_list (This.Void_Ptr);
+        my_new_list (This.Void_Ptr);
     end New_List;
 
 
     procedure Inserting
            (This : in out Browser;
-            A, B : in     Item_Cursor) is
+            A, B : in     Item_Cursor)
+    is
+        procedure my_inserting
+               (V, A, B : in Storage.Integer_Address);
+        for my_inserting'Address use This.Cache_Ptrs (Inserting_Ptr);
+        pragma Import (Ada, my_inserting);
     begin
-        fl_abstract_browser_inserting
+        my_inserting
            (This.Void_Ptr,
             Cursor_To_Address (A),
             Cursor_To_Address (B));
@@ -1246,9 +1352,14 @@ package body FLTK.Widgets.Groups.Browsers is
 
     procedure Deleting
            (This : in out Browser;
-            Item : in     Item_Cursor) is
+            Item : in     Item_Cursor)
+    is
+        procedure my_deleting
+               (V, I : in Storage.Integer_Address);
+        for my_deleting'Address use This.Cache_Ptrs (Deleting_Ptr);
+        pragma Import (Ada, my_deleting);
     begin
-        fl_abstract_browser_deleting
+        my_deleting
            (This.Void_Ptr,
             Cursor_To_Address (Item));
     end Deleting;
@@ -1256,9 +1367,14 @@ package body FLTK.Widgets.Groups.Browsers is
 
     procedure Replacing
            (This : in out Browser;
-            A, B : in     Item_Cursor) is
+            A, B : in     Item_Cursor)
+    is
+        procedure my_replacing
+               (V, A, B : in Storage.Integer_Address);
+        for my_replacing'Address use This.Cache_Ptrs (Replacing_Ptr);
+        pragma Import (Ada, my_replacing);
     begin
-        fl_abstract_browser_replacing
+        my_replacing
            (This.Void_Ptr,
             Cursor_To_Address (A),
             Cursor_To_Address (B));
@@ -1267,9 +1383,14 @@ package body FLTK.Widgets.Groups.Browsers is
 
     procedure Swapping
            (This : in out Browser;
-            A, B : in     Item_Cursor) is
+            A, B : in     Item_Cursor)
+    is
+        procedure my_swapping
+               (V, A, B : in Storage.Integer_Address);
+        for my_swapping'Address use This.Cache_Ptrs (Swapping_Ptr);
+        pragma Import (Ada, my_swapping);
     begin
-        fl_abstract_browser_swapping
+        my_swapping
            (This.Void_Ptr,
             Cursor_To_Address (A),
             Cursor_To_Address (B));
@@ -1281,19 +1402,30 @@ package body FLTK.Widgets.Groups.Browsers is
     --  Standard Override API
 
     procedure Draw
-           (This : in out Browser) is
+           (This : in out Browser)
+    is
+        procedure my_draw
+               (V : in Storage.Integer_Address);
+        for my_draw'Address use This.Draw_Ptr;
+        pragma Import (Ada, my_draw);
     begin
-        fl_abstract_browser_draw (This.Void_Ptr);
+        my_draw (This.Void_Ptr);
     end Draw;
 
 
     function Handle
            (This  : in out Browser;
             Event : in     Event_Kind)
-        return Event_Outcome is
+        return Event_Outcome
+    is
+        function my_handle
+               (V : in Storage.Integer_Address;
+                E : in Interfaces.C.int)
+            return Interfaces.C.int;
+        for my_handle'Address use This.Handle_Ptr;
+        pragma Import (Ada, my_handle);
     begin
-        return Event_Outcome'Val
-           (fl_abstract_browser_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
+        return Event_Outcome'Val (my_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
     end Handle;
 
 

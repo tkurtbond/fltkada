@@ -5,8 +5,19 @@
 
 
 #include <FL/Fl.H>
+#include <errno.h>
 #include <stdarg.h>
+#include <string.h>
 #include "c_fl_error.h"
+
+
+
+
+//  Obtaining general error messages from errno
+
+char * get_error_message() {
+    return strerror(errno);
+}
 
 
 

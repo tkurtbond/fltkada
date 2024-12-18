@@ -72,6 +72,7 @@ FLTK.Widgets.Clocks.Updated.Round
 FLTK.Widgets.Groups
 FLTK.Widgets.Groups.Browsers
 FLTK.Widgets.Groups.Browsers.Check
+FLTK.Widgets.Groups.Browsers.Textline
 FLTK.Widgets.Groups.Color_Choosers
 FLTK.Widgets.Groups.Help_Views
 FLTK.Widgets.Groups.Input_Choices
@@ -141,7 +142,6 @@ FLTK.Devices.Surfaces (incomplete API, otherwise polished)
 
 To-Do:
 
-Fl_Browser
 Fl_Display_Device
 Fl_File_Browser
 Fl_Glut_Window

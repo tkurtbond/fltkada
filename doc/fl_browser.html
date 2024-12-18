@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Browser Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Browser Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Browser</td>
+    <td>FLTK.Widgets.Groups.Browsers.Textline</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Browser</td>
+    <td>Textline_Browser</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Textline_Browser_Reference</td>
+  </tr>
+
+  <tr>
+    <td>Fl_Line_Position</td>
+    <td>Line_Position</td>
+  </tr>
+
+  <tr>
+    <td>const int *</td>
+    <td>Column_Widths</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Errors</th></tr>
+
+  <tr>
+    <td>int</td>
+    <td>Browser_Load_Error</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Browser(int X, int Y, int W, int H, const char *L=0);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return Textline_Browser;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void add(const char *newtext, void *d=0);
+</pre></td>
+<td><pre>
+procedure Add
+       (This : in out Textline_Browser;
+        Text : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void bottomline(int line);
+</pre></td>
+<td><pre>
+procedure Set_Bottom_Line
+       (This : in out Textline_Browser;
+        Line : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void clear();
+</pre></td>
+<td><pre>
+procedure Clear
+       (This : in out Textline_Browser);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+char column_char() const;
+</pre></td>
+<td><pre>
+function Get_Column_Character
+       (This : in Textline_Browser)
+    return Character;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void column_char(char c);
+</pre></td>
+<td><pre>
+procedure Set_Column_Character
+       (This  : in out Textline_Browser;
+        Value : in     Character);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const int * column_widths() const;
+</pre></td>
+<td><pre>
+function Get_Column_Widths
+       (This : in Textline_Browser)
+    return Column_Widths;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void column_widths(const int *arr);
+</pre></td>
+<td><pre>
+procedure Set_Column_Widths
+       (This   : in out Textline_Browser;
+        Widths : in     Column_Widths);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void * data(int line) const;
+</pre></td>
+<td>Not used</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void data(int line, void *d);
+</pre></td>
+<td>Not used</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void display(int line, int val=1);
+</pre></td>
+<td>Deprecated, see show / Show_Line and hide / Hide_Line</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int displayed(int line) const;
+</pre></td>
+<td><pre>
+function Is_Displayed
+       (This : in Textline_Browser;
+        Line : in Positive)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+char format_char() const;
+</pre></td>
+<td><pre>
+function Get_Format_Character
+       (This : in Textline_Browser)
+    return Character;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void format_char(char c);
+</pre></td>
+<td><pre>
+procedure Set_Format_Character
+       (This  : in out Textline_Browser;
+        Value : in     Character);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void hide();
+</pre></td>
+<td><pre>
+procedure Hide
+       (This : in out Textline_Browser);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void hide(int line);
+</pre></td>
+<td><pre>
+procedure Hide_Line
+       (This : in out Textline_Browser;
+        Line : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Image * icon(int line) const;
+</pre></td>
+<td><pre>
+function Has_Icon
+       (This : in Textline_Browser;
+        Line : in Positive)
+    return Boolean;
+
+function Get_Icon
+       (This : in Textline_Browser;
+        Line : in Positive)
+    return FLTK.Images.Image_Reference;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void icon(int line, Fl_Image *icon);
+</pre></td>
+<td><pre>
+procedure Set_Icon
+       (This : in out Textline_Browser;
+        Line : in     Positive;
+        Icon : in     FLTK.Images.Image'Class);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void insert(int line, const char *newtext, void *d=0);
+</pre></td>
+<td><pre>
+procedure Insert
+       (This  : in out Textline_Browser;
+        Above : in     Positive;
+        Text  : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void lineposition(int line, Fl_Line_Position pos);
+</pre></td>
+<td><pre>
+procedure Set_Line_Position
+       (This  : in out Textline_Browser;
+        Line  : in     Positive;
+        Place : in     Line_Position);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int load(const char *filename);
+</pre></td>
+<td><pre>
+procedure Load
+       (This : in out Textline_Browser;
+        File : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void make_visible(int line);
+</pre></td>
+<td><pre>
+procedure Make_Visible
+       (This : in out Textline_Browser;
+        Line : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void middleline(int line);
+</pre></td>
+<td><pre>
+procedure Set_Middle_Line
+       (This : in out Textline_Browser;
+        Line : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void move(int to, int from);
+</pre></td>
+<td><pre>
+procedure Move
+       (This     : in out Textline_Browser;
+        From, To : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void remove(int line);
+</pre></td>
+<td><pre>
+procedure Remove
+       (This : in out Textline_Browser;
+        Line : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void remove_icon(int line);
+</pre></td>
+<td><pre>
+procedure Remove_Icon
+       (This : in out Textline_Browser;
+        Line : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void replace(int a, const char *b);
+</pre></td>
+<td>Deprecated, see text / Set_Line_Text</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int select(int line, int val=1);
+</pre></td>
+<td><pre>
+function Set_Select
+       (This  : in out Textline_Browser;
+        Line  : in     Positive;
+        State : in     Boolean := True)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int selected(int line) const;
+</pre></td>
+<td><pre>
+function Is_Selected
+       (This : in Textline_Browser;
+        Line : in Positive)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void show();
+</pre></td>
+<td><pre>
+procedure Show
+       (This : in out Textline_Browser);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void show(int line);
+</pre></td>
+<td><pre>
+procedure Show_Line
+       (This : in out Textline_Browser;
+        Line : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int size() const;
+</pre></td>
+<td><pre>
+function Number_Of_Lines
+       (This : in Textline_Browser)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void size(int W, int H);
+</pre></td>
+<td>Falls through to Fl_Widget::size(int, int) anyway so binding unnecessary</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void swap(int a, int b);
+</pre></td>
+<td><pre>
+procedure Swap
+       (This : in out Textline_Browser;
+        A, B : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char * text(int line) const;
+</pre></td>
+<td><pre>
+function Get_Line_Text
+       (This : in Textline_Browser;
+        Line : in Positive)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void text(int line, const char *newtext);
+</pre></td>
+<td><pre>
+procedure Set_Line_Text
+       (This : in out Textline_Browser;
+        Line : in     Positive;
+        Text : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Fontsize textsize() const;
+</pre></td>
+<td><pre>
+function Get_Text_Size
+       (This : in Textline_Browser)
+    return Font_Size;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void textsize(Fl_Fontsize newSize);
+</pre></td>
+<td><pre>
+procedure Set_Text_Size
+       (This : in out Textline_Browser;
+        Size : in     Font_Size);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int topline() const;
+</pre></td>
+<td><pre>
+function Get_Top_Line
+       (This : in Textline_Browser)
+    return Positive;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void topline(int line);
+</pre></td>
+<td><pre>
+procedure Set_Top_Line
+       (This : in out Textline_Browser;
+        Line : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int value() const;
+</pre></td>
+<td><pre>
+function Selected_Index
+       (This : in Textline_Browser)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void value(int line);
+</pre></td>
+<td><pre>
+procedure Set_Select
+       (This  : in out Textline_Browser;
+        Line  : in     Positive;
+        State : in     Boolean := True);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int visible(int line) const;
+</pre></td>
+<td><pre>
+function Is_Visible
+       (This : in Textline_Browser;
+        Line : in Positive)
+    return Boolean;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+FL_BLINE * _remove(int line);
+</pre></td>
+<td>Intentionally left unbound</td>
+  </tr>
+
+  <tr>
+<td><pre>
+FL_BLINE * find_line(int line) const;
+</pre></td>
+<td>Intentionally left unbound</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int full_height() const;
+</pre></td>
+<td><pre>
+function Full_List_Height
+       (This : in Textline_Browser)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int incr_height() const;
+</pre></td>
+<td><pre>
+function Average_Item_Height
+       (This : in Textline_Browser)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void insert(int line, FL_BLINE *item);
+</pre></td>
+<td>Intentionally left unbound</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void * item_at(int line) const;
+</pre></td>
+<td><pre>
+function Item_At
+       (This  : in Textline_Browser;
+        Index : in Positive)
+    return Item_Cursor;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void item_draw(void *item, int X, int Y, int W, int H) const;
+</pre></td>
+<td><pre>
+procedure Item_Draw
+       (This       : in Textline_Browser;
+        Item       : in Item_Cursor;
+        X, Y, W, H : in Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void * item_first() const;
+</pre></td>
+<td><pre>
+function Item_First
+       (This : in Textline_Browser)
+    return Item_Cursor;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int item_height(void *item) const;
+</pre></td>
+<td><pre>
+function Item_Height
+       (This : in Textline_Browser;
+        Item : in Item_Cursor)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void * item_last() const;
+</pre></td>
+<td><pre>
+function Item_Last
+       (This : in Textline_Browser)
+    return Item_Cursor;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void * item_next(void *item) const;
+</pre></td>
+<td><pre>
+function Item_Next
+       (This : in Textline_Browser;
+        Item : in Item_Cursor)
+    return Item_Cursor;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void * item_prev(void *item) const;
+</pre></td>
+<td><pre>
+function Item_Previous
+       (This : in Textline_Browser;
+        Item : in Item_Cursor)
+    return Item_Cursor;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void item_select(void *item, int val);
+</pre></td>
+<td><pre>
+procedure Item_Select
+       (This  : in out Textline_Browser;
+        Item  : in     Item_Cursor;
+        State : in     Boolean := True);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int item_selected(void *item) const;
+</pre></td>
+<td><pre>
+function Item_Selected
+       (This : in Textline_Browser;
+        Item : in Item_Cursor)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void item_swap(void *a, void *b);
+</pre></td>
+<td><pre>
+procedure Item_Swap
+       (This : in out Textline_Browser;
+        A, B : in     Item_Cursor);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char * item_text(void *item) const;
+</pre></td>
+<td><pre>
+function Item_Text
+       (This : in Textline_Browser;
+        Item : in Item_Cursor)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int item_width(void *item) const;
+</pre></td>
+<td><pre>
+function Item_Width
+       (This : in Textline_Browser;
+        Item : in Item_Cursor)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int lineno(void *item) const;
+</pre></td>
+<td><pre>
+function Line_Number
+       (This : in Textline_Browser;
+        Item : in Item_Cursor)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void swap(FL_BLINE *a, FL_BLINE *b);
+</pre></td>
+<td>Intentionally left unbound</td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
+

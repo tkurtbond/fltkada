@@ -8,6 +8,9 @@
 #define FL_ERROR_GUARD
 
 
+extern "C" char * get_error_message();
+
+
 extern "C" const int error_bsize;
 
 
