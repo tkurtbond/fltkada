@@ -73,6 +73,7 @@ FLTK.Widgets.Groups
 FLTK.Widgets.Groups.Browsers
 FLTK.Widgets.Groups.Browsers.Check
 FLTK.Widgets.Groups.Browsers.Textline
+FLTK.Widgets.Groups.Browsers.Textline.Choice
 FLTK.Widgets.Groups.Browsers.Textline.Hold
 FLTK.Widgets.Groups.Browsers.Textline.Multi
 FLTK.Widgets.Groups.Color_Choosers
@@ -148,7 +149,6 @@ Fl_Display_Device
 Fl_File_Browser
 Fl_Glut_Window
 Fl_Postscript_File_Device
-Fl_Select_Browser
 Fl_Table
 Fl_Table_Row
 Fl_Tree
