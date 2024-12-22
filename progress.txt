@@ -5,20 +5,12 @@ Approximate Progress List
 
 
 
-Overall estimate: 82%
+Overall estimate: 85+%
 
 
 
 
-To move from 'Never' to 'To-Do' the class must be useful enough to bind.
-To move from 'To-Do' to 'Partially Done' the class binding must be usable from Ada to some extent.
-To move from 'Partially Done' to 'Done' the Ada API must be completed.
-To move from 'Done' to 'Polished' the implementation details must be double checked and binding docs written.
-
-
-
-
-Polished:
+Done:
 
 FLTK
 FLTK.Asks
@@ -131,11 +123,6 @@ FLTK.Widgets.Valuators.Value_Outputs
 
 
 
-Done:
-
-
-
-
 Partially Done:
 
 FLTK.Devices.Graphics (incomplete API, otherwise polished)
@@ -147,33 +134,39 @@ FLTK.Devices.Surfaces (incomplete API, otherwise polished)
 To-Do:
 
 Fl_Display_Device
+Fl_GDI_Graphics_Driver
+Fl_GDI_Printer_Graphics_Driver
 Fl_Glut_Window
 Fl_Postscript_File_Device
+Fl_Postscript_Graphics_Driver
+Fl_Quartz_Graphics_Driver
+Fl_Sys_Menu_Bar
 Fl_Table
 Fl_Table_Row
 Fl_Tree
+Fl_Xlib_Graphics_Driver
 
 
 
 
 Never:
 
+(C++ binary plugins) (I have no idea how to bind these)
 Fl_Device_Plugin
+Fl_Plugin
+Fl_Plugin_Manager
+
+(XForms legacy compatibility)
 Fl_FormsBitmap
 Fl_FormsPixmap
 Fl_FormsText
 Fl_Free
-Fl_GDI_Graphics_Driver
-Fl_Plugin
-Fl_Plugin_Manager
 Fl_Positioner
-Fl_Postscript_Graphics_Driver
-Fl_Postscript_Printer
-Fl_Quartz_Graphics_Driver
-Fl_Sys_Menu_Bar
-Fl_System_Printer
 Fl_Timer
-Fl_Xlib_Graphics_Driver
+
+(docs explicitly say to use Fl_Printer instead)
+Fl_Postscript_Printer
+Fl_System_Printer
 
 
 
@@ -186,12 +179,6 @@ Fl_Tooltip ABI_VERSION checks
 Fl_Text_Editor tab_nav ABI_VERSION checks
 Fl_Wizard draw() method private/protected
 GNAT bug with type_invariant combined with derived type and a begin section in a package, eg dialogs.adb
-
-
-
-
-General:
-
-Find an easy way to make protected methods available on the Ada side
+Fl_Bitmap / Fl_XBM_Image instances will always have fail() return ERR_NO_IMAGE
 
 
