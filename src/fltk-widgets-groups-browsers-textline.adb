@@ -682,10 +682,16 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
            (This : in out Textline_Browser;
             File : in     String)
     is
+        Msg  : Interfaces.C.Strings.chars_ptr;
         Code : Interfaces.C.int := fl_browser_load (This.Void_Ptr, Interfaces.C.To_C (File));
     begin
         if Code = 0 then
-            raise Browser_Load_Error with Interfaces.C.Strings.Value (get_error_message);
+            Msg := get_error_message;
+            if Msg = Interfaces.C.Strings.Null_Ptr then
+                raise Browser_Load_Error;
+            else
+                raise Browser_Load_Error with Interfaces.C.Strings.Value (Msg);
+            end if;
         elsif Code /= 1 then
             raise Internal_FLTK_Error;
         end if;

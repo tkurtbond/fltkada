@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_File_Browser Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_File_Browser Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_File_Browser</td>
+    <td>FLTK.Widgets.Groups.Browsers.Textline.File</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_File_Browser</td>
+    <td>File_Browser</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>File_Browser_Reference</td>
+  </tr>
+
+  <tr>
+    <td>enum {FILES, DIRECTORIES}</td>
+    <td>File_Kind</td>
+  </tr>
+
+  <tr>
+    <td>uchar</td>
+    <td>Icon_Size</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_File_Browser(int, int, int, int, const char *=0);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return File_Browser;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+int filetype() const;
+</pre></td>
+<td><pre>
+function Get_File_Kind
+       (This : in File_Browser)
+    return File_Kind;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void filetype(int t);
+</pre></td>
+<td><pre>
+procedure Set_File_Kind
+       (This  : in out File_Browser;
+        Value : in     File_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char * filter() const;
+</pre></td>
+<td><pre>
+function Get_Filter
+       (This : in File_Browser)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void filter(const char *pattern);
+</pre></td>
+<td><pre>
+procedure Set_Filter
+       (This  : in out File_Browser;
+        Value : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+uchar iconsize() const;
+</pre></td>
+<td><pre>
+function Get_Icon_Size
+       (This : in File_Browser)
+    return Icon_Size;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void iconsize(uchar s);
+</pre></td>
+<td><pre>
+procedure Set_Icon_Size
+       (This  : in out File_Browser;
+        Value : in     Icon_Size);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int load(const char *directory, Fl_File_Sort_F
+    *sort=fl_numericsort);
+</pre></td>
+<td><pre>
+function Load
+       (This : in out File_Browser;
+        Dir  : in     String;
+        Sort : in not null FLTK.Filenames.Compare_Function :=
+            FLTK.Filenames.Numeric_Sort'Access)
+    return Natural;
+
+procedure Load
+       (This : in out File_Browser;
+        Dir  : in     String;
+        Sort : in not null FLTK.Filenames.Compare_Function :=
+            FLTK.Filenames.Numeric_Sort'Access);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Fontsize textsize() const;
+</pre></td>
+<td><pre>
+function Get_Text_Size
+       (This : in File_Browser)
+    return Font_Size;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void textsize(Fl_Fontsize s);
+</pre></td>
+<td><pre>
+procedure Set_Text_Size
+       (This : in out File_Browser;
+        Size : in     Font_Size);
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
+
