@@ -13,7 +13,7 @@ use type
     Interfaces.C.int;
 
 
-package body FLTK.Devices.Surfaces.Paged.Printers is
+package body FLTK.Devices.Surface.Paged.Printers is
 
 
     function new_fl_printer
@@ -353,5 +353,6 @@ package body FLTK.Devices.Surfaces.Paged.Printers is
     end Set_Current;
 
 
-end FLTK.Devices.Surfaces.Paged.Printers;
+end FLTK.Devices.Surface.Paged.Printers;
+
 

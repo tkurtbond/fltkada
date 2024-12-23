@@ -9,10 +9,10 @@ with
     FLTK.Widgets.Groups.Windows;
 
 
-package FLTK.Devices.Surfaces.Paged.Printers is
+package FLTK.Devices.Surface.Paged.Printers is
 
 
-    type Printer is new Paged_Surface with private;
+    type Printer is new Paged_Device with private;
 
     type Printer_Reference (Data : not null access Printer'Class) is limited null record
         with Implicit_Dereference => Data;
@@ -110,19 +110,16 @@ package FLTK.Devices.Surfaces.Paged.Printers is
 private
 
 
-    type Printer is new Paged_Surface with null record;
+    type Printer is new Paged_Device with null record;
 
     overriding procedure Finalize
            (This : in out Printer);
-
-
 
 
     pragma Inline (Start_Job);
     pragma Inline (End_Job);
     pragma Inline (Start_Page);
     pragma Inline (End_Page);
-
 
     pragma Inline (Get_Margins);
     pragma Inline (Get_Printable_Rect);
@@ -133,13 +130,12 @@ private
     pragma Inline (Translate);
     pragma Inline (Untranslate);
 
-
     pragma Inline (Print_Widget);
     pragma Inline (Print_Window_Part);
-
 
     pragma Inline (Set_Current);
 
 
-end FLTK.Devices.Surfaces.Paged.Printers;
+end FLTK.Devices.Surface.Paged.Printers;
+
 

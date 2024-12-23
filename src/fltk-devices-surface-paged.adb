@@ -13,7 +13,7 @@ use type
     Interfaces.C.int;
 
 
-package body FLTK.Devices.Surfaces.Paged is
+package body FLTK.Devices.Surface.Paged is
 
 
     function new_fl_paged_device
@@ -136,7 +136,7 @@ package body FLTK.Devices.Surfaces.Paged is
 
 
     procedure Finalize
-           (This : in out Paged_Surface) is
+           (This : in out Paged_Device) is
     begin
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_paged_device (This.Void_Ptr);
@@ -150,9 +150,9 @@ package body FLTK.Devices.Surfaces.Paged is
     package body Forge is
 
         function Create
-            return Paged_Surface is
+            return Paged_Device is
         begin
-            return This : Paged_Surface do
+            return This : Paged_Device do
                 This.Void_Ptr := new_fl_paged_device;
             end return;
         end Create;
@@ -165,7 +165,7 @@ package body FLTK.Devices.Surfaces.Paged is
 
 
     procedure Start_Job
-           (This  : in out Paged_Surface;
+           (This  : in out Paged_Device;
             Count : in     Natural) is
     begin
         if fl_paged_device_start_job
@@ -177,7 +177,7 @@ package body FLTK.Devices.Surfaces.Paged is
 
 
     procedure Start_Job
-           (This     : in out Paged_Surface;
+           (This     : in out Paged_Device;
             Count    : in     Natural;
             From, To : in     Positive) is
     begin
@@ -193,14 +193,14 @@ package body FLTK.Devices.Surfaces.Paged is
 
 
     procedure End_Job
-           (This : in out Paged_Surface) is
+           (This : in out Paged_Device) is
     begin
         fl_paged_device_end_job (This.Void_Ptr);
     end End_Job;
 
 
     procedure Start_Page
-           (This : in out Paged_Surface) is
+           (This : in out Paged_Device) is
     begin
         if fl_paged_device_start_page (This.Void_Ptr) /= 0 then
             raise Page_Error;
@@ -209,7 +209,7 @@ package body FLTK.Devices.Surfaces.Paged is
 
 
     procedure End_Page
-           (This : in out Paged_Surface) is
+           (This : in out Paged_Device) is
     begin
         if fl_paged_device_end_page (This.Void_Ptr) /= 0 then
             raise Page_Error;
@@ -220,7 +220,7 @@ package body FLTK.Devices.Surfaces.Paged is
 
 
     procedure Get_Margins
-           (This                     : in     Paged_Surface;
+           (This                     : in     Paged_Device;
             Left, Top, Right, Bottom :    out Integer) is
     begin
         fl_paged_device_margins
@@ -233,7 +233,7 @@ package body FLTK.Devices.Surfaces.Paged is
 
 
     procedure Get_Printable_Rect
-           (This : in     Paged_Surface;
+           (This : in     Paged_Device;
             W, H :    out Integer) is
     begin
         if fl_paged_device_printable_rect
@@ -245,7 +245,7 @@ package body FLTK.Devices.Surfaces.Paged is
 
 
     procedure Get_Origin
-           (This : in     Paged_Surface;
+           (This : in     Paged_Device;
             X, Y :    out Integer) is
     begin
         fl_paged_device_get_origin (This.Void_Ptr, Interfaces.C.int (X), Interfaces.C.int (Y));
@@ -253,7 +253,7 @@ package body FLTK.Devices.Surfaces.Paged is
 
 
     procedure Set_Origin
-           (This : in out Paged_Surface;
+           (This : in out Paged_Device;
             X, Y : in     Integer) is
     begin
         fl_paged_device_set_origin
@@ -264,7 +264,7 @@ package body FLTK.Devices.Surfaces.Paged is
 
 
     procedure Rotate
-           (This    : in out Paged_Surface;
+           (This    : in out Paged_Device;
             Degrees : in     Float) is
     begin
         fl_paged_device_rotate (This.Void_Ptr, Interfaces.C.C_float (Degrees));
@@ -272,7 +272,7 @@ package body FLTK.Devices.Surfaces.Paged is
 
 
     procedure Scale
-           (This   : in out Paged_Surface;
+           (This   : in out Paged_Device;
             Factor : in     Float) is
     begin
         fl_paged_device_scale (This.Void_Ptr, Interfaces.C.C_float (Factor), 0.0);
@@ -280,7 +280,7 @@ package body FLTK.Devices.Surfaces.Paged is
 
 
     procedure Scale
-           (This               : in out Paged_Surface;
+           (This               : in out Paged_Device;
             Factor_X, Factor_Y : in     Float) is
     begin
         fl_paged_device_scale
@@ -291,7 +291,7 @@ package body FLTK.Devices.Surfaces.Paged is
 
 
     procedure Translate
-           (This             : in out Paged_Surface;
+           (This             : in out Paged_Device;
             Delta_X, Delta_Y : in     Integer) is
     begin
         fl_paged_device_translate
@@ -302,7 +302,7 @@ package body FLTK.Devices.Surfaces.Paged is
 
 
     procedure Untranslate
-           (This : in out Paged_Surface) is
+           (This : in out Paged_Device) is
     begin
         fl_paged_device_untranslate (This.Void_Ptr);
     end Untranslate;
@@ -311,7 +311,7 @@ package body FLTK.Devices.Surfaces.Paged is
 
 
     procedure Print_Widget
-           (This               : in out Paged_Surface;
+           (This               : in out Paged_Device;
             Item               : in     FLTK.Widgets.Widget'Class;
             Offset_X, Offset_Y : in     Integer := 0) is
     begin
@@ -324,7 +324,7 @@ package body FLTK.Devices.Surfaces.Paged is
 
 
     procedure Print_Window
-           (This               : in out Paged_Surface;
+           (This               : in out Paged_Device;
             Item               : in     FLTK.Widgets.Groups.Windows.Window'Class;
             Offset_X, Offset_Y : in     Integer := 0) is
     begin
@@ -337,7 +337,7 @@ package body FLTK.Devices.Surfaces.Paged is
 
 
     procedure Print_Window_Part
-           (This               : in out Paged_Surface;
+           (This               : in out Paged_Device;
             Item               : in     FLTK.Widgets.Groups.Windows.Window'Class;
             X, Y, W, H         : in     Integer;
             Offset_X, Offset_Y : in     Integer := 0) is
@@ -354,5 +354,6 @@ package body FLTK.Devices.Surfaces.Paged is
     end Print_Window_Part;
 
 
-end FLTK.Devices.Surfaces.Paged;
+end FLTK.Devices.Surface.Paged;
+
 

@@ -9,7 +9,7 @@ with
     FLTK.Widgets.Groups.Windows;
 
 
-package FLTK.Devices.Surfaces.Copy is
+package FLTK.Devices.Surface.Copy is
 
 
     type Copy_Surface is new Surface_Device with private;
@@ -68,18 +68,15 @@ private
            (This : in out Copy_Surface);
 
 
-
-
     pragma Inline (Get_W);
     pragma Inline (Get_H);
-
 
     pragma Inline (Draw_Widget);
     pragma Inline (Draw_Decorated_Window);
 
-
     pragma Inline (Set_Current);
 
 
-end FLTK.Devices.Surfaces.Copy;
+end FLTK.Devices.Surface.Copy;
+
 

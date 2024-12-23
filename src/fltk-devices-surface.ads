@@ -9,10 +9,10 @@ with
     FLTK.Devices.Graphics;
 
 
-package FLTK.Devices.Surfaces is
+package FLTK.Devices.Surface is
 
 
-    pragma Elaborate_Body (FLTK.Devices.Surfaces);
+    pragma Elaborate_Body (FLTK.Devices.Surface);
 
 
 
@@ -52,17 +52,14 @@ private
            (This : in out Surface_Device);
 
 
-
-
     Original_Surface : aliased Surface_Device;
     Current_Ptr : access Surface_Device'Class := Original_Surface'Access;
-
-
 
 
     pragma Inline (Get_Current);
     pragma Inline (Set_Current);
 
 
-end FLTK.Devices.Surfaces;
+end FLTK.Devices.Surface;
+
 

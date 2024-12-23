@@ -9,7 +9,7 @@ with
     Interfaces.C;
 
 
-package body FLTK.Devices.Surfaces.Image is
+package body FLTK.Devices.Surface.Image is
 
 
     function new_fl_image_surface
@@ -166,5 +166,6 @@ package body FLTK.Devices.Surfaces.Image is
     end Set_Current;
 
 
-end FLTK.Devices.Surfaces.Image;
+end FLTK.Devices.Surface.Image;
+
 

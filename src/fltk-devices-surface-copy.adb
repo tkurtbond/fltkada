@@ -9,7 +9,7 @@ with
     Interfaces.C;
 
 
-package body FLTK.Devices.Surfaces.Copy is
+package body FLTK.Devices.Surface.Copy is
 
 
     function new_fl_copy_surface
@@ -151,5 +151,6 @@ package body FLTK.Devices.Surfaces.Copy is
     end Set_Current;
 
 
-end FLTK.Devices.Surfaces.Copy;
+end FLTK.Devices.Surface.Copy;
+
 

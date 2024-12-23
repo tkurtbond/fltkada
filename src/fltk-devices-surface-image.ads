@@ -11,7 +11,7 @@ with
     FLTK.Widgets.Groups.Windows;
 
 
-package FLTK.Devices.Surfaces.Image is
+package FLTK.Devices.Surface.Image is
 
 
     type Image_Surface is new Surface_Device with private;
@@ -80,21 +80,17 @@ private
            (This : in out Image_Surface);
 
 
-
-
     pragma Inline (Is_Highres);
-
 
     pragma Inline (Draw_Widget);
     pragma Inline (Draw_Decorated_Window);
 
-
     pragma Inline (Get_Image);
     pragma Inline (Get_Highres_Image);
-
 
     pragma Inline (Set_Current);
 
 
-end FLTK.Devices.Surfaces.Image;
+end FLTK.Devices.Surface.Image;
+
 

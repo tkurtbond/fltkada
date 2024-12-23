@@ -9,12 +9,12 @@ with
     FLTK.Widgets.Groups.Windows;
 
 
-package FLTK.Devices.Surfaces.Paged is
+package FLTK.Devices.Surface.Paged is
 
 
-    type Paged_Surface is new Surface_Device with private;
+    type Paged_Device is new Surface_Device with private;
 
-    type Paged_Surface_Reference (Data : not null access Paged_Surface'Class) is
+    type Paged_Device_Reference (Data : not null access Paged_Device'Class) is
         limited null record with Implicit_Dereference => Data;
 
     type Page_Format is
@@ -37,7 +37,7 @@ package FLTK.Devices.Surfaces.Paged is
     package Forge is
 
         function Create
-            return Paged_Surface;
+            return Paged_Device;
 
     end Forge;
 
@@ -45,76 +45,76 @@ package FLTK.Devices.Surfaces.Paged is
 
 
     procedure Start_Job
-           (This  : in out Paged_Surface;
+           (This  : in out Paged_Device;
             Count : in     Natural);
 
     procedure Start_Job
-           (This     : in out Paged_Surface;
+           (This     : in out Paged_Device;
             Count    : in     Natural;
             From, To : in     Positive);
 
     procedure End_Job
-           (This : in out Paged_Surface);
+           (This : in out Paged_Device);
 
     procedure Start_Page
-           (This : in out Paged_Surface);
+           (This : in out Paged_Device);
 
     procedure End_Page
-           (This : in out Paged_Surface);
+           (This : in out Paged_Device);
 
 
 
 
     procedure Get_Margins
-           (This                     : in     Paged_Surface;
+           (This                     : in     Paged_Device;
             Left, Top, Right, Bottom :    out Integer);
 
     procedure Get_Printable_Rect
-           (This : in     Paged_Surface;
+           (This : in     Paged_Device;
             W, H :    out Integer);
 
     procedure Get_Origin
-           (This : in     Paged_Surface;
+           (This : in     Paged_Device;
             X, Y :    out Integer);
 
     procedure Set_Origin
-           (This : in out Paged_Surface;
+           (This : in out Paged_Device;
             X, Y : in     Integer);
 
     procedure Rotate
-           (This    : in out Paged_Surface;
+           (This    : in out Paged_Device;
             Degrees : in     Float);
 
     procedure Scale
-           (This   : in out Paged_Surface;
+           (This   : in out Paged_Device;
             Factor : in     Float);
 
     procedure Scale
-           (This               : in out Paged_Surface;
+           (This               : in out Paged_Device;
             Factor_X, Factor_Y : in     Float);
 
     procedure Translate
-           (This             : in out Paged_Surface;
+           (This             : in out Paged_Device;
             Delta_X, Delta_Y : in     Integer);
 
     procedure Untranslate
-           (This : in out Paged_Surface);
+           (This : in out Paged_Device);
 
 
 
 
     procedure Print_Widget
-           (This               : in out Paged_Surface;
+           (This               : in out Paged_Device;
             Item               : in     FLTK.Widgets.Widget'Class;
             Offset_X, Offset_Y : in     Integer := 0);
 
     procedure Print_Window
-           (This               : in out Paged_Surface;
+           (This               : in out Paged_Device;
             Item               : in     FLTK.Widgets.Groups.Windows.Window'Class;
             Offset_X, Offset_Y : in     Integer := 0);
 
     procedure Print_Window_Part
-           (This               : in out Paged_Surface;
+           (This               : in out Paged_Device;
             Item               : in     FLTK.Widgets.Groups.Windows.Window'Class;
             X, Y, W, H         : in     Integer;
             Offset_X, Offset_Y : in     Integer := 0);
@@ -123,19 +123,16 @@ package FLTK.Devices.Surfaces.Paged is
 private
 
 
-    type Paged_Surface is new Surface_Device with null record;
+    type Paged_Device is new Surface_Device with null record;
 
     overriding procedure Finalize
-           (This : in out Paged_Surface);
-
-
+           (This : in out Paged_Device);
 
 
     pragma Inline (Start_Job);
     pragma Inline (End_Job);
     pragma Inline (Start_Page);
     pragma Inline (End_Page);
-
 
     pragma Inline (Get_Margins);
     pragma Inline (Get_Printable_Rect);
@@ -146,11 +143,11 @@ private
     pragma Inline (Translate);
     pragma Inline (Untranslate);
 
-
     pragma Inline (Print_Widget);
     pragma Inline (Print_Window);
     pragma Inline (Print_Window_Part);
 
 
-end FLTK.Devices.Surfaces.Paged;
+end FLTK.Devices.Surface.Paged;
+
 

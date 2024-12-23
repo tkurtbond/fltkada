@@ -4,7 +4,7 @@
 --  Released into the public domain
 
 
-package body FLTK.Devices.Surfaces is
+package body FLTK.Devices.Surface is
 
 
     function new_fl_surface
@@ -88,5 +88,6 @@ begin
     Original_Surface.Needs_Dealloc := False;
 
 
-end FLTK.Devices.Surfaces;
+end FLTK.Devices.Surface;
+
 
