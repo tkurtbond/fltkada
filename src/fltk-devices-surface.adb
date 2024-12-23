@@ -7,6 +7,10 @@
 package body FLTK.Devices.Surface is
 
 
+    ------------------------
+    --  Functions From C  --
+    ------------------------
+
     function new_fl_surface
            (G : in Storage.Integer_Address)
         return Storage.Integer_Address;
@@ -34,6 +38,18 @@ package body FLTK.Devices.Surface is
 
 
 
+    procedure fl_surface_set_driver
+           (S, G : in Storage.Integer_Address);
+    pragma Import (C, fl_surface_set_driver, "fl_surface_set_driver");
+    pragma Inline (fl_surface_set_driver);
+
+
+
+
+    -------------------
+    --  Destructors  --
+    -------------------
+
     procedure Finalize
            (This : in out Surface_Device) is
     begin
@@ -46,28 +62,60 @@ package body FLTK.Devices.Surface is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
+    procedure Initialize
+           (This : in out Surface_Device) is
+    begin
+        Wrapper (This.My_Driver).Needs_Dealloc := False;
+    end Initialize;
+
+
     package body Forge is
 
         function Create
-               (Graphics : in out FLTK.Devices.Graphics.Graphics_Driver)
+               (Graphics : in FLTK.Devices.Graphics.Graphics_Driver)
             return Surface_Device is
         begin
             return This : Surface_Device do
                 This.Void_Ptr := new_fl_surface (Wrapper (Graphics).Void_Ptr);
+                Wrapper (This.My_Driver).Void_Ptr := Wrapper (Graphics).Void_Ptr;
             end return;
         end Create;
-
-        pragma Inline (Create);
 
     end Forge;
 
 
 
 
-    function Get_Current
-        return access Surface_Device'Class is
+    -------------------------
+    --  Static Attributes  --
+    -------------------------
+
+    Original_Surface : aliased Surface_Device;
+    Current_Surface  : aliased Surface_Device;
+
+
+    procedure Set_Current_Bookkeep
+           (Surface : in Surface_Device'Class) is
     begin
-        return Current_Ptr;
+        Current_Surface.Void_Ptr := Surface.Void_Ptr;
+        Wrapper (Current_Surface.My_Driver).Void_Ptr := Wrapper (Surface.My_Driver).Void_Ptr;
+    end Set_Current_Bookkeep;
+
+
+
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
+    function Get_Current
+        return Surface_Device_Reference is
+    begin
+        return Ref : Surface_Device_Reference (Data => Current_Surface'Access);
     end Get_Current;
 
 
@@ -75,10 +123,43 @@ package body FLTK.Devices.Surface is
            (This : in out Surface_Device) is
     begin
         fl_surface_set_current (This.Void_Ptr);
-        Current_Ptr := This'Unchecked_Access;
+        This.Set_Current_Bookkeep;
     end Set_Current;
 
 
+    function Get_Original
+        return Surface_Device_Reference is
+    begin
+        return Ref : Surface_Device_Reference (Data => Original_Surface'Access);
+    end Get_Original;
+
+
+
+
+    function Has_Driver
+           (This : in Surface_Device)
+        return Boolean is
+    begin
+        return Wrapper (This.My_Driver).Void_Ptr /= Null_Pointer;
+    end Has_Driver;
+
+
+    function Get_Driver
+           (This : in out Surface_Device)
+        return FLTK.Devices.Graphics.Graphics_Driver_Reference is
+    begin
+        return Ref : FLTK.Devices.Graphics.Graphics_Driver_Reference
+            (Data => This.My_Driver'Unchecked_Access);
+    end Get_Driver;
+
+
+    procedure Set_Driver
+           (This   : in out Surface_Device;
+            Driver : in     FLTK.Devices.Graphics.Graphics_Driver'Class) is
+    begin
+        fl_surface_set_driver (This.Void_Ptr, Wrapper (Driver).Void_Ptr);
+        Wrapper (This.My_Driver).Void_Ptr := Wrapper (Driver).Void_Ptr;
+    end Set_Driver;
 
 
 begin
@@ -86,6 +167,9 @@ begin
 
     Original_Surface.Void_Ptr := fl_surface_get_surface;
     Original_Surface.Needs_Dealloc := False;
+
+    Current_Surface.Void_Ptr := Original_Surface.Void_Ptr;
+    Current_Surface.Needs_Dealloc := False;
 
 
 end FLTK.Devices.Surface;

@@ -162,7 +162,7 @@ package body FLTK.Devices.Surface.Image is
            (This : in out Image_Surface) is
     begin
         fl_image_surface_set_current (This.Void_Ptr);
-        Current_Ptr := This'Unchecked_Access;
+        This.Set_Current_Bookkeep;
     end Set_Current;
 
 

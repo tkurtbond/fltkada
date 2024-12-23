@@ -11,9 +11,9 @@
 
 
 class My_Surface_Device : public Fl_Surface_Device {
-    public:
-        using Fl_Surface_Device::Fl_Surface_Device;
-        friend SURFACE new_fl_surface(void * g);
+public:
+    using Fl_Surface_Device::Fl_Surface_Device;
+    friend SURFACE new_fl_surface(void * g);
 };
 
 
@@ -38,6 +38,13 @@ void fl_surface_set_current(SURFACE s) {
 
 SURFACE fl_surface_get_surface(void) {
     return Fl_Surface_Device::surface();
+}
+
+
+
+
+void fl_surface_set_driver(SURFACE s, void * g) {
+    reinterpret_cast<Fl_Surface_Device*>(s)->driver(reinterpret_cast<Fl_Graphics_Driver*>(g));
 }
 
 

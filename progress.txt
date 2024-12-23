@@ -15,10 +15,11 @@ Done:
 FLTK
 FLTK.Asks
 FLTK.Devices
-FLTK.Devices.Surfaces.Copy
-FLTK.Devices.Surfaces.Image
-FLTK.Devices.Surfaces.Paged
-FLTK.Devices.Surfaces.Paged.Printers
+FLTK.Devices.Surface
+FLTK.Devices.Surface.Copy
+FLTK.Devices.Surface.Image
+FLTK.Devices.Surface.Paged
+FLTK.Devices.Surface.Paged.Printers
 FLTK.Draw
 FLTK.Environment
 FLTK.Errors
@@ -125,8 +126,7 @@ FLTK.Widgets.Valuators.Value_Outputs
 
 Partially Done:
 
-FLTK.Devices.Graphics (incomplete API, otherwise polished)
-FLTK.Devices.Surfaces (incomplete API, otherwise polished)
+Fl_Graphics_Driver / FLTK.Devices.Graphics
 
 
 

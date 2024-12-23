@@ -46,7 +46,21 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Static Attributes</th></tr>
+
+  <tr>
+<td><pre>
+static const char * class_id = "Fl_Surface_Device";
+</pre></td>
+<td>Use runtime tag checks instead</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -54,10 +68,17 @@ Fl_Surface_Device(Fl_Graphics_Driver *graphics_driver);
 </pre></td>
 <td><pre>
 function Create
-       (Graphics : in out FLTK.Devices.Graphics.Graphics_Driver)
+       (Graphics : in FLTK.Devices.Graphics.Graphics_Driver)
     return Surface_Device;
 </pre></td>
   </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
@@ -68,16 +89,28 @@ const char * class_name();
 
   <tr>
 <td><pre>
-void driver(Fl_Graphics_Driver *graphics_driver);
+Fl_Graphics_Driver * driver();
 </pre></td>
-<td>TBA</td>
+<td><pre>
+function Has_Driver
+       (This : in Surface_Device)
+    return Boolean;
+
+function Get_Driver
+       (This : in out Surface_Device)
+    return FLTK.Devices.Graphics.Graphics_Driver_Reference;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
-Fl_Graphics_Driver * driver();
+void driver(Fl_Graphics_Driver *graphics_driver);
 </pre></td>
-<td>TBA</td>
+<td><pre>
+procedure Set_Driver
+       (This   : in out Surface_Device;
+        Driver : in     FLTK.Devices.Graphics.Graphics_Driver'Class);
+</pre></td>
   </tr>
 
   <tr>
@@ -90,13 +123,23 @@ procedure Set_Current
 </pre></td>
   </tr>
 
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Functions and Procedures</th></tr>
+
   <tr>
 <td><pre>
 static Fl_Surface_Device * surface();
 </pre></td>
 <td><pre>
 function Get_Current
-    return access Surface_Device'Class;
+    return Surface_Device_Reference;
+
+function Get_Original
+    return Surface_Device_Reference;
 </pre></td>
   </tr>
 

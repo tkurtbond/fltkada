@@ -147,7 +147,7 @@ package body FLTK.Devices.Surface.Copy is
            (This : in out Copy_Surface) is
     begin
         fl_copy_surface_set_current (This.Void_Ptr);
-        Current_Ptr := This'Unchecked_Access;
+        This.Set_Current_Bookkeep;
     end Set_Current;
 
 

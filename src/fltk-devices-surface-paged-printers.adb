@@ -349,7 +349,7 @@ package body FLTK.Devices.Surface.Paged.Printers is
            (This : in out Printer) is
     begin
         fl_printer_set_current (This.Void_Ptr);
-        Current_Ptr := This'Unchecked_Access;
+        This.Set_Current_Bookkeep;
     end Set_Current;
 
 

@@ -15,8 +15,6 @@ package FLTK.Devices.Surface is
     pragma Elaborate_Body (FLTK.Devices.Surface);
 
 
-
-
     type Surface_Device is new Device with private;
 
     type Surface_Device_Reference (Data : not null access Surface_Device'Class) is
@@ -28,7 +26,7 @@ package FLTK.Devices.Surface is
     package Forge is
 
         function Create
-               (Graphics : in out FLTK.Devices.Graphics.Graphics_Driver)
+               (Graphics : in FLTK.Devices.Graphics.Graphics_Driver)
             return Surface_Device;
 
     end Forge;
@@ -37,27 +35,53 @@ package FLTK.Devices.Surface is
 
 
     function Get_Current
-        return access Surface_Device'Class;
+        return Surface_Device_Reference;
 
     procedure Set_Current
            (This : in out Surface_Device);
+
+    function Get_Original
+        return Surface_Device_Reference;
+
+
+
+
+    function Has_Driver
+           (This : in Surface_Device)
+        return Boolean;
+
+    function Get_Driver
+           (This : in out Surface_Device)
+        return FLTK.Devices.Graphics.Graphics_Driver_Reference;
+
+    procedure Set_Driver
+           (This   : in out Surface_Device;
+            Driver : in     FLTK.Devices.Graphics.Graphics_Driver'Class);
 
 
 private
 
 
-    type Surface_Device is new Device with null record;
+    type Surface_Device is new Device with record
+        My_Driver : aliased FLTK.Devices.Graphics.Graphics_Driver;
+    end record;
+
+    overriding procedure Initialize
+           (This : in out Surface_Device);
 
     overriding procedure Finalize
            (This : in out Surface_Device);
 
 
-    Original_Surface : aliased Surface_Device;
-    Current_Ptr : access Surface_Device'Class := Original_Surface'Access;
+    procedure Set_Current_Bookkeep
+           (Surface : in Surface_Device'Class);
 
 
     pragma Inline (Get_Current);
-    pragma Inline (Set_Current);
+    pragma Inline (Get_Original);
+
+    pragma Inline (Has_Driver);
+    pragma Inline (Get_Driver);
 
 
 end FLTK.Devices.Surface;
