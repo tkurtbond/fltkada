@@ -17,6 +17,7 @@ FLTK.Asks
 FLTK.Devices
 FLTK.Devices.Surface
 FLTK.Devices.Surface.Copy
+FLTK.Devices.Surface.Display
 FLTK.Devices.Surface.Image
 FLTK.Devices.Surface.Paged
 FLTK.Devices.Surface.Paged.Printers
@@ -133,7 +134,6 @@ Fl_Graphics_Driver / FLTK.Devices.Graphics
 
 To-Do:
 
-Fl_Display_Device
 Fl_GDI_Graphics_Driver
 Fl_GDI_Printer_Graphics_Driver
 Fl_Glut_Window

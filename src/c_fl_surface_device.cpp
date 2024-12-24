@@ -5,7 +5,7 @@
 
 
 #include <FL/Fl_Device.H>
-#include "c_fl_surface.h"
+#include "c_fl_surface_device.h"
 
 
 
@@ -13,37 +13,41 @@
 class My_Surface_Device : public Fl_Surface_Device {
 public:
     using Fl_Surface_Device::Fl_Surface_Device;
-    friend SURFACE new_fl_surface(void * g);
+    friend SURFACEDEVICE new_fl_surface_device(void * g);
 };
 
 
 
 
-SURFACE new_fl_surface(void * g) {
+SURFACEDEVICE new_fl_surface_device(void * g) {
     My_Surface_Device *s = new My_Surface_Device(reinterpret_cast<Fl_Graphics_Driver*>(g));
     return s;
 }
 
-void free_fl_surface(SURFACE s) {
+void free_fl_surface_device(SURFACEDEVICE s) {
     delete reinterpret_cast<My_Surface_Device*>(s);
 }
 
 
 
 
-void fl_surface_set_current(SURFACE s) {
+void fl_surface_device_set_current(SURFACEDEVICE s) {
     //  virtual so disable dispatch
     reinterpret_cast<Fl_Surface_Device*>(s)->Fl_Surface_Device::set_current();
 }
 
-SURFACE fl_surface_get_surface(void) {
+SURFACEDEVICE fl_surface_device_get_surface(void) {
     return Fl_Surface_Device::surface();
 }
 
 
 
 
-void fl_surface_set_driver(SURFACE s, void * g) {
+void * fl_surface_device_get_driver(SURFACEDEVICE s) {
+    return reinterpret_cast<Fl_Surface_Device*>(s)->driver();
+}
+
+void fl_surface_device_set_driver(SURFACEDEVICE s, void * g) {
     reinterpret_cast<Fl_Surface_Device*>(s)->driver(reinterpret_cast<Fl_Graphics_Driver*>(g));
 }
 

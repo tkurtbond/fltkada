@@ -11,37 +11,43 @@ package body FLTK.Devices.Surface is
     --  Functions From C  --
     ------------------------
 
-    function new_fl_surface
+    function new_fl_surface_device
            (G : in Storage.Integer_Address)
         return Storage.Integer_Address;
-    pragma Import (C, new_fl_surface, "new_fl_surface");
-    pragma Inline (new_fl_surface);
+    pragma Import (C, new_fl_surface_device, "new_fl_surface_device");
+    pragma Inline (new_fl_surface_device);
 
-    procedure free_fl_surface
+    procedure free_fl_surface_device
            (S : in Storage.Integer_Address);
-    pragma Import (C, free_fl_surface, "free_fl_surface");
-    pragma Inline (free_fl_surface);
+    pragma Import (C, free_fl_surface_device, "free_fl_surface_device");
+    pragma Inline (free_fl_surface_device);
 
 
 
 
-    procedure fl_surface_set_current
+    procedure fl_surface_device_set_current
            (S : in Storage.Integer_Address);
-    pragma Import (C, fl_surface_set_current, "fl_surface_set_current");
-    pragma Inline (fl_surface_set_current);
+    pragma Import (C, fl_surface_device_set_current, "fl_surface_device_set_current");
+    pragma Inline (fl_surface_device_set_current);
 
-    function fl_surface_get_surface
+    function fl_surface_device_get_surface
         return Storage.Integer_Address;
-    pragma Import (C, fl_surface_get_surface, "fl_surface_get_surface");
-    pragma Inline (fl_surface_get_surface);
+    pragma Import (C, fl_surface_device_get_surface, "fl_surface_device_get_surface");
+    pragma Inline (fl_surface_device_get_surface);
 
 
 
 
-    procedure fl_surface_set_driver
+    function fl_surface_device_get_driver
+           (S : in Storage.Integer_Address)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_surface_device_get_driver, "fl_surface_device_get_driver");
+    pragma Inline (fl_surface_device_get_driver);
+
+    procedure fl_surface_device_set_driver
            (S, G : in Storage.Integer_Address);
-    pragma Import (C, fl_surface_set_driver, "fl_surface_set_driver");
-    pragma Inline (fl_surface_set_driver);
+    pragma Import (C, fl_surface_device_set_driver, "fl_surface_device_set_driver");
+    pragma Inline (fl_surface_device_set_driver);
 
 
 
@@ -54,7 +60,7 @@ package body FLTK.Devices.Surface is
            (This : in out Surface_Device) is
     begin
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
-            free_fl_surface (This.Void_Ptr);
+            free_fl_surface_device (This.Void_Ptr);
             This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;
@@ -73,7 +79,7 @@ package body FLTK.Devices.Surface is
             return Surface_Device is
         begin
             return This : Surface_Device do
-                This.Void_Ptr := new_fl_surface (Wrapper (Graphics).Void_Ptr);
+                This.Void_Ptr := new_fl_surface_device (Wrapper (Graphics).Void_Ptr);
                 This.My_Driver := Graphics'Unchecked_Access;
             end return;
         end Create;
@@ -87,7 +93,9 @@ package body FLTK.Devices.Surface is
     --  Static Attributes  --
     -------------------------
 
-    Original_Surface : aliased Surface_Device;
+    Original_Surface  : aliased Surface_Device;
+    Original_Graphics : aliased FLTK.Devices.Graphics.Graphics_Driver;
+
     Current_Surface : access Surface_Device'Class := Original_Surface'Access;
 
 
@@ -114,7 +122,7 @@ package body FLTK.Devices.Surface is
     procedure Set_Current
            (This : in out Surface_Device) is
     begin
-        fl_surface_set_current (This.Void_Ptr);
+        fl_surface_device_set_current (This.Void_Ptr);
         This.Set_Current_Bookkeep;
     end Set_Current;
 
@@ -149,7 +157,7 @@ package body FLTK.Devices.Surface is
            (This   : in out Surface_Device;
             Driver : in out FLTK.Devices.Graphics.Graphics_Driver'Class) is
     begin
-        fl_surface_set_driver (This.Void_Ptr, Wrapper (Driver).Void_Ptr);
+        fl_surface_device_set_driver (This.Void_Ptr, Wrapper (Driver).Void_Ptr);
         This.My_Driver := Driver'Unchecked_Access;
     end Set_Driver;
 
@@ -157,8 +165,14 @@ package body FLTK.Devices.Surface is
 begin
 
 
-    Original_Surface.Void_Ptr := fl_surface_get_surface;
+    Original_Surface.Void_Ptr := fl_surface_device_get_surface;
     Original_Surface.Needs_Dealloc := False;
+
+    Wrapper (Original_Graphics).Void_Ptr :=
+        fl_surface_device_get_driver (Original_Surface.Void_Ptr);
+    Wrapper (Original_Graphics).Needs_Dealloc := False;
+
+    Original_Surface.My_Driver := Original_Graphics'Access;
 
 
 end FLTK.Devices.Surface;
