@@ -68,7 +68,7 @@ Fl_Surface_Device(Fl_Graphics_Driver *graphics_driver);
 </pre></td>
 <td><pre>
 function Create
-       (Graphics : in FLTK.Devices.Graphics.Graphics_Driver)
+       (Graphics : in out FLTK.Devices.Graphics.Graphics_Driver)
     return Surface_Device;
 </pre></td>
   </tr>
@@ -109,7 +109,7 @@ void driver(Fl_Graphics_Driver *graphics_driver);
 <td><pre>
 procedure Set_Driver
        (This   : in out Surface_Device;
-        Driver : in     FLTK.Devices.Graphics.Graphics_Driver'Class);
+        Driver : in out FLTK.Devices.Graphics.Graphics_Driver'Class);
 </pre></td>
   </tr>
 

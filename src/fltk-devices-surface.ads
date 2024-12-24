@@ -26,7 +26,7 @@ package FLTK.Devices.Surface is
     package Forge is
 
         function Create
-               (Graphics : in FLTK.Devices.Graphics.Graphics_Driver)
+               (Graphics : in out FLTK.Devices.Graphics.Graphics_Driver)
             return Surface_Device;
 
     end Forge;
@@ -56,25 +56,23 @@ package FLTK.Devices.Surface is
 
     procedure Set_Driver
            (This   : in out Surface_Device;
-            Driver : in     FLTK.Devices.Graphics.Graphics_Driver'Class);
+            Driver : in out FLTK.Devices.Graphics.Graphics_Driver'Class);
 
 
 private
 
 
     type Surface_Device is new Device with record
-        My_Driver : aliased FLTK.Devices.Graphics.Graphics_Driver;
+        My_Driver : access FLTK.Devices.Graphics.Graphics_Driver'Class;
     end record;
-
-    overriding procedure Initialize
-           (This : in out Surface_Device);
 
     overriding procedure Finalize
            (This : in out Surface_Device);
 
 
     procedure Set_Current_Bookkeep
-           (Surface : in Surface_Device'Class);
+           (Surface : in out Surface_Device'Class)
+    with Inline;
 
 
     pragma Inline (Get_Current);
