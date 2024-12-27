@@ -1,0 +1,27 @@
+
+
+project Tool is
+
+
+    for Languages use ("Ada");
+
+
+    for Source_Dirs use ("tool");
+    for Object_Dir use "obj";
+    for Exec_Dir use "bin";
+    for Main use ("template.adb");
+
+
+    package Builder is
+        for Executable ("template.adb") use "template";
+    end Builder;
+
+
+    package Compiler is
+        for Default_Switches("Ada") use ("-gnaty4aAbcefhiklM100nprt");
+    end Compiler;
+
+
+end Tool;
+
+
