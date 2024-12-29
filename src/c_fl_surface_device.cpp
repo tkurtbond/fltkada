@@ -10,6 +10,8 @@
 
 
 
+//  Adding relevant friends
+
 class My_Surface_Device : public Fl_Surface_Device {
 public:
     using Fl_Surface_Device::Fl_Surface_Device;
@@ -18,6 +20,8 @@ public:
 
 
 
+
+//  Flattened C API
 
 SURFACEDEVICE new_fl_surface_device(void * g) {
     My_Surface_Device *s = new My_Surface_Device(reinterpret_cast<Fl_Graphics_Driver*>(g));

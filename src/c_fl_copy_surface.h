@@ -8,17 +8,11 @@
 #define CL_COPY_SURFACE_GUARD
 
 
-
-
 typedef void* COPY_SURFACE;
-
-
 
 
 extern "C" COPY_SURFACE new_fl_copy_surface(int w, int h);
 extern "C" void free_fl_copy_surface(COPY_SURFACE c);
-
-
 
 
 extern "C" int fl_copy_surface_get_w(COPY_SURFACE c);
@@ -33,4 +27,5 @@ extern "C" void fl_copy_surface_set_current(COPY_SURFACE c);
 
 
 #endif
+
 

@@ -8,21 +8,26 @@
 #define FL_PAGED_DEVICE_GUARD
 
 
+extern "C" const int fl_page_format_media;
+extern "C" const int fl_page_layout_portrait;
+extern "C" const int fl_page_layout_landscape;
+extern "C" const int fl_page_layout_reversed;
+extern "C" const int fl_page_layout_orientation;
+extern "C" const int fl_no_page_formats;
+
+
+extern "C" void fl_paged_device_get_page_format(int i, const char ** n, int * w, int * h);
 
 
 typedef void* PAGED_DEVICE;
-
-
 
 
 extern "C" PAGED_DEVICE new_fl_paged_device(void);
 extern "C" void free_fl_paged_device(PAGED_DEVICE p);
 
 
-
-
 extern "C" int fl_paged_device_start_job(PAGED_DEVICE p, int c);
-extern "C" int fl_paged_device_start_job2(PAGED_DEVICE p, int c, int f, int t);
+extern "C" int fl_paged_device_start_job2(PAGED_DEVICE p, int c, int * f, int * t);
 extern "C" void fl_paged_device_end_job(PAGED_DEVICE p);
 extern "C" int fl_paged_device_start_page(PAGED_DEVICE p);
 extern "C" int fl_paged_device_end_page(PAGED_DEVICE p);
@@ -40,8 +45,10 @@ extern "C" void fl_paged_device_untranslate(PAGED_DEVICE p);
 
 extern "C" void fl_paged_device_print_widget(PAGED_DEVICE p, void * i, int dx, int dy);
 extern "C" void fl_paged_device_print_window(PAGED_DEVICE p, void * i, int dx, int dy);
-extern "C" void fl_paged_device_print_window_part(PAGED_DEVICE p, void * i, int x, int y, int w, int h, int dx, int dy);
+extern "C" void fl_paged_device_print_window_part(PAGED_DEVICE p, void * i, int x, int y,
+    int w, int h, int dx, int dy);
 
 
 #endif
+
 

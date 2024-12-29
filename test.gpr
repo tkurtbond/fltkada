@@ -12,12 +12,13 @@ project Test is
     for Source_Dirs use ("test");
     for Object_Dir use "obj";
     for Exec_Dir use "bin";
-    for Main use ("compare.adb", "dirlist.adb");
+    for Main use ("compare.adb", "dirlist.adb", "page_formats.adb");
 
 
     package Builder is
         for Executable ("compare.adb") use "compare";
         for Executable ("dirlist.adb") use "dirlist";
+        for Executable ("page_formats.adb") use "page_formats";
     end Builder;
 
 

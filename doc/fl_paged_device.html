@@ -51,12 +51,57 @@
     <td>Page_Layout</td>
   </tr>
 
+  <tr>
+    <td>page_format</td>
+    <td>Page_Format_Info</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Page_Format_Info_Array</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Errors</th></tr>
+
+  <tr>
+    <td>int</td>
+    <td>Page_Error</td>
+  </tr>
+
 </table>
 
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Static Attributes</th></tr>
+
+  <tr>
+<td><pre>
+static const char * class_id = "Fl_Paged_Device";
+</pre></td>
+<td>Deprecated, use runtime tag checks instead.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const page_format page_formats[NO_PAGE_FORMATS];
+</pre></td>
+<td><pre>
+Page_Formats : constant Page_Format_Info_Array (A0 .. Envelope);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -68,11 +113,18 @@ function Create
 </pre></td>
   </tr>
 
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
   <tr>
 <td><pre>
 const char * class_name();
 </pre></td>
-<td>&nbsp;</td>
+<td>Deprecated, use runtime tag checks instead.</td>
   </tr>
 
   <tr>
@@ -210,12 +262,12 @@ virtual int start_job(int pagecount, int *frompage=NULL, int *topage=NULL);
 <td><pre>
 procedure Start_Job
        (This  : in out Paged_Device;
-        Count : in     Natural);
+        Count : in     Natural := 0);
 
 procedure Start_Job
        (This     : in out Paged_Device;
-        Count    : in     Natural;
-        From, To : in     Positive);
+        Count    : in     Natural := 0;
+        From, To :    out Positive);
 </pre></td>
   </tr>
 

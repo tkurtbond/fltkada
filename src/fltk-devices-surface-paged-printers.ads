@@ -8,6 +8,11 @@ with
 
     FLTK.Widgets.Groups.Windows;
 
+private with
+
+    Ada.Finalization,
+    Interfaces.C.Strings;
+
 
 package FLTK.Devices.Surface.Paged.Printers is
 
@@ -16,6 +21,13 @@ package FLTK.Devices.Surface.Paged.Printers is
 
     type Printer_Reference (Data : not null access Printer'Class) is limited null record
         with Implicit_Dereference => Data;
+
+
+
+
+    --  The initial Graphics_Driver this is supposed to have upon construction
+    --  is not currently implemented properly. Please wait warmly until the
+    --  binding for the Graphics sub-hierarchy is done.
 
 
 
@@ -30,14 +42,138 @@ package FLTK.Devices.Surface.Paged.Printers is
 
 
 
+    function Get_Dialog_Title
+        return String;
+
+    procedure Set_Dialog_Title
+           (Value : in String);
+
+    function Get_Dialog_Printer
+        return String;
+
+    procedure Set_Dialog_Printer
+           (Value : in String);
+
+    function Get_Dialog_Range
+        return String;
+
+    procedure Set_Dialog_Range
+           (Value : in String);
+
+    function Get_Dialog_Copies
+        return String;
+
+    procedure Set_Dialog_Copies
+           (Value : in String);
+
+    function Get_Dialog_All
+        return String;
+
+    procedure Set_Dialog_All
+           (Value : in String);
+
+    function Get_Dialog_Pages
+        return String;
+
+    procedure Set_Dialog_Pages
+           (Value : in String);
+
+    function Get_Dialog_From
+        return String;
+
+    procedure Set_Dialog_From
+           (Value : in String);
+
+    function Get_Dialog_To
+        return String;
+
+    procedure Set_Dialog_To
+           (Value : in String);
+
+    function Get_Dialog_Properties
+        return String;
+
+    procedure Set_Dialog_Properties
+           (Value : in String);
+
+    function Get_Dialog_Number_Copies
+        return String;
+
+    procedure Set_Dialog_Number_Copies
+           (Value : in String);
+
+    function Get_Dialog_Print_Button
+        return String;
+
+    procedure Set_Dialog_Print_Button
+           (Value : in String);
+
+    function Get_Dialog_Cancel_Button
+        return String;
+
+    procedure Set_Dialog_Cancel_Button
+           (Value : in String);
+
+    function Get_Dialog_Print_To_File
+        return String;
+
+    procedure Set_Dialog_Print_To_File
+           (Value : in String);
+
+    function Get_Property_Title
+        return String;
+
+    procedure Set_Property_Title
+           (Value : in String);
+
+    function Get_Property_Page_Size
+        return String;
+
+    procedure Set_Property_Page_Size
+           (Value : in String);
+
+    function Get_Property_Mode
+        return String;
+
+    procedure Set_Property_Mode
+           (Value : in String);
+
+    function Get_Property_Use
+        return String;
+
+    procedure Set_Property_Use
+           (Value : in String);
+
+    function Get_Property_Save
+        return String;
+
+    procedure Set_Property_Save
+           (Value : in String);
+
+    function Get_Property_Cancel
+        return String;
+
+    procedure Set_Property_Cancel
+           (Value : in String);
+
+
+
+
+    function Get_Original_Driver
+           (This : in out Printer)
+        return FLTK.Devices.Graphics.Graphics_Driver_Reference;
+
+
+
+
     procedure Start_Job
            (This  : in out Printer;
-            Count : in     Natural);
+            Count : in     Natural := 0);
 
     procedure Start_Job
            (This     : in out Printer;
-            Count    : in     Natural;
-            From, To : in     Positive);
+            Count    : in     Natural := 0;
+            From, To :    out Positive);
 
     procedure End_Job
            (This : in out Printer);
@@ -116,6 +252,40 @@ private
            (This : in out Printer);
 
 
+    Dialog_Title,         Dialog_Printer,
+    Dialog_Range,         Dialog_Copies,
+    Dialog_All,           Dialog_Pages,
+    Dialog_From,          Dialog_To,
+    Dialog_Properties,    Dialog_Copyno,
+    Dialog_Print_Button,  Dialog_Cancel_Button,
+    Dialog_Print_To_File,
+    Property_Title,       Property_Pagesize,
+    Property_Mode,        Property_Use,
+    Property_Save,        Property_Cancel      : Interfaces.C.Strings.chars_ptr;
+
+
+    pragma Inline (Get_Dialog_Title);
+    pragma Inline (Get_Dialog_Printer);
+    pragma Inline (Get_Dialog_Range);
+    pragma Inline (Get_Dialog_Copies);
+    pragma Inline (Get_Dialog_All);
+    pragma Inline (Get_Dialog_Pages);
+    pragma Inline (Get_Dialog_From);
+    pragma Inline (Get_Dialog_To);
+    pragma Inline (Get_Dialog_Properties);
+    pragma Inline (Get_Dialog_Number_Copies);
+    pragma Inline (Get_Dialog_Print_Button);
+    pragma Inline (Get_Dialog_Cancel_Button);
+    pragma Inline (Get_Dialog_Print_To_File);
+    pragma Inline (Get_Property_Title);
+    pragma Inline (Get_Property_Page_Size);
+    pragma Inline (Get_Property_Mode);
+    pragma Inline (Get_Property_Use);
+    pragma Inline (Get_Property_Save);
+    pragma Inline (Get_Property_Cancel);
+
+    pragma Inline (Get_Original_Driver);
+
     pragma Inline (Start_Job);
     pragma Inline (End_Job);
     pragma Inline (Start_Page);
@@ -134,6 +304,15 @@ private
     pragma Inline (Print_Window_Part);
 
     pragma Inline (Set_Current);
+
+
+    --  Needed to ensure chars_ptr storage is properly cleaned up
+    type Printer_Final_Controller is new Ada.Finalization.Limited_Controlled with null record;
+
+    overriding procedure Finalize
+           (This : in out Printer_Final_Controller);
+
+    Cleanup : Printer_Final_Controller;
 
 
 end FLTK.Devices.Surface.Paged.Printers;

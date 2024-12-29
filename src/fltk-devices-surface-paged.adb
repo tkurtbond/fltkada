@@ -6,14 +6,61 @@
 
 with
 
-    Interfaces.C;
+    Ada.Strings.Unbounded,
+    Interfaces.C.Strings;
 
 use type
 
-    Interfaces.C.int;
+    Interfaces.C.int,
+    Interfaces.C.Strings.chars_ptr;
 
 
 package body FLTK.Devices.Surface.Paged is
+
+
+    package SU renames Ada.Strings.Unbounded;
+
+
+
+
+    ------------------------
+    --  Constants From C  --
+    ------------------------
+
+    fl_page_format_media : constant Interfaces.C.int;
+    pragma Import (C, fl_page_format_media);
+
+    fl_page_layout_portrait : constant Interfaces.C.int;
+    pragma Import (C, fl_page_layout_portrait);
+
+    fl_page_layout_landscape : constant Interfaces.C.int;
+    pragma Import (C, fl_page_layout_landscape);
+
+    fl_page_layout_reversed : constant Interfaces.C.int;
+    pragma Import (C, fl_page_layout_reversed);
+
+    fl_page_layout_orientation : constant Interfaces.C.int;
+    pragma Import (C, fl_page_layout_orientation);
+
+    fl_no_page_formats : constant Interfaces.C.int;
+    pragma Import (C, fl_no_page_formats);
+
+
+
+
+    ------------------------
+    --  Functions From C  --
+    ------------------------
+
+    procedure fl_paged_device_get_page_format
+           (Index  : in     Interfaces.C.int;
+            Name   :    out Interfaces.C.Strings.chars_ptr;
+            Width  :    out Interfaces.C.int;
+            Height :    out Interfaces.C.int);
+    pragma Import (C, fl_paged_device_get_page_format, "fl_paged_device_get_page_format");
+    pragma Inline (fl_paged_device_get_page_format);
+
+
 
 
     function new_fl_paged_device
@@ -37,8 +84,9 @@ package body FLTK.Devices.Surface.Paged is
     pragma Inline (fl_paged_device_start_job);
 
     function fl_paged_device_start_job2
-           (D       : in Storage.Integer_Address;
-            C, F, T : in Interfaces.C.int)
+           (D    : in     Storage.Integer_Address;
+            C    : in     Interfaces.C.int;
+            F, T :    out Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_paged_device_start_job2, "fl_paged_device_start_job2");
     pragma Inline (fl_paged_device_start_job2);
@@ -135,6 +183,125 @@ package body FLTK.Devices.Surface.Paged is
 
 
 
+    ------------------------
+    --  Internal Utility  --
+    ------------------------
+
+    function To_Cint
+           (Value : in Page_Format)
+        return Interfaces.C.int is
+    begin
+        case Value is
+        when A0 .. Envelope => return Page_Format'Pos (Value);
+        when Media => return fl_page_format_media;
+        end case;
+    end To_Cint;
+
+
+    function To_Page_Format
+           (Value : in Interfaces.C.int)
+        return Page_Format is
+    begin
+        if Value in Page_Format'Pos (A0) .. Page_Format'Pos (Envelope) then
+            return Page_Format'Val (Value);
+        elsif Value = fl_page_format_media then
+            return Media;
+        else
+            raise Internal_FLTK_Error;
+        end if;
+    end To_Page_Format;
+
+
+    function To_Cint
+           (Value : in Page_Layout)
+        return Interfaces.C.int is
+    begin
+        case Value is
+        when Portrait    => return fl_page_layout_portrait;
+        when Landscape   => return fl_page_layout_landscape;
+        when Reversed    => return fl_page_layout_reversed;
+        when Orientation => return fl_page_layout_orientation;
+        end case;
+    end To_Cint;
+
+
+    function To_Page_Layout
+           (Value : in Interfaces.C.int)
+        return Page_Layout is
+    begin
+        if Value = fl_page_layout_portrait then
+            return Portrait;
+        elsif Value = fl_page_layout_landscape then
+            return Landscape;
+        elsif Value = fl_page_layout_reversed then
+            return Reversed;
+        elsif Value = fl_page_layout_orientation then
+            return Orientation;
+        else
+            raise Internal_FLTK_Error;
+        end if;
+    end To_Page_Layout;
+
+
+    function Get_Page_Formats
+        return Page_Format_Info_Array
+    is
+        C_Name   : Interfaces.C.Strings.chars_ptr;
+        C_Width  : Interfaces.C.int;
+        C_Height : Interfaces.C.int;
+    begin
+        return Data : Page_Format_Info_Array (A0 .. To_Page_Format (fl_no_page_formats - 1)) do
+            for Index in Data'Range loop
+                fl_paged_device_get_page_format (To_Cint (Index), C_Name, C_Width, C_Height);
+                if C_Name = Interfaces.C.Strings.Null_Ptr then
+                    Data (Index).My_Name := SU.To_Unbounded_String ("");
+                else
+                    Data (Index).My_Name := SU.To_Unbounded_String
+                        (Interfaces.C.Strings.Value (C_Name));
+                end if;
+                Data (Index).My_Width := Natural (C_Width);
+                Data (Index).My_Height := Natural (C_Height);
+            end loop;
+        end return;
+    end Get_Page_Formats;
+
+
+
+
+    ----------------------------
+    --  Datatype Subprograms  --
+    ----------------------------
+
+    function Name
+           (This : in Page_Format_Info)
+        return String is
+    begin
+        return SU.To_String (This.My_Name);
+    end Name;
+
+
+    function Width
+           (This : in Page_Format_Info)
+        return Natural is
+    begin
+        return This.My_Width;
+    end Width;
+
+
+    function Height
+           (This : in Page_Format_Info)
+        return Natural is
+    begin
+        return This.My_Height;
+    end Height;
+
+
+
+
+    -------------------
+    --  Destructors  --
+    -------------------
+
     procedure Finalize
            (This : in out Paged_Device) is
     begin
@@ -146,6 +313,10 @@ package body FLTK.Devices.Surface.Paged is
 
 
 
+
+    --------------------
+    --  Constructors  --
+    --------------------
 
     package body Forge is
 
@@ -164,9 +335,13 @@ package body FLTK.Devices.Surface.Paged is
 
 
 
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
     procedure Start_Job
            (This  : in out Paged_Device;
-            Count : in     Natural) is
+            Count : in     Natural := 0) is
     begin
         if fl_paged_device_start_job
             (This.Void_Ptr, Interfaces.C.int (Count)) /= 0
@@ -178,8 +353,8 @@ package body FLTK.Devices.Surface.Paged is
 
     procedure Start_Job
            (This     : in out Paged_Device;
-            Count    : in     Natural;
-            From, To : in     Positive) is
+            Count    : in     Natural := 0;
+            From, To :    out Positive) is
     begin
         if fl_paged_device_start_job2
            (This.Void_Ptr,

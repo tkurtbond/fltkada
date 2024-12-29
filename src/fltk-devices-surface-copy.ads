@@ -20,6 +20,13 @@ package FLTK.Devices.Surface.Copy is
 
 
 
+    --  The initial Graphics_Driver this is supposed to have upon construction
+    --  is not currently implemented properly. Please wait warmly until the
+    --  binding for the Graphics sub-hierarchy is done.
+
+
+
+
     package Forge is
 
         function Create

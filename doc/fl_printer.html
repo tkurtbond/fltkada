@@ -46,7 +46,268 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Static Attributes</th></tr>
+
+  <tr>
+<td><pre>
+static const char * class_id = "Fl_Printer";
+</pre></td>
+<td>Deprecated, use runtime tag checks instead.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * dialog_title = "Print";
+</pre></td>
+<td><pre>
+function Get_Dialog_Title
+    return String;
+
+procedure Set_Dialog_Title
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * dialog_printer = "Printer:";
+</pre></td>
+<td><pre>
+function Get_Dialog_Printer
+    return String;
+
+procedure Set_Dialog_Printer
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * dialog_range = "Print Range";
+</pre></td>
+<td><pre>
+function Get_Dialog_Range
+    return String;
+
+procedure Set_Dialog_Range
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * dialog_copies = "Copies";
+</pre></td>
+<td><pre>
+function Get_Dialog_Copies
+    return String;
+
+procedure Set_Dialog_Copies
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * dialog_all = "All";
+</pre></td>
+<td><pre>
+function Get_Dialog_All
+    return String;
+
+procedure Set_Dialog_All
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * dialog_pages = "Pages";
+</pre></td>
+<td><pre>
+function Get_Dialog_Pages
+    return String;
+
+procedure Set_Dialog_Pages
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * dialog_from = "From:";
+</pre></td>
+<td><pre>
+function Get_Dialog_From
+    return String;
+
+procedure Set_Dialog_From
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * dialog_to = "To:";
+</pre></td>
+<td><pre>
+function Get_Dialog_To
+    return String;
+
+procedure Set_Dialog_To
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * dialog_properties = "Properties...";
+</pre></td>
+<td><pre>
+function Get_Dialog_Properties
+    return String;
+
+procedure Set_Dialog_Properties
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * dialog_copyNo = "# Copies:";
+</pre></td>
+<td><pre>
+function Get_Dialog_Number_Copies
+    return String;
+
+procedure Set_Dialog_Number_Copies
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * dialog_print_button = "Print";
+</pre></td>
+<td><pre>
+function Get_Dialog_Print_Button
+    return String;
+
+procedure Set_Dialog_Print_Button
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * dialog_cancel_button = "Cancel";
+</pre></td>
+<td><pre>
+function Get_Dialog_Cancel_Button
+    return String;
+
+procedure Set_Dialog_Cancel_Button
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * dialog_print_to_file = "Print To File";
+</pre></td>
+<td><pre>
+function Get_Dialog_Print_To_File
+    return String;
+
+procedure Set_Dialog_Print_To_File
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * property_title = "Printer Properties";
+</pre></td>
+<td><pre>
+function Get_Property_Title
+    return String;
+
+procedure Set_Property_Title
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * property_pagesize = "Page Size:";
+</pre></td>
+<td><pre>
+function Get_Property_Page_Size
+    return String;
+
+procedure Set_Property_Page_Size
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * property_mode = "Output Mode:";
+</pre></td>
+<td><pre>
+function Get_Property_Mode
+    return String;
+
+procedure Set_Property_Mode
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * property_use = "Use";
+</pre></td>
+<td><pre>
+function Get_Property_Use
+    return String;
+
+procedure Set_Property_Use
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * property_save = "Save";
+</pre></td>
+<td><pre>
+function Get_Property_Save
+    return String;
+
+procedure Set_Property_Save
+       (Value : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * property_cancel = "Cancel";
+</pre></td>
+<td><pre>
+function Get_Property_Cancel
+    return String;
+
+procedure Set_Property_Cancel
+       (Value : in String);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -58,18 +319,29 @@ function Create
 </pre></td>
   </tr>
 
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
   <tr>
 <td><pre>
 const char * class_name();
 </pre></td>
-<td>Use runtime tag checking</td>
+<td>Deprecated, use runtime tag checks instead.</td>
   </tr>
 
   <tr>
 <td><pre>
 Fl_Graphics_Driver * driver(void);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Get_Original_Driver
+       (This : in out Printer)
+    return FLTK.Devices.Graphics.Graphics_Driver_Reference;
+</pre></td>
   </tr>
 
   <tr>
@@ -205,12 +477,12 @@ int start_job(int pagecount, int *frompage=NULL, int *topage=NULL);
 <td><pre>
 procedure Start_Job
        (This  : in out Printer;
-        Count : in     Natural);
+        Count : in     Natural := 0);
 
 procedure Start_Job
        (This     : in out Printer;
-        Count    : in     Natural;
-        From, To : in     Positive);
+        Count    : in     Natural := 0;
+        From, To :    out Positive);
 </pre></td>
   </tr>
 

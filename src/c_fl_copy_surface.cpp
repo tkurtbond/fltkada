@@ -12,6 +12,8 @@
 
 
 
+//  Flattened C API
+
 COPY_SURFACE new_fl_copy_surface(int w, int h) {
     Fl_Copy_Surface *c = new Fl_Copy_Surface(w,h);
     return c;

@@ -6,7 +6,7 @@
 
 with
 
-    Interfaces.C;
+    Interfaces.C.Strings;
 
 use type
 
@@ -15,6 +15,10 @@ use type
 
 package body FLTK.Devices.Surface.Paged.Printers is
 
+
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_printer
         return Storage.Integer_Address;
@@ -29,6 +33,199 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
 
+    function fl_printer_get_dialog_title
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_printer_get_dialog_title, "fl_printer_get_dialog_title");
+    pragma Inline (fl_printer_get_dialog_title);
+
+    procedure fl_printer_set_dialog_title
+           (V : in Interfaces.C.Strings.chars_ptr);
+    pragma Import (C, fl_printer_set_dialog_title, "fl_printer_set_dialog_title");
+    pragma Inline (fl_printer_set_dialog_title);
+
+    function fl_printer_get_dialog_printer
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_printer_get_dialog_printer, "fl_printer_get_dialog_printer");
+    pragma Inline (fl_printer_get_dialog_printer);
+
+    procedure fl_printer_set_dialog_printer
+           (V : in Interfaces.C.Strings.chars_ptr);
+    pragma Import (C, fl_printer_set_dialog_printer, "fl_printer_set_dialog_printer");
+    pragma Inline (fl_printer_set_dialog_printer);
+
+    function fl_printer_get_dialog_range
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_printer_get_dialog_range, "fl_printer_get_dialog_range");
+    pragma Inline (fl_printer_get_dialog_range);
+
+    procedure fl_printer_set_dialog_range
+           (V : in Interfaces.C.Strings.chars_ptr);
+    pragma Import (C, fl_printer_set_dialog_range, "fl_printer_set_dialog_range");
+    pragma Inline (fl_printer_set_dialog_range);
+
+    function fl_printer_get_dialog_copies
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_printer_get_dialog_copies, "fl_printer_get_dialog_copies");
+    pragma Inline (fl_printer_get_dialog_copies);
+
+    procedure fl_printer_set_dialog_copies
+           (V : in Interfaces.C.Strings.chars_ptr);
+    pragma Import (C, fl_printer_set_dialog_copies, "fl_printer_set_dialog_copies");
+    pragma Inline (fl_printer_set_dialog_copies);
+
+    function fl_printer_get_dialog_all
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_printer_get_dialog_all, "fl_printer_get_dialog_all");
+    pragma Inline (fl_printer_get_dialog_all);
+
+    procedure fl_printer_set_dialog_all
+           (V : in Interfaces.C.Strings.chars_ptr);
+    pragma Import (C, fl_printer_set_dialog_all, "fl_printer_set_dialog_all");
+    pragma Inline (fl_printer_set_dialog_all);
+
+    function fl_printer_get_dialog_pages
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_printer_get_dialog_pages, "fl_printer_get_dialog_pages");
+    pragma Inline (fl_printer_get_dialog_pages);
+
+    procedure fl_printer_set_dialog_pages
+           (V : in Interfaces.C.Strings.chars_ptr);
+    pragma Import (C, fl_printer_set_dialog_pages, "fl_printer_set_dialog_pages");
+    pragma Inline (fl_printer_set_dialog_pages);
+
+    function fl_printer_get_dialog_from
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_printer_get_dialog_from, "fl_printer_get_dialog_from");
+    pragma Inline (fl_printer_get_dialog_from);
+
+    procedure fl_printer_set_dialog_from
+           (V : in Interfaces.C.Strings.chars_ptr);
+    pragma Import (C, fl_printer_set_dialog_from, "fl_printer_set_dialog_from");
+    pragma Inline (fl_printer_set_dialog_from);
+
+    function fl_printer_get_dialog_to
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_printer_get_dialog_to, "fl_printer_get_dialog_to");
+    pragma Inline (fl_printer_get_dialog_to);
+
+    procedure fl_printer_set_dialog_to
+           (V : in Interfaces.C.Strings.chars_ptr);
+    pragma Import (C, fl_printer_set_dialog_to, "fl_printer_set_dialog_to");
+    pragma Inline (fl_printer_set_dialog_to);
+
+    function fl_printer_get_dialog_properties
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_printer_get_dialog_properties, "fl_printer_get_dialog_properties");
+    pragma Inline (fl_printer_get_dialog_properties);
+
+    procedure fl_printer_set_dialog_properties
+           (V : in Interfaces.C.Strings.chars_ptr);
+    pragma Import (C, fl_printer_set_dialog_properties, "fl_printer_set_dialog_properties");
+    pragma Inline (fl_printer_set_dialog_properties);
+
+    function fl_printer_get_dialog_copyno
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_printer_get_dialog_copyno, "fl_printer_get_dialog_copyno");
+    pragma Inline (fl_printer_get_dialog_copyno);
+
+    procedure fl_printer_set_dialog_copyno
+           (V : in Interfaces.C.Strings.chars_ptr);
+    pragma Import (C, fl_printer_set_dialog_copyno, "fl_printer_set_dialog_copyno");
+    pragma Inline (fl_printer_set_dialog_copyno);
+
+    function fl_printer_get_dialog_print_button
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_printer_get_dialog_print_button, "fl_printer_get_dialog_print_button");
+    pragma Inline (fl_printer_get_dialog_print_button);
+
+    procedure fl_printer_set_dialog_print_button
+           (V : in Interfaces.C.Strings.chars_ptr);
+    pragma Import (C, fl_printer_set_dialog_print_button, "fl_printer_set_dialog_print_button");
+    pragma Inline (fl_printer_set_dialog_print_button);
+
+    function fl_printer_get_dialog_cancel_button
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_printer_get_dialog_cancel_button, "fl_printer_get_dialog_cancel_button");
+    pragma Inline (fl_printer_get_dialog_cancel_button);
+
+    procedure fl_printer_set_dialog_cancel_button
+           (V : in Interfaces.C.Strings.chars_ptr);
+    pragma Import (C, fl_printer_set_dialog_cancel_button, "fl_printer_set_dialog_cancel_button");
+    pragma Inline (fl_printer_set_dialog_cancel_button);
+
+    function fl_printer_get_dialog_print_to_file
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_printer_get_dialog_print_to_file, "fl_printer_get_dialog_print_to_file");
+    pragma Inline (fl_printer_get_dialog_print_to_file);
+
+    procedure fl_printer_set_dialog_print_to_file
+           (V : in Interfaces.C.Strings.chars_ptr);
+    pragma Import (C, fl_printer_set_dialog_print_to_file, "fl_printer_set_dialog_print_to_file");
+    pragma Inline (fl_printer_set_dialog_print_to_file);
+
+    function fl_printer_get_property_title
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_printer_get_property_title, "fl_printer_get_property_title");
+    pragma Inline (fl_printer_get_property_title);
+
+    procedure fl_printer_set_property_title
+           (V : in Interfaces.C.Strings.chars_ptr);
+    pragma Import (C, fl_printer_set_property_title, "fl_printer_set_property_title");
+    pragma Inline (fl_printer_set_property_title);
+
+    function fl_printer_get_property_pagesize
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_printer_get_property_pagesize, "fl_printer_get_property_pagesize");
+    pragma Inline (fl_printer_get_property_pagesize);
+
+    procedure fl_printer_set_property_pagesize
+           (V : in Interfaces.C.Strings.chars_ptr);
+    pragma Import (C, fl_printer_set_property_pagesize, "fl_printer_set_property_pagesize");
+    pragma Inline (fl_printer_set_property_pagesize);
+
+    function fl_printer_get_property_mode
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_printer_get_property_mode, "fl_printer_get_property_mode");
+    pragma Inline (fl_printer_get_property_mode);
+
+    procedure fl_printer_set_property_mode
+           (V : in Interfaces.C.Strings.chars_ptr);
+    pragma Import (C, fl_printer_set_property_mode, "fl_printer_set_property_mode");
+    pragma Inline (fl_printer_set_property_mode);
+
+    function fl_printer_get_property_use
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_printer_get_property_use, "fl_printer_get_property_use");
+    pragma Inline (fl_printer_get_property_use);
+
+    procedure fl_printer_set_property_use
+           (V : in Interfaces.C.Strings.chars_ptr);
+    pragma Import (C, fl_printer_set_property_use, "fl_printer_set_property_use");
+    pragma Inline (fl_printer_set_property_use);
+
+    function fl_printer_get_property_save
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_printer_get_property_save, "fl_printer_get_property_save");
+    pragma Inline (fl_printer_get_property_save);
+
+    procedure fl_printer_set_property_save
+           (V : in Interfaces.C.Strings.chars_ptr);
+    pragma Import (C, fl_printer_set_property_save, "fl_printer_set_property_save");
+    pragma Inline (fl_printer_set_property_save);
+
+    function fl_printer_get_property_cancel
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_printer_get_property_cancel, "fl_printer_get_property_cancel");
+    pragma Inline (fl_printer_get_property_cancel);
+
+    procedure fl_printer_set_property_cancel
+           (V : in Interfaces.C.Strings.chars_ptr);
+    pragma Import (C, fl_printer_set_property_cancel, "fl_printer_set_property_cancel");
+    pragma Inline (fl_printer_set_property_cancel);
+
+
+
+
     function fl_printer_start_job
            (D : in Storage.Integer_Address;
             C : in Interfaces.C.int)
@@ -37,8 +234,9 @@ package body FLTK.Devices.Surface.Paged.Printers is
     pragma Inline (fl_printer_start_job);
 
     function fl_printer_start_job2
-           (D       : in Storage.Integer_Address;
-            C, F, T : in Interfaces.C.int)
+           (D    : in     Storage.Integer_Address;
+            C    : in     Interfaces.C.int;
+            F, T :    out Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_printer_start_job2, "fl_printer_start_job2");
     pragma Inline (fl_printer_start_job2);
@@ -137,6 +335,10 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
     procedure Finalize
            (This : in out Printer) is
     begin
@@ -147,7 +349,38 @@ package body FLTK.Devices.Surface.Paged.Printers is
     end Finalize;
 
 
+    procedure Finalize
+           (This : in out Printer_Final_Controller)
+    is
+        use Interfaces.C.Strings;
+    begin
+        Free (Dialog_Title);
+        Free (Dialog_Printer);
+        Free (Dialog_Range);
+        Free (Dialog_Copies);
+        Free (Dialog_All);
+        Free (Dialog_Pages);
+        Free (Dialog_From);
+        Free (Dialog_To);
+        Free (Dialog_Properties);
+        Free (Dialog_Copyno);
+        Free (Dialog_Print_Button);
+        Free (Dialog_Cancel_Button);
+        Free (Dialog_Print_To_File);
+        Free (Property_Title);
+        Free (Property_Pagesize);
+        Free (Property_Mode);
+        Free (Property_Use);
+        Free (Property_Save);
+        Free (Property_Cancel);
+    end Finalize;
 
+
+
+
+    --------------------
+    --  Constructors  --
+    --------------------
 
     package body Forge is
 
@@ -166,9 +399,333 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
 
+    -------------------------
+    --  Static Attributes  --
+    -------------------------
+
+    function Get_Dialog_Title
+        return String is
+    begin
+        return Interfaces.C.Strings.Value (fl_printer_get_dialog_title);
+    end Get_Dialog_Title;
+
+
+    procedure Set_Dialog_Title
+           (Value : in String) is
+    begin
+        Interfaces.C.Strings.Free (Dialog_Title);
+        Dialog_Title := Interfaces.C.Strings.New_String (Value);
+        fl_printer_set_dialog_title (Dialog_Title);
+    end Set_Dialog_Title;
+
+
+    function Get_Dialog_Printer
+        return String is
+    begin
+        return Interfaces.C.Strings.Value (fl_printer_get_dialog_printer);
+    end Get_Dialog_Printer;
+
+
+    procedure Set_Dialog_Printer
+           (Value : in String) is
+    begin
+        Interfaces.C.Strings.Free (Dialog_Printer);
+        Dialog_Printer := Interfaces.C.Strings.New_String (Value);
+        fl_printer_set_dialog_printer (Dialog_Printer);
+    end Set_Dialog_Printer;
+
+
+    function Get_Dialog_Range
+        return String is
+    begin
+        return Interfaces.C.Strings.Value (fl_printer_get_dialog_range);
+    end Get_Dialog_Range;
+
+
+    procedure Set_Dialog_Range
+           (Value : in String) is
+    begin
+        Interfaces.C.Strings.Free (Dialog_Range);
+        Dialog_Range := Interfaces.C.Strings.New_String (Value);
+        fl_printer_set_dialog_range (Dialog_Range);
+    end Set_Dialog_Range;
+
+
+    function Get_Dialog_Copies
+        return String is
+    begin
+        return Interfaces.C.Strings.Value (fl_printer_get_dialog_copies);
+    end Get_Dialog_Copies;
+
+
+    procedure Set_Dialog_Copies
+           (Value : in String) is
+    begin
+        Interfaces.C.Strings.Free (Dialog_Copies);
+        Dialog_Copies := Interfaces.C.Strings.New_String (Value);
+        fl_printer_set_dialog_copies (Dialog_Copies);
+    end Set_Dialog_Copies;
+
+
+    function Get_Dialog_All
+        return String is
+    begin
+        return Interfaces.C.Strings.Value (fl_printer_get_dialog_all);
+    end Get_Dialog_All;
+
+
+    procedure Set_Dialog_All
+           (Value : in String) is
+    begin
+        Interfaces.C.Strings.Free (Dialog_All);
+        Dialog_All := Interfaces.C.Strings.New_String (Value);
+        fl_printer_set_dialog_all (Dialog_All);
+    end Set_Dialog_All;
+
+
+    function Get_Dialog_Pages
+        return String is
+    begin
+        return Interfaces.C.Strings.Value (fl_printer_get_dialog_pages);
+    end Get_Dialog_Pages;
+
+
+    procedure Set_Dialog_Pages
+           (Value : in String) is
+    begin
+        Interfaces.C.Strings.Free (Dialog_Pages);
+        Dialog_Pages := Interfaces.C.Strings.New_String (Value);
+        fl_printer_set_dialog_pages (Dialog_Pages);
+    end Set_Dialog_Pages;
+
+
+    function Get_Dialog_From
+        return String is
+    begin
+        return Interfaces.C.Strings.Value (fl_printer_get_dialog_from);
+    end Get_Dialog_From;
+
+
+    procedure Set_Dialog_From
+           (Value : in String) is
+    begin
+        Interfaces.C.Strings.Free (Dialog_From);
+        Dialog_From := Interfaces.C.Strings.New_String (Value);
+        fl_printer_set_dialog_from (Dialog_From);
+    end Set_Dialog_From;
+
+
+    function Get_Dialog_To
+        return String is
+    begin
+        return Interfaces.C.Strings.Value (fl_printer_get_dialog_to);
+    end Get_Dialog_To;
+
+
+    procedure Set_Dialog_To
+           (Value : in String) is
+    begin
+        Interfaces.C.Strings.Free (Dialog_To);
+        Dialog_To := Interfaces.C.Strings.New_String (Value);
+        fl_printer_set_dialog_to (Dialog_To);
+    end Set_Dialog_To;
+
+
+    function Get_Dialog_Properties
+        return String is
+    begin
+        return Interfaces.C.Strings.Value (fl_printer_get_dialog_properties);
+    end Get_Dialog_Properties;
+
+
+    procedure Set_Dialog_Properties
+           (Value : in String) is
+    begin
+        Interfaces.C.Strings.Free (Dialog_Properties);
+        Dialog_Properties := Interfaces.C.Strings.New_String (Value);
+        fl_printer_set_dialog_properties (Dialog_Properties);
+    end Set_Dialog_Properties;
+
+
+    function Get_Dialog_Number_Copies
+        return String is
+    begin
+        return Interfaces.C.Strings.Value (fl_printer_get_dialog_copyno);
+    end Get_Dialog_Number_Copies;
+
+
+    procedure Set_Dialog_Number_Copies
+           (Value : in String) is
+    begin
+        Interfaces.C.Strings.Free (Dialog_Copyno);
+        Dialog_Copyno := Interfaces.C.Strings.New_String (Value);
+        fl_printer_set_dialog_copyno (Dialog_Copyno);
+    end Set_Dialog_Number_Copies;
+
+
+    function Get_Dialog_Print_Button
+        return String is
+    begin
+        return Interfaces.C.Strings.Value (fl_printer_get_dialog_print_button);
+    end Get_Dialog_Print_Button;
+
+
+    procedure Set_Dialog_Print_Button
+           (Value : in String) is
+    begin
+        Interfaces.C.Strings.Free (Dialog_Print_Button);
+        Dialog_Print_Button := Interfaces.C.Strings.New_String (Value);
+        fl_printer_set_dialog_print_button (Dialog_Print_Button);
+    end Set_Dialog_Print_Button;
+
+
+    function Get_Dialog_Cancel_Button
+        return String is
+    begin
+        return Interfaces.C.Strings.Value (fl_printer_get_dialog_cancel_button);
+    end Get_Dialog_Cancel_Button;
+
+
+    procedure Set_Dialog_Cancel_Button
+           (Value : in String) is
+    begin
+        Interfaces.C.Strings.Free (Dialog_Cancel_Button);
+        Dialog_Cancel_Button := Interfaces.C.Strings.New_String (Value);
+        fl_printer_set_dialog_cancel_button (Dialog_Cancel_Button);
+    end Set_Dialog_Cancel_Button;
+
+
+    function Get_Dialog_Print_To_File
+        return String is
+    begin
+        return Interfaces.C.Strings.Value (fl_printer_get_dialog_print_to_file);
+    end Get_Dialog_Print_To_File;
+
+
+    procedure Set_Dialog_Print_To_File
+           (Value : in String) is
+    begin
+        Interfaces.C.Strings.Free (Dialog_Print_To_File);
+        Dialog_Print_To_File := Interfaces.C.Strings.New_String (Value);
+        fl_printer_set_dialog_print_to_file (Dialog_Print_To_File);
+    end Set_Dialog_Print_To_File;
+
+
+    function Get_Property_Title
+        return String is
+    begin
+        return Interfaces.C.Strings.Value (fl_printer_get_property_title);
+    end Get_Property_Title;
+
+
+    procedure Set_Property_Title
+           (Value : in String) is
+    begin
+        Interfaces.C.Strings.Free (Property_Title);
+        Property_Title := Interfaces.C.Strings.New_String (Value);
+        fl_printer_set_property_title (Property_Title);
+    end Set_Property_Title;
+
+
+    function Get_Property_Page_Size
+        return String is
+    begin
+        return Interfaces.C.Strings.Value (fl_printer_get_property_pagesize);
+    end Get_Property_Page_Size;
+
+
+    procedure Set_Property_Page_Size
+           (Value : in String) is
+    begin
+        Interfaces.C.Strings.Free (Property_Pagesize);
+        Property_Pagesize := Interfaces.C.Strings.New_String (Value);
+        fl_printer_set_property_pagesize (Property_Pagesize);
+    end Set_Property_Page_Size;
+
+
+    function Get_Property_Mode
+        return String is
+    begin
+        return Interfaces.C.Strings.Value (fl_printer_get_property_mode);
+    end Get_Property_Mode;
+
+
+    procedure Set_Property_Mode
+           (Value : in String) is
+    begin
+        Interfaces.C.Strings.Free (Property_Mode);
+        Property_Mode := Interfaces.C.Strings.New_String (Value);
+        fl_printer_set_property_mode (Property_Mode);
+    end Set_Property_Mode;
+
+
+    function Get_Property_Use
+        return String is
+    begin
+        return Interfaces.C.Strings.Value (fl_printer_get_property_use);
+    end Get_Property_Use;
+
+
+    procedure Set_Property_Use
+           (Value : in String) is
+    begin
+        Interfaces.C.Strings.Free (Property_Use);
+        Property_Use := Interfaces.C.Strings.New_String (Value);
+        fl_printer_set_property_use (Property_Use);
+    end Set_Property_Use;
+
+
+    function Get_Property_Save
+        return String is
+    begin
+        return Interfaces.C.Strings.Value (fl_printer_get_property_save);
+    end Get_Property_Save;
+
+
+    procedure Set_Property_Save
+           (Value : in String) is
+    begin
+        Interfaces.C.Strings.Free (Property_Save);
+        Property_Save := Interfaces.C.Strings.New_String (Value);
+        fl_printer_set_property_save (Property_Save);
+    end Set_Property_Save;
+
+
+    function Get_Property_Cancel
+        return String is
+    begin
+        return Interfaces.C.Strings.Value (fl_printer_get_property_cancel);
+    end Get_Property_Cancel;
+
+
+    procedure Set_Property_Cancel
+           (Value : in String) is
+    begin
+        Interfaces.C.Strings.Free (Property_Cancel);
+        Property_Cancel := Interfaces.C.Strings.New_String (Value);
+        fl_printer_set_property_cancel (Property_Cancel);
+    end Set_Property_Cancel;
+
+
+
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
+    function Get_Original_Driver
+           (This : in out Printer)
+        return FLTK.Devices.Graphics.Graphics_Driver_Reference is
+    begin
+        return raise Program_Error with "Won't be implemented until Graphics_Drivers taken care of";
+    end Get_Original_Driver;
+
+
+
+
     procedure Start_Job
            (This  : in out Printer;
-            Count : in     Natural) is
+            Count : in     Natural := 0) is
     begin
         if fl_printer_start_job
             (This.Void_Ptr, Interfaces.C.int (Count)) /= 0
@@ -180,8 +737,8 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
     procedure Start_Job
            (This     : in out Printer;
-            Count    : in     Natural;
-            From, To : in     Positive) is
+            Count    : in     Natural := 0;
+            From, To :    out Positive) is
     begin
         if fl_printer_start_job2
            (This.Void_Ptr,

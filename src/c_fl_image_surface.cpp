@@ -12,6 +12,8 @@
 
 
 
+//  Flattened C API
+
 IMAGE_SURFACE new_fl_image_surface(int w, int h, int r) {
     Fl_Image_Surface *s = new Fl_Image_Surface(w,h,r);
     return s;

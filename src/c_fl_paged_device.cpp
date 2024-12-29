@@ -12,14 +12,43 @@
 
 
 
+//  Enums and macro constants
+
+const int fl_page_format_media = Fl_Paged_Device::MEDIA;
+
+const int fl_page_layout_portrait    = Fl_Paged_Device::PORTRAIT;
+const int fl_page_layout_landscape   = Fl_Paged_Device::LANDSCAPE;
+const int fl_page_layout_reversed    = Fl_Paged_Device::REVERSED;
+const int fl_page_layout_orientation = Fl_Paged_Device::ORIENTATION;
+
+const int fl_no_page_formats = NO_PAGE_FORMATS;
+
+
+
+
+//  Helper functions
+
+void fl_paged_device_get_page_format(int i, const char ** n, int * w, int * h) {
+    *n = Fl_Paged_Device::page_formats[i].name;
+    *w = Fl_Paged_Device::page_formats[i].height;
+    *h = Fl_Paged_Device::page_formats[i].width;
+}
+
+
+
+
+//  Adding relevant friends
+
 class My_Paged_Device : public Fl_Paged_Device {
-    public:
-        using Fl_Paged_Device::Fl_Paged_Device;
-        friend PAGED_DEVICE new_fl_paged_device(void);
+public:
+    using Fl_Paged_Device::Fl_Paged_Device;
+    friend PAGED_DEVICE new_fl_paged_device(void);
 };
 
 
 
+
+//  Flattened C API
 
 PAGED_DEVICE new_fl_paged_device(void) {
     My_Paged_Device *p = new My_Paged_Device();
@@ -35,12 +64,12 @@ void free_fl_paged_device(PAGED_DEVICE p) {
 
 int fl_paged_device_start_job(PAGED_DEVICE p, int c) {
     //  virtual so disable dispatch
-    return reinterpret_cast<Fl_Paged_Device*>(p)->Fl_Paged_Device::start_job(c,0,0);
+    return reinterpret_cast<Fl_Paged_Device*>(p)->Fl_Paged_Device::start_job(c, 0, 0);
 }
 
-int fl_paged_device_start_job2(PAGED_DEVICE p, int c, int f, int t) {
+int fl_paged_device_start_job2(PAGED_DEVICE p, int c, int * f, int * t) {
     //  virtual so disable dispatch
-    return reinterpret_cast<Fl_Paged_Device*>(p)->Fl_Paged_Device::start_job(c,&f,&t);
+    return reinterpret_cast<Fl_Paged_Device*>(p)->Fl_Paged_Device::start_job(c, f, t);
 }
 
 void fl_paged_device_end_job(PAGED_DEVICE p) {
@@ -113,9 +142,12 @@ void fl_paged_device_print_window(PAGED_DEVICE p, void * i, int dx, int dy) {
     reinterpret_cast<Fl_Paged_Device*>(p)->print_window(reinterpret_cast<Fl_Window*>(i),dx,dy);
 }
 
-void fl_paged_device_print_window_part(PAGED_DEVICE p, void * i, int x, int y, int w, int h, int dx, int dy) {
+void fl_paged_device_print_window_part(PAGED_DEVICE p, void * i, int x, int y,
+    int w, int h, int dx, int dy)
+{
     //  virtual so disable dispatch
-    reinterpret_cast<Fl_Paged_Device*>(p)->Fl_Paged_Device::print_window_part(reinterpret_cast<Fl_Window*>(i),x,y,w,h,dx,dy);
+    reinterpret_cast<Fl_Paged_Device*>(p)->Fl_Paged_Device::print_window_part
+        (reinterpret_cast<Fl_Window*>(i),x,y,w,h,dx,dy);
 }
 
 

@@ -147,6 +147,20 @@ Fl_Tree
 Fl_Xlib_Graphics_Driver
 
 
+Doesn't need an internal Graphics_Driver:
+
+Fl_Surface_Device (is supplied a driver by constructor)
+Fl_Display_Device (is supplied a driver by constructor)
+Fl_Image_Surface (doesn't start with a driver)
+Fl_Paged_Device (doesn't start with a driver)
+
+Needs an internal Graphics_Driver'Class:
+
+Fl_Copy_Surface (via internal Quartz/GDI/Xlib surface)
+Fl_Printer (via internal Fl_System_Printer (win/mac) or Fl_PostScript_Printer (linux))
+Fl_PostScript_File_Device (internal Fl_PostScript_Graphics_Driver)
+
+
 
 
 Never:
