@@ -20,6 +20,7 @@ FLTK.Devices.Surface.Copy
 FLTK.Devices.Surface.Display
 FLTK.Devices.Surface.Image
 FLTK.Devices.Surface.Paged
+FLTK.Devices.Surface.Paged.Postscript
 FLTK.Devices.Surface.Paged.Printers
 FLTK.Draw
 FLTK.Environment
@@ -137,7 +138,6 @@ To-Do:
 Fl_GDI_Graphics_Driver
 Fl_GDI_Printer_Graphics_Driver
 Fl_Glut_Window
-Fl_Postscript_File_Device
 Fl_Postscript_Graphics_Driver
 Fl_Quartz_Graphics_Driver
 Fl_Sys_Menu_Bar

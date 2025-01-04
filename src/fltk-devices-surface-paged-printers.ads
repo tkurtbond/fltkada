@@ -159,6 +159,7 @@ package FLTK.Devices.Surface.Paged.Printers is
 
 
 
+    --  Not currently implemented
     function Get_Original_Driver
            (This : in out Printer)
         return FLTK.Devices.Graphics.Graphics_Driver_Reference;
