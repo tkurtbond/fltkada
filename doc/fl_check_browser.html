@@ -176,7 +176,7 @@ procedure Remove
 <td><pre>
 void set_checked(int item);
 </pre></td>
-<td>See checked(int item, int b);</td>
+<td>See checked / Set_Checked.</td>
   </tr>
 
   <tr>
@@ -211,84 +211,6 @@ function Selected_Index
 
   <tr>
 <td><pre>
-void bbox(int &X, int &Y, int &W, int &H) const;
-</pre>(Inherited from Fl_Browser_)</td>
-<td><pre>
-procedure Bounding_Box
-       (This       : in     Check_Browser;
-        X, Y, W, H :    out Integer);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-void deleting(void *item);
-</pre>(Inherited from Fl_Browser_)</td>
-<td><pre>
-procedure Deleting
-       (This : in out Check_Browser;
-        Item : in     Item_Cursor);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-int displayed(void *item) const;
-</pre>(Inherited from Fl_Browser_)</td>
-<td><pre>
-function Is_Displayed
-       (This : in Check_Browser;
-        Item : in Item_Cursor)
-    return Boolean;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-void draw();
-</pre>(Inherited from Fl_Browser_)</td>
-<td><pre>
-procedure Draw
-       (This : in out Check_Browser);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-void * find_item(int ypos);
-</pre>(Inherited from Fl_Browser_)</td>
-<td><pre>
-function Find_Item
-       (This  : in Check_Browser;
-        Y_Pos : in Integer)
-    return Item_Cursor;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-virtual int full_height() const;
-</pre>(Inherited from Fl_Browser_)</td>
-<td><pre>
-function Full_List_Height
-       (This : in Check_Browser)
-    return Integer;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-virtual int full_width() const;
-</pre>(Inherited from Fl_Browser_)</td>
-<td><pre>
-function Full_List_Width
-       (This : in Check_Browser)
-    return Integer;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
 int handle(int);
 </pre></td>
 <td><pre>
@@ -301,32 +223,33 @@ function Handle
 
   <tr>
 <td><pre>
-virtual int incr_height() const;
-</pre>(Inherited from Fl_Browser_)</td>
+void item_draw(void *, int, int, int, int) const;
+</pre>(Actually private in 1.3)</td>
 <td><pre>
-function Average_Item_Height
+procedure Item_Draw
+       (This       : in Check_Browser;
+        Item       : in Item_Cursor;
+        X, Y, W, H : in Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void * item_first() const;
+</pre>(Actually private in 1.3)</td>
+<td><pre>
+function Item_First
        (This : in Check_Browser)
-    return Integer;
+    return Item_Cursor;
 </pre></td>
   </tr>
 
   <tr>
 <td><pre>
-void inserting(void *a, void *b);
-</pre>(Inherited from Fl_Browser_)</td>
+int item_height(void *) const;
+</pre>(Actually private in 1.3)</td>
 <td><pre>
-procedure Inserting
-       (This : in out Check_Browser;
-        A, B : in     Item_Cursor);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-virtual int item_quick_height(void *item) const;
-</pre>(Inherited from Fl_Browser_)</td>
-<td><pre>
-function Item_Quick_Height
+function Item_Height
        (This : in Check_Browser;
         Item : in Item_Cursor)
     return Integer;
@@ -335,87 +258,61 @@ function Item_Quick_Height
 
   <tr>
 <td><pre>
-int leftedge() const;
-</pre>(Inherited from Fl_Browser_)</td>
+void * item_next(void *) const;
+</pre>(Actually private in 1.3)</td>
 <td><pre>
-function Left_Edge
-       (This : in Check_Browser)
+function Item_Next
+       (This : in Check_Browser;
+        Item : in Item_Cursor)
+    return Item_Cursor;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void * item_prev(void *) const;
+</pre>(Actually private in 1.3)</td>
+<td><pre>
+function Item_Previous
+       (This : in Check_Browser;
+        Item : in Item_Cursor)
+    return Item_Cursor;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void item_select(void *, int);
+</pre>(Actually private in 1.3)</td>
+<td><pre>
+procedure Item_Select
+       (This  : in out Check_Browser;
+        Item  : in     Item_Cursor;
+        State : in     Boolean := True);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int item_selected(void *) const;
+</pre>(Actually private in 1.3)</td>
+<td><pre>
+function Item_Selected
+       (This : in Check_Browser;
+        Item : in Item_Cursor)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int item_width(void *) const;
+</pre>(Actually private in 1.3)</td>
+<td><pre>
+function Item_Width
+       (This : in Check_Browser;
+        Item : in Item_Cursor)
     return Integer;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-void new_list();
-</pre>(Inherited from Fl_Browser_)</td>
-<td><pre>
-procedure New_List
-       (This : in out Check_Browser);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-void redraw_line(void *item);
-</pre>(Inherited from Fl_Browser_)</td>
-<td><pre>
-procedure Redraw_Line
-       (This : in out Check_Browser;
-        Item : in     Item_Cursor);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-void redraw_lines();
-</pre>(Inherited from Fl_Browser_)</td>
-<td><pre>
-procedure Redraw_List
-       (This : in out Check_Browser);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-void replacing(void *a, void *b);
-</pre>(Inherited from Fl_Browser_)</td>
-<td><pre>
-procedure Replacing
-       (This : in out Check_Browser;
-        A, B : in     Item_Cursor);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-void * selection() const;
-</pre>(Inherited from Fl_Browser_)</td>
-<td><pre>
-function Current_Selection
-       (This : in Check_Browser)
-    return Item_Cursor;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-void swapping(void *a, void *b);
-</pre>(Inherited from Fl_Browser_)</td>
-<td><pre>
-procedure Swapping
-       (This : in out Check_Browser;
-        A, B : in     Item_Cursor);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-void * top() const;
-</pre>(Inherited from Fl_Browser_)</td>
-<td><pre>
-function Top_Item
-       (This : in Check_Browser)
-    return Item_Cursor;
 </pre></td>
   </tr>
 

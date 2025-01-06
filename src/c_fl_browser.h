@@ -86,27 +86,8 @@ extern "C" int fl_browser_lineno(BROWSER b, void * item);
 
 //  reimp below here
 
-extern "C" void * fl_browser_selection(BROWSER c);
-extern "C" int fl_browser_displayed2(BROWSER c, void * i);
-extern "C" void * fl_browser_find_item(BROWSER c, int y);
-extern "C" void * fl_browser_top(BROWSER c);
-
-
-extern "C" void fl_browser_bbox(BROWSER c, int &x, int &y, int &w, int &h);
-extern "C" int fl_browser_leftedge(BROWSER c);
-extern "C" void fl_browser_redraw_line(BROWSER c, void * i);
-extern "C" void fl_browser_redraw_lines(BROWSER c);
-
-
 extern "C" int fl_browser_full_width(BROWSER c);
 extern "C" int fl_browser_item_quick_height(BROWSER c, void * i);
-
-
-extern "C" void fl_browser_new_list(BROWSER b);
-extern "C" void fl_browser_inserting(BROWSER b, void * a1, void * a2);
-extern "C" void fl_browser_deleting(BROWSER b, void * item);
-extern "C" void fl_browser_replacing(BROWSER b, void * a1, void * a2);
-extern "C" void fl_browser_swapping(BROWSER b, void * a1, void * a2);
 
 
 extern "C" void fl_browser_draw(BROWSER b);

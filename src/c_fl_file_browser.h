@@ -48,30 +48,8 @@ extern "C" const char * fl_file_browser_item_text(FILEBROWSER b, void * item);
 extern "C" void fl_file_browser_item_draw(FILEBROWSER b, void * item, int x, int y, int w, int h);
 
 
-extern "C" int fl_file_browser_lineno(FILEBROWSER b, void * item);
-
-
-extern "C" void * fl_file_browser_selection(FILEBROWSER c);
-extern "C" int fl_file_browser_displayed2(FILEBROWSER c, void * i);
-extern "C" void * fl_file_browser_find_item(FILEBROWSER c, int y);
-extern "C" void * fl_file_browser_top(FILEBROWSER c);
-
-
-extern "C" void fl_file_browser_bbox(FILEBROWSER c, int &x, int &y, int &w, int &h);
-extern "C" int fl_file_browser_leftedge(FILEBROWSER c);
-extern "C" void fl_file_browser_redraw_line(FILEBROWSER c, void * i);
-extern "C" void fl_file_browser_redraw_lines(FILEBROWSER c);
-
-
 extern "C" int fl_file_browser_full_width(FILEBROWSER c);
 extern "C" int fl_file_browser_item_quick_height(FILEBROWSER c, void * i);
-
-
-extern "C" void fl_file_browser_new_list(FILEBROWSER b);
-extern "C" void fl_file_browser_inserting(FILEBROWSER b, void * a1, void * a2);
-extern "C" void fl_file_browser_deleting(FILEBROWSER b, void * item);
-extern "C" void fl_file_browser_replacing(FILEBROWSER b, void * a1, void * a2);
-extern "C" void fl_file_browser_swapping(FILEBROWSER b, void * a1, void * a2);
 
 
 extern "C" void fl_file_browser_draw(FILEBROWSER b);

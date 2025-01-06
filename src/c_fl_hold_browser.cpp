@@ -55,28 +55,10 @@ public:
     friend const char * fl_hold_browser_item_text(HOLDBROWSER b, void * item);
     friend void fl_hold_browser_item_draw(HOLDBROWSER b, void * item, int x, int y, int w, int h);
 
-    friend int fl_hold_browser_lineno(HOLDBROWSER b, void * item);
-
-    friend void * fl_hold_browser_selection(HOLDBROWSER c);
-    friend int fl_hold_browser_displayed2(HOLDBROWSER c, void * i);
-    friend void * fl_hold_browser_find_item(HOLDBROWSER c, int y);
-    friend void * fl_hold_browser_top(HOLDBROWSER c);
-
-    friend void fl_hold_browser_bbox(HOLDBROWSER c, int &x, int &y, int &w, int &h);
-    friend int fl_hold_browser_leftedge(HOLDBROWSER c);
-    friend void fl_hold_browser_redraw_line(HOLDBROWSER c, void * i);
-    friend void fl_hold_browser_redraw_lines(HOLDBROWSER c);
-
     friend int fl_hold_browser_full_width(HOLDBROWSER c);
     friend int fl_hold_browser_full_height(HOLDBROWSER c);
     friend int fl_hold_browser_incr_height(HOLDBROWSER c);
     friend int fl_hold_browser_item_quick_height(HOLDBROWSER c, void * i);
-
-    friend void fl_hold_browser_new_list(HOLDBROWSER b);
-    friend void fl_hold_browser_inserting(HOLDBROWSER b, void * a1, void * a2);
-    friend void fl_hold_browser_deleting(HOLDBROWSER b, void * item);
-    friend void fl_hold_browser_replacing(HOLDBROWSER b, void * a1, void * a2);
-    friend void fl_hold_browser_swapping(HOLDBROWSER b, void * a1, void * a2);
 
     friend void fl_hold_browser_draw(HOLDBROWSER b);
 
@@ -198,153 +180,86 @@ void free_fl_hold_browser(HOLDBROWSER b) {
 
 //  These have to be reimplemented due to relying on custom class extensions
 
+
 int fl_hold_browser_full_height(HOLDBROWSER c) {
-    return reinterpret_cast<My_Hold_Browser*>(c)->Fl_Browser::full_height();
+    return reinterpret_cast<My_Hold_Browser*>(c)->Fl_Hold_Browser::full_height();
 }
 
 int fl_hold_browser_incr_height(HOLDBROWSER c) {
-    return reinterpret_cast<My_Hold_Browser*>(c)->Fl_Browser::incr_height();
+    return reinterpret_cast<My_Hold_Browser*>(c)->Fl_Hold_Browser::incr_height();
 }
 
 
 
 
 int fl_hold_browser_item_width(HOLDBROWSER b, void * item) {
-    return reinterpret_cast<My_Hold_Browser*>(b)->item_width(item);
+    return reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_width(item);
 }
 
 int fl_hold_browser_item_height(HOLDBROWSER b, void * item) {
-    return reinterpret_cast<My_Hold_Browser*>(b)->item_height(item);
+    return reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_height(item);
 }
 
 void * fl_hold_browser_item_first(HOLDBROWSER b) {
-    return reinterpret_cast<My_Hold_Browser*>(b)->item_first();
+    return reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_first();
 }
 
 void * fl_hold_browser_item_last(HOLDBROWSER b) {
-    return reinterpret_cast<My_Hold_Browser*>(b)->item_last();
+    return reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_last();
 }
 
 void * fl_hold_browser_item_next(HOLDBROWSER b, void * item) {
-    return reinterpret_cast<My_Hold_Browser*>(b)->item_next(item);
+    return reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_next(item);
 }
 
 void * fl_hold_browser_item_prev(HOLDBROWSER b, void * item) {
-    return reinterpret_cast<My_Hold_Browser*>(b)->item_prev(item);
+    return reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_prev(item);
 }
 
 void * fl_hold_browser_item_at(HOLDBROWSER b, int index) {
-    return reinterpret_cast<My_Hold_Browser*>(b)->item_at(index);
+    return reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_at(index);
 }
 
 void fl_hold_browser_item_select(HOLDBROWSER b, void * item, int val) {
-    reinterpret_cast<My_Hold_Browser*>(b)->item_select(item, val);
+    reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_select(item, val);
 }
 
 int fl_hold_browser_item_selected(HOLDBROWSER b, void * item) {
-    return reinterpret_cast<My_Hold_Browser*>(b)->item_selected(item);
+    return reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_selected(item);
 }
 
 void fl_hold_browser_item_swap(HOLDBROWSER b, void * x, void * y) {
-    reinterpret_cast<My_Hold_Browser*>(b)->item_swap(x, y);
+    reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_swap(x, y);
 }
 
 const char * fl_hold_browser_item_text(HOLDBROWSER b, void * item) {
-    return reinterpret_cast<My_Hold_Browser*>(b)->item_text(item);
+    return reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_text(item);
 }
 
 void fl_hold_browser_item_draw(HOLDBROWSER b, void * item, int x, int y, int w, int h) {
-    reinterpret_cast<My_Hold_Browser*>(b)->item_draw(item, x, y, w, h);
-}
-
-
-
-
-int fl_hold_browser_lineno(HOLDBROWSER b, void * item) {
-    return reinterpret_cast<My_Hold_Browser*>(b)->lineno(item);
-}
-
-
-
-
-void * fl_hold_browser_selection(HOLDBROWSER c) {
-    return reinterpret_cast<My_Hold_Browser*>(c)->selection();
-}
-
-int fl_hold_browser_displayed2(HOLDBROWSER c, void * i) {
-    return reinterpret_cast<My_Hold_Browser*>(c)->Fl_Browser_::displayed(i);
-}
-
-void * fl_hold_browser_find_item(HOLDBROWSER c, int y) {
-    return reinterpret_cast<My_Hold_Browser*>(c)->find_item(y);
-}
-
-void * fl_hold_browser_top(HOLDBROWSER c) {
-    return reinterpret_cast<My_Hold_Browser*>(c)->top();
-}
-
-
-
-
-void fl_hold_browser_bbox(HOLDBROWSER c, int &x, int &y, int &w, int &h) {
-    reinterpret_cast<My_Hold_Browser*>(c)->bbox(x, y, w, h);
-}
-
-int fl_hold_browser_leftedge(HOLDBROWSER c) {
-    return reinterpret_cast<My_Hold_Browser*>(c)->leftedge();
-}
-
-void fl_hold_browser_redraw_line(HOLDBROWSER c, void * i) {
-    reinterpret_cast<My_Hold_Browser*>(c)->redraw_line(i);
-}
-
-void fl_hold_browser_redraw_lines(HOLDBROWSER c) {
-    reinterpret_cast<My_Hold_Browser*>(c)->redraw_lines();
+    reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_draw(item, x, y, w, h);
 }
 
 
 
 
 int fl_hold_browser_full_width(HOLDBROWSER c) {
-    return reinterpret_cast<My_Hold_Browser*>(c)->Fl_Browser::full_width();
+    return reinterpret_cast<My_Hold_Browser*>(c)->Fl_Hold_Browser::full_width();
 }
 
 int fl_hold_browser_item_quick_height(HOLDBROWSER c, void * i) {
-    return reinterpret_cast<My_Hold_Browser*>(c)->Fl_Browser::item_quick_height(i);
-}
-
-
-
-
-void fl_hold_browser_new_list(HOLDBROWSER b) {
-    reinterpret_cast<My_Hold_Browser*>(b)->new_list();
-}
-
-void fl_hold_browser_inserting(HOLDBROWSER b, void * a1, void * a2) {
-    reinterpret_cast<My_Hold_Browser*>(b)->inserting(a1, a2);
-}
-
-void fl_hold_browser_deleting(HOLDBROWSER b, void * item) {
-    reinterpret_cast<My_Hold_Browser*>(b)->deleting(item);
-}
-
-void fl_hold_browser_replacing(HOLDBROWSER b, void * a1, void * a2) {
-    reinterpret_cast<My_Hold_Browser*>(b)->replacing(a1, a2);
-}
-
-void fl_hold_browser_swapping(HOLDBROWSER b, void * a1, void * a2) {
-    reinterpret_cast<My_Hold_Browser*>(b)->swapping(a1, a2);
+    return reinterpret_cast<My_Hold_Browser*>(c)->Fl_Hold_Browser::item_quick_height(i);
 }
 
 
 
 
 void fl_hold_browser_draw(HOLDBROWSER b) {
-    reinterpret_cast<My_Hold_Browser*>(b)->Fl_Browser::draw();
+    reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::draw();
 }
 
 int fl_hold_browser_handle(HOLDBROWSER b, int e) {
-    return reinterpret_cast<My_Hold_Browser*>(b)->Fl_Browser::handle(e);
+    return reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::handle(e);
 }
 
 

@@ -37,6 +37,16 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 
 
+//  Non-friend protected access
+
+class Friend_Browser : Fl_Browser {
+public:
+    using Fl_Browser::lineno;
+};
+
+
+
+
 //  Attaching all relevant hooks and friends
 
 class My_Browser : public Fl_Browser {
@@ -56,28 +66,10 @@ public:
     friend const char * fl_browser_item_text(BROWSER b, void * item);
     friend void fl_browser_item_draw(BROWSER b, void * item, int x, int y, int w, int h);
 
-    friend int fl_browser_lineno(BROWSER b, void * item);
-
-    friend void * fl_browser_selection(BROWSER c);
-    friend int fl_browser_displayed2(BROWSER c, void * i);
-    friend void * fl_browser_find_item(BROWSER c, int y);
-    friend void * fl_browser_top(BROWSER c);
-
-    friend void fl_browser_bbox(BROWSER c, int &x, int &y, int &w, int &h);
-    friend int fl_browser_leftedge(BROWSER c);
-    friend void fl_browser_redraw_line(BROWSER c, void * i);
-    friend void fl_browser_redraw_lines(BROWSER c);
-
     friend int fl_browser_full_width(BROWSER c);
     friend int fl_browser_full_height(BROWSER c);
     friend int fl_browser_incr_height(BROWSER c);
     friend int fl_browser_item_quick_height(BROWSER c, void * i);
-
-    friend void fl_browser_new_list(BROWSER b);
-    friend void fl_browser_inserting(BROWSER b, void * a1, void * a2);
-    friend void fl_browser_deleting(BROWSER b, void * item);
-    friend void fl_browser_replacing(BROWSER b, void * a1, void * a2);
-    friend void fl_browser_swapping(BROWSER b, void * a1, void * a2);
 
     friend void fl_browser_draw(BROWSER b);
 
@@ -367,101 +359,64 @@ int fl_browser_incr_height(BROWSER c) {
 
 
 int fl_browser_item_width(BROWSER b, void * item) {
-    return reinterpret_cast<My_Browser*>(b)->item_width(item);
+    return reinterpret_cast<My_Browser*>(b)->Fl_Browser::item_width(item);
 }
 
 int fl_browser_item_height(BROWSER b, void * item) {
-    return reinterpret_cast<My_Browser*>(b)->item_height(item);
+    return reinterpret_cast<My_Browser*>(b)->Fl_Browser::item_height(item);
 }
 
 void * fl_browser_item_first(BROWSER b) {
-    return reinterpret_cast<My_Browser*>(b)->item_first();
+    return reinterpret_cast<My_Browser*>(b)->Fl_Browser::item_first();
 }
 
 void * fl_browser_item_last(BROWSER b) {
-    return reinterpret_cast<My_Browser*>(b)->item_last();
+    return reinterpret_cast<My_Browser*>(b)->Fl_Browser::item_last();
 }
 
 void * fl_browser_item_next(BROWSER b, void * item) {
-    return reinterpret_cast<My_Browser*>(b)->item_next(item);
+    return reinterpret_cast<My_Browser*>(b)->Fl_Browser::item_next(item);
 }
 
 void * fl_browser_item_prev(BROWSER b, void * item) {
-    return reinterpret_cast<My_Browser*>(b)->item_prev(item);
+    return reinterpret_cast<My_Browser*>(b)->Fl_Browser::item_prev(item);
 }
 
 void * fl_browser_item_at(BROWSER b, int index) {
-    return reinterpret_cast<My_Browser*>(b)->item_at(index);
+    return reinterpret_cast<My_Browser*>(b)->Fl_Browser::item_at(index);
 }
 
 void fl_browser_item_select(BROWSER b, void * item, int val) {
-    reinterpret_cast<My_Browser*>(b)->item_select(item, val);
+    reinterpret_cast<My_Browser*>(b)->Fl_Browser::item_select(item, val);
 }
 
 int fl_browser_item_selected(BROWSER b, void * item) {
-    return reinterpret_cast<My_Browser*>(b)->item_selected(item);
+    return reinterpret_cast<My_Browser*>(b)->Fl_Browser::item_selected(item);
 }
 
 void fl_browser_item_swap(BROWSER b, void * x, void * y) {
-    reinterpret_cast<My_Browser*>(b)->item_swap(x, y);
+    reinterpret_cast<My_Browser*>(b)->Fl_Browser::item_swap(x, y);
 }
 
 const char * fl_browser_item_text(BROWSER b, void * item) {
-    return reinterpret_cast<My_Browser*>(b)->item_text(item);
+    return reinterpret_cast<My_Browser*>(b)->Fl_Browser::item_text(item);
 }
 
 void fl_browser_item_draw(BROWSER b, void * item, int x, int y, int w, int h) {
-    reinterpret_cast<My_Browser*>(b)->item_draw(item, x, y, w, h);
+    reinterpret_cast<My_Browser*>(b)->Fl_Browser::item_draw(item, x, y, w, h);
 }
 
 
 
 
 int fl_browser_lineno(BROWSER b, void * item) {
-    return reinterpret_cast<My_Browser*>(b)->lineno(item);
+    return (reinterpret_cast<Fl_Browser*>(b)->*(&Friend_Browser::lineno))(item);
 }
 
 
 
 
 //  These have to be reimplemented due to relying on custom class extensions
-
-void * fl_browser_selection(BROWSER c) {
-    return reinterpret_cast<My_Browser*>(c)->selection();
-}
-
-int fl_browser_displayed2(BROWSER c, void * i) {
-    return reinterpret_cast<My_Browser*>(c)->Fl_Browser_::displayed(i);
-}
-
-void * fl_browser_find_item(BROWSER c, int y) {
-    return reinterpret_cast<My_Browser*>(c)->find_item(y);
-}
-
-void * fl_browser_top(BROWSER c) {
-    return reinterpret_cast<My_Browser*>(c)->top();
-}
-
-
-
-
-void fl_browser_bbox(BROWSER c, int &x, int &y, int &w, int &h) {
-    reinterpret_cast<My_Browser*>(c)->bbox(x, y, w, h);
-}
-
-int fl_browser_leftedge(BROWSER c) {
-    return reinterpret_cast<My_Browser*>(c)->leftedge();
-}
-
-void fl_browser_redraw_line(BROWSER c, void * i) {
-    reinterpret_cast<My_Browser*>(c)->redraw_line(i);
-}
-
-void fl_browser_redraw_lines(BROWSER c) {
-    reinterpret_cast<My_Browser*>(c)->redraw_lines();
-}
-
-
 
 
 int fl_browser_full_width(BROWSER c) {
@@ -470,29 +425,6 @@ int fl_browser_full_width(BROWSER c) {
 
 int fl_browser_item_quick_height(BROWSER c, void * i) {
     return reinterpret_cast<My_Browser*>(c)->Fl_Browser::item_quick_height(i);
-}
-
-
-
-
-void fl_browser_new_list(BROWSER b) {
-    reinterpret_cast<My_Browser*>(b)->new_list();
-}
-
-void fl_browser_inserting(BROWSER b, void * a1, void * a2) {
-    reinterpret_cast<My_Browser*>(b)->inserting(a1, a2);
-}
-
-void fl_browser_deleting(BROWSER b, void * item) {
-    reinterpret_cast<My_Browser*>(b)->deleting(item);
-}
-
-void fl_browser_replacing(BROWSER b, void * a1, void * a2) {
-    reinterpret_cast<My_Browser*>(b)->replacing(a1, a2);
-}
-
-void fl_browser_swapping(BROWSER b, void * a1, void * a2) {
-    reinterpret_cast<My_Browser*>(b)->swapping(a1, a2);
 }
 
 

@@ -5,6 +5,7 @@
 
 
 #include <FL/Fl_Check_Browser.H>
+#include <FL/Fl_Browser_.H>
 #include "c_fl_check_browser.h"
 
 
@@ -43,21 +44,28 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 
 
+//  Non-friend protected / private access
+
+class Friend_Browser : Fl_Browser_ {
+public:
+    using Fl_Browser_::item_width;
+    using Fl_Browser_::item_height;
+    using Fl_Browser_::item_first;
+    using Fl_Browser_::item_next;
+    using Fl_Browser_::item_prev;
+    using Fl_Browser_::item_select;
+    using Fl_Browser_::item_selected;
+    using Fl_Browser_::item_draw;
+};
+
+
+
+
 //  Attaching all relevant hooks and friends
 
 class My_Check_Browser : public Fl_Check_Browser {
 public:
     using Fl_Check_Browser::Fl_Check_Browser;
-
-    friend void * fl_check_browser_selection(CHECKBROWSER c);
-    friend int fl_check_browser_displayed(CHECKBROWSER c, void * i);
-    friend void * fl_check_browser_find_item(CHECKBROWSER c, int y);
-    friend void * fl_check_browser_top(CHECKBROWSER c);
-
-    friend void fl_check_browser_bbox(CHECKBROWSER c, int &x, int &y, int &w, int &h);
-    friend int fl_check_browser_leftedge(CHECKBROWSER c);
-    friend void fl_check_browser_redraw_line(CHECKBROWSER c, void * i);
-    friend void fl_check_browser_redraw_lines(CHECKBROWSER c);
 
     friend int fl_check_browser_full_width(CHECKBROWSER c);
     friend int fl_check_browser_full_height(CHECKBROWSER c);
@@ -76,12 +84,6 @@ public:
     //  item_swap goes here
     //  item_text goes here
     friend void fl_check_browser_item_draw(CHECKBROWSER c, void * item, int x, int y, int w, int h);
-
-    friend void fl_check_browser_new_list(CHECKBROWSER c);
-    friend void fl_check_browser_inserting(CHECKBROWSER c, void * a1, void * a2);
-    friend void fl_check_browser_deleting(CHECKBROWSER c, void * item);
-    friend void fl_check_browser_replacing(CHECKBROWSER c, void * a1, void * a2);
-    friend void fl_check_browser_swapping(CHECKBROWSER c, void * a1, void * a2);
 
     friend void fl_check_browser_draw(CHECKBROWSER c);
     friend int fl_check_browser_handle(CHECKBROWSER c, int e);
@@ -254,47 +256,6 @@ int fl_check_browser_value(CHECKBROWSER c) {
 
 
 
-//  These have to be reimplemented due to relying on custom class extensions
-
-void * fl_check_browser_selection(CHECKBROWSER c) {
-    return reinterpret_cast<My_Check_Browser*>(c)->selection();
-}
-
-int fl_check_browser_displayed(CHECKBROWSER c, void * i) {
-    return reinterpret_cast<My_Check_Browser*>(c)->displayed(i);
-}
-
-void * fl_check_browser_find_item(CHECKBROWSER c, int y) {
-    //  For whatever reason the Fl_Check_Browser version of find_item is private
-    return reinterpret_cast<My_Check_Browser*>(c)->Fl_Browser_::find_item(y);
-}
-
-void * fl_check_browser_top(CHECKBROWSER c) {
-    return reinterpret_cast<My_Check_Browser*>(c)->top();
-}
-
-
-
-
-void fl_check_browser_bbox(CHECKBROWSER c, int &x, int &y, int &w, int &h) {
-    reinterpret_cast<My_Check_Browser*>(c)->bbox(x, y, w, h);
-}
-
-int fl_check_browser_leftedge(CHECKBROWSER c) {
-    return reinterpret_cast<My_Check_Browser*>(c)->leftedge();
-}
-
-void fl_check_browser_redraw_line(CHECKBROWSER c, void * i) {
-    reinterpret_cast<My_Check_Browser*>(c)->redraw_line(i);
-}
-
-void fl_check_browser_redraw_lines(CHECKBROWSER c) {
-    reinterpret_cast<My_Check_Browser*>(c)->redraw_lines();
-}
-
-
-
-
 int fl_check_browser_full_width(CHECKBROWSER c) {
     return reinterpret_cast<My_Check_Browser*>(c)->Fl_Check_Browser::full_width();
 }
@@ -315,47 +276,41 @@ int fl_check_browser_item_quick_height(CHECKBROWSER c, void * i) {
 
 
 int fl_check_browser_item_width(CHECKBROWSER c, void * i) {
-    (void)c; (void)i;
-    return 0;
+    return (reinterpret_cast<Fl_Check_Browser*>(c)->*(&Friend_Browser::item_width))(i);
     //  return reinterpret_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_width(i);
 }
 
 int fl_check_browser_item_height(CHECKBROWSER c, void * i) {
-    (void)c; (void)i;
-    return 0;
+    return (reinterpret_cast<Fl_Check_Browser*>(c)->*(&Friend_Browser::item_height))(i);
     //  return reinterpret_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_height(i);
 }
 
 void * fl_check_browser_item_first(CHECKBROWSER c) {
-    (void)c;
-    return 0;
+    return (reinterpret_cast<Fl_Check_Browser*>(c)->*(&Friend_Browser::item_first))();
     //  return reinterpret_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_first();
 }
 
 //  missing item_last
 
 void * fl_check_browser_item_next(CHECKBROWSER c, void * i) {
-    (void)c; (void)i;
-    return 0;
+    return (reinterpret_cast<Fl_Check_Browser*>(c)->*(&Friend_Browser::item_next))(i);
     //  return reinterpret_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_next(i);
 }
 
 void * fl_check_browser_item_prev(CHECKBROWSER c, void * i) {
-    (void)c; (void)i;
-    return 0;
+    return (reinterpret_cast<Fl_Check_Browser*>(c)->*(&Friend_Browser::item_prev))(i);
     //  return reinterpret_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_prev(i);
 }
 
 //  missing item_at
 
 void fl_check_browser_item_select(CHECKBROWSER c, void * i, int v) {
-    (void)c; (void)i; (void)v;
+    (reinterpret_cast<Fl_Check_Browser*>(c)->*(&Friend_Browser::item_select))(i, v);
     //  reinterpret_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_select(i, v);
 }
 
 int fl_check_browser_item_selected(CHECKBROWSER c, void * i) {
-    (void)c; (void)i;
-    return 0;
+    return (reinterpret_cast<Fl_Check_Browser*>(c)->*(&Friend_Browser::item_selected))(i);
     //  return reinterpret_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_selected(i);
 }
 
@@ -363,31 +318,8 @@ int fl_check_browser_item_selected(CHECKBROWSER c, void * i) {
 //  missing item_text
 
 void fl_check_browser_item_draw(CHECKBROWSER c, void * item, int x, int y, int w, int h) {
-    (void)c; (void)item; (void)x; (void)y; (void)w; (void)h;
+    (reinterpret_cast<Fl_Check_Browser*>(c)->*(&Friend_Browser::item_draw))(item, x, y, w, h);
     //  reinterpret_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_draw(item, x, y, w, h);
-}
-
-
-
-
-void fl_check_browser_new_list(CHECKBROWSER c) {
-    reinterpret_cast<My_Check_Browser*>(c)->new_list();
-}
-
-void fl_check_browser_inserting(CHECKBROWSER c, void * a1, void * a2) {
-    reinterpret_cast<My_Check_Browser*>(c)->inserting(a1, a2);
-}
-
-void fl_check_browser_deleting(CHECKBROWSER c, void * item) {
-    reinterpret_cast<My_Check_Browser*>(c)->deleting(item);
-}
-
-void fl_check_browser_replacing(CHECKBROWSER c, void * a1, void * a2) {
-    reinterpret_cast<My_Check_Browser*>(c)->replacing(a1, a2);
-}
-
-void fl_check_browser_swapping(CHECKBROWSER c, void * a1, void * a2) {
-    reinterpret_cast<My_Check_Browser*>(c)->swapping(a1, a2);
 }
 
 

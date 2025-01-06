@@ -356,6 +356,8 @@ private
             Callback       : Widget_Callback;
             Current_Image  : access FLTK.Images.Image'Class;
             Inactive_Image : access FLTK.Images.Image'Class;
+            Draw_Ptr       : System.Address;
+            Handle_Ptr     : System.Address;
         end record;
 
     overriding procedure Finalize

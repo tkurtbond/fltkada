@@ -351,48 +351,18 @@ package FLTK.Widgets.Groups.Browsers is
 private
 
 
-    type Item_Override_Fun is
-       (Item_Width_Ptr,    Item_Height_Ptr,
-        Item_First_Ptr,    Item_Last_Ptr,
-        Item_Next_Ptr,     Item_Previous_Ptr,
-        Item_At_Ptr,       Item_Select_Ptr,
-        Item_Selected_Ptr, Item_Swap_Ptr,
-        Item_Text_Ptr,     Item_Draw_Ptr);
-    type Item_Override_Fun_Ptr_Array is array (Item_Override_Fun) of System.Address;
-
-
-    type Item_Inherit_Fun is
-       (Current_Selection_Ptr, Is_Displayed_Ptr,
-        Find_Item_Ptr,         Top_Item_Ptr);
-    type Item_Inherit_Fun_Ptr_Array is array (Item_Inherit_Fun) of System.Address;
-
-    type Redrawing_Fun is
-       (Bounding_Box_Ptr, Left_Edge_Ptr,
-        Redraw_Line_Ptr,  Redraw_List_Ptr);
-    type Redrawing_Fun_Ptr_Array is array (Redrawing_Fun) of System.Address;
-
     type Wide_High_Fun is
        (Full_List_Width_Ptr,     Full_List_Height_Ptr,
         Average_Item_Height_Ptr, Item_Quick_Height_Ptr);
     type Wide_High_Fun_Ptr_Array is array (Wide_High_Fun) of System.Address;
 
-    type Cache_Fun is
-       (New_List_Ptr, Inserting_Ptr,
-        Deleting_Ptr, Replacing_Ptr, Swapping_Ptr);
-    type Cache_Fun_Ptr_Array is array (Cache_Fun) of System.Address;
-
 
     type Browser is new Group with record
-        Horizon           : aliased Valuators.Sliders.Scrollbars.Scrollbar;
-        Vertigo           : aliased Valuators.Sliders.Scrollbars.Scrollbar;
-        Text_Store        : Interfaces.C.Strings.chars_ptr_array (1 .. 2);
-        Current           : Interfaces.C.size_t := 1;
-        Item_Inherit_Ptrs : Item_Inherit_Fun_Ptr_Array;
-        Redrawing_Ptrs    : Redrawing_Fun_Ptr_Array;
-        Wide_High_Ptrs    : Wide_High_Fun_Ptr_Array;
-        Cache_Ptrs        : Cache_Fun_Ptr_Array;
-        Draw_Ptr          : System.Address;
-        Handle_Ptr        : System.Address;
+        Horizon        : aliased Valuators.Sliders.Scrollbars.Scrollbar;
+        Vertigo        : aliased Valuators.Sliders.Scrollbars.Scrollbar;
+        Text_Store     : Interfaces.C.Strings.chars_ptr_array (1 .. 2);
+        Current        : Interfaces.C.size_t := 1;
+        Wide_High_Ptrs : Wide_High_Fun_Ptr_Array;
     end record;
 
     overriding procedure Initialize

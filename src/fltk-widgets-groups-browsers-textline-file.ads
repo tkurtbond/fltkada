@@ -12,6 +12,19 @@ with
 package FLTK.Widgets.Groups.Browsers.Textline.File is
 
 
+    --  Due to the inherited methods being made private in C++, overriding
+    --
+    --      Item_Width
+    --      Item_Height
+    --      Item_Draw
+    --      Full_List_Height
+    --      Average_Item_Height
+    --
+    --  will have no effect on the behaviour of this widget in FLTK.
+    --
+    --  This may change in versions beyond 1.3.
+
+
     type File_Browser is new Textline_Browser with private;
 
     type File_Browser_Reference (Data : not null access File_Browser'Class) is
@@ -85,6 +98,35 @@ package FLTK.Widgets.Groups.Browsers.Textline.File is
             Size : in     Font_Size);
 
 
+
+
+    function Full_List_Height
+           (This : in File_Browser)
+        return Integer;
+
+    function Average_Item_Height
+           (This : in File_Browser)
+        return Integer;
+
+
+
+
+    function Item_Width
+           (This : in File_Browser;
+            Item : in Item_Cursor)
+        return Integer;
+
+    function Item_Height
+           (This : in File_Browser;
+            Item : in Item_Cursor)
+        return Integer;
+
+    procedure Item_Draw
+           (This       : in File_Browser;
+            Item       : in Item_Cursor;
+            X, Y, W, H : in Integer);
+
+
 private
 
 
@@ -111,6 +153,13 @@ private
     pragma Inline (Set_Icon_Size);
     pragma Inline (Get_Text_Size);
     pragma Inline (Set_Text_Size);
+
+    pragma Inline (Full_List_Height);
+    pragma Inline (Average_Item_Height);
+
+    pragma Inline (Item_Width);
+    pragma Inline (Item_Height);
+    pragma Inline (Item_Draw);
 
 
 end FLTK.Widgets.Groups.Browsers.Textline.File;

@@ -188,60 +188,6 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
 
 
 
-
-    function fl_file_browser_selection
-           (B : in Storage.Integer_Address)
-        return Storage.Integer_Address;
-    pragma Import (C, fl_file_browser_selection, "fl_file_browser_selection");
-    pragma Inline (fl_file_browser_selection);
-
-    function fl_file_browser_displayed2
-           (B, I : in Storage.Integer_Address)
-        return Interfaces.C.int;
-    pragma Import (C, fl_file_browser_displayed2, "fl_file_browser_displayed2");
-    pragma Inline (fl_file_browser_displayed2);
-
-    function fl_file_browser_find_item
-           (B : in Storage.Integer_Address;
-            Y : in Interfaces.C.int)
-        return Storage.Integer_Address;
-    pragma Import (C, fl_file_browser_find_item, "fl_file_browser_find_item");
-    pragma Inline (fl_file_browser_find_item);
-
-    function fl_file_browser_top
-           (B : in Storage.Integer_Address)
-        return Storage.Integer_Address;
-    pragma Import (C, fl_file_browser_top, "fl_file_browser_top");
-    pragma Inline (fl_file_browser_top);
-
-
-
-
-    procedure fl_file_browser_bbox
-           (B          : in     Storage.Integer_Address;
-            X, Y, W, H :    out Interfaces.C.int);
-    pragma Import (C, fl_file_browser_bbox, "fl_file_browser_bbox");
-    pragma Inline (fl_file_browser_bbox);
-
-    function fl_file_browser_leftedge
-           (B : in Storage.Integer_Address)
-        return Interfaces.C.int;
-    pragma Import (C, fl_file_browser_leftedge, "fl_file_browser_leftedge");
-    pragma Inline (fl_file_browser_leftedge);
-
-    procedure fl_file_browser_redraw_line
-           (B, I : in Storage.Integer_Address);
-    pragma Import (C, fl_file_browser_redraw_line, "fl_file_browser_redraw_line");
-    pragma Inline (fl_file_browser_redraw_line);
-
-    procedure fl_file_browser_redraw_lines
-           (B : in Storage.Integer_Address);
-    pragma Import (C, fl_file_browser_redraw_lines, "fl_file_browser_redraw_lines");
-    pragma Inline (fl_file_browser_redraw_lines);
-
-
-
-
     function fl_file_browser_full_width
            (B : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -265,43 +211,6 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
         return Interfaces.C.int;
     pragma Import (C, fl_file_browser_item_quick_height, "fl_file_browser_item_quick_height");
     pragma Inline (fl_file_browser_item_quick_height);
-
-
-
-
-    function fl_file_browser_lineno
-           (B, I : in Storage.Integer_Address)
-        return Interfaces.C.int;
-    pragma Import (C, fl_file_browser_lineno, "fl_file_browser_lineno");
-    pragma Inline (fl_file_browser_lineno);
-
-
-
-
-    procedure fl_file_browser_new_list
-           (B : in Storage.Integer_Address);
-    pragma Import (C, fl_file_browser_new_list, "fl_file_browser_new_list");
-    pragma Inline (fl_file_browser_new_list);
-
-    procedure fl_file_browser_inserting
-           (B, A1, A2 : in Storage.Integer_Address);
-    pragma Import (C, fl_file_browser_inserting, "fl_file_browser_inserting");
-    pragma Inline (fl_file_browser_inserting);
-
-    procedure fl_file_browser_deleting
-           (B, I : in Storage.Integer_Address);
-    pragma Import (C, fl_file_browser_deleting, "fl_file_browser_deleting");
-    pragma Inline (fl_file_browser_deleting);
-
-    procedure fl_file_browser_replacing
-           (B, A1, A2 : in Storage.Integer_Address);
-    pragma Import (C, fl_file_browser_replacing, "fl_file_browser_replacing");
-    pragma Inline (fl_file_browser_replacing);
-
-    procedure fl_file_browser_swapping
-           (B, A1, A2 : in Storage.Integer_Address);
-    pragma Import (C, fl_file_browser_swapping, "fl_file_browser_swapping");
-    pragma Inline (fl_file_browser_swapping);
 
 
 
@@ -374,30 +283,13 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
             Item_Swap_Ptr     => fl_file_browser_item_swap'Address,
             Item_Text_Ptr     => fl_file_browser_item_text'Address,
             Item_Draw_Ptr     => fl_file_browser_item_draw'Address);
-        This.Item_Inherit_Ptrs :=
-           (Current_Selection_Ptr => fl_file_browser_selection'Address,
-            Is_Displayed_Ptr      => fl_file_browser_displayed2'Address,
-            Find_Item_Ptr         => fl_file_browser_find_item'Address,
-            Top_Item_Ptr          => fl_file_browser_top'Address);
-        This.Redrawing_Ptrs :=
-           (Bounding_Box_Ptr => fl_file_browser_bbox'Address,
-            Left_Edge_Ptr    => fl_file_browser_leftedge'Address,
-            Redraw_Line_Ptr  => fl_file_browser_redraw_line'Address,
-            Redraw_List_Ptr  => fl_file_browser_redraw_lines'Address);
         This.Wide_High_Ptrs :=
            (Full_List_Width_Ptr     => fl_file_browser_full_width'Address,
             Full_List_Height_Ptr    => fl_file_browser_full_height'Address,
             Average_Item_Height_Ptr => fl_file_browser_incr_height'Address,
             Item_Quick_Height_Ptr   => fl_file_browser_item_quick_height'Address);
-        This.Cache_Ptrs :=
-           (New_List_Ptr  => fl_file_browser_new_list'Address,
-            Inserting_Ptr => fl_file_browser_inserting'Address,
-            Deleting_Ptr  => fl_file_browser_deleting'Address,
-            Replacing_Ptr => fl_file_browser_replacing'Address,
-            Swapping_Ptr  => fl_file_browser_swapping'Address);
-        This.Draw_Ptr := fl_file_browser_draw'Address;
+        This.Draw_Ptr   := fl_file_browser_draw'Address;
         This.Handle_Ptr := fl_file_browser_handle'Address;
-        This.Line_Number_Ptr := fl_file_browser_lineno'Address;
     end Initialize;
 
 
@@ -560,6 +452,53 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
     begin
         fl_file_browser_set_textsize (This.Void_Ptr, Interfaces.C.int (Size));
     end Set_Text_Size;
+
+
+
+
+    function Full_List_Height
+           (This : in File_Browser)
+        return Integer is
+    begin
+        return Textline_Browser (This).Full_List_Height;
+    end Full_List_Height;
+
+
+    function Average_Item_Height
+           (This : in File_Browser)
+        return Integer is
+    begin
+        return Textline_Browser (This).Average_Item_Height;
+    end Average_Item_Height;
+
+
+
+
+    function Item_Width
+           (This : in File_Browser;
+            Item : in Item_Cursor)
+        return Integer is
+    begin
+        return Textline_Browser (This).Item_Width (Item);
+    end Item_Width;
+
+
+    function Item_Height
+           (This : in File_Browser;
+            Item : in Item_Cursor)
+        return Integer is
+    begin
+        return Textline_Browser (This).Item_Height (Item);
+    end Item_Height;
+
+
+    procedure Item_Draw
+           (This       : in File_Browser;
+            Item       : in Item_Cursor;
+            X, Y, W, H : in Integer) is
+    begin
+        Textline_Browser (This).Item_Draw (Item, X, Y, W, H);
+    end Item_Draw;
 
 
 end FLTK.Widgets.Groups.Browsers.Textline.File;

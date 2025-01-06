@@ -42,34 +42,41 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 
 
+//  Non-friend protected access
+
+class Friend_Browser_ : Fl_Browser_ {
+public:
+    using Fl_Browser_::selection;
+    using Fl_Browser_::displayed;
+    using Fl_Browser_::find_item;
+    using Fl_Browser_::top;
+
+    using Fl_Browser_::bbox;
+    using Fl_Browser_::leftedge;
+    using Fl_Browser_::redraw_line;
+    using Fl_Browser_::redraw_lines;
+
+    using Fl_Browser_::new_list;
+    using Fl_Browser_::inserting;
+    using Fl_Browser_::deleting;
+    using Fl_Browser_::replacing;
+    using Fl_Browser_::swapping;
+};
+
+
+
+
 //  Attaching all relevant hooks and friends
 
 class My_Browser_ : public Fl_Browser_ {
 public:
     using Fl_Browser_::Fl_Browser_;
-
     friend ABSTRACTBROWSER new_fl_abstract_browser(int x, int y, int w, int h, char * label);
-
-    friend void * fl_abstract_browser_selection(ABSTRACTBROWSER b);
-    friend int fl_abstract_browser_displayed(ABSTRACTBROWSER b, void * i);
-    friend void * fl_abstract_browser_find_item(ABSTRACTBROWSER b, int y);
-    friend void * fl_abstract_browser_top(ABSTRACTBROWSER b);
-
-    friend void fl_abstract_browser_bbox(ABSTRACTBROWSER b, int &x, int &y, int &w, int &h);
-    friend int fl_abstract_browser_leftedge(ABSTRACTBROWSER b);
-    friend void fl_abstract_browser_redraw_line(ABSTRACTBROWSER b, void * i);
-    friend void fl_abstract_browser_redraw_lines(ABSTRACTBROWSER b);
 
     friend int fl_abstract_browser_full_width(ABSTRACTBROWSER b);
     friend int fl_abstract_browser_full_height(ABSTRACTBROWSER b);
     friend int fl_abstract_browser_incr_height(ABSTRACTBROWSER b);
     friend int fl_abstract_browser_item_quick_height(ABSTRACTBROWSER b, void * i);
-
-    friend void fl_abstract_browser_new_list(ABSTRACTBROWSER b);
-    friend void fl_abstract_browser_inserting(ABSTRACTBROWSER b, void * a1, void * a2);
-    friend void fl_abstract_browser_deleting(ABSTRACTBROWSER b, void * item);
-    friend void fl_abstract_browser_replacing(ABSTRACTBROWSER b, void * a1, void * a2);
-    friend void fl_abstract_browser_swapping(ABSTRACTBROWSER b, void * a1, void * a2);
 
     friend void fl_abstract_browser_draw(ABSTRACTBROWSER b);
     friend int fl_abstract_browser_handle(ABSTRACTBROWSER b, int e);
@@ -209,7 +216,7 @@ int fl_abstract_browser_select_only(ABSTRACTBROWSER b, void * i, int c) {
 }
 
 void * fl_abstract_browser_selection(ABSTRACTBROWSER b) {
-    return reinterpret_cast<My_Browser_*>(b)->selection();
+    return (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::selection))();
 }
 
 int fl_abstract_browser_deselect(ABSTRACTBROWSER b, int c) {
@@ -221,15 +228,15 @@ void fl_abstract_browser_display(ABSTRACTBROWSER b, void * i) {
 }
 
 int fl_abstract_browser_displayed(ABSTRACTBROWSER b, void * i) {
-    return reinterpret_cast<My_Browser_*>(b)->displayed(i);
+    return (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::displayed))(i);
 }
 
 void * fl_abstract_browser_find_item(ABSTRACTBROWSER b, int y) {
-    return reinterpret_cast<My_Browser_*>(b)->find_item(y);
+    return (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::find_item))(y);
 }
 
 void * fl_abstract_browser_top(ABSTRACTBROWSER b) {
-    return reinterpret_cast<My_Browser_*>(b)->top();
+    return (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::top))();
 }
 
 void fl_abstract_browser_sort(ABSTRACTBROWSER b, int f) {
@@ -314,19 +321,19 @@ void fl_abstract_browser_resize(ABSTRACTBROWSER b, int x, int y, int w, int h) {
 }
 
 void fl_abstract_browser_bbox(ABSTRACTBROWSER b, int &x, int &y, int &w, int &h) {
-    reinterpret_cast<My_Browser_*>(b)->bbox(x, y, w, h);
+    (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::bbox))(x, y, w, h);
 }
 
 int fl_abstract_browser_leftedge(ABSTRACTBROWSER b) {
-    return reinterpret_cast<My_Browser_*>(b)->leftedge();
+    return (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::leftedge))();
 }
 
 void fl_abstract_browser_redraw_line(ABSTRACTBROWSER b, void * i) {
-    reinterpret_cast<My_Browser_*>(b)->redraw_line(i);
+    (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::redraw_line))(i);
 }
 
 void fl_abstract_browser_redraw_lines(ABSTRACTBROWSER b) {
-    reinterpret_cast<My_Browser_*>(b)->redraw_lines();
+    (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::redraw_lines))();
 }
 
 
@@ -352,23 +359,23 @@ int fl_abstract_browser_item_quick_height(ABSTRACTBROWSER b, void * i) {
 
 
 void fl_abstract_browser_new_list(ABSTRACTBROWSER b) {
-    reinterpret_cast<My_Browser_*>(b)->new_list();
+    (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::new_list))();
 }
 
 void fl_abstract_browser_inserting(ABSTRACTBROWSER b, void * a1, void * a2) {
-    reinterpret_cast<My_Browser_*>(b)->inserting(a1, a2);
+    (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::inserting))(a1, a2);
 }
 
 void fl_abstract_browser_deleting(ABSTRACTBROWSER b, void * item) {
-    reinterpret_cast<My_Browser_*>(b)->deleting(item);
+    (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::deleting))(item);
 }
 
 void fl_abstract_browser_replacing(ABSTRACTBROWSER b, void * a1, void * a2) {
-    reinterpret_cast<My_Browser_*>(b)->replacing(a1, a2);
+    (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::replacing))(a1, a2);
 }
 
 void fl_abstract_browser_swapping(ABSTRACTBROWSER b, void * a1, void * a2) {
-    reinterpret_cast<My_Browser_*>(b)->swapping(a1, a2);
+    (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::swapping))(a1, a2);
 }
 
 

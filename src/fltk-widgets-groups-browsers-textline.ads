@@ -342,11 +342,20 @@ private
         Element_Type => Image_Access);
 
 
+    type Item_Override_Fun is
+       (Item_Width_Ptr,    Item_Height_Ptr,
+        Item_First_Ptr,    Item_Last_Ptr,
+        Item_Next_Ptr,     Item_Previous_Ptr,
+        Item_At_Ptr,       Item_Select_Ptr,
+        Item_Selected_Ptr, Item_Swap_Ptr,
+        Item_Text_Ptr,     Item_Draw_Ptr);
+    type Item_Override_Fun_Ptr_Array is array (Item_Override_Fun) of System.Address;
+
+
     type Textline_Browser is new Browser with record
         Columns            : C_Col_Widths_Access;
         Icons              : Image_Vectors.Vector;
         Item_Override_Ptrs : Item_Override_Fun_Ptr_Array;
-        Line_Number_Ptr    : System.Address;
     end record;
 
     overriding procedure Initialize
@@ -398,11 +407,6 @@ private
 
     pragma Inline (Has_Icon);
     pragma Inline (Get_Icon);
-
-    pragma Inline (Bounding_Box);
-    pragma Inline (Left_Edge);
-    pragma Inline (Redraw_Line);
-    pragma Inline (Redraw_List);
 
     pragma Inline (Full_List_Height);
     pragma Inline (Average_Item_Height);

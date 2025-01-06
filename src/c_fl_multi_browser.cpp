@@ -55,28 +55,10 @@ public:
     friend const char * fl_multi_browser_item_text(MULTIBROWSER b, void * item);
     friend void fl_multi_browser_item_draw(MULTIBROWSER b, void * item, int x, int y, int w, int h);
 
-    friend int fl_multi_browser_lineno(MULTIBROWSER b, void * item);
-
-    friend void * fl_multi_browser_selection(MULTIBROWSER c);
-    friend int fl_multi_browser_displayed2(MULTIBROWSER c, void * i);
-    friend void * fl_multi_browser_find_item(MULTIBROWSER c, int y);
-    friend void * fl_multi_browser_top(MULTIBROWSER c);
-
-    friend void fl_multi_browser_bbox(MULTIBROWSER c, int &x, int &y, int &w, int &h);
-    friend int fl_multi_browser_leftedge(MULTIBROWSER c);
-    friend void fl_multi_browser_redraw_line(MULTIBROWSER c, void * i);
-    friend void fl_multi_browser_redraw_lines(MULTIBROWSER c);
-
     friend int fl_multi_browser_full_width(MULTIBROWSER c);
     friend int fl_multi_browser_full_height(MULTIBROWSER c);
     friend int fl_multi_browser_incr_height(MULTIBROWSER c);
     friend int fl_multi_browser_item_quick_height(MULTIBROWSER c, void * i);
-
-    friend void fl_multi_browser_new_list(MULTIBROWSER b);
-    friend void fl_multi_browser_inserting(MULTIBROWSER b, void * a1, void * a2);
-    friend void fl_multi_browser_deleting(MULTIBROWSER b, void * item);
-    friend void fl_multi_browser_replacing(MULTIBROWSER b, void * a1, void * a2);
-    friend void fl_multi_browser_swapping(MULTIBROWSER b, void * a1, void * a2);
 
     friend void fl_multi_browser_draw(MULTIBROWSER b);
 
@@ -198,153 +180,86 @@ void free_fl_multi_browser(MULTIBROWSER b) {
 
 //  These have to be reimplemented due to relying on custom class extensions
 
+
 int fl_multi_browser_full_height(MULTIBROWSER c) {
-    return reinterpret_cast<My_Multi_Browser*>(c)->Fl_Browser::full_height();
+    return reinterpret_cast<My_Multi_Browser*>(c)->Fl_Multi_Browser::full_height();
 }
 
 int fl_multi_browser_incr_height(MULTIBROWSER c) {
-    return reinterpret_cast<My_Multi_Browser*>(c)->Fl_Browser::incr_height();
+    return reinterpret_cast<My_Multi_Browser*>(c)->Fl_Multi_Browser::incr_height();
 }
 
 
 
 
 int fl_multi_browser_item_width(MULTIBROWSER b, void * item) {
-    return reinterpret_cast<My_Multi_Browser*>(b)->item_width(item);
+    return reinterpret_cast<My_Multi_Browser*>(b)->Fl_Multi_Browser::item_width(item);
 }
 
 int fl_multi_browser_item_height(MULTIBROWSER b, void * item) {
-    return reinterpret_cast<My_Multi_Browser*>(b)->item_height(item);
+    return reinterpret_cast<My_Multi_Browser*>(b)->Fl_Multi_Browser::item_height(item);
 }
 
 void * fl_multi_browser_item_first(MULTIBROWSER b) {
-    return reinterpret_cast<My_Multi_Browser*>(b)->item_first();
+    return reinterpret_cast<My_Multi_Browser*>(b)->Fl_Multi_Browser::item_first();
 }
 
 void * fl_multi_browser_item_last(MULTIBROWSER b) {
-    return reinterpret_cast<My_Multi_Browser*>(b)->item_last();
+    return reinterpret_cast<My_Multi_Browser*>(b)->Fl_Multi_Browser::item_last();
 }
 
 void * fl_multi_browser_item_next(MULTIBROWSER b, void * item) {
-    return reinterpret_cast<My_Multi_Browser*>(b)->item_next(item);
+    return reinterpret_cast<My_Multi_Browser*>(b)->Fl_Multi_Browser::item_next(item);
 }
 
 void * fl_multi_browser_item_prev(MULTIBROWSER b, void * item) {
-    return reinterpret_cast<My_Multi_Browser*>(b)->item_prev(item);
+    return reinterpret_cast<My_Multi_Browser*>(b)->Fl_Multi_Browser::item_prev(item);
 }
 
 void * fl_multi_browser_item_at(MULTIBROWSER b, int index) {
-    return reinterpret_cast<My_Multi_Browser*>(b)->item_at(index);
+    return reinterpret_cast<My_Multi_Browser*>(b)->Fl_Multi_Browser::item_at(index);
 }
 
 void fl_multi_browser_item_select(MULTIBROWSER b, void * item, int val) {
-    reinterpret_cast<My_Multi_Browser*>(b)->item_select(item, val);
+    reinterpret_cast<My_Multi_Browser*>(b)->Fl_Multi_Browser::item_select(item, val);
 }
 
 int fl_multi_browser_item_selected(MULTIBROWSER b, void * item) {
-    return reinterpret_cast<My_Multi_Browser*>(b)->item_selected(item);
+    return reinterpret_cast<My_Multi_Browser*>(b)->Fl_Multi_Browser::item_selected(item);
 }
 
 void fl_multi_browser_item_swap(MULTIBROWSER b, void * x, void * y) {
-    reinterpret_cast<My_Multi_Browser*>(b)->item_swap(x, y);
+    reinterpret_cast<My_Multi_Browser*>(b)->Fl_Multi_Browser::item_swap(x, y);
 }
 
 const char * fl_multi_browser_item_text(MULTIBROWSER b, void * item) {
-    return reinterpret_cast<My_Multi_Browser*>(b)->item_text(item);
+    return reinterpret_cast<My_Multi_Browser*>(b)->Fl_Multi_Browser::item_text(item);
 }
 
 void fl_multi_browser_item_draw(MULTIBROWSER b, void * item, int x, int y, int w, int h) {
-    reinterpret_cast<My_Multi_Browser*>(b)->item_draw(item, x, y, w, h);
-}
-
-
-
-
-int fl_multi_browser_lineno(MULTIBROWSER b, void * item) {
-    return reinterpret_cast<My_Multi_Browser*>(b)->lineno(item);
-}
-
-
-
-
-void * fl_multi_browser_selection(MULTIBROWSER c) {
-    return reinterpret_cast<My_Multi_Browser*>(c)->selection();
-}
-
-int fl_multi_browser_displayed2(MULTIBROWSER c, void * i) {
-    return reinterpret_cast<My_Multi_Browser*>(c)->Fl_Browser_::displayed(i);
-}
-
-void * fl_multi_browser_find_item(MULTIBROWSER c, int y) {
-    return reinterpret_cast<My_Multi_Browser*>(c)->find_item(y);
-}
-
-void * fl_multi_browser_top(MULTIBROWSER c) {
-    return reinterpret_cast<My_Multi_Browser*>(c)->top();
-}
-
-
-
-
-void fl_multi_browser_bbox(MULTIBROWSER c, int &x, int &y, int &w, int &h) {
-    reinterpret_cast<My_Multi_Browser*>(c)->bbox(x, y, w, h);
-}
-
-int fl_multi_browser_leftedge(MULTIBROWSER c) {
-    return reinterpret_cast<My_Multi_Browser*>(c)->leftedge();
-}
-
-void fl_multi_browser_redraw_line(MULTIBROWSER c, void * i) {
-    reinterpret_cast<My_Multi_Browser*>(c)->redraw_line(i);
-}
-
-void fl_multi_browser_redraw_lines(MULTIBROWSER c) {
-    reinterpret_cast<My_Multi_Browser*>(c)->redraw_lines();
+    reinterpret_cast<My_Multi_Browser*>(b)->Fl_Multi_Browser::item_draw(item, x, y, w, h);
 }
 
 
 
 
 int fl_multi_browser_full_width(MULTIBROWSER c) {
-    return reinterpret_cast<My_Multi_Browser*>(c)->Fl_Browser::full_width();
+    return reinterpret_cast<My_Multi_Browser*>(c)->Fl_Multi_Browser::full_width();
 }
 
 int fl_multi_browser_item_quick_height(MULTIBROWSER c, void * i) {
-    return reinterpret_cast<My_Multi_Browser*>(c)->Fl_Browser::item_quick_height(i);
-}
-
-
-
-
-void fl_multi_browser_new_list(MULTIBROWSER b) {
-    reinterpret_cast<My_Multi_Browser*>(b)->new_list();
-}
-
-void fl_multi_browser_inserting(MULTIBROWSER b, void * a1, void * a2) {
-    reinterpret_cast<My_Multi_Browser*>(b)->inserting(a1, a2);
-}
-
-void fl_multi_browser_deleting(MULTIBROWSER b, void * item) {
-    reinterpret_cast<My_Multi_Browser*>(b)->deleting(item);
-}
-
-void fl_multi_browser_replacing(MULTIBROWSER b, void * a1, void * a2) {
-    reinterpret_cast<My_Multi_Browser*>(b)->replacing(a1, a2);
-}
-
-void fl_multi_browser_swapping(MULTIBROWSER b, void * a1, void * a2) {
-    reinterpret_cast<My_Multi_Browser*>(b)->swapping(a1, a2);
+    return reinterpret_cast<My_Multi_Browser*>(c)->Fl_Multi_Browser::item_quick_height(i);
 }
 
 
 
 
 void fl_multi_browser_draw(MULTIBROWSER b) {
-    reinterpret_cast<My_Multi_Browser*>(b)->Fl_Browser::draw();
+    reinterpret_cast<My_Multi_Browser*>(b)->Fl_Multi_Browser::draw();
 }
 
 int fl_multi_browser_handle(MULTIBROWSER b, int e) {
-    return reinterpret_cast<My_Multi_Browser*>(b)->Fl_Browser::handle(e);
+    return reinterpret_cast<My_Multi_Browser*>(b)->Fl_Multi_Browser::handle(e);
 }
 
 
