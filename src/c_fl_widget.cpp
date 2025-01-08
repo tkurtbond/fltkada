@@ -7,38 +7,49 @@
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Image.H>
 #include "c_fl_widget.h"
-#include "c_fl_type.h"
 
 
 
+
+//  Exports from Ada
+
+extern "C" void widget_draw_hook(void * ud);
+extern "C" int widget_handle_hook(void * ud, int e);
+
+
+
+
+//  Non-friend protected access
+
+class Friend_Widget : Fl_Widget {
+public:
+    //  probably expand this later when doing a pass for protected methods
+    using Fl_Widget::draw_box;
+};
+
+
+
+
+//  Attaching all relevant hooks and friends
 
 class My_Widget : public Fl_Widget {
-    public:
-        using Fl_Widget::Fl_Widget;
-        friend void widget_set_draw_hook(WIDGET w, void * d);
-        friend void widget_set_handle_hook(WIDGET w, void * h);
-        friend WIDGET new_fl_widget(int x, int y, int w, int h, char* label);
-    protected:
-        void draw();
-        int handle(int e);
-        d_hook_p draw_hook;
-        h_hook_p handle_hook;
+public:
+    using Fl_Widget::Fl_Widget;
+    friend WIDGET new_fl_widget(int x, int y, int w, int h, char* label);
+
+    friend void fl_widget_draw(WIDGET w);
+    friend int fl_widget_handle(WIDGET w, int e);
+
+    void draw();
+    int handle(int e);
 };
 
 void My_Widget::draw() {
-    (*draw_hook)(this->user_data());
+    widget_draw_hook(this->user_data());
 }
 
 int My_Widget::handle(int e) {
-    return (*handle_hook)(this->user_data(), e);
-}
-
-void widget_set_draw_hook(WIDGET w, void * d) {
-    reinterpret_cast<My_Widget*>(w)->draw_hook = reinterpret_cast<d_hook_p>(d);
-}
-
-void widget_set_handle_hook(WIDGET w, void * h) {
-    reinterpret_cast<My_Widget*>(w)->handle_hook = reinterpret_cast<h_hook_p>(h);
+    return widget_handle_hook(this->user_data(), e);
 }
 
 
@@ -349,6 +360,14 @@ void fl_widget_set_damage2(WIDGET w, int t, int x, int y, int d, int h) {
     }
 }
 
+void fl_widget_draw(WIDGET w) {
+    //  The Fl_Widget draw method doesn't technically exist, so...
+    (void)(w);
+    //  It is more convenient for this function to exist, however,
+    //  even though it will likely never be called, because it simplifies
+    //  and makes uniform the implementation of the Ada Widget Draw subprogram.
+}
+
 void fl_widget_draw_label(WIDGET w, int x, int y, int d, int h, unsigned int a) {
     reinterpret_cast<Fl_Widget*>(w)->draw_label(x,y,d,h,a);
 }
@@ -360,4 +379,9 @@ void fl_widget_redraw(WIDGET w) {
 void fl_widget_redraw_label(WIDGET w) {
     reinterpret_cast<Fl_Widget*>(w)->redraw_label();
 }
+
+int fl_widget_handle(WIDGET w, int e) {
+    return reinterpret_cast<My_Widget*>(w)->Fl_Widget::handle(e);
+}
+
 

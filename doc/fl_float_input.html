@@ -21,7 +21,7 @@
 
   <tr>
     <td>Fl_Float_Input</td>
-    <td>FLTK.Widgets.Inputs.Floating_Point</td>
+    <td>FLTK.Widgets.Inputs.Text.Floating_Point</td>
   </tr>
 
 </table>
@@ -46,7 +46,7 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -60,30 +60,19 @@ function Create
 </pre></td>
   </tr>
 
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
-procedure Draw
-       (This : in out Float_Input);
-</pre></td>
-  </tr>
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
-<td>&nbsp;</td>
+<td>Use value() and manually convert from char * to float.</td>
 <td><pre>
 function Get_Value
        (This : in Float_Input)
     return Long_Float;
-</pre></td>
-  </tr>
-
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
-function Handle
-       (This  : in out Float_Input;
-        Event : in     Event_Kind)
-    return Event_Outcome;
 </pre></td>
   </tr>
 

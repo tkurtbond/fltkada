@@ -4,10 +4,10 @@
 --  Released into the public domain
 
 
-package FLTK.Widgets.Inputs.Outputs is
+package FLTK.Widgets.Inputs.Text.Outputs is
 
 
-    type Output is new Input with private;
+    type Output is new Text_Input with private;
 
     type Output_Reference (Data : not null access Output'Class) is
         limited null record with Implicit_Dereference => Data;
@@ -25,21 +25,13 @@ package FLTK.Widgets.Inputs.Outputs is
     end Forge;
 
 
-
-
-    procedure Draw
-           (This : in out Output);
-
-    function Handle
-           (This  : in out Output;
-            Event : in     Event_Kind)
-        return Event_Outcome;
-
-
 private
 
 
-    type Output is new Input with null record;
+    type Output is new Text_Input with null record;
+
+    overriding procedure Initialize
+           (This : in out Output);
 
     overriding procedure Finalize
            (This : in out Output);
@@ -55,9 +47,6 @@ private
     with Inline;
 
 
-    pragma Inline (Draw);
-    pragma Inline (Handle);
+end FLTK.Widgets.Inputs.Text.Outputs;
 
-
-end FLTK.Widgets.Inputs.Outputs;
 

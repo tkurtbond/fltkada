@@ -6,6 +6,7 @@
 
 with
 
+    Ada.Assertions,
     Interfaces.C.Strings;
 
 use type
@@ -17,18 +18,14 @@ use type
 package body FLTK.Widgets.Inputs is
 
 
-    procedure input_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, input_set_draw_hook, "input_set_draw_hook");
-    pragma Inline (input_set_draw_hook);
-
-    procedure input_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, input_set_handle_hook, "input_set_handle_hook");
-    pragma Inline (input_set_handle_hook);
+    package Chk renames Ada.Assertions;
 
 
 
+
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_input
            (X, Y, W, H : in Interfaces.C.int;
@@ -46,7 +43,8 @@ package body FLTK.Widgets.Inputs is
 
 
     function fl_input_copy
-           (I : in Storage.Integer_Address)
+           (I : in Storage.Integer_Address;
+            C : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_input_copy, "fl_input_copy");
     pragma Inline (fl_input_copy);
@@ -175,6 +173,13 @@ package body FLTK.Widgets.Inputs is
     pragma Import (C, fl_input_set_position, "fl_input_set_position");
     pragma Inline (fl_input_set_position);
 
+    function fl_input_set_position2
+           (I    : in Storage.Integer_Address;
+            P, M : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_input_set_position2, "fl_input_set_position2");
+    pragma Inline (fl_input_set_position2);
+
 
 
 
@@ -202,10 +207,11 @@ package body FLTK.Widgets.Inputs is
     pragma Import (C, fl_input_replace, "fl_input_replace");
     pragma Inline (fl_input_replace);
 
-    procedure fl_input_set_value
+    function fl_input_set_value
            (I : in Storage.Integer_Address;
             T : in Interfaces.C.char_array;
-            L : in Interfaces.C.int);
+            L : in Interfaces.C.int)
+        return Interfaces.C.int;
     pragma Import (C, fl_input_set_value, "fl_input_set_value");
     pragma Inline (fl_input_set_value);
 
@@ -290,6 +296,12 @@ package body FLTK.Widgets.Inputs is
     pragma Import (C, fl_input_set_size, "fl_input_set_size");
     pragma Inline (fl_input_set_size);
 
+    procedure fl_input_resize
+           (I          : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int);
+    pragma Import (C, fl_input_resize, "fl_input_resize");
+    pragma Inline (fl_input_resize);
+
 
 
 
@@ -307,6 +319,10 @@ package body FLTK.Widgets.Inputs is
 
 
 
+
+    -------------------
+    --  Destructors  --
+    -------------------
 
     procedure Extra_Final
            (This : in out Input) is
@@ -328,6 +344,10 @@ package body FLTK.Widgets.Inputs is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Input;
             X, Y, W, H : in     Integer;
@@ -335,6 +355,14 @@ package body FLTK.Widgets.Inputs is
     begin
         Extra_Init (Widget (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Input) is
+    begin
+        This.Draw_Ptr   := fl_input_draw'Address;
+        This.Handle_Ptr := fl_input_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -352,8 +380,6 @@ package body FLTK.Widgets.Inputs is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                input_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                input_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -362,25 +388,73 @@ package body FLTK.Widgets.Inputs is
 
 
 
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
     procedure Copy
-           (This : in out Input) is
+           (This        : in out Input;
+            Destination : in     Clipboard_Kind := Cut_Paste_Board)
+    is
+        Result : Interfaces.C.int := fl_input_copy
+            (This.Void_Ptr, Clipboard_Kind'Pos (Destination));
     begin
-        This.Was_Changed := fl_input_copy (This.Void_Ptr) /= 0;
+        pragma Assert (Result in 0 .. 1);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    end Copy;
+
+
+    function Copy
+           (This        : in out Input;
+            Destination : in     Clipboard_Kind := Cut_Paste_Board)
+        return Boolean
+    is
+        Result : Interfaces.C.int := fl_input_copy
+            (This.Void_Ptr, Clipboard_Kind'Pos (Destination));
+    begin
+        pragma Assert (Result in 0 .. 1);
+        return Boolean'Val (Result);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Copy;
 
 
     procedure Cut
-           (This : in out Input) is
+           (This : in out Input)
+    is
+        Result : Interfaces.C.int := fl_input_cut (This.Void_Ptr);
     begin
-        This.Was_Changed := fl_input_cut (This.Void_Ptr) /= 0;
+        null;
+    end Cut;
+
+
+    function Cut
+           (This : in out Input)
+        return Boolean is
+    begin
+        return fl_input_cut (This.Void_Ptr) /= 0;
     end Cut;
 
 
     procedure Cut
            (This      : in out Input;
-            Num_Bytes : in     Integer) is
+            Num_Bytes : in     Integer)
+    is
+        Result : Interfaces.C.int := fl_input_cut2
+           (This.Void_Ptr,
+            Interfaces.C.int (Num_Bytes));
     begin
-        This.Was_Changed := fl_input_cut2
+        null;
+    end Cut;
+
+
+    function Cut
+           (This      : in out Input;
+            Num_Bytes : in     Integer)
+        return Boolean is
+    begin
+        return fl_input_cut2
            (This.Void_Ptr,
             Interfaces.C.int (Num_Bytes)) /= 0;
     end Cut;
@@ -388,9 +462,23 @@ package body FLTK.Widgets.Inputs is
 
     procedure Cut
            (This          : in out Input;
-            Start, Finish : in     Integer) is
+            Start, Finish : in     Integer)
+    is
+        Result : Interfaces.C.int := fl_input_cut3
+           (This.Void_Ptr,
+            Interfaces.C.int (Start),
+            Interfaces.C.int (Finish));
     begin
-        This.Was_Changed := fl_input_cut3
+        null;
+    end Cut;
+
+
+    function Cut
+           (This          : in out Input;
+            Start, Finish : in     Integer)
+        return Boolean is
+    begin
+        return fl_input_cut3
            (This.Void_Ptr,
             Interfaces.C.int (Start),
             Interfaces.C.int (Finish)) /= 0;
@@ -398,34 +486,41 @@ package body FLTK.Widgets.Inputs is
 
 
     procedure Copy_Cuts
-           (This : in out Input) is
+           (This : in out Input)
+    is
+        Result : Interfaces.C.int := fl_input_copy_cuts (This.Void_Ptr);
     begin
-        This.Was_Changed := fl_input_copy_cuts (This.Void_Ptr) /= 0;
+        null;
+    end Copy_Cuts;
+
+
+    function Copy_Cuts
+           (This : in out Input)
+        return Boolean
+    is
+        Result : Interfaces.C.int := fl_input_copy_cuts (This.Void_Ptr);
+    begin
+        return Result /= 0;
     end Copy_Cuts;
 
 
     procedure Undo
-           (This : in out Input) is
+           (This : in out Input)
+    is
+        Result : Interfaces.C.int := fl_input_undo (This.Void_Ptr);
     begin
-        This.Was_Changed := fl_input_undo (This.Void_Ptr) /= 0;
+        null;
     end Undo;
 
 
-
-
-    function Has_Changed
-           (This : in Input)
+    function Undo
+           (This : in out Input)
         return Boolean is
     begin
-        return This.Was_Changed;
-    end Has_Changed;
+        return fl_input_undo (This.Void_Ptr) /= 0;
+    end Undo;
 
 
-    procedure Clear_Changed
-           (This : in out Input) is
-    begin
-        This.Was_Changed := False;
-    end Clear_Changed;
 
 
     function Is_Readonly
@@ -519,10 +614,24 @@ package body FLTK.Widgets.Inputs is
 
     procedure Set_Mark
            (This : in out Input;
-            To   : in     Natural) is
+            To   : in     Natural)
+    is
+        Result : Interfaces.C.int := fl_input_set_mark
+           (This.Void_Ptr,
+            Interfaces.C.int (To));
     begin
-        This.Was_Changed := fl_input_set_mark
-           (This.Void_Ptr, Interfaces.C.int (To)) /= 0;
+        null;
+    end Set_Mark;
+
+
+    function Set_Mark
+           (This : in out Input;
+            To   : in     Natural)
+        return Boolean is
+    begin
+        return fl_input_set_mark
+           (This.Void_Ptr,
+            Interfaces.C.int (To)) /= 0;
     end Set_Mark;
 
 
@@ -536,11 +645,52 @@ package body FLTK.Widgets.Inputs is
 
     procedure Set_Position
            (This : in out Input;
-            To   : in     Natural) is
+            To   : in     Natural)
+    is
+        Result : Interfaces.C.int := fl_input_set_position
+           (This.Void_Ptr,
+            Interfaces.C.int (To));
     begin
-        This.Was_Changed := fl_input_set_position
-           (This.Void_Ptr, Interfaces.C.int (To)) /= 0;
+        null;
     end Set_Position;
+
+
+    function Set_Position
+           (This : in out Input;
+            To   : in     Natural)
+        return Boolean is
+    begin
+        return fl_input_set_position
+           (This.Void_Ptr,
+            Interfaces.C.int (To)) /= 0;
+    end Set_Position;
+
+
+    procedure Set_Position_Mark
+           (This  : in out Input;
+            Place : in     Natural;
+            Mark  : in     Natural)
+    is
+        Result : Interfaces.C.int := fl_input_set_position2
+           (This.Void_Ptr,
+            Interfaces.C.int (Place),
+            Interfaces.C.int (Mark));
+    begin
+        null;
+    end Set_Position_Mark;
+
+
+    function Set_Position_Mark
+           (This  : in out Input;
+            Place : in     Natural;
+            Mark  : in     Natural)
+        return Boolean is
+    begin
+        return fl_input_set_position2
+           (This.Void_Ptr,
+            Interfaces.C.int (Place),
+            Interfaces.C.int (Mark)) /= 0;
+    end Set_Position_Mark;
 
 
 
@@ -556,11 +706,25 @@ package body FLTK.Widgets.Inputs is
 
     procedure Insert
            (This : in out Input;
-            Str  : in     String) is
-    begin
-        This.Was_Changed := fl_input_insert
+            Str  : in     String)
+    is
+        Result : Interfaces.C.int := fl_input_insert
            (This.Void_Ptr,
-            Interfaces.C.To_C (Str),
+            Interfaces.C.To_C (Str, False),
+            Str'Length);
+    begin
+        null;
+    end Insert;
+
+
+    function Insert
+           (This : in out Input;
+            Str  : in     String)
+        return Boolean is
+    begin
+        return fl_input_insert
+           (This.Void_Ptr,
+            Interfaces.C.To_C (Str, False),
             Str'Length) /= 0;
     end Insert;
 
@@ -568,13 +732,30 @@ package body FLTK.Widgets.Inputs is
     procedure Replace
            (This     : in out Input;
             From, To : in     Natural;
-            New_Text : in     String) is
-    begin
-        This.Was_Changed := fl_input_replace
+            New_Text : in     String)
+    is
+        Result : Interfaces.C.int := fl_input_replace
            (This.Void_Ptr,
             Interfaces.C.int (From),
             Interfaces.C.int (To),
             Interfaces.C.To_C (New_Text),
+            New_Text'Length);
+    begin
+        null;
+    end Replace;
+
+
+    function Replace
+           (This     : in out Input;
+            From, To : in     Natural;
+            New_Text : in     String)
+        return Boolean is
+    begin
+        return fl_input_replace
+           (This.Void_Ptr,
+            Interfaces.C.int (From),
+            Interfaces.C.int (To),
+            Interfaces.C.To_C (New_Text, False),
             New_Text'Length) /= 0;
     end Replace;
 
@@ -596,9 +777,24 @@ package body FLTK.Widgets.Inputs is
 
     procedure Set_Value
            (This : in out Input;
-            To   : in     String) is
+            To   : in     String)
+    is
+        Result : Interfaces.C.int := fl_input_set_value
+            (This.Void_Ptr, Interfaces.C.To_C (To), To'Length);
     begin
-        fl_input_set_value (This.Void_Ptr, Interfaces.C.To_C (To), To'Length);
+        null;
+    end Set_Value;
+
+
+    function Set_Value
+           (This : in out Input;
+            To   : in     String)
+        return Boolean is
+    begin
+        return fl_input_set_value
+           (This.Void_Ptr,
+            Interfaces.C.To_C (To, False),
+            To'Length) /= 0;
     end Set_Value;
 
 
@@ -704,23 +900,17 @@ package body FLTK.Widgets.Inputs is
     end Resize;
 
 
-
-
-    procedure Draw
-           (This : in out Input) is
+    procedure Resize
+           (This       : in out Input;
+            X, Y, W, H : in     Integer) is
     begin
-        fl_input_draw (This.Void_Ptr);
-    end Draw;
-
-
-    function Handle
-           (This  : in out Input;
-            Event : in     Event_Kind)
-        return Event_Outcome is
-    begin
-        return Event_Outcome'Val
-               (fl_input_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
-    end Handle;
+        fl_input_resize
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H));
+    end Resize;
 
 
 
@@ -740,4 +930,5 @@ package body FLTK.Widgets.Inputs is
 
 
 end FLTK.Widgets.Inputs;
+
 

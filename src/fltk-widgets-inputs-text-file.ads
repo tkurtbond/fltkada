@@ -4,10 +4,10 @@
 --  Released into the public domain
 
 
-package FLTK.Widgets.Inputs.File is
+package FLTK.Widgets.Inputs.Text.File is
 
 
-    type File_Input is new Input with private;
+    type File_Input is new Text_Input with private;
 
     type File_Input_Reference (Data : not null access File_Input'Class) is
         limited null record with Implicit_Dereference => Data;
@@ -47,11 +47,11 @@ package FLTK.Widgets.Inputs.File is
 
 
     function Get_Value
-           (This : in Input)
+           (This : in File_Input)
         return String;
 
     procedure Set_Value
-           (This : in out Input;
+           (This : in out File_Input;
             To   : in     String);
 
 
@@ -69,7 +69,10 @@ package FLTK.Widgets.Inputs.File is
 private
 
 
-    type File_Input is new Input with null record;
+    type File_Input is new Text_Input with null record;
+
+    overriding procedure Initialize
+           (This : in out File_Input);
 
     overriding procedure Finalize
            (This : in out File_Input);
@@ -97,5 +100,6 @@ private
     pragma Inline (Handle);
 
 
-end FLTK.Widgets.Inputs.File;
+end FLTK.Widgets.Inputs.Text.File;
+
 

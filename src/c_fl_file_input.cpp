@@ -6,99 +6,92 @@
 
 #include <FL/Fl_File_Input.H>
 #include "c_fl_file_input.h"
-#include "c_fl_type.h"
 
 
 
+
+//  Exports from Ada
+
+extern "C" void widget_draw_hook(void * ud);
+extern "C" int widget_handle_hook(void * ud, int e);
+
+
+
+
+//  Attaching all relevant hooks and friends
 
 class My_File_Input : public Fl_File_Input {
-    public:
-        using Fl_File_Input::Fl_File_Input;
-        friend void file_input_set_draw_hook(FILE_INPUT i, void * d);
-        friend void fl_file_input_draw(FILE_INPUT i);
-        friend void file_input_set_handle_hook(FILE_INPUT i, void * h);
-        friend int fl_file_input_handle(FILE_INPUT i, int e);
-    protected:
-        void draw();
-        void real_draw();
-        int handle(int e);
-        int real_handle(int e);
-        d_hook_p draw_hook;
-        h_hook_p handle_hook;
+public:
+    using Fl_File_Input::Fl_File_Input;
+
+    friend void fl_file_input_draw(FILEINPUT i);
+    friend int fl_file_input_handle(FILEINPUT i, int e);
+
+    void draw();
+    int handle(int e);
 };
 
 void My_File_Input::draw() {
-    (*draw_hook)(this->user_data());
-}
-
-void My_File_Input::real_draw() {
-    Fl_File_Input::draw();
+    widget_draw_hook(this->user_data());
 }
 
 int My_File_Input::handle(int e) {
-    return (*handle_hook)(this->user_data(), e);
-}
-
-int My_File_Input::real_handle(int e) {
-    return Fl_File_Input::handle(e);
-}
-
-void file_input_set_draw_hook(FILE_INPUT i, void * d) {
-    reinterpret_cast<My_File_Input*>(i)->draw_hook = reinterpret_cast<d_hook_p>(d);
-}
-
-void fl_file_input_draw(FILE_INPUT i) {
-    reinterpret_cast<My_File_Input*>(i)->real_draw();
-}
-
-void file_input_set_handle_hook(FILE_INPUT i, void * h) {
-    reinterpret_cast<My_File_Input*>(i)->handle_hook = reinterpret_cast<h_hook_p>(h);
-}
-
-int fl_file_input_handle(FILE_INPUT i, int e) {
-    return reinterpret_cast<My_File_Input*>(i)->real_handle(e);
+    return widget_handle_hook(this->user_data(), e);
 }
 
 
 
 
-FILE_INPUT new_fl_file_input(int x, int y, int w, int h, char* label) {
+//  Flattened C API
+
+FILEINPUT new_fl_file_input(int x, int y, int w, int h, char* label) {
     My_File_Input *i = new My_File_Input(x, y, w, h, label);
     return i;
 }
 
-void free_fl_file_input(FILE_INPUT i) {
+void free_fl_file_input(FILEINPUT i) {
     delete reinterpret_cast<My_File_Input*>(i);
 }
 
 
 
 
-int fl_file_input_get_down_box(FILE_INPUT i) {
+int fl_file_input_get_down_box(FILEINPUT i) {
     return reinterpret_cast<Fl_File_Input*>(i)->down_box();
 }
 
-void fl_file_input_set_down_box(FILE_INPUT i, int t) {
+void fl_file_input_set_down_box(FILEINPUT i, int t) {
     reinterpret_cast<Fl_File_Input*>(i)->down_box(static_cast<Fl_Boxtype>(t));
 }
 
-unsigned int fl_file_input_get_errorcolor(FILE_INPUT i) {
+unsigned int fl_file_input_get_errorcolor(FILEINPUT i) {
     return reinterpret_cast<Fl_File_Input*>(i)->errorcolor();
 }
 
-void fl_file_input_set_errorcolor(FILE_INPUT i, unsigned int t) {
+void fl_file_input_set_errorcolor(FILEINPUT i, unsigned int t) {
     reinterpret_cast<Fl_File_Input*>(i)->errorcolor(t);
 }
 
 
 
 
-const char * fl_file_input_get_value(FILE_INPUT i) {
+const char * fl_file_input_get_value(FILEINPUT i) {
     return reinterpret_cast<Fl_File_Input*>(i)->value();
 }
 
-void fl_file_input_set_value(FILE_INPUT i, const char * s, int len) {
-    reinterpret_cast<Fl_File_Input*>(i)->value(s,len);
+int fl_file_input_set_value(FILEINPUT i, const char * s, int len) {
+    return reinterpret_cast<Fl_File_Input*>(i)->value(s,len);
+}
+
+
+
+
+void fl_file_input_draw(FILEINPUT i) {
+    reinterpret_cast<My_File_Input*>(i)->Fl_File_Input::draw();
+}
+
+int fl_file_input_handle(FILEINPUT i, int e) {
+    return reinterpret_cast<My_File_Input*>(i)->Fl_File_Input::handle(e);
 }
 
 

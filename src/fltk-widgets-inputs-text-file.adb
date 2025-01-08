@@ -6,28 +6,26 @@
 
 with
 
+    Ada.Assertions,
     Interfaces.C.Strings;
 
 use type
 
+    Interfaces.C.int,
     Interfaces.C.Strings.chars_ptr;
 
 
-package body FLTK.Widgets.Inputs.File is
+package body FLTK.Widgets.Inputs.Text.File is
 
 
-    procedure file_input_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, file_input_set_draw_hook, "file_input_set_draw_hook");
-    pragma Inline (file_input_set_draw_hook);
-
-    procedure file_input_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, file_input_set_handle_hook, "file_input_set_handle_hook");
-    pragma Inline (file_input_set_handle_hook);
+    package Chk renames Ada.Assertions;
 
 
 
+
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_file_input
            (X, Y, W, H : in Interfaces.C.int;
@@ -77,10 +75,11 @@ package body FLTK.Widgets.Inputs.File is
     pragma Import (C, fl_file_input_get_value, "fl_file_input_get_value");
     pragma Inline (fl_file_input_get_value);
 
-    procedure fl_file_input_set_value
+    function fl_file_input_set_value
            (I : in Storage.Integer_Address;
             T : in Interfaces.C.char_array;
-            L : in Interfaces.C.int);
+            L : in Interfaces.C.int)
+        return Interfaces.C.int;
     pragma Import (C, fl_file_input_set_value, "fl_file_input_set_value");
     pragma Inline (fl_file_input_set_value);
 
@@ -102,6 +101,10 @@ package body FLTK.Widgets.Inputs.File is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
     procedure Extra_Final
            (This : in out File_Input) is
     begin
@@ -122,6 +125,10 @@ package body FLTK.Widgets.Inputs.File is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out File_Input;
             X, Y, W, H : in     Integer;
@@ -129,6 +136,14 @@ package body FLTK.Widgets.Inputs.File is
     begin
         Extra_Init (Input (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out File_Input) is
+    begin
+        This.Draw_Ptr   := fl_file_input_draw'Address;
+        This.Handle_Ptr := fl_file_input_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -146,10 +161,6 @@ package body FLTK.Widgets.Inputs.File is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                file_input_set_draw_hook
-                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                file_input_set_handle_hook
-                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -157,6 +168,10 @@ package body FLTK.Widgets.Inputs.File is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     function Get_Down_Box
            (This : in File_Input)
@@ -193,7 +208,7 @@ package body FLTK.Widgets.Inputs.File is
 
 
     function Get_Value
-           (This : in Input)
+           (This : in File_Input)
         return String
     is
         Ptr : Interfaces.C.Strings.chars_ptr := fl_file_input_get_value (This.Void_Ptr);
@@ -208,10 +223,16 @@ package body FLTK.Widgets.Inputs.File is
 
 
     procedure Set_Value
-           (This : in out Input;
-            To   : in     String) is
+           (This : in out File_Input;
+            To   : in     String)
+    is
+        Result : Interfaces.C.int := fl_file_input_set_value
+           (This.Void_Ptr,
+            Interfaces.C.To_C (To), To'Length);
     begin
-        fl_file_input_set_value (This.Void_Ptr, Interfaces.C.To_C (To), To'Length);
+        pragma Assert (Result /= 0);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Set_Value;
 
 
@@ -220,7 +241,7 @@ package body FLTK.Widgets.Inputs.File is
     procedure Draw
            (This : in out File_Input) is
     begin
-        fl_file_input_draw (This.Void_Ptr);
+        Text_Input (This).Draw;
     end Draw;
 
 
@@ -229,10 +250,10 @@ package body FLTK.Widgets.Inputs.File is
             Event : in     Event_Kind)
         return Event_Outcome is
     begin
-        return Event_Outcome'Val
-               (fl_file_input_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
+        return Text_Input (This).Handle (Event);
     end Handle;
 
 
-end FLTK.Widgets.Inputs.File;
+end FLTK.Widgets.Inputs.Text.File;
+
 

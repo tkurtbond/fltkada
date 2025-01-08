@@ -329,7 +329,7 @@ package FLTK.Widgets is
             X, Y, W, H : in     Integer);
 
     procedure Draw
-           (This : in out Widget) is null;
+           (This : in out Widget);
 
     procedure Draw_Label
            (This       : in Widget;
@@ -360,6 +360,9 @@ private
             Handle_Ptr     : System.Address;
         end record;
 
+    overriding procedure Initialize
+           (This : in out Widget);
+
     overriding procedure Finalize
            (This : in out Widget);
 
@@ -386,8 +389,6 @@ private
     with Inline;
 
 
-
-
     type Callback_Flag is new Interfaces.C.unsigned;
 
     Call_Never     : constant Callback_Flag := 0;
@@ -395,8 +396,6 @@ private
     When_Interact  : constant Callback_Flag := 2;
     When_Release   : constant Callback_Flag := 4;
     When_Enter_Key : constant Callback_Flag := 8;
-
-
 
 
     --  the user data portion should always be a reference back to the Ada binding
@@ -415,12 +414,8 @@ private
     pragma Export (C, Handle_Hook, "widget_handle_hook");
 
 
-
-
     package Widget_Convert is new System.Address_To_Access_Conversions (Widget'Class);
     package Callback_Convert renames FLTK.Widget_Callback_Conversions;
-
-
 
 
     function fl_widget_get_user_data
@@ -435,15 +430,11 @@ private
     pragma Inline (fl_widget_set_user_data);
 
 
-
-
     procedure fl_widget_set_label
            (W : in Storage.Integer_Address;
             T : in Interfaces.C.char_array);
     pragma Import (C, fl_widget_set_label, "fl_widget_set_label");
     pragma Inline (fl_widget_set_label);
-
-
 
 
     pragma Inline (Activate);
@@ -452,7 +443,6 @@ private
     pragma Inline (Is_Tree_Active);
     pragma Inline (Set_Active);
 
-
     pragma Inline (Has_Changed);
     pragma Inline (Set_Changed);
     pragma Inline (Is_Output_Only);
@@ -460,18 +450,15 @@ private
     pragma Inline (Is_Visible);
     pragma Inline (Set_Visible);
 
-
     pragma Inline (Has_Visible_Focus);
     pragma Inline (Set_Visible_Focus);
     pragma Inline (Take_Focus);
     pragma Inline (Takes_Events);
 
-
     pragma Inline (Get_Background_Color);
     pragma Inline (Set_Background_Color);
     pragma Inline (Get_Selection_Color);
     pragma Inline (Set_Selection_Color);
-
 
     pragma Inline (Parent);
     pragma Inline (Contains);
@@ -480,14 +467,12 @@ private
     pragma Inline (Top_Window);
     pragma Inline (Top_Window_Offset);
 
-
     pragma Inline (Get_Alignment);
     pragma Inline (Set_Alignment);
     pragma Inline (Get_Box);
     pragma Inline (Set_Box);
     pragma Inline (Get_Tooltip);
     pragma Inline (Set_Tooltip);
-
 
     pragma Inline (Get_Label);
     pragma Inline (Set_Label);
@@ -501,13 +486,11 @@ private
     pragma Inline (Set_Label_Type);
     pragma Inline (Measure_Label);
 
-
     pragma Inline (Get_Callback);
     pragma Inline (Set_Callback);
     pragma Inline (Do_Callback);
     pragma Inline (Get_When);
     pragma Inline (Set_When);
-
 
     pragma Inline (Get_X);
     pragma Inline (Get_Y);
@@ -516,12 +499,10 @@ private
     pragma Inline (Resize);
     pragma Inline (Reposition);
 
-
     pragma Inline (Get_Image);
     pragma Inline (Set_Image);
     pragma Inline (Get_Inactive_Image);
     pragma Inline (Set_Inactive_Image);
-
 
     pragma Inline (Is_Damaged);
     pragma Inline (Set_Damaged);

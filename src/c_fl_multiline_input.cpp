@@ -6,69 +6,62 @@
 
 #include <FL/Fl_Multiline_Input.H>
 #include "c_fl_multiline_input.h"
-#include "c_fl_type.h"
 
 
 
+
+//  Exports from Ada
+
+extern "C" void widget_draw_hook(void * ud);
+extern "C" int widget_handle_hook(void * ud, int e);
+
+
+
+
+//  Attaching all relevant hooks and friends
 
 class My_Multiline_Input : public Fl_Multiline_Input {
-    public:
-        using Fl_Multiline_Input::Fl_Multiline_Input;
-        friend void multiline_input_set_draw_hook(MULTILINE_INPUT i, void * d);
-        friend void fl_multiline_input_draw(MULTILINE_INPUT i);
-        friend void multiline_input_set_handle_hook(MULTILINE_INPUT i, void * h);
-        friend int fl_multiline_input_handle(MULTILINE_INPUT i, int e);
-    protected:
-        void draw();
-        void real_draw();
-        int handle(int e);
-        int real_handle(int e);
-        d_hook_p draw_hook;
-        h_hook_p handle_hook;
+public:
+    using Fl_Multiline_Input::Fl_Multiline_Input;
+
+    friend void fl_multiline_input_draw(MULTILINEINPUT i);
+    friend int fl_multiline_input_handle(MULTILINEINPUT i, int e);
+
+    void draw();
+    int handle(int e);
 };
 
 void My_Multiline_Input::draw() {
-    (*draw_hook)(this->user_data());
-}
-
-void My_Multiline_Input::real_draw() {
-    Fl_Multiline_Input::draw();
+    widget_draw_hook(this->user_data());
 }
 
 int My_Multiline_Input::handle(int e) {
-    return (*handle_hook)(this->user_data(), e);
-}
-
-int My_Multiline_Input::real_handle(int e) {
-    return Fl_Multiline_Input::handle(e);
-}
-
-void multiline_input_set_draw_hook(MULTILINE_INPUT i, void * d) {
-    reinterpret_cast<My_Multiline_Input*>(i)->draw_hook = reinterpret_cast<d_hook_p>(d);
-}
-
-void fl_multiline_input_draw(MULTILINE_INPUT i) {
-    reinterpret_cast<My_Multiline_Input*>(i)->real_draw();
-}
-
-void multiline_input_set_handle_hook(MULTILINE_INPUT i, void * h) {
-    reinterpret_cast<My_Multiline_Input*>(i)->handle_hook = reinterpret_cast<h_hook_p>(h);
-}
-
-int fl_multiline_input_handle(MULTILINE_INPUT i, int e) {
-    return reinterpret_cast<My_Multiline_Input*>(i)->real_handle(e);
+    return widget_handle_hook(this->user_data(), e);
 }
 
 
 
 
-MULTILINE_INPUT new_fl_multiline_input(int x, int y, int w, int h, char* label) {
+//  Flattened C API
+
+MULTILINEINPUT new_fl_multiline_input(int x, int y, int w, int h, char* label) {
     My_Multiline_Input *i = new My_Multiline_Input(x, y, w, h, label);
     return i;
 }
 
-void free_fl_multiline_input(MULTILINE_INPUT i) {
+void free_fl_multiline_input(MULTILINEINPUT i) {
     delete reinterpret_cast<My_Multiline_Input*>(i);
+}
+
+
+
+
+void fl_multiline_input_draw(MULTILINEINPUT i) {
+    reinterpret_cast<My_Multiline_Input*>(i)->Fl_Multiline_Input::draw();
+}
+
+int fl_multiline_input_handle(MULTILINEINPUT i, int e) {
+    return reinterpret_cast<My_Multiline_Input*>(i)->Fl_Multiline_Input::handle(e);
 }
 
 

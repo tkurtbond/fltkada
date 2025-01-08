@@ -22,6 +22,8 @@ package FLTK.Widgets.Inputs is
        (Normal_Kind, Float_Kind, Integer_Kind, Multiline_Kind,
         Secret_Kind, Readonly_Kind, Wrap_Kind);
 
+    type Clipboard_Kind is (Selection_Buffer, Cut_Paste_Board);
+
 
 
 
@@ -38,34 +40,55 @@ package FLTK.Widgets.Inputs is
 
 
     procedure Copy
-           (This : in out Input);
+           (This        : in out Input;
+            Destination : in     Clipboard_Kind := Cut_Paste_Board);
+
+    function Copy
+           (This        : in out Input;
+            Destination : in     Clipboard_Kind := Cut_Paste_Board)
+        return Boolean;
 
     procedure Cut
            (This : in out Input);
+
+    function Cut
+           (This : in out Input)
+        return Boolean;
 
     procedure Cut
            (This      : in out Input;
             Num_Bytes : in     Integer);
 
+    function Cut
+           (This      : in out Input;
+            Num_Bytes : in     Integer)
+        return Boolean;
+
     procedure Cut
            (This          : in out Input;
             Start, Finish : in     Integer);
 
+    function Cut
+           (This          : in out Input;
+            Start, Finish : in     Integer)
+        return Boolean;
+
     procedure Copy_Cuts
            (This : in out Input);
+
+    function Copy_Cuts
+           (This : in out Input)
+        return Boolean;
 
     procedure Undo
            (This : in out Input);
 
-
-
-
-    function Has_Changed
-           (This : in Input)
+    function Undo
+           (This : in out Input)
         return Boolean;
 
-    procedure Clear_Changed
-           (This : in out Input);
+
+
 
     function Is_Readonly
            (This : in Input)
@@ -114,6 +137,11 @@ package FLTK.Widgets.Inputs is
            (This : in out Input;
             To   : in     Natural);
 
+    function Set_Mark
+           (This : in out Input;
+            To   : in     Natural)
+        return Boolean;
+
     function Get_Position
            (This : in Input)
         return Natural;
@@ -121,6 +149,22 @@ package FLTK.Widgets.Inputs is
     procedure Set_Position
            (This : in out Input;
             To   : in     Natural);
+
+    function Set_Position
+           (This : in out Input;
+            To   : in     Natural)
+        return Boolean;
+
+    procedure Set_Position_Mark
+           (This  : in out Input;
+            Place : in     Natural;
+            Mark  : in     Natural);
+
+    function Set_Position_Mark
+           (This  : in out Input;
+            Place : in     Natural;
+            Mark  : in     Natural)
+        return Boolean;
 
 
 
@@ -134,10 +178,21 @@ package FLTK.Widgets.Inputs is
            (This : in out Input;
             Str  : in     String);
 
+    function Insert
+           (This : in out Input;
+            Str  : in     String)
+        return Boolean;
+
     procedure Replace
            (This     : in out Input;
             From, To : in     Natural;
             New_Text : in     String);
+
+    function Replace
+           (This     : in out Input;
+            From, To : in     Natural;
+            New_Text : in     String)
+        return Boolean;
 
     function Get_Value
            (This : in Input)
@@ -146,6 +201,11 @@ package FLTK.Widgets.Inputs is
     procedure Set_Value
            (This : in out Input;
             To   : in     String);
+
+    function Set_Value
+           (This : in out Input;
+            To   : in     String)
+        return Boolean;
 
 
 
@@ -204,16 +264,9 @@ package FLTK.Widgets.Inputs is
            (This : in out Input;
             W, H : in     Integer);
 
-
-
-
-    procedure Draw
-           (This : in out Input);
-
-    function Handle
-           (This  : in out Input;
-            Event : in     Event_Kind)
-        return Event_Outcome;
+    procedure Resize
+           (This       : in out Input;
+            X, Y, W, H : in     Integer);
 
 
 
@@ -230,9 +283,10 @@ package FLTK.Widgets.Inputs is
 private
 
 
-    type Input is new Widget with record
-        Was_Changed : Boolean := False;
-    end record;
+    type Input is new Widget with null record;
+
+    overriding procedure Initialize
+           (This : in out Input);
 
     overriding procedure Finalize
            (This : in out Input);
@@ -253,8 +307,6 @@ private
     pragma Inline (Copy_Cuts);
     pragma Inline (Undo);
 
-    pragma Inline (Has_Changed);
-    pragma Inline (Clear_Changed);
     pragma Inline (Is_Readonly);
     pragma Inline (Set_Readonly);
     pragma Inline (Is_Tab_Nav);
@@ -313,4 +365,5 @@ private
 
 
 end FLTK.Widgets.Inputs;
+
 

@@ -9,21 +9,12 @@ with
     Interfaces.C.Strings;
 
 
-package body FLTK.Widgets.Inputs.Secret is
+package body FLTK.Widgets.Inputs.Text.Secret is
 
 
-    procedure secret_input_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, secret_input_set_draw_hook, "secret_input_set_draw_hook");
-    pragma Inline (secret_input_set_draw_hook);
-
-    procedure secret_input_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, secret_input_set_handle_hook, "secret_input_set_handle_hook");
-    pragma Inline (secret_input_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_secret_input
            (X, Y, W, H : in Interfaces.C.int;
@@ -55,6 +46,10 @@ package body FLTK.Widgets.Inputs.Secret is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
     procedure Extra_Final
            (This : in out Secret_Input) is
     begin
@@ -75,6 +70,10 @@ package body FLTK.Widgets.Inputs.Secret is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Secret_Input;
             X, Y, W, H : in     Integer;
@@ -82,6 +81,14 @@ package body FLTK.Widgets.Inputs.Secret is
     begin
         Extra_Init (Input (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Secret_Input) is
+    begin
+        This.Draw_Ptr   := fl_secret_input_draw'Address;
+        This.Handle_Ptr := fl_secret_input_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -99,10 +106,6 @@ package body FLTK.Widgets.Inputs.Secret is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                secret_input_set_draw_hook
-                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                secret_input_set_handle_hook
-                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -111,22 +114,19 @@ package body FLTK.Widgets.Inputs.Secret is
 
 
 
-    procedure Draw
-           (This : in out Secret_Input) is
-    begin
-        fl_secret_input_draw (This.Void_Ptr);
-    end Draw;
-
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     function Handle
            (This  : in out Secret_Input;
             Event : in     Event_Kind)
         return Event_Outcome is
     begin
-        return Event_Outcome'Val
-               (fl_secret_input_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
+        return Text_Input (This).Handle (Event);
     end Handle;
 
 
-end FLTK.Widgets.Inputs.Secret;
+end FLTK.Widgets.Inputs.Text.Secret;
+
 

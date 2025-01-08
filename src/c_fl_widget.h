@@ -8,23 +8,11 @@
 #define FL_WIDGET_GUARD
 
 
-
-
 typedef void* WIDGET;
-
-
-
-
-extern "C" void widget_set_draw_hook(WIDGET w, void * d);
-extern "C" void widget_set_handle_hook(WIDGET w, void * h);
-
-
 
 
 extern "C" WIDGET new_fl_widget(int x, int y, int w, int h, char* label);
 extern "C" void free_fl_widget(WIDGET w);
-
-
 
 
 extern "C" void * fl_widget_get_user_data(WIDGET w);
@@ -112,9 +100,11 @@ extern "C" void fl_widget_set_deimage(WIDGET w, void * img);
 extern "C" int fl_widget_damage(WIDGET w);
 extern "C" void fl_widget_set_damage(WIDGET w, int t);
 extern "C" void fl_widget_set_damage2(WIDGET w, int t, int x, int y, int d, int h);
+extern "C" void fl_widget_draw(WIDGET w);
 extern "C" void fl_widget_draw_label(WIDGET w, int x, int y, int d, int h, unsigned int a);
 extern "C" void fl_widget_redraw(WIDGET w);
 extern "C" void fl_widget_redraw_label(WIDGET w);
+extern "C" int fl_widget_handle(WIDGET w, int e);
 
 
 #endif

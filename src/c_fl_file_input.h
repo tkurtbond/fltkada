@@ -8,36 +8,27 @@
 #define FL_FILE_INPUT_GUARD
 
 
+typedef void* FILEINPUT;
 
 
-typedef void* FILE_INPUT;
+extern "C" FILEINPUT new_fl_file_input(int x, int y, int w, int h, char* label);
+extern "C" void free_fl_file_input(FILEINPUT i);
 
 
+extern "C" int fl_file_input_get_down_box(FILEINPUT i);
+extern "C" void fl_file_input_set_down_box(FILEINPUT i, int t);
+extern "C" unsigned int fl_file_input_get_errorcolor(FILEINPUT i);
+extern "C" void fl_file_input_set_errorcolor(FILEINPUT i, unsigned int t);
 
 
-extern "C" void file_input_set_draw_hook(FILE_INPUT i, void * d);
-extern "C" void fl_file_input_draw(FILE_INPUT i);
-extern "C" void file_input_set_handle_hook(FILE_INPUT i, void * h);
-extern "C" int fl_file_input_handle(FILE_INPUT i, int e);
+extern "C" const char * fl_file_input_get_value(FILEINPUT i);
+extern "C" int fl_file_input_set_value(FILEINPUT i, const char * s, int len);
 
 
-
-
-extern "C" FILE_INPUT new_fl_file_input(int x, int y, int w, int h, char* label);
-extern "C" void free_fl_file_input(FILE_INPUT i);
-
-
-
-
-extern "C" int fl_file_input_get_down_box(FILE_INPUT i);
-extern "C" void fl_file_input_set_down_box(FILE_INPUT i, int t);
-extern "C" unsigned int fl_file_input_get_errorcolor(FILE_INPUT i);
-extern "C" void fl_file_input_set_errorcolor(FILE_INPUT i, unsigned int t);
-
-
-extern "C" const char * fl_file_input_get_value(FILE_INPUT i);
-extern "C" void fl_file_input_set_value(FILE_INPUT i, const char * s, int len);
+extern "C" void fl_file_input_draw(FILEINPUT i);
+extern "C" int fl_file_input_handle(FILEINPUT i, int e);
 
 
 #endif
+
 

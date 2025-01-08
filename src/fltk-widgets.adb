@@ -40,18 +40,9 @@ package body FLTK.Widgets is
 
 
 
-    procedure widget_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, widget_set_draw_hook, "widget_set_draw_hook");
-    pragma Inline (widget_set_draw_hook);
-
-    procedure widget_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, widget_set_handle_hook, "widget_set_handle_hook");
-    pragma Inline (widget_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_widget
            (X, Y, W, H : in Interfaces.C.int;
@@ -467,6 +458,25 @@ package body FLTK.Widgets is
 
 
 
+    procedure fl_widget_draw
+           (W : in Storage.Integer_Address);
+    pragma Import (C, fl_widget_draw, "fl_widget_draw");
+    pragma Inline (fl_widget_draw);
+
+    function fl_widget_handle
+           (W : in Storage.Integer_Address;
+            E : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_widget_handle, "fl_widget_handle");
+    pragma Inline (fl_widget_handle);
+
+
+
+
+    ----------------------
+    --  Exported Hooks  --
+    ----------------------
+
     procedure Callback_Hook
            (W, U : in Storage.Integer_Address)
     is
@@ -501,6 +511,10 @@ package body FLTK.Widgets is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
     procedure Extra_Final
            (This : in out Widget) is
     begin
@@ -521,6 +535,10 @@ package body FLTK.Widgets is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Widget;
             X, Y, W, H : in     Integer;
@@ -531,6 +549,14 @@ package body FLTK.Widgets is
             Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
         fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Widget) is
+    begin
+        This.Draw_Ptr   := fl_widget_draw'Address;
+        This.Handle_Ptr := fl_widget_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -548,8 +574,6 @@ package body FLTK.Widgets is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                widget_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                widget_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -557,6 +581,10 @@ package body FLTK.Widgets is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     procedure Activate
            (This : in out Widget) is
@@ -1157,6 +1185,18 @@ package body FLTK.Widgets is
     end Set_Damaged;
 
 
+    procedure Draw
+           (This : in out Widget)
+    is
+        procedure my_draw
+               (V : in Storage.Integer_Address);
+        for my_draw'Address use This.Draw_Ptr;
+        pragma Import (Ada, my_draw);
+    begin
+        my_draw (This.Void_Ptr);
+    end Draw;
+
+
     procedure Draw_Label
            (This       : in Widget;
             X, Y, W, H : in Integer;
@@ -1189,9 +1229,18 @@ package body FLTK.Widgets is
     function Handle
            (This  : in out Widget;
             Event : in     Event_Kind)
-        return Event_Outcome is
+        return Event_Outcome
+    is
+        function my_handle
+               (V : in Storage.Integer_Address;
+                E : in Interfaces.C.int)
+            return Interfaces.C.int;
+        for my_handle'Address use This.Handle_Ptr;
+        pragma Import (Ada, my_handle);
     begin
-        return Not_Handled;
+        return Event_Outcome'Val (my_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error;
     end Handle;
 
 

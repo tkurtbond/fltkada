@@ -4,12 +4,12 @@
 --  Released into the public domain
 
 
-package FLTK.Widgets.Inputs.Outputs.Multiline is
+package FLTK.Widgets.Inputs.Text.Secret is
 
 
-    type Multiline_Output is new Output with private;
+    type Secret_Input is new Text_Input with private;
 
-    type Multiline_Output_Reference (Data : not null access Multiline_Output'Class) is
+    type Secret_Input_Reference (Data : not null access Secret_Input'Class) is
         limited null record with Implicit_Dereference => Data;
 
 
@@ -20,18 +20,15 @@ package FLTK.Widgets.Inputs.Outputs.Multiline is
         function Create
                (X, Y, W, H : in Integer;
                 Text       : in String := "")
-            return Multiline_Output;
+            return Secret_Input;
 
     end Forge;
 
 
 
 
-    procedure Draw
-           (This : in out Multiline_Output);
-
     function Handle
-           (This  : in out Multiline_Output;
+           (This  : in out Secret_Input;
             Event : in     Event_Kind)
         return Event_Outcome;
 
@@ -39,25 +36,28 @@ package FLTK.Widgets.Inputs.Outputs.Multiline is
 private
 
 
-    type Multiline_Output is new Output with null record;
+    type Secret_Input is new Text_Input with null record;
+
+    overriding procedure Initialize
+           (This : in out Secret_Input);
 
     overriding procedure Finalize
-           (This : in out Multiline_Output);
+           (This : in out Secret_Input);
 
     procedure Extra_Init
-           (This       : in out Multiline_Output;
+           (This       : in out Secret_Input;
             X, Y, W, H : in     Integer;
             Text       : in     String)
     with Inline;
 
     procedure Extra_Final
-           (This : in out Multiline_Output)
+           (This : in out Secret_Input)
     with Inline;
 
 
-    pragma Inline (Draw);
     pragma Inline (Handle);
 
 
-end FLTK.Widgets.Inputs.Outputs.Multiline;
+end FLTK.Widgets.Inputs.Text.Secret;
+
 

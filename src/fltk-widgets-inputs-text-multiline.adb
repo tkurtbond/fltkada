@@ -9,21 +9,12 @@ with
     Interfaces.C.Strings;
 
 
-package body FLTK.Widgets.Inputs.Multiline is
+package body FLTK.Widgets.Inputs.Text.Multiline is
 
 
-    procedure multiline_input_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, multiline_input_set_draw_hook, "multiline_input_set_draw_hook");
-    pragma Inline (multiline_input_set_draw_hook);
-
-    procedure multiline_input_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, multiline_input_set_handle_hook, "multiline_input_set_handle_hook");
-    pragma Inline (multiline_input_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_multiline_input
            (X, Y, W, H : in Interfaces.C.int;
@@ -55,6 +46,10 @@ package body FLTK.Widgets.Inputs.Multiline is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
     procedure Extra_Final
            (This : in out Multiline_Input) is
     begin
@@ -75,6 +70,10 @@ package body FLTK.Widgets.Inputs.Multiline is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Multiline_Input;
             X, Y, W, H : in     Integer;
@@ -82,6 +81,14 @@ package body FLTK.Widgets.Inputs.Multiline is
     begin
         Extra_Init (Input (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Multiline_Input) is
+    begin
+        This.Draw_Ptr := fl_multiline_input_draw'Address;
+        This.Handle_Ptr := fl_multiline_input_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -99,34 +106,12 @@ package body FLTK.Widgets.Inputs.Multiline is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                multiline_input_set_draw_hook
-                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                multiline_input_set_handle_hook
-                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
     end Forge;
 
 
+end FLTK.Widgets.Inputs.Text.Multiline;
 
-
-    procedure Draw
-           (This : in out Multiline_Input) is
-    begin
-        fl_multiline_input_draw (This.Void_Ptr);
-    end Draw;
-
-
-    function Handle
-           (This  : in out Multiline_Input;
-            Event : in     Event_Kind)
-        return Event_Outcome is
-    begin
-        return Event_Outcome'Val
-               (fl_multiline_input_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
-    end Handle;
-
-
-end FLTK.Widgets.Inputs.Multiline;
 

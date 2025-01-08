@@ -4,10 +4,10 @@
 --  Released into the public domain
 
 
-package FLTK.Widgets.Inputs.Floating_Point is
+package FLTK.Widgets.Inputs.Text.Floating_Point is
 
 
-    type Float_Input is new Input with private;
+    type Float_Input is new Text_Input with private;
 
     type Float_Input_Reference (Data : not null access Float_Input'Class) is
         limited null record with Implicit_Dereference => Data;
@@ -32,21 +32,13 @@ package FLTK.Widgets.Inputs.Floating_Point is
         return Long_Float;
 
 
-
-
-    procedure Draw
-           (This : in out Float_Input);
-
-    function Handle
-           (This  : in out Float_Input;
-            Event : in     Event_Kind)
-        return Event_Outcome;
-
-
 private
 
 
-    type Float_Input is new Input with null record;
+    type Float_Input is new Text_Input with null record;
+
+    overriding procedure Initialize
+           (This : in out Float_Input);
 
     overriding procedure Finalize
            (This : in out Float_Input);
@@ -64,9 +56,7 @@ private
 
     pragma Inline (Get_Value);
 
-    pragma Inline (Draw);
-    pragma Inline (Handle);
 
+end FLTK.Widgets.Inputs.Text.Floating_Point;
 
-end FLTK.Widgets.Inputs.Floating_Point;
 

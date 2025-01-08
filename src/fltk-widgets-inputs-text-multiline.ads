@@ -4,10 +4,10 @@
 --  Released into the public domain
 
 
-package FLTK.Widgets.Inputs.Multiline is
+package FLTK.Widgets.Inputs.Text.Multiline is
 
 
-    type Multiline_Input is new Input with private;
+    type Multiline_Input is new Text_Input with private;
 
     type Multiline_Input_Reference (Data : not null access Multiline_Input'Class) is
         limited null record with Implicit_Dereference => Data;
@@ -25,21 +25,13 @@ package FLTK.Widgets.Inputs.Multiline is
     end Forge;
 
 
-
-
-    procedure Draw
-           (This : in out Multiline_Input);
-
-    function Handle
-           (This  : in out Multiline_Input;
-            Event : in     Event_Kind)
-        return Event_Outcome;
-
-
 private
 
 
-    type Multiline_Input is new Input with null record;
+    type Multiline_Input is new Text_Input with null record;
+
+    overriding procedure Initialize
+           (This : in out Multiline_Input);
 
     overriding procedure Finalize
            (This : in out Multiline_Input);
@@ -55,9 +47,6 @@ private
     with Inline;
 
 
-    pragma Inline (Draw);
-    pragma Inline (Handle);
+end FLTK.Widgets.Inputs.Text.Multiline;
 
-
-end FLTK.Widgets.Inputs.Multiline;
 

@@ -21,7 +21,7 @@
 
   <tr>
     <td>Fl_Multiline_Output</td>
-    <td>FLTK.Widgets.Inputs.Outputs.Multiline</td>
+    <td>FLTK.Widgets.Inputs.Text.Outputs.Multiline</td>
   </tr>
 
 </table>
@@ -46,7 +46,7 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -57,24 +57,6 @@ function Create
        (X, Y, W, H : in Integer;
         Text       : in String)
     return Multiline_Output;
-</pre></td>
-  </tr>
-
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
-procedure Draw
-       (This : in out Multiline_Output);
-</pre></td>
-  </tr>
-
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
-function Handle
-       (This  : in out Multiline_Output;
-        Event : in     Event_Kind)
-    return Event_Outcome;
 </pre></td>
   </tr>
 

@@ -4,10 +4,10 @@
 --  Released into the public domain
 
 
-package FLTK.Widgets.Inputs.Whole_Number is
+package FLTK.Widgets.Inputs.Text.Whole_Number is
 
 
-    type Integer_Input is new Input with private;
+    type Integer_Input is new Text_Input with private;
 
     type Integer_Input_Reference (Data : not null access Integer_Input'Class) is
         limited null record with Implicit_Dereference => Data;
@@ -32,21 +32,13 @@ package FLTK.Widgets.Inputs.Whole_Number is
         return Long_Integer;
 
 
-
-
-    procedure Draw
-           (This : in out Integer_Input);
-
-    function Handle
-           (This  : in out Integer_Input;
-            Event : in     Event_Kind)
-        return Event_Outcome;
-
-
 private
 
 
-    type Integer_Input is new Input with null record;
+    type Integer_Input is new Text_Input with null record;
+
+    overriding procedure Initialize
+           (This : in out Integer_Input);
 
     overriding procedure Finalize
            (This : in out Integer_Input);
@@ -64,9 +56,7 @@ private
 
     pragma Inline (Get_Value);
 
-    pragma Inline (Draw);
-    pragma Inline (Handle);
 
+end FLTK.Widgets.Inputs.Text.Whole_Number;
 
-end FLTK.Widgets.Inputs.Whole_Number;
 
