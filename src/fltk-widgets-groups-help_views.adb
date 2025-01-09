@@ -6,6 +6,7 @@
 
 with
 
+    Ada.Assertions,
     Interfaces.C.Strings,
     System.Address_To_Access_Conversions;
 
@@ -15,6 +16,11 @@ use type
 
 
 package body FLTK.Widgets.Groups.Help_Views is
+
+
+    package Chk renames Ada.Assertions;
+
+
 
 
     ------------------------
@@ -422,9 +428,11 @@ package body FLTK.Widgets.Groups.Help_Views is
     begin
         if Code = -1 then
             raise Load_Help_Error;
-        elsif Code /= 0 then
-            raise Internal_FLTK_Error;
+        else
+            pragma Assert (Code = 0);
         end if;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Load;
 
 

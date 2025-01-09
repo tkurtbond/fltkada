@@ -6,6 +6,7 @@
 
 with
 
+    Ada.Assertions,
     Interfaces.C.Strings;
 
 use type
@@ -14,6 +15,11 @@ use type
 
 
 package body FLTK.Devices.Surface.Paged.Postscript is
+
+
+    package Chk renames Ada.Assertions;
+
+
 
 
     ------------------------
@@ -347,9 +353,9 @@ package body FLTK.Devices.Surface.Paged.Postscript is
             To_Cint (Format),
             To_Cint (Layout));
     begin
-        if Code /= 0 then
-            raise Internal_FLTK_Error;
-        end if;
+        pragma Assert (Code = 0);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Start_Job;
 
 
@@ -366,11 +372,12 @@ package body FLTK.Devices.Surface.Paged.Postscript is
             To_Cint (Layout));
     begin
         case Code is
-        when 0 => null;
         when 1 => raise User_Cancel_Error;
         when 2 => raise File_Open_Error;
-        when others => raise Internal_FLTK_Error;
+        when others => pragma Assert (Code = 0);
         end case;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Start_Job;
 
 

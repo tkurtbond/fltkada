@@ -6,6 +6,7 @@
 
 with
 
+    Ada.Assertions,
     Interfaces.C.Strings,
     System.Address_To_Access_Conversions;
 
@@ -17,6 +18,8 @@ use type
 
 package body FLTK.File_Choosers is
 
+
+    package Chk renames Ada.Assertions;
 
     package File_Chooser_Convert is new System.Address_To_Access_Conversions (File_Chooser'Class);
     package Widget_Convert       is new System.Address_To_Access_Conversions (Widgets.Widget'Class);
@@ -1038,11 +1041,10 @@ package body FLTK.File_Choosers is
     is
         Ret : Interfaces.C.int := fl_file_chooser_get_preview (This.Void_Ptr);
     begin
-        if Ret not in 0 .. 1 then
-            raise Internal_FLTK_Error;
-        else
-            return Boolean'Val (Ret);
-        end if;
+        pragma Assert (Ret in 0 .. 1);
+        return Boolean'Val (Ret);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Has_Preview;
 
 
@@ -1108,11 +1110,10 @@ package body FLTK.File_Choosers is
     is
         Ret : Interfaces.C.int := fl_file_chooser_get_type (This.Void_Ptr);
     begin
-        if Ret not in 0 .. Chooser_Kind'Pos (Chooser_Kind'Last) then
-            raise Internal_FLTK_Error;
-        else
-            return Chooser_Kind'Val (Ret);
-        end if;
+        pragma Assert (Ret in 0 .. Chooser_Kind'Pos (Chooser_Kind'Last));
+        return Chooser_Kind'Val (Ret);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Get_Chooser_Kind;
 
 

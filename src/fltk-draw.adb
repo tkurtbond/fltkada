@@ -6,6 +6,7 @@
 
 with
 
+    Ada.Assertions,
     Ada.Unchecked_Deallocation,
     Interfaces.C.Strings;
 
@@ -17,6 +18,15 @@ use type
 
 package body FLTK.Draw is
 
+
+    package Chk renames Ada.Assertions;
+
+
+
+
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     procedure fl_draw_reset_spot;
     pragma Import (C, fl_draw_reset_spot, "fl_draw_reset_spot");
@@ -670,11 +680,12 @@ package body FLTK.Draw is
     begin
         if Result = 1 then
             return True;
-        elsif Result = 0 then
-            return False;
         else
-            raise Internal_FLTK_Error;
+            pragma Assert (Result = 0);
+            return False;
         end if;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Can_Do_Alpha_Blending;
 
 
@@ -1214,10 +1225,10 @@ package body FLTK.Draw is
             Interfaces.C.int (W),
             Interfaces.C.int (H),
             Interfaces.C.int (Alpha));
-        if Buffer /= Storage.To_Integer (Result (Result'First)'Address) then
-            raise Internal_FLTK_Error;
-        end if;
+        pragma Assert (Buffer = Storage.To_Integer (Result (Result'First)'Address));
         return Result;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Read_Image;
 
 
@@ -1239,9 +1250,11 @@ package body FLTK.Draw is
     begin
         if Ret_Val = 0 then
             raise Draw_Error;
-        elsif Ret_Val /= 1 then
-            raise Internal_FLTK_Error;
+        else
+            pragma Assert (Ret_Val = 1);
         end if;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Add_Symbol;
 
     procedure Draw_Text
@@ -1406,9 +1419,11 @@ package body FLTK.Draw is
     begin
         if Ret_Val = 0 then
             raise Draw_Error;
-        elsif Ret_Val /= 1 then
-            raise Internal_FLTK_Error;
+        else
+            pragma Assert (Ret_Val = 1);
         end if;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Draw_Symbol;
 
 

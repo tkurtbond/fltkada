@@ -6,6 +6,7 @@
 
 with
 
+    Ada.Assertions,
     Interfaces.C.Strings;
 
 use type
@@ -15,6 +16,11 @@ use type
 
 
 package body FLTK.Widgets.Groups.Browsers.Textline.File is
+
+
+    package Chk renames Ada.Assertions;
+
+
 
 
     ------------------------
@@ -385,10 +391,10 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
     is
         Code : Interfaces.C.int := fl_file_browser_get_filetype (This.Void_Ptr);
     begin
-        if Code not in File_Kind'Pos (File_Kind'First) .. File_Kind'Pos (File_Kind'Last) then
-            raise Internal_FLTK_Error;
-        end if;
+        pragma Assert (Code in File_Kind'Pos (File_Kind'First) .. File_Kind'Pos (File_Kind'Last));
         return File_Kind'Val (Code);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Get_File_Kind;
 
 

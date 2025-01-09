@@ -6,6 +6,7 @@
 
 with
 
+    Ada.Assertions,
     Ada.Strings.Unbounded,
     Interfaces.C.Strings;
 
@@ -18,7 +19,8 @@ use type
 package body FLTK.Devices.Surface.Paged is
 
 
-    package SU renames Ada.Strings.Unbounded;
+    package Chk renames Ada.Assertions;
+    package SU  renames Ada.Strings.Unbounded;
 
 
 
@@ -204,11 +206,12 @@ package body FLTK.Devices.Surface.Paged is
     begin
         if Value in Page_Format'Pos (A0) .. Page_Format'Pos (Envelope) then
             return Page_Format'Val (Value);
-        elsif Value = fl_page_format_media then
-            return Media;
         else
-            raise Internal_FLTK_Error;
+            pragma Assert (Value = fl_page_format_media);
+            return Media;
         end if;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end To_Page_Format;
 
 
@@ -235,11 +238,12 @@ package body FLTK.Devices.Surface.Paged is
             return Landscape;
         elsif Value = fl_page_layout_reversed then
             return Reversed;
-        elsif Value = fl_page_layout_orientation then
-            return Orientation;
         else
-            raise Internal_FLTK_Error;
+            pragma Assert (Value = fl_page_layout_orientation);
+            return Orientation;
         end if;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end To_Page_Layout;
 
 

@@ -6,6 +6,7 @@
 
 with
 
+    Ada.Assertions,
     Interfaces.C.Strings;
 
 use type
@@ -15,6 +16,11 @@ use type
 
 
 package body FLTK.Environment is
+
+
+    package Chk renames Ada.Assertions;
+
+
 
 
     ------------------------
@@ -381,11 +387,12 @@ package body FLTK.Environment is
     begin
         if Num = root_fl_prefs_system then
             return Global;
-        elsif Num = root_fl_prefs_user then
-            return User;
         else
-            raise Internal_FLTK_Error;
+            pragma Assert (Num = root_fl_prefs_user);
+            return User;
         end if;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end To_Scope;
 
 

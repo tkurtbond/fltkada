@@ -6,11 +6,17 @@
 
 with
 
+    Ada.Assertions,
     Interfaces.C.Strings,
     System.Address_To_Access_Conversions;
 
 
 package body FLTK.Widgets.Groups.Browsers is
+
+
+    package Chk renames Ada.Assertions;
+
+
 
 
     ------------------------
@@ -773,10 +779,10 @@ package body FLTK.Widgets.Groups.Browsers is
             Boolean'Pos (State),
             Boolean'Pos (Do_Callbacks));
     begin
-        if Code not in 0 .. 1 then
-            raise Internal_FLTK_Error;
-        end if;
+        pragma Assert (Code in 0 .. 1);
         return Boolean'Val (Code);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Set_Select;
 
 
@@ -792,9 +798,9 @@ package body FLTK.Widgets.Groups.Browsers is
             Boolean'Pos (State),
             Boolean'Pos (Do_Callbacks));
     begin
-        if Code not in 0 .. 1 then
-            raise Internal_FLTK_Error;
-        end if;
+        pragma Assert (Code in 0 .. 1);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Set_Select;
 
 
@@ -809,10 +815,10 @@ package body FLTK.Widgets.Groups.Browsers is
             Cursor_To_Address (Item),
             Boolean'Pos (Do_Callbacks));
     begin
-        if Code not in 0 .. 1 then
-            raise Internal_FLTK_Error;
-        end if;
+        pragma Assert (Code in 0 .. 1);
         return Boolean'Val (Code);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Select_Only;
 
 
@@ -826,9 +832,9 @@ package body FLTK.Widgets.Groups.Browsers is
             Cursor_To_Address (Item),
             Boolean'Pos (Do_Callbacks));
     begin
-        if Code not in 0 .. 1 then
-            raise Internal_FLTK_Error;
-        end if;
+        pragma Assert (Code in 0 .. 1);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Select_Only;
 
 
@@ -849,10 +855,10 @@ package body FLTK.Widgets.Groups.Browsers is
            (This.Void_Ptr,
             Boolean'Pos (Do_Callbacks));
     begin
-        if Code not in 0 .. 1 then
-            raise Internal_FLTK_Error;
-        end if;
+        pragma Assert (Code in 0 .. 1);
         return Boolean'Val (Code);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Deselect;
 
 
@@ -864,9 +870,9 @@ package body FLTK.Widgets.Groups.Browsers is
            (This.Void_Ptr,
             Boolean'Pos (Do_Callbacks));
     begin
-        if Code not in 0 .. 1 then
-            raise Internal_FLTK_Error;
-        end if;
+        pragma Assert (Code in 0 .. 1);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Deselect;
 
 
@@ -886,10 +892,10 @@ package body FLTK.Widgets.Groups.Browsers is
         Code : Interfaces.C.int := fl_abstract_browser_displayed
             (This.Void_Ptr, Cursor_To_Address (Item));
     begin
-        if Code not in 0 .. 1 then
-            raise Internal_FLTK_Error;
-        end if;
+        pragma Assert (Code in 0 .. 1);
         return Boolean'Val (Code);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Is_Displayed;
 
 

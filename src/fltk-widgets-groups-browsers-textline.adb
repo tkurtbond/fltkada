@@ -6,6 +6,7 @@
 
 with
 
+    Ada.Assertions,
     Ada.Unchecked_Deallocation,
     FLTK.Images,
     Interfaces.C.Strings;
@@ -17,6 +18,11 @@ use type
 
 
 package body FLTK.Widgets.Groups.Browsers.Textline is
+
+
+    package Chk renames Ada.Assertions;
+
+
 
 
     ------------------------
@@ -594,9 +600,11 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
             else
                 raise Browser_Load_Error with Interfaces.C.Strings.Value (Msg);
             end if;
-        elsif Code /= 1 then
-            raise Internal_FLTK_Error;
+        else
+            pragma Assert (Code = 1);
         end if;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Load;
 
 
@@ -765,11 +773,10 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
             Interfaces.C.int (Line),
             Boolean'Pos (State));
     begin
-        if Code not in 0 .. 1 then
-            raise Internal_FLTK_Error;
-        else
-            return Boolean'Val (Code);
-        end if;
+        pragma Assert (Code in 0 .. 1);
+        return Boolean'Val (Code);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Set_Select;
 
 
@@ -783,9 +790,9 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
             Interfaces.C.int (Line),
             Boolean'Pos (State));
     begin
-        if Code not in 0 .. 1 then
-            raise Internal_FLTK_Error;
-        end if;
+        pragma Assert (Code in 0 .. 1);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Set_Select;
 
 
@@ -798,11 +805,10 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
            (This.Void_Ptr,
             Interfaces.C.int (Line));
     begin
-        if Code not in 0 .. 1 then
-            raise Internal_FLTK_Error;
-        else
-            return Boolean'Val (Code);
-        end if;
+        pragma Assert (Code in 0 .. 1);
+        return Boolean'Val (Code);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Is_Selected;
 
 
@@ -842,11 +848,10 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
            (This.Void_Ptr,
             Interfaces.C.int (Line));
     begin
-        if Code not in 0 .. 1 then
-            raise Internal_FLTK_Error;
-        else
-            return Boolean'Val (Code);
-        end if;
+        pragma Assert (Code in 0 .. 1);
+        return Boolean'Val (Code);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Is_Displayed;
 
 
@@ -1084,11 +1089,10 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
         pragma Import (Ada, my_item_selected);
         Code : Interfaces.C.int := my_item_selected (This.Void_Ptr, Cursor_To_Address (Item));
     begin
-        if Code not in 0 .. 1 then
-            raise Internal_FLTK_Error;
-        else
-            return Boolean'Val (Code);
-        end if;
+        pragma Assert (Code in 0 .. 1);
+        return Boolean'Val (Code);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Item_Selected;
 
 

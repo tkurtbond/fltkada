@@ -6,6 +6,7 @@
 
 with
 
+    Ada.Assertions,
     Interfaces.C.Strings;
 
 use type
@@ -15,6 +16,11 @@ use type
 
 
 package body FLTK.Asks is
+
+
+    package Chk renames Ada.Assertions;
+
+
 
 
     ------------------------
@@ -393,11 +399,10 @@ package body FLTK.Asks is
             Interfaces.C.Strings.Null_Ptr,
             Interfaces.C.Strings.Null_Ptr);
     begin
-        case Result is
-        when -3 .. -1 => return Extended_Choice_Result'Val (Result + 6);
-        when  0 ..  2 => return Extended_Choice_Result'Val (Result);
-        when others   => raise Internal_FLTK_Error;
-        end case;
+        pragma Assert (Result in -3 .. 2);
+        return Extended_Choice_Result'Val (Result mod 6);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Extended_Choice;
 
 
@@ -412,11 +417,10 @@ package body FLTK.Asks is
             Interfaces.C.Strings.To_Chars_Ptr (Str2'Unchecked_Access),
             Interfaces.C.Strings.Null_Ptr);
     begin
-        case Result is
-        when -3 .. -1 => return Extended_Choice_Result'Val (Result + 6);
-        when  0 ..  2 => return Extended_Choice_Result'Val (Result);
-        when others   => raise Internal_FLTK_Error;
-        end case;
+        pragma Assert (Result in -3 .. 2);
+        return Extended_Choice_Result'Val (Result mod 6);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Extended_Choice;
 
 
@@ -432,11 +436,10 @@ package body FLTK.Asks is
             Interfaces.C.Strings.To_Chars_Ptr (Str2'Unchecked_Access),
             Interfaces.C.Strings.To_Chars_Ptr (Str3'Unchecked_Access));
     begin
-        case Result is
-        when -3 .. -1 => return Extended_Choice_Result'Val (Result + 6);
-        when  0 ..  2 => return Extended_Choice_Result'Val (Result);
-        when others   => raise Internal_FLTK_Error;
-        end case;
+        pragma Assert (Result in -3 .. 2);
+        return Extended_Choice_Result'Val (Result mod 6);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Extended_Choice;
 
 
@@ -504,11 +507,12 @@ package body FLTK.Asks is
             G := RGB_Float (C_G);
             B := RGB_Float (C_B);
             return Confirm;
-        elsif Result = 0 then
-            return Cancel;
         else
-            raise Internal_FLTK_Error;
+            pragma Assert (Result = 0);
+            return Cancel;
         end if;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Color_Chooser;
 
 
@@ -531,11 +535,12 @@ package body FLTK.Asks is
             G := RGB_Int (C_G);
             B := RGB_Int (C_B);
             return Confirm;
-        elsif Result = 0 then
-            return Cancel;
         else
-            raise Internal_FLTK_Error;
+            pragma Assert (Result = 0);
+            return Cancel;
         end if;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Color_Chooser;
 
 

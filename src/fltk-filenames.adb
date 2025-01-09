@@ -6,6 +6,7 @@
 
 with
 
+    Ada.Assertions,
     Interfaces.C.Strings;
 
 use type
@@ -15,6 +16,11 @@ use type
 
 
 package body FLTK.Filenames is
+
+
+    package Chk renames Ada.Assertions;
+
+
 
 
     ------------------------
@@ -160,11 +166,11 @@ package body FLTK.Filenames is
         Result : Interfaces.C.int :=
             filename_alphasort (Interfaces.C.To_C (A), Interfaces.C.To_C (B));
     begin
-        if Result not in Comparison'Pos (Comparison'First) .. Comparison'Pos (Comparison'Last) then
-            raise Internal_FLTK_Error;
-        else
-            return Comparison'Val (Result);
-        end if;
+        pragma Assert
+            (Result in Comparison'Pos (Comparison'First) .. Comparison'Pos (Comparison'Last));
+        return Comparison'Val (Result);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Alpha_Sort;
 
 
@@ -175,11 +181,11 @@ package body FLTK.Filenames is
         Result : Interfaces.C.int :=
             filename_casealphasort (Interfaces.C.To_C (A), Interfaces.C.To_C (B));
     begin
-        if Result not in Comparison'Pos (Comparison'First) .. Comparison'Pos (Comparison'Last) then
-            raise Internal_FLTK_Error;
-        else
-            return Comparison'Val (Result);
-        end if;
+        pragma Assert
+            (Result in Comparison'Pos (Comparison'First) .. Comparison'Pos (Comparison'Last));
+        return Comparison'Val (Result);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Case_Alpha_Sort;
 
 
@@ -190,11 +196,11 @@ package body FLTK.Filenames is
         Result : Interfaces.C.int :=
             filename_numericsort (Interfaces.C.To_C (A), Interfaces.C.To_C (B));
     begin
-        if Result not in Comparison'Pos (Comparison'First) .. Comparison'Pos (Comparison'Last) then
-            raise Internal_FLTK_Error;
-        else
-            return Comparison'Val (Result);
-        end if;
+        pragma Assert
+            (Result in Comparison'Pos (Comparison'First) .. Comparison'Pos (Comparison'Last));
+        return Comparison'Val (Result);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Numeric_Sort;
 
 
@@ -205,11 +211,11 @@ package body FLTK.Filenames is
         Result : Interfaces.C.int :=
             filename_casenumericsort (Interfaces.C.To_C (A), Interfaces.C.To_C (B));
     begin
-        if Result not in Comparison'Pos (Comparison'First) .. Comparison'Pos (Comparison'Last) then
-            raise Internal_FLTK_Error;
-        else
-            return Comparison'Val (Result);
-        end if;
+        pragma Assert
+            (Result in Comparison'Pos (Comparison'First) .. Comparison'Pos (Comparison'Last));
+        return Comparison'Val (Result);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Case_Numeric_Sort;
 
 
@@ -276,9 +282,11 @@ package body FLTK.Filenames is
     begin
         if Result = 0 then
             raise Open_URI_Error with "Error: " & Interfaces.C.To_Ada (Message);
-        elsif Result /= 1 then
-            raise Internal_FLTK_Error;
+        else
+            pragma Assert (Result = 1);
         end if;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Open_URI;
 
 
