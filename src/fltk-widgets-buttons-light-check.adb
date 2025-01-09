@@ -6,11 +6,15 @@
 
 with
 
-    Interfaces.C;
+    Interfaces.C.Strings;
 
 
 package body FLTK.Widgets.Buttons.Light.Check is
 
+
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     procedure check_button_set_draw_hook
            (W, D : in Storage.Integer_Address);
@@ -55,6 +59,26 @@ package body FLTK.Widgets.Buttons.Light.Check is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
+    --  Round the world and home again, that's the sailor's way!
+    procedure check_button_extra_final_hook
+           (Ada_Obj : in Storage.Integer_Address);
+    pragma Export (C, check_button_extra_final_hook, "check_button_extra_final_hook");
+
+    procedure check_button_extra_final_hook
+           (Ada_Obj : in Storage.Integer_Address)
+    is
+        My_Check_Button : Check_Button;
+        for My_Check_Button'Address use Storage.To_Address (Ada_Obj);
+        pragma Import (Ada, My_Check_Button);
+    begin
+        Extra_Final (My_Check_Button);
+    end check_button_extra_final_hook;
+
+
     procedure Extra_Final
            (This : in out Check_Button) is
     begin
@@ -73,6 +97,34 @@ package body FLTK.Widgets.Buttons.Light.Check is
     end Finalize;
 
 
+
+
+    --------------------
+    --  Constructors  --
+    --------------------
+
+    --  Arrived at the flip side
+    procedure check_button_extra_init_hook
+           (Ada_Obj    : Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int;
+            C_Str      : in Interfaces.C.Strings.chars_ptr);
+    pragma Export (C, check_button_extra_init_hook, "check_button_extra_init_hook");
+
+    procedure check_button_extra_init_hook
+           (Ada_Obj    : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int;
+            C_Str      : in Interfaces.C.Strings.chars_ptr)
+    is
+        My_Check_Button : Check_Button;
+        for My_Check_Button'Address use Storage.To_Address (Ada_Obj);
+        pragma Import (Ada, My_Check_Button);
+    begin
+        Extra_Init
+           (My_Check_Button,
+            Integer (X), Integer (Y),
+            Integer (W), Integer (H),
+            Interfaces.C.Strings.Value (C_Str));
+    end check_button_extra_init_hook;
 
 
     procedure Extra_Init
@@ -110,6 +162,10 @@ package body FLTK.Widgets.Buttons.Light.Check is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     procedure Draw
            (This : in out Check_Button) is

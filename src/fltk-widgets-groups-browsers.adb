@@ -626,11 +626,18 @@ package body FLTK.Widgets.Groups.Browsers is
     --  Destructors  --
     -------------------
 
+    --  Preparing to use morse code
+    procedure fl_scrollbar_extra_final
+           (Ada_Obj : in Storage.Integer_Address);
+    pragma Import (C, fl_scrollbar_extra_final, "fl_scrollbar_extra_final");
+    pragma Inline (fl_scrollbar_extra_final);
+
+
     procedure Extra_Final
            (This : in out Browser) is
     begin
-        Extra_Final (Widget (This.Horizon));
-        Extra_Final (Widget (This.Vertigo));
+        fl_scrollbar_extra_final (Storage.To_Integer (This.Horizon'Address));
+        fl_scrollbar_extra_final (Storage.To_Integer (This.Vertigo'Address));
         Extra_Final (Group (This));
         for Index in This.Text_Store'Range loop
             Interfaces.C.Strings.Free (This.Text_Store (Index));
@@ -655,6 +662,15 @@ package body FLTK.Widgets.Groups.Browsers is
     --  Constructors  --
     --------------------
 
+    --  Boarding the Titanic...
+    procedure fl_scrollbar_extra_init
+           (Ada_Obj    : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int;
+            C_Str      : in Interfaces.C.char_array);
+    pragma Import (C, fl_scrollbar_extra_init, "fl_scrollbar_extra_init");
+    pragma Inline (fl_scrollbar_extra_init);
+
+
     procedure Extra_Init
            (This       : in out Browser;
             X, Y, W, H : in     Integer;
@@ -662,22 +678,22 @@ package body FLTK.Widgets.Groups.Browsers is
     begin
         Widget (This.Horizon).Void_Ptr := fl_abstract_browser_hscrollbar (This.Void_Ptr);
         Widget (This.Horizon).Needs_Dealloc := False;
-        Extra_Init
-           (Widget (This.Horizon),
-            This.Horizon.Get_X,
-            This.Horizon.Get_Y,
-            This.Horizon.Get_W,
-            This.Horizon.Get_H,
-            This.Horizon.Get_Label);
+        fl_scrollbar_extra_init
+           (Storage.To_Integer (This.Horizon'Address),
+            Interfaces.C.int (This.Horizon.Get_X),
+            Interfaces.C.int (This.Horizon.Get_Y),
+            Interfaces.C.int (This.Horizon.Get_W),
+            Interfaces.C.int (This.Horizon.Get_H),
+            Interfaces.C.To_C (This.Horizon.Get_Label));
         Widget (This.Vertigo).Void_Ptr := fl_abstract_browser_scrollbar (This.Void_Ptr);
         Widget (This.Vertigo).Needs_Dealloc := False;
-        Extra_Init
-           (Widget (This.Vertigo),
-            This.Vertigo.Get_X,
-            This.Vertigo.Get_Y,
-            This.Vertigo.Get_W,
-            This.Vertigo.Get_H,
-            This.Vertigo.Get_Label);
+        fl_scrollbar_extra_init
+           (Storage.To_Integer (This.Vertigo'Address),
+            Interfaces.C.int (This.Vertigo.Get_X),
+            Interfaces.C.int (This.Vertigo.Get_Y),
+            Interfaces.C.int (This.Vertigo.Get_W),
+            Interfaces.C.int (This.Vertigo.Get_H),
+            Interfaces.C.To_C (This.Vertigo.Get_Label));
         Extra_Init (Group (This), X, Y, W, H, Text);
     end Extra_Init;
 

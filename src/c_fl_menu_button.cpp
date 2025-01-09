@@ -11,6 +11,22 @@
 
 
 
+//  Telprot stopovers
+
+extern "C" void menu_button_extra_init_hook
+    (void * aobj, int x, int y, int w, int h, const char * l);
+void fl_menu_button_extra_init(void * adaobj, int x, int y, int w, int h, const char * label) {
+    menu_button_extra_init_hook(adaobj, x, y, w, h, label);
+}
+
+extern "C" void menu_button_extra_final_hook(void * aobj);
+void fl_menu_button_extra_final(void * adaobj) {
+    menu_button_extra_final_hook(adaobj);
+}
+
+
+
+
 class My_Menu_Button : public Fl_Menu_Button {
     public:
         using Fl_Menu_Button::Fl_Menu_Button;

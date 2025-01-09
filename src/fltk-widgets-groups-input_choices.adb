@@ -17,6 +17,10 @@ use type
 package body FLTK.Widgets.Groups.Input_Choices is
 
 
+    ------------------------
+    --  Functions From C  --
+    ------------------------
+
     procedure input_choice_set_draw_hook
            (W, D : in Storage.Integer_Address);
     pragma Import (C, input_choice_set_draw_hook, "input_choice_set_draw_hook");
@@ -168,13 +172,32 @@ package body FLTK.Widgets.Groups.Input_Choices is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
+    --  Resorting to smoke signals
+    procedure fl_text_input_extra_final
+           (Ada_Obj : in Storage.Integer_Address);
+    pragma Import (C, fl_text_input_extra_final, "fl_text_input_extra_final");
+    pragma Inline (fl_text_input_extra_final);
+
+
+    --  Message in a bottle
+    procedure fl_menu_button_extra_final
+           (Ada_Obj : in Storage.Integer_Address);
+    pragma Import (C, fl_menu_button_extra_final, "fl_menu_button_extra_final");
+    pragma Inline (fl_menu_button_extra_final);
+
+
     procedure Extra_Final
            (This : in out Input_Choice) is
     begin
-        Extra_Final (Widget (This.My_Input));
-        Extra_Final (Widget (This.My_Menu_Button));
+        fl_text_input_extra_final (Storage.To_Integer (This.My_Input'Address));
+        fl_menu_button_extra_final (Storage.To_Integer (This.My_Menu_Button'Address));
         Extra_Final (Group (This));
     end Extra_Final;
+
 
     procedure Finalize
            (This : in out Input_Choice) is
@@ -189,6 +212,28 @@ package body FLTK.Widgets.Groups.Input_Choices is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
+    --  Translocation initiating...
+    procedure fl_text_input_extra_init
+           (Ada_Obj    : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int;
+            C_Str      : in Interfaces.C.char_array);
+    pragma Import (C, fl_text_input_extra_init, "fl_text_input_extra_init");
+    pragma Inline (fl_text_input_extra_init);
+
+
+    --  Crossing the streams
+    procedure fl_menu_button_extra_init
+           (Ada_Obj    : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int;
+            C_Str      : in Interfaces.C.char_array);
+    pragma Import (C, fl_menu_button_extra_init, "fl_menu_button_extra_init");
+    pragma Inline (fl_menu_button_extra_init);
+
+
     procedure Extra_Init
            (This       : in out Input_Choice;
             X, Y, W, H : in     Integer;
@@ -196,22 +241,22 @@ package body FLTK.Widgets.Groups.Input_Choices is
     begin
         Wrapper (This.My_Input).Void_Ptr := fl_input_choice_input (This.Void_Ptr);
         Wrapper (This.My_Input).Needs_Dealloc := False;
-        Extra_Init
-           (Widget (This.My_Input),
-            This.My_Input.Get_X,
-            This.My_Input.Get_Y,
-            This.My_Input.Get_W,
-            This.My_Input.Get_H,
-            This.My_Input.Get_Label);
+        fl_text_input_extra_init
+           (Storage.To_Integer (This.My_Input'Address),
+            Interfaces.C.int (This.My_Input.Get_X),
+            Interfaces.C.int (This.My_Input.Get_Y),
+            Interfaces.C.int (This.My_Input.Get_W),
+            Interfaces.C.int (This.My_Input.Get_H),
+            Interfaces.C.To_C (This.My_Input.Get_Label));
         Wrapper (This.My_Menu_Button).Void_Ptr := fl_input_choice_menubutton (This.Void_Ptr);
         Wrapper (This.My_Menu_Button).Needs_Dealloc := False;
-        Extra_Init
-           (Widget (This.My_Menu_Button),
-            This.My_Menu_Button.Get_X,
-            This.My_Menu_Button.Get_Y,
-            This.My_Menu_Button.Get_W,
-            This.My_Menu_Button.Get_H,
-            This.My_Menu_Button.Get_Label);
+        fl_menu_button_extra_init
+           (Storage.To_Integer (This.My_Menu_Button'Address),
+            Interfaces.C.int (This.My_Menu_Button.Get_X),
+            Interfaces.C.int (This.My_Menu_Button.Get_Y),
+            Interfaces.C.int (This.My_Menu_Button.Get_W),
+            Interfaces.C.int (This.My_Menu_Button.Get_H),
+            Interfaces.C.To_C (This.My_Menu_Button.Get_Label));
         Extra_Init (Group (This), X, Y, W, H, Text);
     end Extra_Init;
 
@@ -243,20 +288,20 @@ package body FLTK.Widgets.Groups.Input_Choices is
 
 
 
-    function Input
+    function Text_Field
            (This : in out Input_Choice)
-        return FLTK.Widgets.Inputs.Input_Reference is
+        return FLTK.Widgets.Inputs.Text.Text_Input_Reference is
     begin
         return (Data => This.My_Input'Unchecked_Access);
-    end Input;
+    end Text_Field;
 
 
-    function Menu_Button
+    function Button_Menu
            (This : in out Input_Choice)
         return FLTK.Widgets.Menus.Menu_Buttons.Menu_Button_Reference is
     begin
         return (Data => This.My_Menu_Button'Unchecked_Access);
-    end Menu_Button;
+    end Button_Menu;
 
 
 

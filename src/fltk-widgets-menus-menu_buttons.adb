@@ -6,11 +6,15 @@
 
 with
 
-    Interfaces.C;
+    Interfaces.C.Strings;
 
 
 package body FLTK.Widgets.Menus.Menu_Buttons is
 
+
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     procedure menu_button_set_draw_hook
            (W, D : in Storage.Integer_Address);
@@ -76,6 +80,26 @@ package body FLTK.Widgets.Menus.Menu_Buttons is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
+    --  More magic
+    procedure menu_button_extra_final_hook
+           (Ada_Obj : in Storage.Integer_Address);
+    pragma Export (C, menu_button_extra_final_hook, "menu_button_extra_final_hook");
+
+    procedure menu_button_extra_final_hook
+           (Ada_Obj : in Storage.Integer_Address)
+    is
+        My_Menu_Button : Menu_Button;
+        for My_Menu_Button'Address use Storage.To_Address (Ada_Obj);
+        pragma Import (Ada, My_Menu_Button);
+    begin
+        Extra_Final (My_Menu_Button);
+    end menu_button_extra_final_hook;
+
+
     procedure Extra_Final
            (This : in out Menu_Button) is
     begin
@@ -94,6 +118,34 @@ package body FLTK.Widgets.Menus.Menu_Buttons is
     end Finalize;
 
 
+
+
+    --------------------
+    --  Constructors  --
+    --------------------
+
+    --  Long distance telephone call receival
+    procedure menu_button_extra_init_hook
+           (Ada_Obj    : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int;
+            C_Str      : in Interfaces.C.Strings.chars_ptr);
+    pragma Export (C, menu_button_extra_init_hook, "menu_button_extra_init_hook");
+
+    procedure menu_button_extra_init_hook
+           (Ada_Obj    : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int;
+            C_Str      : in Interfaces.C.Strings.chars_ptr)
+    is
+        My_Menu_Button : Menu_Button;
+        for My_Menu_Button'Address use Storage.To_Address (Ada_Obj);
+        pragma Import (Ada, My_Menu_Button);
+    begin
+        Extra_Init
+           (My_Menu_Button,
+            Integer (X), Integer (Y),
+            Integer (W), Integer (H),
+            Interfaces.C.Strings.Value (C_Str));
+    end menu_button_extra_init_hook;
 
 
     procedure Extra_Init
@@ -131,6 +183,10 @@ package body FLTK.Widgets.Menus.Menu_Buttons is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     procedure Set_Popup_Kind
            (This : in out Menu_Button;

@@ -6,7 +6,7 @@
 
 with
 
-    FLTK.Widgets.Inputs;
+    FLTK.Widgets.Inputs.Text;
 
 
 package FLTK.Widgets.Valuators.Value_Inputs is
@@ -32,9 +32,9 @@ package FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
-    function Input
+    function Text_Field
            (This : in out Value_Input)
-        return FLTK.Widgets.Inputs.Input_Reference;
+        return FLTK.Widgets.Inputs.Text.Text_Input_Reference;
 
 
 
@@ -112,7 +112,7 @@ private
 
 
     type Value_Input is new Valuator with record
-        My_Input : aliased Inputs.Input;
+        My_Input : aliased Inputs.Text.Text_Input;
     end record;
 
     overriding procedure Finalize
@@ -128,7 +128,7 @@ private
     with Inline;
 
 
-    pragma Inline (Input);
+    pragma Inline (Text_Field);
 
     pragma Inline (Get_Cursor_Color);
     pragma Inline (Set_Cursor_Color);

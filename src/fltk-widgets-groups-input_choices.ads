@@ -6,7 +6,7 @@
 
 with
 
-    FLTK.Widgets.Inputs,
+    FLTK.Widgets.Inputs.Text,
     FLTK.Widgets.Menus.Menu_Buttons;
 
 
@@ -33,11 +33,11 @@ package FLTK.Widgets.Groups.Input_Choices is
 
 
 
-    function Input
+    function Text_Field
            (This : in out Input_Choice)
-        return FLTK.Widgets.Inputs.Input_Reference;
+        return FLTK.Widgets.Inputs.Text.Text_Input_Reference;
 
-    function Menu_Button
+    function Button_Menu
            (This : in out Input_Choice)
         return FLTK.Widgets.Menus.Menu_Buttons.Menu_Button_Reference;
 
@@ -121,7 +121,7 @@ private
 
 
     type Input_Choice is new Group with record
-        My_Input       : aliased Inputs.Input;
+        My_Input       : aliased Inputs.Text.Text_Input;
         My_Menu_Button : aliased Menus.Menu_Buttons.Menu_Button;
     end record;
 
@@ -137,8 +137,8 @@ private
            (This : in out Input_Choice);
 
 
-    pragma Inline (Input);
-    pragma Inline (Menu_Button);
+    pragma Inline (Text_Field);
+    pragma Inline (Button_Menu);
 
     pragma Inline (Has_Changed);
     pragma Inline (Clear_Changed);

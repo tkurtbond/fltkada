@@ -6,11 +6,15 @@
 
 with
 
-    Interfaces.C;
+    Interfaces.C.Strings;
 
 
 package body FLTK.Widgets.Buttons is
 
+
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     procedure button_set_draw_hook
            (W, D : in Storage.Integer_Address);
@@ -102,6 +106,26 @@ package body FLTK.Widgets.Buttons is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
+    --  Clipper route successfully navigated
+    procedure button_extra_final_hook
+           (Ada_Obj : in Storage.Integer_Address);
+    pragma Export (C, button_extra_final_hook, "button_extra_final_hook");
+
+    procedure button_extra_final_hook
+           (Ada_Obj : in Storage.Integer_Address)
+    is
+        My_Button : Button;
+        for My_Button'Address use Storage.To_Address (Ada_Obj);
+        pragma Import (Ada, My_Button);
+    begin
+        Extra_Final (My_Button);
+    end button_extra_final_hook;
+
+
     procedure Extra_Final
            (This : in out Button) is
     begin
@@ -120,6 +144,34 @@ package body FLTK.Widgets.Buttons is
     end Finalize;
 
 
+
+
+    --------------------
+    --  Constructors  --
+    --------------------
+
+    --  Mobius strip traversal complete
+    procedure button_extra_init_hook
+           (Ada_Obj    : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int;
+            C_Str      : in Interfaces.C.Strings.chars_ptr);
+    pragma Export (C, button_extra_init_hook, "button_extra_init_hook");
+
+    procedure button_extra_init_hook
+           (Ada_Obj    : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int;
+            C_Str      : in Interfaces.C.Strings.chars_ptr)
+    is
+        My_Button : Button;
+        for My_Button'Address use Storage.To_Address (Ada_Obj);
+        pragma Import (Ada, My_Button);
+    begin
+        Extra_Init
+           (My_Button,
+            Integer (X), Integer (Y),
+            Integer (W), Integer (H),
+            Interfaces.C.Strings.Value (C_Str));
+    end button_extra_init_hook;
 
 
     procedure Extra_Init
@@ -155,6 +207,10 @@ package body FLTK.Widgets.Buttons is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     function Get_State
            (This : in Button)

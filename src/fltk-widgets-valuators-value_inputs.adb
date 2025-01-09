@@ -16,6 +16,10 @@ use type
 package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
+    ------------------------
+    --  Functions From C  --
+    ------------------------
+
     procedure value_input_set_draw_hook
            (W, D : in Storage.Integer_Address);
     pragma Import (C, value_input_set_draw_hook, "value_input_set_draw_hook");
@@ -152,9 +156,21 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
+    --  Making a long distance telephone call
+    procedure fl_text_input_extra_final
+           (Ada_Obj : in Storage.Integer_Address);
+    pragma Import (C, fl_text_input_extra_final, "fl_text_input_extra_final");
+    pragma Inline (fl_text_input_extra_final);
+
+
     procedure Extra_Final
            (This : in out Value_Input) is
     begin
+        fl_text_input_extra_final (Storage.To_Integer (This.My_Input'Address));
         Extra_Final (Valuator (This));
     end Extra_Final;
 
@@ -172,21 +188,33 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
+    --  Black magic, don't try this at home kids
+    procedure fl_text_input_extra_init
+           (Ada_Obj    : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int;
+            C_Str      : in Interfaces.C.char_array);
+    pragma Import (C, fl_text_input_extra_init, "fl_text_input_extra_init");
+    pragma Inline (fl_text_input_extra_init);
+
+
     procedure Extra_Init
            (This       : in out Value_Input;
             X, Y, W, H : in     Integer;
             Text       : in     String) is
     begin
-        Wrapper (This.My_Input).Void_Ptr :=
-            fl_value_input_get_input (This.Void_Ptr);
+        Wrapper (This.My_Input).Void_Ptr := fl_value_input_get_input (This.Void_Ptr);
         Wrapper (This.My_Input).Needs_Dealloc := False;
-        Extra_Init  --  Would be better to call Extra_Init for Inputs here, but alas
-           (Widget (This.My_Input),
-            This.My_Input.Get_X,
-            This.My_Input.Get_Y,
-            This.My_Input.Get_W,
-            This.My_Input.Get_H,
-            This.My_Input.Get_Label);
+        fl_text_input_extra_init
+           (Storage.To_Integer (This.My_Input'Address),
+            Interfaces.C.int (This.My_Input.Get_X),
+            Interfaces.C.int (This.My_Input.Get_Y),
+            Interfaces.C.int (This.My_Input.Get_W),
+            Interfaces.C.int (This.My_Input.Get_H),
+            Interfaces.C.To_C (This.My_Input.Get_Label));
         Extra_Init (Valuator (This), X, Y, W, H, Text);
     end Extra_Init;
 
@@ -218,12 +246,12 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
-    function Input
+    function Text_Field
            (This : in out Value_Input)
-        return FLTK.Widgets.Inputs.Input_Reference is
+        return FLTK.Widgets.Inputs.Text.Text_Input_Reference is
     begin
         return (Data => This.My_Input'Unchecked_Access);
-    end Input;
+    end Text_Field;
 
 
 

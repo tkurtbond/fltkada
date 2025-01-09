@@ -11,6 +11,22 @@
 
 
 
+//  Telprot stopovers
+
+extern "C" void check_button_extra_init_hook
+    (void * aobj, int x, int y, int w, int h, const char * l);
+void fl_check_button_extra_init (void * adaobj, int x, int y, int w, int h, const char * label) {
+    check_button_extra_init_hook(adaobj, x, y, w, h, label);
+}
+
+extern "C" void check_button_extra_final_hook(void * aobj);
+void fl_check_button_extra_final(void * adaobj) {
+    check_button_extra_final_hook(adaobj);
+}
+
+
+
+
 class My_Check_Button : public Fl_Check_Button {
     public:
         using Fl_Check_Button::Fl_Check_Button;

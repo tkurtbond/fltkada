@@ -8,11 +8,11 @@
 #define FL_BUTTON_GUARD
 
 
+extern "C" void fl_button_extra_init(void * adaobj, int x, int y, int w, int h, const char * label);
+extern "C" void fl_button_extra_final(void * adaobj);
 
 
 typedef void* BUTTON;
-
-
 
 
 extern "C" void button_set_draw_hook(BUTTON b, void * d);
@@ -21,12 +21,8 @@ extern "C" void button_set_handle_hook(BUTTON b, void * h);
 extern "C" int fl_button_handle(BUTTON b, int e);
 
 
-
-
 extern "C" BUTTON new_fl_button(int x, int y, int w, int h, char* label);
 extern "C" void free_fl_button(BUTTON b);
-
-
 
 
 extern "C" int fl_button_get_state(BUTTON b);
@@ -41,4 +37,5 @@ extern "C" void fl_button_set_shortcut(BUTTON b, int k);
 
 
 #endif
+
 

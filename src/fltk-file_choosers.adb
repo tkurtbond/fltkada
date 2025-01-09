@@ -509,11 +509,28 @@ package body FLTK.File_Choosers is
     --  Destructors  --
     -------------------
 
+    --  Releasing carrier pigeon
+    procedure fl_button_extra_final
+           (Ada_Obj : in Storage.Integer_Address);
+    pragma Import (C, fl_button_extra_final, "fl_button_extra_final");
+    pragma Inline (fl_button_extra_final);
+
+
+    --  Entering wormhole
+    procedure fl_check_button_extra_final
+           (Ada_Obj : in Storage.Integer_Address);
+    pragma Import (C, fl_check_button_extra_final, "fl_check_button_extra_final");
+    pragma Inline (fl_check_button_extra_final);
+
+
     procedure Extra_Final
            (This : in out File_Chooser)
     is
         use Interfaces.C.Strings;
     begin
+        fl_button_extra_final (Storage.To_Integer (This.New_Butt'Address));
+        fl_check_button_extra_final (Storage.To_Integer (This.Preview_Butt'Address));
+        fl_check_button_extra_final (Storage.To_Integer (This.Hidden_Butt'Address));
         Free (This.My_Label);
         Free (This.My_OK_Label);
     end Extra_Final;
@@ -558,24 +575,57 @@ package body FLTK.File_Choosers is
     --  Constructors  --
     --------------------
 
+    --  Bypassing border checkpoints
+    procedure fl_button_extra_init
+           (Ada_Obj    : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int;
+            C_Str      : in Interfaces.C.char_array);
+    pragma Import (C, fl_button_extra_init, "fl_button_extra_init");
+    pragma Inline (fl_button_extra_init);
+
+
+    --  Refracting off language boundaries
+    procedure fl_check_button_extra_init
+           (Ada_Obj    : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int;
+            C_Str      : in Interfaces.C.char_array);
+    pragma Import (C, fl_check_button_extra_init, "fl_check_button_extra_init");
+    pragma Inline (fl_check_button_extra_init);
+
+
     procedure Extra_Init
            (This : in out File_Chooser) is
     begin
         Wrapper (This.New_Butt).Void_Ptr := fl_file_chooser_newbutton (This.Void_Ptr);
         Wrapper (This.New_Butt).Needs_Dealloc := False;
-        fl_widget_set_user_data
-           (Wrapper (This.New_Butt).Void_Ptr,
-            Storage.To_Integer (This.New_Butt'Address));
+        fl_button_extra_init
+           (Storage.To_Integer (This.New_Butt'Address),
+            Interfaces.C.int (This.New_Butt.Get_X),
+            Interfaces.C.int (This.New_Butt.Get_Y),
+            Interfaces.C.int (This.New_Butt.Get_W),
+            Interfaces.C.int (This.New_Butt.Get_H),
+            Interfaces.C.To_C (This.New_Butt.Get_Label));
+
         Wrapper (This.Preview_Butt).Void_Ptr := fl_file_chooser_previewbutton (This.Void_Ptr);
         Wrapper (This.Preview_Butt).Needs_Dealloc := False;
-        fl_widget_set_user_data
-           (Wrapper (This.Preview_Butt).Void_Ptr,
-            Storage.To_Integer (This.Preview_Butt'Address));
+        fl_check_button_extra_init
+           (Storage.To_Integer (This.Preview_Butt'Address),
+            Interfaces.C.int (This.Preview_Butt.Get_X),
+            Interfaces.C.int (This.Preview_Butt.Get_Y),
+            Interfaces.C.int (This.Preview_Butt.Get_W),
+            Interfaces.C.int (This.Preview_Butt.Get_H),
+            Interfaces.C.To_C (This.Preview_Butt.Get_Label));
+
         Wrapper (This.Hidden_Butt).Void_Ptr := fl_file_chooser_showhiddenbutton (This.Void_Ptr);
         Wrapper (This.Hidden_Butt).Needs_Dealloc := False;
-        fl_widget_set_user_data
-           (Wrapper (This.Hidden_Butt).Void_Ptr,
-            Storage.To_Integer (This.Hidden_Butt'Address));
+        fl_check_button_extra_init
+           (Storage.To_Integer (This.Hidden_Butt'Address),
+            Interfaces.C.int (This.Hidden_Butt.Get_X),
+            Interfaces.C.int (This.Hidden_Butt.Get_Y),
+            Interfaces.C.int (This.Hidden_Butt.Get_W),
+            Interfaces.C.int (This.Hidden_Butt.Get_H),
+            Interfaces.C.To_C (This.Hidden_Butt.Get_Label));
+
         fl_file_chooser_set_user_data
            (This.Void_Ptr,
             Storage.To_Integer (This'Address));

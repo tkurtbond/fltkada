@@ -8,11 +8,12 @@
 #define FL_CHECK_BUTTON_GUARD
 
 
+extern "C" void fl_check_button_extra_init
+    (void * adaobj, int x, int y, int w, int h, const char * label);
+extern "C" void fl_check_button_extra_final(void * adaobj);
 
 
 typedef void* CHECKBUTTON;
-
-
 
 
 extern "C" void check_button_set_draw_hook(CHECKBUTTON b, void * d);
@@ -21,11 +22,10 @@ extern "C" void check_button_set_handle_hook(CHECKBUTTON b, void * h);
 extern "C" int fl_check_button_handle(CHECKBUTTON b, int e);
 
 
-
-
 extern "C" CHECKBUTTON new_fl_check_button(int x, int y, int w, int h, char* label);
 extern "C" void free_fl_check_button(CHECKBUTTON b);
 
 
 #endif
+
 

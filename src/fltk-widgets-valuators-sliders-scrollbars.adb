@@ -12,6 +12,10 @@ with
 package body FLTK.Widgets.Valuators.Sliders.Scrollbars is
 
 
+    ------------------------
+    --  Functions From C  --
+    ------------------------
+
     procedure scrollbar_set_draw_hook
            (W, D : in Storage.Integer_Address);
     pragma Import (C, scrollbar_set_draw_hook, "scrollbar_set_draw_hook");
@@ -88,6 +92,26 @@ package body FLTK.Widgets.Valuators.Sliders.Scrollbars is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
+    --  End of the line
+    procedure scrollbar_extra_final_hook
+           (Ada_Obj : in Storage.Integer_Address);
+    pragma Export (C, scrollbar_extra_final_hook, "scrollbar_extra_final_hook");
+
+    procedure scrollbar_extra_final_hook
+           (Ada_Obj : in Storage.Integer_Address)
+    is
+        My_Scrollbar : Scrollbar;
+        for My_Scrollbar'Address use Storage.To_Address (Ada_Obj);
+        pragma Import (Ada, My_Scrollbar);
+    begin
+        Extra_Final (My_Scrollbar);
+    end scrollbar_extra_final_hook;
+
+
     procedure Extra_Final
            (This : in out Scrollbar) is
     begin
@@ -106,6 +130,34 @@ package body FLTK.Widgets.Valuators.Sliders.Scrollbars is
     end Finalize;
 
 
+
+
+    --------------------
+    --  Constructors  --
+    --------------------
+
+    --  Radio signal successfully intercepted
+    procedure scrollbar_extra_init_hook
+           (Ada_Obj    : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int;
+            C_Str      : in Interfaces.C.Strings.chars_ptr);
+    pragma Export (C, scrollbar_extra_init_hook, "scrollbar_extra_init_hook");
+
+    procedure scrollbar_extra_init_hook
+           (Ada_Obj    : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int;
+            C_Str      : in Interfaces.C.Strings.chars_ptr)
+    is
+        My_Scrollbar : Scrollbar;
+        for My_Scrollbar'Address use Storage.To_Address (Ada_Obj);
+        pragma Import (Ada, My_Scrollbar);
+    begin
+        Extra_Init
+           (My_Scrollbar,
+            Integer (X), Integer (Y),
+            Integer (W), Integer (H),
+            Interfaces.C.Strings.Value (C_Str));
+    end scrollbar_extra_init_hook;
 
 
     procedure Extra_Init
@@ -141,6 +193,10 @@ package body FLTK.Widgets.Valuators.Sliders.Scrollbars is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     function Get_Line_Size
            (This : in Scrollbar)
