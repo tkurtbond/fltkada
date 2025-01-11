@@ -45,7 +45,7 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -54,15 +54,24 @@ Fl_Repeat_Button(int X, int Y, int W, int H, const char *L=0);
 <td><pre>
 function Create
        (X, Y, W, H : in Integer;
-        Text       : in String)
+        Text       : in String := "")
     return Repeat_Button;
 </pre></td>
   </tr>
 
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
   <tr>
-<td>&nbsp;</td>
 <td><pre>
-procedure Draw
+void deactivate();
+</pre></td>
+<td><pre>
+procedure Deactivate
        (This : in out Repeat_Button);
 </pre></td>
   </tr>

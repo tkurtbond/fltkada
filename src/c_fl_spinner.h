@@ -8,25 +8,11 @@
 #define FL_SPINNER_GUARD
 
 
-
-
 typedef void* SPINNER;
-
-
-
-
-extern "C" void spinner_set_draw_hook(SPINNER n, void * d);
-extern "C" void fl_spinner_draw(SPINNER n);
-extern "C" void spinner_set_handle_hook(SPINNER n, void * h);
-extern "C" int fl_spinner_handle(SPINNER n, int e);
-
-
 
 
 extern "C" SPINNER new_fl_spinner(int x, int y, int w, int h, char* label);
 extern "C" void free_fl_spinner(SPINNER n);
-
-
 
 
 extern "C" unsigned int fl_spinner_get_color(SPINNER n);
@@ -54,5 +40,13 @@ extern "C" double fl_spinner_get_value(SPINNER n);
 extern "C" void fl_spinner_set_value(SPINNER n, double t);
 
 
+extern "C" void fl_spinner_resize(SPINNER n, int x, int y, int w, int h);
+
+
+extern "C" void fl_spinner_draw(SPINNER n);
+extern "C" int fl_spinner_handle(SPINNER n, int e);
+
+
 #endif
+
 

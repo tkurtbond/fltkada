@@ -6,6 +6,7 @@
 
 with
 
+    Ada.Assertions,
     Interfaces.C;
 
 use type
@@ -16,18 +17,14 @@ use type
 package body FLTK.Widgets.Groups.Color_Choosers is
 
 
-    procedure color_chooser_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, color_chooser_set_draw_hook, "color_chooser_set_draw_hook");
-    pragma Inline (color_chooser_set_draw_hook);
-
-    procedure color_chooser_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, color_chooser_set_handle_hook, "color_chooser_set_handle_hook");
-    pragma Inline (color_chooser_set_handle_hook);
+    package Chk renames Ada.Assertions;
 
 
 
+
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_color_chooser
            (X, Y, W, H : in Interfaces.C.int;
@@ -145,6 +142,10 @@ package body FLTK.Widgets.Groups.Color_Choosers is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
     procedure Extra_Final
            (This : in out Color_Chooser) is
     begin
@@ -165,6 +166,10 @@ package body FLTK.Widgets.Groups.Color_Choosers is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Color_Chooser;
             X, Y, W, H : in     Integer;
@@ -172,6 +177,14 @@ package body FLTK.Widgets.Groups.Color_Choosers is
     begin
         Extra_Init (Group (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Color_Chooser) is
+    begin
+        This.Draw_Ptr := fl_color_chooser_draw'Address;
+        This.Handle_Ptr := fl_color_chooser_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -189,10 +202,6 @@ package body FLTK.Widgets.Groups.Color_Choosers is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                color_chooser_set_draw_hook
-                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                color_chooser_set_handle_hook
-                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -200,6 +209,10 @@ package body FLTK.Widgets.Groups.Color_Choosers is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     function Get_Red
            (This : in Color_Chooser)
@@ -227,13 +240,34 @@ package body FLTK.Widgets.Groups.Color_Choosers is
 
     procedure Set_RGB
            (This    : in out Color_Chooser;
-            R, G, B : in     Long_Float) is
-    begin
-        This.Was_Changed := fl_color_chooser_rgb
+            R, G, B : in     Long_Float)
+    is
+        Result : Interfaces.C.int := fl_color_chooser_rgb
            (This.Void_Ptr,
             Interfaces.C.double (R),
             Interfaces.C.double (G),
-            Interfaces.C.double (B)) /= 0;
+            Interfaces.C.double (B));
+    begin
+        pragma Assert (Result in 0 .. 1);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    end Set_RGB;
+
+
+    function Set_RGB
+           (This    : in out Color_Chooser;
+            R, G, B : in     Long_Float)
+        return Boolean
+    is
+        Result : Interfaces.C.int := fl_color_chooser_rgb
+           (This.Void_Ptr,
+            Interfaces.C.double (R),
+            Interfaces.C.double (G),
+            Interfaces.C.double (B));
+    begin
+        return Boolean'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error;
     end Set_RGB;
 
 
@@ -265,13 +299,34 @@ package body FLTK.Widgets.Groups.Color_Choosers is
 
     procedure Set_HSV
            (This    : in out Color_Chooser;
-            H, S, V : in     Long_Float) is
-    begin
-        This.Was_Changed := fl_color_chooser_hsv
+            H, S, V : in     Long_Float)
+    is
+        Result : Interfaces.C.int := fl_color_chooser_hsv
            (This.Void_Ptr,
             Interfaces.C.double (H),
             Interfaces.C.double (S),
-            Interfaces.C.double (V)) /= 0;
+            Interfaces.C.double (V));
+    begin
+        pragma Assert (Result in 0 .. 1);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    end Set_HSV;
+
+
+    function Set_HSV
+           (This    : in out Color_Chooser;
+            H, S, V : in     Long_Float)
+        return Boolean
+    is
+        Result : Interfaces.C.int := fl_color_chooser_hsv
+           (This.Void_Ptr,
+            Interfaces.C.double (H),
+            Interfaces.C.double (S),
+            Interfaces.C.double (V));
+    begin
+        return Boolean'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error;
     end Set_HSV;
 
 
@@ -307,23 +362,6 @@ package body FLTK.Widgets.Groups.Color_Choosers is
 
 
 
-    function Color_Was_Changed
-           (This : in Color_Chooser)
-        return Boolean is
-    begin
-        return This.Was_Changed;
-    end Color_Was_Changed;
-
-
-    procedure Clear_Changed
-           (This : in out Color_Chooser) is
-    begin
-        This.Was_Changed := False;
-    end Clear_Changed;
-
-
-
-
     function Get_Mode
            (This : in Color_Chooser)
         return Color_Mode is
@@ -340,24 +378,6 @@ package body FLTK.Widgets.Groups.Color_Choosers is
     end Set_Mode;
 
 
-
-
-    procedure Draw
-           (This : in out Color_Chooser) is
-    begin
-        fl_color_chooser_draw (This.Void_Ptr);
-    end Draw;
-
-
-    function Handle
-           (This  : in out Color_Chooser;
-            Event : in     Event_Kind)
-        return Event_Outcome is
-    begin
-        return Event_Outcome'Val
-               (fl_color_chooser_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
-    end Handle;
-
-
 end FLTK.Widgets.Groups.Color_Choosers;
+
 

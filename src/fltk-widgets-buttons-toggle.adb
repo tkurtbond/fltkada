@@ -12,18 +12,9 @@ with
 package body FLTK.Widgets.Buttons.Toggle is
 
 
-    procedure toggle_button_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, toggle_button_set_draw_hook, "toggle_button_set_draw_hook");
-    pragma Inline (toggle_button_set_draw_hook);
-
-    procedure toggle_button_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, toggle_button_set_handle_hook, "toggle_button_set_handle_hook");
-    pragma Inline (toggle_button_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_toggle_button
            (X, Y, W, H : in Interfaces.C.int;
@@ -55,6 +46,10 @@ package body FLTK.Widgets.Buttons.Toggle is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
     procedure Extra_Final
            (This : in out Toggle_Button) is
     begin
@@ -75,6 +70,10 @@ package body FLTK.Widgets.Buttons.Toggle is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Toggle_Button;
             X, Y, W, H : in     Integer;
@@ -82,6 +81,14 @@ package body FLTK.Widgets.Buttons.Toggle is
     begin
         Extra_Init (Button (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Toggle_Button) is
+    begin
+        This.Draw_Ptr   := fl_toggle_button_draw'Address;
+        This.Handle_Ptr := fl_toggle_button_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -99,34 +106,12 @@ package body FLTK.Widgets.Buttons.Toggle is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                toggle_button_set_draw_hook
-                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                toggle_button_set_handle_hook
-                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
     end Forge;
 
 
-
-
-    procedure Draw
-           (This : in out Toggle_Button) is
-    begin
-        fl_toggle_button_draw (This.Void_Ptr);
-    end Draw;
-
-
-    function Handle
-           (This  : in out Toggle_Button;
-            Event : in     Event_Kind)
-        return Event_Outcome is
-    begin
-        return Event_Outcome'Val
-               (fl_toggle_button_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
-    end Handle;
-
-
 end FLTK.Widgets.Buttons.Toggle;
+
 

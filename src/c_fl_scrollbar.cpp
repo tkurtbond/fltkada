@@ -6,7 +6,6 @@
 
 #include <FL/Fl_Scrollbar.H>
 #include "c_fl_scrollbar.h"
-#include "c_fl_type.h"
 
 
 
@@ -26,56 +25,39 @@ void fl_scrollbar_extra_final(void * adaobj) {
 
 
 
+//  Exports from Ada
+
+extern "C" void widget_draw_hook(void * ud);
+extern "C" int widget_handle_hook(void * ud, int e);
+
+
+
+
+//  Attaching all relevant hooks and friends
+
 class My_Scrollbar : public Fl_Scrollbar {
-    public:
-        using Fl_Scrollbar::Fl_Scrollbar;
-        friend void scrollbar_set_draw_hook(SCROLLBAR s, void * d);
-        friend void fl_scrollbar_draw(SCROLLBAR s);
-        friend void scrollbar_set_handle_hook(SCROLLBAR s, void * h);
-        friend int fl_scrollbar_handle(SCROLLBAR s, int e);
-    protected:
-        void draw();
-        void real_draw();
-        int handle(int e);
-        int real_handle(int e);
-        d_hook_p draw_hook;
-        h_hook_p handle_hook;
+public:
+    using Fl_Scrollbar::Fl_Scrollbar;
+
+    friend void fl_scrollbar_draw(SCROLLBAR s);
+    friend int fl_scrollbar_handle(SCROLLBAR s, int e);
+
+    void draw();
+    int handle(int e);
 };
 
 void My_Scrollbar::draw() {
-    (*draw_hook)(this->user_data());
-}
-
-void My_Scrollbar::real_draw() {
-    Fl_Scrollbar::draw();
+    widget_draw_hook(this->user_data());
 }
 
 int My_Scrollbar::handle(int e) {
-    return (*handle_hook)(this->user_data(), e);
-}
-
-int My_Scrollbar::real_handle(int e) {
-    return Fl_Scrollbar::handle(e);
-}
-
-void scrollbar_set_draw_hook(SCROLLBAR s, void * d) {
-    reinterpret_cast<My_Scrollbar*>(s)->draw_hook = reinterpret_cast<d_hook_p>(d);
-}
-
-void fl_scrollbar_draw(SCROLLBAR s) {
-    reinterpret_cast<My_Scrollbar*>(s)->real_draw();
-}
-
-void scrollbar_set_handle_hook(SCROLLBAR s, void * h) {
-    reinterpret_cast<My_Scrollbar*>(s)->handle_hook = reinterpret_cast<h_hook_p>(h);
-}
-
-int fl_scrollbar_handle(SCROLLBAR s, int e) {
-    return reinterpret_cast<My_Scrollbar*>(s)->real_handle(e);
+    return widget_handle_hook(this->user_data(), e);
 }
 
 
 
+
+//  Flattened C API
 
 SCROLLBAR new_fl_scrollbar(int x, int y, int w, int h, char* label) {
     My_Scrollbar *s = new My_Scrollbar(x, y, w, h, label);
@@ -108,4 +90,16 @@ void fl_scrollbar_set_value(SCROLLBAR s, int t) {
 void fl_scrollbar_set_value2(SCROLLBAR s, int p, int w, int f, int t) {
     reinterpret_cast<Fl_Scrollbar*>(s)->value(p,w,f,t);
 }
+
+
+
+
+void fl_scrollbar_draw(SCROLLBAR s) {
+    reinterpret_cast<My_Scrollbar*>(s)->Fl_Scrollbar::draw();
+}
+
+int fl_scrollbar_handle(SCROLLBAR s, int e) {
+    return reinterpret_cast<My_Scrollbar*>(s)->Fl_Scrollbar::handle(e);
+}
+
 

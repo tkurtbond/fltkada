@@ -6,106 +6,88 @@
 
 #include <FL/Fl_Color_Chooser.H>
 #include "c_fl_color_chooser.h"
-#include "c_fl_type.h"
 
 
 
+
+//  Exports from Ada
+
+extern "C" void widget_draw_hook(void * ud);
+extern "C" int widget_handle_hook(void * ud, int e);
+
+
+
+
+//  Attaching all relevant hooks and friends
 
 class My_Color_Chooser : public Fl_Color_Chooser {
-    public:
-        using Fl_Color_Chooser::Fl_Color_Chooser;
-        friend void color_chooser_set_draw_hook(COLOR_CHOOSER n, void * d);
-        friend void fl_color_chooser_draw(COLOR_CHOOSER n);
-        friend void color_chooser_set_handle_hook(COLOR_CHOOSER n, void * h);
-        friend int fl_color_chooser_handle(COLOR_CHOOSER n, int e);
-    protected:
-        void draw();
-        void real_draw();
-        int handle(int e);
-        int real_handle(int e);
-        d_hook_p draw_hook;
-        h_hook_p handle_hook;
+public:
+    using Fl_Color_Chooser::Fl_Color_Chooser;
+
+    friend void fl_color_chooser_draw(COLORCHOOSER n);
+    friend int fl_color_chooser_handle(COLORCHOOSER n, int e);
+
+    void draw();
+    int handle(int e);
 };
 
 void My_Color_Chooser::draw() {
-    (*draw_hook)(this->user_data());
-}
-
-void My_Color_Chooser::real_draw() {
-    Fl_Color_Chooser::draw();
+    widget_draw_hook(this->user_data());
 }
 
 int My_Color_Chooser::handle(int e) {
-    return (*handle_hook)(this->user_data(), e);
-}
-
-int My_Color_Chooser::real_handle(int e) {
-    return Fl_Color_Chooser::handle(e);
-}
-
-void color_chooser_set_draw_hook(COLOR_CHOOSER n, void * d) {
-    reinterpret_cast<My_Color_Chooser*>(n)->draw_hook = reinterpret_cast<d_hook_p>(d);
-}
-
-void fl_color_chooser_draw(COLOR_CHOOSER n) {
-    reinterpret_cast<My_Color_Chooser*>(n)->real_draw();
-}
-
-void color_chooser_set_handle_hook(COLOR_CHOOSER n, void * h) {
-    reinterpret_cast<My_Color_Chooser*>(n)->handle_hook = reinterpret_cast<h_hook_p>(h);
-}
-
-int fl_color_chooser_handle(COLOR_CHOOSER n, int e) {
-    return reinterpret_cast<My_Color_Chooser*>(n)->real_handle(e);
+    return widget_handle_hook(this->user_data(), e);
 }
 
 
 
 
-COLOR_CHOOSER new_fl_color_chooser(int x, int y, int w, int h, char* label) {
+//  Flattened C API
+
+COLORCHOOSER new_fl_color_chooser(int x, int y, int w, int h, char* label) {
     My_Color_Chooser *n = new My_Color_Chooser(x, y, w, h, label);
     return n;
 }
 
-void free_fl_color_chooser(COLOR_CHOOSER n) {
+void free_fl_color_chooser(COLORCHOOSER n) {
     delete reinterpret_cast<My_Color_Chooser*>(n);
 }
 
 
 
 
-double fl_color_chooser_r(COLOR_CHOOSER n) {
+double fl_color_chooser_r(COLORCHOOSER n) {
     return reinterpret_cast<Fl_Color_Chooser*>(n)->r();
 }
 
-double fl_color_chooser_g(COLOR_CHOOSER n) {
+double fl_color_chooser_g(COLORCHOOSER n) {
     return reinterpret_cast<Fl_Color_Chooser*>(n)->g();
 }
 
-double fl_color_chooser_b(COLOR_CHOOSER n) {
+double fl_color_chooser_b(COLORCHOOSER n) {
     return reinterpret_cast<Fl_Color_Chooser*>(n)->b();
 }
 
-int fl_color_chooser_rgb(COLOR_CHOOSER n, int r, int g, int b) {
+int fl_color_chooser_rgb(COLORCHOOSER n, int r, int g, int b) {
     return reinterpret_cast<Fl_Color_Chooser*>(n)->rgb(r,g,b);
 }
 
 
 
 
-double fl_color_chooser_hue(COLOR_CHOOSER n) {
+double fl_color_chooser_hue(COLORCHOOSER n) {
     return reinterpret_cast<Fl_Color_Chooser*>(n)->hue();
 }
 
-double fl_color_chooser_saturation(COLOR_CHOOSER n) {
+double fl_color_chooser_saturation(COLORCHOOSER n) {
     return reinterpret_cast<Fl_Color_Chooser*>(n)->saturation();
 }
 
-double fl_color_chooser_value(COLOR_CHOOSER n) {
+double fl_color_chooser_value(COLORCHOOSER n) {
     return reinterpret_cast<Fl_Color_Chooser*>(n)->value();
 }
 
-int fl_color_chooser_hsv(COLOR_CHOOSER n, int h, int s, int v) {
+int fl_color_chooser_hsv(COLORCHOOSER n, int h, int s, int v) {
     return reinterpret_cast<Fl_Color_Chooser*>(n)->hsv(h,s,v);
 }
 
@@ -123,12 +105,23 @@ void fl_color_chooser_rgb2hsv(double r, double g, double b, double &h, double &s
 
 
 
-int fl_color_chooser_get_mode(COLOR_CHOOSER n) {
+int fl_color_chooser_get_mode(COLORCHOOSER n) {
     return reinterpret_cast<Fl_Color_Chooser*>(n)->mode();
 }
 
-void fl_color_chooser_set_mode(COLOR_CHOOSER n, int m) {
+void fl_color_chooser_set_mode(COLORCHOOSER n, int m) {
     reinterpret_cast<Fl_Color_Chooser*>(n)->mode(m);
+}
+
+
+
+
+void fl_color_chooser_draw(COLORCHOOSER n) {
+    reinterpret_cast<My_Color_Chooser*>(n)->Fl_Color_Chooser::draw();
+}
+
+int fl_color_chooser_handle(COLORCHOOSER n, int e) {
+    return reinterpret_cast<My_Color_Chooser*>(n)->Fl_Color_Chooser::handle(e);
 }
 
 

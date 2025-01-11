@@ -12,6 +12,8 @@ package FLTK.Widgets.Groups.Packed is
     type Packed_Group_Reference (Data : not null access Packed_Group'Class) is
         limited null record with Implicit_Dereference => Data;
 
+    type Pack_Kind is (Vertical_Pack, Horizontal_Pack);
+
 
 
 
@@ -35,22 +37,28 @@ package FLTK.Widgets.Groups.Packed is
            (This : in out Packed_Group;
             To   : in     Integer);
 
+    function Get_Pack_Type
+           (This : in Packed_Group)
+        return Pack_Kind;
+
+    procedure Set_Pack_Type
+           (This : in out Packed_Group;
+            Kind : in     Pack_Kind);
+
 
 
 
     procedure Draw
            (This : in out Packed_Group);
 
-    function Handle
-           (This  : in out Packed_Group;
-            Event : in     Event_Kind)
-        return Event_Outcome;
-
 
 private
 
 
     type Packed_Group is new Group with null record;
+
+    overriding procedure Initialize
+           (This : in out Packed_Group);
 
     overriding procedure Finalize
            (This : in out Packed_Group);
@@ -68,10 +76,12 @@ private
 
     pragma Inline (Get_Spacing);
     pragma Inline (Set_Spacing);
+    pragma Inline (Get_Pack_Type);
+    pragma Inline (Set_Pack_Type);
 
     pragma Inline (Draw);
-    pragma Inline (Handle);
 
 
 end FLTK.Widgets.Groups.Packed;
+
 

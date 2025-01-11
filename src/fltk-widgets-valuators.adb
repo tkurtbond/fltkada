@@ -12,18 +12,9 @@ with
 package body FLTK.Widgets.Valuators is
 
 
-    procedure valuator_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, valuator_set_draw_hook, "valuator_set_draw_hook");
-    pragma Inline (valuator_set_draw_hook);
-
-    procedure valuator_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, valuator_set_handle_hook, "valuator_set_handle_hook");
-    pragma Inline (valuator_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_valuator
            (X, Y, W, H : in Interfaces.C.int;
@@ -95,9 +86,22 @@ package body FLTK.Widgets.Valuators is
     pragma Import (C, fl_valuator_get_step, "fl_valuator_get_step");
     pragma Inline (fl_valuator_get_step);
 
-    procedure fl_valuator_set_step
+    procedure fl_valuator_set_step_top
            (V : in Storage.Integer_Address;
             T : in Interfaces.C.double);
+    pragma Import (C, fl_valuator_set_step_top, "fl_valuator_set_step_top");
+    pragma Inline (fl_valuator_set_step_top);
+
+    procedure fl_valuator_set_step_bottom
+           (V : in Storage.Integer_Address;
+            B : in Interfaces.C.int);
+    pragma Import (C, fl_valuator_set_step_bottom, "fl_valuator_set_step_bottom");
+    pragma Inline (fl_valuator_set_step_bottom);
+
+    procedure fl_valuator_set_step
+           (V : in Storage.Integer_Address;
+            T : in Interfaces.C.double;
+            B : in Interfaces.C.int);
     pragma Import (C, fl_valuator_set_step, "fl_valuator_set_step");
     pragma Inline (fl_valuator_set_step);
 
@@ -134,6 +138,16 @@ package body FLTK.Widgets.Valuators is
 
 
 
+    procedure fl_valuator_value_damage
+           (V : in Storage.Integer_Address);
+    pragma Import (C, fl_valuator_value_damage, "fl_valuator_value_damage");
+    pragma Inline (fl_valuator_value_damage);
+
+    procedure fl_valuator_draw
+           (V : in Storage.Integer_Address);
+    pragma Import (C, fl_valuator_draw, "fl_valuator_draw");
+    pragma Inline (fl_valuator_draw);
+
     function fl_valuator_handle
            (V : in Storage.Integer_Address;
             E : in Interfaces.C.int)
@@ -143,6 +157,10 @@ package body FLTK.Widgets.Valuators is
 
 
 
+
+    -------------------
+    --  Destructors  --
+    -------------------
 
     procedure Extra_Final
            (This : in out Valuator) is
@@ -164,6 +182,10 @@ package body FLTK.Widgets.Valuators is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Valuator;
             X, Y, W, H : in     Integer;
@@ -171,6 +193,14 @@ package body FLTK.Widgets.Valuators is
     begin
         Extra_Init (Widget (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Valuator) is
+    begin
+        This.Draw_Ptr   := fl_valuator_draw'Address;
+        This.Handle_Ptr := fl_valuator_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -188,8 +218,6 @@ package body FLTK.Widgets.Valuators is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                valuator_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                valuator_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -197,6 +225,10 @@ package body FLTK.Widgets.Valuators is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     function Clamp
            (This  : in Valuator;
@@ -271,11 +303,35 @@ package body FLTK.Widgets.Valuators is
     end Get_Step;
 
 
-    procedure Set_Step
+    procedure Set_Step_Top
            (This : in out Valuator;
             To   : in     Long_Float) is
     begin
-        fl_valuator_set_step (This.Void_Ptr, Interfaces.C.double (To));
+        fl_valuator_set_step_top
+           (This.Void_Ptr,
+            Interfaces.C.double (To));
+    end Set_Step_Top;
+
+
+    procedure Set_Step_Bottom
+           (This : in out Valuator;
+            To   : in     Integer) is
+    begin
+        fl_valuator_set_step_bottom
+           (This.Void_Ptr,
+            Interfaces.C.int (To));
+    end Set_Step_Bottom;
+
+
+    procedure Set_Step
+           (This   : in out Valuator;
+            Top    : in     Long_Float;
+            Bottom : in     Integer) is
+    begin
+        fl_valuator_set_step
+           (This.Void_Ptr,
+            Interfaces.C.double (Top),
+            Interfaces.C.int (Bottom));
     end Set_Step;
 
 
@@ -327,15 +383,13 @@ package body FLTK.Widgets.Valuators is
 
 
 
-    function Handle
-           (This  : in out Valuator;
-            Event : in     Event_Kind)
-        return Event_Outcome is
+    procedure Value_Damage
+           (This : in out Valuator) is
     begin
-        return Event_Outcome'Val
-               (fl_valuator_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
-    end Handle;
+        fl_valuator_value_damage (This.Void_Ptr);
+    end Value_Damage;
 
 
 end FLTK.Widgets.Valuators;
+
 

@@ -215,6 +215,9 @@ private
 
     type Window is new Group with null record;
 
+    overriding procedure Initialize
+           (This : in out Window);
+
     overriding procedure Finalize
            (This : in out Window);
 
@@ -276,4 +279,5 @@ private
 
 
 end FLTK.Widgets.Groups.Windows;
+
 

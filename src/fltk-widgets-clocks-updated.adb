@@ -12,18 +12,9 @@ with
 package body FLTK.Widgets.Clocks.Updated is
 
 
-    procedure clock_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, clock_set_draw_hook, "clock_set_draw_hook");
-    pragma Inline (clock_set_draw_hook);
-
-    procedure clock_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, clock_set_handle_hook, "clock_set_handle_hook");
-    pragma Inline (clock_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_clock
            (X, Y, W, H : in Interfaces.C.int;
@@ -53,12 +44,6 @@ package body FLTK.Widgets.Clocks.Updated is
     pragma Import (C, fl_clock_draw, "fl_clock_draw");
     pragma Inline (fl_clock_draw);
 
-    procedure fl_clock_draw2
-           (C          : in Storage.Integer_Address;
-            X, Y, W, H : in Interfaces.C.int);
-    pragma Import (C, fl_clock_draw2, "fl_clock_draw2");
-    pragma Inline (fl_clock_draw2);
-
     function fl_clock_handle
            (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
@@ -68,6 +53,10 @@ package body FLTK.Widgets.Clocks.Updated is
 
 
 
+
+    -------------------
+    --  Destructors  --
+    -------------------
 
     procedure Extra_Final
            (This : in out Updated_Clock) is
@@ -89,6 +78,10 @@ package body FLTK.Widgets.Clocks.Updated is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Updated_Clock;
             X, Y, W, H : in     Integer;
@@ -96,6 +89,14 @@ package body FLTK.Widgets.Clocks.Updated is
     begin
         Extra_Init (Clock (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Updated_Clock) is
+    begin
+        This.Draw_Ptr   := fl_clock_draw'Address;
+        This.Handle_Ptr := fl_clock_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -113,8 +114,6 @@ package body FLTK.Widgets.Clocks.Updated is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                clock_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                clock_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -134,8 +133,6 @@ package body FLTK.Widgets.Clocks.Updated is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                clock_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                clock_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -144,35 +141,19 @@ package body FLTK.Widgets.Clocks.Updated is
 
 
 
-    procedure Draw
-           (This : in out Updated_Clock) is
-    begin
-        fl_clock_draw (This.Void_Ptr);
-    end Draw;
-
-
-    procedure Draw
-           (This       : in out Clock;
-            X, Y, W, H : in     Integer) is
-    begin
-        fl_clock_draw2
-           (This.Void_Ptr,
-            Interfaces.C.int (X),
-            Interfaces.C.int (Y),
-            Interfaces.C.int (W),
-            Interfaces.C.int (H));
-    end Draw;
-
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     function Handle
            (This  : in out Updated_Clock;
             Event : in     Event_Kind)
         return Event_Outcome is
     begin
-        return Event_Outcome'Val
-               (fl_clock_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
+        return Clock (This).Handle (Event);
     end Handle;
 
 
 end FLTK.Widgets.Clocks.Updated;
+
 

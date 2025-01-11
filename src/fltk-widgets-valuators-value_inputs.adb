@@ -20,19 +20,6 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
     --  Functions From C  --
     ------------------------
 
-    procedure value_input_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, value_input_set_draw_hook, "value_input_set_draw_hook");
-    pragma Inline (value_input_set_draw_hook);
-
-    procedure value_input_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, value_input_set_handle_hook, "value_input_set_handle_hook");
-    pragma Inline (value_input_set_handle_hook);
-
-
-
-
     function new_fl_value_input
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -141,6 +128,15 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
+    procedure fl_value_input_resize
+           (TD         : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int);
+    pragma Import (C, fl_value_input_resize, "fl_value_input_resize");
+    pragma Inline (fl_value_input_resize);
+
+
+
+
     procedure fl_value_input_draw
            (W : in Storage.Integer_Address);
     pragma Import (C, fl_value_input_draw, "fl_value_input_draw");
@@ -219,6 +215,14 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
     end Extra_Init;
 
 
+    procedure Initialize
+           (This : in out Value_Input) is
+    begin
+        This.Draw_Ptr   := fl_value_input_draw'Address;
+        This.Handle_Ptr := fl_value_input_handle'Address;
+    end Initialize;
+
+
     package body Forge is
 
         function Create
@@ -234,10 +238,6 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                value_input_set_draw_hook
-                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                value_input_set_handle_hook
-                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -245,6 +245,10 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
+
+    ------------------
+    --  Attributes  --
+    ------------------
 
     function Text_Field
            (This : in out Value_Input)
@@ -255,6 +259,10 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     function Get_Cursor_Color
            (This : in Value_Input)
@@ -360,10 +368,25 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
+    procedure Resize
+           (This       : in out Value_Input;
+            X, Y, W, H : in     Integer) is
+    begin
+        fl_value_input_resize
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H));
+    end Resize;
+
+
+
+
     procedure Draw
            (This : in out Value_Input) is
     begin
-        fl_value_input_draw (This.Void_Ptr);
+        Valuator (This).Draw;
     end Draw;
 
 
@@ -372,10 +395,10 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
             Event : in     Event_Kind)
         return Event_Outcome is
     begin
-        return Event_Outcome'Val
-               (fl_value_input_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
+        return Valuator (This).Handle (Event);
     end Handle;
 
 
 end FLTK.Widgets.Valuators.Value_Inputs;
+
 

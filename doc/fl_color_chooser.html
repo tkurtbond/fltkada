@@ -26,6 +26,9 @@
 
 </table>
 
+<p><b>Note:</b><br /><br />
+See Fl_Ask for related symbols that are not members of the Fl_Color_Chooser class.</p>
+
 
 
 <table class="type">
@@ -42,8 +45,58 @@
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>int</td>
     <td>Color_Mode</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Color_Chooser(int X, int Y, int W, int H, const char *L=0);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return Color_Chooser;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+static void hsv2rgb(double H, double S, double V,
+    double &R, double &G, double &B);
+</pre></td>
+<td><pre>
+procedure HSV_To_RGB
+       (H, S, V : in     Long_Float;
+        R, G, B :    out Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void rgb2hsv(double R, double G, double B,
+    double &H, double &S, double &V);
+</pre></td>
+<td><pre>
+procedure RGB_To_HSV
+       (R, G, B : in     Long_Float;
+        H, S, V :    out Long_Float);
+</pre></td>
   </tr>
 
 </table>
@@ -55,49 +108,12 @@
 
   <tr>
 <td><pre>
-Fl_Color_Chooser(int X, int Y, int W, int H, const char *L=0);
-</pre></td>
-<td><pre>
-function Create
-       (X, Y, W, H : in Integer;
-        Text       : in String)
-    return Color_Chooser;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
 double b() const;
 </pre></td>
 <td><pre>
 function Get_Blue
        (This : in Color_Chooser)
     return Long_Float;
-</pre></td>
-  </tr>
-
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
-function Color_Was_Changed
-       (This : in Color_Chooser)
-    return Boolean;
-</pre></td>
-  </tr>
-
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
-procedure Clear_Changed
-       (This : in out Color_Chooser);
-</pre></td>
-  </tr>
-
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
-procedure Draw
-       (This : in out Color_Chooser);
 </pre></td>
   </tr>
 
@@ -113,16 +129,6 @@ function Get_Green
   </tr>
 
   <tr>
-<td>&nbsp;</td>
-<td><pre>
-function Handle
-       (This  : in out Color_Chooser;
-        Event : in     Event_Kind)
-    return Event_Outcome;
-</pre></td>
-  </tr>
-
-  <tr>
 <td><pre>
 int hsv(double H, double S, double V);
 </pre></td>
@@ -130,6 +136,11 @@ int hsv(double H, double S, double V);
 procedure Set_HSV
        (This    : in out Color_Chooser;
         H, S, V : in     Long_Float);
+
+function Set_HSV
+       (This    : in out Color_Chooser;
+        H, S, V : in     Long_Float)
+    return Boolean;
 </pre></td>
   </tr>
 
@@ -185,6 +196,11 @@ int rgb(double R, double G, double B);
 procedure Set_RGB
        (This    : in out Color_Chooser;
         R, G, B : in     Long_Float);
+
+function Set_RGB
+       (This    : in out Color_Chooser;
+        R, G, B : in     Long_Float)
+    return Boolean;
 </pre></td>
   </tr>
 
@@ -207,28 +223,6 @@ double value() const;
 function Get_Value
        (This : in Color_Chooser)
     return Long_Float;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-static void hsv2rgb(double H, double S, double V, double &R, double &G, double &B);
-</pre></td>
-<td><pre>
-procedure HSV_To_RGB
-       (H, S, V : in     Long_Float;
-        R, G, B :    out Long_Float);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-static void rgb2hsv(double R, double G, double B, double &H, double &S, double &V);
-</pre></td>
-<td><pre>
-procedure RGB_To_HSV
-       (R, G, B : in     Long_Float;
-        H, S, V :    out Long_Float);
 </pre></td>
   </tr>
 

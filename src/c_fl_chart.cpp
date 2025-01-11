@@ -6,61 +6,43 @@
 
 #include <FL/Fl_Chart.H>
 #include "c_fl_chart.h"
-#include "c_fl_type.h"
 
 
 
+
+//  Exports from Ada
+
+extern "C" void widget_draw_hook(void * ud);
+extern "C" int widget_handle_hook(void * ud, int e);
+
+
+
+
+//  Attaching all relevant hooks and friends
 
 class My_Chart : public Fl_Chart {
-    public:
-        using Fl_Chart::Fl_Chart;
-        friend void chart_set_draw_hook(CHART n, void * d);
-        friend void fl_chart_draw(CHART n);
-        friend void chart_set_handle_hook(CHART n, void * h);
-        friend int fl_chart_handle(CHART n, int e);
-    protected:
-        void draw();
-        void real_draw();
-        int handle(int e);
-        int real_handle(int e);
-        d_hook_p draw_hook;
-        h_hook_p handle_hook;
+public:
+    using Fl_Chart::Fl_Chart;
+
+    friend void fl_chart_draw(CHART n);
+    friend int fl_chart_handle(CHART n, int e);
+
+    void draw();
+    int handle(int e);
 };
 
 void My_Chart::draw() {
-    (*draw_hook)(this->user_data());
-}
-
-void My_Chart::real_draw() {
-    Fl_Chart::draw();
+    widget_draw_hook(this->user_data());
 }
 
 int My_Chart::handle(int e) {
-    return (*handle_hook)(this->user_data(), e);
-}
-
-int My_Chart::real_handle(int e) {
-    return Fl_Chart::handle(e);
-}
-
-void chart_set_draw_hook(CHART n, void * d) {
-    reinterpret_cast<My_Chart*>(n)->draw_hook = reinterpret_cast<d_hook_p>(d);
-}
-
-void fl_chart_draw(CHART n) {
-    reinterpret_cast<My_Chart*>(n)->real_draw();
-}
-
-void chart_set_handle_hook(CHART n, void * h) {
-    reinterpret_cast<My_Chart*>(n)->handle_hook = reinterpret_cast<h_hook_p>(h);
-}
-
-int fl_chart_handle(CHART n, int e) {
-    return reinterpret_cast<My_Chart*>(n)->real_handle(e);
+    return widget_handle_hook(this->user_data(), e);
 }
 
 
 
+
+//  Flattened C API
 
 CHART new_fl_chart(int x, int y, int w, int h, char* label) {
     My_Chart *b = new My_Chart(x, y, w, h, label);
@@ -153,6 +135,17 @@ int fl_chart_get_textsize(CHART b) {
 
 void fl_chart_set_textsize(CHART b, int s) {
     reinterpret_cast<Fl_Chart*>(b)->textsize(s);
+}
+
+
+
+
+void fl_chart_draw(CHART n) {
+    reinterpret_cast<My_Chart*>(n)->Fl_Chart::draw();
+}
+
+int fl_chart_handle(CHART n, int e) {
+    return reinterpret_cast<My_Chart*>(n)->Fl_Chart::handle(e);
 }
 
 

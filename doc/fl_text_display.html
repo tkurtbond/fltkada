@@ -86,7 +86,20 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Protected Attributes</th></tr>
+
+  <tr>
+<td colspan="2" style="text-align:center">
+Too many to list. None that look suited for public API usage.
+</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -99,6 +112,13 @@ function Create
     return Text_Display;
 </pre></td>
   </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
@@ -178,16 +198,6 @@ void cursor_style(int style);
 procedure Set_Cursor_Style
        (This  : in out Text_Display;
         Style : in     Cursor_Style);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-virtual void draw();
-</pre></td>
-<td><pre>
-procedure Draw
-       (This : in out Text_Display);
 </pre></td>
   </tr>
 
@@ -813,6 +823,30 @@ function X_To_Col
        (This  : in Text_Display;
         X_Pos : in Integer)
     return Integer;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Protected Functions and Procedures</th></tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+virtual void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Text_Display);
 </pre></td>
   </tr>
 

@@ -41,6 +41,9 @@ private
 
     type Light_Button is new Button with null record;
 
+    overriding procedure Initialize
+           (This : in out Light_Button);
+
     overriding procedure Finalize
            (This : in out Light_Button);
 
@@ -60,4 +63,5 @@ private
 
 
 end FLTK.Widgets.Buttons.Light;
+
 

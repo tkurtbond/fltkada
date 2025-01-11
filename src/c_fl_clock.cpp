@@ -6,69 +6,50 @@
 
 #include <FL/Fl_Clock.H>
 #include "c_fl_clock.h"
-#include "c_fl_type.h"
 
 
 
+
+//  Exports from Ada
+
+extern "C" void widget_draw_hook(void * ud);
+extern "C" int widget_handle_hook(void * ud, int e);
+
+
+
+
+//  Attaching all relevant hooks and friends
 
 class My_Clock : public Fl_Clock {
-    public:
-        using Fl_Clock::Fl_Clock;
-        friend void clock_set_draw_hook(CLOCK c, void * d);
-        friend void fl_clock_draw(CLOCK c);
-        friend void clock_set_handle_hook(CLOCK c, void * h);
-        friend int fl_clock_handle(CLOCK c, int e);
-        friend void fl_clock_draw2(CLOCK c, int x, int y, int w, int h);
-    protected:
-        void draw();
-        void real_draw();
-        int handle(int e);
-        int real_handle(int e);
-        d_hook_p draw_hook;
-        h_hook_p handle_hook;
+public:
+    using Fl_Clock::Fl_Clock;
+
+    friend void fl_clock_draw(CLOCK c);
+    friend int fl_clock_handle(CLOCK c, int e);
+
+    void draw();
+    int handle(int e);
 };
 
 void My_Clock::draw() {
-    (*draw_hook)(this->user_data());
-}
-
-void My_Clock::real_draw() {
-    Fl_Clock::draw();
+    widget_draw_hook(this->user_data());
 }
 
 int My_Clock::handle(int e) {
-    return (*handle_hook)(this->user_data(), e);
-}
-
-int My_Clock::real_handle(int e) {
-    return Fl_Clock::handle(e);
-}
-
-void clock_set_draw_hook(CLOCK c, void * d) {
-    reinterpret_cast<My_Clock*>(c)->draw_hook = reinterpret_cast<d_hook_p>(d);
-}
-
-void fl_clock_draw(CLOCK c) {
-    reinterpret_cast<My_Clock*>(c)->real_draw();
-}
-
-void clock_set_handle_hook(CLOCK c, void * h) {
-    reinterpret_cast<My_Clock*>(c)->handle_hook = reinterpret_cast<h_hook_p>(h);
-}
-
-int fl_clock_handle(CLOCK c, int e) {
-    return reinterpret_cast<My_Clock*>(c)->real_handle(e);
+    return widget_handle_hook(this->user_data(), e);
 }
 
 
 
+
+//  Flattened C API
 
 CLOCK new_fl_clock(int x, int y, int w, int h, char* label) {
     My_Clock *c = new My_Clock(x, y, w, h, label);
     return c;
 }
 
-CLOCK new_fl_clock2(uchar k, int x, int y, int w, int h, char* label) {
+CLOCK new_fl_clock2(unsigned char k, int x, int y, int w, int h, char* label) {
     My_Clock *c = new My_Clock(k,x,y,w,h,label);
     return c;
 }
@@ -80,8 +61,12 @@ void free_fl_clock(CLOCK c) {
 
 
 
-void fl_clock_draw2(CLOCK c, int x, int y, int w, int h) {
-    reinterpret_cast<My_Clock*>(c)->Fl_Clock::draw(x,y,w,h);
+void fl_clock_draw(CLOCK c) {
+    reinterpret_cast<My_Clock*>(c)->Fl_Clock::draw();
+}
+
+int fl_clock_handle(CLOCK c, int e) {
+    return reinterpret_cast<My_Clock*>(c)->Fl_Clock::handle(e);
 }
 
 

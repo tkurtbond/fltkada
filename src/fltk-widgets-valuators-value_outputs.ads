@@ -79,6 +79,9 @@ private
 
     type Value_Output is new Valuator with null record;
 
+    overriding procedure Initialize
+           (This : in out Value_Output);
+
     overriding procedure Finalize
            (This : in out Value_Output);
 
@@ -108,4 +111,5 @@ private
 
 
 end FLTK.Widgets.Valuators.Value_Outputs;
+
 

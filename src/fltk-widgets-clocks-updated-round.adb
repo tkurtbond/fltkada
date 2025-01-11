@@ -12,18 +12,9 @@ with
 package body FLTK.Widgets.Clocks.Updated.Round is
 
 
-    procedure round_clock_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, round_clock_set_draw_hook, "round_clock_set_draw_hook");
-    pragma Inline (round_clock_set_draw_hook);
-
-    procedure round_clock_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, round_clock_set_handle_hook, "round_clock_set_handle_hook");
-    pragma Inline (round_clock_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_round_clock
            (X, Y, W, H : in Interfaces.C.int;
@@ -45,12 +36,6 @@ package body FLTK.Widgets.Clocks.Updated.Round is
     pragma Import (C, fl_round_clock_draw, "fl_round_clock_draw");
     pragma Inline (fl_round_clock_draw);
 
-    procedure fl_round_clock_draw2
-           (C          : in Storage.Integer_Address;
-            X, Y, W, H : in Interfaces.C.int);
-    pragma Import (C, fl_round_clock_draw2, "fl_round_clock_draw2");
-    pragma Inline (fl_round_clock_draw2);
-
     function fl_round_clock_handle
            (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
@@ -60,6 +45,10 @@ package body FLTK.Widgets.Clocks.Updated.Round is
 
 
 
+
+    -------------------
+    --  Destructors  --
+    -------------------
 
     procedure Extra_Final
            (This : in out Round_Clock) is
@@ -81,6 +70,10 @@ package body FLTK.Widgets.Clocks.Updated.Round is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Round_Clock;
             X, Y, W, H : in     Integer;
@@ -88,6 +81,14 @@ package body FLTK.Widgets.Clocks.Updated.Round is
     begin
         Extra_Init (Updated_Clock (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Round_Clock) is
+    begin
+        This.Draw_Ptr := fl_round_clock_draw'Address;
+        This.Handle_Ptr := fl_round_clock_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -105,47 +106,12 @@ package body FLTK.Widgets.Clocks.Updated.Round is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                round_clock_set_draw_hook
-                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                round_clock_set_handle_hook
-                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
     end Forge;
 
 
-
-
-    procedure Draw
-           (This : in out Round_Clock) is
-    begin
-        fl_round_clock_draw (This.Void_Ptr);
-    end Draw;
-
-
-    procedure Draw
-           (This       : in out Clock;
-            X, Y, W, H : in     Integer) is
-    begin
-        fl_round_clock_draw2
-           (This.Void_Ptr,
-            Interfaces.C.int (X),
-            Interfaces.C.int (Y),
-            Interfaces.C.int (W),
-            Interfaces.C.int (H));
-    end Draw;
-
-
-    function Handle
-           (This  : in out Round_Clock;
-            Event : in     Event_Kind)
-        return Event_Outcome is
-    begin
-        return Event_Outcome'Val
-               (fl_round_clock_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
-    end Handle;
-
-
 end FLTK.Widgets.Clocks.Updated.Round;
+
 

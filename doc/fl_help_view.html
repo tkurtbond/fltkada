@@ -42,12 +42,12 @@
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>int</td>
     <td>Position</td>
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>int</td>
     <td>Extended_Position</td>
   </tr>
 
@@ -64,7 +64,7 @@
   <tr><th colspan="2">Errors</th></tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>int</td>
     <td>Load_Help_Error</td>
   </tr>
 
@@ -73,7 +73,7 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -86,6 +86,13 @@ function Create
     return Help_View;
 </pre></td>
   </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
@@ -105,16 +112,6 @@ const char * directory() const;
 function Current_Directory
        (This : in Help_View)
     return String;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-void draw();
-</pre></td>
-<td><pre>
-procedure Draw
-       (This : in out Help_View);
 </pre></td>
   </tr>
 
@@ -202,7 +199,11 @@ procedure Load
 <td><pre>
 void resize(int, int, int, int);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Resize
+       (This       : in out Help_View;
+        X, Y, W, H : in     Integer);
+</pre></td>
   </tr>
 
   <tr>
@@ -388,6 +389,23 @@ void value(const char *val);
 procedure Set_Content
        (This  : in out Help_View;
         Value : in     String);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Help_View);
 </pre></td>
   </tr>
 

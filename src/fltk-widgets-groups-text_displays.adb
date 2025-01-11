@@ -17,18 +17,9 @@ use type
 package body FLTK.Widgets.Groups.Text_Displays is
 
 
-    procedure text_display_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, text_display_set_draw_hook, "text_display_set_draw_hook");
-    pragma Inline (text_display_set_draw_hook);
-
-    procedure text_display_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, text_display_set_handle_hook, "text_display_set_handle_hook");
-    pragma Inline (text_display_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_text_display
            (X, Y, W, H : in Interfaces.C.int;
@@ -449,6 +440,10 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    ----------------------
+    --  Callback Hooks  --
+    ----------------------
+
     procedure Style_Hook
            (C : in Interfaces.C.int;
             D : in Storage.Integer_Address)
@@ -465,6 +460,10 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+
+    -------------------
+    --  Destructors  --
+    -------------------
 
     procedure Extra_Final
            (This : in out Text_Display) is
@@ -487,6 +486,10 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Text_Display;
             X, Y, W, H : in     Integer;
@@ -494,6 +497,14 @@ package body FLTK.Widgets.Groups.Text_Displays is
     begin
         Extra_Init (Group (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Text_Display) is
+    begin
+        This.Draw_Ptr   := fl_text_display_draw'Address;
+        This.Handle_Ptr := fl_text_display_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -511,10 +522,6 @@ package body FLTK.Widgets.Groups.Text_Displays is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                text_display_set_draw_hook
-                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                text_display_set_handle_hook
-                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -522,6 +529,10 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+
+    ----------------------
+    --  Child Packages  --
+    ----------------------
 
     package body Styles is
 
@@ -545,6 +556,10 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     function Get_Buffer
            (This : in Text_Display)
@@ -1105,7 +1120,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
     procedure Draw
            (This : in out Text_Display) is
     begin
-        fl_text_display_draw (This.Void_Ptr);
+        Group (This).Draw;
     end Draw;
 
 
@@ -1114,10 +1129,10 @@ package body FLTK.Widgets.Groups.Text_Displays is
             Event : in     Event_Kind)
         return Event_Outcome is
     begin
-        return Event_Outcome'Val
-               (fl_text_display_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
+        return Group (This).Handle (Event);
     end Handle;
 
 
 end FLTK.Widgets.Groups.Text_Displays;
+
 

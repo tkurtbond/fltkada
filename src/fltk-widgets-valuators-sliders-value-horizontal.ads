@@ -7,9 +7,9 @@
 package FLTK.Widgets.Valuators.Sliders.Value.Horizontal is
 
 
-    type Hor_Value_Slider is new Value_Slider with private;
+    type Horizontal_Value_Slider is new Value_Slider with private;
 
-    type Hor_Value_Slider_Reference (Data : not null access Hor_Value_Slider'Class) is
+    type Horizontal_Value_Slider_Reference (Data : not null access Horizontal_Value_Slider'Class) is
         limited null record with Implicit_Dereference => Data;
 
 
@@ -20,44 +20,33 @@ package FLTK.Widgets.Valuators.Sliders.Value.Horizontal is
         function Create
                (X, Y, W, H : in Integer;
                 Text       : in String := "")
-            return Hor_Value_Slider;
+            return Horizontal_Value_Slider;
 
     end Forge;
-
-
-
-
-    procedure Draw
-           (This : in out Hor_Value_Slider);
-
-    function Handle
-           (This  : in out Hor_Value_Slider;
-            Event : in     Event_Kind)
-        return Event_Outcome;
 
 
 private
 
 
-    type Hor_Value_Slider is new Value_Slider with null record;
+    type Horizontal_Value_Slider is new Value_Slider with null record;
+
+    overriding procedure Initialize
+           (This : in out Horizontal_Value_Slider);
 
     overriding procedure Finalize
-           (This : in out Hor_Value_Slider);
+           (This : in out Horizontal_Value_Slider);
 
     procedure Extra_Init
-           (This       : in out Hor_Value_Slider;
+           (This       : in out Horizontal_Value_Slider;
             X, Y, W, H : in     Integer;
             Text       : in     String)
     with Inline;
 
     procedure Extra_Final
-           (This : in out Hor_Value_Slider)
+           (This : in out Horizontal_Value_Slider)
     with Inline;
 
 
-    pragma Inline (Draw);
-    pragma Inline (Handle);
-
-
 end FLTK.Widgets.Valuators.Sliders.Value.Horizontal;
+
 

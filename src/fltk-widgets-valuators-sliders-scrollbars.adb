@@ -16,19 +16,6 @@ package body FLTK.Widgets.Valuators.Sliders.Scrollbars is
     --  Functions From C  --
     ------------------------
 
-    procedure scrollbar_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, scrollbar_set_draw_hook, "scrollbar_set_draw_hook");
-    pragma Inline (scrollbar_set_draw_hook);
-
-    procedure scrollbar_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, scrollbar_set_handle_hook, "scrollbar_set_handle_hook");
-    pragma Inline (scrollbar_set_handle_hook);
-
-
-
-
     function new_fl_scrollbar
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -169,6 +156,14 @@ package body FLTK.Widgets.Valuators.Sliders.Scrollbars is
     end Extra_Init;
 
 
+    procedure Initialize
+           (This : in out Scrollbar) is
+    begin
+        This.Draw_Ptr   := fl_scrollbar_draw'Address;
+        This.Handle_Ptr := fl_scrollbar_handle'Address;
+    end Initialize;
+
+
     package body Forge is
 
         function Create
@@ -184,8 +179,6 @@ package body FLTK.Widgets.Valuators.Sliders.Scrollbars is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                scrollbar_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                scrollbar_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -251,7 +244,7 @@ package body FLTK.Widgets.Valuators.Sliders.Scrollbars is
     procedure Draw
            (This : in out Scrollbar) is
     begin
-        fl_scrollbar_draw (This.Void_Ptr);
+        Slider (This).Draw;
     end Draw;
 
 
@@ -260,10 +253,10 @@ package body FLTK.Widgets.Valuators.Sliders.Scrollbars is
             Event : in     Event_Kind)
         return Event_Outcome is
     begin
-        return Event_Outcome'Val
-               (fl_scrollbar_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
+        return Slider (This).Handle (Event);
     end Handle;
 
 
 end FLTK.Widgets.Valuators.Sliders.Scrollbars;
+
 

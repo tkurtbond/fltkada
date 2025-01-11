@@ -8,61 +8,43 @@
 #include <FL/Fl_Text_Buffer.H>
 #include "c_fl_text_display.h"
 #include "c_fl_text_buffer.h"
-#include "c_fl_type.h"
 
 
 
+
+//  Exports from Ada
+
+extern "C" void widget_draw_hook(void * ud);
+extern "C" int widget_handle_hook(void * ud, int e);
+
+
+
+
+//  Attaching all relevant hooks and friends
 
 class My_Text_Display : public Fl_Text_Display {
-    public:
-        using Fl_Text_Display::Fl_Text_Display;
-        friend void text_display_set_draw_hook(TEXTDISPLAY td, void * d);
-        friend void fl_text_display_draw(TEXTDISPLAY td);
-        friend void text_display_set_handle_hook(TEXTDISPLAY td, void * h);
-        friend int fl_text_display_handle(TEXTDISPLAY td, int e);
-    protected:
-        void draw();
-        void real_draw();
-        int handle(int e);
-        int real_handle(int e);
-        d_hook_p draw_hook;
-        h_hook_p handle_hook;
+public:
+    using Fl_Text_Display::Fl_Text_Display;
+
+    friend void fl_text_display_draw(TEXTDISPLAY td);
+    friend int fl_text_display_handle(TEXTDISPLAY td, int e);
+
+    void draw();
+    int handle(int e);
 };
 
 void My_Text_Display::draw() {
-    (*draw_hook)(this->user_data());
-}
-
-void My_Text_Display::real_draw() {
-    Fl_Text_Display::draw();
+    widget_draw_hook(this->user_data());
 }
 
 int My_Text_Display::handle(int e) {
-    return (*handle_hook)(this->user_data(), e);
-}
-
-int My_Text_Display::real_handle(int e) {
-    return Fl_Text_Display::handle(e);
-}
-
-void text_display_set_draw_hook(TEXTDISPLAY td, void * d) {
-    reinterpret_cast<My_Text_Display*>(td)->draw_hook = reinterpret_cast<d_hook_p>(d);
-}
-
-void fl_text_display_draw(TEXTDISPLAY td) {
-    reinterpret_cast<My_Text_Display*>(td)->real_draw();
-}
-
-void text_display_set_handle_hook(TEXTDISPLAY td, void * h) {
-    reinterpret_cast<My_Text_Display*>(td)->handle_hook = reinterpret_cast<h_hook_p>(h);
-}
-
-int fl_text_display_handle(TEXTDISPLAY td, int e) {
-    return reinterpret_cast<My_Text_Display*>(td)->real_handle(e);
+    return widget_handle_hook(this->user_data(), e);
 }
 
 
 
+
+//  Flattened C API
 
 TEXTDISPLAY new_fl_text_display(int x, int y, int w, int h, char*  label) {
     My_Text_Display *td = new My_Text_Display(x, y, w, h, label);
@@ -91,13 +73,18 @@ void fl_text_display_set_buffer(TEXTDISPLAY td, TEXTBUFFER tb) {
 
 void fl_text_display_highlight_data(TEXTDISPLAY td, TEXTBUFFER tb, void * st, int len) {
     reinterpret_cast<Fl_Text_Display*>(td)->highlight_data
-        (reinterpret_cast<Fl_Text_Buffer*>(tb), reinterpret_cast<Fl_Text_Display::Style_Table_Entry*>(st), len, 0, 0, 0);
+       (reinterpret_cast<Fl_Text_Buffer*>(tb),
+        reinterpret_cast<Fl_Text_Display::Style_Table_Entry*>(st),
+        len, 0, 0, 0);
 }
 
-void fl_text_display_highlight_data2(TEXTDISPLAY td, TEXTBUFFER tb, void * st, int len, char us, void * cb, void * a) {
+void fl_text_display_highlight_data2(TEXTDISPLAY td, TEXTBUFFER tb, void * st, int len,
+    char us, void * cb, void * a)
+{
     reinterpret_cast<Fl_Text_Display*>(td)->highlight_data
-       (reinterpret_cast<Fl_Text_Buffer*>(tb), reinterpret_cast<Fl_Text_Display::Style_Table_Entry*>(st), len,
-        us, reinterpret_cast<Fl_Text_Display::Unfinished_Style_Cb>(cb), a);
+       (reinterpret_cast<Fl_Text_Buffer*>(tb),
+        reinterpret_cast<Fl_Text_Display::Style_Table_Entry*>(st),
+        len, us, reinterpret_cast<Fl_Text_Display::Unfinished_Style_Cb>(cb), a);
 }
 
 
@@ -336,6 +323,17 @@ void fl_text_display_set_scrollbar_width(TEXTDISPLAY td, int w) {
 
 void fl_text_display_redisplay_range(TEXTDISPLAY td, int s, int f) {
     reinterpret_cast<Fl_Text_Display*>(td)->redisplay_range(s,f);
+}
+
+
+
+
+void fl_text_display_draw(TEXTDISPLAY td) {
+    reinterpret_cast<My_Text_Display*>(td)->Fl_Text_Display::draw();
+}
+
+int fl_text_display_handle(TEXTDISPLAY td, int e) {
+    return reinterpret_cast<My_Text_Display*>(td)->Fl_Text_Display::handle(e);
 }
 
 

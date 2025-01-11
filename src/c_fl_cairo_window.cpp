@@ -38,8 +38,6 @@ public:
     friend void fl_cairo_window_draw(CAIROWINDOW w);
 
     int handle(int e);
-
-protected:
     void draw();
 };
 

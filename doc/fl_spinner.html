@@ -46,7 +46,35 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Protected Attributes</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Repeat_Button down_button_;
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Input input_;
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Repeat_Button up_button_;
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -55,10 +83,17 @@ Fl_Spinner(int X, int Y, int W, int H, const char *L=0);
 <td><pre>
 function Create
        (X, Y, W, H : in Integer;
-        Text       : in String)
+        Text       : in String := "")
     return Spinner;
 </pre></td>
   </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
@@ -79,14 +114,6 @@ Fl_Color color() const;
 function Get_Background_Color
        (This : in Spinner)
     return Color;
-</pre></td>
-  </tr>
-
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
-procedure Draw
-       (This : in out Spinner);
 </pre></td>
   </tr>
 
@@ -142,7 +169,7 @@ procedure Set_Maximum
 <td><pre>
 double maxinum() const;
 </pre></td>
-<td>&nbsp;</td>
+<td>Deprecated spelling mistake, use maximum / Get_Maximum instead.</td>
   </tr>
 
   <tr>
@@ -171,11 +198,11 @@ procedure Set_Minimum
 <td><pre>
 double mininum() const;
 </pre></td>
-<td>&nbsp;</td>
+<td>Deprecated spelling mistake, use minimum / Get_Minimum instead.</td>
   </tr>
 
   <tr>
-<td>&nbsp;</td>
+<td>Use a combination of minimum and maximum to get the values.</td>
 <td><pre>
 procedure Get_Range
        (This     : in     Spinner;
@@ -198,7 +225,11 @@ procedure Set_Range
 <td><pre>
 void resize(int X, int Y, int W, int H);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Resize
+       (This       : in out Spinner;
+        X, Y, W, H : in     Integer);
+</pre></td>
   </tr>
 
   <tr>

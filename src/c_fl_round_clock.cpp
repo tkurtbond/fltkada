@@ -6,77 +6,62 @@
 
 #include <FL/Fl_Round_Clock.H>
 #include "c_fl_round_clock.h"
-#include "c_fl_type.h"
 
 
 
+
+//  Exports from Ada
+
+extern "C" void widget_draw_hook(void * ud);
+extern "C" int widget_handle_hook(void * ud, int e);
+
+
+
+
+//  Attaching all relevant hooks and friends
 
 class My_Round_Clock : public Fl_Round_Clock {
-    public:
-        using Fl_Round_Clock::Fl_Round_Clock;
-        friend void round_clock_set_draw_hook(ROUND_CLOCK c, void * d);
-        friend void fl_round_clock_draw(ROUND_CLOCK c);
-        friend void round_clock_set_handle_hook(ROUND_CLOCK c, void * h);
-        friend int fl_round_clock_handle(ROUND_CLOCK c, int e);
-        friend void fl_round_clock_draw2(ROUND_CLOCK c, int x, int y, int w, int h);
-    protected:
-        void draw();
-        void real_draw();
-        int handle(int e);
-        int real_handle(int e);
-        d_hook_p draw_hook;
-        h_hook_p handle_hook;
+public:
+    using Fl_Round_Clock::Fl_Round_Clock;
+
+    friend void fl_round_clock_draw(ROUNDCLOCK c);
+    friend int fl_round_clock_handle(ROUNDCLOCK c, int e);
+
+    void draw();
+    int handle(int e);
 };
 
 void My_Round_Clock::draw() {
-    (*draw_hook)(this->user_data());
-}
-
-void My_Round_Clock::real_draw() {
-    Fl_Round_Clock::draw();
+    widget_draw_hook(this->user_data());
 }
 
 int My_Round_Clock::handle(int e) {
-    return (*handle_hook)(this->user_data(), e);
-}
-
-int My_Round_Clock::real_handle(int e) {
-    return Fl_Round_Clock::handle(e);
-}
-
-void round_clock_set_draw_hook(ROUND_CLOCK c, void * d) {
-    reinterpret_cast<My_Round_Clock*>(c)->draw_hook = reinterpret_cast<d_hook_p>(d);
-}
-
-void fl_round_clock_draw(ROUND_CLOCK c) {
-    reinterpret_cast<My_Round_Clock*>(c)->real_draw();
-}
-
-void round_clock_set_handle_hook(ROUND_CLOCK c, void * h) {
-    reinterpret_cast<My_Round_Clock*>(c)->handle_hook = reinterpret_cast<h_hook_p>(h);
-}
-
-int fl_round_clock_handle(ROUND_CLOCK c, int e) {
-    return reinterpret_cast<My_Round_Clock*>(c)->real_handle(e);
+    return widget_handle_hook(this->user_data(), e);
 }
 
 
 
 
-ROUND_CLOCK new_fl_round_clock(int x, int y, int w, int h, char* label) {
+//  Flattened C API
+
+ROUNDCLOCK new_fl_round_clock(int x, int y, int w, int h, char* label) {
     My_Round_Clock *c = new My_Round_Clock(x, y, w, h, label);
     return c;
 }
 
-void free_fl_round_clock(ROUND_CLOCK c) {
+void free_fl_round_clock(ROUNDCLOCK c) {
     delete reinterpret_cast<My_Round_Clock*>(c);
 }
 
 
 
 
-void fl_round_clock_draw2(ROUND_CLOCK c, int x, int y, int w, int h) {
-    reinterpret_cast<My_Round_Clock*>(c)->Fl_Round_Clock::draw(x,y,w,h);
+void fl_round_clock_draw(ROUNDCLOCK c) {
+    reinterpret_cast<My_Round_Clock*>(c)->Fl_Round_Clock::draw();
+}
+
+int fl_round_clock_handle(ROUNDCLOCK c, int e) {
+    return reinterpret_cast<My_Round_Clock*>(c)->Fl_Round_Clock::handle(e);
 }
 
 

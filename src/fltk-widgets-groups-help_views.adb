@@ -27,19 +27,6 @@ package body FLTK.Widgets.Groups.Help_Views is
     --  Functions From C  --
     ------------------------
 
-    procedure help_view_set_draw_hook
-           (V, D : in Storage.Integer_Address);
-    pragma Import (C, help_view_set_draw_hook, "help_view_set_draw_hook");
-    pragma Inline (help_view_set_draw_hook);
-
-    procedure help_view_set_handle_hook
-           (V, H : in Storage.Integer_Address);
-    pragma Import (C, help_view_set_handle_hook, "help_view_set_handle_hook");
-    pragma Inline (help_view_set_handle_hook);
-
-
-
-
     function new_fl_help_view
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -178,6 +165,12 @@ package body FLTK.Widgets.Groups.Help_Views is
     pragma Import (C, fl_help_view_set_size, "fl_help_view_set_size");
     pragma Inline (fl_help_view_set_size);
 
+    procedure fl_help_view_resize
+           (V          : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int);
+    pragma Import (C, fl_help_view_resize, "fl_help_view_resize");
+    pragma Inline (fl_help_view_resize);
+
     function fl_help_view_get_textcolor
            (V : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
@@ -269,9 +262,9 @@ package body FLTK.Widgets.Groups.Help_Views is
 
 
 
-    -----------------------------------
-    --  Controlled Type Subprograms  --
-    -----------------------------------
+    -------------------
+    --  Destructors  --
+    -------------------
 
     procedure Extra_Final
            (This : in out Help_View) is
@@ -294,17 +287,26 @@ package body FLTK.Widgets.Groups.Help_Views is
 
 
 
-    ---------------------
-    --  Help_View API  --
-    ---------------------
+    --------------------
+    --  Constructors  --
+    --------------------
 
     procedure Extra_Init
            (This       : in out Help_View;
             X, Y, W, H : in     Integer;
             Text       : in     String) is
     begin
+        fl_help_view_link (This.Void_Ptr, Storage.To_Integer (Link_Callback_Hook'Address));
         Extra_Init (Group (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Help_View) is
+    begin
+        This.Draw_Ptr := fl_help_view_draw'Address;
+        This.Handle_Ptr := fl_help_view_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -322,9 +324,6 @@ package body FLTK.Widgets.Groups.Help_Views is
                     Interfaces.C.int (H),
                     Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                help_view_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                help_view_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
-                fl_help_view_link (This.Void_Ptr, Storage.To_Integer (Link_Callback_Hook'Address));
             end return;
         end Create;
 
@@ -332,6 +331,10 @@ package body FLTK.Widgets.Groups.Help_Views is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     procedure Clear_Selection
            (This : in out Help_View) is
@@ -519,6 +522,19 @@ package body FLTK.Widgets.Groups.Help_Views is
     end Resize;
 
 
+    procedure Resize
+           (This       : in out Help_View;
+            X, Y, W, H : in     Integer) is
+    begin
+        fl_help_view_resize
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H));
+    end Resize;
+
+
     function Get_Text_Color
            (This : in Help_View)
         return Color is
@@ -572,7 +588,7 @@ package body FLTK.Widgets.Groups.Help_Views is
     procedure Draw
            (This : in out Help_View) is
     begin
-        fl_help_view_draw (This.Void_Ptr);
+        Group (This).Draw;
     end Draw;
 
 
@@ -581,8 +597,7 @@ package body FLTK.Widgets.Groups.Help_Views is
             Event : in     Event_Kind)
         return Event_Outcome is
     begin
-        return Event_Outcome'Val
-           (fl_help_view_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
+        return Group (This).Handle (Event);
     end Handle;
 
 

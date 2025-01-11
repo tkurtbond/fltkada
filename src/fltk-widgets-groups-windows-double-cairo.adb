@@ -134,6 +134,14 @@ package body FLTK.Widgets.Groups.Windows.Double.Cairo is
     end Extra_Init;
 
 
+    procedure Initialize
+           (This : in out Cairo_Window) is
+    begin
+        This.Draw_Ptr := fl_cairo_window_draw'Address;
+        This.Handle_Ptr := fl_cairo_window_handle'Address;
+    end Initialize;
+
+
     package body Forge is
 
         function Create
@@ -202,18 +210,8 @@ package body FLTK.Widgets.Groups.Windows.Double.Cairo is
     procedure Draw
            (This : in out Cairo_Window) is
     begin
-        fl_cairo_window_draw (This.Void_Ptr);
+        Double_Window (This).Draw;
     end Draw;
-
-
-    function Handle
-           (This  : in out Cairo_Window;
-            Event : in     Event_Kind)
-        return Event_Outcome is
-    begin
-        return Event_Outcome'Val
-           (fl_cairo_window_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
-    end Handle;
 
 
 end FLTK.Widgets.Groups.Windows.Double.Cairo;

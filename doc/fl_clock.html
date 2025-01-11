@@ -45,7 +45,7 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -54,7 +54,7 @@ Fl_Clock(int X, int Y, int W, int H, const char *L=0);
 <td><pre>
 function Create
        (X, Y, W, H : in Integer;
-        Text       : in String)
+        Text       : in String := "")
     return Updated_Clock;
 </pre></td>
   </tr>
@@ -67,27 +67,17 @@ Fl_Clock(uchar t, int X, int Y, int W, int H, const char *L);
 function Create
        (Kind       : in Box_Kind;
         X, Y, W, H : in Integer;
-        Text       : in String)
+        Text       : in String := "")
     return Updated_Clock;
 </pre></td>
   </tr>
 
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
-procedure Draw
-       (This : in out Updated_Clock);
-</pre></td>
-  </tr>
+</table>
 
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
-procedure Draw
-       (This       : in out Clock;
-        X, Y, W, H : in     Integer);
-</pre></td>
-  </tr>
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>

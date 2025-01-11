@@ -44,6 +44,9 @@ private
 
     type Enter_Button is new Button with null record;
 
+    overriding procedure Initialize
+           (This : in out Enter_Button);
+
     overriding procedure Finalize
            (This : in out Enter_Button);
 
@@ -63,4 +66,5 @@ private
 
 
 end FLTK.Widgets.Buttons.Enter;
+
 

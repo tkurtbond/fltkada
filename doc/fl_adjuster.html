@@ -46,7 +46,7 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -55,10 +55,46 @@ Fl_Adjuster(int X, int Y, int W, int H, const char *L=0);
 <td><pre>
 function Create
        (X, Y, W, H : in Integer;
-        Text       : in String)
+        Text       : in String := "")
     return Adjuster;
 </pre></td>
   </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+int soft() const;
+</pre></td>
+<td><pre>
+function Is_Soft
+       (This : in Adjuster)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void soft(int s);
+</pre></td>
+<td><pre>
+procedure Set_Soft
+       (This : in out Adjuster;
+        To   : in     Boolean);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
@@ -84,23 +120,11 @@ function Handle
 
   <tr>
 <td><pre>
-void soft(int s);
+void value_damage();
 </pre></td>
 <td><pre>
-procedure Set_Soft
-       (This : in out Adjuster;
-        To   : in     Boolean);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-int soft() const;
-</pre></td>
-<td><pre>
-function Is_Soft
-       (This : in Adjuster)
-    return Boolean;
+procedure Value_Damage
+       (This : in out Adjuster);
 </pre></td>
   </tr>
 

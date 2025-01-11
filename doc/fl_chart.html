@@ -46,7 +46,7 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -55,10 +55,17 @@ Fl_Chart(int X, int Y, int W, int H, const char *L=0);
 <td><pre>
 function Create
        (X, Y, W, H : in Integer;
-        Text       : in String)
+        Text       : in String := "")
     return Chart;
 </pre></td>
   </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
@@ -124,26 +131,6 @@ void clear();
 <td><pre>
 procedure Clear
        (This : in out Chart);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-void draw();
-</pre></td>
-<td><pre>
-procedure Draw
-       (This : in out Chart);
-</pre></td>
-  </tr>
-
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
-function Handle
-       (This  : in out Chart;
-        Event : in     Event_Kind)
-    return Event_Outcome;
 </pre></td>
   </tr>
 
@@ -282,6 +269,23 @@ void textsize(Fl_Fontsize s);
 procedure Set_Text_Size
        (This : in out Chart;
         To   : in     Font_Size);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Chart);
 </pre></td>
   </tr>
 

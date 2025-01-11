@@ -14,6 +14,7 @@ package FLTK.Widgets.Groups.Windows.Double is
 
 
 
+
     package Forge is
 
         function Create
@@ -43,19 +44,18 @@ package FLTK.Widgets.Groups.Windows.Double is
 
 
 
-    procedure Draw
-           (This : in out Double_Window);
-
-    function Handle
-           (This  : in out Double_Window;
-            Event : in     Event_Kind)
-        return Event_Outcome;
+    procedure Resize
+           (This       : in out Double_Window;
+            X, Y, W, H : in     Integer);
 
 
 private
 
 
     type Double_Window is new Window with null record;
+
+    overriding procedure Initialize
+           (This : in out Double_Window);
 
     overriding procedure Finalize
            (This : in out Double_Window);
@@ -75,9 +75,9 @@ private
     pragma Inline (Hide);
     pragma Inline (Flush);
 
-    pragma Inline (Draw);
-    pragma Inline (Handle);
+    pragma Inline (Resize);
 
 
 end FLTK.Widgets.Groups.Windows.Double;
+
 

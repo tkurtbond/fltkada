@@ -8,27 +8,17 @@
 #define FL_MENU_GUARD
 
 
-
-
 typedef void* MENU;
-
-
-
-
-extern "C" void menu_set_draw_hook(MENU m, void * d);
-extern "C" void menu_set_handle_hook(MENU m, void * h);
-
-
 
 
 extern "C" MENU new_fl_menu(int x, int y, int w, int h, char* label);
 extern "C" void free_fl_menu(MENU m);
 
 
-
-
-extern "C" int fl_menu_add(MENU m, const char * t, unsigned long s, void * c, void * u, unsigned long f);
-extern "C" int fl_menu_insert(MENU m, int p, const char * t, unsigned long s, void * c, void * u, unsigned long f);
+extern "C" int fl_menu_add(MENU m, const char * t, unsigned long s,
+    void * c, void * u, unsigned long f);
+extern "C" int fl_menu_insert(MENU m, int p, const char * t, unsigned long s,
+    void * c, void * u, unsigned long f);
 extern "C" void fl_menu_remove(MENU m, int p);
 extern "C" void fl_menu_clear(MENU m);
 
@@ -68,7 +58,10 @@ extern "C" const void * fl_menu_pulldown(MENU m, int x, int y, int w, int h, int
 
 
 extern "C" void fl_menu_draw_item(MENU m, int i, int x, int y, int w, int h, int s);
+extern "C" void fl_menu_draw(MENU m);
+extern "C" int fl_menu_handle(MENU m, int e);
 
 
 #endif
+
 

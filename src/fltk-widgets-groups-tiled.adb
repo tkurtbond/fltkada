@@ -12,18 +12,9 @@ with
 package body FLTK.Widgets.Groups.Tiled is
 
 
-    procedure tile_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, tile_set_draw_hook, "tile_set_draw_hook");
-    pragma Inline (tile_set_draw_hook);
-
-    procedure tile_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, tile_set_handle_hook, "tile_set_handle_hook");
-    pragma Inline (tile_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_tile
            (X, Y, W, H : in Interfaces.C.int;
@@ -46,6 +37,12 @@ package body FLTK.Widgets.Groups.Tiled is
     pragma Import (C, fl_tile_position, "fl_tile_position");
     pragma Inline (fl_tile_position);
 
+    procedure fl_tile_resize
+           (T          : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int);
+    pragma Import (C, fl_tile_resize, "fl_tile_resize");
+    pragma Inline (fl_tile_resize);
+
 
 
 
@@ -63,6 +60,10 @@ package body FLTK.Widgets.Groups.Tiled is
 
 
 
+
+    -------------------
+    --  Destructors  --
+    -------------------
 
     procedure Extra_Final
            (This : in out Tiled_Group) is
@@ -84,6 +85,10 @@ package body FLTK.Widgets.Groups.Tiled is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Tiled_Group;
             X, Y, W, H : in     Integer;
@@ -91,6 +96,14 @@ package body FLTK.Widgets.Groups.Tiled is
     begin
         Extra_Init (Group (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Tiled_Group) is
+    begin
+        This.Draw_Ptr := fl_tile_draw'Address;
+        This.Handle_Ptr := fl_tile_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -108,8 +121,6 @@ package body FLTK.Widgets.Groups.Tiled is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                tile_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                tile_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -117,6 +128,10 @@ package body FLTK.Widgets.Groups.Tiled is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     procedure Position
            (This         : in out Tiled_Group;
@@ -130,13 +145,19 @@ package body FLTK.Widgets.Groups.Tiled is
     end Position;
 
 
-
-
-    procedure Draw
-           (This : in out Tiled_Group) is
+    procedure Resize
+           (This       : in out Tiled_Group;
+            X, Y, W, H : in     Integer) is
     begin
-        fl_tile_draw (This.Void_Ptr);
-    end Draw;
+        fl_tile_resize
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H));
+    end Resize;
+
+
 
 
     function Handle
@@ -144,10 +165,10 @@ package body FLTK.Widgets.Groups.Tiled is
             Event : in     Event_Kind)
         return Event_Outcome is
     begin
-        return Event_Outcome'Val
-               (fl_tile_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
+        return Group (This).Handle (Event);
     end Handle;
 
 
 end FLTK.Widgets.Groups.Tiled;
+
 

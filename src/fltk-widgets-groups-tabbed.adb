@@ -12,18 +12,9 @@ with
 package body FLTK.Widgets.Groups.Tabbed is
 
 
-    procedure tabs_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, tabs_set_draw_hook, "tabs_set_draw_hook");
-    pragma Inline (tabs_set_draw_hook);
-
-    procedure tabs_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, tabs_set_handle_hook, "tabs_set_handle_hook");
-    pragma Inline (tabs_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_tabs
            (X, Y, W, H : in Interfaces.C.int;
@@ -87,6 +78,11 @@ package body FLTK.Widgets.Groups.Tabbed is
     pragma Import (C, fl_tabs_draw, "fl_tabs_draw");
     pragma Inline (fl_tabs_draw);
 
+    procedure fl_tabs_redraw_tabs
+           (T : in Storage.Integer_Address);
+    pragma Import (C, fl_tabs_redraw_tabs, "fl_tabs_redraw_tabs");
+    pragma Inline (fl_tabs_redraw_tabs);
+
     function fl_tabs_handle
            (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
@@ -96,6 +92,10 @@ package body FLTK.Widgets.Groups.Tabbed is
 
 
 
+
+    -------------------
+    --  Destructors  --
+    -------------------
 
     procedure Extra_Final
            (This : in out Tabbed_Group) is
@@ -117,6 +117,10 @@ package body FLTK.Widgets.Groups.Tabbed is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Tabbed_Group;
             X, Y, W, H : in     Integer;
@@ -124,6 +128,14 @@ package body FLTK.Widgets.Groups.Tabbed is
     begin
         Extra_Init (Group (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Tabbed_Group) is
+    begin
+        This.Draw_Ptr := fl_tabs_draw'Address;
+        This.Handle_Ptr := fl_tabs_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -141,8 +153,6 @@ package body FLTK.Widgets.Groups.Tabbed is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                tabs_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                tabs_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -150,6 +160,10 @@ package body FLTK.Widgets.Groups.Tabbed is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     procedure Get_Client_Area
            (This       : in     Tabbed_Group;
@@ -229,8 +243,15 @@ package body FLTK.Widgets.Groups.Tabbed is
     procedure Draw
            (This : in out Tabbed_Group) is
     begin
-        fl_tabs_draw (This.Void_Ptr);
+        Group (This).Draw;
     end Draw;
+
+
+    procedure Redraw_Tabs
+           (This : in out Tabbed_Group) is
+    begin
+        fl_tabs_redraw_tabs (This.Void_Ptr);
+    end Redraw_Tabs;
 
 
     function Handle
@@ -238,10 +259,10 @@ package body FLTK.Widgets.Groups.Tabbed is
             Event : in     Event_Kind)
         return Event_Outcome is
     begin
-        return Event_Outcome'Val
-               (fl_tabs_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
+        return Group (This).Handle (Event);
     end Handle;
 
 
 end FLTK.Widgets.Groups.Tabbed;
+
 

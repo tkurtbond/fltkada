@@ -71,10 +71,19 @@ package FLTK.Widgets.Buttons is
         return Event_Outcome;
 
 
+
+
+    procedure Simulate_Key_Action
+           (This : in out Button);
+
+
 private
 
 
     type Button is new Widget with null record;
+
+    overriding procedure Initialize
+           (This : in out Button);
 
     overriding procedure Finalize
            (This : in out Button);
@@ -102,6 +111,9 @@ private
     pragma Inline (Draw);
     pragma Inline (Handle);
 
+    pragma Inline (Simulate_Key_Action);
+
 
 end FLTK.Widgets.Buttons;
+
 

@@ -46,7 +46,7 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -55,20 +55,17 @@ Fl_Scrollbar(int X, int Y, int W, int H, const char *L=0);
 <td><pre>
 function Create
        (X, Y, W, H : in Integer;
-        Text       : in String)
+        Text       : in String := "")
     return Scrollbar;
 </pre></td>
   </tr>
 
-  <tr>
-<td><pre>
-void draw();
-</pre></td>
-<td><pre>
-procedure Draw
-       (This : in out Scrollbar);
-</pre></td>
-  </tr>
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
@@ -137,6 +134,23 @@ procedure Set_All
         Win_Size    : in     Natural;
         First_Line  : in     Natural;
         Total_Lines : in     Natural);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Scrollbar);
 </pre></td>
   </tr>
 

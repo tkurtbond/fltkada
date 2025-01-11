@@ -12,18 +12,9 @@ with
 package body FLTK.Widgets.Valuators.Sliders.Value is
 
 
-    procedure value_slider_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, value_slider_set_draw_hook, "value_slider_set_draw_hook");
-    pragma Inline (value_slider_set_draw_hook);
-
-    procedure value_slider_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, value_slider_set_handle_hook, "value_slider_set_handle_hook");
-    pragma Inline (value_slider_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_value_slider
            (X, Y, W, H : in Interfaces.C.int;
@@ -94,6 +85,10 @@ package body FLTK.Widgets.Valuators.Sliders.Value is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
     procedure Extra_Final
            (This : in out Value_Slider) is
     begin
@@ -114,6 +109,10 @@ package body FLTK.Widgets.Valuators.Sliders.Value is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Value_Slider;
             X, Y, W, H : in     Integer;
@@ -121,6 +120,14 @@ package body FLTK.Widgets.Valuators.Sliders.Value is
     begin
         Extra_Init (Slider (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Value_Slider) is
+    begin
+        This.Draw_Ptr := fl_value_slider_draw'Address;
+        This.Handle_Ptr := fl_value_slider_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -138,10 +145,6 @@ package body FLTK.Widgets.Valuators.Sliders.Value is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                value_slider_set_draw_hook
-                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                value_slider_set_handle_hook
-                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -149,6 +152,10 @@ package body FLTK.Widgets.Valuators.Sliders.Value is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     function Get_Text_Color
            (This : in Value_Slider)
@@ -203,7 +210,7 @@ package body FLTK.Widgets.Valuators.Sliders.Value is
     procedure Draw
            (This : in out Value_Slider) is
     begin
-        fl_value_slider_draw (This.Void_Ptr);
+        Slider (This).Draw;
     end Draw;
 
 
@@ -212,10 +219,10 @@ package body FLTK.Widgets.Valuators.Sliders.Value is
             Event : in     Event_Kind)
         return Event_Outcome is
     begin
-        return Event_Outcome'Val
-               (fl_value_slider_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
+        return Slider (This).Handle (Event);
     end Handle;
 
 
 end FLTK.Widgets.Valuators.Sliders.Value;
+
 

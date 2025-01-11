@@ -51,7 +51,7 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -60,20 +60,17 @@ Fl_Menu_Button(int, int, int, int, const char *=0);
 <td><pre>
 function Create
        (X, Y, W, H : in Integer;
-        Text       : in String)
+        Text       : in String := "")
     return Menu_Button;
 </pre></td>
   </tr>
 
-  <tr>
-<td><pre>
-void draw();
-</pre></td>
-<td><pre>
-procedure Draw
-       (This : in out Menu_Button);
-</pre></td>
-  </tr>
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
@@ -99,11 +96,28 @@ function Popup
   </tr>
 
   <tr>
-<td>&nbsp;</td>
+<td>Use the type method in Fl_Widget with the popup_buttons enum.</td>
 <td><pre>
 procedure Set_Popup_Kind
        (This : in out Menu_Button;
         Pop  : in     Popup_Buttons);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Menu_Button);
 </pre></td>
   </tr>
 

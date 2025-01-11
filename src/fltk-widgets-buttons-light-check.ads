@@ -25,21 +25,13 @@ package FLTK.Widgets.Buttons.Light.Check is
     end Forge;
 
 
-
-
-    procedure Draw
-           (This : in out Check_Button);
-
-    function Handle
-           (This  : in out Check_Button;
-            Event : in     Event_Kind)
-        return Event_Outcome;
-
-
 private
 
 
     type Check_Button is new Light_Button with null record;
+
+    overriding procedure Initialize
+           (This : in out Check_Button);
 
     overriding procedure Finalize
            (This : in out Check_Button);
@@ -55,9 +47,6 @@ private
     with Inline;
 
 
-    pragma Inline (Draw);
-    pragma Inline (Handle);
-
-
 end FLTK.Widgets.Buttons.Light.Check;
+
 

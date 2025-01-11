@@ -46,7 +46,7 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -55,10 +55,17 @@ Fl_Tabs(int, int, int, int, const char *=0);
 <td><pre>
 function Create
        (X, Y, W, H : in Integer;
-        Text       : in String)
+        Text       : in String := "")
     return Tabbed_Group;
 </pre></td>
   </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
@@ -69,16 +76,6 @@ procedure Get_Client_Area
        (This       : in     Tabbed_Group;
         Tab_Height : in     Natural;
         X, Y, W, H :    out Integer);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-void draw();
-</pre></td>
-<td><pre>
-procedure Draw
-       (This : in out Tabbed_Group);
 </pre></td>
   </tr>
 
@@ -147,6 +144,33 @@ function Get_Which
        (This             : in Tabbed_Group;
         Event_X, Event_Y : in Integer)
     return access Widget'Class;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Tabbed_Group);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void redraw_tabs();
+</pre></td>
+<td><pre>
+procedure Redraw_Tabs
+       (This : in out Tabbed_Group);
 </pre></td>
   </tr>
 

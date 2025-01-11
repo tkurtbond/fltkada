@@ -121,16 +121,14 @@ package FLTK.Widgets.Charts is
     procedure Draw
            (This : in out Chart);
 
-    function Handle
-           (This  : in out Chart;
-            Event : in     Event_Kind)
-        return Event_Outcome;
-
 
 private
 
 
     type Chart is new Widget with null record;
+
+    overriding procedure Initialize
+           (This : in out Chart);
 
     overriding procedure Finalize
            (This : in out Chart);
@@ -169,8 +167,8 @@ private
     pragma Inline (Resize);
 
     pragma Inline (Draw);
-    pragma Inline (Handle);
 
 
 end FLTK.Widgets.Charts;
+
 

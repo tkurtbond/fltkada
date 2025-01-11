@@ -32,11 +32,12 @@ package FLTK.Widgets.Groups.Tiled is
             Old_X, Old_Y : in     Integer;
             New_X, New_Y : in     Integer);
 
+    procedure Resize
+           (This       : in out Tiled_Group;
+            X, Y, W, H : in     Integer);
 
 
 
-    procedure Draw
-           (This : in out Tiled_Group);
 
     function Handle
            (This  : in out Tiled_Group;
@@ -48,6 +49,9 @@ private
 
 
     type Tiled_Group is new Group with null record;
+
+    overriding procedure Initialize
+           (This : in out Tiled_Group);
 
     overriding procedure Finalize
            (This : in out Tiled_Group);
@@ -64,10 +68,11 @@ private
 
 
     pragma Inline (Position);
+    pragma Inline (Resize);
 
-    pragma Inline (Draw);
     pragma Inline (Handle);
 
 
 end FLTK.Widgets.Groups.Tiled;
+
 

@@ -41,6 +41,9 @@ private
 
     type Menu_Bar is new Menu with null record;
 
+    overriding procedure Initialize
+           (This : in out Menu_Bar);
+
     overriding procedure Finalize
            (This : in out Menu_Bar);
 
@@ -60,4 +63,5 @@ private
 
 
 end FLTK.Widgets.Menus.Menu_Bars;
+
 

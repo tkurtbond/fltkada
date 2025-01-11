@@ -67,6 +67,9 @@ private
 
     type Scrollbar is new Slider with null record;
 
+    overriding procedure Initialize
+           (This : in out Scrollbar);
+
     overriding procedure Finalize
            (This : in out Scrollbar);
 
@@ -92,4 +95,5 @@ private
 
 
 end FLTK.Widgets.Valuators.Sliders.Scrollbars;
+
 

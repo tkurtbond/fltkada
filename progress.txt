@@ -171,7 +171,7 @@ Fl_Device_Plugin
 Fl_Plugin
 Fl_Plugin_Manager
 
-(XForms legacy compatibility)
+(XForms legacy compatibility) (why did I bind Fl_Chart/Fl_Clock then?)
 Fl_FormsBitmap
 Fl_FormsPixmap
 Fl_FormsText

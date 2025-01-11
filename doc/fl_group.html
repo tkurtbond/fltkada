@@ -42,12 +42,12 @@
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>int</td>
     <td>Index</td>
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>int</td>
     <td>Extended_Index</td>
   </tr>
 
@@ -61,7 +61,7 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -70,10 +70,44 @@ Fl_Group(int, int, int, int, const char *=0);
 <td><pre>
 function Create
        (X, Y, W, H : in Integer;
-        Text       : in String)
+        Text       : in String := "")
     return Group;
 </pre></td>
   </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+static Fl_Group * current();
+</pre></td>
+<td><pre>
+function Get_Current
+    return access Group'Class;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void current(Fl_Group *g);
+</pre></td>
+<td><pre>
+procedure Set_Current
+       (To : in Group'Class);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
@@ -85,6 +119,7 @@ Fl_Widget *& _ddfdesign_kludge();
   <tr>
 <td><pre>
 void add(Fl_Widget &);
+
 void add(Fl_Widget *o);
 </pre></td>
 <td><pre>
@@ -200,16 +235,6 @@ unsigned int clip_children();
 
   <tr>
 <td><pre>
-void draw();
-</pre></td>
-<td><pre>
-procedure Draw
-       (This : in out Group);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
 void end();
 </pre></td>
 <td>&nbsp;</td>
@@ -218,6 +243,7 @@ void end();
   <tr>
 <td><pre>
 int find(const Fl_Widget *) const;
+
 int find(const Fl_Widget &o) const;
 </pre></td>
 <td><pre>
@@ -311,24 +337,13 @@ procedure Remove
   <tr>
 <td><pre>
 void remove(Fl_Widget &);
+
 void remove(Fl_Widget *o);
 </pre></td>
 <td><pre>
 procedure Remove
        (This : in out Group;
         Item : in out Widget'Class);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-void resizable(Fl_Widget &o);
-void resizable(Fl_Widget *o);
-</pre></td>
-<td><pre>
-procedure Set_Resizable
-       (This : in out Group;
-        Item : in     Widget'Class);
 </pre></td>
   </tr>
 
@@ -345,29 +360,74 @@ function Get_Resizable
 
   <tr>
 <td><pre>
+void resizable(Fl_Widget &o);
+
+void resizable(Fl_Widget *o);
+</pre></td>
+<td><pre>
+procedure Set_Resizable
+       (This : in out Group;
+        Item : in     Widget'Class);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 void resize(int, int, int, int);
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Group);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw_child(Fl_Widget &widget) const;
 </pre></td>
 <td>&nbsp;</td>
   </tr>
 
   <tr>
 <td><pre>
-static Fl_Group * current();
+void draw_children();
 </pre></td>
-<td><pre>
-function Get_Current
-    return access Group'Class;
-</pre></td>
+<td>&nbsp;</td>
   </tr>
 
   <tr>
 <td><pre>
-static void current(Fl_Group *g);
+void draw_outside_label(const Fl_Widget &widget) const;
 </pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
 <td><pre>
-procedure Set_Current
-       (To : in Group'Class);
+int * sizes();
 </pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void update_child(Fl_Widget &widget) const;
+</pre></td>
+<td>&nbsp;</td>
   </tr>
 
 </table>

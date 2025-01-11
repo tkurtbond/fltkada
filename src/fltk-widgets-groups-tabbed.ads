@@ -62,6 +62,9 @@ package FLTK.Widgets.Groups.Tabbed is
     procedure Draw
            (This : in out Tabbed_Group);
 
+    procedure Redraw_Tabs
+           (This : in out Tabbed_Group);
+
     function Handle
            (This  : in out Tabbed_Group;
             Event : in     Event_Kind)
@@ -72,6 +75,9 @@ private
 
 
     type Tabbed_Group is new Group with null record;
+
+    overriding procedure Initialize
+           (This : in out Tabbed_Group);
 
     overriding procedure Finalize
            (This : in out Tabbed_Group);
@@ -96,8 +102,10 @@ private
     pragma Inline (Get_Which);
 
     pragma Inline (Draw);
+    pragma Inline (Redraw_Tabs);
     pragma Inline (Handle);
 
 
 end FLTK.Widgets.Groups.Tabbed;
+
 

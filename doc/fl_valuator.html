@@ -46,7 +46,7 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -55,10 +55,17 @@ Fl_Valuator(int X, int Y, int W, int H, const char *L);
 <td><pre>
 function Create
        (X, Y, W, H : in Integer;
-        Text       : in String)
+        Text       : in String := "")
     return Valuator;
 </pre></td>
   </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
@@ -88,16 +95,6 @@ function Clamp
 virtual int format(char *);
 </pre></td>
 <td>&nbsp;</td>
-  </tr>
-
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
-function Handle
-       (This  : in out Valuator;
-        Event : in     Event_Kind)
-    return Event_Outcome;
-</pre></td>
   </tr>
 
   <tr>
@@ -193,16 +190,25 @@ function Round
 
   <tr>
 <td><pre>
-void step(int a);
+double step() const;
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Get_Step
+       (This : in Valuator)
+    return Long_Float;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 void step(double a, int b);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Set_Step
+       (This   : in out Valuator;
+        Top    : in     Long_Float;
+        Bottom : in     Integer);
+</pre></td>
   </tr>
 
   <tr>
@@ -210,7 +216,7 @@ void step(double a, int b);
 void step(double s);
 </pre></td>
 <td><pre>
-procedure Set_Step
+procedure Set_Step_Top
        (This : in out Valuator;
         To   : in     Long_Float);
 </pre></td>
@@ -218,12 +224,12 @@ procedure Set_Step
 
   <tr>
 <td><pre>
-double step() const;
+void step(int a);
 </pre></td>
 <td><pre>
-function Get_Step
-       (This : in Valuator)
-    return Long_Float;
+procedure Set_Step_Bottom
+       (This : in out Valuator;
+        To   : in     Integer);
 </pre></td>
   </tr>
 
@@ -246,6 +252,72 @@ int value(double);
 procedure Set_Value
        (This : in out Valuator;
         To   : in     Long_Float);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void handle_drag(double newvalue);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void handle_push();
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void handle_release();
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int horizontal() const;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+double previous_value() const;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void set_value(double v);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+double softclamp(double);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual void value_damage();
+</pre></td>
+<td><pre>
+procedure Value_Damage
+       (This : in out Valuator);
 </pre></td>
   </tr>
 

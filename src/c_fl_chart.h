@@ -8,25 +8,11 @@
 #define FL_CHART_GUARD
 
 
-
-
 typedef void* CHART;
-
-
-
-
-extern "C" void chart_set_draw_hook(CHART n, void * d);
-extern "C" void fl_chart_draw(CHART n);
-extern "C" void chart_set_handle_hook(CHART n, void * h);
-extern "C" int fl_chart_handle(CHART n, int e);
-
-
 
 
 extern "C" CHART new_fl_chart(int x, int y, int w, int h, char * label);
 extern "C" void free_fl_chart(CHART b);
-
-
 
 
 extern "C" void fl_chart_add(CHART b, double v, char * s, unsigned int c);
@@ -55,5 +41,10 @@ extern "C" int fl_chart_get_textsize(CHART b);
 extern "C" void fl_chart_set_textsize(CHART b, int s);
 
 
+extern "C" void fl_chart_draw(CHART n);
+extern "C" int fl_chart_handle(CHART n, int e);
+
+
 #endif
+
 

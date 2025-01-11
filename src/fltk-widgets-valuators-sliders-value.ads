@@ -68,6 +68,9 @@ private
 
     type Value_Slider is new Slider with null record;
 
+    overriding procedure Initialize
+           (This : in out Value_Slider);
+
     overriding procedure Finalize
            (This : in out Value_Slider);
 
@@ -94,4 +97,5 @@ private
 
 
 end FLTK.Widgets.Valuators.Sliders.Value;
+
 

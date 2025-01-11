@@ -16,18 +16,9 @@ use type
 package body FLTK.Widgets.Charts is
 
 
-    procedure chart_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, chart_set_draw_hook, "chart_set_draw_hook");
-    pragma Inline (chart_set_draw_hook);
-
-    procedure chart_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, chart_set_handle_hook, "chart_set_handle_hook");
-    pragma Inline (chart_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_chart
            (X, Y, W, H : in Interfaces.C.int;
@@ -186,6 +177,10 @@ package body FLTK.Widgets.Charts is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
     procedure Extra_Final
            (This : in out Chart) is
     begin
@@ -206,6 +201,10 @@ package body FLTK.Widgets.Charts is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Chart;
             X, Y, W, H : in     Integer;
@@ -213,6 +212,14 @@ package body FLTK.Widgets.Charts is
     begin
         Extra_Init (Widget (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Chart) is
+    begin
+        This.Draw_Ptr   := fl_chart_draw'Address;
+        This.Handle_Ptr := fl_chart_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -230,8 +237,6 @@ package body FLTK.Widgets.Charts is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                chart_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                chart_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -239,6 +244,10 @@ package body FLTK.Widgets.Charts is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     procedure Add
            (This       : in out Chart;
@@ -422,19 +431,10 @@ package body FLTK.Widgets.Charts is
     procedure Draw
            (This : in out Chart) is
     begin
-        fl_chart_draw (This.Void_Ptr);
+        Widget (This).Draw;
     end Draw;
 
 
-    function Handle
-           (This  : in out Chart;
-            Event : in     Event_Kind)
-        return Event_Outcome is
-    begin
-        return Event_Outcome'Val
-               (fl_chart_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
-    end Handle;
-
-
 end FLTK.Widgets.Charts;
+
 

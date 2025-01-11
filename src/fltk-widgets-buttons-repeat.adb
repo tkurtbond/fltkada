@@ -12,18 +12,9 @@ with
 package body FLTK.Widgets.Buttons.Repeat is
 
 
-    procedure repeat_button_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, repeat_button_set_draw_hook, "repeat_button_set_draw_hook");
-    pragma Inline (repeat_button_set_draw_hook);
-
-    procedure repeat_button_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, repeat_button_set_handle_hook, "repeat_button_set_handle_hook");
-    pragma Inline (repeat_button_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_repeat_button
            (X, Y, W, H : in Interfaces.C.int;
@@ -36,6 +27,14 @@ package body FLTK.Widgets.Buttons.Repeat is
            (B : in Storage.Integer_Address);
     pragma Import (C, free_fl_repeat_button, "free_fl_repeat_button");
     pragma Inline (free_fl_repeat_button);
+
+
+
+
+    procedure fl_repeat_button_deactivate
+           (B : in Storage.Integer_Address);
+    pragma Import (C, fl_repeat_button_deactivate, "fl_repeat_button_deactivate");
+    pragma Inline (fl_repeat_button_deactivate);
 
 
 
@@ -54,6 +53,10 @@ package body FLTK.Widgets.Buttons.Repeat is
 
 
 
+
+    -------------------
+    --  Destructors  --
+    -------------------
 
     procedure Extra_Final
            (This : in out Repeat_Button) is
@@ -75,6 +78,10 @@ package body FLTK.Widgets.Buttons.Repeat is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Repeat_Button;
             X, Y, W, H : in     Integer;
@@ -82,6 +89,14 @@ package body FLTK.Widgets.Buttons.Repeat is
     begin
         Extra_Init (Button (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Repeat_Button) is
+    begin
+        This.Draw_Ptr := fl_repeat_button_draw'Address;
+        This.Handle_Ptr := fl_repeat_button_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -99,10 +114,6 @@ package body FLTK.Widgets.Buttons.Repeat is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                repeat_button_set_draw_hook
-                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                repeat_button_set_handle_hook
-                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -111,11 +122,17 @@ package body FLTK.Widgets.Buttons.Repeat is
 
 
 
-    procedure Draw
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
+    procedure Deactivate
            (This : in out Repeat_Button) is
     begin
-        fl_repeat_button_draw (This.Void_Ptr);
-    end Draw;
+        fl_repeat_button_deactivate (This.Void_Ptr);
+    end Deactivate;
+
+
 
 
     function Handle
@@ -123,10 +140,10 @@ package body FLTK.Widgets.Buttons.Repeat is
             Event : in     Event_Kind)
         return Event_Outcome is
     begin
-        return Event_Outcome'Val
-               (fl_repeat_button_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
+        return Button (This).Handle (Event);
     end Handle;
 
 
 end FLTK.Widgets.Buttons.Repeat;
+
 

@@ -25,21 +25,13 @@ package FLTK.Widgets.Valuators.Counters.Simple is
     end Forge;
 
 
-
-
-    procedure Draw
-           (This : in out Simple_Counter);
-
-    function Handle
-           (This  : in out Simple_Counter;
-            Event : in     Event_Kind)
-        return Event_Outcome;
-
-
 private
 
 
     type Simple_Counter is new Counter with null record;
+
+    overriding procedure Initialize
+           (This : in out Simple_Counter);
 
     overriding procedure Finalize
            (This : in out Simple_Counter);
@@ -55,9 +47,6 @@ private
     with Inline;
 
 
-    pragma Inline (Draw);
-    pragma Inline (Handle);
-
-
 end FLTK.Widgets.Valuators.Counters.Simple;
+
 

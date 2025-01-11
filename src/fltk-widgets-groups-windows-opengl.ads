@@ -16,10 +16,6 @@ private with
 package FLTK.Widgets.Groups.Windows.OpenGL is
 
 
-    -------------
-    --  Types  --
-    -------------
-
     type GL_Window is new Window with private;
 
     type GL_Window_Reference (Data : not null access GL_Window'Class) is
@@ -43,10 +39,6 @@ package FLTK.Widgets.Groups.Windows.OpenGL is
 
 
 
-
-    --------------------
-    --  Constructors  --
-    --------------------
 
     package Forge is
 
@@ -99,6 +91,10 @@ package FLTK.Widgets.Groups.Windows.OpenGL is
     function Pixels_Per_Unit
            (This : in GL_Window)
         return Float;
+
+    procedure Resize
+           (This       : in out GL_Window;
+            X, Y, W, H : in     Integer);
 
 
 
@@ -195,6 +191,9 @@ private
 
     type GL_Window is new Window with null record;
 
+    overriding procedure Initialize
+           (This : in out GL_Window);
+
     overriding procedure Finalize
            (This : in out GL_Window);
 
@@ -259,4 +258,5 @@ private
 
 
 end FLTK.Widgets.Groups.Windows.OpenGL;
+
 

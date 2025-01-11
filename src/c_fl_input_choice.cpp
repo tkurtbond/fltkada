@@ -6,146 +6,146 @@
 
 #include <FL/Fl_Input_Choice.H>
 #include "c_fl_input_choice.h"
-#include "c_fl_type.h"
 
 
 
+
+//  Exports from Ada
+
+extern "C" void widget_draw_hook(void * ud);
+extern "C" int widget_handle_hook(void * ud, int e);
+
+
+
+
+//  Attaching all relevant hooks and friends
 
 class My_Input_Choice : public Fl_Input_Choice {
-    public:
-        using Fl_Input_Choice::Fl_Input_Choice;
-        friend void input_choice_set_draw_hook(INPUT_CHOICE n, void * d);
-        friend void fl_input_choice_draw(INPUT_CHOICE n);
-        friend void input_choice_set_handle_hook(INPUT_CHOICE n, void * h);
-        friend int fl_input_choice_handle(INPUT_CHOICE n, int e);
-    protected:
-        void draw();
-        void real_draw();
-        int handle(int e);
-        int real_handle(int e);
-        d_hook_p draw_hook;
-        h_hook_p handle_hook;
+public:
+    using Fl_Input_Choice::Fl_Input_Choice;
+
+    friend void fl_input_choice_draw(INPUTCHOICE n);
+    friend int fl_input_choice_handle(INPUTCHOICE n, int e);
+
+    void draw();
+    int handle(int e);
 };
 
 void My_Input_Choice::draw() {
-    (*draw_hook)(this->user_data());
-}
-
-void My_Input_Choice::real_draw() {
-    Fl_Input_Choice::draw();
+    widget_draw_hook(this->user_data());
 }
 
 int My_Input_Choice::handle(int e) {
-    return (*handle_hook)(this->user_data(), e);
-}
-
-int My_Input_Choice::real_handle(int e) {
-    return Fl_Input_Choice::handle(e);
-}
-
-void input_choice_set_draw_hook(INPUT_CHOICE n, void * d) {
-    reinterpret_cast<My_Input_Choice*>(n)->draw_hook = reinterpret_cast<d_hook_p>(d);
-}
-
-void fl_input_choice_draw(INPUT_CHOICE n) {
-    reinterpret_cast<My_Input_Choice*>(n)->real_draw();
-}
-
-void input_choice_set_handle_hook(INPUT_CHOICE n, void * h) {
-    reinterpret_cast<My_Input_Choice*>(n)->handle_hook = reinterpret_cast<h_hook_p>(h);
-}
-
-int fl_input_choice_handle(INPUT_CHOICE n, int e) {
-    return reinterpret_cast<My_Input_Choice*>(n)->real_handle(e);
+    return widget_handle_hook(this->user_data(), e);
 }
 
 
 
 
-INPUT_CHOICE new_fl_input_choice(int x, int y, int w, int h, char* label) {
+//  Flattened C API
+
+INPUTCHOICE new_fl_input_choice(int x, int y, int w, int h, char* label) {
     My_Input_Choice *n = new My_Input_Choice(x, y, w, h, label);
     return n;
 }
 
-void free_fl_input_choice(INPUT_CHOICE n) {
+void free_fl_input_choice(INPUTCHOICE n) {
     delete reinterpret_cast<My_Input_Choice*>(n);
 }
 
 
 
 
-void * fl_input_choice_input(INPUT_CHOICE n) {
+void * fl_input_choice_input(INPUTCHOICE n) {
     return reinterpret_cast<Fl_Input_Choice*>(n)->input();
 }
 
-void * fl_input_choice_menubutton(INPUT_CHOICE n) {
+void * fl_input_choice_menubutton(INPUTCHOICE n) {
     return reinterpret_cast<Fl_Input_Choice*>(n)->menubutton();
 }
 
 
 
 
-void fl_input_choice_clear(INPUT_CHOICE n) {
+void fl_input_choice_clear(INPUTCHOICE n) {
     reinterpret_cast<Fl_Input_Choice*>(n)->clear();
 }
 
 
 
 
-int fl_input_choice_changed(INPUT_CHOICE n) {
+int fl_input_choice_changed(INPUTCHOICE n) {
     return reinterpret_cast<Fl_Input_Choice*>(n)->changed();
 }
 
-void fl_input_choice_clear_changed(INPUT_CHOICE n) {
+void fl_input_choice_clear_changed(INPUTCHOICE n) {
     reinterpret_cast<Fl_Input_Choice*>(n)->clear_changed();
 }
 
-void fl_input_choice_set_changed(INPUT_CHOICE n) {
+void fl_input_choice_set_changed(INPUTCHOICE n) {
     reinterpret_cast<Fl_Input_Choice*>(n)->set_changed();
 }
 
-int fl_input_choice_get_down_box(INPUT_CHOICE n) {
+int fl_input_choice_get_down_box(INPUTCHOICE n) {
     return reinterpret_cast<Fl_Input_Choice*>(n)->down_box();
 }
 
-void fl_input_choice_set_down_box(INPUT_CHOICE n, int t) {
+void fl_input_choice_set_down_box(INPUTCHOICE n, int t) {
     reinterpret_cast<Fl_Input_Choice*>(n)->down_box(static_cast<Fl_Boxtype>(t));
 }
 
-unsigned int fl_input_choice_get_textcolor(INPUT_CHOICE n) {
+unsigned int fl_input_choice_get_textcolor(INPUTCHOICE n) {
     return reinterpret_cast<Fl_Input_Choice*>(n)->textcolor();
 }
 
-void fl_input_choice_set_textcolor(INPUT_CHOICE n, unsigned int t) {
+void fl_input_choice_set_textcolor(INPUTCHOICE n, unsigned int t) {
     reinterpret_cast<Fl_Input_Choice*>(n)->textcolor(t);
 }
 
-int fl_input_choice_get_textfont(INPUT_CHOICE n) {
+int fl_input_choice_get_textfont(INPUTCHOICE n) {
     return reinterpret_cast<Fl_Input_Choice*>(n)->textfont();
 }
 
-void fl_input_choice_set_textfont(INPUT_CHOICE n, int t) {
+void fl_input_choice_set_textfont(INPUTCHOICE n, int t) {
     reinterpret_cast<Fl_Input_Choice*>(n)->textfont(t);
 }
 
-int fl_input_choice_get_textsize(INPUT_CHOICE n) {
+int fl_input_choice_get_textsize(INPUTCHOICE n) {
     return reinterpret_cast<Fl_Input_Choice*>(n)->textsize();
 }
 
-void fl_input_choice_set_textsize(INPUT_CHOICE n, int t) {
+void fl_input_choice_set_textsize(INPUTCHOICE n, int t) {
     reinterpret_cast<Fl_Input_Choice*>(n)->textsize(t);
 }
 
-const char * fl_input_choice_get_value(INPUT_CHOICE n) {
+const char * fl_input_choice_get_value(INPUTCHOICE n) {
     return reinterpret_cast<Fl_Input_Choice*>(n)->value();
 }
 
-void fl_input_choice_set_value(INPUT_CHOICE n, const char * t) {
+void fl_input_choice_set_value(INPUTCHOICE n, const char * t) {
     reinterpret_cast<Fl_Input_Choice*>(n)->value(t);
 }
 
-void fl_input_choice_set_value2(INPUT_CHOICE n, int t) {
+void fl_input_choice_set_value2(INPUTCHOICE n, int t) {
     reinterpret_cast<Fl_Input_Choice*>(n)->value(t);
+}
+
+
+
+
+void fl_input_choice_resize(INPUTCHOICE n, int x, int y, int w, int h) {
+    reinterpret_cast<Fl_Input_Choice*>(n)->resize(x, y, w, h);
+}
+
+
+
+
+void fl_input_choice_draw(INPUTCHOICE n) {
+    reinterpret_cast<My_Input_Choice*>(n)->Fl_Input_Choice::draw();
+}
+
+int fl_input_choice_handle(INPUTCHOICE n, int e) {
+    return reinterpret_cast<My_Input_Choice*>(n)->Fl_Input_Choice::handle(e);
 }
 
 

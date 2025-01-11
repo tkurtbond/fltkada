@@ -17,18 +17,9 @@ use type
 package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
-    procedure text_editor_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, text_editor_set_draw_hook, "text_editor_set_draw_hook");
-    pragma Inline (text_editor_set_draw_hook);
-
-    procedure text_editor_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, text_editor_set_handle_hook, "text_editor_set_handle_hook");
-    pragma Inline (text_editor_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_text_editor
            (X, Y, W, H : in Interfaces.C.int;
@@ -356,6 +347,10 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+    ----------------------
+    --  Callback Hooks  --
+    ----------------------
+
     function Key_Func_Hook
            (K : in Interfaces.C.int;
             E : in Storage.Integer_Address)
@@ -383,6 +378,10 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+
+    -------------------
+    --  Destructors  --
+    -------------------
 
     procedure Extra_Final
            (This : in out Text_Editor) is
@@ -435,6 +434,12 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
     --          (Escape_Key,       -1));
 
 
+
+
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Text_Editor;
             X, Y, W, H : in     Integer;
@@ -481,6 +486,14 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
     end Extra_Init;
 
 
+    procedure Initialize
+           (This : in out Text_Editor) is
+    begin
+        This.Draw_Ptr   := fl_text_editor_draw'Address;
+        This.Handle_Ptr := fl_text_editor_handle'Address;
+    end Initialize;
+
+
     package body Forge is
 
         function Create
@@ -498,10 +511,6 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                text_editor_set_draw_hook
-                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                text_editor_set_handle_hook
-                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -509,6 +518,10 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     procedure Default
            (This : in out Text_Editor'Class;
@@ -988,22 +1001,15 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
-    procedure Draw
-           (This : in out Text_Editor) is
-    begin
-        fl_text_editor_draw (This.Void_Ptr);
-    end Draw;
-
-
     function Handle
            (This  : in out Text_Editor;
             Event : in     Event_Kind)
         return Event_Outcome is
     begin
-        return Event_Outcome'Val
-               (fl_text_editor_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
+        return Text_Display (This).Handle (Event);
     end Handle;
 
 
 end FLTK.Widgets.Groups.Text_Displays.Text_Editors;
+
 

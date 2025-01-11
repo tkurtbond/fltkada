@@ -71,7 +71,21 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Static Protected Attributes</th></tr>
+
+  <tr>
+<td><pre>
+static Key_Binding * global_key_bindings;
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -80,187 +94,17 @@ Fl_Text_Editor(int X, int Y, int W, int H, const char *L=0);
 <td><pre>
 function Create
        (X, Y, W, H : in Integer;
-        Text       : in String)
+        Text       : in String := "")
     return Text_Editor;
 </pre></td>
   </tr>
 
-  <tr>
-<td><pre>
-void add_default_key_bindings(Key_Binding **list);
-</pre></td>
-<td>&nbsp;</td>
-  </tr>
+</table>
 
-  <tr>
-<td><pre>
-void add_key_binding(int key, int state, Key_Func f, Key_Binding **list);
-</pre></td>
-<td><pre>
-procedure Add_Key_Binding
-       (This : in out Text_Editor;
-        Bind : in     Key_Binding);
-</pre></td>
-  </tr>
 
-  <tr>
-<td><pre>
-void add_key_binding(int key, int state, Key_Func f);
-</pre></td>
-<td><pre>
-procedure Add_Key_Binding
-       (This : in out Text_Editor;
-        Key  : in     Key_Combo;
-        Func : in     Key_Func);
-</pre></td>
-  </tr>
 
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
-procedure Add_Key_Bindings
-       (This : in out Text_Editor;
-        List : in     Key_Binding_List);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-Key_Func bound_key_function(int key, int state, Key_Binding *list) const;
-</pre></td>
-<td>&nbsp;</td>
-  </tr>
-
-  <tr>
-<td><pre>
-Key_Func bound_key_function(int key, int state) const;
-</pre></td>
-<td><pre>
-function Get_Bound_Key_Function
-       (This : in Text_Editor;
-        Key  : in Key_Combo)
-    return Key_Func;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-void default_key_function(Key_Func f);
-</pre></td>
-<td><pre>
-procedure Set_Default_Key_Function
-       (This : in out Text_Editor;
-        Func : in     Default_Key_Func);
-</pre></td>
-  </tr>
-
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
-function Get_Default_Key_Function
-       (This : in Text_Editor)
-    return Default_Key_Func;
-</pre></td>
-  </tr>
-
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
-procedure Draw
-       (This : in out Text_Editor);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-virtual int handle(int e);
-</pre></td>
-<td><pre>
-function Handle
-       (This  : in out Text_Editor;
-        Event : in     Event_Kind)
-    return Event_Outcome;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-void insert_mode(int b);
-</pre></td>
-<td><pre>
-procedure Set_Insert_Mode
-       (This : in out Text_Editor;
-        To   : in     Insert_Mode);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-int insert_mode();
-</pre></td>
-<td><pre>
-function Get_Insert_Mode
-       (This : in Text_Editor)
-    return Insert_Mode;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-void remove_all_key_bindings(Key_Binding **list);
-</pre></td>
-<td><pre>
-procedure Remove_Key_Bindings
-       (This : in out Text_Editor;
-        List : in     Key_Binding_List);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-void remove_all_key_bindings();
-</pre></td>
-<td><pre>
-procedure Remove_All_Key_Bindings
-       (This : in out Text_Editor);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-void remove_key_binding(int key, int state, Key_Binding **list);
-</pre></td>
-<td><pre>
-procedure Remove_Key_Binding
-       (This : in out Text_Editor;
-        Bind : in     Key_Binding);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-void remove_key_binding(int key, int state);
-</pre></td>
-<td><pre>
-procedure Remove_Key_Binding
-       (This : in out Text_Editor;
-        Key  : in     Key_Combo);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-void tab_nav(int val);
-</pre></td>
-<td>TBA</td>
-  </tr>
-
-  <tr>
-<td><pre>
-int tab_nav() const;
-</pre></td>
-<td>TBA</td>
-  </tr>
+<table class="function">
+  <tr><th colspan="2">Static Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
@@ -565,6 +409,203 @@ static int kf_up(int c, Fl_Text_Editor *e);
 procedure KF_Up
        (This : in out Text_Editor'Class);
 </pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void add_default_key_bindings(Key_Binding **list);
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void add_key_binding(int key, int state, Key_Func f, Key_Binding **list);
+</pre></td>
+<td><pre>
+procedure Add_Key_Binding
+       (This : in out Text_Editor;
+        Bind : in     Key_Binding);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void add_key_binding(int key, int state, Key_Func f);
+</pre></td>
+<td><pre>
+procedure Add_Key_Binding
+       (This : in out Text_Editor;
+        Key  : in     Key_Combo;
+        Func : in     Key_Func);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>&nbsp;</td>
+<td><pre>
+procedure Add_Key_Bindings
+       (This : in out Text_Editor;
+        List : in     Key_Binding_List);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Key_Func bound_key_function(int key, int state, Key_Binding *list) const;
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+Key_Func bound_key_function(int key, int state) const;
+</pre></td>
+<td><pre>
+function Get_Bound_Key_Function
+       (This : in Text_Editor;
+        Key  : in Key_Combo)
+    return Key_Func;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void default_key_function(Key_Func f);
+</pre></td>
+<td><pre>
+procedure Set_Default_Key_Function
+       (This : in out Text_Editor;
+        Func : in     Default_Key_Func);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>&nbsp;</td>
+<td><pre>
+function Get_Default_Key_Function
+       (This : in Text_Editor)
+    return Default_Key_Func;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual int handle(int e);
+</pre></td>
+<td><pre>
+function Handle
+       (This  : in out Text_Editor;
+        Event : in     Event_Kind)
+    return Event_Outcome;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void insert_mode(int b);
+</pre></td>
+<td><pre>
+procedure Set_Insert_Mode
+       (This : in out Text_Editor;
+        To   : in     Insert_Mode);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int insert_mode();
+</pre></td>
+<td><pre>
+function Get_Insert_Mode
+       (This : in Text_Editor)
+    return Insert_Mode;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void remove_all_key_bindings(Key_Binding **list);
+</pre></td>
+<td><pre>
+procedure Remove_Key_Bindings
+       (This : in out Text_Editor;
+        List : in     Key_Binding_List);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void remove_all_key_bindings();
+</pre></td>
+<td><pre>
+procedure Remove_All_Key_Bindings
+       (This : in out Text_Editor);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void remove_key_binding(int key, int state, Key_Binding **list);
+</pre></td>
+<td><pre>
+procedure Remove_Key_Binding
+       (This : in out Text_Editor;
+        Bind : in     Key_Binding);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void remove_key_binding(int key, int state);
+</pre></td>
+<td><pre>
+procedure Remove_Key_Binding
+       (This : in out Text_Editor;
+        Key  : in     Key_Combo);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void tab_nav(int val);
+</pre></td>
+<td>TBA</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int tab_nav() const;
+</pre></td>
+<td>TBA</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+int handle_key();
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void maybe_do_callback();
+</pre></td>
+<td>&nbsp;</td>
   </tr>
 
 </table>

@@ -26,6 +26,7 @@ package FLTK.Widgets.Groups.Text_Displays is
 
     type Cursor_Style is (Normal, Caret, Dim, Block, Heavy, Simple);
 
+
     Bounds_Error : exception;
 
 
@@ -220,13 +221,13 @@ package FLTK.Widgets.Groups.Text_Displays is
 
 
 
-    --  takes into account word wrap
+    --  Takes into account word wrap
     function Line_Start
            (This : in Text_Display;
             Pos  : in Natural)
         return Natural;
 
-    --  takes into account word wrap
+    --  Takes into account word wrap
     function Line_End
            (This                    : in Text_Display;
             Pos                     : in Natural;
@@ -239,14 +240,14 @@ package FLTK.Widgets.Groups.Text_Displays is
             Start_Pos_Is_Line_Start : in Boolean := False)
         return Natural;
 
-    --  takes into account word wrap as well as newline characters
+    --  Takes into account word wrap as well as newline characters
     function Skip_Lines
            (This                    : in Text_Display;
             Start, Lines            : in Natural;
             Start_Pos_Is_Line_Start : in Boolean := False)
         return Natural;
 
-    --  takes into account word wrap as well as newline characters
+    --  Takes into account word wrap as well as newline characters
     function Rewind_Lines
            (This         : in Text_Display;
             Start, Lines : in Natural)
@@ -367,6 +368,9 @@ private
             Style_Callback : Styles.Unfinished_Style_Callback;
         end record;
 
+    overriding procedure Initialize
+           (This : in out Text_Display);
+
     overriding procedure Finalize
            (This : in out Text_Display);
 
@@ -468,4 +472,5 @@ private
 
 
 end FLTK.Widgets.Groups.Text_Displays;
+
 

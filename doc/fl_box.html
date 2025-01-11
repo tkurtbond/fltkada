@@ -23,6 +23,7 @@
     <td>Fl_Box</td>
     <td>FLTK.Widgets.Boxes</td>
   </tr>
+
 </table>
 
 
@@ -39,24 +40,45 @@
     <td>&nbsp;</td>
     <td>Box_Reference</td>
   </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Box(Fl_Boxtype b, int X, int Y, int W, int H, const char *l);
+</pre></td>
+<td><pre>
+function Create
+       (Kind       : in Box_Kind;
+        X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return Box;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Box(int X, int Y, int W, int H, const char *l=0);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return Box;
+</pre></td>
+  </tr>
+
 </table>
 
 
 
 <table class="function">
   <tr><th colspan="2">Functions and Procedures</th></tr>
-
-  <tr>
-<td><pre>
-Fl_Box (int X, int Y, int W, int H, const char *l=0);
-</pre></td>
-<td><pre>
-function Create
-       (X, Y, W, H : in Integer;
-        Text       : in String)
-    return Box;
-</pre></td>
-  </tr>
 
   <tr>
 <td><pre>
@@ -70,6 +92,13 @@ function Handle
 </pre></td>
   </tr>
 
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
   <tr>
 <td><pre>
 void draw();
@@ -79,6 +108,7 @@ procedure Draw
        (This : in out Box);
 </pre></td>
   </tr>
+
 </table>
 
 

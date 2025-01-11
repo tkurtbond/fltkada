@@ -29,29 +29,25 @@ package FLTK.Widgets.Valuators.Dials is
 
 
 
-    function Get_Dial_Type
-           (This : in Dial)
-        return Dial_Kind;
-
     function Get_First_Angle
            (This : in Dial)
-        return Integer;
+        return Short_Integer;
 
     procedure Set_First_Angle
            (This : in out Dial;
-            To   : in     Integer);
+            To   : in     Short_Integer);
 
     function Get_Second_Angle
            (This : in Dial)
-        return Integer;
+        return Short_Integer;
 
     procedure Set_Second_Angle
            (This : in out Dial;
-            To   : in     Integer);
+            To   : in     Short_Integer);
 
     procedure Set_Angles
            (This     : in out Dial;
-            One, Two : in     Integer);
+            One, Two : in     Short_Integer);
 
 
 
@@ -59,13 +55,27 @@ package FLTK.Widgets.Valuators.Dials is
     procedure Draw
            (This : in out Dial);
 
+    procedure Draw
+           (This       : in out Dial;
+            X, Y, W, H : in     Integer);
+
     function Handle
            (This  : in out Dial;
             Event : in     Event_Kind)
         return Event_Outcome;
 
+    function Handle
+           (This       : in out Dial;
+            Event      : in     Event_Kind;
+            X, Y, W, H : in     Integer)
+        return Event_Outcome;
 
 
+
+
+    function Get_Dial_Type
+           (This : in Dial)
+        return Dial_Kind;
 
     package Extra is
 
@@ -81,6 +91,9 @@ private
 
     type Dial is new Valuator with null record;
 
+    overriding procedure Initialize
+           (This : in out Dial);
+
     overriding procedure Finalize
            (This : in out Dial);
 
@@ -95,8 +108,6 @@ private
     with Inline;
 
 
-    pragma Inline (Get_Dial_Type);
-
     pragma Inline (Get_First_Angle);
     pragma Inline (Set_First_Angle);
     pragma Inline (Get_Second_Angle);
@@ -106,6 +117,9 @@ private
     pragma Inline (Draw);
     pragma Inline (Handle);
 
+    pragma Inline (Get_Dial_Type);
+
 
 end FLTK.Widgets.Valuators.Dials;
+
 

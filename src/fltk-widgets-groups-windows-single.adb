@@ -12,18 +12,9 @@ with
 package body FLTK.Widgets.Groups.Windows.Single is
 
 
-    procedure single_window_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, single_window_set_draw_hook, "single_window_set_draw_hook");
-    pragma Inline (single_window_set_draw_hook);
-
-    procedure single_window_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, single_window_set_handle_hook, "single_window_set_handle_hook");
-    pragma Inline (single_window_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_single_window
            (X, Y, W, H : in Interfaces.C.int;
@@ -60,6 +51,14 @@ package body FLTK.Widgets.Groups.Windows.Single is
 
 
 
+    procedure fl_single_window_make_current
+           (S : in Storage.Integer_Address);
+    pragma Import (C, fl_single_window_make_current, "fl_single_window_make_current");
+    pragma Inline (fl_single_window_make_current);
+
+
+
+
     procedure fl_single_window_draw
            (W : in Storage.Integer_Address);
     pragma Import (C, fl_single_window_draw, "fl_single_window_draw");
@@ -74,6 +73,10 @@ package body FLTK.Widgets.Groups.Windows.Single is
 
 
 
+
+    -------------------
+    --  Destructors  --
+    -------------------
 
     procedure Extra_Final
            (This : in out Single_Window) is
@@ -95,6 +98,10 @@ package body FLTK.Widgets.Groups.Windows.Single is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Single_Window;
             X, Y, W, H : in     Integer;
@@ -102,6 +109,14 @@ package body FLTK.Widgets.Groups.Windows.Single is
     begin
         Extra_Init (Window (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Single_Window) is
+    begin
+        This.Draw_Ptr   := fl_single_window_draw'Address;
+        This.Handle_Ptr := fl_single_window_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -119,10 +134,6 @@ package body FLTK.Widgets.Groups.Windows.Single is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                single_window_set_draw_hook
-                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                single_window_set_handle_hook
-                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -138,10 +149,6 @@ package body FLTK.Widgets.Groups.Windows.Single is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, This.Get_X, This.Get_Y, W, H, Text);
-                single_window_set_draw_hook
-                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                single_window_set_handle_hook
-                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -149,6 +156,10 @@ package body FLTK.Widgets.Groups.Windows.Single is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     procedure Show
            (This : in out Single_Window) is
@@ -166,22 +177,13 @@ package body FLTK.Widgets.Groups.Windows.Single is
 
 
 
-    procedure Draw
+    procedure Make_Current
            (This : in out Single_Window) is
     begin
-        fl_single_window_draw (This.Void_Ptr);
-    end Draw;
-
-
-    function Handle
-           (This  : in out Single_Window;
-            Event : in     Event_Kind)
-        return Event_Outcome is
-    begin
-        return Event_Outcome'Val
-               (fl_single_window_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
-    end Handle;
+        fl_single_window_make_current (This.Void_Ptr);
+    end Make_Current;
 
 
 end FLTK.Widgets.Groups.Windows.Single;
+
 

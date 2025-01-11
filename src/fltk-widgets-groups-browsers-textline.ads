@@ -221,6 +221,15 @@ package FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+    --  Resizing
+
+    procedure Resize
+           (This : in out Textline_Browser;
+            W, H : in     Integer);
+
+
+
+
     --  Icons for specific lines
 
     function Has_Icon

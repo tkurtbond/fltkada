@@ -16,18 +16,9 @@ use type
 package body FLTK.Widgets.Groups.Spinners is
 
 
-    procedure spinner_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, spinner_set_draw_hook, "spinner_set_draw_hook");
-    pragma Inline (spinner_set_draw_hook);
-
-    procedure spinner_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, spinner_set_handle_hook, "spinner_set_handle_hook");
-    pragma Inline (spinner_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_spinner
            (X, Y, W, H : in Interfaces.C.int;
@@ -176,6 +167,15 @@ package body FLTK.Widgets.Groups.Spinners is
 
 
 
+    procedure fl_spinner_resize
+           (S          : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int);
+    pragma Import (C, fl_spinner_resize, "fl_spinner_resize");
+    pragma Inline (fl_spinner_resize);
+
+
+
+
     procedure fl_spinner_draw
            (W : in Storage.Integer_Address);
     pragma Import (C, fl_spinner_draw, "fl_spinner_draw");
@@ -190,6 +190,10 @@ package body FLTK.Widgets.Groups.Spinners is
 
 
 
+
+    -------------------
+    --  Destructors  --
+    -------------------
 
     procedure Extra_Final
            (This : in out Spinner) is
@@ -211,6 +215,10 @@ package body FLTK.Widgets.Groups.Spinners is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Spinner;
             X, Y, W, H : in     Integer;
@@ -218,6 +226,14 @@ package body FLTK.Widgets.Groups.Spinners is
     begin
         Extra_Init (Group (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Spinner) is
+    begin
+        This.Draw_Ptr   := fl_spinner_draw'Address;
+        This.Handle_Ptr := fl_spinner_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -235,8 +251,6 @@ package body FLTK.Widgets.Groups.Spinners is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                spinner_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                spinner_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -244,6 +258,10 @@ package body FLTK.Widgets.Groups.Spinners is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     function Get_Background_Color
            (This : in Spinner)
@@ -429,11 +447,19 @@ package body FLTK.Widgets.Groups.Spinners is
 
 
 
-    procedure Draw
-           (This : in out Spinner) is
+    procedure Resize
+           (This       : in out Spinner;
+            X, Y, W, H : in     Integer) is
     begin
-        fl_spinner_draw (This.Void_Ptr);
-    end Draw;
+        fl_spinner_resize
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H));
+    end Resize;
+
+
 
 
     function Handle
@@ -441,10 +467,10 @@ package body FLTK.Widgets.Groups.Spinners is
             Event : in     Event_Kind)
         return Event_Outcome is
     begin
-        return Event_Outcome'Val
-               (fl_spinner_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
+        return Group (This).Handle (Event);
     end Handle;
 
 
 end FLTK.Widgets.Groups.Spinners;
+
 

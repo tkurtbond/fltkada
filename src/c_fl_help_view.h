@@ -8,25 +8,11 @@
 #define FL_HELP_VIEW_GUARD
 
 
-
-
 typedef void* HELPVIEW;
-
-
-
-
-extern "C" void help_view_set_draw_hook(HELPVIEW v, void * d);
-extern "C" void fl_help_view_draw(HELPVIEW v);
-extern "C" void help_view_set_handle_hook(HELPVIEW v, void * h);
-extern "C" int fl_help_view_handle(HELPVIEW v, int e);
-
-
 
 
 extern "C" HELPVIEW new_fl_help_view(int x, int y, int w, int h, char * label);
 extern "C" void free_fl_help_view(HELPVIEW v);
-
-
 
 
 extern "C" void fl_help_view_clear_selection(HELPVIEW v);
@@ -54,12 +40,17 @@ extern "C" int fl_help_view_get_scrollbar_size(HELPVIEW v);
 extern "C" void fl_help_view_set_scrollbar_size(HELPVIEW v, int s);
 extern "C" int fl_help_view_get_size(HELPVIEW v);
 extern "C" void fl_help_view_set_size(HELPVIEW v, int w, int h);
+extern "C" void fl_help_view_resize(HELPVIEW v, int x, int y, int w, int h);
 extern "C" unsigned int fl_help_view_get_textcolor(HELPVIEW v);
 extern "C" void fl_help_view_set_textcolor(HELPVIEW v, unsigned int c);
 extern "C" int fl_help_view_get_textfont(HELPVIEW v);
 extern "C" void fl_help_view_set_textfont(HELPVIEW v, int f);
 extern "C" int fl_help_view_get_textsize(HELPVIEW v);
 extern "C" void fl_help_view_set_textsize(HELPVIEW v, int s);
+
+
+extern "C" void fl_help_view_draw(HELPVIEW v);
+extern "C" int fl_help_view_handle(HELPVIEW v, int e);
 
 
 #endif

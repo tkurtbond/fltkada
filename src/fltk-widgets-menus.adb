@@ -19,18 +19,9 @@ use type
 package body FLTK.Widgets.Menus is
 
 
-    procedure menu_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, menu_set_draw_hook, "menu_set_draw_hook");
-    pragma Inline (menu_set_draw_hook);
-
-    procedure menu_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, menu_set_handle_hook, "menu_set_handle_hook");
-    pragma Inline (menu_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_menu
            (X, Y, W, H : in Interfaces.C.int;
@@ -259,8 +250,24 @@ package body FLTK.Widgets.Menus is
     pragma Import (C, fl_menu_draw_item, "fl_menu_draw_item");
     pragma Inline (fl_menu_draw_item);
 
+    procedure fl_menu_draw
+           (M : in Storage.Integer_Address);
+    pragma Import (C, fl_menu_draw, "fl_menu_draw");
+    pragma Inline (fl_menu_draw);
+
+    function fl_menu_handle
+           (M : in Storage.Integer_Address;
+            E : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_menu_handle, "fl_menu_handle");
+    pragma Inline (fl_menu_handle);
 
 
+
+
+    ----------------------
+    --  Callback Hooks  --
+    ----------------------
 
     procedure Item_Hook
            (M, U : in Storage.Integer_Address)
@@ -274,6 +281,10 @@ package body FLTK.Widgets.Menus is
 
 
 
+
+    -------------------
+    --  Destructors  --
+    -------------------
 
     procedure Free_Item is new Ada.Unchecked_Deallocation
         (Object => FLTK.Menu_Items.Menu_Item, Name => Item_Access);
@@ -302,6 +313,10 @@ package body FLTK.Widgets.Menus is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Menu;
             X, Y, W, H : in     Integer;
@@ -309,6 +324,14 @@ package body FLTK.Widgets.Menus is
     begin
         Extra_Init (Widget (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Menu) is
+    begin
+        This.Draw_Ptr := fl_menu_draw'Address;
+        This.Handle_Ptr := fl_menu_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -326,8 +349,6 @@ package body FLTK.Widgets.Menus is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                menu_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                menu_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -335,6 +356,10 @@ package body FLTK.Widgets.Menus is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     procedure Add
            (This     : in out Menu;
@@ -799,14 +824,6 @@ package body FLTK.Widgets.Menus is
     end Draw_Item;
 
 
-    function Handle
-           (This  : in out Menu;
-            Event : in     Event_Kind)
-        return Event_Outcome is
-    begin
-        return Not_Handled;
-    end Handle;
-
-
 end FLTK.Widgets.Menus;
+
 

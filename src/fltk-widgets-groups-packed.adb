@@ -12,18 +12,9 @@ with
 package body FLTK.Widgets.Groups.Packed is
 
 
-    procedure pack_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, pack_set_draw_hook, "pack_set_draw_hook");
-    pragma Inline (pack_set_draw_hook);
-
-    procedure pack_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, pack_set_handle_hook, "pack_set_handle_hook");
-    pragma Inline (pack_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_pack
            (X, Y, W, H : in Interfaces.C.int;
@@ -52,6 +43,18 @@ package body FLTK.Widgets.Groups.Packed is
     pragma Import (C, fl_pack_set_spacing, "fl_pack_set_spacing");
     pragma Inline (fl_pack_set_spacing);
 
+    function fl_widget_get_type
+           (P : in Storage.Integer_Address)
+        return Interfaces.C.unsigned_char;
+    pragma Import (C, fl_widget_get_type, "fl_widget_get_type");
+    pragma Inline (fl_widget_get_type);
+
+    procedure fl_widget_set_type
+           (P : in Storage.Integer_Address;
+            T : in Interfaces.C.unsigned_char);
+    pragma Import (C, fl_widget_set_type, "fl_widget_set_type");
+    pragma Inline (fl_widget_set_type);
+
 
 
 
@@ -69,6 +72,10 @@ package body FLTK.Widgets.Groups.Packed is
 
 
 
+
+    -------------------
+    --  Destructors  --
+    -------------------
 
     procedure Extra_Final
            (This : in out Packed_Group) is
@@ -90,6 +97,10 @@ package body FLTK.Widgets.Groups.Packed is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Packed_Group;
             X, Y, W, H : in     Integer;
@@ -97,6 +108,14 @@ package body FLTK.Widgets.Groups.Packed is
     begin
         Extra_Init (Group (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Packed_Group) is
+    begin
+        This.Draw_Ptr   := fl_pack_draw'Address;
+        This.Handle_Ptr := fl_pack_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -114,8 +133,6 @@ package body FLTK.Widgets.Groups.Packed is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                pack_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                pack_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -123,6 +140,10 @@ package body FLTK.Widgets.Groups.Packed is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     function Get_Spacing
            (This : in Packed_Group)
@@ -140,24 +161,33 @@ package body FLTK.Widgets.Groups.Packed is
     end Set_Spacing;
 
 
+    function Get_Pack_Type
+           (This : in Packed_Group)
+        return Pack_Kind is
+    begin
+        return Pack_Kind'Val (fl_widget_get_type (This.Void_Ptr));
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error;
+    end Get_Pack_Type;
+
+
+    procedure Set_Pack_Type
+           (This : in out Packed_Group;
+            Kind : in     Pack_Kind) is
+    begin
+        fl_widget_set_type (This.Void_Ptr, Pack_Kind'Pos (Kind));
+    end Set_Pack_Type;
+
+
 
 
     procedure Draw
            (This : in out Packed_Group) is
     begin
-        fl_pack_draw (This.Void_Ptr);
+        Group (This).Draw;
     end Draw;
 
 
-    function Handle
-           (This  : in out Packed_Group;
-            Event : in     Event_Kind)
-        return Event_Outcome is
-    begin
-        return Event_Outcome'Val
-               (fl_pack_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
-    end Handle;
-
-
 end FLTK.Widgets.Groups.Packed;
+
 

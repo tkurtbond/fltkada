@@ -19,18 +19,9 @@ use type
 package body FLTK.Widgets.Groups.Windows.OpenGL is
 
 
-    procedure gl_window_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, gl_window_set_draw_hook, "gl_window_set_draw_hook");
-    pragma Inline (gl_window_set_draw_hook);
-
-    procedure gl_window_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, gl_window_set_handle_hook, "gl_window_set_handle_hook");
-    pragma Inline (gl_window_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_gl_window
            (X, Y, W, H : in Interfaces.C.int;
@@ -94,6 +85,12 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
         return Interfaces.C.C_float;
     pragma Import (C, fl_gl_window_pixels_per_unit, "fl_gl_window_pixels_per_unit");
     pragma Inline (fl_gl_window_pixels_per_unit);
+
+    procedure fl_gl_window_resize
+           (G          : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int);
+    pragma Import (C, fl_gl_window_resize, "fl_gl_window_resize");
+    pragma Inline (fl_gl_window_resize);
 
 
 
@@ -210,6 +207,10 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
     procedure Extra_Final
            (This : in out GL_Window) is
     begin
@@ -243,6 +244,14 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
     end Extra_Init;
 
 
+    procedure Initialize
+           (This : in out GL_Window) is
+    begin
+        This.Draw_Ptr   := fl_gl_window_draw'Address;
+        This.Handle_Ptr := fl_gl_window_handle'Address;
+    end Initialize;
+
+
     package body Forge is
 
         function Create
@@ -258,8 +267,6 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
                     Interfaces.C.int (H),
                     Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                gl_window_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                gl_window_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -275,8 +282,6 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
                     Interfaces.C.int (H),
                     Interfaces.C.To_C (Text));
                 Extra_Init (This, This.Get_X, This.Get_Y, W, H, Text);
-                gl_window_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                gl_window_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -345,6 +350,19 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
     begin
         return Float (fl_gl_window_pixels_per_unit (This.Void_Ptr));
     end Pixels_Per_Unit;
+
+
+    procedure Resize
+           (This       : in out GL_Window;
+            X, Y, W, H : in     Integer) is
+    begin
+        fl_gl_window_resize
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H));
+    end Resize;
 
 
 
@@ -493,7 +511,7 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
     procedure Draw
            (This : in out GL_Window) is
     begin
-        fl_gl_window_draw (This.Void_Ptr);
+        Window (This).Draw;
     end Draw;
 
 
@@ -502,10 +520,10 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
             Event : in     Event_Kind)
         return Event_Outcome is
     begin
-        return Event_Outcome'Val
-               (fl_gl_window_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
+        return Window (This).Handle (Event);
     end Handle;
 
 
 end FLTK.Widgets.Groups.Windows.OpenGL;
+
 

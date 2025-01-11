@@ -18,7 +18,7 @@ package FLTK.Widgets.Inputs.Text.Whole_Number is
     package Forge is
 
         function Create
-               (X, Y, W, H : in Standard.Integer;
+               (X, Y, W, H : in Integer;
                 Text       : in String := "")
             return Integer_Input;
 
@@ -45,7 +45,7 @@ private
 
     procedure Extra_Init
            (This       : in out Integer_Input;
-            X, Y, W, H : in     Standard.Integer;
+            X, Y, W, H : in     Integer;
             Text       : in     String)
     with Inline;
 

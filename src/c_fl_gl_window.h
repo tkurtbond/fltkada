@@ -8,26 +8,12 @@
 #define FL_GL_WINDOW_GUARD
 
 
-
-
 typedef void* GLWINDOW;
-
-
-
-
-extern "C" void gl_window_set_draw_hook(GLWINDOW n, void * d);
-extern "C" void fl_gl_window_draw(GLWINDOW n);
-extern "C" void gl_window_set_handle_hook(GLWINDOW n, void * h);
-extern "C" int fl_gl_window_handle(GLWINDOW n, int e);
-
-
 
 
 extern "C" GLWINDOW new_fl_gl_window(int x, int y, int w, int h, char* label);
 extern "C" GLWINDOW new_fl_gl_window2(int w, int h, char* label);
 extern "C" void free_fl_gl_window(GLWINDOW w);
-
-
 
 
 extern "C" void fl_gl_window_show(GLWINDOW w);
@@ -39,6 +25,7 @@ extern "C" void fl_gl_window_flush(GLWINDOW w);
 extern "C" int fl_gl_window_pixel_h(GLWINDOW w);
 extern "C" int fl_gl_window_pixel_w(GLWINDOW w);
 extern "C" float fl_gl_window_pixels_per_unit(GLWINDOW w);
+extern "C" void fl_gl_window_resize(GLWINDOW gw, int x, int y, int w, int h);
 
 
 extern "C" unsigned int fl_gl_window_get_mode(GLWINDOW w);
@@ -63,5 +50,10 @@ extern "C" void fl_gl_window_redraw_overlay(GLWINDOW w);
 extern "C" void fl_gl_window_swap_buffers(GLWINDOW w);
 
 
+extern "C" void fl_gl_window_draw(GLWINDOW n);
+extern "C" int fl_gl_window_handle(GLWINDOW n, int e);
+
+
 #endif
+
 

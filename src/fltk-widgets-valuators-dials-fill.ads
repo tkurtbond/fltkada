@@ -25,21 +25,13 @@ package FLTK.Widgets.Valuators.Dials.Fill is
     end Forge;
 
 
-
-
-    procedure Draw
-           (This : in out Fill_Dial);
-
-    function Handle
-           (This  : in out Fill_Dial;
-            Event : in     Event_Kind)
-        return Event_Outcome;
-
-
 private
 
 
     type Fill_Dial is new Dial with null record;
+
+    overriding procedure Initialize
+           (This : in out Fill_Dial);
 
     overriding procedure Finalize
            (This : in out Fill_Dial);
@@ -55,9 +47,6 @@ private
     with Inline;
 
 
-    pragma Inline (Draw);
-    pragma Inline (Handle);
-
-
 end FLTK.Widgets.Valuators.Dials.Fill;
+
 

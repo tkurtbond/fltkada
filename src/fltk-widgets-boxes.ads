@@ -22,6 +22,12 @@ package FLTK.Widgets.Boxes is
                 Text       : in String := "")
             return Box;
 
+        function Create
+               (Kind       : in Box_Kind;
+                X, Y, W, H : in Integer;
+                Text       : in String := "")
+            return Box;
+
     end Forge;
 
 
@@ -40,6 +46,9 @@ private
 
 
     type Box is new Widget with null record;
+
+    overriding procedure Initialize
+           (This : in out Box);
 
     overriding procedure Finalize
            (This : in out Box);
@@ -60,4 +69,5 @@ private
 
 
 end FLTK.Widgets.Boxes;
+
 

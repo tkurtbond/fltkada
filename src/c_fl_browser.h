@@ -59,6 +59,9 @@ extern "C" void fl_browser_show(BROWSER b);
 extern "C" void fl_browser_hide(BROWSER b);
 
 
+extern "C" void fl_browser_set_size(BROWSER b, int w, int h);
+
+
 extern "C" void fl_browser_set_icon(BROWSER b, int l, void * c);
 extern "C" void fl_browser_remove_icon(BROWSER b, int l);
 

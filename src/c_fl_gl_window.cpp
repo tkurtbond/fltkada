@@ -6,61 +6,43 @@
 
 #include <FL/Fl_Gl_Window.H>
 #include "c_fl_gl_window.h"
-#include "c_fl_type.h"
 
 
 
+
+//  Exports from Ada
+
+extern "C" void widget_draw_hook(void * ud);
+extern "C" int widget_handle_hook(void * ud, int e);
+
+
+
+
+//  Attaching all relevant hooks and friends
 
 class My_Gl_Window : public Fl_Gl_Window {
-    public:
-        using Fl_Gl_Window::Fl_Gl_Window;
-        friend void gl_window_set_draw_hook(GLWINDOW n, void * d);
-        friend void fl_gl_window_draw(GLWINDOW n);
-        friend void gl_window_set_handle_hook(GLWINDOW n, void * h);
-        friend int fl_gl_window_handle(GLWINDOW n, int e);
-    protected:
-        void draw();
-        void real_draw();
-        int handle(int e);
-        int real_handle(int e);
-        d_hook_p draw_hook;
-        h_hook_p handle_hook;
+public:
+    using Fl_Gl_Window::Fl_Gl_Window;
+
+    friend void fl_gl_window_draw(GLWINDOW n);
+    friend int fl_gl_window_handle(GLWINDOW n, int e);
+
+    void draw();
+    int handle(int e);
 };
 
 void My_Gl_Window::draw() {
-    (*draw_hook)(this->user_data());
-}
-
-void My_Gl_Window::real_draw() {
-    Fl_Gl_Window::draw();
+    widget_draw_hook(this->user_data());
 }
 
 int My_Gl_Window::handle(int e) {
-    return (*handle_hook)(this->user_data(), e);
-}
-
-int My_Gl_Window::real_handle(int e) {
-    return Fl_Gl_Window::handle(e);
-}
-
-void gl_window_set_draw_hook(GLWINDOW n, void * d) {
-    reinterpret_cast<My_Gl_Window*>(n)->draw_hook = reinterpret_cast<d_hook_p>(d);
-}
-
-void fl_gl_window_draw(GLWINDOW n) {
-    reinterpret_cast<My_Gl_Window*>(n)->real_draw();
-}
-
-void gl_window_set_handle_hook(GLWINDOW n, void * h) {
-    reinterpret_cast<My_Gl_Window*>(n)->handle_hook = reinterpret_cast<h_hook_p>(h);
-}
-
-int fl_gl_window_handle(GLWINDOW n, int e) {
-    return reinterpret_cast<My_Gl_Window*>(n)->real_handle(e);
+    return widget_handle_hook(this->user_data(), e);
 }
 
 
 
+
+//  Flattened C API
 
 GLWINDOW new_fl_gl_window(int x, int y, int w, int h, char* label) {
     My_Gl_Window *gw = new My_Gl_Window(x, y, w, h, label);
@@ -108,6 +90,10 @@ int fl_gl_window_pixel_w(GLWINDOW w) {
 
 float fl_gl_window_pixels_per_unit(GLWINDOW w) {
     return reinterpret_cast<Fl_Gl_Window*>(w)->pixels_per_unit();
+}
+
+void fl_gl_window_resize(GLWINDOW gw, int x, int y, int w, int h) {
+    reinterpret_cast<Fl_Gl_Window*>(gw)->resize(x, y, w, h);
 }
 
 
@@ -181,6 +167,17 @@ void fl_gl_window_redraw_overlay(GLWINDOW w) {
 
 void fl_gl_window_swap_buffers(GLWINDOW w) {
     reinterpret_cast<Fl_Gl_Window*>(w)->swap_buffers();
+}
+
+
+
+
+void fl_gl_window_draw(GLWINDOW n) {
+    reinterpret_cast<My_Gl_Window*>(n)->Fl_Gl_Window::draw();
+}
+
+int fl_gl_window_handle(GLWINDOW n, int e) {
+    return reinterpret_cast<My_Gl_Window*>(n)->Fl_Gl_Window::handle(e);
 }
 
 

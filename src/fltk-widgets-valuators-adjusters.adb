@@ -16,18 +16,9 @@ use type
 package body FLTK.Widgets.Valuators.Adjusters is
 
 
-    procedure adjuster_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, adjuster_set_draw_hook, "adjuster_set_draw_hook");
-    pragma Inline (adjuster_set_draw_hook);
-
-    procedure adjuster_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, adjuster_set_handle_hook, "adjuster_set_handle_hook");
-    pragma Inline (adjuster_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_adjuster
            (X, Y, W, H : in Interfaces.C.int;
@@ -59,6 +50,11 @@ package body FLTK.Widgets.Valuators.Adjusters is
 
 
 
+    procedure fl_adjuster_value_damage
+           (A : in Storage.Integer_Address);
+    pragma Import (C, fl_adjuster_value_damage, "fl_adjuster_value_damage");
+    pragma Inline (fl_adjuster_value_damage);
+
     procedure fl_adjuster_draw
            (W : in Storage.Integer_Address);
     pragma Import (C, fl_adjuster_draw, "fl_adjuster_draw");
@@ -73,6 +69,10 @@ package body FLTK.Widgets.Valuators.Adjusters is
 
 
 
+
+    -------------------
+    --  Destructors  --
+    -------------------
 
     procedure Extra_Final
            (This : in out Adjuster) is
@@ -94,6 +94,10 @@ package body FLTK.Widgets.Valuators.Adjusters is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Adjuster;
             X, Y, W, H : in     Integer;
@@ -101,6 +105,14 @@ package body FLTK.Widgets.Valuators.Adjusters is
     begin
         Extra_Init (Valuator (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Adjuster) is
+    begin
+        This.Draw_Ptr   := fl_adjuster_draw'Address;
+        This.Handle_Ptr := fl_adjuster_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -118,8 +130,6 @@ package body FLTK.Widgets.Valuators.Adjusters is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                adjuster_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                adjuster_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -127,6 +137,10 @@ package body FLTK.Widgets.Valuators.Adjusters is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     function Is_Soft
            (This : in Adjuster)
@@ -146,10 +160,17 @@ package body FLTK.Widgets.Valuators.Adjusters is
 
 
 
+    procedure Value_Damage
+           (This : in out Adjuster) is
+    begin
+        fl_adjuster_value_damage (This.Void_Ptr);
+    end Value_Damage;
+
+
     procedure Draw
            (This : in out Adjuster) is
     begin
-        fl_adjuster_draw (This.Void_Ptr);
+        Valuator (This).Draw;
     end Draw;
 
 
@@ -158,10 +179,10 @@ package body FLTK.Widgets.Valuators.Adjusters is
             Event : in     Event_Kind)
         return Event_Outcome is
     begin
-        return Event_Outcome'Val
-               (fl_adjuster_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
+        return Valuator (This).Handle (Event);
     end Handle;
 
 
 end FLTK.Widgets.Valuators.Adjusters;
+
 

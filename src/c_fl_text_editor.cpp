@@ -6,61 +6,43 @@
 
 #include <FL/Fl_Text_Editor.H>
 #include "c_fl_text_editor.h"
-#include "c_fl_type.h"
 
 
 
+
+//  Exports from Ada
+
+extern "C" void widget_draw_hook(void * ud);
+extern "C" int widget_handle_hook(void * ud, int e);
+
+
+
+
+//  Attaching all relevant hooks and friends
 
 class My_Text_Editor : public Fl_Text_Editor {
-    public:
-        using Fl_Text_Editor::Fl_Text_Editor;
-        friend void text_editor_set_draw_hook(TEXTEDITOR te, void * d);
-        friend void fl_text_editor_draw(TEXTEDITOR te);
-        friend void text_editor_set_handle_hook(TEXTEDITOR te, void * h);
-        friend int fl_text_editor_handle(TEXTEDITOR te, int e);
-    protected:
-        void draw();
-        void real_draw();
-        int handle(int e);
-        int real_handle(int e);
-        d_hook_p draw_hook;
-        h_hook_p handle_hook;
+public:
+    using Fl_Text_Editor::Fl_Text_Editor;
+
+    friend void fl_text_editor_draw(TEXTEDITOR te);
+    friend int fl_text_editor_handle(TEXTEDITOR te, int e);
+
+    void draw();
+    int handle(int e);
 };
 
 void My_Text_Editor::draw() {
-    (*draw_hook)(this->user_data());
-}
-
-void My_Text_Editor::real_draw() {
-    Fl_Text_Editor::draw();
+    widget_draw_hook(this->user_data());
 }
 
 int My_Text_Editor::handle(int e) {
-    return (*handle_hook)(this->user_data(), e);
-}
-
-int My_Text_Editor::real_handle(int e) {
-    return Fl_Text_Editor::handle(e);
-}
-
-void text_editor_set_draw_hook(TEXTEDITOR te, void * d) {
-    reinterpret_cast<My_Text_Editor*>(te)->draw_hook = reinterpret_cast<d_hook_p>(d);
-}
-
-void fl_text_editor_draw(TEXTEDITOR te) {
-    reinterpret_cast<My_Text_Editor*>(te)->real_draw();
-}
-
-void text_editor_set_handle_hook(TEXTEDITOR te, void * h) {
-    reinterpret_cast<My_Text_Editor*>(te)->handle_hook = reinterpret_cast<h_hook_p>(h);
-}
-
-int fl_text_editor_handle(TEXTEDITOR te, int e) {
-    return reinterpret_cast<My_Text_Editor*>(te)->real_handle(e);
+    return widget_handle_hook(this->user_data(), e);
 }
 
 
 
+
+//  Flattened C API
 
 TEXTEDITOR new_fl_text_editor(int x, int y, int w, int h, char* label) {
     My_Text_Editor *te = new My_Text_Editor(x, y, w, h, label);
@@ -304,4 +286,16 @@ void fl_text_editor_set_insert_mode(TEXTEDITOR te, int i) {
 //void fl_text_editor_set_tab_nav(TEXTEDITOR te, int t) {
 //    reinterpret_cast<Fl_Text_Editor*>(te)->tab_nav(t);
 //}
+
+
+
+
+void fl_text_editor_draw(TEXTEDITOR te) {
+    reinterpret_cast<My_Text_Editor*>(te)->Fl_Text_Editor::draw();
+}
+
+int fl_text_editor_handle(TEXTEDITOR te, int e) {
+    return reinterpret_cast<My_Text_Editor*>(te)->Fl_Text_Editor::handle(e);
+}
+
 

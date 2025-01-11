@@ -46,7 +46,7 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -60,13 +60,12 @@ function Create
 </pre></td>
   </tr>
 
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
-procedure Draw
-       (This : in out Tiled_Group);
-</pre></td>
-  </tr>
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
@@ -96,7 +95,11 @@ procedure Position
 <td><pre>
 void resize(int X, int Y, int W, int H);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Resize
+       (This       : in out Tiled_Group;
+        X, Y, W, H : in     Integer);
+</pre></td>
   </tr>
 
 </table>

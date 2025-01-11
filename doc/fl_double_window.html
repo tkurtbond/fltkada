@@ -39,14 +39,28 @@
   <tr>
     <td>&nbsp;</td>
     <td>Double_Window_Reference</td>
-  <tr>
+  </tr>
 
 </table>
 
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Protected Attributes</th></tr>
+
+  <tr>
+<td><pre>
+char force_doublebuffering_;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -55,7 +69,7 @@ Fl_Double_Window(int W, int H, const char *L=0);
 <td><pre>
 function Create
        (W, H : in Integer;
-        Text : in String)
+        Text : in String := "")
     return Double_Window;
 </pre></td>
   </tr>
@@ -67,18 +81,17 @@ Fl_Double_Window(int X, int Y, int W, int H, const char *L=0);
 <td><pre>
 function Create
        (X, Y, W, H : in Integer;
-        Text       : in String)
+        Text       : in String := "")
     return Double_Window;
 </pre></td>
   </tr>
 
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
-procedure Draw
-       (This : in out Double_Window);
-</pre></td>
-  </tr>
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
@@ -87,16 +100,6 @@ void flush();
 <td><pre>
 procedure Flush
        (This : in out Double_Window);
-</pre></td>
-  </tr>
-
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
-function Handle
-       (This  : in out Double_Window;
-        Event : in     Event_Kind)
-    return Event_Outcome;
 </pre></td>
   </tr>
 
@@ -114,7 +117,11 @@ procedure Hide
 <td><pre>
 void resize(int,int,int,int);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Resize
+       (This       : in out Double_Window;
+        X, Y, W, H : in     Integer);
+</pre></td>
   </tr>
 
   <tr>
@@ -130,6 +137,20 @@ procedure Show
   <tr>
 <td><pre>
 void show(int a, char **b);
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void flush(int eraseoverlay);
 </pre></td>
 <td>&nbsp;</td>
   </tr>

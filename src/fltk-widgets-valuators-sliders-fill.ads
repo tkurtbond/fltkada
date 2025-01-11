@@ -25,21 +25,13 @@ package FLTK.Widgets.Valuators.Sliders.Fill is
     end Forge;
 
 
-
-
-    procedure Draw
-           (This : in out Fill_Slider);
-
-    function Handle
-           (This  : in out Fill_Slider;
-            Event : in     Event_Kind)
-        return Event_Outcome;
-
-
 private
 
 
     type Fill_Slider is new Slider with null record;
+
+    overriding procedure Initialize
+           (This : in out Fill_Slider);
 
     overriding procedure Finalize
            (This : in out Fill_Slider);
@@ -55,9 +47,6 @@ private
     with Inline;
 
 
-    pragma Inline (Draw);
-    pragma Inline (Handle);
-
-
 end FLTK.Widgets.Valuators.Sliders.Fill;
+
 

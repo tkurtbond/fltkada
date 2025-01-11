@@ -42,12 +42,12 @@
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>int</td>
     <td>Index</td>
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>int</td>
     <td>Extended_Index</td>
   </tr>
 
@@ -61,7 +61,49 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Protected Attributes</th></tr>
+
+  <tr>
+<td><pre>
+uchar alloc;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+uchar down_box_;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Color textcolor_;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Font textfont_;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Fontsize textsize_;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -70,14 +112,22 @@ Fl_Menu_(int, int, int, int, const char *=0);
 <td><pre>
 function Create
        (X, Y, W, H : in Integer;
-        Text       : in String)
+        Text       : in String := "")
     return Menu;
 </pre></td>
   </tr>
 
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
   <tr>
 <td><pre>
-int add(const char *, int shortcut, Fl_Callback *, void *=0, int=0);
+int add(const char *, int shortcut, Fl_Callback *,
+    void *=0, int=0);
 </pre></td>
 <td><pre>
 procedure Add
@@ -91,7 +141,8 @@ procedure Add
 
   <tr>
 <td><pre>
-int add(const char *a, const char *b, Fl_Callback *c, void *d=0, int e=0);
+int add(const char *a, const char *b, Fl_Callback *c,
+    void *d=0, int e=0);
 </pre></td>
 <td>&nbsp;</td>
   </tr>
@@ -153,22 +204,14 @@ procedure Set_Down_Box
 <td><pre>
 Fl_Color down_color() const;
 </pre></td>
-<td>&nbsp;</td>
+<td>See selection_color / Get_Selection_Color from Fl_Widget.</td>
   </tr>
 
   <tr>
 <td><pre>
 void down_color(unsigned c);
 </pre></td>
-<td>&nbsp;</td>
-  </tr>
-
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
-procedure Draw
-       (This : in out Menu) is null;
-</pre></td>
+<td>See selection_color / Set_Selection_Color from Fl_Widget.</td>
   </tr>
 
   <tr>
@@ -255,16 +298,6 @@ procedure Make_Global
   <tr>
 <td>&nbsp;</td>
 <td><pre>
-function Handle
-       (This  : in out Menu;
-        Event : in     Event_Kind)
-    return Event_Outcome;
-</pre></td>
-  </tr>
-
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
 function Has_Item
        (This  : in Menu;
         Place : in Index)
@@ -283,7 +316,8 @@ function Has_Item
 
   <tr>
 <td><pre>
-int insert(int index, const char *, int shortcut, Fl_Callback *, void *=0, int=0);
+int insert(int index, const char *, int shortcut,
+    Fl_Callback *, void *=0, int=0);
 </pre></td>
 <td><pre>
 procedure Insert
@@ -298,7 +332,8 @@ procedure Insert
 
   <tr>
 <td><pre>
-int insert(int index, const char *a, const char *b, Fl_Callback *c, void *d=0, int e=0);
+int insert(int index, const char *a, const char *b,
+    Fl_Callback *c, void *d=0, int e=0);
 </pre></td>
 <td>&nbsp;</td>
   </tr>
@@ -325,7 +360,8 @@ function Item
 
   <tr>
 <td><pre>
-int item_pathname(char *name, int namelen, const Fl_Menu_Item *finditem=0) const;
+int item_pathname(char *name, int namelen,
+    const Fl_Menu_Item *finditem=0) const;
 </pre></td>
 <td>&nbsp;</td>
   </tr>
@@ -590,6 +626,21 @@ procedure Set_Chosen
        (This  : in out Menu;
         Place : in     Index);
 </pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protection Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+int item_pathname_(char *name, int namelen,
+    const Fl_Menu_Item *finditem, const Fl_Menu_Item *menu=0) const;
+</pre></td>
+<td>Intentionally left unbound.</td>
   </tr>
 
 </table>

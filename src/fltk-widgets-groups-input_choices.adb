@@ -21,19 +21,6 @@ package body FLTK.Widgets.Groups.Input_Choices is
     --  Functions From C  --
     ------------------------
 
-    procedure input_choice_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, input_choice_set_draw_hook, "input_choice_set_draw_hook");
-    pragma Inline (input_choice_set_draw_hook);
-
-    procedure input_choice_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, input_choice_set_handle_hook, "input_choice_set_handle_hook");
-    pragma Inline (input_choice_set_handle_hook);
-
-
-
-
     function new_fl_input_choice
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -157,6 +144,15 @@ package body FLTK.Widgets.Groups.Input_Choices is
 
 
 
+    procedure fl_input_choice_resize
+           (N          : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int);
+    pragma Import (C, fl_input_choice_resize, "fl_input_choice_resize");
+    pragma Inline (fl_input_choice_resize);
+
+
+
+
     procedure fl_input_choice_draw
            (W : in Storage.Integer_Address);
     pragma Import (C, fl_input_choice_draw, "fl_input_choice_draw");
@@ -261,6 +257,14 @@ package body FLTK.Widgets.Groups.Input_Choices is
     end Extra_Init;
 
 
+    procedure Initialize
+           (This : in out Input_Choice) is
+    begin
+        This.Draw_Ptr   := fl_input_choice_draw'Address;
+        This.Handle_Ptr := fl_input_choice_handle'Address;
+    end Initialize;
+
+
     package body Forge is
 
         function Create
@@ -276,10 +280,6 @@ package body FLTK.Widgets.Groups.Input_Choices is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                input_choice_set_draw_hook
-                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                input_choice_set_handle_hook
-                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -287,6 +287,10 @@ package body FLTK.Widgets.Groups.Input_Choices is
 
 
 
+
+    ------------------
+    --  Attributes  --
+    ------------------
 
     function Text_Field
            (This : in out Input_Choice)
@@ -305,6 +309,10 @@ package body FLTK.Widgets.Groups.Input_Choices is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     procedure Clear
            (This : in out Input_Choice) is
@@ -437,22 +445,19 @@ package body FLTK.Widgets.Groups.Input_Choices is
 
 
 
-    procedure Draw
-           (This : in out Input_Choice) is
+    procedure Resize
+           (This       : in out Input_Choice;
+            X, Y, W, H : in     Integer) is
     begin
-        fl_input_choice_draw (This.Void_Ptr);
-    end Draw;
-
-
-    function Handle
-           (This  : in out Input_Choice;
-            Event : in     Event_Kind)
-        return Event_Outcome is
-    begin
-        return Event_Outcome'Val
-               (fl_input_choice_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
-    end Handle;
+        fl_input_choice_resize
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H));
+    end Resize;
 
 
 end FLTK.Widgets.Groups.Input_Choices;
+
 

@@ -78,6 +78,26 @@ function Create
 
 
 <table class="function">
+  <tr><th colspan="2">Static Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+static Fl_Surface_Device * surface();
+</pre></td>
+<td><pre>
+function Get_Current
+    return Surface_Device_Reference;
+
+function Get_Original
+    return Surface_Device_Reference;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
   <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
@@ -120,26 +140,6 @@ virtual void set_current(void);
 <td><pre>
 procedure Set_Current
        (This : in out Surface_Device);
-</pre></td>
-  </tr>
-
-</table>
-
-
-
-<table class="function">
-  <tr><th colspan="2">Static Functions and Procedures</th></tr>
-
-  <tr>
-<td><pre>
-static Fl_Surface_Device * surface();
-</pre></td>
-<td><pre>
-function Get_Current
-    return Surface_Device_Reference;
-
-function Get_Original
-    return Surface_Device_Reference;
 </pre></td>
   </tr>
 

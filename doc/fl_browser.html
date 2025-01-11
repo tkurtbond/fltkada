@@ -428,7 +428,11 @@ function Number_Of_Lines
 <td><pre>
 void size(int W, int H);
 </pre></td>
-<td>Falls through to Fl_Widget::size(int, int) anyway so binding unnecessary.</td>
+<td><pre>
+procedure Resize
+       (This : in out Textline_Browser;
+        W, H : in     Integer);
+</pre></td>
   </tr>
 
   <tr>

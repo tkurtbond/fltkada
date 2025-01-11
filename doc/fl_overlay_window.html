@@ -46,7 +46,7 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -72,6 +72,13 @@ function Create
 </pre></td>
   </tr>
 
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
   <tr>
 <td><pre>
 int can_do_overlay();
@@ -80,16 +87,6 @@ int can_do_overlay();
 function Can_Do_Overlay
        (This : in Overlay_Window)
     return Boolean;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-virtual void draw_overlay()=0;
-</pre></td>
-<td><pre>
-procedure Draw_Overlay
-       (This : in out Overlay_Window) is null;
 </pre></td>
   </tr>
 
@@ -127,21 +124,45 @@ procedure Redraw_Overlay
 <td><pre>
 void resize(int, int, int, int);
 </pre></td>
-<td>
-Use Resize/Reposition from FLTK.Widgets instead
-</td>
+<td><pre>
+procedure Resize
+       (This       : in out Overlay_Window;
+        X, Y, W, H : in     Integer);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 void show();
-
-void show(int a, char **b);
 </pre></td>
 <td><pre>
 procedure Show
        (This : in out Overlay_Window);
 </pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void show(int a, char **b);
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+virtual void draw_overlay()=0;
+</pre></td>
+<td><pre>
+procedure Draw_Overlay
+       (This : in out Overlay_Window);
+</pre>(Will raise Program_Error if not overridden.)</td>
   </tr>
 
 </table>

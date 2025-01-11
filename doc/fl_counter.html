@@ -46,7 +46,7 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -55,20 +55,17 @@ Fl_Counter(int X, int Y, int W, int H, const char *L=0);
 <td><pre>
 function Create
        (X, Y, W, H : in Integer;
-        Text       : in String)
+        Text       : in String := "")
     return Counter;
 </pre></td>
   </tr>
 
-  <tr>
-<td><pre>
-void draw();
-</pre></td>
-<td><pre>
-procedure Draw
-       (This : in out Counter);
-</pre></td>
-  </tr>
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
@@ -79,6 +76,15 @@ function Handle
        (This  : in out Counter;
         Event : in     Event_Kind)
     return Event_Outcome;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Keep manual track of whatever you set lstep to.</td>
+<td><pre>
+function Get_Long_Step
+       (This : in Counter)
+    return Long_Float;
 </pre></td>
   </tr>
 
@@ -94,33 +100,6 @@ procedure Set_Long_Step
   </tr>
 
   <tr>
-<td>&nbsp;</td>
-<td><pre>
-function Get_Long_Step
-       (This : in Counter)
-    return Long_Float;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-void step(double a, double b);
-</pre></td>
-<td>&nbsp;</td>
-  </tr>
-
-  <tr>
-<td><pre>
-void step(double a);
-</pre></td>
-<td><pre>
-procedure Set_Step
-       (This : in out Counter;
-        To   : in     Long_Float);
-</pre></td>
-  </tr>
-
-  <tr>
 <td><pre>
 double step() const;
 </pre></td>
@@ -128,6 +107,28 @@ double step() const;
 function Get_Step
        (This : in Counter)
     return Long_Float;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void step(double a);
+</pre></td>
+<td><pre>
+procedure Set_Step_Top
+       (This : in out Counter;
+        To   : in     Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void step(double a, double b);
+</pre></td>
+<td><pre>
+procedure Set_Step_Both
+       (This        : in out Counter;
+        Short, Long : in     Long_Float);
 </pre></td>
   </tr>
 
@@ -194,6 +195,23 @@ void textsize(Fl_Fontsize s);
 procedure Set_Text_Size
        (This : in out Counter;
         To   : in     Font_Size);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Counter);
 </pre></td>
   </tr>
 

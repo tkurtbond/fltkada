@@ -12,18 +12,9 @@ with
 package body FLTK.Widgets.Groups.Wizards is
 
 
-    procedure wizard_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, wizard_set_draw_hook, "wizard_set_draw_hook");
-    pragma Inline (wizard_set_draw_hook);
-
-    procedure wizard_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, wizard_set_handle_hook, "wizard_set_handle_hook");
-    pragma Inline (wizard_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_wizard
            (X, Y, W, H : in Interfaces.C.int;
@@ -82,6 +73,10 @@ package body FLTK.Widgets.Groups.Wizards is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
     procedure Extra_Final
            (This : in out Wizard) is
     begin
@@ -102,6 +97,10 @@ package body FLTK.Widgets.Groups.Wizards is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Wizard;
             X, Y, W, H : in     Integer;
@@ -109,6 +108,14 @@ package body FLTK.Widgets.Groups.Wizards is
     begin
         Extra_Init (Group (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Wizard) is
+    begin
+        This.Draw_Ptr   := fl_wizard_draw'Address;
+        This.Handle_Ptr := fl_wizard_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -126,8 +133,6 @@ package body FLTK.Widgets.Groups.Wizards is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                wizard_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                wizard_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -135,6 +140,10 @@ package body FLTK.Widgets.Groups.Wizards is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     procedure Next
            (This : in out Wizard) is
@@ -178,19 +187,10 @@ package body FLTK.Widgets.Groups.Wizards is
     procedure Draw
            (This : in out Wizard) is
     begin
-        fl_wizard_draw (This.Void_Ptr);
+        Group (This).Draw;
     end Draw;
 
 
-    function Handle
-           (This  : in out Wizard;
-            Event : in     Event_Kind)
-        return Event_Outcome is
-    begin
-        return Event_Outcome'Val
-               (fl_wizard_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
-    end Handle;
-
-
 end FLTK.Widgets.Groups.Wizards;
+
 

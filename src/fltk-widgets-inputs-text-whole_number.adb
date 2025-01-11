@@ -80,7 +80,7 @@ package body FLTK.Widgets.Inputs.Text.Whole_Number is
 
     procedure Extra_Init
            (This       : in out Integer_Input;
-            X, Y, W, H : in     Standard.Integer;
+            X, Y, W, H : in     Integer;
             Text       : in     String) is
     begin
         Extra_Init (Input (This), X, Y, W, H, Text);
@@ -98,7 +98,7 @@ package body FLTK.Widgets.Inputs.Text.Whole_Number is
     package body Forge is
 
         function Create
-               (X, Y, W, H : in Standard.Integer;
+               (X, Y, W, H : in Integer;
                 Text       : in String := "")
             return Integer_Input is
         begin

@@ -336,6 +336,13 @@ void fl_browser_hide(BROWSER b) {
 
 
 
+void fl_browser_set_size(BROWSER b, int w, int h) {
+    reinterpret_cast<Fl_Browser*>(b)->size(w, h);
+}
+
+
+
+
 void fl_browser_set_icon(BROWSER b, int l, void * c) {
     reinterpret_cast<Fl_Browser*>(b)->icon(l, reinterpret_cast<Fl_Image*>(c));
 }

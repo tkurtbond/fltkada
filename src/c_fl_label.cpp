@@ -7,7 +7,6 @@
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Image.H>
 #include "c_fl_label.h"
-#include "c_fl_type.h"
 
 
 

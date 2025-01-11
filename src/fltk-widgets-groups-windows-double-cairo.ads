@@ -65,11 +65,6 @@ package FLTK.Widgets.Groups.Windows.Double.Cairo is
     procedure Draw
            (This : in out Cairo_Window);
 
-    function Handle
-           (This  : in out Cairo_Window;
-            Event : in     Event_Kind)
-        return Event_Outcome;
-
 
 private
 
@@ -77,6 +72,9 @@ private
     type Cairo_Window is new Double_Window with record
         My_Func : Cairo_Callback;
     end record;
+
+    overriding procedure Initialize
+           (This : in out Cairo_Window);
 
     overriding procedure Finalize
            (This : in out Cairo_Window);
@@ -93,7 +91,6 @@ private
     pragma Inline (Set_Cairo_Draw);
 
     pragma Inline (Draw);
-    pragma Inline (Handle);
 
 
 end FLTK.Widgets.Groups.Windows.Double.Cairo;

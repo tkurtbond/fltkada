@@ -45,6 +45,11 @@ package FLTK.Widgets.Groups.Color_Choosers is
            (This    : in out Color_Chooser;
             R, G, B : in     Long_Float);
 
+    function Set_RGB
+           (This    : in out Color_Chooser;
+            R, G, B : in     Long_Float)
+        return Boolean;
+
 
 
 
@@ -64,6 +69,11 @@ package FLTK.Widgets.Groups.Color_Choosers is
            (This    : in out Color_Chooser;
             H, S, V : in     Long_Float);
 
+    function Set_HSV
+           (This    : in out Color_Chooser;
+            H, S, V : in     Long_Float)
+        return Boolean;
+
 
 
 
@@ -78,16 +88,6 @@ package FLTK.Widgets.Groups.Color_Choosers is
 
 
 
-    function Color_Was_Changed
-           (This : in Color_Chooser)
-        return Boolean;
-
-    procedure Clear_Changed
-           (This : in out Color_Chooser);
-
-
-
-
     function Get_Mode
            (This : in Color_Chooser)
         return Color_Mode;
@@ -97,23 +97,13 @@ package FLTK.Widgets.Groups.Color_Choosers is
             To   : in     Color_Mode);
 
 
-
-
-    procedure Draw
-           (This : in out Color_Chooser);
-
-    function Handle
-           (This  : in out Color_Chooser;
-            Event : in     Event_Kind)
-        return Event_Outcome;
-
-
 private
 
 
-    type Color_Chooser is new Group with record
-        Was_Changed : Boolean := False;
-    end record;
+    type Color_Chooser is new Group with null record;
+
+    overriding procedure Initialize
+           (This : in out Color_Chooser);
 
     overriding procedure Finalize
            (This : in out Color_Chooser);
@@ -142,15 +132,10 @@ private
     pragma Inline (HSV_To_RGB);
     pragma Inline (RGB_To_HSV);
 
-    pragma Inline (Color_Was_Changed);
-    pragma Inline (Clear_Changed);
-
     pragma Inline (Get_Mode);
     pragma Inline (Set_Mode);
 
-    pragma Inline (Draw);
-    pragma Inline (Handle);
-
 
 end FLTK.Widgets.Groups.Color_Choosers;
+
 

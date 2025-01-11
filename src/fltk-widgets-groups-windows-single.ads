@@ -41,19 +41,17 @@ package FLTK.Widgets.Groups.Windows.Single is
 
 
 
-    procedure Draw
+    procedure Make_Current
            (This : in out Single_Window);
-
-    function Handle
-           (This  : in out Single_Window;
-            Event : in     Event_Kind)
-        return Event_Outcome;
 
 
 private
 
 
     type Single_Window is new Window with null record;
+
+    overriding procedure Initialize
+           (This : in out Single_Window);
 
     overriding procedure Finalize
            (This : in out Single_Window);
@@ -72,9 +70,9 @@ private
     pragma Inline (Show);
     pragma Inline (Flush);
 
-    pragma Inline (Draw);
-    pragma Inline (Handle);
+    pragma Inline (Make_Current);
 
 
 end FLTK.Widgets.Groups.Windows.Single;
+
 

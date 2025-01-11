@@ -10,25 +10,11 @@
 #include "c_fl_text_buffer.h"
 
 
-
-
 typedef void* TEXTDISPLAY;
-
-
-
-
-extern "C" void text_display_set_draw_hook(TEXTDISPLAY td, void * d);
-extern "C" void fl_text_display_draw(TEXTDISPLAY td);
-extern "C" void text_display_set_handle_hook(TEXTDISPLAY td, void * h);
-extern "C" int fl_text_display_handle(TEXTDISPLAY td, int e);
-
-
 
 
 extern "C" TEXTDISPLAY new_fl_text_display(int x, int y, int w, int h, char* label);
 extern "C" void free_fl_text_display(TEXTDISPLAY td);
-
-
 
 
 extern "C" TEXTBUFFER fl_text_display_get_buffer(TEXTDISPLAY td);
@@ -36,7 +22,8 @@ extern "C" void fl_text_display_set_buffer(TEXTDISPLAY td, TEXTBUFFER tb);
 
 
 extern "C" void fl_text_display_highlight_data(TEXTDISPLAY td, TEXTBUFFER tb, void * st, int len);
-extern "C" void fl_text_display_highlight_data2(TEXTDISPLAY td, TEXTBUFFER tb, void * st, int len, char us, void * cb, void * a);
+extern "C" void fl_text_display_highlight_data2(TEXTDISPLAY td, TEXTBUFFER tb, void * st, int len,
+    char us, void * cb, void * a);
 
 
 extern "C" double fl_text_display_col_to_x(TEXTDISPLAY td, double c);
@@ -111,5 +98,10 @@ extern "C" void fl_text_display_set_scrollbar_width(TEXTDISPLAY td, int w);
 extern "C" void fl_text_display_redisplay_range(TEXTDISPLAY td, int s, int f);
 
 
+extern "C" void fl_text_display_draw(TEXTDISPLAY td);
+extern "C" int fl_text_display_handle(TEXTDISPLAY td, int e);
+
+
 #endif
+
 

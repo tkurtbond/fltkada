@@ -8,17 +8,11 @@
 #define FL_LABEL_GUARD
 
 
-
-
 typedef void* LABEL;
-
-
 
 
 extern "C" LABEL new_fl_label(const char * v, int f, int s, unsigned int h, int k, unsigned int p);
 extern "C" void free_fl_label(LABEL l);
-
-
 
 
 extern "C" void fl_label_set_value(LABEL l, const char * v);

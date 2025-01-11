@@ -8,49 +8,43 @@
 #define FL_VALUE_INPUT_GUARD
 
 
+typedef void* VALUEINPUT;
 
 
-typedef void* VALUE_INPUT;
+extern "C" VALUEINPUT new_fl_value_input(int x, int y, int w, int h, char* label);
+extern "C" void free_fl_value_input(VALUEINPUT a);
 
 
+extern "C" void * fl_value_input_get_input(VALUEINPUT v);
 
 
-extern "C" void value_input_set_draw_hook(VALUE_INPUT a, void * d);
-extern "C" void fl_value_input_draw(VALUE_INPUT a);
-extern "C" void value_input_set_handle_hook(VALUE_INPUT a, void * h);
-extern "C" int fl_value_input_handle(VALUE_INPUT a, int e);
+extern "C" unsigned int fl_value_input_get_cursor_color(VALUEINPUT v);
+extern "C" void fl_value_input_set_cursor_color(VALUEINPUT v, unsigned int c);
 
 
+extern "C" int fl_value_input_get_shortcut(VALUEINPUT v);
+extern "C" void fl_value_input_set_shortcut(VALUEINPUT v, int k);
 
 
-extern "C" VALUE_INPUT new_fl_value_input(int x, int y, int w, int h, char* label);
-extern "C" void free_fl_value_input(VALUE_INPUT a);
+extern "C" int fl_value_input_is_soft(VALUEINPUT a);
+extern "C" void fl_value_input_set_soft(VALUEINPUT a, int t);
 
 
+extern "C" unsigned int fl_value_input_get_text_color(VALUEINPUT v);
+extern "C" void fl_value_input_set_text_color(VALUEINPUT v, unsigned int c);
+extern "C" int fl_value_input_get_text_font(VALUEINPUT v);
+extern "C" void fl_value_input_set_text_font(VALUEINPUT v, int f);
+extern "C" int fl_value_input_get_text_size(VALUEINPUT v);
+extern "C" void fl_value_input_set_text_size(VALUEINPUT v, int s);
 
 
-extern "C" void * fl_value_input_get_input(VALUE_INPUT v);
+extern "C" void fl_value_input_resize(VALUEINPUT v, int x, int y, int w, int h);
 
 
-extern "C" unsigned int fl_value_input_get_cursor_color(VALUE_INPUT v);
-extern "C" void fl_value_input_set_cursor_color(VALUE_INPUT v, unsigned int c);
-
-
-extern "C" int fl_value_input_get_shortcut(VALUE_INPUT v);
-extern "C" void fl_value_input_set_shortcut(VALUE_INPUT v, int k);
-
-
-extern "C" int fl_value_input_is_soft(VALUE_INPUT a);
-extern "C" void fl_value_input_set_soft(VALUE_INPUT a, int t);
-
-
-extern "C" unsigned int fl_value_input_get_text_color(VALUE_INPUT v);
-extern "C" void fl_value_input_set_text_color(VALUE_INPUT v, unsigned int c);
-extern "C" int fl_value_input_get_text_font(VALUE_INPUT v);
-extern "C" void fl_value_input_set_text_font(VALUE_INPUT v, int f);
-extern "C" int fl_value_input_get_text_size(VALUE_INPUT v);
-extern "C" void fl_value_input_set_text_size(VALUE_INPUT v, int s);
+extern "C" void fl_value_input_draw(VALUEINPUT a);
+extern "C" int fl_value_input_handle(VALUEINPUT a, int e);
 
 
 #endif
+
 

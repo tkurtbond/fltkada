@@ -41,8 +41,41 @@
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>int</td>
     <td>State</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Protected Attributes</th></tr>
+
+  <tr>
+<td><pre>
+static Fl_Widget_Tracker * key_release_tracker = 0;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Button(int X, int Y, int W, int H, const char *L=0);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return Button;
+</pre></td>
   </tr>
 
 </table>
@@ -54,21 +87,9 @@
 
   <tr>
 <td><pre>
-Fl_Button(int X, int Y, int W, int H, const char *L=0);
-</pre></td>
-<td><pre>
-function Create
-       (X, Y, W, H : in Integer;
-        Text       : in String)
-    return Button;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
 int clear();
 </pre></td>
-<td>See int value();</td>
+<td>See value / Set_State.</td>
   </tr>
 
   <tr>
@@ -97,24 +118,14 @@ procedure Set_Down_Box
 <td><pre>
 Fl_Color down_color() const;
 </pre></td>
-<td>&nbsp;</td>
+<td>See selection_color / Get_Selection_Color from Fl_Widget.</td>
   </tr>
 
   <tr>
 <td><pre>
 void down_color(unsigned c);
 </pre></td>
-<td>&nbsp;</td>
-  </tr>
-
-  <tr>
-<td><pre>
-virtual void draw();
-</pre></td>
-<td><pre>
-procedure Draw
-       (This : in out Button);
-</pre></td>
+<td>See selection_color / Set_Selection_Color from Fl_Widget.</td>
   </tr>
 
   <tr>
@@ -133,7 +144,7 @@ function Handle
 <td><pre>
 int set();
 </pre></td>
-<td>See int value();</td>
+<td>See value / Set_State.</td>
   </tr>
 
   <tr>
@@ -172,7 +183,7 @@ procedure Set_Shortcut
 <td><pre>
 void shortcut(const char *s);
 </pre></td>
-<td>See void shortcut(int s);</td>
+<td>See shortcut / Set_Shortcut.</td>
   </tr>
 
   <tr>
@@ -194,6 +205,47 @@ char value() const;
 function Get_State
        (This : in Button)
     return State;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+static void key_release_timeout(void *);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+virtual void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Button);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void simulate_key_action();
+</pre></td>
+<td><pre>
+procedure Simulate_Key_Action
+       (This : in out Button);
 </pre></td>
   </tr>
 

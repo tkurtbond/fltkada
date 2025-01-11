@@ -12,18 +12,9 @@ with
 package body FLTK.Widgets.Groups.Windows.Double is
 
 
-    procedure double_window_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, double_window_set_draw_hook, "double_window_set_draw_hook");
-    pragma Inline (double_window_set_draw_hook);
-
-    procedure double_window_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, double_window_set_handle_hook, "double_window_set_handle_hook");
-    pragma Inline (double_window_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_double_window
            (X, Y, W, H : in Interfaces.C.int;
@@ -65,6 +56,15 @@ package body FLTK.Widgets.Groups.Windows.Double is
 
 
 
+    procedure fl_double_window_resize
+           (DW         : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int);
+    pragma Import (C, fl_double_window_resize, "fl_double_window_resize");
+    pragma Inline (fl_double_window_resize);
+
+
+
+
     procedure fl_double_window_draw
            (W : in Storage.Integer_Address);
     pragma Import (C, fl_double_window_draw, "fl_double_window_draw");
@@ -79,6 +79,10 @@ package body FLTK.Widgets.Groups.Windows.Double is
 
 
 
+
+    -------------------
+    --  Destructors  --
+    -------------------
 
     procedure Extra_Final
            (This : in out Double_Window) is
@@ -100,6 +104,10 @@ package body FLTK.Widgets.Groups.Windows.Double is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Double_Window;
             X, Y, W, H : in     Integer;
@@ -107,6 +115,14 @@ package body FLTK.Widgets.Groups.Windows.Double is
     begin
         Extra_Init (Window (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Double_Window) is
+    begin
+        This.Draw_Ptr   := fl_double_window_draw'Address;
+        This.Handle_Ptr := fl_double_window_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -124,10 +140,6 @@ package body FLTK.Widgets.Groups.Windows.Double is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                double_window_set_draw_hook
-                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                double_window_set_handle_hook
-                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -143,10 +155,6 @@ package body FLTK.Widgets.Groups.Windows.Double is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, This.Get_X, This.Get_Y, W, H, Text);
-                double_window_set_draw_hook
-                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                double_window_set_handle_hook
-                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -154,6 +162,10 @@ package body FLTK.Widgets.Groups.Windows.Double is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     procedure Show
            (This : in out Double_Window) is
@@ -178,22 +190,19 @@ package body FLTK.Widgets.Groups.Windows.Double is
 
 
 
-    procedure Draw
-           (This : in out Double_Window) is
+    procedure Resize
+           (This       : in out Double_Window;
+            X, Y, W, H : in     Integer) is
     begin
-        fl_double_window_draw (This.Void_Ptr);
-    end Draw;
-
-
-    function Handle
-           (This  : in out Double_Window;
-            Event : in     Event_Kind)
-        return Event_Outcome is
-    begin
-        return Event_Outcome'Val
-               (fl_double_window_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
-    end Handle;
+        fl_double_window_resize
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H));
+    end Resize;
 
 
 end FLTK.Widgets.Groups.Windows.Double;
+
 

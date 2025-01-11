@@ -17,7 +17,7 @@ package FLTK.Widgets.Menus.Menu_Buttons is
     type Menu_Button_Reference (Data : access Menu_Button'Class) is limited null record
         with Implicit_Dereference => Data;
 
-    --  signifies which mouse buttons cause the menu to appear
+    --  Signifies which mouse buttons cause the menu to appear
     type Popup_Buttons is (No_Popup, Popup1, Popup2, Popup12, Popup3, Popup13, Popup23, Popup123);
 
 
@@ -60,6 +60,9 @@ private
 
     type Menu_Button is new Menu with null record;
 
+    overriding procedure Initialize
+           (This : in out Menu_Button);
+
     overriding procedure Finalize
            (This : in out Menu_Button);
 
@@ -82,4 +85,5 @@ private
 
 
 end FLTK.Widgets.Menus.Menu_Buttons;
+
 

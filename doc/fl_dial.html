@@ -42,7 +42,7 @@
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>uchar</td>
     <td>Dial_Kind</td>
   </tr>
 
@@ -51,7 +51,7 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -60,10 +60,17 @@ Fl_Dial(int x, int y, int w, int h, const char *l=0);
 <td><pre>
 function Create
        (X, Y, W, H : in Integer;
-        Text       : in String)
+        Text       : in String := "")
     return Dial;
 </pre></td>
   </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
@@ -122,16 +129,6 @@ procedure Set_Angles
 
   <tr>
 <td><pre>
-void draw();
-</pre></td>
-<td><pre>
-procedure Draw
-       (This : in out Dial);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
 int handle(int);
 </pre></td>
 <td><pre>
@@ -143,7 +140,7 @@ function Handle
   </tr>
 
   <tr>
-<td>See type() methods for Fl_Widget</td>
+<td>See type method for Fl_Widget.</td>
 <td><pre>
 function Get_Dial_Type
        (This : in Dial)
@@ -152,11 +149,52 @@ function Get_Dial_Type
   </tr>
 
   <tr>
-<td>See type() methods for Fl_Widget</td>
+<td>See type method for Fl_Widget.</td>
 <td><pre>
 procedure Set_Dial_Type
        (This : in out Dial;
         To   : in     Dial_Kind);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Dial);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw(int X, int Y, int W, int H);
+</pre></td>
+<td><pre>
+procedure Draw
+       (This       : in out Dial;
+        X, Y, W, H : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int handle(int event, int X, int Y, int W, int H);
+</pre></td>
+<td><pre>
+function Handle
+       (This       : in out Dial;
+        Event      : in     Event_Kind;
+        X, Y, W, H : in     Integer)
+    return Event_Outcome;
 </pre></td>
   </tr>
 

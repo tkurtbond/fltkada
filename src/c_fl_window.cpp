@@ -7,61 +7,43 @@
 #include <FL/Fl_Window.H>
 #include <FL/Fl_RGB_Image.H>
 #include "c_fl_window.h"
-#include "c_fl_type.h"
 
 
 
+
+//  Exports from Ada
+
+extern "C" void widget_draw_hook(void * ud);
+extern "C" int widget_handle_hook(void * ud, int e);
+
+
+
+
+//  Attaching all relevant hooks and friends
 
 class My_Window : public Fl_Window {
-    public:
-        using Fl_Window::Fl_Window;
-        friend void window_set_draw_hook(WINDOW n, void * d);
-        friend void fl_window_draw(WINDOW n);
-        friend void window_set_handle_hook(WINDOW n, void * h);
-        friend int fl_window_handle(WINDOW n, int e);
-    protected:
-        void draw();
-        void real_draw();
-        int handle(int e);
-        int real_handle(int e);
-        d_hook_p draw_hook;
-        h_hook_p handle_hook;
+public:
+    using Fl_Window::Fl_Window;
+
+    friend void fl_window_draw(WINDOW n);
+    friend int fl_window_handle(WINDOW n, int e);
+
+    void draw();
+    int handle(int e);
 };
 
 void My_Window::draw() {
-    (*draw_hook)(this->user_data());
-}
-
-void My_Window::real_draw() {
-    Fl_Window::draw();
+    widget_draw_hook(this->user_data());
 }
 
 int My_Window::handle(int e) {
-    return (*handle_hook)(this->user_data(), e);
-}
-
-int My_Window::real_handle(int e) {
-    return Fl_Window::handle(e);
-}
-
-void window_set_draw_hook(WINDOW n, void * d) {
-    reinterpret_cast<My_Window*>(n)->draw_hook = reinterpret_cast<d_hook_p>(d);
-}
-
-void fl_window_draw(WINDOW n) {
-    reinterpret_cast<My_Window*>(n)->real_draw();
-}
-
-void window_set_handle_hook(WINDOW n, void * h) {
-    reinterpret_cast<My_Window*>(n)->handle_hook = reinterpret_cast<h_hook_p>(h);
-}
-
-int fl_window_handle(WINDOW n, int e) {
-    return reinterpret_cast<My_Window*>(n)->real_handle(e);
+    return widget_handle_hook(this->user_data(), e);
 }
 
 
 
+
+//  Flattened C API
 
 WINDOW new_fl_window(int x, int y, int w, int h, char* label) {
     My_Window *n = new My_Window(x, y, w, h, label);
@@ -248,4 +230,16 @@ int fl_window_get_decorated_w(WINDOW n) {
 int fl_window_get_decorated_h(WINDOW n) {
     return reinterpret_cast<Fl_Window*>(n)->decorated_h();
 }
+
+
+
+
+void fl_window_draw(WINDOW n) {
+    reinterpret_cast<My_Window*>(n)->Fl_Window::draw();
+}
+
+int fl_window_handle(WINDOW n, int e) {
+    return reinterpret_cast<My_Window*>(n)->Fl_Window::handle(e);
+}
+
 

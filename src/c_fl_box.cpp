@@ -6,68 +6,67 @@
 
 #include <FL/Fl_Box.H>
 #include "c_fl_box.h"
-#include "c_fl_type.h"
 
 
 
+
+//  Exports from Ada
+
+extern "C" void widget_draw_hook(void * ud);
+extern "C" int widget_handle_hook(void * ud, int e);
+
+
+
+
+//  Attaching all relevant hooks and friends
 
 class My_Box : public Fl_Box {
-    public:
-        using Fl_Box::Fl_Box;
-        friend void box_set_draw_hook(BOX n, void * d);
-        friend void fl_box_draw(BOX n);
-        friend void box_set_handle_hook(BOX n, void * h);
-        friend int fl_box_handle(BOX n, int e);
-    protected:
-        void draw();
-        void real_draw();
-        int handle(int e);
-        int real_handle(int e);
-        d_hook_p draw_hook;
-        h_hook_p handle_hook;
+public:
+    using Fl_Box::Fl_Box;
+
+    friend void fl_box_draw(BOX n);
+    friend int fl_box_handle(BOX n, int e);
+
+    void draw();
+    int handle(int e);
 };
 
 void My_Box::draw() {
-    (*draw_hook)(this->user_data());
-}
-
-void My_Box::real_draw() {
-    Fl_Box::draw();
+    widget_draw_hook(this->user_data());
 }
 
 int My_Box::handle(int e) {
-    return (*handle_hook)(this->user_data(), e);
-}
-
-int My_Box::real_handle(int e) {
-    return Fl_Box::handle(e);
-}
-
-void box_set_draw_hook(BOX n, void * d) {
-    reinterpret_cast<My_Box*>(n)->draw_hook = reinterpret_cast<d_hook_p>(d);
-}
-
-void fl_box_draw(BOX n) {
-    reinterpret_cast<My_Box*>(n)->real_draw();
-}
-
-void box_set_handle_hook(BOX n, void * h) {
-    reinterpret_cast<My_Box*>(n)->handle_hook = reinterpret_cast<h_hook_p>(h);
-}
-
-int fl_box_handle(BOX n, int e) {
-    return reinterpret_cast<My_Box*>(n)->real_handle(e);
+    return widget_handle_hook(this->user_data(), e);
 }
 
 
 
+
+//  Flattened C API
 
 BOX new_fl_box(int x, int y, int w, int h, char* label) {
     My_Box *b = new My_Box(x, y, w, h, label);
     return b;
 }
 
+BOX new_fl_box2(int k, int x, int y, int w, int h, char * label) {
+    My_Box *b = new My_Box(static_cast<Fl_Boxtype>(k), x, y, w, h, label);
+    return b;
+}
+
 void free_fl_box(BOX b) {
     delete reinterpret_cast<My_Box*>(b);
 }
+
+
+
+
+void fl_box_draw(BOX n) {
+    reinterpret_cast<My_Box*>(n)->Fl_Box::draw();
+}
+
+int fl_box_handle(BOX n, int e) {
+    return reinterpret_cast<My_Box*>(n)->Fl_Box::handle(e);
+}
+
 

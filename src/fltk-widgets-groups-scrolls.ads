@@ -88,6 +88,9 @@ private
 
     type Scroll is new Group with null record;
 
+    overriding procedure Initialize
+           (This : in out Scroll);
+
     overriding procedure Finalize
            (This : in out Scroll);
 
@@ -117,4 +120,5 @@ private
 
 
 end FLTK.Widgets.Groups.Scrolls;
+
 

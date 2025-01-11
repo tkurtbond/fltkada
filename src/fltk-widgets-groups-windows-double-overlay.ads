@@ -7,10 +7,6 @@
 package FLTK.Widgets.Groups.Windows.Double.Overlay is
 
 
-    -------------
-    --  Types  --
-    -------------
-
     type Overlay_Window is new Double_Window with private;
 
     type Overlay_Window_Reference (Data : not null access Overlay_Window'Class) is
@@ -18,10 +14,6 @@ package FLTK.Widgets.Groups.Windows.Double.Overlay is
 
 
 
-
-    --------------------
-    --  Constructors  --
-    --------------------
 
     package Forge is
 
@@ -40,10 +32,6 @@ package FLTK.Widgets.Groups.Windows.Double.Overlay is
 
 
 
-    ---------------
-    --  Display  --
-    ---------------
-
     procedure Show
            (This : in out Overlay_Window);
 
@@ -56,40 +44,32 @@ package FLTK.Widgets.Groups.Windows.Double.Overlay is
 
 
 
-    -------------
-    --  Other  --
-    -------------
-
     function Can_Do_Overlay
            (This : in Overlay_Window)
         return Boolean;
 
+    procedure Resize
+           (This       : in out Overlay_Window;
+            X, Y, W, H : in     Integer);
 
 
 
-    ----------------------------------
-    --  Drawing and Event Handling  --
-    ----------------------------------
 
-    procedure Draw
-           (This : in out Overlay_Window);
-
+    --  You must override this subprogram
     procedure Draw_Overlay
-           (This : in out Overlay_Window) is null;
+           (This : in out Overlay_Window);
 
     procedure Redraw_Overlay
            (This : in out Overlay_Window);
-
-    function Handle
-           (This  : in out Overlay_Window;
-            Event : in     Event_Kind)
-        return Event_Outcome;
 
 
 private
 
 
     type Overlay_Window is new Double_Window with null record;
+
+    overriding procedure Initialize
+           (This : in out Overlay_Window);
 
     overriding procedure Finalize
            (This : in out Overlay_Window);
@@ -110,11 +90,11 @@ private
     pragma Inline (Flush);
 
     pragma Inline (Can_Do_Overlay);
+    pragma Inline (Resize);
 
-    pragma Inline (Draw);
     pragma Inline (Redraw_Overlay);
-    pragma Inline (Handle);
 
 
 end FLTK.Widgets.Groups.Windows.Double.Overlay;
+
 

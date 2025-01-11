@@ -8,61 +8,43 @@
 #include <FL/Fl_Widget.H>
 #include "c_fl_group.h"
 #include "c_fl_widget.h"
-#include "c_fl_type.h"
 
 
 
+
+//  Exports from Ada
+
+extern "C" void widget_draw_hook(void * ud);
+extern "C" int widget_handle_hook(void * ud, int e);
+
+
+
+
+//  Attaching all relevant hooks and friends
 
 class My_Group : public Fl_Group {
-    public:
-        using Fl_Group::Fl_Group;
-        friend void group_set_draw_hook(GROUP g, void * d);
-        friend void fl_group_draw(GROUP g);
-        friend void group_set_handle_hook(GROUP g, void * h);
-        friend int fl_group_handle(GROUP g, int e);
-    protected:
-        void draw();
-        void real_draw();
-        int handle(int e);
-        int real_handle(int e);
-        d_hook_p draw_hook;
-        h_hook_p handle_hook;
+public:
+    using Fl_Group::Fl_Group;
+
+    friend void fl_group_draw(GROUP g);
+    friend int fl_group_handle(GROUP g, int e);
+
+    void draw();
+    int handle(int e);
 };
 
 void My_Group::draw() {
-    (*draw_hook)(this->user_data());
-}
-
-void My_Group::real_draw() {
-    Fl_Group::draw();
+    widget_draw_hook(this->user_data());
 }
 
 int My_Group::handle(int e) {
-    return (*handle_hook)(this->user_data(), e);
-}
-
-int My_Group::real_handle(int e) {
-    return Fl_Group::handle(e);
-}
-
-void group_set_draw_hook(GROUP g, void * d) {
-    reinterpret_cast<My_Group*>(g)->draw_hook = reinterpret_cast<d_hook_p>(d);
-}
-
-void fl_group_draw(GROUP g) {
-    reinterpret_cast<My_Group*>(g)->real_draw();
-}
-
-void group_set_handle_hook(GROUP g, void * h) {
-    reinterpret_cast<My_Group*>(g)->handle_hook = reinterpret_cast<h_hook_p>(h);
-}
-
-int fl_group_handle(GROUP g, int e) {
-    return reinterpret_cast<My_Group*>(g)->real_handle(e);
+    return widget_handle_hook(this->user_data(), e);
 }
 
 
 
+
+//  Flattened C API
 
 GROUP new_fl_group(int x, int y, int w, int h, char* label) {
     My_Group *g = new My_Group(x, y, w, h, label);
@@ -154,6 +136,17 @@ void * fl_group_get_current() {
 
 void fl_group_set_current(GROUP g) {
     Fl_Group::current(reinterpret_cast<Fl_Group*>(g));
+}
+
+
+
+
+void fl_group_draw(GROUP g) {
+    reinterpret_cast<My_Group*>(g)->Fl_Group::draw();
+}
+
+int fl_group_handle(GROUP g, int e) {
+    return reinterpret_cast<My_Group*>(g)->Fl_Group::handle(e);
 }
 
 

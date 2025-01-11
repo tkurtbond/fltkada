@@ -99,6 +99,13 @@ package FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
+    procedure Resize
+           (This       : in out Value_Input;
+            X, Y, W, H : in     Integer);
+
+
+
+
     procedure Draw
            (This : in out Value_Input);
 
@@ -114,6 +121,9 @@ private
     type Value_Input is new Valuator with record
         My_Input : aliased Inputs.Text.Text_Input;
     end record;
+
+    overriding procedure Initialize
+           (This : in out Value_Input);
 
     overriding procedure Finalize
            (This : in out Value_Input);
@@ -146,9 +156,12 @@ private
     pragma Inline (Get_Text_Size);
     pragma Inline (Set_Text_Size);
 
+    pragma Inline (Resize);
+
     pragma Inline (Draw);
     pragma Inline (Handle);
 
 
 end FLTK.Widgets.Valuators.Value_Inputs;
+
 

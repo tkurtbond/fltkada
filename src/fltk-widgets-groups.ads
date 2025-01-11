@@ -164,6 +164,9 @@ private
 
     type Group is new Widget with null record;
 
+    overriding procedure Initialize
+           (This : in out Group);
+
     overriding procedure Finalize
            (This : in out Group);
 
@@ -234,4 +237,5 @@ private
 
 
 end FLTK.Widgets.Groups;
+
 

@@ -108,13 +108,9 @@ package FLTK.Widgets.Groups.Input_Choices is
 
 
 
-    procedure Draw
-           (This : in out Input_Choice);
-
-    function Handle
-           (This  : in out Input_Choice;
-            Event : in     Event_Kind)
-        return Event_Outcome;
+    procedure Resize
+           (This       : in out Input_Choice;
+            X, Y, W, H : in     Integer);
 
 
 private
@@ -124,6 +120,9 @@ private
         My_Input       : aliased Inputs.Text.Text_Input;
         My_Menu_Button : aliased Menus.Menu_Buttons.Menu_Button;
     end record;
+
+    overriding procedure Initialize
+           (This : in out Input_Choice);
 
     overriding procedure Finalize
            (This : in out Input_Choice);
@@ -154,9 +153,9 @@ private
     pragma Inline (Set_Input);
     pragma Inline (Set_Item);
 
-    pragma Inline (Draw);
-    pragma Inline (Handle);
+    pragma Inline (Resize);
 
 
 end FLTK.Widgets.Groups.Input_Choices;
+
 

@@ -16,19 +16,6 @@ package body FLTK.Widgets.Buttons is
     --  Functions From C  --
     ------------------------
 
-    procedure button_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, button_set_draw_hook, "button_set_draw_hook");
-    pragma Inline (button_set_draw_hook);
-
-    procedure button_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, button_set_handle_hook, "button_set_handle_hook");
-    pragma Inline (button_set_handle_hook);
-
-
-
-
     function new_fl_button
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -102,6 +89,14 @@ package body FLTK.Widgets.Buttons is
         return Interfaces.C.int;
     pragma Import (C, fl_button_handle, "fl_button_handle");
     pragma Inline (fl_button_handle);
+
+
+
+
+    procedure fl_button_simulate_key_action
+           (B : in Storage.Integer_Address);
+    pragma Import (C, fl_button_simulate_key_action, "fl_button_simulate_key_action");
+    pragma Inline (fl_button_simulate_key_action);
 
 
 
@@ -183,6 +178,14 @@ package body FLTK.Widgets.Buttons is
     end Extra_Init;
 
 
+    procedure Initialize
+           (This : in out Button) is
+    begin
+        This.Draw_Ptr   := fl_button_draw'Address;
+        This.Handle_Ptr := fl_button_handle'Address;
+    end Initialize;
+
+
     package body Forge is
 
         function Create
@@ -198,8 +201,6 @@ package body FLTK.Widgets.Buttons is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                button_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                button_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -274,7 +275,7 @@ package body FLTK.Widgets.Buttons is
     procedure Draw
            (This : in out Button) is
     begin
-        fl_button_draw (This.Void_Ptr);
+        Widget (This).Draw;
     end Draw;
 
 
@@ -283,10 +284,19 @@ package body FLTK.Widgets.Buttons is
             Event : in     Event_Kind)
         return Event_Outcome is
     begin
-        return Event_Outcome'Val
-               (fl_button_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
+        return Widget (This).Handle (Event);
     end Handle;
 
 
+
+
+    procedure Simulate_Key_Action
+           (This : in out Button) is
+    begin
+        fl_button_simulate_key_action (This.Void_Ptr);
+    end Simulate_Key_Action;
+
+
 end FLTK.Widgets.Buttons;
+
 

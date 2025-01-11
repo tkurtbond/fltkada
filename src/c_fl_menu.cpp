@@ -7,41 +7,43 @@
 #include <FL/Fl_Menu_.H>
 #include <FL/Fl_Menu_Item.H>
 #include "c_fl_menu.h"
-#include "c_fl_type.h"
 
 
 
+
+//  Exports from Ada
+
+extern "C" void widget_draw_hook(void * ud);
+extern "C" int widget_handle_hook(void * ud, int e);
+
+
+
+
+//  Attaching all relevant hooks and friends
 
 class My_Menu : public Fl_Menu_ {
-    public:
-        using Fl_Menu_::Fl_Menu_;
-        friend void menu_set_draw_hook(MENU m, void * d);
-        friend void menu_set_handle_hook(MENU m, void * h);
-    protected:
-        void draw();
-        int handle(int e);
-        d_hook_p draw_hook;
-        h_hook_p handle_hook;
+public:
+    using Fl_Menu_::Fl_Menu_;
+
+    friend void fl_menu_draw(MENU m);
+    friend int fl_menu_handle(MENU m, int e);
+
+    void draw();
+    int handle(int e);
 };
 
 void My_Menu::draw() {
-    (*draw_hook)(this->user_data());
+    widget_draw_hook(this->user_data());
 }
 
 int My_Menu::handle(int e) {
-    return (*handle_hook)(this->user_data(), e);
-}
-
-void menu_set_draw_hook(MENU m, void * d) {
-    reinterpret_cast<My_Menu*>(m)->draw_hook = reinterpret_cast<d_hook_p>(d);
-}
-
-void menu_set_handle_hook(MENU m, void * h) {
-    reinterpret_cast<My_Menu*>(m)->handle_hook = reinterpret_cast<h_hook_p>(h);
+    return widget_handle_hook(this->user_data(), e);
 }
 
 
 
+
+//  Flattened C API
 
 MENU new_fl_menu(int x, int y, int w, int h, char* label) {
     My_Menu *m = new My_Menu(x, y, w, h, label);
@@ -59,7 +61,9 @@ int fl_menu_add(MENU m, const char * t, unsigned long s, void * c, void * u, uns
     return reinterpret_cast<Fl_Menu_*>(m)->add(t,s,reinterpret_cast<Fl_Callback_p>(c),u,f);
 }
 
-int fl_menu_insert(MENU m, int p, const char * t, unsigned long s, void * c, void * u, unsigned long f) {
+int fl_menu_insert(MENU m, int p, const char * t, unsigned long s,
+    void * c, void * u, unsigned long f)
+{
     return reinterpret_cast<Fl_Menu_*>(m)->insert(p,t,s,reinterpret_cast<Fl_Callback_p>(c),u,f);
 }
 
@@ -219,6 +223,18 @@ void fl_menu_draw_item(MENU m, int i, int x, int y, int w, int h, int s) {
     //  method actually belongs to Fl_Menu_Item
     const Fl_Menu_Item * item = reinterpret_cast<const Fl_Menu_Item*>(fl_menu_get_item(m,i));
     item->draw(x,y,w,h,reinterpret_cast<Fl_Menu_*>(m),s);
+}
+
+void fl_menu_draw(MENU m) {
+    //  The Fl_Menu_ draw method doesn't technically exist, so...
+    (void)(m);
+    //  It is more convenient for this function to exist, however,
+    //  even though it will likely never be called, because it simplifies
+    //  and makes uniform the implementation of the Ada Menu Draw subprogram.
+}
+
+int fl_menu_handle(MENU m, int e) {
+    return reinterpret_cast<My_Menu*>(m)->Fl_Menu_::handle(e);
 }
 
 

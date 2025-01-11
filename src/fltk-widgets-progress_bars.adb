@@ -12,18 +12,9 @@ with
 package body FLTK.Widgets.Progress_Bars is
 
 
-    procedure progress_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, progress_set_draw_hook, "progress_set_draw_hook");
-    pragma Inline (progress_set_draw_hook);
-
-    procedure progress_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, progress_set_handle_hook, "progress_set_handle_hook");
-    pragma Inline (progress_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_progress
            (X, Y, W, H : in Interfaces.C.int;
@@ -94,6 +85,10 @@ package body FLTK.Widgets.Progress_Bars is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
     procedure Extra_Final
            (This : in out Progress_Bar) is
     begin
@@ -114,6 +109,10 @@ package body FLTK.Widgets.Progress_Bars is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Progress_Bar;
             X, Y, W, H : in     Integer;
@@ -121,6 +120,14 @@ package body FLTK.Widgets.Progress_Bars is
     begin
         Extra_Init (Widget (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Progress_Bar) is
+    begin
+        This.Draw_Ptr := fl_progress_draw'Address;
+        This.Handle_Ptr := fl_progress_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -138,8 +145,6 @@ package body FLTK.Widgets.Progress_Bars is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                progress_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                progress_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -148,6 +153,9 @@ package body FLTK.Widgets.Progress_Bars is
 
 
 
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     function Get_Minimum
            (This : in Progress_Bar)
@@ -202,19 +210,10 @@ package body FLTK.Widgets.Progress_Bars is
     procedure Draw
            (This : in out Progress_Bar) is
     begin
-        fl_progress_draw (This.Void_Ptr);
+        Widget (This).Draw;
     end Draw;
 
 
-    function Handle
-           (This  : in out Progress_Bar;
-            Event : in     Event_Kind)
-        return Event_Outcome is
-    begin
-        return Event_Outcome'Val
-               (fl_progress_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
-    end Handle;
-
-
 end FLTK.Widgets.Progress_Bars;
+
 

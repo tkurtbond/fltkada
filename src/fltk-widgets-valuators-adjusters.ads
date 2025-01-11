@@ -38,6 +38,9 @@ package FLTK.Widgets.Valuators.Adjusters is
 
 
 
+    procedure Value_Damage
+           (This : in out Adjuster);
+
     procedure Draw
            (This : in out Adjuster);
 
@@ -51,6 +54,9 @@ private
 
 
     type Adjuster is new Valuator with null record;
+
+    overriding procedure Initialize
+           (This : in out Adjuster);
 
     overriding procedure Finalize
            (This : in out Adjuster);
@@ -69,9 +75,11 @@ private
     pragma Inline (Is_Soft);
     pragma Inline (Set_Soft);
 
+    pragma Inline (Value_Damage);
     pragma Inline (Draw);
     pragma Inline (Handle);
 
 
 end FLTK.Widgets.Valuators.Adjusters;
+
 

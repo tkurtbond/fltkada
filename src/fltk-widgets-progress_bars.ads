@@ -57,16 +57,14 @@ package FLTK.Widgets.Progress_Bars is
     procedure Draw
            (This : in out Progress_Bar);
 
-    function Handle
-           (This  : in out Progress_Bar;
-            Event : in     Event_Kind)
-        return Event_Outcome;
-
 
 private
 
 
     type Progress_Bar is new Widget with null record;
+
+    overriding procedure Initialize
+           (This : in out Progress_Bar);
 
     overriding procedure Finalize
            (This : in out Progress_Bar);
@@ -90,8 +88,8 @@ private
     pragma Inline (Set_Value);
 
     pragma Inline (Draw);
-    pragma Inline (Handle);
 
 
 end FLTK.Widgets.Progress_Bars;
+
 

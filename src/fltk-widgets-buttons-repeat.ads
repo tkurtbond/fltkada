@@ -27,8 +27,11 @@ package FLTK.Widgets.Buttons.Repeat is
 
 
 
-    procedure Draw
+    procedure Deactivate
            (This : in out Repeat_Button);
+
+
+
 
     function Handle
            (This  : in out Repeat_Button;
@@ -40,6 +43,9 @@ private
 
 
     type Repeat_Button is new Button with null record;
+
+    overriding procedure Initialize
+           (This : in out Repeat_Button);
 
     overriding procedure Finalize
            (This : in out Repeat_Button);
@@ -55,9 +61,11 @@ private
     with Inline;
 
 
-    pragma Inline (Draw);
+    pragma Inline (Deactivate);
+
     pragma Inline (Handle);
 
 
 end FLTK.Widgets.Buttons.Repeat;
+
 

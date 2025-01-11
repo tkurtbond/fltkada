@@ -6,7 +6,6 @@
 
 #include <FL/Fl_Button.H>
 #include "c_fl_button.h"
-#include "c_fl_type.h"
 
 
 
@@ -26,56 +25,49 @@ void fl_button_extra_final(void * adaobj) {
 
 
 
+//  Exports from Ada
+
+extern "C" void widget_draw_hook(void * ud);
+extern "C" int widget_handle_hook(void * ud, int e);
+
+
+
+
+//  Non-friend protected access
+
+class Friend_Button : Fl_Button {
+public:
+    using Fl_Button::simulate_key_action;
+};
+
+
+
+
+//  Attaching all relevant hooks and friends
+
 class My_Button : public Fl_Button {
-    public:
-        using Fl_Button::Fl_Button;
-        friend void button_set_draw_hook(BUTTON b, void * d);
-        friend void fl_button_draw(BUTTON b);
-        friend void button_set_handle_hook(BUTTON b, void * h);
-        friend int fl_button_handle(BUTTON b, int e);
-    protected:
-        void draw();
-        void real_draw();
-        int handle(int e);
-        int real_handle(int e);
-        d_hook_p draw_hook;
-        h_hook_p handle_hook;
+public:
+    using Fl_Button::Fl_Button;
+
+    friend void fl_button_draw(BUTTON b);
+    friend int fl_button_handle(BUTTON b, int e);
+
+    void draw();
+    int handle(int e);
 };
 
 void My_Button::draw() {
-    (*draw_hook)(this->user_data());
-}
-
-void My_Button::real_draw() {
-    Fl_Button::draw();
+    widget_draw_hook(this->user_data());
 }
 
 int My_Button::handle(int e) {
-    return (*handle_hook)(this->user_data(), e);
-}
-
-int My_Button::real_handle(int e) {
-    return Fl_Button::handle(e);
-}
-
-void button_set_draw_hook(BUTTON b, void * d) {
-    reinterpret_cast<My_Button*>(b)->draw_hook = reinterpret_cast<d_hook_p>(d);
-}
-
-void fl_button_draw(BUTTON b) {
-    reinterpret_cast<My_Button*>(b)->real_draw();
-}
-
-void button_set_handle_hook(BUTTON b, void * h) {
-    reinterpret_cast<My_Button*>(b)->handle_hook = reinterpret_cast<h_hook_p>(h);
-}
-
-int fl_button_handle(BUTTON b, int e) {
-    return reinterpret_cast<My_Button*>(b)->real_handle(e);
+    return widget_handle_hook(this->user_data(), e);
 }
 
 
 
+
+//  Flattened C API
 
 BUTTON new_fl_button(int x, int y, int w, int h, char* label) {
     My_Button *b = new My_Button(x, y, w, h, label);
@@ -118,6 +110,24 @@ int fl_button_get_shortcut(BUTTON b) {
 
 void fl_button_set_shortcut(BUTTON b, int k) {
     reinterpret_cast<Fl_Button*>(b)->Fl_Button::shortcut(k);
+}
+
+
+
+
+void fl_button_draw(BUTTON b) {
+    reinterpret_cast<My_Button*>(b)->Fl_Button::draw();
+}
+
+int fl_button_handle(BUTTON b, int e) {
+    return reinterpret_cast<My_Button*>(b)->Fl_Button::handle(e);
+}
+
+
+
+
+void fl_button_simulate_key_action(BUTTON b) {
+    (reinterpret_cast<Fl_Button*>(b)->*(&Friend_Button::simulate_key_action))();
 }
 
 

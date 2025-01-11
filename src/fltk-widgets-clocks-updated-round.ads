@@ -25,25 +25,13 @@ package FLTK.Widgets.Clocks.Updated.Round is
     end Forge;
 
 
-
-
-    procedure Draw
-           (This : in out Round_Clock);
-
-    procedure Draw
-           (This       : in out Clock;
-            X, Y, W, H : in     Integer);
-
-    function Handle
-           (This  : in out Round_Clock;
-            Event : in     Event_Kind)
-        return Event_Outcome;
-
-
 private
 
 
     type Round_Clock is new Updated_Clock with null record;
+
+    overriding procedure Initialize
+           (This : in out Round_Clock);
 
     overriding procedure Finalize
            (This : in out Round_Clock);
@@ -59,9 +47,6 @@ private
     with Inline;
 
 
-    pragma Inline (Draw);
-    pragma Inline (Handle);
-
-
 end FLTK.Widgets.Clocks.Updated.Round;
+
 

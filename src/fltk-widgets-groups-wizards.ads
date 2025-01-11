@@ -50,16 +50,14 @@ package FLTK.Widgets.Groups.Wizards is
     procedure Draw
            (This : in out Wizard);
 
-    function Handle
-           (This  : in out Wizard;
-            Event : in     Event_Kind)
-        return Event_Outcome;
-
 
 private
 
 
     type Wizard is new Group with null record;
+
+    overriding procedure Initialize
+           (This : in out Wizard);
 
     overriding procedure Finalize
            (This : in out Wizard);
@@ -82,8 +80,8 @@ private
     pragma Inline (Set_Visible);
 
     pragma Inline (Draw);
-    pragma Inline (Handle);
 
 
 end FLTK.Widgets.Groups.Wizards;
+
 

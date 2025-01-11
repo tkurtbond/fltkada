@@ -6,80 +6,68 @@
 
 #include <FL/Fl_Slider.H>
 #include "c_fl_slider.h"
-#include "c_fl_type.h"
 
 
 
+
+//  Exports from Ada
+
+extern "C" void widget_draw_hook(void * ud);
+extern "C" int widget_handle_hook(void * ud, int e);
+
+
+
+
+//  Non-friend protected access
+
+class Friend_Slider : Fl_Slider {
+public:
+    //  Really only needed for the (int,int,int,int) versions
+    using Fl_Slider::draw;
+    using Fl_Slider::handle;
+};
+
+
+
+
+//  Attaching all relevant hooks and friends
 
 class My_Slider : public Fl_Slider {
-    public:
-        using Fl_Slider::Fl_Slider;
-        friend void slider_set_draw_hook(SLIDER s, void * d);
-        friend void fl_slider_draw(SLIDER s);
-        friend void slider_set_handle_hook(SLIDER s, void * h);
-        friend int fl_slider_handle(SLIDER s, int e);
-    protected:
-        void draw();
-        void real_draw();
-        int handle(int e);
-        int real_handle(int e);
-        d_hook_p draw_hook;
-        h_hook_p handle_hook;
+public:
+    using Fl_Slider::Fl_Slider;
+
+    friend void fl_slider_draw(SLIDER s);
+    friend int fl_slider_handle(SLIDER s, int e);
+
+    void draw();
+    int handle(int e);
 };
 
 void My_Slider::draw() {
-    (*draw_hook)(this->user_data());
-}
-
-void My_Slider::real_draw() {
-    Fl_Slider::draw();
+    widget_draw_hook(this->user_data());
 }
 
 int My_Slider::handle(int e) {
-    return (*handle_hook)(this->user_data(), e);
-}
-
-int My_Slider::real_handle(int e) {
-    return Fl_Slider::handle(e);
-}
-
-void slider_set_draw_hook(SLIDER s, void * d) {
-    reinterpret_cast<My_Slider*>(s)->draw_hook = reinterpret_cast<d_hook_p>(d);
-}
-
-void fl_slider_draw(SLIDER s) {
-    reinterpret_cast<My_Slider*>(s)->real_draw();
-}
-
-void slider_set_handle_hook(SLIDER s, void * h) {
-    reinterpret_cast<My_Slider*>(s)->handle_hook = reinterpret_cast<h_hook_p>(h);
-}
-
-int fl_slider_handle(SLIDER s, int e) {
-    return reinterpret_cast<My_Slider*>(s)->real_handle(e);
+    return widget_handle_hook(this->user_data(), e);
 }
 
 
 
+
+//  Flattened C API
 
 SLIDER new_fl_slider(int x, int y, int w, int h, char* label) {
     My_Slider *s = new My_Slider(x, y, w, h, label);
     return s;
 }
 
+SLIDER new_fl_slider2(unsigned char k, int x, int y, int w, int h, char * label) {
+    My_Slider *s = new My_Slider(k, x, y, w, h, label);
+    return s;
+}
+
 void free_fl_slider(SLIDER s) {
     delete reinterpret_cast<My_Slider*>(s);
-}
-
-
-
-
-int fl_slider_get_type(SLIDER s) {
-    return reinterpret_cast<Fl_Slider*>(s)->type();
-}
-
-void fl_slider_set_type(SLIDER s, int t) {
-    reinterpret_cast<Fl_Slider*>(s)->type(t);
 }
 
 
@@ -101,12 +89,33 @@ float fl_slider_get_slider_size(SLIDER s) {
     return reinterpret_cast<Fl_Slider*>(s)->slider_size();
 }
 
-void fl_slider_set_slider_size(SLIDER s, float t) {
+void fl_slider_set_slider_size(SLIDER s, double t) {
     reinterpret_cast<Fl_Slider*>(s)->slider_size(t);
 }
 
 int fl_slider_scrollvalue(SLIDER s, int p, int z, int f, int t) {
     return reinterpret_cast<Fl_Slider*>(s)->scrollvalue(p,z,f,t);
+}
+
+
+
+
+void fl_slider_draw(SLIDER s) {
+    reinterpret_cast<My_Slider*>(s)->Fl_Slider::draw();
+}
+
+void fl_slider_draw2(SLIDER s, int x, int y, int w, int h) {
+    void (Fl_Slider::*mydraw)(int,int,int,int) = &Friend_Slider::draw;
+    (reinterpret_cast<Fl_Slider*>(s)->*mydraw)(x, y, w, h);
+}
+
+int fl_slider_handle(SLIDER s, int e) {
+    return reinterpret_cast<My_Slider*>(s)->Fl_Slider::handle(e);
+}
+
+int fl_slider_handle2(SLIDER s, int e, int x, int y, int w, int h) {
+    int (Fl_Slider::*myhandle)(int,int,int,int,int) = &Friend_Slider::handle;
+    return (reinterpret_cast<Fl_Slider*>(s)->*myhandle)(e, x, y, w, h);
 }
 
 

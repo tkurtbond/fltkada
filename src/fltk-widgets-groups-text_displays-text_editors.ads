@@ -320,9 +320,6 @@ package FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
-    procedure Draw
-           (This : in out Text_Editor);
-
     function Handle
            (This  : in out Text_Editor;
             Event : in     Event_Kind)
@@ -340,6 +337,9 @@ private
         Bindings     : Binding_Vectors.Vector;
         Default_Func : Default_Key_Func;
     end record;
+
+    overriding procedure Initialize
+           (This : in out Text_Editor);
 
     overriding procedure Finalize
            (This : in out Text_Editor);
@@ -424,9 +424,9 @@ private
     --  pragma Inline (Get_Tab_Nav_Mode);
     --  pragma Inline (Set_Tab_Nav_Mode);
 
-    pragma Inline (Draw);
     pragma Inline (Handle);
 
 
 end FLTK.Widgets.Groups.Text_Displays.Text_Editors;
+
 

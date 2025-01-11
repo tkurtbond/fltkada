@@ -97,6 +97,10 @@ extern "C" void fl_widget_set_image(WIDGET w, void * img);
 extern "C" void fl_widget_set_deimage(WIDGET w, void * img);
 
 
+extern "C" unsigned char fl_widget_get_type(WIDGET w);
+extern "C" void fl_widget_set_type(WIDGET w, unsigned char t);
+
+
 extern "C" int fl_widget_damage(WIDGET w);
 extern "C" void fl_widget_set_damage(WIDGET w, int t);
 extern "C" void fl_widget_set_damage2(WIDGET w, int t, int x, int y, int d, int h);
@@ -108,4 +112,5 @@ extern "C" int fl_widget_handle(WIDGET w, int e);
 
 
 #endif
+
 

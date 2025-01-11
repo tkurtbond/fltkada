@@ -41,22 +41,22 @@
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>int</td>
     <td>Hour</td>
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>int</td>
     <td>Minute</td>
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>int</td>
     <td>Second</td>
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>ulong</td>
     <td>Time_Value</td>
   </tr>
 
@@ -65,7 +65,7 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -74,41 +74,17 @@ Fl_Clock_Output(int X, int Y, int W, int H, const char *L=0);
 <td><pre>
 function Create
        (X, Y, W, H : in Integer;
-        Text       : in String)
+        Text       : in String := "")
     return Clock;
 </pre></td>
   </tr>
 
-  <tr>
-<td><pre>
-void draw();
-</pre></td>
-<td><pre>
-procedure Draw
-       (This : in out Clock);
-</pre></td>
-  </tr>
+</table>
 
-  <tr>
-<td><pre>
-void draw(int X, int Y, int W, int H);
-</pre></td>
-<td><pre>
-procedure Draw
-       (This       : in out Clock;
-        X, Y, W, H : in     Integer);
-</pre></td>
-  </tr>
 
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
-function Handle
-       (This  : in out Clock;
-        Event : in     Event_Kind)
-    return Event_Outcome;
-</pre></td>
-  </tr>
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
@@ -175,6 +151,34 @@ ulong value() const;
 function Get_Time
        (This : in Clock)
     return Time_Value;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Clock);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw(int X, int Y, int W, int H);
+</pre></td>
+<td><pre>
+procedure Draw
+       (This       : in out Clock;
+        X, Y, W, H : in     Integer);
 </pre></td>
   </tr>
 

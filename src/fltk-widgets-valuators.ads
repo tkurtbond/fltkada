@@ -66,9 +66,18 @@ package FLTK.Widgets.Valuators is
            (This : in Valuator)
         return Long_Float;
 
-    procedure Set_Step
+    procedure Set_Step_Top
            (This : in out Valuator;
             To   : in     Long_Float);
+
+    procedure Set_Step_Bottom
+           (This : in out Valuator;
+            To   : in     Integer);
+
+    procedure Set_Step
+           (This   : in out Valuator;
+            Top    : in     Long_Float;
+            Bottom : in     Integer);
 
     function Get_Value
            (This : in Valuator)
@@ -93,16 +102,17 @@ package FLTK.Widgets.Valuators is
 
 
 
-    function Handle
-           (This  : in out Valuator;
-            Event : in     Event_Kind)
-        return Event_Outcome;
+    procedure Value_Damage
+           (This : in out Valuator);
 
 
 private
 
 
     type Valuator is new Widget with null record;
+
+    overriding procedure Initialize
+           (This : in out Valuator);
 
     overriding procedure Finalize
            (This : in out Valuator);
@@ -127,6 +137,8 @@ private
     pragma Inline (Get_Maximum);
     pragma Inline (Set_Maximum);
     pragma Inline (Get_Step);
+    pragma Inline (Set_Step_Top);
+    pragma Inline (Set_Step_Bottom);
     pragma Inline (Set_Step);
     pragma Inline (Get_Value);
     pragma Inline (Set_Value);
@@ -134,8 +146,9 @@ private
     pragma Inline (Set_Precision);
     pragma Inline (Set_Range);
 
-    pragma Inline (Handle);
+    pragma Inline (Value_Damage);
 
 
 end FLTK.Widgets.Valuators;
+
 

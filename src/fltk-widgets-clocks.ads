@@ -72,16 +72,14 @@ package FLTK.Widgets.Clocks is
            (This       : in out Clock;
             X, Y, W, H : in     Integer);
 
-    function Handle
-           (This  : in out Clock;
-            Event : in     Event_Kind)
-        return Event_Outcome;
-
 
 private
 
 
     type Clock is new Widget with null record;
+
+    overriding procedure Initialize
+           (This : in out Clock);
 
     overriding procedure Finalize
            (This : in out Clock);
@@ -105,8 +103,8 @@ private
     pragma Inline (Set_Time);
 
     pragma Inline (Draw);
-    pragma Inline (Handle);
 
 
 end FLTK.Widgets.Clocks;
+
 

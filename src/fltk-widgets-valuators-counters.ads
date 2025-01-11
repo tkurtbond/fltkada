@@ -31,7 +31,7 @@ package FLTK.Widgets.Valuators.Counters is
            (This : in Counter)
         return Long_Float;
 
-    procedure Set_Step
+    procedure Set_Step_Top
            (This : in out Counter;
             To   : in     Long_Float);
 
@@ -42,6 +42,10 @@ package FLTK.Widgets.Valuators.Counters is
     procedure Set_Long_Step
            (This : in out Counter;
             To   : in     Long_Float);
+
+    procedure Set_Step_Both
+           (This        : in out Counter;
+            Short, Long : in     Long_Float);
 
 
 
@@ -91,6 +95,9 @@ private
         Long_Step : Long_Float := 1.0;
     end record;
 
+    overriding procedure Initialize
+           (This : in out Counter);
+
     overriding procedure Finalize
            (This : in out Counter);
 
@@ -122,4 +129,5 @@ private
 
 
 end FLTK.Widgets.Valuators.Counters;
+
 

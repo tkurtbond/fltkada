@@ -6,61 +6,53 @@
 
 #include <FL/Fl_Tabs.H>
 #include "c_fl_tabs.h"
-#include "c_fl_type.h"
 
 
 
+
+//  Exports from Ada
+
+extern "C" void widget_draw_hook(void * ud);
+extern "C" int widget_handle_hook(void * ud, int e);
+
+
+
+
+//  Non-friend protected access
+
+class Friend_Tabs : Fl_Tabs {
+public:
+    using Fl_Tabs::redraw_tabs;
+};
+
+
+
+
+//  Attaching all relevant hooks and friends
 
 class My_Tabs : public Fl_Tabs {
-    public:
-        using Fl_Tabs::Fl_Tabs;
-        friend void tabs_set_draw_hook(TABS t, void * d);
-        friend void fl_tabs_draw(TABS t);
-        friend void tabs_set_handle_hook(TABS t, void * h);
-        friend int fl_tabs_handle(TABS t, int e);
-    protected:
-        void draw();
-        void real_draw();
-        int handle(int e);
-        int real_handle(int e);
-        d_hook_p draw_hook;
-        h_hook_p handle_hook;
+public:
+    using Fl_Tabs::Fl_Tabs;
+
+    friend void fl_tabs_draw(TABS t);
+    friend int fl_tabs_handle(TABS t, int e);
+
+    void draw();
+    int handle(int e);
 };
 
 void My_Tabs::draw() {
-    (*draw_hook)(this->user_data());
-}
-
-void My_Tabs::real_draw() {
-    Fl_Tabs::draw();
+    widget_draw_hook(this->user_data());
 }
 
 int My_Tabs::handle(int e) {
-    return (*handle_hook)(this->user_data(), e);
-}
-
-int My_Tabs::real_handle(int e) {
-    return Fl_Tabs::handle(e);
-}
-
-void tabs_set_draw_hook(TABS t, void * d) {
-    reinterpret_cast<My_Tabs*>(t)->draw_hook = reinterpret_cast<d_hook_p>(d);
-}
-
-void fl_tabs_draw(TABS t) {
-    reinterpret_cast<My_Tabs*>(t)->real_draw();
-}
-
-void tabs_set_handle_hook(TABS t, void * h) {
-    reinterpret_cast<My_Tabs*>(t)->handle_hook = reinterpret_cast<h_hook_p>(h);
-}
-
-int fl_tabs_handle(TABS t, int e) {
-    return reinterpret_cast<My_Tabs*>(t)->real_handle(e);
+    return widget_handle_hook(this->user_data(), e);
 }
 
 
 
+
+//  Flattened C API
 
 TABS new_fl_tabs(int x, int y, int w, int h, char* label) {
     My_Tabs *t = new My_Tabs(x, y, w, h, label);
@@ -100,4 +92,20 @@ void fl_tabs_set_value(TABS t, void * w) {
 void * fl_tabs_which(TABS t, int x, int y) {
     return reinterpret_cast<Fl_Tabs*>(t)->which(x,y);
 }
+
+
+
+
+void fl_tabs_draw(TABS t) {
+    reinterpret_cast<My_Tabs*>(t)->Fl_Tabs::draw();
+}
+
+void fl_tabs_redraw_tabs(TABS t) {
+    (reinterpret_cast<Fl_Tabs*>(t)->*(&Friend_Tabs::redraw_tabs))();
+}
+
+int fl_tabs_handle(TABS t, int e) {
+    return reinterpret_cast<My_Tabs*>(t)->Fl_Tabs::handle(e);
+}
+
 

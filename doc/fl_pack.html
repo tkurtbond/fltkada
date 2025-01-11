@@ -43,7 +43,26 @@
 
   <tr>
     <td>enum { VERTICAL = 0, HORIZONTAL = 1 }</td>
-    <td>&nbsp;</td>
+    <td>Pack_Kind</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Pack(int x, int y, int w, int h, const char *l=0);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return Packed_Group;
+</pre></td>
   </tr>
 
 </table>
@@ -55,41 +74,13 @@
 
   <tr>
 <td><pre>
-Fl_Pack(int x, int y, int w, int h, const char *l=0);
-</pre></td>
-<td><pre>
-function Create
-       (X, Y, W, H : in Integer;
-        Text       : in String)
-    return Packed_Group;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-void draw();
-</pre></td>
-<td><pre>
-procedure Draw
-       (This : in out Packed_Group);
-</pre></td>
-  </tr>
-
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
-function Handle
-       (This  : in out Packed_Group;
-        Event : in     Event_Kind)
-    return Event_Outcome;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
 uchar horizontal() const;
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Get_Pack_Type
+       (This : in Packed_Group)
+    return Pack_Kind;
+</pre></td>
   </tr>
 
   <tr>
@@ -111,6 +102,32 @@ void spacing(int i);
 procedure Set_Spacing
        (This : in out Packed_Group;
         To   : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>See type method for Fl_Widget.</td>
+<td><pre>
+procedure Set_Pack_Type
+       (This : in out Packed_Group;
+        Kind : in     Pack_Kind);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Packed_Group);
 </pre></td>
   </tr>
 

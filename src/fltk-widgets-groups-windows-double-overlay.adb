@@ -17,24 +17,9 @@ use type
 package body FLTK.Widgets.Groups.Windows.Double.Overlay is
 
 
-    procedure overlay_window_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, overlay_window_set_draw_hook, "overlay_window_set_draw_hook");
-    pragma Inline (overlay_window_set_draw_hook);
-
-    procedure overlay_window_set_draw_overlay_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, overlay_window_set_draw_overlay_hook,
-        "overlay_window_set_draw_overlay_hook");
-    pragma Inline (overlay_window_set_draw_overlay_hook);
-
-    procedure overlay_window_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, overlay_window_set_handle_hook, "overlay_window_set_handle_hook");
-    pragma Inline (overlay_window_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_overlay_window
            (X, Y, W, H : in Interfaces.C.int;
@@ -82,6 +67,12 @@ package body FLTK.Widgets.Groups.Windows.Double.Overlay is
     pragma Import (C, fl_overlay_window_can_do_overlay, "fl_overlay_window_can_do_overlay");
     pragma Inline (fl_overlay_window_can_do_overlay);
 
+    procedure fl_overlay_window_resize
+           (OW         : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int);
+    pragma Import (C, fl_overlay_window_resize, "fl_overlay_window_resize");
+    pragma Inline (fl_overlay_window_resize);
+
 
 
 
@@ -105,20 +96,31 @@ package body FLTK.Widgets.Groups.Windows.Double.Overlay is
 
 
 
+    ----------------------
+    --  Exported Hooks  --
+    ----------------------
+
     package Over_Convert is new System.Address_To_Access_Conversions (Overlay_Window'Class);
 
+    procedure Overlay_Window_Draw_Overlay_Hook
+           (U : in Storage.Integer_Address);
+    pragma Export (C, Overlay_Window_Draw_Overlay_Hook, "overlay_window_draw_overlay_hook");
 
-    procedure Draw_Overlay_Hook
+    procedure Overlay_Window_Draw_Overlay_Hook
            (U : in Storage.Integer_Address)
     is
         Overlay_Widget : access Overlay_Window'Class :=
             Over_Convert.To_Pointer (Storage.To_Address (U));
     begin
         Overlay_Widget.Draw_Overlay;
-    end Draw_Overlay_Hook;
+    end Overlay_Window_Draw_Overlay_Hook;
 
 
 
+
+    -------------------
+    --  Destructors  --
+    -------------------
 
     procedure Extra_Final
            (This : in out Overlay_Window) is
@@ -153,6 +155,14 @@ package body FLTK.Widgets.Groups.Windows.Double.Overlay is
     end Extra_Init;
 
 
+    procedure Initialize
+           (This : in out Overlay_Window) is
+    begin
+        This.Draw_Ptr   := fl_overlay_window_draw'Address;
+        This.Handle_Ptr := fl_overlay_window_handle'Address;
+    end Initialize;
+
+
     package body Forge is
 
         function Create
@@ -168,12 +178,6 @@ package body FLTK.Widgets.Groups.Windows.Double.Overlay is
                     Interfaces.C.int (H),
                     Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                overlay_window_set_draw_hook
-                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                overlay_window_set_draw_overlay_hook
-                    (This.Void_Ptr, Storage.To_Integer (Draw_Overlay_Hook'Address));
-                overlay_window_set_handle_hook
-                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -189,12 +193,6 @@ package body FLTK.Widgets.Groups.Windows.Double.Overlay is
                     Interfaces.C.int (H),
                     Interfaces.C.To_C (Text));
                 Extra_Init (This, This.Get_X, This.Get_Y, W, H, Text);
-                overlay_window_set_draw_hook
-                    (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                overlay_window_set_draw_overlay_hook
-                    (This.Void_Ptr, Storage.To_Integer (Draw_Overlay_Hook'Address));
-                overlay_window_set_handle_hook
-                    (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -242,17 +240,30 @@ package body FLTK.Widgets.Groups.Windows.Double.Overlay is
     end Can_Do_Overlay;
 
 
+    procedure Resize
+           (This       : in out Overlay_Window;
+            X, Y, W, H : in     Integer) is
+    begin
+        fl_overlay_window_resize
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H));
+    end Resize;
+
+
 
 
     ----------------------------------
     --  Drawing and Event Handling  --
     ----------------------------------
 
-    procedure Draw
+    procedure Draw_Overlay
            (This : in out Overlay_Window) is
     begin
-        fl_overlay_window_draw (This.Void_Ptr);
-    end Draw;
+        raise Program_Error with "You must override Draw_Overlay";
+    end Draw_Overlay;
 
 
     procedure Redraw_Overlay
@@ -262,15 +273,6 @@ package body FLTK.Widgets.Groups.Windows.Double.Overlay is
     end Redraw_Overlay;
 
 
-    function Handle
-           (This  : in out Overlay_Window;
-            Event : in     Event_Kind)
-        return Event_Outcome is
-    begin
-        return Event_Outcome'Val
-            (fl_overlay_window_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
-    end Handle;
-
-
 end FLTK.Widgets.Groups.Windows.Double.Overlay;
+
 

@@ -33,13 +33,6 @@ package FLTK.Widgets.Clocks.Updated is
 
 
 
-    procedure Draw
-           (This : in out Updated_Clock);
-
-    procedure Draw
-           (This       : in out Clock;
-            X, Y, W, H : in     Integer);
-
     function Handle
            (This  : in out Updated_Clock;
             Event : in     Event_Kind)
@@ -50,6 +43,9 @@ private
 
 
     type Updated_Clock is new Clock with null record;
+
+    overriding procedure Initialize
+           (This : in out Updated_Clock);
 
     overriding procedure Finalize
            (This : in out Updated_Clock);
@@ -65,9 +61,9 @@ private
     with Inline;
 
 
-    pragma Inline (Draw);
     pragma Inline (Handle);
 
 
 end FLTK.Widgets.Clocks.Updated;
+
 

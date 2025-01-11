@@ -12,18 +12,9 @@ with
 package body FLTK.Widgets.Boxes is
 
 
-    procedure box_set_draw_hook
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, box_set_draw_hook, "box_set_draw_hook");
-    pragma Inline (box_set_draw_hook);
-
-    procedure box_set_handle_hook
-           (W, H : in Storage.Integer_Address);
-    pragma Import (C, box_set_handle_hook, "box_set_handle_hook");
-    pragma Inline (box_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_box
            (X, Y, W, H : in Interfaces.C.int;
@@ -31,6 +22,13 @@ package body FLTK.Widgets.Boxes is
         return Storage.Integer_Address;
     pragma Import (C, new_fl_box, "new_fl_box");
     pragma Inline (new_fl_box);
+
+    function new_fl_box2
+           (K, X, Y, W, H : in Interfaces.C.int;
+            Text          : in Interfaces.C.char_array)
+        return Storage.Integer_Address;
+    pragma Import (C, new_fl_box2, "new_fl_box2");
+    pragma Inline (new_fl_box2);
 
     procedure free_fl_box
            (B : in Storage.Integer_Address);
@@ -55,6 +53,10 @@ package body FLTK.Widgets.Boxes is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
     procedure Extra_Final
            (This : in out Box) is
     begin
@@ -75,6 +77,10 @@ package body FLTK.Widgets.Boxes is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Box;
             X, Y, W, H : in     Integer;
@@ -82,6 +88,14 @@ package body FLTK.Widgets.Boxes is
     begin
         Extra_Init (Widget (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Box) is
+    begin
+        This.Draw_Ptr   := fl_box_draw'Address;
+        This.Handle_Ptr := fl_box_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -93,14 +107,31 @@ package body FLTK.Widgets.Boxes is
         begin
             return This : Box do
                 This.Void_Ptr := new_fl_box
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                box_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                box_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
+            end return;
+        end Create;
+
+
+        function Create
+               (Kind       : in Box_Kind;
+                X, Y, W, H : in Integer;
+                Text       : in String := "")
+            return Box is
+        begin
+            return This : Box do
+                This.Void_Ptr := new_fl_box2
+                   (Box_Kind'Pos (Kind),
+                    Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
+                Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
 
@@ -109,10 +140,14 @@ package body FLTK.Widgets.Boxes is
 
 
 
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
     procedure Draw
            (This : in out Box) is
     begin
-        fl_box_draw (This.Void_Ptr);
+        Widget (This).Draw;
     end Draw;
 
 
@@ -121,10 +156,10 @@ package body FLTK.Widgets.Boxes is
             Event : in     Event_Kind)
         return Event_Outcome is
     begin
-        return Event_Outcome'Val
-               (fl_box_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
+        return Widget (This).Handle (Event);
     end Handle;
 
 
 end FLTK.Widgets.Boxes;
+
 

@@ -220,19 +220,11 @@ package FLTK.Widgets.Menus is
 
 
 
-    procedure Draw
-           (This : in out Menu) is null;
-
     procedure Draw_Item
            (This       : in out Menu;
             Item       : in     Index;
             X, Y, W, H : in     Integer;
             Selected   : in     Boolean := False);
-
-    function Handle
-           (This  : in out Menu;
-            Event : in     Event_Kind)
-        return Event_Outcome;
 
 
 private
@@ -252,6 +244,9 @@ private
     type Menu is new Widget with record
         My_Items : Item_Vectors.Vector;
     end record;
+
+    overriding procedure Initialize
+           (This : in out Menu);
 
     overriding procedure Finalize
            (This : in out Menu);
@@ -326,10 +321,9 @@ private
     pragma Inline (Popup);
     pragma Inline (Pulldown);
 
-    pragma Inline (Draw);
     pragma Inline (Draw_Item);
-    pragma Inline (Handle);
 
 
 end FLTK.Widgets.Menus;
+
 

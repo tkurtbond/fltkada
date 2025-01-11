@@ -27,14 +27,16 @@ package FLTK.Widgets.Valuators.Sliders is
                 Text       : in String := "")
             return Slider;
 
+        function Create
+               (Kind       : in Slider_Kind;
+                X, Y, W, H : in Integer;
+                Text       : in String := "")
+            return Slider;
+
     end Forge;
 
 
 
-
-    function Get_Slider_Type
-           (This : in Slider)
-        return Slider_Kind;
 
     procedure Set_Bounds
            (This     : in out Slider;
@@ -54,7 +56,7 @@ package FLTK.Widgets.Valuators.Sliders is
 
     procedure Set_Slide_Size
            (This : in out Slider;
-            To   : in     Float);
+            To   : in     Long_Float);
 
     procedure Set_Scrollvalue
            (This            : in out Slider;
@@ -69,13 +71,27 @@ package FLTK.Widgets.Valuators.Sliders is
     procedure Draw
            (This : in out Slider);
 
+    procedure Draw
+           (This       : in out Slider;
+            X, Y, W, H : in     Integer);
+
     function Handle
            (This  : in out Slider;
             Event : in     Event_Kind)
         return Event_Outcome;
 
+    function Handle
+           (This       : in out Slider;
+            Event      : in     Event_Kind;
+            X, Y, W, H : in     Integer)
+        return Event_Outcome;
 
 
+
+
+    function Get_Slider_Type
+           (This : in Slider)
+        return Slider_Kind;
 
     package Extra is
 
@@ -91,6 +107,9 @@ private
 
     type Slider is new Valuator with null record;
 
+    overriding procedure Initialize
+           (This : in out Slider);
+
     overriding procedure Finalize
            (This : in out Slider);
 
@@ -105,7 +124,6 @@ private
     with Inline;
 
 
-    pragma Inline (Get_Slider_Type);
     pragma Inline (Set_Bounds);
     pragma Inline (Get_Box);
     pragma Inline (Set_Box);
@@ -116,6 +134,9 @@ private
     pragma Inline (Draw);
     pragma Inline (Handle);
 
+    pragma Inline (Get_Slider_Type);
+
 
 end FLTK.Widgets.Valuators.Sliders;
+
 

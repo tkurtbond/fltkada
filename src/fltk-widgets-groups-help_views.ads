@@ -28,10 +28,8 @@ package FLTK.Widgets.Groups.Help_Views is
         return String;
 
 
-
-
     --  You have no idea how tempting it is to give this
-    --  a more tongue in cheek name
+    --  a more tongue in cheek name.
     Load_Help_Error : exception;
 
 
@@ -95,7 +93,7 @@ package FLTK.Widgets.Groups.Help_Views is
            (This : in Help_View)
         return String;
 
-    --  Name here can be either a ftp/http/https/ipp/mailto/news URL or a filename
+    --  Name here can be either a ftp/http/https/ipp/mailto/news URL or a filename.
     procedure Load
            (This : in out Help_View;
             Name : in     String);
@@ -134,6 +132,10 @@ package FLTK.Widgets.Groups.Help_Views is
     procedure Resize
            (This : in out Help_View;
             W, H : in     Integer);
+
+    procedure Resize
+           (This       : in out Help_View;
+            X, Y, W, H : in     Integer);
 
     function Get_Text_Color
            (This : in Help_View)
@@ -179,14 +181,16 @@ private
         Hilda : Interfaces.C.Strings.chars_ptr;
     end record;
 
+    overriding procedure Initialize
+           (This : in out Help_View);
+
     overriding procedure Finalize
            (This : in out Help_View);
 
     procedure Extra_Init
            (This       : in out Help_View;
             X, Y, W, H : in     Integer;
-            Text       : in     String)
-    with Inline;
+            Text       : in     String);
 
     procedure Extra_Final
            (This : in out Help_View);

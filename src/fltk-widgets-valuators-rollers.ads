@@ -41,6 +41,9 @@ private
 
     type Roller is new Valuator with null record;
 
+    overriding procedure Initialize
+           (This : in out Roller);
+
     overriding procedure Finalize
            (This : in out Roller);
 
@@ -60,4 +63,5 @@ private
 
 
 end FLTK.Widgets.Valuators.Rollers;
+
 

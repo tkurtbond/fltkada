@@ -27,7 +27,7 @@ package FLTK.Widgets.Menus.Choices is
 
 
 
-    function Chosen
+    function Get_Chosen
            (This : in Choice)
         return FLTK.Menu_Items.Menu_Item_Reference;
 
@@ -60,6 +60,9 @@ private
 
     type Choice is new Menu with null record;
 
+    overriding procedure Initialize
+           (This : in out Choice);
+
     overriding procedure Finalize
            (This : in out Choice);
 
@@ -83,4 +86,5 @@ private
 
 
 end FLTK.Widgets.Menus.Choices;
+
 

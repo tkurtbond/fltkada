@@ -55,6 +55,8 @@ int My_Widget::handle(int e) {
 
 
 
+//  Flattened C API
+
 WIDGET new_fl_widget(int x, int y, int w, int h, char* label) {
     My_Widget *wd = new My_Widget(x, y, w, h, label);
     return wd;
@@ -335,6 +337,17 @@ void fl_widget_set_image(WIDGET w, void * img) {
 
 void fl_widget_set_deimage(WIDGET w, void * img) {
     reinterpret_cast<Fl_Widget*>(w)->deimage(reinterpret_cast<Fl_Image*>(img));
+}
+
+
+
+
+unsigned char fl_widget_get_type(WIDGET w) {
+    return reinterpret_cast<Fl_Widget*>(w)->type();
+}
+
+void fl_widget_set_type(WIDGET w, unsigned char t) {
+    reinterpret_cast<Fl_Widget*>(w)->type(t);
 }
 
 

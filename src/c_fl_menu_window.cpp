@@ -6,61 +6,43 @@
 
 #include <FL/Fl_Menu_Window.H>
 #include "c_fl_menu_window.h"
-#include "c_fl_type.h"
 
 
 
+
+//  Exports from Ada
+
+extern "C" void widget_draw_hook(void * ud);
+extern "C" int widget_handle_hook(void * ud, int e);
+
+
+
+
+//  Attaching all relevant hooks and friends
 
 class My_Menu_Window : public Fl_Menu_Window {
-    public:
-        using Fl_Menu_Window::Fl_Menu_Window;
-        friend void menu_window_set_draw_hook(MENUWINDOW n, void * d);
-        friend void fl_menu_window_draw(MENUWINDOW n);
-        friend void menu_window_set_handle_hook(MENUWINDOW n, void * h);
-        friend int fl_menu_window_handle(MENUWINDOW n, int e);
-    protected:
-        void draw();
-        void real_draw();
-        int handle(int e);
-        int real_handle(int e);
-        d_hook_p draw_hook;
-        h_hook_p handle_hook;
+public:
+    using Fl_Menu_Window::Fl_Menu_Window;
+
+    friend void fl_menu_window_draw(MENUWINDOW n);
+    friend int fl_menu_window_handle(MENUWINDOW n, int e);
+
+    void draw();
+    int handle(int e);
 };
 
 void My_Menu_Window::draw() {
-    (*draw_hook)(this->user_data());
-}
-
-void My_Menu_Window::real_draw() {
-    Fl_Menu_Window::draw();
+    widget_draw_hook(this->user_data());
 }
 
 int My_Menu_Window::handle(int e) {
-    return (*handle_hook)(this->user_data(), e);
-}
-
-int My_Menu_Window::real_handle(int e) {
-    return Fl_Menu_Window::handle(e);
-}
-
-void menu_window_set_draw_hook(MENUWINDOW n, void * d) {
-    reinterpret_cast<My_Menu_Window*>(n)->draw_hook = reinterpret_cast<d_hook_p>(d);
-}
-
-void fl_menu_window_draw(MENUWINDOW n) {
-    reinterpret_cast<My_Menu_Window*>(n)->real_draw();
-}
-
-void menu_window_set_handle_hook(MENUWINDOW n, void * h) {
-    reinterpret_cast<My_Menu_Window*>(n)->handle_hook = reinterpret_cast<h_hook_p>(h);
-}
-
-int fl_menu_window_handle(MENUWINDOW n, int e) {
-    return reinterpret_cast<My_Menu_Window*>(n)->real_handle(e);
+    return widget_handle_hook(this->user_data(), e);
 }
 
 
 
+
+//  Flattened C API
 
 MENUWINDOW new_fl_menu_window(int x, int y, int w, int h, char* label) {
     My_Menu_Window *m = new My_Menu_Window(x, y, w, h, label);
@@ -105,4 +87,16 @@ void fl_menu_window_clear_overlay(MENUWINDOW m) {
 unsigned int fl_menu_window_overlay(MENUWINDOW m) {
     return reinterpret_cast<Fl_Menu_Window*>(m)->overlay();
 }
+
+
+
+
+void fl_menu_window_draw(MENUWINDOW n) {
+    reinterpret_cast<My_Menu_Window*>(n)->Fl_Menu_Window::draw();
+}
+
+int fl_menu_window_handle(MENUWINDOW n, int e) {
+    return reinterpret_cast<My_Menu_Window*>(n)->Fl_Menu_Window::handle(e);
+}
+
 

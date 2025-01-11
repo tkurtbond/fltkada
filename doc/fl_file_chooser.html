@@ -64,46 +64,6 @@ See Fl_Ask for related symbols that are not members of the Fl_File_Chooser class
 
 
 <table class="function">
-  <tr><th colspan="2">Attributes</th></tr>
-
-  <tr>
-<td><pre>
-Fl_Button * newButton;
-</pre></td>
-<td><pre>
-function New_Button
-       (This : in out File_Chooser)
-    return FLTK.Widgets.Buttons.Button_Reference;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-Fl_Check_Button * previewButton;
-</pre></td>
-<td><pre>
-function Preview_Button
-       (This : in out File_Chooser)
-    return FLTK.Widgets.Buttons.Light.Check.Check_Button_Reference;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-Fl_Check_Button * showHiddenButton;
-</pre></td>
-<td><pre>
-function Show_Hidden_Button
-       (This : in out File_Chooser)
-    return FLTK.Widgets.Buttons.Light.Check.Check_Button_Reference;
-</pre></td>
-  </tr>
-
-</table>
-
-
-
-<table class="function">
   <tr><th colspan="2">Static Attributes</th></tr>
 
   <tr>
@@ -298,6 +258,46 @@ static Fl_File_Sort_F * sort = fl_numericsort;
 <td><pre>
 Sort_Method : not null FLTK.Filenames.Compare_Function :=
     FLTK.Filenames.Numeric_Sort'Access;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Attributes</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Button * newButton;
+</pre></td>
+<td><pre>
+function New_Button
+       (This : in out File_Chooser)
+    return FLTK.Widgets.Buttons.Button_Reference;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Check_Button * previewButton;
+</pre></td>
+<td><pre>
+function Preview_Button
+       (This : in out File_Chooser)
+    return FLTK.Widgets.Buttons.Light.Check.Check_Button_Reference;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Check_Button * showHiddenButton;
+</pre></td>
+<td><pre>
+function Show_Hidden_Button
+       (This : in out File_Chooser)
+    return FLTK.Widgets.Buttons.Light.Check.Check_Button_Reference;
 </pre></td>
   </tr>
 

@@ -12,18 +12,9 @@ with
 package body FLTK.Widgets.Groups.Scrolls is
 
 
-    procedure scroll_set_draw_hook
-           (S, D : in Storage.Integer_Address);
-    pragma Import (C, scroll_set_draw_hook, "scroll_set_draw_hook");
-    pragma Inline (scroll_set_draw_hook);
-
-    procedure scroll_set_handle_hook
-           (S, H : in Storage.Integer_Address);
-    pragma Import (C, scroll_set_handle_hook, "scroll_set_handle_hook");
-    pragma Inline (scroll_set_handle_hook);
-
-
-
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     function new_fl_scroll
            (X, Y, W, H : in Interfaces.C.int;
@@ -105,6 +96,10 @@ package body FLTK.Widgets.Groups.Scrolls is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
     procedure Extra_Final
            (This : in out Scroll) is
     begin
@@ -125,6 +120,10 @@ package body FLTK.Widgets.Groups.Scrolls is
 
 
 
+    --------------------
+    --  Constructors  --
+    --------------------
+
     procedure Extra_Init
            (This       : in out Scroll;
             X, Y, W, H : in     Integer;
@@ -132,6 +131,14 @@ package body FLTK.Widgets.Groups.Scrolls is
     begin
         Extra_Init (Group (This), X, Y, W, H, Text);
     end Extra_Init;
+
+
+    procedure Initialize
+           (This : in out Scroll) is
+    begin
+        This.Draw_Ptr   := fl_scroll_draw'Address;
+        This.Handle_Ptr := fl_scroll_handle'Address;
+    end Initialize;
 
 
     package body Forge is
@@ -149,8 +156,6 @@ package body FLTK.Widgets.Groups.Scrolls is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
-                scroll_set_draw_hook (This.Void_Ptr, Storage.To_Integer (Draw_Hook'Address));
-                scroll_set_handle_hook (This.Void_Ptr, Storage.To_Integer (Handle_Hook'Address));
             end return;
         end Create;
 
@@ -158,6 +163,10 @@ package body FLTK.Widgets.Groups.Scrolls is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     procedure Clear
            (This : in out Scroll) is
@@ -223,7 +232,7 @@ package body FLTK.Widgets.Groups.Scrolls is
     procedure Draw
            (This : in out Scroll) is
     begin
-        fl_scroll_draw (This.Void_Ptr);
+        Group (This).Draw;
     end Draw;
 
 
@@ -232,10 +241,10 @@ package body FLTK.Widgets.Groups.Scrolls is
             Event : in     Event_Kind)
         return Event_Outcome is
     begin
-        return Event_Outcome'Val
-               (fl_scroll_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
+        return Group (This).Handle (Event);
     end Handle;
 
 
 end FLTK.Widgets.Groups.Scrolls;
+
 

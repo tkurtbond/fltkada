@@ -46,7 +46,36 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Attributes</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Input * input();
+</pre></td>
+<td><pre>
+function Text_Field
+       (This : in out Input_Choice)
+    return FLTK.Widgets.Inputs.Text.Text_Input_Reference;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Menu_Button * menubutton();
+</pre></td>
+<td><pre>
+function Button_Menu
+       (This : in out Input_Choice)
+    return FLTK.Widgets.Menus.Menu_Buttons.Menu_Button_Reference;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -55,16 +84,23 @@ Fl_Input_Choice(int X, int Y, int W, int H, const char *L=0);
 <td><pre>
 function Create
        (X, Y, W, H : in Integer;
-        Text       : in String)
+        Text       : in String := "")
     return Input_Choice;
 </pre></td>
   </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
 void add(const char *s);
 </pre></td>
-<td>Use Menu_Button instead</td>
+<td>Use menubutton / Button_Menu instead.</td>
   </tr>
 
   <tr>
@@ -121,35 +157,6 @@ procedure Set_Down_Box
   </tr>
 
   <tr>
-<td>&nbsp;</td>
-<td><pre>
-procedure Draw
-       (This : in out Input_Choice);
-</pre></td>
-  </tr>
-
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
-function Handle
-       (This  : in out Input_Choice;
-        Event : in     Event_Kind)
-    return Event_Outcome;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-Fl_Input * input();
-</pre></td>
-<td><pre>
-function Text_Field
-       (This : in out Input_Choice)
-    return FLTK.Widgets.Inputs.Text.Text_Input_Reference;
-</pre></td>
-  </tr>
-
-  <tr>
 <td><pre>
 const Fl_Menu_Item * menu();
 </pre></td>
@@ -165,20 +172,13 @@ void menu(const Fl_Menu_Item *m);
 
   <tr>
 <td><pre>
-Fl_Menu_Button * menubutton();
-</pre></td>
-<td><pre>
-function Button_Menu
-       (This : in out Input_Choice)
-    return FLTK.Widgets.Menus.Menu_Buttons.Menu_Button_Reference;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
 void resize(int X, int Y, int W, int H);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Resize
+       (This       : in out Input_Choice;
+        X, Y, W, H : in     Integer);
+</pre></td>
   </tr>
 
   <tr>

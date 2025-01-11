@@ -123,8 +123,12 @@ package FLTK.Widgets.Groups.Spinners is
 
 
 
-    procedure Draw
-           (This : in out Spinner);
+    procedure Resize
+           (This       : in out Spinner;
+            X, Y, W, H : in     Integer);
+
+
+
 
     function Handle
            (This  : in out Spinner;
@@ -136,6 +140,9 @@ private
 
 
     type Spinner is new Group with null record;
+
+    overriding procedure Initialize
+           (This : in out Spinner);
 
     overriding procedure Finalize
            (This : in out Spinner);
@@ -174,9 +181,11 @@ private
     pragma Inline (Get_Value);
     pragma Inline (Set_Value);
 
-    pragma Inline (Draw);
+    pragma Inline (Resize);
+
     pragma Inline (Handle);
 
 
 end FLTK.Widgets.Groups.Spinners;
+
 

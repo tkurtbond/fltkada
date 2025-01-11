@@ -8,69 +8,43 @@
 #include <FL/Fl_Help_View.H>
 #include <FL/Enumerations.H>
 #include "c_fl_help_view.h"
-#include "c_fl_type.h"
 
 
 
+
+//  Exports from Ada
+
+extern "C" void widget_draw_hook(void * ud);
+extern "C" int widget_handle_hook(void * ud, int e);
+
+
+
+
+//  Attaching all relevant hooks and friends
 
 class My_Help_View : public Fl_Help_View {
-    public:
-        using Fl_Help_View::Fl_Help_View;
-        friend void help_view_set_draw_hook(HELPVIEW v, void * d);
-        friend void fl_help_view_draw(HELPVIEW v);
-        friend void help_view_set_handle_hook(HELPVIEW v, void * h);
-        friend int fl_help_view_handle(HELPVIEW v, int e);
-    protected:
-        void draw();
-        void real_draw();
-        int handle(int e);
-        int real_handle(int e);
-        d_hook_p draw_hook;
-        h_hook_p handle_hook;
+public:
+    using Fl_Help_View::Fl_Help_View;
+
+    friend void fl_help_view_draw(HELPVIEW v);
+    friend int fl_help_view_handle(HELPVIEW v, int e);
+
+    void draw();
+    int handle(int e);
 };
 
 void My_Help_View::draw() {
-    (*draw_hook)(this->user_data());
-}
-
-void My_Help_View::real_draw() {
-    #if FL_ABI_VERSION >= 10303
-    Fl_Help_View::draw();
-    #else
-    Fl_Group::draw();
-    #endif
+    widget_draw_hook(this->user_data());
 }
 
 int My_Help_View::handle(int e) {
-    return (*handle_hook)(this->user_data(), e);
-}
-
-int My_Help_View::real_handle(int e) {
-    #if FL_ABI_VERSION >= 10303
-    return Fl_Help_View::handle(e);
-    #else
-    return Fl_Group::handle(e);
-    #endif
-}
-
-void help_view_set_draw_hook(HELPVIEW v, void * d) {
-    reinterpret_cast<My_Help_View*>(v)->draw_hook = reinterpret_cast<d_hook_p>(d);
-}
-
-void fl_help_view_draw(HELPVIEW v) {
-    reinterpret_cast<My_Help_View*>(v)->real_draw();
-}
-
-void help_view_set_handle_hook(HELPVIEW v, void * h) {
-    reinterpret_cast<My_Help_View*>(v)->handle_hook = reinterpret_cast<h_hook_p>(h);
-}
-
-int fl_help_view_handle(HELPVIEW v, int e) {
-    return reinterpret_cast<My_Help_View*>(v)->real_handle(e);
+    return widget_handle_hook(this->user_data(), e);
 }
 
 
 
+
+//  Flattened C API
 
 HELPVIEW new_fl_help_view(int x, int y, int w, int h, char * label) {
     My_Help_View *v = new My_Help_View(x, y, w, h, label);
@@ -169,6 +143,10 @@ void fl_help_view_set_size(HELPVIEW v, int w, int h) {
     reinterpret_cast<Fl_Help_View*>(v)->size(w, h);
 }
 
+void fl_help_view_resize(HELPVIEW v, int x, int y, int w, int h) {
+    reinterpret_cast<Fl_Help_View*>(v)->resize(x, y, w, h);
+}
+
 unsigned int fl_help_view_get_textcolor(HELPVIEW v) {
     return reinterpret_cast<Fl_Help_View*>(v)->textcolor();
 }
@@ -191,6 +169,25 @@ int fl_help_view_get_textsize(HELPVIEW v) {
 
 void fl_help_view_set_textsize(HELPVIEW v, int s) {
     reinterpret_cast<Fl_Help_View*>(v)->textsize(s);
+}
+
+
+
+
+void fl_help_view_draw(HELPVIEW v) {
+    #if FL_ABI_VERSION >= 10303
+    reinterpret_cast<My_Help_View*>(v)->Fl_Help_View::draw();
+    #else
+    reinterpret_cast<My_Help_View*>(v)->Fl_Group::draw();
+    #endif
+}
+
+int fl_help_view_handle(HELPVIEW v, int e) {
+    #if FL_ABI_VERSION >= 10303
+    return reinterpret_cast<My_Help_View*>(v)->Fl_Help_View::handle(e);
+    #else
+    return reinterpret_cast<My_Help_View*>(v)->Fl_Group::handle(e);
+    #endif
 }
 
 

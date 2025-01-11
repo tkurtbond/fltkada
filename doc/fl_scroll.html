@@ -51,7 +51,28 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Attributes</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Scrollbar hscrollbar;
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Scrollbar scrollbar;
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -60,10 +81,17 @@ Fl_Scroll(int X, int Y, int W, int H, const char *L=0);
 <td><pre>
 function Create
        (X, Y, W, H : in Integer;
-        Text       : in String)
+        Text       : in String := "")
     return Scroll;
 </pre></td>
   </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
@@ -71,16 +99,6 @@ void clear();
 </pre></td>
 <td><pre>
 procedure Clear
-       (This : in out Scroll);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-void draw();
-</pre></td>
-<td><pre>
-procedure Draw
        (This : in out Scroll);
 </pre></td>
   </tr>
@@ -166,6 +184,37 @@ procedure Set_Type
        (This : in out Scroll;
         Mode : in     Scroll_Kind);
 </pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void bbox(int &, int &, int &, int &);
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Scroll);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void recalc_scrollbars(Scrollinfo &si);
+</pre></td>
+<td>&nbsp;</td>
   </tr>
 
 </table>

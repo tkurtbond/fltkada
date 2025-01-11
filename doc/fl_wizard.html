@@ -46,7 +46,7 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -55,28 +55,17 @@ Fl_Wizard(int, int, int, int, const char *=0);
 <td><pre>
 function Create
        (X, Y, W, H : in Integer;
-        Text       : in String)
+        Text       : in String := "")
     return Wizard;
 </pre></td>
   </tr>
 
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
-procedure Draw
-       (This : in out Wizard);
-</pre></td>
-  </tr>
+</table>
 
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
-function Handle
-       (This  : in out Wizard;
-        Event : in     Event_Kind)
-    return Event_Outcome;
-</pre></td>
-  </tr>
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
@@ -117,6 +106,23 @@ void value(Fl_Widget *);
 procedure Set_Visible
        (This : in out Wizard;
         Item : in out Widget'Class);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre>(Actually private in 1.3)</td>
+<td><pre>
+procedure Draw
+       (This : in out Wizard);
 </pre></td>
   </tr>
 

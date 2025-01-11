@@ -42,8 +42,40 @@
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>uchar</td>
     <td>Slider_Kind</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Slider(int X, int Y, int W, int H, const char *L=0);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return Slider;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Slider(uchar t, int X, int Y, int W, int H, const char *L);
+</pre></td>
+<td><pre>
+function Create
+       (Kind       : in Slider_Kind;
+        X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return Slider;
+</pre></td>
   </tr>
 
 </table>
@@ -55,41 +87,12 @@
 
   <tr>
 <td><pre>
-Fl_Slider(int X, int Y, int W, int H, const char *L=0);
-</pre></td>
-<td><pre>
-function Create
-       (X, Y, W, H : in Integer;
-        Text       : in String)
-    return Slider;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-Fl_Slider(uchar t, int X, int Y, int W, int H, const char *L);
-</pre></td>
-<td>&nbsp;</td>
-  </tr>
-
-  <tr>
-<td><pre>
 void bounds(double a, double b);
 </pre></td>
 <td><pre>
 procedure Set_Bounds
        (This     : in out Slider;
         Min, Max : in     Long_Float);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-void draw();
-</pre></td>
-<td><pre>
-procedure Draw
-       (This : in out Slider);
 </pre></td>
   </tr>
 
@@ -159,12 +162,12 @@ void slider_size(double v);
 <td><pre>
 procedure Set_Slide_Size
        (This : in out Slider;
-        To   : in     Float);
+        To   : in     Long_Float);
 </pre></td>
   </tr>
 
   <tr>
-<td>See type() methods for Fl_Widget</td>
+<td>See type method for Fl_Widget.</td>
 <td><pre>
 function Get_Slider_Type
        (This : in Slider)
@@ -173,11 +176,52 @@ function Get_Slider_Type
   </tr>
 
   <tr>
-<td>See type() methods for Fl_Widget</td>
+<td>See type method for Fl_Widget.</td>
 <td><pre>
 procedure Set_Slider_Type
        (This : in out Slider;
         To   : in     Slider_Kind);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Slider);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw(int, int, int, int);
+</pre></td>
+<td><pre>
+procedure Draw
+       (This       : in out Slider;
+        X, Y, W, H : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int handle(int, int, int, int, int);
+</pre></td>
+<td><pre>
+function Handle
+       (This       : in out Slider;
+        Event      : in     Event_Kind;
+        X, Y, W, H : in     Integer)
+    return Event_Outcome;
 </pre></td>
   </tr>
 

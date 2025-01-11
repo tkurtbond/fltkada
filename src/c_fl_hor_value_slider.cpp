@@ -6,69 +6,62 @@
 
 #include <FL/Fl_Hor_Value_Slider.H>
 #include "c_fl_hor_value_slider.h"
-#include "c_fl_type.h"
 
 
 
+
+//  Exports from Ada
+
+extern "C" void widget_draw_hook(void * ud);
+extern "C" int widget_handle_hook(void * ud, int e);
+
+
+
+
+//  Attaching all relevant hooks and friends
 
 class My_Hor_Value_Slider : public Fl_Hor_Value_Slider {
-    public:
-        using Fl_Hor_Value_Slider::Fl_Hor_Value_Slider;
-        friend void hor_value_slider_set_draw_hook(HOR_VALUE_SLIDER s, void * d);
-        friend void fl_hor_value_slider_draw(HOR_VALUE_SLIDER s);
-        friend void hor_value_slider_set_handle_hook(HOR_VALUE_SLIDER s, void * h);
-        friend int fl_hor_value_slider_handle(HOR_VALUE_SLIDER s, int e);
-    protected:
-        void draw();
-        void real_draw();
-        int handle(int e);
-        int real_handle(int e);
-        d_hook_p draw_hook;
-        h_hook_p handle_hook;
+public:
+    using Fl_Hor_Value_Slider::Fl_Hor_Value_Slider;
+
+    friend void fl_hor_value_slider_draw(HORVALUESLIDER s);
+    friend int fl_hor_value_slider_handle(HORVALUESLIDER s, int e);
+
+    void draw();
+    int handle(int e);
 };
 
 void My_Hor_Value_Slider::draw() {
-    (*draw_hook)(this->user_data());
-}
-
-void My_Hor_Value_Slider::real_draw() {
-    Fl_Hor_Value_Slider::draw();
+    widget_draw_hook(this->user_data());
 }
 
 int My_Hor_Value_Slider::handle(int e) {
-    return (*handle_hook)(this->user_data(), e);
-}
-
-int My_Hor_Value_Slider::real_handle(int e) {
-    return Fl_Hor_Value_Slider::handle(e);
-}
-
-void hor_value_slider_set_draw_hook(HOR_VALUE_SLIDER s, void * d) {
-    reinterpret_cast<My_Hor_Value_Slider*>(s)->draw_hook = reinterpret_cast<d_hook_p>(d);
-}
-
-void fl_hor_value_slider_draw(HOR_VALUE_SLIDER s) {
-    reinterpret_cast<My_Hor_Value_Slider*>(s)->real_draw();
-}
-
-void hor_value_slider_set_handle_hook(HOR_VALUE_SLIDER s, void * h) {
-    reinterpret_cast<My_Hor_Value_Slider*>(s)->handle_hook = reinterpret_cast<h_hook_p>(h);
-}
-
-int fl_hor_value_slider_handle(HOR_VALUE_SLIDER s, int e) {
-    return reinterpret_cast<My_Hor_Value_Slider*>(s)->real_handle(e);
+    return widget_handle_hook(this->user_data(), e);
 }
 
 
 
 
-HOR_VALUE_SLIDER new_fl_hor_value_slider(int x, int y, int w, int h, char* label) {
+//  Flattened C API
+
+HORVALUESLIDER new_fl_hor_value_slider(int x, int y, int w, int h, char* label) {
     My_Hor_Value_Slider *s = new My_Hor_Value_Slider(x, y, w, h, label);
     return s;
 }
 
-void free_fl_hor_value_slider(HOR_VALUE_SLIDER s) {
+void free_fl_hor_value_slider(HORVALUESLIDER s) {
     delete reinterpret_cast<My_Hor_Value_Slider*>(s);
+}
+
+
+
+
+void fl_hor_value_slider_draw(HORVALUESLIDER s) {
+    reinterpret_cast<My_Hor_Value_Slider*>(s)->Fl_Hor_Value_Slider::draw();
+}
+
+int fl_hor_value_slider_handle(HORVALUESLIDER s, int e) {
+    return reinterpret_cast<My_Hor_Value_Slider*>(s)->Fl_Hor_Value_Slider::handle(e);
 }
 
 

@@ -268,6 +268,15 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+    procedure fl_browser_set_size
+           (B    : in Storage.Integer_Address;
+            W, H : in Interfaces.C.int);
+    pragma Import (C, fl_browser_set_size, "fl_browser_set_size");
+    pragma Inline (fl_browser_set_size);
+
+
+
+
     procedure fl_browser_set_icon
            (B : in Storage.Integer_Address;
             L : in Interfaces.C.int;
@@ -883,6 +892,19 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
     begin
         fl_browser_hide (This.Void_Ptr);
     end Hide;
+
+
+
+
+    procedure Resize
+           (This : in out Textline_Browser;
+            W, H : in     Integer) is
+    begin
+        fl_browser_set_size
+           (This.Void_Ptr,
+            Interfaces.C.int (W),
+            Interfaces.C.int (H));
+    end Resize;
 
 
 
