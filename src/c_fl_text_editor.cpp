@@ -279,13 +279,23 @@ void fl_text_editor_set_insert_mode(TEXTEDITOR te, int i) {
 
 
 
-//int fl_text_editor_get_tab_nav(TEXTEDITOR te) {
-//    return reinterpret_cast<Fl_Text_Editor*>(te)->tab_nav();
-//}
+int fl_text_editor_get_tab_nav(TEXTEDITOR te) {
+#if FLTK_ABI_VERSION >= 10304
+    return reinterpret_cast<Fl_Text_Editor*>(te)->tab_nav();
+#else
+    (void)(te);
+    return 0;
+#endif
+}
 
-//void fl_text_editor_set_tab_nav(TEXTEDITOR te, int t) {
-//    reinterpret_cast<Fl_Text_Editor*>(te)->tab_nav(t);
-//}
+void fl_text_editor_set_tab_nav(TEXTEDITOR te, int t) {
+#if FLTK_ABI_VERSION >= 10304
+    reinterpret_cast<Fl_Text_Editor*>(te)->tab_nav(t);
+#else
+    (void)(te);
+    (void)(t);
+#endif
+}
 
 
 

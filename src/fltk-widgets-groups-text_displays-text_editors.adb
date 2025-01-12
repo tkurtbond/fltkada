@@ -317,17 +317,17 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
-    --  function fl_text_editor_get_tab_nav
-    --         (TE : in Storage.Integer_Address)
-    --      return Interfaces.C.int;
-    --  pragma Import (C, fl_text_editor_get_tab_nav, "fl_text_editor_get_tab_nav");
-    --  pragma Inline (fl_text_editor_get_tab_nav);
+    function fl_text_editor_get_tab_nav
+           (TE : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_editor_get_tab_nav, "fl_text_editor_get_tab_nav");
+    pragma Inline (fl_text_editor_get_tab_nav);
 
-    --  procedure fl_text_editor_set_tab_nav
-    --         (TE : in Storage.Integer_Address;
-    --          T  : in Interfaces.C.int);
-    --  pragma Import (C, fl_text_editor_set_tab_nav, "fl_text_editor_set_tab_nav");
-    --  pragma Inline (fl_text_editor_set_tab_nav);
+    procedure fl_text_editor_set_tab_nav
+           (TE : in Storage.Integer_Address;
+            T  : in Interfaces.C.int);
+    pragma Import (C, fl_text_editor_set_tab_nav, "fl_text_editor_set_tab_nav");
+    pragma Inline (fl_text_editor_set_tab_nav);
 
 
 
@@ -983,20 +983,22 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
-    --  function Get_Tab_Nav_Mode
-    --         (This : in Text_Editor)
-    --      return Tab_Navigation is
-    --  begin
-    --      return Tab_Navigation'Val (fl_text_editor_get_tab_nav (This.Void_Ptr));
-    --  end Get_Tab_Nav_Mode;
+    function Get_Tab_Mode
+           (This : in Text_Editor)
+        return Tab_Navigation is
+    begin
+        return Tab_Navigation'Val (fl_text_editor_get_tab_nav (This.Void_Ptr));
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error;
+    end Get_Tab_Mode;
 
 
-    --  procedure Set_Tab_Nav_Mode
-    --         (This : in out Text_Editor;
-    --          To   : in     Tab_Navigation) is
-    --  begin
-    --      fl_text_editor_set_tab_nav (This.Void_Ptr, Tab_Navigation'Pos (To));
-    --  end Set_Tab_Nav_Mode;
+    procedure Set_Tab_Mode
+           (This : in out Text_Editor;
+            To   : in     Tab_Navigation) is
+    begin
+        fl_text_editor_set_tab_nav (This.Void_Ptr, Tab_Navigation'Pos (To));
+    end Set_Tab_Mode;
 
 
 

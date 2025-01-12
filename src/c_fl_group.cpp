@@ -103,14 +103,13 @@ int fl_group_children(GROUP g) {
 
 
 
-//unsigned int flt_group_get_clip_children(GROUP g) {
-//    return reinterpret_cast<Fl_Group*>(g)->clip_children();
-//}
+unsigned int fl_group_get_clip_children(GROUP g) {
+    return reinterpret_cast<Fl_Group*>(g)->clip_children();
+}
 
-
-//void fl_group_set_clip_children(GROUP g, int c) {
-//    reinterpret_cast<Fl_Group*>(g)->clip_children(c);
-//}
+void fl_group_set_clip_children(GROUP g, int c) {
+    reinterpret_cast<Fl_Group*>(g)->clip_children(c);
+}
 
 
 

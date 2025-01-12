@@ -27,6 +27,10 @@ void fl_tooltip_enable(int v) {
     Fl_Tooltip::enable(v);
 }
 
+void fl_tooltip_disable() {
+    Fl_Tooltip::disable();
+}
+
 void fl_tooltip_enter_area(void * i, int x, int y, int w, int h, const char * t) {
     Fl_Tooltip::enter_area(reinterpret_cast<Fl_Widget*>(i),x,y,w,h,t);
 }
@@ -65,25 +69,37 @@ int fl_tooltip_get_margin_height(void) {
     return Fl_Tooltip::margin_height();
 }
 
-//void fl_tooltip_set_margin_height(int v) {
-//    Fl_Tooltip::margin_height(v);
-//}
+void fl_tooltip_set_margin_height(int v) {
+#if FLTK_ABI_VERSION >= 10301
+    Fl_Tooltip::margin_height(v);
+#else
+    (void)(v);
+#endif
+}
 
 int fl_tooltip_get_margin_width(void) {
     return Fl_Tooltip::margin_width();
 }
 
-//void fl_tooltip_set_margin_width(int v) {
-//    Fl_Tooltip::margin_width(v);
-//}
+void fl_tooltip_set_margin_width(int v) {
+#if FLTK_ABI_VERSION >= 10301
+    Fl_Tooltip::margin_width(v);
+#else
+    (void)(v);
+#endif
+}
 
 int fl_tooltip_get_wrap_width(void) {
     return Fl_Tooltip::wrap_width();
 }
 
-//void fl_tooltip_set_wrap_width(int v) {
-//    Fl_Tooltip::wrap_width(v);
-//}
+void fl_tooltip_set_wrap_width(int v) {
+#if FLTK_ABI_VERSION >= 10301
+    Fl_Tooltip::wrap_width(v);
+#else
+    (void)(v);
+#endif
+}
 
 
 

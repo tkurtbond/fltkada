@@ -22,7 +22,9 @@ package FLTK.Tooltips is
         return Boolean;
 
     procedure Set_Enabled
-           (To : in Boolean);
+           (To : in Boolean := True);
+
+    procedure Disable;
 
     procedure Enter_Area
            (Item       : in FLTK.Widgets.Widget'Class;
@@ -56,20 +58,20 @@ package FLTK.Tooltips is
     function Get_Margin_Height
         return Natural;
 
-    --  procedure Set_Margin_Height
-    --         (To : in Natural);
+    procedure Set_Margin_Height
+           (To : in Natural);
 
     function Get_Margin_Width
         return Natural;
 
-    --  procedure Set_Margin_Width
-    --         (To : in Natural);
+    procedure Set_Margin_Width
+           (To : in Natural);
 
     function Get_Wrap_Width
         return Natural;
 
-    --  procedure Set_Wrap_Width
-    --         (To : in Natural);
+    procedure Set_Wrap_Width
+           (To : in Natural);
 
 
 
@@ -100,24 +102,22 @@ private
     pragma Inline (Set_Target);
     pragma Inline (Is_Enabled);
     pragma Inline (Set_Enabled);
+    pragma Inline (Disable);
     pragma Inline (Enter_Area);
-
 
     pragma Inline (Get_Delay);
     pragma Inline (Set_Delay);
     pragma Inline (Get_Hover_Delay);
     pragma Inline (Set_Hover_Delay);
 
-
     pragma Inline (Get_Background_Color);
     pragma Inline (Set_Background_Color);
     pragma Inline (Get_Margin_Height);
-    --  pragma Inline (Set_Margin_Height);
+    pragma Inline (Set_Margin_Height);
     pragma Inline (Get_Margin_Width);
-    --  pragma Inline (Set_Margin_Width);
+    pragma Inline (Set_Margin_Width);
     pragma Inline (Get_Wrap_Width);
-    --  pragma Inline (Set_Wrap_Width);
-
+    pragma Inline (Set_Wrap_Width);
 
     pragma Inline (Get_Text_Color);
     pragma Inline (Set_Text_Color);
@@ -128,4 +128,5 @@ private
 
 
 end FLTK.Tooltips;
+
 

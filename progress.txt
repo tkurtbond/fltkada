@@ -188,10 +188,6 @@ Fl_System_Printer
 
 Bugs to fix:
 
-Fl_Group ABI_VERSION checks
-Fl_Help_View ABI_VERSION checks
-Fl_Tooltip ABI_VERSION checks
-Fl_Text_Editor tab_nav ABI_VERSION checks
 Fl_Wizard draw() method private/protected
 GNAT bug with type_invariant combined with derived type and a begin section in a package, eg dialogs.adb
 Fl_Bitmap / Fl_XBM_Image instances will always have fail() return ERR_NO_IMAGE

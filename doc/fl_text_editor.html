@@ -42,8 +42,13 @@
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>int</td>
     <td>Insert_Mode</td>
+  </tr>
+
+  <tr>
+    <td>int</td>
+    <td>Tab_Navigation</td>
   </tr>
 
   <tr>
@@ -575,16 +580,24 @@ procedure Remove_Key_Binding
 
   <tr>
 <td><pre>
-void tab_nav(int val);
+int tab_nav() const;
 </pre></td>
-<td>TBA</td>
+<td><pre>
+function Get_Tab_Mode
+       (This : in Text_Editor)
+    return Tab_Navigation;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
-int tab_nav() const;
+void tab_nav(int val);
 </pre></td>
-<td>TBA</td>
+<td><pre>
+procedure Set_Tab_Mode
+       (This : in out Text_Editor;
+        To   : in     Tab_Navigation);
+</pre></td>
   </tr>
 
 </table>

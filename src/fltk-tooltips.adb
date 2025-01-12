@@ -17,6 +17,10 @@ use type
 package body FLTK.Tooltips is
 
 
+    ------------------------
+    --  Functions From C  --
+    ------------------------
+
     function fl_tooltip_get_current
         return Storage.Integer_Address;
     pragma Import (C, fl_tooltip_get_current, "fl_tooltip_get_current");
@@ -36,6 +40,10 @@ package body FLTK.Tooltips is
            (V : in Interfaces.C.int);
     pragma Import (C, fl_tooltip_enable, "fl_tooltip_enable");
     pragma Inline (fl_tooltip_enable);
+
+    procedure fl_tooltip_disable;
+    pragma Import (C, fl_tooltip_disable, "fl_tooltip_disable");
+    pragma Inline (fl_tooltip_disable);
 
     procedure fl_tooltip_enter_area
            (I          : in Storage.Integer_Address;
@@ -85,30 +93,30 @@ package body FLTK.Tooltips is
     pragma Import (C, fl_tooltip_get_margin_height, "fl_tooltip_get_margin_height");
     pragma Inline (fl_tooltip_get_margin_height);
 
-    --  procedure fl_tooltip_set_margin_height
-    --         (V : in Interfaces.C.int);
-    --  pragma Import (C, fl_tooltip_set_margin_height, "fl_tooltip_set_margin_height");
-    --  pragma Inline (fl_tooltip_set_margin_height);
+    procedure fl_tooltip_set_margin_height
+           (V : in Interfaces.C.int);
+    pragma Import (C, fl_tooltip_set_margin_height, "fl_tooltip_set_margin_height");
+    pragma Inline (fl_tooltip_set_margin_height);
 
     function fl_tooltip_get_margin_width
         return Interfaces.C.int;
     pragma Import (C, fl_tooltip_get_margin_width, "fl_tooltip_get_margin_width");
     pragma Inline (fl_tooltip_get_margin_width);
 
-    --  procedure fl_tooltip_set_margin_width
-    --         (V : in Interfaces.C.int);
-    --  pragma Import (C, fl_tooltip_set_margin_width, "fl_tooltip_set_margin_width");
-    --  pragma Inline (fl_tooltip_set_margin_width);
+    procedure fl_tooltip_set_margin_width
+           (V : in Interfaces.C.int);
+    pragma Import (C, fl_tooltip_set_margin_width, "fl_tooltip_set_margin_width");
+    pragma Inline (fl_tooltip_set_margin_width);
 
     function fl_tooltip_get_wrap_width
         return Interfaces.C.int;
     pragma Import (C, fl_tooltip_get_wrap_width, "fl_tooltip_get_wrap_width");
     pragma Inline (fl_tooltip_get_wrap_width);
 
-    --  procedure fl_tooltip_set_wrap_width
-    --         (V : in Interfaces.C.int);
-    --  pragma Import (C, fl_tooltip_set_wrap_width, "fl_tooltip_set_wrap_width");
-    --  pragma Inline (fl_tooltip_set_wrap_width);
+    procedure fl_tooltip_set_wrap_width
+           (V : in Interfaces.C.int);
+    pragma Import (C, fl_tooltip_set_wrap_width, "fl_tooltip_set_wrap_width");
+    pragma Inline (fl_tooltip_set_wrap_width);
 
 
 
@@ -158,6 +166,10 @@ package body FLTK.Tooltips is
 
 
 
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
     function Get_Target
         return access FLTK.Widgets.Widget'Class
     is
@@ -187,10 +199,16 @@ package body FLTK.Tooltips is
 
 
     procedure Set_Enabled
-           (To : in Boolean) is
+           (To : in Boolean := True) is
     begin
         fl_tooltip_enable (Boolean'Pos (To));
     end Set_Enabled;
+
+
+    procedure Disable is
+    begin
+        fl_tooltip_disable;
+    end Disable;
 
 
     procedure Enter_Area
@@ -261,11 +279,11 @@ package body FLTK.Tooltips is
     end Get_Margin_Height;
 
 
-    --  procedure Set_Margin_Height
-    --         (To : in Natural) is
-    --  begin
-    --      fl_tooltip_set_margin_height (Interfaces.C.int (To));
-    --  end Set_Margin_Height;
+    procedure Set_Margin_Height
+           (To : in Natural) is
+    begin
+        fl_tooltip_set_margin_height (Interfaces.C.int (To));
+    end Set_Margin_Height;
 
 
     function Get_Margin_Width
@@ -275,11 +293,11 @@ package body FLTK.Tooltips is
     end Get_Margin_Width;
 
 
-    --  procedure Set_Margin_Width
-    --         (To : in Natural) is
-    --  begin
-    --      fl_tooltip_set_margin_width (Interfaces.C.int (To));
-    --  end Set_Margin_Width;
+    procedure Set_Margin_Width
+           (To : in Natural) is
+    begin
+        fl_tooltip_set_margin_width (Interfaces.C.int (To));
+    end Set_Margin_Width;
 
 
     function Get_Wrap_Width
@@ -289,11 +307,11 @@ package body FLTK.Tooltips is
     end Get_Wrap_Width;
 
 
-    --  procedure Set_Wrap_Width
-    --         (To : in Natural) is
-    --  begin
-    --      fl_tooltip_set_wrap_width (Interfaces.C.int (To));
-    --  end Set_Wrap_Width;
+    procedure Set_Wrap_Width
+           (To : in Natural) is
+    begin
+        fl_tooltip_set_wrap_width (Interfaces.C.int (To));
+    end Set_Wrap_Width;
 
 
 
@@ -341,4 +359,5 @@ package body FLTK.Tooltips is
 
 
 end FLTK.Tooltips;
+
 

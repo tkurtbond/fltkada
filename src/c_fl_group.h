@@ -32,8 +32,8 @@ extern "C" int fl_group_find(GROUP g, WIDGET item);
 extern "C" int fl_group_children(GROUP g);
 
 
-//extern "C" unsigned int fl_group_get_clip_children(GROUP g);
-//extern "C" void fl_group_set_clip_children(GROUP g, int c);
+extern "C" unsigned int fl_group_get_clip_children(GROUP g);
+extern "C" void fl_group_set_clip_children(GROUP g, int c);
 
 
 extern "C" void * fl_group_get_resizable(GROUP g);

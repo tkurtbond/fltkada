@@ -28,7 +28,7 @@ package FLTK.Widgets.Groups is
     subtype Extended_Index is Natural;
     No_Index : constant Extended_Index := Extended_Index'First;
 
-    --  type Clip_Mode is (No_Clip, Clip);
+    type Clip_Mode is (No_Clip, Clip);
 
     type Cursor is private;
 
@@ -116,13 +116,13 @@ package FLTK.Widgets.Groups is
 
 
 
-    --  function Get_Clip_Mode
-    --         (This : in Group)
-    --      return Clip_Mode;
+    function Get_Clip_Mode
+           (This : in Group)
+        return Clip_Mode;
 
-    --  procedure Set_Clip_Mode
-    --         (This : in out Group;
-    --          Mode : in     Clip_Mode);
+    procedure Set_Clip_Mode
+           (This : in out Group;
+            Mode : in     Clip_Mode := Clip);
 
 
 

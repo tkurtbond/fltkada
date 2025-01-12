@@ -95,17 +95,17 @@ package body FLTK.Widgets.Groups is
 
 
 
-    --  function fl_group_get_clip_children
-    --         (G : in Storage.Integer_Address)
-    --      return Interfaces.C.unsigned;
-    --  pragma Import (C, fl_group_get_clip_children, "fl_group_get_clip_children");
-    --  pragma Inline (fl_group_get_clip_children);
+    function fl_group_get_clip_children
+           (G : in Storage.Integer_Address)
+        return Interfaces.C.unsigned;
+    pragma Import (C, fl_group_get_clip_children, "fl_group_get_clip_children");
+    pragma Inline (fl_group_get_clip_children);
 
-    --  procedure fl_group_set_clip_children
-    --         (G : in Storage.Integer_Address;
-    --          C : in Interfaces.C.unsigned);
-    --  pragma Import (C, fl_group_set_clip_children, "fl_group_set_clip_children");
-    --  pragma Inline (fl_group_set_clip_children);
+    procedure fl_group_set_clip_children
+           (G : in Storage.Integer_Address;
+            C : in Interfaces.C.int);
+    pragma Import (C, fl_group_set_clip_children, "fl_group_set_clip_children");
+    pragma Inline (fl_group_set_clip_children);
 
 
 
@@ -413,20 +413,22 @@ package body FLTK.Widgets.Groups is
 
 
 
-    --  function Get_Clip_Mode
-    --         (This : in Group)
-    --      return Clip_Mode is
-    --  begin
-    --      return Clip_Mode'Val (fl_group_get_clip_children (This.Void_Ptr));
-    --  end Get_Clip_Mode;
+    function Get_Clip_Mode
+           (This : in Group)
+        return Clip_Mode is
+    begin
+        return Clip_Mode'Val (fl_group_get_clip_children (This.Void_Ptr));
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error;
+    end Get_Clip_Mode;
 
 
-    --  procedure Set_Clip_Mode
-    --         (This : in out Group;
-    --          Mode : in     Clip_Mode) is
-    --  begin
-    --      fl_group_set_clip_children (This.Void_Ptr, Clip_Mode'Pos (Mode));
-    --  end Set_Clip_Mode;
+    procedure Set_Clip_Mode
+           (This : in out Group;
+            Mode : in     Clip_Mode := Clip) is
+    begin
+        fl_group_set_clip_children (This.Void_Ptr, Clip_Mode'Pos (Mode));
+    end Set_Clip_Mode;
 
 
 

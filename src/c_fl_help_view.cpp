@@ -175,19 +175,19 @@ void fl_help_view_set_textsize(HELPVIEW v, int s) {
 
 
 void fl_help_view_draw(HELPVIEW v) {
-    #if FL_ABI_VERSION >= 10303
+#if FL_ABI_VERSION >= 10303
     reinterpret_cast<My_Help_View*>(v)->Fl_Help_View::draw();
-    #else
+#else
     reinterpret_cast<My_Help_View*>(v)->Fl_Group::draw();
-    #endif
+#endif
 }
 
 int fl_help_view_handle(HELPVIEW v, int e) {
-    #if FL_ABI_VERSION >= 10303
+#if FL_ABI_VERSION >= 10303
     return reinterpret_cast<My_Help_View*>(v)->Fl_Help_View::handle(e);
-    #else
+#else
     return reinterpret_cast<My_Help_View*>(v)->Fl_Group::handle(e);
-    #endif
+#endif
 }
 
 

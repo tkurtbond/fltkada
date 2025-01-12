@@ -20,7 +20,7 @@ package FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
     type Insert_Mode is (Before, After);
 
-    --  type Tab_Navigation is (Insert_Char, Widget_Focus);
+    type Tab_Navigation is (Insert_Char, Widget_Focus);
 
     type Key_Func is access procedure
            (This : in out Text_Editor'Class);
@@ -309,13 +309,13 @@ package FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
-    --  function Get_Tab_Nav_Mode
-    --         (This : in Text_Editor)
-    --      return Tab_Navigation;
+    function Get_Tab_Mode
+           (This : in Text_Editor)
+        return Tab_Navigation;
 
-    --  procedure Set_Tab_Nav_Mode
-    --         (This : in out Text_Editor;
-    --          To   : in     Tab_Navigation);
+    procedure Set_Tab_Mode
+           (This : in out Text_Editor;
+            To   : in     Tab_Navigation);
 
 
 

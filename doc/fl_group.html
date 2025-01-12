@@ -52,6 +52,11 @@
   </tr>
 
   <tr>
+    <td>int</td>
+    <td>Clip_Mode</td>
+  </tr>
+
+  <tr>
     <td>&nbsp;</td>
     <td>Cursor</td>
   </tr>
@@ -113,7 +118,7 @@ procedure Set_Current
 <td><pre>
 Fl_Widget *& _ddfdesign_kludge();
 </pre></td>
-<td>&nbsp;</td>
+<td>Intentionally left unbound.</td>
   </tr>
 
   <tr>
@@ -221,16 +226,24 @@ procedure Clear
 
   <tr>
 <td><pre>
-void clip_children(int c);
+unsigned int clip_children();
 </pre></td>
-<td>TBA</td>
+<td><pre>
+function Get_Clip_Mode
+       (This : in Group)
+    return Clip_Mode;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
-unsigned int clip_children();
+void clip_children(int c);
 </pre></td>
-<td>TBA</td>
+<td><pre>
+procedure Set_Clip_Mode
+       (This : in out Group;
+        Mode : in     Clip_Mode := Clip);
+</pre></td>
   </tr>
 
   <tr>
@@ -265,7 +278,7 @@ void focus(Fl_Widget *W);
 <td><pre>
 void forms_end();
 </pre></td>
-<td>&nbsp;</td>
+<td>Intentionally left unbound.</td>
   </tr>
 
   <tr>

@@ -26,8 +26,30 @@
 </table>
 
 
+
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Static Attributes</th></tr>
+
+  <tr>
+<td><pre>
+static void(*enter)(Fl_Widget *w) = 0;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void(*exit)(Fl_Widget *w) = 0;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
@@ -93,7 +115,9 @@ procedure Set_Delay
 <td><pre>
 static void disable();
 </pre></td>
-<td>See static void enable(int b=1);</td>
+<td><pre>
+procedure Disable;
+</pre></td>
   </tr>
 
   <tr>
@@ -102,7 +126,7 @@ static void enable(int b=1);
 </pre></td>
 <td><pre>
 procedure Set_Enabled
-       (To : in Boolean);
+       (To : in Boolean := True);
 </pre></td>
   </tr>
 
@@ -118,7 +142,8 @@ function Is_Enabled
 
   <tr>
 <td><pre>
-static void enter_area(Fl_Widget *w, int X, int Y, int W, int H, const char *tip);
+static void enter_area(Fl_Widget *w, int X, int Y, int W, int H,
+    const char *tip);
 </pre></td>
 <td><pre>
 procedure Enter_Area
@@ -182,7 +207,10 @@ function Get_Margin_Height
 <td><pre>
 static void margin_height(int v);
 </pre></td>
-<td>Disabled pending ABI version check bugfix in FLTK</td>
+<td><pre>
+procedure Set_Margin_Height
+       (To : in Natural);
+</pre></td>
   </tr>
 
   <tr>
@@ -199,7 +227,10 @@ function Get_Margin_Width
 <td><pre>
 static void margin_width(int v);
 </pre></td>
-<td>Disabled pending ABI version check bugfix in FLTK</td>
+<td><pre>
+procedure Set_Margin_Width
+       (To : in Natural);
+</pre></td>
   </tr>
 
   <tr>
@@ -256,7 +287,10 @@ function Get_Wrap_Width
 <td><pre>
 static void wrap_width(int v);
 </pre></td>
-<td>Disabled pending ABI version check bugfix in FLTK</td>
+<td><pre>
+procedure Set_Wrap_Width
+       (To : in Natural);
+</pre></td>
   </tr>
 
 </table>
