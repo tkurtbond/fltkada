@@ -127,20 +127,31 @@ void fl_spinner_set_step(SPINNER n, double t) {
     reinterpret_cast<Fl_Spinner*>(n)->step(t);
 }
 
-int fl_spinner_get_type(SPINNER n) {
-    return reinterpret_cast<Fl_Spinner*>(n)->type();
-}
-
-void fl_spinner_set_type(SPINNER n, int t) {
-    reinterpret_cast<Fl_Spinner*>(n)->type(t);
-}
-
 double fl_spinner_get_value(SPINNER n) {
     return reinterpret_cast<Fl_Spinner*>(n)->value();
 }
 
 void fl_spinner_set_value(SPINNER n, double t) {
     reinterpret_cast<Fl_Spinner*>(n)->value(t);
+}
+
+
+
+
+const char * fl_spinner_get_format(SPINNER n) {
+    return reinterpret_cast<Fl_Spinner*>(n)->format();
+}
+
+void fl_spinner_set_format(SPINNER n, const char * f) {
+    reinterpret_cast<Fl_Spinner*>(n)->format(f);
+}
+
+int fl_spinner_get_type(SPINNER n) {
+    return reinterpret_cast<Fl_Spinner*>(n)->type();
+}
+
+void fl_spinner_set_type(SPINNER n, int t) {
+    reinterpret_cast<Fl_Spinner*>(n)->type(t);
 }
 
 

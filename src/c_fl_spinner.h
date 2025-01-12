@@ -34,10 +34,14 @@ extern "C" void fl_spinner_set_maximum(SPINNER n, double t);
 extern "C" void fl_spinner_range(SPINNER n, double a, double b);
 extern "C" double fl_spinner_get_step(SPINNER n);
 extern "C" void fl_spinner_set_step(SPINNER n, double t);
-extern "C" int fl_spinner_get_type(SPINNER n);
-extern "C" void fl_spinner_set_type(SPINNER n, int t);
 extern "C" double fl_spinner_get_value(SPINNER n);
 extern "C" void fl_spinner_set_value(SPINNER n, double t);
+
+
+extern "C" const char * fl_spinner_get_format(SPINNER n);
+extern "C" void fl_spinner_set_format(SPINNER n, const char * f);
+extern "C" int fl_spinner_get_type(SPINNER n);
+extern "C" void fl_spinner_set_type(SPINNER n, int t);
 
 
 extern "C" void fl_spinner_resize(SPINNER n, int x, int y, int w, int h);

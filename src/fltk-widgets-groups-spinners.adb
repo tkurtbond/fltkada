@@ -6,11 +6,12 @@
 
 with
 
-    Interfaces.C;
+    Interfaces.C.Strings;
 
 use type
 
-    Interfaces.C.int;
+    Interfaces.C.int,
+    Interfaces.C.Strings.chars_ptr;
 
 
 package body FLTK.Widgets.Groups.Spinners is
@@ -140,18 +141,6 @@ package body FLTK.Widgets.Groups.Spinners is
     pragma Import (C, fl_spinner_set_step, "fl_spinner_set_step");
     pragma Inline (fl_spinner_set_step);
 
-    function fl_spinner_get_type
-           (S : in Storage.Integer_Address)
-        return Interfaces.C.int;
-    pragma Import (C, fl_spinner_get_type, "fl_spinner_get_type");
-    pragma Inline (fl_spinner_get_type);
-
-    procedure fl_spinner_set_type
-           (S : in Storage.Integer_Address;
-            T : in Interfaces.C.int);
-    pragma Import (C, fl_spinner_set_type, "fl_spinner_set_type");
-    pragma Inline (fl_spinner_set_type);
-
     function fl_spinner_get_value
            (S : in Storage.Integer_Address)
         return Interfaces.C.double;
@@ -163,6 +152,33 @@ package body FLTK.Widgets.Groups.Spinners is
             T : in Interfaces.C.double);
     pragma Import (C, fl_spinner_set_value, "fl_spinner_set_value");
     pragma Inline (fl_spinner_set_value);
+
+
+
+
+    function fl_spinner_get_format
+           (S : in Storage.Integer_Address)
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_spinner_get_format, "fl_spinner_get_format");
+    pragma Inline (fl_spinner_get_format);
+
+    procedure fl_spinner_set_format
+           (S : in Storage.Integer_Address;
+            F : in Interfaces.C.Strings.chars_ptr);
+    pragma Import (C, fl_spinner_set_format, "fl_spinner_set_format");
+    pragma Inline (fl_spinner_set_format);
+
+    function fl_spinner_get_type
+           (S : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_spinner_get_type, "fl_spinner_get_type");
+    pragma Inline (fl_spinner_get_type);
+
+    procedure fl_spinner_set_type
+           (S : in Storage.Integer_Address;
+            T : in Interfaces.C.int);
+    pragma Import (C, fl_spinner_set_type, "fl_spinner_set_type");
+    pragma Inline (fl_spinner_set_type);
 
 
 
@@ -413,22 +429,6 @@ package body FLTK.Widgets.Groups.Spinners is
     end Set_Step;
 
 
-    function Get_Type
-           (This : in Spinner)
-        return Spinner_Kind is
-    begin
-        return Spinner_Kind'Val (fl_spinner_get_type (This.Void_Ptr) - 1);
-    end Get_Type;
-
-
-    procedure Set_Type
-           (This : in out Spinner;
-            To   : in     Spinner_Kind) is
-    begin
-        fl_spinner_set_type (This.Void_Ptr, Spinner_Kind'Pos (To) + 1);
-    end Set_Type;
-
-
     function Get_Value
            (This : in Spinner)
         return Long_Float is
@@ -443,6 +443,48 @@ package body FLTK.Widgets.Groups.Spinners is
     begin
         fl_spinner_set_value (This.Void_Ptr, Interfaces.C.double (To));
     end Set_Value;
+
+
+
+
+    function Get_Format
+           (This : in Spinner)
+        return String
+    is
+        Result : Interfaces.C.Strings.chars_ptr := fl_spinner_get_format (This.Void_Ptr);
+    begin
+        if Result = Interfaces.C.Strings.Null_Ptr then
+            return "";
+        else
+            return Interfaces.C.Strings.Value (Result);
+        end if;
+    end Get_Format;
+
+
+    procedure Set_Format
+           (This : in out Spinner;
+            To   : in     String) is
+    begin
+        Interfaces.C.Strings.Free (This.Format_Str);
+        This.Format_Str := Interfaces.C.Strings.New_String (To);
+        fl_spinner_set_format (This.Void_Ptr, This.Format_Str);
+    end Set_Format;
+
+
+    function Get_Type
+           (This : in Spinner)
+        return Spinner_Kind is
+    begin
+        return Spinner_Kind'Val (fl_spinner_get_type (This.Void_Ptr) - 1);
+    end Get_Type;
+
+
+    procedure Set_Type
+           (This : in out Spinner;
+            To   : in     Spinner_Kind) is
+    begin
+        fl_spinner_set_type (This.Void_Ptr, Spinner_Kind'Pos (To) + 1);
+    end Set_Type;
 
 
 

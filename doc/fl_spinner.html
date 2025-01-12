@@ -52,21 +52,21 @@
 <td><pre>
 Fl_Repeat_Button down_button_;
 </pre></td>
-<td>&nbsp;</td>
+<td>Intentionally left unbound.</td>
   </tr>
 
   <tr>
 <td><pre>
 Fl_Input input_;
 </pre></td>
-<td>&nbsp;</td>
+<td>Intentionally left unbound.</td>
   </tr>
 
   <tr>
 <td><pre>
 Fl_Repeat_Button up_button_;
 </pre></td>
-<td>&nbsp;</td>
+<td>Intentionally left unbound.</td>
   </tr>
 
 </table>
@@ -121,14 +121,22 @@ function Get_Background_Color
 <td><pre>
 const char * format();
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Get_Format
+       (This : in Spinner)
+    return String;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 void format(const char *f);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Set_Format
+       (This : in out Spinner;
+        To   : in     String);
+</pre></td>
   </tr>
 
   <tr>

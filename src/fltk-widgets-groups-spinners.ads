@@ -4,6 +4,11 @@
 --  Released into the public domain
 
 
+private with
+
+    Interfaces.C.Strings;
+
+
 package FLTK.Widgets.Groups.Spinners is
 
 
@@ -104,14 +109,6 @@ package FLTK.Widgets.Groups.Spinners is
            (This : in out Spinner;
             To   : in     Long_Float);
 
-    function Get_Type
-           (This : in Spinner)
-        return Spinner_Kind;
-
-    procedure Set_Type
-           (This : in out Spinner;
-            To   : in     Spinner_Kind);
-
     function Get_Value
            (This : in Spinner)
         return Long_Float;
@@ -119,6 +116,25 @@ package FLTK.Widgets.Groups.Spinners is
     procedure Set_Value
            (This : in out Spinner;
             To   : in     Long_Float);
+
+
+
+
+    function Get_Format
+           (This : in Spinner)
+        return String;
+
+    procedure Set_Format
+           (This : in out Spinner;
+            To   : in     String);
+
+    function Get_Type
+           (This : in Spinner)
+        return Spinner_Kind;
+
+    procedure Set_Type
+           (This : in out Spinner;
+            To   : in     Spinner_Kind);
 
 
 
@@ -139,7 +155,9 @@ package FLTK.Widgets.Groups.Spinners is
 private
 
 
-    type Spinner is new Group with null record;
+    type Spinner is new Group with record
+        Format_Str : Interfaces.C.Strings.chars_ptr;
+    end record;
 
     overriding procedure Initialize
            (This : in out Spinner);
@@ -176,10 +194,11 @@ private
     pragma Inline (Set_Range);
     pragma Inline (Get_Step);
     pragma Inline (Set_Step);
-    pragma Inline (Get_Type);
-    pragma Inline (Set_Type);
     pragma Inline (Get_Value);
     pragma Inline (Set_Value);
+
+    pragma Inline (Get_Type);
+    pragma Inline (Set_Type);
 
     pragma Inline (Resize);
 
