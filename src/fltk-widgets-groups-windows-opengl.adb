@@ -171,6 +171,11 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
     pragma Import (C, fl_gl_window_set_valid, "fl_gl_window_set_valid");
     pragma Inline (fl_gl_window_set_valid);
 
+    procedure fl_gl_window_invalidate
+           (S : in Storage.Integer_Address);
+    pragma Import (C, fl_gl_window_invalidate, "fl_gl_window_invalidate");
+    pragma Inline (fl_gl_window_invalidate);
+
     procedure fl_gl_window_make_current
            (S : in Storage.Integer_Address);
     pragma Import (C, fl_gl_window_make_current, "fl_gl_window_make_current");
@@ -479,6 +484,13 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
     begin
         fl_gl_window_set_valid (This.Void_Ptr, Boolean'Pos (Value));
     end Set_Valid;
+
+
+    procedure Invalidate
+           (This : in out GL_Window) is
+    begin
+        fl_gl_window_invalidate (This.Void_Ptr);
+    end Invalidate;
 
 
     procedure Make_Current

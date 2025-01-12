@@ -19,6 +19,7 @@ extern "C" void free_fl_menu_window(MENUWINDOW m);
 extern "C" void fl_menu_window_show(MENUWINDOW m);
 extern "C" void fl_menu_window_hide(MENUWINDOW m);
 extern "C" void fl_menu_window_flush(MENUWINDOW m);
+extern "C" void fl_menu_window_erase(MENUWINDOW m);
 
 
 extern "C" void fl_menu_window_set_overlay(MENUWINDOW m);

@@ -150,6 +150,10 @@ void fl_gl_window_set_valid(GLWINDOW w, char v) {
     reinterpret_cast<Fl_Gl_Window*>(w)->valid(v);
 }
 
+void fl_gl_window_invalidate(GLWINDOW w) {
+    reinterpret_cast<Fl_Gl_Window*>(w)->invalidate();
+}
+
 void fl_gl_window_make_current(GLWINDOW w) {
     reinterpret_cast<Fl_Gl_Window*>(w)->make_current();
 }

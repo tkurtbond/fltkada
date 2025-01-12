@@ -55,17 +55,7 @@ int My_Cairo_Window::handle(int e) {
 
 //  Flattened C API begins here
 
-CAIROWINDOW new_fl_cairo_window(int x, int y, int w, int h, char * label) {
-    My_Cairo_Window *c = new My_Cairo_Window(x, y, w, h, label);
-    return c;
-}
-
-CAIROWINDOW new_fl_cairo_window2(int w, int h, char * label) {
-    My_Cairo_Window *c = new My_Cairo_Window(w, h, label);
-    return c;
-}
-
-CAIROWINDOW new_fl_cairo_window3(int w, int h) {
+CAIROWINDOW new_fl_cairo_window(int w, int h) {
     My_Cairo_Window *c = new My_Cairo_Window(w, h);
     return c;
 }

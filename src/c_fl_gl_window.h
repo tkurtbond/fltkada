@@ -42,6 +42,7 @@ extern "C" char fl_gl_window_context_valid(GLWINDOW w);
 extern "C" void fl_gl_window_set_context_valid(GLWINDOW w, char v);
 extern "C" char fl_gl_window_valid(GLWINDOW w);
 extern "C" void fl_gl_window_set_valid(GLWINDOW w, char v);
+extern "C" void fl_gl_window_invalidate(GLWINDOW w);
 extern "C" void fl_gl_window_make_current(GLWINDOW w);
 extern "C" void fl_gl_window_make_overlay_current(GLWINDOW w);
 

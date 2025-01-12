@@ -44,6 +44,9 @@ package FLTK.Widgets.Groups.Windows.Double is
     procedure Flush
            (This : in out Double_Window);
 
+    procedure Flush_All
+           (This : in out Double_Window);
+
 
 
 
@@ -78,6 +81,7 @@ private
     pragma Inline (Show_With_Args);
     pragma Inline (Hide);
     pragma Inline (Flush);
+    pragma Inline (Flush_All);
 
     pragma Inline (Resize);
 

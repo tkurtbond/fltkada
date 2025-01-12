@@ -55,7 +55,7 @@ Fl_Menu_Window(int W, int H, const char *L=0);
 <td><pre>
 function Create
        (W, H : in Integer;
-        Text : in String)
+        Text : in String := "")
     return Menu_Window;
 </pre></td>
   </tr>
@@ -67,7 +67,7 @@ Fl_Menu_Window(int X, int Y, int W, int H, const char *L=0);
 <td><pre>
 function Create
        (X, Y, W, H : in Integer;
-        Text       : in String)
+        Text       : in String := "")
     return Menu_Window;
 </pre></td>
   </tr>
@@ -83,14 +83,20 @@ function Create
 <td><pre>
 void clear_overlay();
 </pre></td>
-<td>See set_overlay();</td>
+<td><pre>
+procedure Clear_Overlay
+       (This : in out Menu_Window);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 void erase();
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Erase
+       (This : in out Menu_Window);
+</pre></td>
   </tr>
 
   <tr>
@@ -131,7 +137,7 @@ void set_overlay();
 <td><pre>
 procedure Set_Overlay
        (This  : in out Menu_Window;
-        Value : in     Boolean);
+        Value : in     Boolean := True);
 </pre></td>
   </tr>
 

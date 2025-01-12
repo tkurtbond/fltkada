@@ -158,6 +158,9 @@ package FLTK.Widgets.Groups.Windows.OpenGL is
            (This  : in out GL_Window;
             Value : in     Boolean);
 
+    procedure Invalidate
+           (This : in out GL_Window);
+
     procedure Make_Current
            (This : in out GL_Window);
 
@@ -251,6 +254,7 @@ private
     pragma Inline (Set_Context_Valid);
     pragma Inline (Get_Valid);
     pragma Inline (Set_Valid);
+    pragma Inline (Invalidate);
     pragma Inline (Make_Current);
     pragma Inline (Make_Overlay_Current);
 

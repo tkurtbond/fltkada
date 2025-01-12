@@ -73,6 +73,10 @@ void fl_menu_window_flush(MENUWINDOW m) {
     reinterpret_cast<Fl_Menu_Window*>(m)->flush();
 }
 
+void fl_menu_window_erase(MENUWINDOW m) {
+    reinterpret_cast<Fl_Menu_Window*>(m)->erase();
+}
+
 
 
 

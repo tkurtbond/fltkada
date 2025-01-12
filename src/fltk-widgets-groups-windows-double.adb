@@ -60,6 +60,12 @@ package body FLTK.Widgets.Groups.Windows.Double is
     pragma Import (C, fl_double_window_flush, "fl_double_window_flush");
     pragma Inline (fl_double_window_flush);
 
+    procedure fl_double_window_flush2
+           (W : in Storage.Integer_Address;
+            E : in Interfaces.C.int);
+    pragma Import (C, fl_double_window_flush2, "fl_double_window_flush2");
+    pragma Inline (fl_double_window_flush2);
+
 
 
 
@@ -200,6 +206,13 @@ package body FLTK.Widgets.Groups.Windows.Double is
     begin
         fl_double_window_flush (This.Void_Ptr);
     end Flush;
+
+
+    procedure Flush_All
+           (This : in out Double_Window) is
+    begin
+        fl_double_window_flush2 (This.Void_Ptr, 1);
+    end Flush_All;
 
 
 

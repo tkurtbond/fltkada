@@ -57,6 +57,11 @@ package body FLTK.Widgets.Groups.Windows.Single.Menu is
     pragma Import (C, fl_menu_window_flush, "fl_menu_window_flush");
     pragma Inline (fl_menu_window_flush);
 
+    procedure fl_menu_window_erase
+           (M : in Storage.Integer_Address);
+    pragma Import (C, fl_menu_window_erase, "fl_menu_window_erase");
+    pragma Inline (fl_menu_window_erase);
+
 
 
 
@@ -202,6 +207,13 @@ package body FLTK.Widgets.Groups.Windows.Single.Menu is
     end Flush;
 
 
+    procedure Erase
+           (This : in out Menu_Window) is
+    begin
+        fl_menu_window_erase (This.Void_Ptr);
+    end Erase;
+
+
 
 
     function Is_Overlay
@@ -214,7 +226,7 @@ package body FLTK.Widgets.Groups.Windows.Single.Menu is
 
     procedure Set_Overlay
            (This  : in out Menu_Window;
-            Value : in     Boolean) is
+            Value : in     Boolean := True) is
     begin
         if Value then
             fl_menu_window_set_overlay (This.Void_Ptr);
@@ -222,6 +234,13 @@ package body FLTK.Widgets.Groups.Windows.Single.Menu is
             fl_menu_window_clear_overlay (This.Void_Ptr);
         end if;
     end Set_Overlay;
+
+
+    procedure Clear_Overlay
+           (This : in out Menu_Window) is
+    begin
+        fl_menu_window_clear_overlay (This.Void_Ptr);
+    end Clear_Overlay;
 
 
 end FLTK.Widgets.Groups.Windows.Single.Menu;

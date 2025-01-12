@@ -18,24 +18,10 @@ package body FLTK.Widgets.Groups.Windows.Double.Cairo is
     ------------------------
 
     function new_fl_cairo_window
-           (X, Y, W, H : in Interfaces.C.int;
-            Text       : in Interfaces.C.char_array)
+           (W, H : in Interfaces.C.int)
         return Storage.Integer_Address;
     pragma Import (C, new_fl_cairo_window, "new_fl_cairo_window");
     pragma Inline (new_fl_cairo_window);
-
-    function new_fl_cairo_window2
-           (W, H : in Interfaces.C.int;
-            Text : in Interfaces.C.char_array)
-        return Storage.Integer_Address;
-    pragma Import (C, new_fl_cairo_window2, "new_fl_cairo_window2");
-    pragma Inline (new_fl_cairo_window2);
-
-    function new_fl_cairo_window3
-           (W, H : in Interfaces.C.int)
-        return Storage.Integer_Address;
-    pragma Import (C, new_fl_cairo_window3, "new_fl_cairo_window3");
-    pragma Inline (new_fl_cairo_window3);
 
     procedure free_fl_cairo_window
            (W : in Storage.Integer_Address);
@@ -151,11 +137,10 @@ package body FLTK.Widgets.Groups.Windows.Double.Cairo is
         begin
             return This : Cairo_Window do
                 This.Void_Ptr := new_fl_cairo_window
-                   (Interfaces.C.int (X),
-                    Interfaces.C.int (Y),
-                    Interfaces.C.int (W),
-                    Interfaces.C.int (H),
-                    Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (W),
+                    Interfaces.C.int (H));
+                This.Reposition (X, Y);
+                This.Set_Label (Text);
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -167,10 +152,10 @@ package body FLTK.Widgets.Groups.Windows.Double.Cairo is
             return Cairo_Window is
         begin
             return This : Cairo_Window do
-                This.Void_Ptr := new_fl_cairo_window2
+                This.Void_Ptr := new_fl_cairo_window
                    (Interfaces.C.int (W),
-                    Interfaces.C.int (H),
-                    Interfaces.C.To_C (Text));
+                    Interfaces.C.int (H));
+                This.Set_Label (Text);
                 Extra_Init (This, This.Get_X, This.Get_Y, W, H, Text);
             end return;
         end Create;
@@ -181,7 +166,7 @@ package body FLTK.Widgets.Groups.Windows.Double.Cairo is
             return Cairo_Window is
         begin
             return This : Cairo_Window do
-                This.Void_Ptr := new_fl_cairo_window3
+                This.Void_Ptr := new_fl_cairo_window
                    (Interfaces.C.int (W),
                     Interfaces.C.int (H));
                 Extra_Init (This, This.Get_X, This.Get_Y, W, H, This.Get_Label);

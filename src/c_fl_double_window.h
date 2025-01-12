@@ -20,6 +20,7 @@ extern "C" void fl_double_window_show(DOUBLEWINDOW d);
 extern "C" void fl_double_window_show2(DOUBLEWINDOW d, int c, void * v);
 extern "C" void fl_double_window_hide(DOUBLEWINDOW d);
 extern "C" void fl_double_window_flush(DOUBLEWINDOW d);
+extern "C" void fl_double_window_flush2(DOUBLEWINDOW d, int e);
 
 
 extern "C" void fl_double_window_resize(DOUBLEWINDOW d, int x, int y, int w, int h);

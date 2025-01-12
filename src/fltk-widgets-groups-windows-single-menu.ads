@@ -41,6 +41,9 @@ package FLTK.Widgets.Groups.Windows.Single.Menu is
     procedure Flush
            (This : in out Menu_Window);
 
+    procedure Erase
+           (This : in out Menu_Window);
+
 
 
 
@@ -50,7 +53,10 @@ package FLTK.Widgets.Groups.Windows.Single.Menu is
 
     procedure Set_Overlay
            (This  : in out Menu_Window;
-            Value : in     Boolean);
+            Value : in     Boolean := True);
+
+    procedure Clear_Overlay
+           (This : in out Menu_Window);
 
 
 private
@@ -78,9 +84,11 @@ private
     pragma Inline (Show);
     pragma Inline (Hide);
     pragma Inline (Flush);
+    pragma Inline (Erase);
 
     pragma Inline (Is_Overlay);
     pragma Inline (Set_Overlay);
+    pragma Inline (Clear_Overlay);
 
 
 end FLTK.Widgets.Groups.Windows.Single.Menu;
