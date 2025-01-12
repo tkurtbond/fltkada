@@ -116,8 +116,8 @@ package body FLTK.Widgets.Inputs.Text is
 
     procedure Extra_Init
            (This       : in out Text_Input;
-            X, Y, W, H : in Integer;
-            Text       : in String) is
+            X, Y, W, H : in     Integer;
+            Text       : in     String) is
     begin
         Extra_Init (Input (This), X, Y, W, H, Text);
     end Extra_Init;
