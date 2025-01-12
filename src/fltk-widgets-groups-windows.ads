@@ -10,7 +10,7 @@ with
 
 private with
 
-    Interfaces.C;
+    Interfaces.C.Strings;
 
 
 package FLTK.Widgets.Groups.Windows is
@@ -46,6 +46,9 @@ package FLTK.Widgets.Groups.Windows is
 
 
     procedure Show
+           (This : in out Window);
+
+    procedure Show_With_Args
            (This : in out Window);
 
     procedure Hide
@@ -232,7 +235,21 @@ private
     with Inline;
 
 
+    --  Used for implementing show(argc,argv)
+    type Show_With_Args_Func is access procedure
+           (CObj : in Storage.Integer_Address;
+            Argc : in Interfaces.C.int;
+            Argv : in Storage.Integer_Address);
+
+    pragma Convention (C, Show_With_Args_Func);
+
+    procedure Dispatch_Show_With_Args
+           (Func : in Show_With_Args_Func;
+            CObj : in Storage.Integer_Address);
+
+
     pragma Inline (Show);
+    pragma Inline (Show_With_Args);
     pragma Inline (Hide);
     pragma Inline (Is_Shown);
     pragma Inline (Wait_For_Expose);

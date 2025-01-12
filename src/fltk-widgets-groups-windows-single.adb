@@ -43,6 +43,13 @@ package body FLTK.Widgets.Groups.Windows.Single is
     pragma Import (C, fl_single_window_show, "fl_single_window_show");
     pragma Inline (fl_single_window_show);
 
+    procedure fl_single_window_show2
+           (S : in Storage.Integer_Address;
+            C : in Interfaces.C.int;
+            V : in Storage.Integer_Address);
+    pragma Import (C, fl_single_window_show2, "fl_single_window_show2");
+    pragma Inline (fl_single_window_show2);
+
     procedure fl_single_window_flush
            (S : in Storage.Integer_Address);
     pragma Import (C, fl_single_window_flush, "fl_single_window_flush");
@@ -166,6 +173,13 @@ package body FLTK.Widgets.Groups.Windows.Single is
     begin
         fl_single_window_show (This.Void_Ptr);
     end Show;
+
+
+    procedure Show_With_Args
+           (This : in out Single_Window) is
+    begin
+        Dispatch_Show_With_Args (fl_single_window_show2'Access, This.Void_Ptr);
+    end Show_With_Args;
 
 
     procedure Flush

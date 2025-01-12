@@ -50,6 +50,13 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
     pragma Import (C, fl_gl_window_show, "fl_gl_window_show");
     pragma Inline (fl_gl_window_show);
 
+    procedure fl_gl_window_show2
+           (S : in Storage.Integer_Address;
+            C : in Interfaces.C.int;
+            V : in Storage.Integer_Address);
+    pragma Import (C, fl_gl_window_show2, "fl_gl_window_show2");
+    pragma Inline (fl_gl_window_show2);
+
     procedure fl_gl_window_hide
            (S : in Storage.Integer_Address);
     pragma Import (C, fl_gl_window_hide, "fl_gl_window_hide");
@@ -299,6 +306,13 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
     begin
         fl_gl_window_show (This.Void_Ptr);
     end Show;
+
+
+    procedure Show_With_Args
+           (This : in out GL_Window) is
+    begin
+        Dispatch_Show_With_Args (fl_gl_window_show2'Access, This.Void_Ptr);
+    end Show_With_Args;
 
 
     procedure Hide

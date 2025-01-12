@@ -356,11 +356,19 @@ procedure Resize
   <tr>
 <td><pre>
 void show();
-
-void show(int a, char **b);
 </pre></td>
 <td><pre>
 procedure Show
+       (This : in out GL_Window);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void show(int a, char **b);
+</pre></td>
+<td><pre>
+procedure Show_With_Args
        (This : in out GL_Window);
 </pre></td>
   </tr>

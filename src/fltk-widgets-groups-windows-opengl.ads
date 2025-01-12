@@ -64,6 +64,9 @@ package FLTK.Widgets.Groups.Windows.OpenGL is
     procedure Show
            (This : in out GL_Window);
 
+    procedure Show_With_Args
+           (This : in out GL_Window);
+
     procedure Hide
            (This : in out GL_Window);
 
@@ -228,6 +231,7 @@ private
 
 
     pragma Inline (Show);
+    pragma Inline (Show_With_Args);
     pragma Inline (Hide);
     pragma Inline (Hide_Overlay);
     pragma Inline (Flush);

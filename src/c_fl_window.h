@@ -17,6 +17,7 @@ extern "C" void free_fl_window(WINDOW n);
 
 
 extern "C" void fl_window_show(WINDOW n);
+extern "C" void fl_window_show2(WINDOW n, int c, void * v);
 extern "C" void fl_window_hide(WINDOW n);
 extern "C" int fl_window_shown(WINDOW n);
 extern "C" void fl_window_wait_for_expose(WINDOW n);

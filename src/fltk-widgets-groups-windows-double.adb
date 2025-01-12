@@ -31,7 +31,7 @@ package body FLTK.Widgets.Groups.Windows.Double is
     pragma Inline (new_fl_double_window2);
 
     procedure free_fl_double_window
-            (W : in Storage.Integer_Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, free_fl_double_window, "free_fl_double_window");
     pragma Inline (free_fl_double_window);
 
@@ -39,17 +39,24 @@ package body FLTK.Widgets.Groups.Windows.Double is
 
 
     procedure fl_double_window_show
-            (W : in Storage.Integer_Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_double_window_show, "fl_double_window_show");
     pragma Inline (fl_double_window_show);
 
+    procedure fl_double_window_show2
+           (W : in Storage.Integer_Address;
+            C : in Interfaces.C.int;
+            V : in Storage.Integer_Address);
+    pragma Import (C, fl_double_window_show2, "fl_double_window_show2");
+    pragma Inline (fl_double_window_show2);
+
     procedure fl_double_window_hide
-            (W : in Storage.Integer_Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_double_window_hide, "fl_double_window_hide");
     pragma Inline (fl_double_window_hide);
 
     procedure fl_double_window_flush
-            (W : in Storage.Integer_Address);
+           (W : in Storage.Integer_Address);
     pragma Import (C, fl_double_window_flush, "fl_double_window_flush");
     pragma Inline (fl_double_window_flush);
 
@@ -172,6 +179,13 @@ package body FLTK.Widgets.Groups.Windows.Double is
     begin
         fl_double_window_show (This.Void_Ptr);
     end Show;
+
+
+    procedure Show_With_Args
+           (This : in out Double_Window) is
+    begin
+        Dispatch_Show_With_Args (fl_double_window_show2'Access, This.Void_Ptr);
+    end Show_With_Args;
 
 
     procedure Hide

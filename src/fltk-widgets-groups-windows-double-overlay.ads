@@ -35,6 +35,9 @@ package FLTK.Widgets.Groups.Windows.Double.Overlay is
     procedure Show
            (This : in out Overlay_Window);
 
+    procedure Show_With_Args
+           (This : in out Overlay_Window);
+
     procedure Hide
            (This : in out Overlay_Window);
 
@@ -86,6 +89,7 @@ private
 
 
     pragma Inline (Show);
+    pragma Inline (Show_With_Args);
     pragma Inline (Hide);
     pragma Inline (Flush);
 

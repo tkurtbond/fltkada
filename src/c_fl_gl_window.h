@@ -17,6 +17,7 @@ extern "C" void free_fl_gl_window(GLWINDOW w);
 
 
 extern "C" void fl_gl_window_show(GLWINDOW w);
+extern "C" void fl_gl_window_show2(GLWINDOW w, int c, void * v);
 extern "C" void fl_gl_window_hide(GLWINDOW w);
 extern "C" void fl_gl_window_hide_overlay(GLWINDOW w);
 extern "C" void fl_gl_window_flush(GLWINDOW w);

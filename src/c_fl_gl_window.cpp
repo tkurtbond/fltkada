@@ -65,6 +65,10 @@ void fl_gl_window_show(GLWINDOW w) {
     reinterpret_cast<Fl_Gl_Window*>(w)->show();
 }
 
+void fl_gl_window_show2(GLWINDOW w, int c, void * v) {
+    reinterpret_cast<Fl_Gl_Window*>(w)->show(c, static_cast<char**>(v));
+}
+
 void fl_gl_window_hide(GLWINDOW w) {
     reinterpret_cast<Fl_Gl_Window*>(w)->hide();
 }

@@ -65,6 +65,10 @@ void fl_single_window_show(SINGLEWINDOW w) {
     reinterpret_cast<Fl_Single_Window*>(w)->show();
 }
 
+void fl_single_window_show2(SINGLEWINDOW w, int c, void * v) {
+    reinterpret_cast<Fl_Single_Window*>(w)->show(c, static_cast<char**>(v));
+}
+
 void fl_single_window_flush(SINGLEWINDOW w) {
     reinterpret_cast<Fl_Single_Window*>(w)->flush();
 }

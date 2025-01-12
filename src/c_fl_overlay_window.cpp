@@ -86,6 +86,10 @@ void fl_overlay_window_show(OVERLAYWINDOW w) {
     reinterpret_cast<Fl_Overlay_Window*>(w)->show();
 }
 
+void fl_overlay_window_show2(OVERLAYWINDOW w, int c, void * v) {
+    reinterpret_cast<Fl_Overlay_Window*>(w)->show(c, static_cast<char**>(v));
+}
+
 void fl_overlay_window_hide(OVERLAYWINDOW w) {
     reinterpret_cast<Fl_Overlay_Window*>(w)->hide();
 }

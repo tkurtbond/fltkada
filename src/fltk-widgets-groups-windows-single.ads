@@ -35,6 +35,9 @@ package FLTK.Widgets.Groups.Windows.Single is
     procedure Show
            (This : in out Single_Window);
 
+    procedure Show_With_Args
+           (This : in out Single_Window);
+
     procedure Flush
            (This : in out Single_Window);
 
@@ -68,6 +71,7 @@ private
 
 
     pragma Inline (Show);
+    pragma Inline (Show_With_Args);
     pragma Inline (Flush);
 
     pragma Inline (Make_Current);

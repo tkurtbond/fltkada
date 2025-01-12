@@ -67,6 +67,10 @@ void fl_window_show(WINDOW n) {
     reinterpret_cast<Fl_Window*>(n)->Fl_Window::show();
 }
 
+void fl_window_show2(WINDOW n, int c, void * v) {
+    reinterpret_cast<Fl_Window*>(n)->show(c, static_cast<char**>(v));
+}
+
 void fl_window_hide(WINDOW n) {
     //  virtual, so disable dispatch
     reinterpret_cast<Fl_Window*>(n)->Fl_Window::hide();

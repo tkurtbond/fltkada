@@ -48,6 +48,13 @@ package body FLTK.Widgets.Groups.Windows.Double.Overlay is
     pragma Import (C, fl_overlay_window_show, "fl_overlay_window_show");
     pragma Inline (fl_overlay_window_show);
 
+    procedure fl_overlay_window_show2
+           (W : in Storage.Integer_Address;
+            C : in Interfaces.C.int;
+            V : in Storage.Integer_Address);
+    pragma Import (C, fl_overlay_window_show2, "fl_overlay_window_show2");
+    pragma Inline (fl_overlay_window_show2);
+
     procedure fl_overlay_window_hide
            (W : in Storage.Integer_Address);
     pragma Import (C, fl_overlay_window_hide, "fl_overlay_window_hide");
@@ -210,6 +217,13 @@ package body FLTK.Widgets.Groups.Windows.Double.Overlay is
     begin
         fl_overlay_window_show (This.Void_Ptr);
     end Show;
+
+
+    procedure Show_With_Args
+           (This : in out Overlay_Window) is
+    begin
+        Dispatch_Show_With_Args (fl_overlay_window_show2'Access, This.Void_Ptr);
+    end Show_With_Args;
 
 
     procedure Hide

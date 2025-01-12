@@ -35,6 +35,9 @@ package FLTK.Widgets.Groups.Windows.Double is
     procedure Show
            (This : in out Double_Window);
 
+    procedure Show_With_Args
+           (This : in out Double_Window);
+
     procedure Hide
            (This : in out Double_Window);
 
@@ -72,6 +75,7 @@ private
 
 
     pragma Inline (Show);
+    pragma Inline (Show_With_Args);
     pragma Inline (Hide);
     pragma Inline (Flush);
 

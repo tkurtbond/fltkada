@@ -17,6 +17,7 @@ extern "C" void free_fl_single_window(SINGLEWINDOW w);
 
 
 extern "C" void fl_single_window_show(SINGLEWINDOW w);
+extern "C" void fl_single_window_show2(SINGLEWINDOW w, int c, void * v);
 extern "C" void fl_single_window_flush(SINGLEWINDOW w);
 
 

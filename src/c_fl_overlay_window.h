@@ -21,6 +21,7 @@ extern "C" void fl_overlay_window_resize(OVERLAYWINDOW ow, int x, int y, int w, 
 
 
 extern "C" void fl_overlay_window_show(OVERLAYWINDOW w);
+extern "C" void fl_overlay_window_show2(OVERLAYWINDOW w, int c, void * v);
 extern "C" void fl_overlay_window_hide(OVERLAYWINDOW w);
 extern "C" void fl_overlay_window_flush(OVERLAYWINDOW w);
 
