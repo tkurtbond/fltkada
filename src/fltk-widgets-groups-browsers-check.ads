@@ -78,7 +78,7 @@ package FLTK.Widgets.Groups.Browsers.Check is
     procedure Set_Checked
            (This  : in out Check_Browser;
             Index : in     Positive;
-            State : in     Boolean);
+            State : in     Boolean := True);
 
     function Number_Checked
            (This : in Check_Browser)

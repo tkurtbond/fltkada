@@ -357,7 +357,7 @@ package body FLTK.Widgets.Groups.Browsers.Check is
     procedure Set_Checked
            (This  : in out Check_Browser;
             Index : in     Positive;
-            State : in     Boolean) is
+            State : in     Boolean := True) is
     begin
         fl_check_browser_set_checked
            (This.Void_Ptr,
