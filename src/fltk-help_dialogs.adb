@@ -6,6 +6,7 @@
 
 with
 
+    FLTK.Show_Argv,
     Interfaces.C.Strings;
 
 use type
@@ -37,6 +38,13 @@ package body FLTK.Help_Dialogs is
            (D : in Storage.Integer_Address);
     pragma Import (C, fl_help_dialog_show, "fl_help_dialog_show");
     pragma Inline (fl_help_dialog_show);
+
+    procedure fl_help_dialog_show2
+           (D : in Storage.Integer_Address;
+            C : in Interfaces.C.int;
+            V : in Storage.Integer_Address);
+    pragma Import (C, fl_help_dialog_show2, "fl_help_dialog_show2");
+    pragma Inline (fl_help_dialog_show2);
 
     procedure fl_help_dialog_hide
            (D : in Storage.Integer_Address);
@@ -197,6 +205,13 @@ package body FLTK.Help_Dialogs is
     begin
         fl_help_dialog_show (This.Void_Ptr);
     end Show;
+
+
+    procedure Show_With_Args
+           (This : in out Help_Dialog) is
+    begin
+        FLTK.Show_Argv.Dispatch (fl_help_dialog_show2'Access, This.Void_Ptr);
+    end Show_With_Args;
 
 
     procedure Hide

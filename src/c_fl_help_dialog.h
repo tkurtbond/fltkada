@@ -8,20 +8,15 @@
 #define FL_HELP_DIALOG_GUARD
 
 
-
-
 typedef void* HELPDIALOG;
-
-
 
 
 extern "C" HELPDIALOG new_fl_help_dialog();
 extern "C" void free_fl_help_dialog(HELPDIALOG d);
 
 
-
-
 extern "C" void fl_help_dialog_show(HELPDIALOG d);
+extern "C" void fl_help_dialog_show2(HELPDIALOG d, int c, void * v);
 extern "C" void fl_help_dialog_hide(HELPDIALOG d);
 extern "C" int fl_help_dialog_visible(HELPDIALOG d);
 

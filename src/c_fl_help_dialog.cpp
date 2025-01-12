@@ -26,6 +26,10 @@ void fl_help_dialog_show(HELPDIALOG d) {
     reinterpret_cast<Fl_Help_Dialog*>(d)->show();
 }
 
+void fl_help_dialog_show2(HELPDIALOG d, int c, void * v) {
+    reinterpret_cast<Fl_Help_Dialog*>(d)->show(c, static_cast<char**>(v));
+}
+
 void fl_help_dialog_hide(HELPDIALOG d) {
     reinterpret_cast<Fl_Help_Dialog*>(d)->hide();
 }

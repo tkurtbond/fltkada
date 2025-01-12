@@ -8,7 +8,8 @@ with
 
     Ada.Command_Line,
     Interfaces.C.Strings,
-    FLTK.Images.RGB;
+    FLTK.Images.RGB,
+    FLTK.Show_Argv;
 
 use type
 
@@ -299,42 +300,6 @@ package body FLTK.Widgets.Groups.Windows is
 
 
 
-    ------------------------
-    --  Internal Utility  --
-    ------------------------
-
-    function Create_Argv
-        return Interfaces.C.Strings.chars_ptr_array
-    is
-        package ICS renames Interfaces.C.Strings;
-        package ACom renames Ada.Command_Line;
-
-        Result : ICS.chars_ptr_array (0 .. Interfaces.C.size_t (ACom.Argument_Count));
-    begin
-        Result (0) := ICS.New_String (ACom.Command_Name);
-        for Index in Integer range 1 .. ACom.Argument_Count loop
-            Result (Interfaces.C.size_t (Index)) := ICS.New_String (ACom.Argument (Index));
-        end loop;
-        return Result;
-    end Create_Argv;
-
-
-    procedure Dispatch_Show_With_Args
-           (Func : in Show_With_Args_Func;
-            CObj : in Storage.Integer_Address)
-    is
-        Argv : Interfaces.C.Strings.chars_ptr_array := Create_Argv;
-    begin
-        Func (CObj, Interfaces.C.int (Ada.Command_Line.Argument_Count + 1),
-            Storage.To_Integer (Argv (Argv'First)'Address));
-        for Ptr of Argv loop
-            Interfaces.C.Strings.Free (Ptr);
-        end loop;
-    end Dispatch_Show_With_Args;
-
-
-
-
     -------------------
     --  Destructors  --
     -------------------
@@ -432,7 +397,7 @@ package body FLTK.Widgets.Groups.Windows is
     procedure Show_With_Args
            (This : in out Window) is
     begin
-        Dispatch_Show_With_Args (fl_window_show2'Access, This.Void_Ptr);
+        FLTK.Show_Argv.Dispatch (fl_window_show2'Access, This.Void_Ptr);
     end Show_With_Args;
 
 

@@ -36,6 +36,9 @@ package FLTK.Help_Dialogs is
     procedure Show
            (This : in out Help_Dialog);
 
+    procedure Show_With_Args
+           (This : in out Help_Dialog);
+
     procedure Hide
            (This : in out Help_Dialog);
 
@@ -120,6 +123,7 @@ private
 
 
     pragma Inline (Show);
+    pragma Inline (Show_With_Args);
     pragma Inline (Hide);
     pragma Inline (Is_Visible);
 

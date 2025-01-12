@@ -200,7 +200,6 @@ Non-widgets with incomplete APIs:
 FLTK
 FLTK.Devices.Graphics
 FLTK.Draw
-FLTK.Help_Dialogs (the Show_With_Args)
 FLTK.Images (static attributes, draw_empty, Get_Data_Size?)
 FLTK.Images.Bitmaps (attributes)
 FLTK.Images.Pixmaps (constructor)

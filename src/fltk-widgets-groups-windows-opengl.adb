@@ -6,6 +6,7 @@
 
 with
 
+    FLTK.Show_Argv,
     Interfaces.C,
     System;
 
@@ -316,7 +317,7 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
     procedure Show_With_Args
            (This : in out GL_Window) is
     begin
-        Dispatch_Show_With_Args (fl_gl_window_show2'Access, This.Void_Ptr);
+        FLTK.Show_Argv.Dispatch (fl_gl_window_show2'Access, This.Void_Ptr);
     end Show_With_Args;
 
 

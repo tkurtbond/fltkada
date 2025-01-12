@@ -6,6 +6,7 @@
 
 with
 
+    FLTK.Show_Argv,
     Interfaces.C;
 
 
@@ -178,7 +179,7 @@ package body FLTK.Widgets.Groups.Windows.Single is
     procedure Show_With_Args
            (This : in out Single_Window) is
     begin
-        Dispatch_Show_With_Args (fl_single_window_show2'Access, This.Void_Ptr);
+        FLTK.Show_Argv.Dispatch (fl_single_window_show2'Access, This.Void_Ptr);
     end Show_With_Args;
 
 
