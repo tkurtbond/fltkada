@@ -46,7 +46,28 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Attributes</th></tr>
+
+  <tr>
+<td><pre>
+int alloc_array;
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+const uchar * array;
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -61,6 +82,13 @@ function Create
     return Bitmap;
 </pre></td>
   </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
@@ -87,7 +115,8 @@ function Copy
 
   <tr>
 <td><pre>
-virtual void draw(int X, int Y, int W, int H, int cx=0, int cy=0);
+virtual void draw(int X, int Y, int W, int H,
+    int cx=0, int cy=0);
 </pre></td>
 <td><pre>
 procedure Draw
@@ -112,14 +141,14 @@ procedure Draw
 <td><pre>
 virtual void label(Fl_Widget *w);
 </pre></td>
-<td>Not applicable as the original is marked as obsolete</td>
+<td>Marked as obsolete.</td>
   </tr>
 
   <tr>
 <td><pre>
 virtual void label(Fl_Menu_Item *m);
 </pre></td>
-<td>Not applicable as the original is marked as obsolete</td>
+<td>Marked as obsolete.</td>
   </tr>
 
   <tr>

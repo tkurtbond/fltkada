@@ -41,30 +41,121 @@
     <td>Shared_Image_Reference</td>
   </tr>
 
+  <tr>
+    <td>Fl_Shared_Handler</td>
+    <td>&nbsp;</td>
+  </tr>
+
 </table>
 
 
 
 <table class="function">
-  <tr><th colspan="2">Static Functions and Procedures</th></tr>
+  <tr><th colspan="2">Static Protected Attributes</th></tr>
 
   <tr>
 <td><pre>
-static void add_handler(Fl_Shared_Handler f);
+static int alloc_handlers_ = 0;
 </pre></td>
-<td>Documentation lacking, claims to be a test function yet used for adding extra formats?</td>
+<td>Intentionally left unbound.</td>
   </tr>
 
   <tr>
 <td><pre>
-static Fl_Shared_Image * find(const char *name, int W=0, int H=0);
+static int alloc_images_ = 0;
 </pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
 <td><pre>
-function Find
-       (Name : in String;
-        W, H : in Integer := 0)
-    return Shared_Image;
+static Fl_Shared_Handler * handlers_ = 0;
 </pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static Fl_Shared_Image ** images_ = 0;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int num_handlers_ = 0;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int num_images_ = 0;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Attributes</th></tr>
+
+  <tr>
+<td><pre>
+int alloc_image_;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Image * image_;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char * name_;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int original_;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int refcount_;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Shared_Image();
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Shared_Image(const char *n, Fl_Image *img=0);
+</pre></td>
+<td>Intentionally left unbound.</td>
   </tr>
 
   <tr>
@@ -95,6 +186,32 @@ function Create
 static Fl_Shared_Image ** images();
 </pre></td>
 <td>&nbsp;</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+static void add_handler(Fl_Shared_Handler f);
+</pre></td>
+<td>Documentation lacking, claims to be a test function yet used for adding extra formats?</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static Fl_Shared_Image * find(const char *name, int W=0, int H=0);
+</pre></td>
+<td><pre>
+function Find
+       (Name : in String;
+        W, H : in Integer := 0)
+    return Shared_Image;
+</pre></td>
   </tr>
 
   <tr>
@@ -178,7 +295,8 @@ procedure Desaturate
 
   <tr>
 <td><pre>
-virtual void draw(int X, int Y, int W, int H, int cx, int cy);
+virtual void draw(int X, int Y, int W, int H,
+    int cx, int cy);
 </pre></td>
 <td><pre>
 procedure Draw
@@ -236,7 +354,7 @@ function Reference_Count
 <td><pre>
 void release();
 </pre></td>
-<td>Used as destructor, handled automatically with Finalize procedure using Limited_Controlled types</td>
+<td>Used as destructor, handled automatically.</td>
   </tr>
 
   <tr>
@@ -271,6 +389,41 @@ virtual void uncache();
 procedure Uncache
        (This : in out Shared_Image);
 </pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+static int compare(Fl_Shared_Image **i0, Fl_Shared_Image **i1);
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void add();
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void update();
+</pre></td>
+<td>Intentionally left unbound.</td>
   </tr>
 
 </table>

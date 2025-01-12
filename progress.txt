@@ -139,6 +139,7 @@ To-Do:
 Fl_GDI_Graphics_Driver
 Fl_GDI_Printer_Graphics_Driver
 Fl_Glut_Window
+Fl_Positioner
 Fl_Postscript_Graphics_Driver
 Fl_Quartz_Graphics_Driver
 Fl_Sys_Menu_Bar
@@ -171,12 +172,11 @@ Fl_Device_Plugin
 Fl_Plugin
 Fl_Plugin_Manager
 
-(XForms legacy compatibility) (why did I bind Fl_Chart/Fl_Clock then?)
+(XForms legacy compatibility) (why did I bind Fl_Chart/Fl_Clock/Fl_Positioner then?)
 Fl_FormsBitmap
 Fl_FormsPixmap
 Fl_FormsText
 Fl_Free
-Fl_Positioner
 Fl_Timer
 
 (docs explicitly say to use Fl_Printer instead)
@@ -191,5 +191,36 @@ Bugs to fix:
 Fl_Wizard draw() method private/protected
 GNAT bug with type_invariant combined with derived type and a begin section in a package, eg dialogs.adb
 Fl_Bitmap / Fl_XBM_Image instances will always have fail() return ERR_NO_IMAGE
+
+
+
+
+Non-widgets with incomplete APIs:
+
+FLTK
+FLTK.Devices.Graphics
+FLTK.Draw
+FLTK.Help_Dialogs (the Show_With_Args)
+FLTK.Images (static attributes, draw_empty, Get_Data_Size?)
+FLTK.Images.Bitmaps (attributes)
+FLTK.Images.Pixmaps (constructor)
+FLTK.Images.Shared (images(), compare)
+FLTK.Menu_Items
+FLTK.Text_Buffers
+
+
+
+Widgets with incomplete APIs:
+
+Widgets
+Widgets.Groups
+Widgets.Groups.Browsers.Check (Set_Checked)
+Widgets.Groups.Input_Choices (menu)
+Widgets.Groups.Scrolls (attributes, resize, type, protected)
+Widgets.Groups.Text_Displays
+Widgets.Groups.Text_Displays.Text_Editors
+Widgets.Groups.Windows
+Widgets.Menus
+Widgets.Valuators (format) (a few derivative classes need type() checked too)
 
 

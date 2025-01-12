@@ -142,9 +142,9 @@ package body FLTK.Help_Dialogs is
 
 
 
-    -----------------------------------
-    --  Controlled Type Subprograms  --
-    -----------------------------------
+    -------------------
+    --  Destructors  --
+    -------------------
 
     procedure Finalize
            (This : in out Help_Dialog) is
@@ -158,9 +158,9 @@ package body FLTK.Help_Dialogs is
 
 
 
-    -----------------------
-    --  Help_Dialog API  --
-    -----------------------
+    --------------------
+    --  Constructors  --
+    --------------------
 
     package body Forge is
 
@@ -187,6 +187,10 @@ package body FLTK.Help_Dialogs is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     procedure Show
            (This : in out Help_Dialog) is

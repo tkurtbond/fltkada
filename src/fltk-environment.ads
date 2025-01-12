@@ -31,8 +31,6 @@ package FLTK.Environment is
     type Binary_Data is array (Positive range <>) of Interfaces.Unsigned_8;
 
 
-
-
     Preference_Error : exception;
 
 

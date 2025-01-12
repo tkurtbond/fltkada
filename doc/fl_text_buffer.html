@@ -71,7 +71,55 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Static Attributes</th></tr>
+
+  <tr>
+<td><pre>
+static const char * file_encoding_warning_message;
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Attributes</th></tr>
+
+  <tr>
+<td><pre>
+int input_file_was_transcoded;
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void (*transcoding_warning_action)(Fl_Text_Buffer *);
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Attributes</th></tr>
+
+  <tr>
+<td colspan="2" style="text-align:center">
+Too many to list. None that look suited for public API usage.
+</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -85,9 +133,17 @@ function Create
 </pre></td>
   </tr>
 
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
   <tr>
 <td><pre>
-void add_modify_callback(Fl_Text_Modify_Cb bufModifiedCB, void *cbArg);
+void add_modify_callback(Fl_Text_Modify_Cb bufModifiedCB,
+    void *cbArg);
 </pre></td>
 <td><pre>
 procedure Add_Modify_Callback
@@ -98,7 +154,8 @@ procedure Add_Modify_Callback
 
   <tr>
 <td><pre>
-void add_predelete_callback(Fl_Text_Predelete_Cb bufPredelCB, void *cbArg);
+void add_predelete_callback(Fl_Text_Predelete_Cb bufPredelCB,
+    void *cbArg);
 </pre></td>
 <td><pre>
 procedure Add_Predelete_Callback
@@ -217,7 +274,8 @@ function Character_At
 
   <tr>
 <td><pre>
-void copy(Fl_Text_Buffer *fromBuf, int fromStart, int fromEnd, int toPos);
+void copy(Fl_Text_Buffer *fromBuf, int fromStart,
+    int fromEnd, int toPos);
 </pre></td>
 <td><pre>
 procedure Copy
@@ -230,7 +288,8 @@ procedure Copy
 
   <tr>
 <td><pre>
-int count_displayed_characters(int lineStartPos, int targetPos) const;
+int count_displayed_characters(int lineStartPos,
+    int targetPos) const;
 </pre></td>
 <td><pre>
 function Count_Displayed_Characters
@@ -254,7 +313,8 @@ function Count_Lines
 
   <tr>
 <td><pre>
-int findchar_backward(int startPos, unsigned int searchChar, int *foundPos) const;
+int findchar_backward(int startPos, unsigned int searchChar,
+    int *foundPos) const;
 </pre></td>
 <td><pre>
 function Findchar_Backward
@@ -268,7 +328,8 @@ function Findchar_Backward
 
   <tr>
 <td><pre>
-int findchar_forward(int startPos, unsigned searchChar, int *foundPos) const;
+int findchar_forward(int startPos, unsigned searchChar,
+    int *foundPos) const;
 </pre></td>
 <td><pre>
 function Findchar_Forward
@@ -437,7 +498,8 @@ int next_char_clipped(int ix) const;
 
   <tr>
 <td><pre>
-int outputfile(const char *file, int start, int end, int buflen=128*1024);
+int outputfile(const char *file, int start, int end,
+    int buflen=128*1024);
 </pre></td>
 <td><pre>
 procedure Output_File
@@ -494,7 +556,8 @@ procedure Remove_Text
 
   <tr>
 <td><pre>
-void remove_modify_callback(Fl_Text_Modify_Cb bufModifiedCB, void *cbArg);
+void remove_modify_callback(Fl_Text_Modify_Cb bufModifiedCB,
+    void *cbArg);
 </pre></td>
 <td><pre>
 procedure Remove_Modify_Callback
@@ -505,7 +568,8 @@ procedure Remove_Modify_Callback
 
   <tr>
 <td><pre>
-void remove_predelete_callback(Fl_Text_Predelete_Cb predelCB, void *cbArg);
+void remove_predelete_callback(Fl_Text_Predelete_Cb predelCB,
+    void *cbArg);
 </pre></td>
 <td><pre>
 procedure Remove_Predelete_Callback
@@ -595,7 +659,8 @@ procedure Save_File
 
   <tr>
 <td><pre>
-int search_backward(int startPos, const char *searchString, int *foundPos, int matchCase=0) const;
+int search_backward(int startPos, const char *searchString,
+    int *foundPos, int matchCase=0) const;
 </pre></td>
 <td><pre>
 function Search_Backward
@@ -610,7 +675,8 @@ function Search_Backward
 
   <tr>
 <td><pre>
-int search_forward(int startPos, const char *searchString, int *foundPos, int matchCase=0) const;
+int search_forward(int startPos, const char *searchString,
+    int *foundPos, int matchCase=0) const;
 </pre></td>
 <td><pre>
 function Search_Forward
@@ -874,6 +940,13 @@ function Word_Start
     return Position;
 </pre></td>
   </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
 
 </table>
 

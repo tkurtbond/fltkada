@@ -42,7 +42,7 @@
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>Fl_Preferences</td>
     <td>Pref_Group</td>
   </tr>
 
@@ -79,7 +79,7 @@
   <tr><th colspan="2">Errors</th></tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>char</td>
     <td>Preference_Error</td>
   </tr>
 
@@ -88,23 +88,20 @@
 
 
 <table class="function">
-  <tr><th colspan="2">Static Functions and Procedures</th></tr>
+  <tr><th colspan="2">Protected Attributes</th></tr>
 
   <tr>
 <td><pre>
-static const char * newUUID();
+Node * node;
 </pre></td>
-<td><pre>
-function New_UUID
-    return String;
-</pre></td>
+<td>Intentionally left unbound.</td>
   </tr>
 
   <tr>
 <td><pre>
-static char remove(ID id_);
+RootNode * rootNode;
 </pre></td>
-<td>&nbsp;</td>
+<td>Intentionally left unbound.</td>
   </tr>
 
 </table>
@@ -112,7 +109,7 @@ static char remove(ID id_);
 
 
 <table class="function">
-  <tr><th colspan="2">Functions and Procedures</th></tr>
+  <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
 <td><pre>
@@ -141,6 +138,7 @@ function From_Filesystem
   <tr>
 <td><pre>
 Fl_Preferences(Fl_Preferences &parent, const char *group);
+
 Fl_Preferences(Fl_Preferences *parent, const char *group);
 </pre></td>
 <td><pre>
@@ -158,6 +156,7 @@ function In_Memory
   <tr>
 <td><pre>
 Fl_Preferences(Fl_Preferences &parent, int groupIndex);
+
 Fl_Preferences(Fl_Preferences *parent, int groupIndex);
 </pre></td>
 <td><pre>
@@ -178,6 +177,37 @@ function Root
     return Pref_Group'Class;
 </pre></td>
   </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+static const char * newUUID();
+</pre></td>
+<td><pre>
+function New_UUID
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static char remove(ID id_);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
@@ -457,7 +487,7 @@ function Number_Of_Groups
 <td><pre>
 ID id();
 </pre></td>
-<td>&nbsp;</td>
+<td>Intentionally left unbound.</td>
   </tr>
 
   <tr>

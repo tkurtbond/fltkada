@@ -46,6 +46,60 @@
 
 
 <table class="function">
+  <tr><th colspan="2">Attributes</th></tr>
+
+  <tr>
+<td><pre>
+int alloc_array;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+const uchar * array;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_RGB_Image(const uchar *bits, int W, int H, int D=3, int LD=0);
+</pre></td>
+<td><pre>
+function Create
+       (Data          : in Color_Component_Array;
+        Width, Height : in Natural;
+        Depth         : in Natural := 3;
+        Line_Data     : in Natural := 0)
+    return RGB_Image;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_RGB_Image(const Fl_Pixmap *pxm, Fl_Color bg=FL_GRAY);
+</pre></td>
+<td><pre>
+function Create
+       (Data       : in FLTK.Images.Pixmaps.Pixmap;
+        Background : in Color := Background_Color)
+    return RGB_Image;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
   <tr><th colspan="2">Static Functions and Procedures</th></tr>
 
   <tr>
@@ -74,32 +128,6 @@ function Get_Max_Size
 
 <table class="function">
   <tr><th colspan="2">Functions and Procedures</th></tr>
-
-  <tr>
-<td><pre>
-Fl_RGB_Image(const uchar *bits, int W, int H, int D=3, int LD=0);
-</pre></td>
-<td><pre>
-function Create
-       (Data          : in Color_Component_Array;
-        Width, Height : in Natural;
-        Depth         : in Natural := 3;
-        Line_Data     : in Natural := 0)
-    return RGB_Image;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-Fl_RGB_Image(const Fl_Pixmap *pxm, Fl_Color bg=FL_GRAY);
-</pre></td>
-<td><pre>
-function Create
-       (Data       : in FLTK.Images.Pixmaps.Pixmap;
-        Background : in Color := Background_Color)
-    return RGB_Image;
-</pre></td>
-  </tr>
 
   <tr>
 <td><pre>
@@ -148,7 +176,8 @@ procedure Desaturate
 
   <tr>
 <td><pre>
-virtual void draw(int X, int Y, int W, int H, int cx=0, int cy=0);
+virtual void draw(int X, int Y, int W, int H,
+    int cx=0, int cy=0);
 </pre></td>
 <td><pre>
 procedure Draw
@@ -173,14 +202,14 @@ procedure Draw
 <td><pre>
 virtual void label(Fl_Widget *w);
 </pre></td>
-<td>Not applicable as the original is marked as obsolete</td>
+<td>Marked as obsolete.</td>
   </tr>
 
   <tr>
 <td><pre>
 virtual void label(Fl_Menu_Item *m);
 </pre></td>
-<td>Not applicable as the original is marked as obsolete</td>
+<td>Marked as obsolete.</td>
   </tr>
 
   <tr>

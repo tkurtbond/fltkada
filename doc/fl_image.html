@@ -47,7 +47,7 @@
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>float</td>
     <td>Blend</td>
   </tr>
 
@@ -71,6 +71,52 @@
   <tr>
     <td>ERR_NO_IMAGE</td>
     <td>No_Image_Error</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Attributes</th></tr>
+
+  <tr>
+<td><pre>
+static const int ERR_FILE_ACCESS = -2;
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const int ERR_FORMAT = -3;
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const int ERR_NO_IMAGE = -1;
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Image(int W, int H, int D);
+</pre></td>
+<td><pre>
+function Create
+       (Width, Height, Depth : in Natural)
+    return Image;
+</pre></td>
   </tr>
 
 </table>
@@ -106,17 +152,6 @@ function Get_Copy_Algorithm
 
 <table class="function">
   <tr><th colspan="2">Functions and Procedures</th></tr>
-
-  <tr>
-<td><pre>
-Fl_Image(int W, int H, int D);
-</pre></td>
-<td><pre>
-function Create
-       (Width, Height, Depth : in Natural)
-    return Image;
-</pre></td>
-  </tr>
 
   <tr>
 <td><pre>
@@ -273,17 +308,6 @@ procedure Draw
 
   <tr>
 <td><pre>
-void draw_empty(int X, int Y);
-</pre></td>
-<td><pre>
-procedure Draw_Empty
-       (This : in Image;
-        X, Y : in Integer);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
 int fail();
 </pre></td>
 <td><pre>
@@ -318,14 +342,14 @@ procedure Inactive
 <td><pre>
 virtual void label(Fl_Widget *w);
 </pre></td>
-<td>Not applicable as the original is marked as obsolete</td>
+<td>Marked as obsolete.</td>
   </tr>
 
   <tr>
 <td><pre>
 virtual void label(Fl_Menu_Item *m);
 </pre></td>
-<td>Not applicable as the original is marked as obsolete</td>
+<td>Marked as obsolete.</td>
   </tr>
 
   <tr>
@@ -358,6 +382,81 @@ function Get_W
        (This : in Image)
     return Natural;
 </pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+static void labeltype(const Fl_Label *lo, int lx, int ly,
+    int lw, int lh, Fl_Align la);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void measure(const Fl_Label *lo, int &lw, int &lh);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void d(int D);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void data(const char *const *p, int c);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw_empty(int X, int Y);
+</pre></td>
+<td><pre>
+procedure Draw_Empty
+       (This : in Image;
+        X, Y : in Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void h(int H);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void ld(int LD);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void w(int W);
+</pre></td>
+<td>Intentionally left unbound.</td>
   </tr>
 
 </table>
