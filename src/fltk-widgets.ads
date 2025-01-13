@@ -382,8 +382,7 @@ private
             Text       : in     String);
 
     procedure Extra_Final
-           (This : in out Widget)
-    with Inline;
+           (This : in out Widget);
 
 
     type Callback_Flag is new Interfaces.C.unsigned;

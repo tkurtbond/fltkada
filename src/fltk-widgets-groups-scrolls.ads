@@ -4,6 +4,11 @@
 --  Released into the public domain
 
 
+with
+
+    FLTK.Widgets.Valuators.Sliders.Scrollbars;
+
+
 package FLTK.Widgets.Groups.Scrolls is
 
 
@@ -32,6 +37,17 @@ package FLTK.Widgets.Groups.Scrolls is
             return Scroll;
 
     end Forge;
+
+
+
+
+    function H_Bar
+           (This : in out Scroll)
+        return Valuators.Sliders.Scrollbars.Scrollbar_Reference;
+
+    function V_Bar
+           (This : in out Scroll)
+        return Valuators.Sliders.Scrollbars.Scrollbar_Reference;
 
 
 
@@ -86,7 +102,9 @@ package FLTK.Widgets.Groups.Scrolls is
 private
 
 
-    type Scroll is new Group with null record;
+    type Scroll is new Group with record
+        Horizon, Vertigo : aliased Valuators.Sliders.Scrollbars.Scrollbar;
+    end record;
 
     overriding procedure Initialize
            (This : in out Scroll);
@@ -97,12 +115,10 @@ private
     procedure Extra_Init
            (This       : in out Scroll;
             X, Y, W, H : in     Integer;
-            Text       : in     String)
-    with Inline;
+            Text       : in     String);
 
     procedure Extra_Final
-           (This : in out Scroll)
-    with Inline;
+           (This : in out Scroll);
 
 
     pragma Inline (Clear);

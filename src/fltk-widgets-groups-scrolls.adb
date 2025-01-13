@@ -31,10 +31,17 @@ package body FLTK.Widgets.Groups.Scrolls is
 
 
 
-    procedure fl_scroll_clear
-           (S : in Storage.Integer_Address);
-    pragma Import (C, fl_scroll_clear, "fl_scroll_clear");
-    pragma Inline (fl_scroll_clear);
+    function fl_scroll_hscrollbar
+           (S : in Storage.Integer_Address)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_scroll_hscrollbar, "fl_scroll_hscrollbar");
+    pragma Inline (fl_scroll_hscrollbar);
+
+    function fl_scroll_scrollbar
+           (S : in Storage.Integer_Address)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_scroll_scrollbar, "fl_scroll_scrollbar");
+    pragma Inline (fl_scroll_scrollbar);
 
 
 
@@ -100,9 +107,18 @@ package body FLTK.Widgets.Groups.Scrolls is
     --  Destructors  --
     -------------------
 
+    --  It's the only way to be sure
+    procedure fl_scrollbar_extra_final
+           (Ada_Obj : in Storage.Integer_Address);
+    pragma Import (C, fl_scrollbar_extra_final, "fl_scrollbar_extra_final");
+    pragma Inline (fl_scrollbar_extra_final);
+
+
     procedure Extra_Final
            (This : in out Scroll) is
     begin
+        fl_scrollbar_extra_final (Storage.To_Integer (This.Horizon'Address));
+        fl_scrollbar_extra_final (Storage.To_Integer (This.Vertigo'Address));
         Extra_Final (Group (This));
     end Extra_Final;
 
@@ -124,11 +140,38 @@ package body FLTK.Widgets.Groups.Scrolls is
     --  Constructors  --
     --------------------
 
+    --  Hold on, I know a shortcut
+    procedure fl_scrollbar_extra_init
+           (Ada_Obj    : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int;
+            C_Str      : in Interfaces.C.char_array);
+    pragma Import (C, fl_scrollbar_extra_init, "fl_scrollbar_extra_init");
+    pragma Inline (fl_scrollbar_extra_init);
+
+
     procedure Extra_Init
            (This       : in out Scroll;
             X, Y, W, H : in     Integer;
             Text       : in     String) is
     begin
+        Widget (This.Horizon).Void_Ptr := fl_scroll_hscrollbar (This.Void_Ptr);
+        Widget (This.Horizon).Needs_Dealloc := False;
+        fl_scrollbar_extra_init
+           (Storage.To_Integer (This.Horizon'Address),
+            Interfaces.C.int (This.Horizon.Get_X),
+            Interfaces.C.int (This.Horizon.Get_Y),
+            Interfaces.C.int (This.Horizon.Get_W),
+            Interfaces.C.int (This.Horizon.Get_H),
+            Interfaces.C.To_C (This.Horizon.Get_Label));
+        Widget (This.Vertigo).Void_Ptr := fl_scroll_scrollbar (This.Void_Ptr);
+        Widget (This.Vertigo).Needs_Dealloc := False;
+        fl_scrollbar_extra_init
+           (Storage.To_Integer (This.Vertigo'Address),
+            Interfaces.C.int (This.Vertigo.Get_X),
+            Interfaces.C.int (This.Vertigo.Get_Y),
+            Interfaces.C.int (This.Vertigo.Get_W),
+            Interfaces.C.int (This.Vertigo.Get_H),
+            Interfaces.C.To_C (This.Vertigo.Get_Label));
         Extra_Init (Group (This), X, Y, W, H, Text);
     end Extra_Init;
 
@@ -164,6 +207,28 @@ package body FLTK.Widgets.Groups.Scrolls is
 
 
 
+    ------------------
+    --  Attributes  --
+    ------------------
+
+    function H_Bar
+           (This : in out Scroll)
+        return Valuators.Sliders.Scrollbars.Scrollbar_Reference is
+    begin
+        return (Data => This.Horizon'Unchecked_Access);
+    end H_Bar;
+
+
+    function V_Bar
+           (This : in out Scroll)
+        return Valuators.Sliders.Scrollbars.Scrollbar_Reference is
+    begin
+        return (Data => This.Vertigo'Unchecked_Access);
+    end V_Bar;
+
+
+
+
     -----------------------
     --  API Subprograms  --
     -----------------------
@@ -171,7 +236,14 @@ package body FLTK.Widgets.Groups.Scrolls is
     procedure Clear
            (This : in out Scroll) is
     begin
-        fl_scroll_clear (This.Void_Ptr);
+        --  Can't use the actual clear method here because that would
+        --  delete the widgets from memory, and the binding is meant to
+        --  handle that, not the library.
+        This.Remove (This.Horizon);
+        This.Remove (This.Vertigo);
+        Group (This).Clear;
+        This.Add (This.Horizon);
+        This.Add (This.Vertigo);
     end Clear;
 
 

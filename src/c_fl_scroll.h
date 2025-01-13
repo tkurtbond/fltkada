@@ -15,7 +15,8 @@ extern "C" SCROLL new_fl_scroll(int x, int y, int w, int h, char* label);
 extern "C" void free_fl_scroll(SCROLL s);
 
 
-extern "C" void fl_scroll_clear(SCROLL s);
+extern "C" void * fl_scroll_hscrollbar(SCROLL s);
+extern "C" void * fl_scroll_scrollbar(SCROLL s);
 
 
 extern "C" void fl_scroll_to(SCROLL s, int x, int y);

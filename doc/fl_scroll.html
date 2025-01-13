@@ -57,14 +57,22 @@
 <td><pre>
 Fl_Scrollbar hscrollbar;
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function H_Bar
+       (This : in out Scroll)
+    return Valuators.Sliders.Scrollbars.Scrollbar_Reference;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 Fl_Scrollbar scrollbar;
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function V_Bar
+       (This : in out Scroll)
+    return Valuators.Sliders.Scrollbars.Scrollbar_Reference;
+</pre></td>
   </tr>
 
 </table>

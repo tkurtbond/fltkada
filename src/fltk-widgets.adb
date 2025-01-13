@@ -6,6 +6,7 @@
 
 with
 
+    Ada.Assertions,
     Interfaces.C.Strings,
     System.Address_To_Access_Conversions,
     FLTK.Widgets.Groups.Windows,
@@ -21,14 +22,15 @@ use type
 package body FLTK.Widgets is
 
 
+    package Chk renames Ada.Assertions;
+
+
     function "+"
            (Left, Right : in Callback_Flag)
         return Callback_Flag is
     begin
         return Left or Right;
     end "+";
-
-
 
 
     package Group_Convert is new
@@ -516,9 +518,13 @@ package body FLTK.Widgets is
     -------------------
 
     procedure Extra_Final
-           (This : in out Widget) is
+           (This : in out Widget)
+    is
+        Maybe_Parent : access FLTK.Widgets.Groups.Group'Class := This.Parent;
     begin
-        null;
+        if Maybe_Parent /= null then
+            Maybe_Parent.Remove (This);
+        end if;
     end Extra_Final;
 
 
@@ -772,15 +778,17 @@ package body FLTK.Widgets is
            (This : in Widget)
         return access FLTK.Widgets.Groups.Group'Class
     is
-        Parent_Ptr : Storage.Integer_Address;
+        Parent_Ptr : Storage.Integer_Address := fl_widget_get_parent (This.Void_Ptr);
         Actual_Parent : access FLTK.Widgets.Groups.Group'Class;
     begin
-        Parent_Ptr := fl_widget_get_parent (This.Void_Ptr);
         if Parent_Ptr /= Null_Pointer then
-            Actual_Parent := Group_Convert.To_Pointer
-                (Storage.To_Address (fl_widget_get_user_data (Parent_Ptr)));
+            Parent_Ptr := fl_widget_get_user_data (Parent_Ptr);
+            pragma Assert (Parent_Ptr /= Null_Pointer);
+            Actual_Parent := Group_Convert.To_Pointer (Storage.To_Address (Parent_Ptr));
         end if;
         return Actual_Parent;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Parent;
 
 
@@ -806,15 +814,17 @@ package body FLTK.Widgets is
            (This : in Widget)
         return access FLTK.Widgets.Groups.Windows.Window'Class
     is
-        Window_Ptr : Storage.Integer_Address;
+        Window_Ptr : Storage.Integer_Address := fl_widget_window (This.Void_Ptr);
         Actual_Window : access FLTK.Widgets.Groups.Windows.Window'Class;
     begin
-        Window_Ptr := fl_widget_window (This.Void_Ptr);
         if Window_Ptr /= Null_Pointer then
-            Actual_Window := Window_Convert.To_Pointer
-                (Storage.To_Address (fl_widget_get_user_data (Window_Ptr)));
+            Window_Ptr := fl_widget_get_user_data (Window_Ptr);
+            pragma Assert (Window_Ptr /= Null_Pointer);
+            Actual_Window := Window_Convert.To_Pointer (Storage.To_Address (Window_Ptr));
         end if;
         return Actual_Window;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Nearest_Window;
 
 
@@ -822,15 +832,17 @@ package body FLTK.Widgets is
            (This : in Widget)
         return access FLTK.Widgets.Groups.Windows.Window'Class
     is
-        Window_Ptr : Storage.Integer_Address;
+        Window_Ptr : Storage.Integer_Address := fl_widget_top_window (This.Void_Ptr);
         Actual_Window : access FLTK.Widgets.Groups.Windows.Window'Class;
     begin
-        Window_Ptr := fl_widget_top_window (This.Void_Ptr);
         if Window_Ptr /= Null_Pointer then
-            Actual_Window := Window_Convert.To_Pointer
-                (Storage.To_Address (fl_widget_get_user_data (Window_Ptr)));
+            Window_Ptr := fl_widget_get_user_data (Window_Ptr);
+            pragma Assert (Window_Ptr /= Null_Pointer);
+            Actual_Window := Window_Convert.To_Pointer (Storage.To_Address (Window_Ptr));
         end if;
         return Actual_Window;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Top_Window;
 
 
@@ -839,18 +851,20 @@ package body FLTK.Widgets is
             Offset_X, Offset_Y : out Integer)
         return access FLTK.Widgets.Groups.Windows.Window'Class
     is
-        Window_Ptr : Storage.Integer_Address;
-        Actual_Window : access FLTK.Widgets.Groups.Windows.Window'Class;
-    begin
-        Window_Ptr := fl_widget_top_window_offset
+        Window_Ptr : Storage.Integer_Address := fl_widget_top_window_offset
            (This.Void_Ptr,
             Interfaces.C.int (Offset_X),
             Interfaces.C.int (Offset_Y));
+        Actual_Window : access FLTK.Widgets.Groups.Windows.Window'Class;
+    begin
         if Window_Ptr /= Null_Pointer then
-            Actual_Window := Window_Convert.To_Pointer
-                (Storage.To_Address (fl_widget_get_user_data (Window_Ptr)));
+            Window_Ptr := fl_widget_get_user_data (Window_Ptr);
+            pragma Assert (Window_Ptr /= Null_Pointer);
+            Actual_Window := Window_Convert.To_Pointer (Storage.To_Address (Window_Ptr));
         end if;
         return Actual_Window;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Top_Window_Offset;
 
 
