@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Positioner Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Positioner Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Positioner</td>
+    <td>FLTK.Widgets.Positioners</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Positioner</td>
+    <td>Positioner</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Positioner_Reference</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Positioner(int x, int y, int w, int h, const char *l=0);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return Positioner;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+int handle(int);
+</pre></td>
+<td><pre>
+function Handle
+       (This  : in out Positioner;
+        Event : in     Event_Kind)
+    return Event_Outcome;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Use xvalue and yvalue manually.</td>
+<td><pre>
+procedure Get_Coords
+       (This : in     Positioner;
+        X, Y :    out Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int value(double, double);
+</pre></td>
+<td><pre>
+procedure Set_Coords
+       (This : in out Positioner;
+        X, Y : in     Long_Float);
+
+function Set_Coords
+       (This : in out Positioner;
+        X, Y : in     Long_Float)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void xbounds(double, double);
+</pre></td>
+<td><pre>
+procedure Set_Ecks_Bounds
+       (This      : in out Positioner;
+        Low, High : in     Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+double xmaximum() const;
+</pre></td>
+<td><pre>
+function Get_Ecks_Maximum
+       (This : in Positioner)
+    return Long_Float;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void xmaximum(double a);
+</pre></td>
+<td><pre>
+procedure Set_Ecks_Maximum
+       (This  : in out Positioner;
+        Value : in     Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+double xminimum() const;
+</pre></td>
+<td><pre>
+function Get_Ecks_Minimum
+       (This : in Positioner)
+    return Long_Float;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void xminimum(double a);
+</pre></td>
+<td><pre>
+procedure Set_Ecks_Minimum
+       (This  : in out Positioner;
+        Value : in     Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void xstep(double a);
+</pre></td>
+<td><pre>
+procedure Set_Ecks_Step
+       (This  : in out Positioner;
+        Value : in     Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+double xvalue() const;
+</pre></td>
+<td><pre>
+function Get_Ecks
+       (This : in Positioner)
+    return Long_Float;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int xvalue(double);
+</pre></td>
+<td><pre>
+procedure Set_Ecks
+       (This  : in out Positioner;
+        Value : in     Long_Float);
+
+function Set_Ecks
+       (This  : in out Positioner;
+        Value : in     Long_Float)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void ybounds(double, double);
+</pre></td>
+<td><pre>
+procedure Set_Why_Bounds
+       (This      : in out Positioner;
+        Low, High : in     Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+double ymaximum() const;
+</pre></td>
+<td><pre>
+function Get_Why_Maximum
+       (This : in Positioner)
+    return Long_Float;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void ymaximum(double a);
+</pre></td>
+<td><pre>
+procedure Set_Why_Maximum
+       (This  : in out Positioner;
+        Value : in     Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+double yminimum() const;
+</pre></td>
+<td><pre>
+function Get_Why_Minimum
+       (This : in Positioner)
+    return Long_Float;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void yminimum(double a);
+</pre></td>
+<td><pre>
+procedure Set_Why_Minimum
+       (This  : in out Positioner;
+        Value : in     Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void ystep(double a);
+</pre></td>
+<td><pre>
+procedure Set_Why_Step
+       (This  : in out Positioner;
+        Value : in     Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+double yvalue() const;
+</pre></td>
+<td><pre>
+function Get_Why
+       (This : in Positioner)
+    return Long_Float;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int yvalue(double);
+</pre></td>
+<td><pre>
+procedure Set_Why
+       (This  : in out Positioner;
+        Value : in     Long_Float);
+
+function Set_Why
+       (This  : in out Positioner;
+        Value : in     Long_Float)
+    return Boolean;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Positioner);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw(int, int, int, int);
+</pre></td>
+<td><pre>
+procedure Draw
+       (This       : in out Positioner;
+        X, Y, W, H : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int handle(int, int, int, int, int);
+</pre></td>
+<td><pre>
+function Handle
+       (This       : in out Positioner;
+        Event      : in     Event_Kind;
+        X, Y, W, H : in     Integer)
+    return Event_Outcome;
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
+

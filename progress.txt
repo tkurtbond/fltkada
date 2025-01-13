@@ -103,6 +103,7 @@ FLTK.Widgets.Menus
 FLTK.Widgets.Menus.Choices
 FLTK.Widgets.Menus.Menu_Bars
 FLTK.Widgets.Menus.Menu_Buttons
+FLTK.Widgets.Positioners
 FLTK.Widgets.Progress_Bars
 FLTK.Widgets.Valuators
 FLTK.Widgets.Valuators.Adjusters
@@ -139,7 +140,6 @@ To-Do:
 Fl_GDI_Graphics_Driver
 Fl_GDI_Printer_Graphics_Driver
 Fl_Glut_Window
-Fl_Positioner
 Fl_Postscript_Graphics_Driver
 Fl_Quartz_Graphics_Driver
 Fl_Sys_Menu_Bar
@@ -191,6 +191,7 @@ Bugs to fix:
 Fl_Wizard draw() method private/protected
 GNAT bug with type_invariant combined with derived type and a begin section in a package, eg dialogs.adb
 Fl_Bitmap / Fl_XBM_Image instances will always have fail() return ERR_NO_IMAGE
+Fl_Positioner has poor docs for value/xvalue/yvalue set methods
 
 
 
