@@ -6,10 +6,16 @@
 
 with
 
+    Ada.Assertions,
     Interfaces.C;
 
 
 package body FLTK.Widgets.Groups.Tabbed is
+
+
+    package Chk renames Ada.Assertions;
+
+
 
 
     ------------------------
@@ -186,12 +192,17 @@ package body FLTK.Widgets.Groups.Tabbed is
            (This : in Tabbed_Group)
         return access Widget'Class
     is
-        Widget_Ptr : Storage.Integer_Address :=
-            fl_tabs_get_push (This.Void_Ptr);
-        Actual_Widget : access Widget'Class :=
-            Widget_Convert.To_Pointer (Storage.To_Address (fl_widget_get_user_data (Widget_Ptr)));
+        Push_Ptr : Storage.Integer_Address := fl_tabs_get_push (This.Void_Ptr);
+        Actual_Widget : access Widget'Class;
     begin
+        if Push_Ptr /= Null_Pointer then
+            Push_Ptr := fl_widget_get_user_data (Push_Ptr);
+            pragma Assert (Push_Ptr /= Null_Pointer);
+            Actual_Widget := Widget_Convert.To_Pointer (Storage.To_Address (Push_Ptr));
+        end if;
         return Actual_Widget;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Get_Push;
 
 
@@ -207,12 +218,17 @@ package body FLTK.Widgets.Groups.Tabbed is
            (This : in Tabbed_Group)
         return access Widget'Class
     is
-        Widget_Ptr : Storage.Integer_Address :=
-            fl_tabs_get_value (This.Void_Ptr);
-        Actual_Widget : access Widget'Class :=
-            Widget_Convert.To_Pointer (Storage.To_Address (fl_widget_get_user_data (Widget_Ptr)));
+        Visible_Ptr : Storage.Integer_Address := fl_tabs_get_value (This.Void_Ptr);
+        Actual_Widget : access Widget'Class;
     begin
+        if Visible_Ptr /= Null_Pointer then
+            Visible_Ptr := fl_widget_get_user_data (Visible_Ptr);
+            pragma Assert (Visible_Ptr /= Null_Pointer);
+            Actual_Widget := Widget_Convert.To_Pointer (Storage.To_Address (Visible_Ptr));
+        end if;
         return Actual_Widget;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Get_Visible;
 
 
@@ -229,12 +245,18 @@ package body FLTK.Widgets.Groups.Tabbed is
             Event_X, Event_Y : in Integer)
         return access Widget'Class
     is
-        Widget_Ptr : Storage.Integer_Address :=
+        Which_Ptr : Storage.Integer_Address :=
             fl_tabs_which (This.Void_Ptr, Interfaces.C.int (Event_X), Interfaces.C.int (Event_Y));
-        Actual_Widget : access Widget'Class :=
-            Widget_Convert.To_Pointer (Storage.To_Address (fl_widget_get_user_data (Widget_Ptr)));
+        Actual_Widget : access Widget'Class;
     begin
+        if Which_Ptr /= Null_Pointer then
+            Which_Ptr := fl_widget_get_user_data (Which_Ptr);
+            pragma Assert (Which_Ptr /= Null_Pointer);
+            Actual_Widget := Widget_Convert.To_Pointer (Storage.To_Address (Which_Ptr));
+        end if;
         return Actual_Widget;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Get_Which;
 
 

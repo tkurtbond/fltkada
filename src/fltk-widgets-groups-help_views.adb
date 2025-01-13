@@ -243,9 +243,11 @@ package body FLTK.Widgets.Groups.Help_Views is
             S : in Interfaces.C.Strings.chars_ptr)
         return Interfaces.C.Strings.chars_ptr
     is
-        Ada_Help_View : access Help_View'Class :=
-            Help_View_Convert.To_Pointer (Storage.To_Address (fl_widget_get_user_data (V)));
+        User_Data : Storage.Integer_Address := fl_widget_get_user_data (V);
+        Ada_Help_View : access Help_View'Class;
     begin
+        pragma Assert (User_Data /= Null_Pointer);
+        Ada_Help_View := Help_View_Convert.To_Pointer (Storage.To_Address (User_Data));
         if Ada_Help_View.Zelda = null then
             return S;
         end if;
@@ -257,6 +259,8 @@ package body FLTK.Widgets.Groups.Help_Views is
         else
             return Ada_Help_View.Hilda;
         end if;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Link_Callback_Hook;
 
 

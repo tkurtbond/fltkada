@@ -6,11 +6,17 @@
 
 with
 
+    Ada.Assertions,
     Interfaces.C,
     System.Address_To_Access_Conversions;
 
 
 package body FLTK.Widgets.Groups.Windows.Double.Cairo is
+
+
+    package Chk renames Ada.Assertions;
+
+
 
 
     ------------------------
@@ -74,9 +80,12 @@ package body FLTK.Widgets.Groups.Windows.Double.Cairo is
         Ada_Object : access Cairo_Window'Class :=
             Cairo_Convert.To_Pointer (Ada_Addr);
     begin
+        pragma Assert (Ada_Object /= null);
         if Ada_Object.My_Func /= null then
             Ada_Object.My_Func (Cairo_Window (Ada_Object.all), Storage.To_Address (Cairo_Addr));
         end if;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Cairo_Draw_Hook;
 
 

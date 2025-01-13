@@ -6,6 +6,7 @@
 
 with
 
+    Ada.Assertions,
     Interfaces.C.Strings;
 
 use type
@@ -16,6 +17,15 @@ use type
 
 package body FLTK.Event is
 
+
+    package Chk renames Ada.Assertions;
+
+
+
+
+    ------------------------
+    --  Functions From C  --
+    ------------------------
 
     procedure fl_event_add_handler
            (F : in Storage.Integer_Address);
@@ -342,10 +352,19 @@ package body FLTK.Event is
 
 
     function Get_Grab
-        return access FLTK.Widgets.Groups.Windows.Window'Class is
+        return access FLTK.Widgets.Groups.Windows.Window'Class
+    is
+        Grab_Ptr : Storage.Integer_Address := fl_event_get_grab;
+        Actual_Grab : access FLTK.Widgets.Groups.Windows.Window'Class;
     begin
-        return Window_Convert.To_Pointer
-            (Storage.To_Address (fl_widget_get_user_data (fl_event_get_grab)));
+        if Grab_Ptr /= Null_Pointer then
+            Grab_Ptr := fl_widget_get_user_data (Grab_Ptr);
+            pragma Assert (Grab_Ptr /= Null_Pointer);
+            Actual_Grab := Window_Convert.To_Pointer (Storage.To_Address (Grab_Ptr));
+        end if;
+        return Actual_Grab;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Get_Grab;
 
 
@@ -363,10 +382,19 @@ package body FLTK.Event is
 
 
     function Get_Pushed
-        return access FLTK.Widgets.Widget'Class is
+        return access FLTK.Widgets.Widget'Class
+    is
+        Pushed_Ptr : Storage.Integer_Address := fl_event_get_pushed;
+        Actual_Pushed : access FLTK.Widgets.Widget'Class;
     begin
-        return Widget_Convert.To_Pointer
-            (Storage.To_Address (fl_widget_get_user_data (fl_event_get_pushed)));
+        if Pushed_Ptr /= Null_Pointer then
+            Pushed_Ptr := fl_widget_get_user_data (Pushed_Ptr);
+            pragma Assert (Pushed_Ptr /= Null_Pointer);
+            Actual_Pushed := Widget_Convert.To_Pointer (Storage.To_Address (Pushed_Ptr));
+        end if;
+        return Actual_Pushed;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Get_Pushed;
 
 
@@ -378,10 +406,19 @@ package body FLTK.Event is
 
 
     function Get_Below_Mouse
-        return access FLTK.Widgets.Widget'Class is
+        return access FLTK.Widgets.Widget'Class
+    is
+        Below_Ptr : Storage.Integer_Address := fl_event_get_belowmouse;
+        Actual_Below : access FLTK.Widgets.Widget'Class;
     begin
-        return Widget_Convert.To_Pointer
-            (Storage.To_Address (fl_widget_get_user_data (fl_event_get_belowmouse)));
+        if Below_Ptr /= Null_Pointer then
+            Below_Ptr := fl_widget_get_user_data (Below_Ptr);
+            pragma Assert (Below_Ptr /= Null_Pointer);
+            Actual_Below := Widget_Convert.To_Pointer (Storage.To_Address (Below_Ptr));
+        end if;
+        return Actual_Below;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Get_Below_Mouse;
 
 
@@ -393,10 +430,19 @@ package body FLTK.Event is
 
 
     function Get_Focus
-        return access FLTK.Widgets.Widget'Class is
+        return access FLTK.Widgets.Widget'Class
+    is
+        Focus_Ptr : Storage.Integer_Address := fl_event_get_focus;
+        Actual_Focus : access FLTK.Widgets.Widget'Class;
     begin
-        return Widget_Convert.To_Pointer
-            (Storage.To_Address (fl_widget_get_user_data (fl_event_get_focus)));
+        if Focus_Ptr /= Null_Pointer then
+            Focus_Ptr := fl_widget_get_user_data (Focus_Ptr);
+            pragma Assert (Focus_Ptr /= Null_Pointer);
+            Actual_Focus := Widget_Convert.To_Pointer (Storage.To_Address (Focus_Ptr));
+        end if;
+        return Actual_Focus;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Get_Focus;
 
 

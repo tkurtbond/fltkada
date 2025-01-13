@@ -356,14 +356,16 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
             E : in Storage.Integer_Address)
         return Interfaces.C.int
     is
-        Ada_Editor : access Text_Editor'Class :=
-            Editor_Convert.To_Pointer (Storage.To_Address (fl_widget_get_user_data (E)));
+        Editor_Ptr : Storage.Integer_Address := fl_widget_get_user_data (E);
+        Ada_Editor : access Text_Editor'Class;
         Modi : Modifier := FLTK.Event.Last_Modifier;
         Actual_Key : Keypress := FLTK.Event.Last_Key; --  fuck you FLTK, give me the real code
         Ada_Key : Key_Combo := To_Ada (To_C (Actual_Key) + To_C (Modi));
 
         Found_Binding : Boolean := False;
     begin
+        pragma Assert (Editor_Ptr /= Null_Pointer);
+        Ada_Editor := Editor_Convert.To_Pointer (Storage.To_Address (Editor_Ptr));
         for B of Ada_Editor.Bindings loop
             if B.Key = Ada_Key then
                 B.Func (Ada_Editor.all);

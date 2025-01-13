@@ -6,10 +6,16 @@
 
 with
 
+    Ada.Assertions,
     Interfaces.C;
 
 
 package body FLTK.Widgets.Groups.Wizards is
+
+
+    package Chk renames Ada.Assertions;
+
+
 
 
     ------------------------
@@ -165,12 +171,17 @@ package body FLTK.Widgets.Groups.Wizards is
            (This : in Wizard)
         return access Widget'Class
     is
-        Widget_Ptr : Storage.Integer_Address :=
-            fl_wizard_get_visible (This.Void_Ptr);
-        Actual_Widget : access Widget'Class :=
-            Widget_Convert.To_Pointer (Storage.To_Address (fl_widget_get_user_data (Widget_Ptr)));
+        Visible_Ptr : Storage.Integer_Address := fl_wizard_get_visible (This.Void_Ptr);
+        Actual_Widget : access Widget'Class;
     begin
+        if Visible_Ptr /= Null_Pointer then
+            Visible_Ptr := fl_widget_get_user_data (Visible_Ptr);
+            pragma Assert (Visible_Ptr /= Null_Pointer);
+            Actual_Widget := Widget_Convert.To_Pointer (Storage.To_Address (Visible_Ptr));
+        end if;
         return Actual_Widget;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Get_Visible;
 
 

@@ -6,8 +6,9 @@
 
 with
 
-    Interfaces.C.Strings,
-    Ada.Unchecked_Deallocation;
+    Ada.Assertions,
+    Ada.Unchecked_Deallocation,
+    Interfaces.C.Strings;
 
 use type
 
@@ -17,6 +18,11 @@ use type
 
 
 package body FLTK.Widgets.Menus is
+
+
+    package Chk renames Ada.Assertions;
+
+
 
 
     ------------------------
@@ -272,11 +278,15 @@ package body FLTK.Widgets.Menus is
     procedure Item_Hook
            (M, U : in Storage.Integer_Address)
     is
-        Ada_Widget : access Widget'Class :=
-            Widget_Convert.To_Pointer (Storage.To_Address (fl_widget_get_user_data (M)));
+        C_Ptr : Storage.Integer_Address := fl_widget_get_user_data (M);
+        Ada_Widget : access Widget'Class;
         Action : Widget_Callback := Callback_Convert.To_Access (U);
     begin
+        pragma Assert (C_Ptr /= Null_Pointer);
+        Ada_Widget := Widget_Convert.To_Pointer (Storage.To_Address (C_Ptr));
         Action.all (Ada_Widget.all);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Item_Hook;
 
 

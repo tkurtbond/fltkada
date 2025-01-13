@@ -31,6 +31,12 @@ package body FLTK.File_Choosers is
     --  Functions From C  --
     ------------------------
 
+    function fl_widget_get_user_data
+           (W : in Storage.Integer_Address)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_widget_get_user_data, "fl_widget_get_user_data");
+    pragma Inline (fl_widget_get_user_data);
+
     procedure fl_widget_set_user_data
            (W, D : in Storage.Integer_Address);
     pragma Import (C, fl_widget_set_user_data, "fl_widget_set_user_data");
@@ -952,8 +958,16 @@ package body FLTK.File_Choosers is
     is
         C_Addr : Storage.Integer_Address :=
             fl_file_chooser_add_extra (This.Void_Ptr, Wrapper (Item).Void_Ptr);
+        Ada_Obj : access Widgets.Widget'Class;
     begin
-        return Widget_Convert.To_Pointer (Storage.To_Address (C_Addr));
+        if C_Addr /= Null_Pointer then
+            C_Addr := fl_widget_get_user_data (C_Addr);
+            pragma Assert (C_Addr /= Null_Pointer);
+            Ada_Obj := Widget_Convert.To_Pointer (Storage.To_Address (C_Addr));
+        end if;
+        return Ada_Obj;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Eject_Extra;
 
 

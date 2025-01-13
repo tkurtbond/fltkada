@@ -6,6 +6,7 @@
 
 with
 
+    Ada.Assertions,
     Interfaces.C,
     System.Address_To_Access_Conversions;
 
@@ -15,6 +16,11 @@ use type
 
 
 package body FLTK.Tooltips is
+
+
+    package Chk renames Ada.Assertions;
+
+
 
 
     ------------------------
@@ -174,13 +180,16 @@ package body FLTK.Tooltips is
         return access FLTK.Widgets.Widget'Class
     is
         Widget_Ptr : Storage.Integer_Address := fl_tooltip_get_current;
+        Actual_Widget : access FLTK.Widgets.Widget'Class;
     begin
         if Widget_Ptr /= Null_Pointer then
-            return Widget_Convert.To_Pointer
-                (Storage.To_Address (fl_widget_get_user_data (Widget_Ptr)));
-        else
-            return null;
+            Widget_Ptr := fl_widget_get_user_data (Widget_Ptr);
+            pragma Assert (Widget_Ptr /= Null_Pointer);
+            Actual_Widget := Widget_Convert.To_Pointer (Storage.To_Address (Widget_Ptr));
         end if;
+        return Actual_Widget;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Get_Target;
 
 

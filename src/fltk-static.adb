@@ -6,6 +6,7 @@
 
 with
 
+    Ada.Assertions,
     Ada.Containers.Vectors,
     Interfaces.C.Strings,
     System.Address_To_Access_Conversions,
@@ -20,6 +21,7 @@ use type
 package body FLTK.Static is
 
 
+    package Chk  renames Ada.Assertions;
     package Conv renames FLTK.Static_Callback_Conversions;
 
 
@@ -901,10 +903,19 @@ package body FLTK.Static is
 
 
     function Get_First_Window
-        return access FLTK.Widgets.Groups.Windows.Window'Class is
+        return access FLTK.Widgets.Groups.Windows.Window'Class
+    is
+        First_Ptr : Storage.Integer_Address := fl_static_get_first_window;
+        Actual_First : access FLTK.Widgets.Groups.Windows.Window'Class;
     begin
-        return Window_Convert.To_Pointer
-            (Storage.To_Address (fl_widget_get_user_data (fl_static_get_first_window)));
+        if First_Ptr /= Null_Pointer then
+            First_Ptr := fl_widget_get_user_data (First_Ptr);
+            pragma Assert (First_Ptr /= Null_Pointer);
+            Actual_First := Window_Convert.To_Pointer (Storage.To_Address (First_Ptr));
+        end if;
+        return Actual_First;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Get_First_Window;
 
 
@@ -917,28 +928,55 @@ package body FLTK.Static is
 
     function Get_Next_Window
            (From : in FLTK.Widgets.Groups.Windows.Window'Class)
-        return access FLTK.Widgets.Groups.Windows.Window'Class is
+        return access FLTK.Widgets.Groups.Windows.Window'Class
+    is
+        Next_Ptr : Storage.Integer_Address := fl_static_next_window (Wrapper (From).Void_Ptr);
+        Actual_Next : access FLTK.Widgets.Groups.Windows.Window'Class;
     begin
-        return Window_Convert.To_Pointer (Storage.To_Address
-            (fl_widget_get_user_data (fl_static_next_window (Wrapper (From).Void_Ptr))));
+        if Next_Ptr /= Null_Pointer then
+            Next_Ptr := fl_widget_get_user_data (Next_Ptr);
+            pragma Assert (Next_Ptr /= Null_Pointer);
+            Actual_Next := Window_Convert.To_Pointer (Storage.To_Address (Next_Ptr));
+        end if;
+        return Actual_Next;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Get_Next_Window;
 
 
     function Get_Top_Modal
-        return access FLTK.Widgets.Groups.Windows.Window'Class is
+        return access FLTK.Widgets.Groups.Windows.Window'Class
+    is
+        Modal_Ptr : Storage.Integer_Address := fl_static_modal;
+        Actual_Modal : access FLTK.Widgets.Groups.Windows.Window'Class;
     begin
-        return Window_Convert.To_Pointer
-            (Storage.To_Address (fl_widget_get_user_data (fl_static_modal)));
+        if Modal_Ptr /= Null_Pointer then
+            Modal_Ptr := fl_widget_get_user_data (Modal_Ptr);
+            pragma Assert (Modal_Ptr /= Null_Pointer);
+            Actual_Modal := Window_Convert.To_Pointer (Storage.To_Address (Modal_Ptr));
+        end if;
+        return Actual_Modal;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Get_Top_Modal;
 
 
 
 
     function Read_Queue
-        return access FLTK.Widgets.Widget'Class is
+        return access FLTK.Widgets.Widget'Class
+    is
+        Queue_Ptr : Storage.Integer_Address := fl_static_readqueue;
+        Actual_Queue : access FLTK.Widgets.Widget'Class;
     begin
-        return Widget_Convert.To_Pointer
-            (Storage.To_Address (fl_widget_get_user_data (fl_static_readqueue)));
+        if Queue_Ptr /= Null_Pointer then
+            Queue_Ptr := fl_widget_get_user_data (Queue_Ptr);
+            pragma Assert (Queue_Ptr /= Null_Pointer);
+            Actual_Queue := Widget_Convert.To_Pointer (Storage.To_Address (Queue_Ptr));
+        end if;
+        return Actual_Queue;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Read_Queue;
 
 
