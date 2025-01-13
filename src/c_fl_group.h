@@ -17,9 +17,6 @@ extern "C" GROUP new_fl_group(int x, int y, int w, int h, char* label);
 extern "C" void free_fl_group(GROUP g);
 
 
-extern "C" void fl_group_end(GROUP g);
-
-
 extern "C" void fl_group_add(GROUP g, WIDGET item);
 extern "C" void fl_group_insert(GROUP g, WIDGET item, int place);
 extern "C" void fl_group_insert2(GROUP g, WIDGET item, WIDGET before);
@@ -36,16 +33,24 @@ extern "C" unsigned int fl_group_get_clip_children(GROUP g);
 extern "C" void fl_group_set_clip_children(GROUP g, int c);
 
 
+extern "C" void fl_group_add_resizable(GROUP g, WIDGET w);
 extern "C" void * fl_group_get_resizable(GROUP g);
 extern "C" void fl_group_set_resizable(GROUP g, WIDGET item);
 extern "C" void fl_group_init_sizes(GROUP g);
+extern "C" void fl_group_resize(GROUP g, int x, int y, int w, int h);
 
 
 extern "C" void * fl_group_get_current();
 extern "C" void fl_group_set_current(GROUP g);
+extern "C" void fl_group_begin(GROUP g);
+extern "C" void fl_group_end(GROUP g);
 
 
 extern "C" void fl_group_draw(GROUP g);
+extern "C" void fl_group_draw_child(GROUP g, WIDGET w);
+extern "C" void fl_group_draw_children(GROUP g);
+extern "C" void fl_group_draw_outside_label(GROUP g, WIDGET w);
+extern "C" void fl_group_update_child(GROUP g, WIDGET w);
 extern "C" int fl_group_handle(GROUP g, int e);
 
 

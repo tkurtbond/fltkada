@@ -6,6 +6,7 @@
 
 with
 
+    Ada.Assertions,
     Interfaces.C;
 
 use type
@@ -14,6 +15,11 @@ use type
 
 
 package body FLTK.Widgets.Groups is
+
+
+    package Chk renames Ada.Assertions;
+
+
 
 
     ------------------------
@@ -31,14 +37,6 @@ package body FLTK.Widgets.Groups is
            (G : in Storage.Integer_Address);
     pragma Import (C, free_fl_group, "free_fl_group");
     pragma Inline (free_fl_group);
-
-
-
-
-    procedure fl_group_end
-           (G : in Storage.Integer_Address);
-    pragma Import (C, fl_group_end, "fl_group_end");
-    pragma Inline (fl_group_end);
 
 
 
@@ -110,6 +108,11 @@ package body FLTK.Widgets.Groups is
 
 
 
+    procedure fl_group_add_resizable
+           (G, W : in Storage.Integer_Address);
+    pragma Import (C, fl_group_add_resizable, "fl_group_add_resizable");
+    pragma Inline (fl_group_add_resizable);
+
     function fl_group_get_resizable
            (G : in Storage.Integer_Address)
         return Storage.Integer_Address;
@@ -126,6 +129,12 @@ package body FLTK.Widgets.Groups is
     pragma Import (C, fl_group_init_sizes, "fl_group_init_sizes");
     pragma Inline (fl_group_init_sizes);
 
+    procedure fl_group_resize
+           (G          : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int);
+    pragma Import (C, fl_group_resize, "fl_group_resize");
+    pragma Inline (fl_group_resize);
+
 
 
 
@@ -139,6 +148,16 @@ package body FLTK.Widgets.Groups is
     pragma Import (C, fl_group_set_current, "fl_group_set_current");
     pragma Inline (fl_group_set_current);
 
+    procedure fl_group_begin
+           (G : in Storage.Integer_Address);
+    pragma Import (C, fl_group_begin, "fl_group_begin");
+    pragma Inline (fl_group_begin);
+
+    procedure fl_group_end
+           (G : in Storage.Integer_Address);
+    pragma Import (C, fl_group_end, "fl_group_end");
+    pragma Inline (fl_group_end);
+
 
 
 
@@ -146,6 +165,26 @@ package body FLTK.Widgets.Groups is
            (W : in Storage.Integer_Address);
     pragma Import (C, fl_group_draw, "fl_group_draw");
     pragma Inline (fl_group_draw);
+
+    procedure fl_group_draw_child
+           (G, W : in Storage.Integer_Address);
+    pragma Import (C, fl_group_draw_child, "fl_group_draw_child");
+    pragma Inline (fl_group_draw_child);
+
+    procedure fl_group_draw_children
+           (G : in Storage.Integer_Address);
+    pragma Import (C, fl_group_draw_children, "fl_group_draw_children");
+    pragma Inline (fl_group_draw_children);
+
+    procedure fl_group_draw_outside_label
+           (G, W : in Storage.Integer_Address);
+    pragma Import (C, fl_group_draw_outside_label, "fl_group_draw_outside_label");
+    pragma Inline (fl_group_draw_outside_label);
+
+    procedure fl_group_update_child
+           (G, W : in Storage.Integer_Address);
+    pragma Import (C, fl_group_update_child, "fl_group_update_child");
+    pragma Inline (fl_group_update_child);
 
     function fl_group_handle
            (W : in Storage.Integer_Address;
@@ -282,6 +321,8 @@ package body FLTK.Widgets.Groups is
     procedure Clear
            (This : in out Group) is
     begin
+        --  We don't use the actual clear method here because
+        --  that would delete the children from memory.
         for I in reverse 1 .. This.Number_Of_Children loop
             This.Remove (Index (I));
         end loop;
@@ -314,10 +355,14 @@ package body FLTK.Widgets.Groups is
     is
         Widget_Ptr : Storage.Integer_Address :=
             fl_group_child (This.Void_Ptr, Interfaces.C.int (Place) - 1);
-        Actual_Widget : access Widget'Class :=
-            Widget_Convert.To_Pointer (Storage.To_Address (fl_widget_get_user_data (Widget_Ptr)));
+        Actual_Widget : access Widget'Class;
     begin
+        Widget_Ptr := fl_widget_get_user_data (Widget_Ptr);
+        pragma Assert (Widget_Ptr /= Null_Pointer);
+        Actual_Widget := Widget_Convert.To_Pointer (Storage.To_Address (Widget_Ptr));
         return (Data => Actual_Widget);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Child;
 
 
@@ -335,13 +380,12 @@ package body FLTK.Widgets.Groups is
             Item : in out Widget'Class)
         return Extended_Index
     is
-        Ret : Interfaces.C.int;
+        Result : Interfaces.C.int := fl_group_find (This.Void_Ptr, Item.Void_Ptr);
     begin
-        Ret := fl_group_find (This.Void_Ptr, Item.Void_Ptr);
-        if Ret = fl_group_children (This.Void_Ptr) then
+        if Result = fl_group_children (This.Void_Ptr) then
             return No_Index;
         end if;
-        return Extended_Index (Ret + 1);
+        return Extended_Index (Result + 1);
     end Find;
 
 
@@ -433,16 +477,29 @@ package body FLTK.Widgets.Groups is
 
 
 
+    procedure Add_Resizable
+           (This : in out Group;
+            Item : in out Widget'Class) is
+    begin
+        fl_group_add_resizable (This.Void_Ptr, Item.Void_Ptr);
+    end Add_Resizable;
+
+
     function Get_Resizable
            (This : in Group)
         return access Widget'Class
     is
-        Widget_Ptr : Storage.Integer_Address :=
-            fl_group_get_resizable (This.Void_Ptr);
-        Actual_Widget : access Widget'Class :=
-            Widget_Convert.To_Pointer (Storage.To_Address (fl_widget_get_user_data (Widget_Ptr)));
+        Widget_Ptr : Storage.Integer_Address := fl_group_get_resizable (This.Void_Ptr);
+        Actual_Widget : access Widget'Class;
     begin
+        if Widget_Ptr /= Null_Pointer then
+            Widget_Ptr := fl_widget_get_user_data (Widget_Ptr);
+            pragma Assert (Widget_Ptr /= Null_Pointer);
+            Actual_Widget := Widget_Convert.To_Pointer (Storage.To_Address (Widget_Ptr));
+        end if;
         return Actual_Widget;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Get_Resizable;
 
 
@@ -454,11 +511,24 @@ package body FLTK.Widgets.Groups is
     end Set_Resizable;
 
 
-    procedure Reset_Initial_Sizes
+    procedure Reset_Sizes
            (This : in out Group) is
     begin
         fl_group_init_sizes (This.Void_Ptr);
-    end Reset_Initial_Sizes;
+    end Reset_Sizes;
+
+
+    procedure Resize
+           (This       : in out Group;
+            X, Y, W, H : in     Integer) is
+    begin
+        fl_group_resize
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H));
+    end Resize;
 
 
 
@@ -470,9 +540,13 @@ package body FLTK.Widgets.Groups is
         Actual_Group : access Group'Class;
     begin
         if Group_Ptr /= Null_Pointer then
+            Group_Ptr := fl_widget_get_user_data (Group_Ptr);
+            pragma Assert (Group_Ptr /= Null_Pointer);
             Actual_Group := Group_Convert.To_Pointer (Storage.To_Address (Group_Ptr));
         end if;
         return Actual_Group;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error;
     end Get_Current;
 
 
@@ -483,6 +557,20 @@ package body FLTK.Widgets.Groups is
     end Set_Current;
 
 
+    procedure Begin_Current
+           (This : in out Group) is
+    begin
+        fl_group_begin (This.Void_Ptr);
+    end Begin_Current;
+
+
+    procedure End_Current
+           (This : in out Group) is
+    begin
+        fl_group_end (This.Void_Ptr);
+    end End_Current;
+
+
 
 
     procedure Draw
@@ -490,6 +578,37 @@ package body FLTK.Widgets.Groups is
     begin
         Widget (This).Draw;
     end Draw;
+
+
+    procedure Draw_Child
+           (This : in out Group;
+            Item : in out Widget'Class) is
+    begin
+        fl_group_draw_child (This.Void_Ptr, Item.Void_Ptr);
+    end Draw_Child;
+
+
+    procedure Draw_Children
+           (This : in out Group) is
+    begin
+        fl_group_draw_children (This.Void_Ptr);
+    end Draw_Children;
+
+
+    procedure Draw_Outside_Label
+           (This : in out Group;
+            Item : in out Widget'Class) is
+    begin
+        fl_group_draw_outside_label (This.Void_Ptr, Item.Void_Ptr);
+    end Draw_Outside_Label;
+
+
+    procedure Update_Child
+           (This : in out Group;
+            Item : in out Widget'Class) is
+    begin
+        fl_group_update_child (This.Void_Ptr, Item.Void_Ptr);
+    end Update_Child;
 
 
     function Handle

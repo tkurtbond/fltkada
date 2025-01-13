@@ -87,7 +87,8 @@ package FLTK.Widgets.Groups is
     function Child
            (This  : in Group;
             Place : in Index)
-        return Widget_Reference;
+        return Widget_Reference
+    with Pre => This.Has_Child (Place);
 
     function Child
            (This  : in Group;
@@ -127,6 +128,10 @@ package FLTK.Widgets.Groups is
 
 
 
+    procedure Add_Resizable
+           (This : in out Group;
+            Item : in out Widget'Class);
+
     function Get_Resizable
            (This : in Group)
         return access Widget'Class;
@@ -135,8 +140,12 @@ package FLTK.Widgets.Groups is
            (This : in out Group;
             Item : in     Widget'Class);
 
-    procedure Reset_Initial_Sizes
+    procedure Reset_Sizes
            (This : in out Group);
+
+    procedure Resize
+           (This       : in out Group;
+            X, Y, W, H : in     Integer);
 
 
 
@@ -147,11 +156,32 @@ package FLTK.Widgets.Groups is
     procedure Set_Current
            (To : in Group'Class);
 
+    procedure Begin_Current
+           (This : in out Group);
+
+    procedure End_Current
+           (This : in out Group);
+
 
 
 
     procedure Draw
            (This : in out Group);
+
+    procedure Draw_Child
+           (This : in out Group;
+            Item : in out Widget'Class);
+
+    procedure Draw_Children
+           (This : in out Group);
+
+    procedure Draw_Outside_Label
+           (This : in out Group;
+            Item : in out Widget'Class);
+
+    procedure Update_Child
+           (This : in out Group;
+            Item : in out Widget'Class);
 
     function Handle
            (This  : in out Group;
@@ -222,17 +252,23 @@ private
 
     pragma Inline (Iterate);
 
-    --  pragma Inline (Get_Clip_Mode);
-    --  pragma Inline (Set_Clip_Mode);
+    pragma Inline (Get_Clip_Mode);
+    pragma Inline (Set_Clip_Mode);
 
-    pragma Inline (Get_Resizable);
+    pragma Inline (Add_Resizable);
     pragma Inline (Set_Resizable);
-    pragma Inline (Reset_Initial_Sizes);
+    pragma Inline (Reset_Sizes);
+    pragma Inline (Resize);
 
-    pragma Inline (Get_Current);
     pragma Inline (Set_Current);
+    pragma Inline (Begin_Current);
+    pragma Inline (End_Current);
 
     pragma Inline (Draw);
+    pragma Inline (Draw_Child);
+    pragma Inline (Draw_Children);
+    pragma Inline (Draw_Outside_Label);
+    pragma Inline (Update_Child);
     pragma Inline (Handle);
 
 

@@ -26,6 +26,11 @@
 
 </table>
 
+<p><b>Note:</b><br /><br />
+Groups automatically have end / End_Current called on them as part of their construction.
+This is because otherwise the usual begin/end behaviour would get confusing with the style
+of declaration this binding uses.</p>
+
 
 
 <table class="type">
@@ -138,32 +143,39 @@ procedure Add
 <td><pre>
 void add_resizable(Fl_Widget &o);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Add_Resizable
+       (This : in out Group;
+        Item : in out Widget'Class);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 Fl_Widget * const * array() const;
 </pre></td>
-<td>Use iterators instead</td>
+<td>Use iterators instead.</td>
   </tr>
 
   <tr>
 <td><pre>
 virtual Fl_Group * as_group();
 </pre></td>
-<td>Use runtime tag checks and view conversions instead</td>
+<td>Use runtime tag checks and view conversions instead.</td>
   </tr>
 
   <tr>
 <td><pre>
 void begin();
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Begin_Current
+       (This : in out Group);
+</pre></td>
   </tr>
 
   <tr>
-<td>&nbsp;</td>
+<td>Check if the index value is in range manually.</td>
 <td><pre>
 function Has_Child
        (This  : in Group;
@@ -189,7 +201,8 @@ Fl_Widget * child(int n) const;
 function Child
        (This  : in Group;
         Place : in Index)
-    return Widget_Reference;
+    return Widget_Reference
+with Pre => This.Has_Child (Place);
 </pre></td>
   </tr>
 
@@ -250,7 +263,10 @@ procedure Set_Clip_Mode
 <td><pre>
 void end();
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure End_Current
+       (This : in out Group);
+</pre></td>
   </tr>
 
   <tr>
@@ -263,7 +279,7 @@ int find(const Fl_Widget &o) const;
 function Find
        (This : in     Group;
         Item : in out Widget'Class)
-    return Index;
+    return Extended_Index;
 </pre></td>
   </tr>
 
@@ -271,7 +287,7 @@ function Find
 <td><pre>
 void focus(Fl_Widget *W);
 </pre></td>
-<td>&nbsp;</td>
+<td>Deprecated, see take_focus / Take_Focus in Fl_Widget.</td>
   </tr>
 
   <tr>
@@ -298,7 +314,7 @@ function Handle
 void init_sizes();
 </pre></td>
 <td><pre>
-procedure Reset_Initial_Sizes
+procedure Reset_Sizes
        (This : in out Group);
 </pre></td>
   </tr>
@@ -328,7 +344,7 @@ procedure Insert
   </tr>
 
   <tr>
-<td>&nbsp;</td>
+<td>Use a for loop to iterate over the group's children.</td>
 <td><pre>
 function Iterate
        (This : in Group)
@@ -388,7 +404,11 @@ procedure Set_Resizable
 <td><pre>
 void resize(int, int, int, int);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Resize
+       (This       : in out Group;
+        X, Y, W, H : in     Integer);
+</pre></td>
   </tr>
 
 </table>
@@ -412,35 +432,50 @@ procedure Draw
 <td><pre>
 void draw_child(Fl_Widget &widget) const;
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Draw_Child
+       (This : in out Group;
+        Item : in out Widget'Class);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 void draw_children();
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Draw_Children
+       (This : in out Group);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 void draw_outside_label(const Fl_Widget &widget) const;
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Draw_Outside_Label
+       (This : in out Group;
+        Item : in out Widget'Class);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 int * sizes();
 </pre></td>
-<td>&nbsp;</td>
+<td>Intentionally left unbound.</td>
   </tr>
 
   <tr>
 <td><pre>
 void update_child(Fl_Widget &widget) const;
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Update_Child
+       (This : in out Group;
+        Item : in out Widget'Class);
+</pre></td>
   </tr>
 
 </table>
