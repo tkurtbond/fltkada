@@ -189,9 +189,16 @@ Fl_System_Printer
 Bugs to fix:
 
 Fl_Wizard draw() method private/protected
+
 GNAT bug with type_invariant combined with derived type and a begin section in a package, eg dialogs.adb
+
 Fl_Bitmap / Fl_XBM_Image instances will always have fail() return ERR_NO_IMAGE
+
 Fl_Positioner has poor docs for value/xvalue/yvalue set methods
+
+code for Fl_Menu_Item::test_shortcut seems to use FL_SUBMENU to assume userdata
+points to another menu item array, not FL_SUBMENU_POINTER, is this still in
+the latest version?
 
 
 
@@ -205,7 +212,6 @@ FLTK.Images (static attributes, draw_empty, Get_Data_Size?)
 FLTK.Images.Bitmaps (attributes)
 FLTK.Images.Pixmaps (constructor)
 FLTK.Images.Shared (images(), compare)
-FLTK.Menu_Items
 FLTK.Text_Buffers
 
 
@@ -218,7 +224,6 @@ Widgets.Groups.Scrolls (attributes, resize, type, protected)
 Widgets.Groups.Text_Displays
 Widgets.Groups.Text_Displays.Text_Editors
 Widgets.Groups.Windows
-Widgets.Menus
 Widgets.Valuators (format) (a few derivative classes need type() checked too)
 
 

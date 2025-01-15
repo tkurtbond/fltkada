@@ -41,6 +41,11 @@
     <td>Menu_Item_Reference</td>
   </tr>
 
+  <tr>
+    <td>Fl_Menu_Item *</td>
+    <td>Menu_Item_Array</td>
+  </tr>
+
 </table>
 
 
@@ -143,7 +148,7 @@ void activate();
 </pre></td>
 <td><pre>
 procedure Activate
-       (Item : in out Menu_Item);
+       (This : in out Menu_Item);
 </pre></td>
   </tr>
 
@@ -153,7 +158,7 @@ int active() const;
 </pre></td>
 <td><pre>
 function Is_Active
-       (Item : in Menu_Item)
+       (This : in Menu_Item)
     return Boolean;
 </pre></td>
   </tr>
@@ -164,7 +169,7 @@ int activevisible() const;
 </pre></td>
 <td><pre>
 function Is_Active_And_Visible
-       (Item : in Menu_Item)
+       (This : in Menu_Item)
     return Boolean;
 </pre></td>
   </tr>
@@ -174,7 +179,7 @@ function Is_Active_And_Visible
 int add(const char *, int shortcut, Fl_Callback *,
     void *=0, int=0);
 </pre></td>
-<td>See Add procedure in FLTK.Widgets.Menus</td>
+<td>Use the Add subprograms in FLTK.Widgets.Menus instead.</td>
   </tr>
 
   <tr>
@@ -182,21 +187,21 @@ int add(const char *, int shortcut, Fl_Callback *,
 int add(const char *a, const char *b, Fl_Callback *c,
     void *d=0, int e=0);
 </pre></td>
-<td>&nbsp;</td>
+<td>Use the Add subprograms in FLTK.Widgets.Menus instead.</td>
   </tr>
 
   <tr>
 <td><pre>
 long argument() const;
 </pre></td>
-<td>&nbsp;</td>
+<td>Not used in public API.</td>
   </tr>
 
   <tr>
 <td><pre>
 void argument(long v);
 </pre></td>
-<td>&nbsp;</td>
+<td>Not used in public API.</td>
   </tr>
 
   <tr>
@@ -205,7 +210,7 @@ Fl_Callback_p callback() const;
 </pre></td>
 <td><pre>
 function Get_Callback
-       (Item : in Menu_Item)
+       (This : in Menu_Item)
     return FLTK.Widgets.Widget_Callback;
 </pre></td>
   </tr>
@@ -222,7 +227,7 @@ void callback(Fl_Callback1 *c, long p=0);
 </pre></td>
 <td><pre>
 procedure Set_Callback
-       (Item : in out Menu_Item;
+       (This : in out Menu_Item;
         Func : in     FLTK.Widgets.Widget_Callback);
 </pre></td>
   </tr>
@@ -231,7 +236,7 @@ procedure Set_Callback
 <td><pre>
 void check();
 </pre></td>
-<td>&nbsp;</td>
+<td>Marked as deprecated.</td>
   </tr>
 
   <tr>
@@ -240,7 +245,7 @@ int checkbox() const;
 </pre></td>
 <td><pre>
 function Has_Checkbox
-       (Item : in Menu_Item)
+       (This : in Menu_Item)
     return Boolean;
 </pre></td>
   </tr>
@@ -249,7 +254,7 @@ function Has_Checkbox
 <td><pre>
 int checked() const;
 </pre></td>
-<td>&nbsp;</td>
+<td>Marked as deprecated.</td>
   </tr>
 
   <tr>
@@ -257,9 +262,8 @@ int checked() const;
 void clear();
 </pre></td>
 <td><pre>
-procedure Set_State
-       (Item : in out Menu_Item;
-        To   : in     Boolean);
+procedure Clear
+       (This : in out Menu_Item);
 </pre></td>
   </tr>
 
@@ -269,7 +273,7 @@ void deactivate();
 </pre></td>
 <td><pre>
 procedure Deactivate
-       (Item : in out Menu_Item);
+       (This : in out Menu_Item);
 </pre></td>
   </tr>
 
@@ -283,7 +287,7 @@ void do_callback(Fl_Widget *o, long arg) const;
 </pre></td>
 <td><pre>
 procedure Do_Callback
-       (Item   : in out Menu_Item;
+       (This   : in out Menu_Item;
         Widget : in out FLTK.Widgets.Widget'Class);
 </pre></td>
   </tr>
@@ -293,7 +297,7 @@ procedure Do_Callback
 void draw(int x, int y, int w, int h, const Fl_Menu_ *,
     int t=0) const;
 </pre></td>
-<td>See Draw_Item procedure in FLTK.Widgets.Menus</td>
+<td>See Draw_Item in FLTK.Widgets.Menus.</td>
   </tr>
 
   <tr>
@@ -301,7 +305,7 @@ void draw(int x, int y, int w, int h, const Fl_Menu_ *,
 const Fl_Menu_Item * find_shortcut(int *ip=0,
     const bool require_alt=false) const;
 </pre></td>
-<td>&nbsp;</td>
+<td>See Find_Shortcut in FLTK.Widgets.Menus.</td>
   </tr>
 
   <tr>
@@ -310,23 +314,23 @@ const Fl_Menu_Item * first() const;
 
 Fl_Menu_Item * first();
 </pre></td>
-<td>Use FLTK.Widgets.Menus iterators instead</td>
+<td>Iterate through FLTK.Widgets.Menus instead.</td>
   </tr>
 
   <tr>
-<td>See Fl_Menu_ int mode(int i) const;</td>
+<td>Access the flags attribute directly.</td>
 <td><pre>
 function Get_Flags
-       (Item : in Menu_Item)
+       (This : in Menu_Item)
     return Menu_Flag;
 </pre></td>
   </tr>
 
   <tr>
-<td>See Fl_Menu_ void mode(int i, int fl);</td>
+<td>Assign to the flags attribute directly.</td>
 <td><pre>
 procedure Set_Flags
-       (Item : in out Menu_Item;
+       (This : in out Menu_Item;
         To   : in     Menu_Flag);
 </pre></td>
   </tr>
@@ -337,7 +341,16 @@ void hide();
 </pre></td>
 <td><pre>
 procedure Hide
-       (Item : in out Menu_Item);
+       (This : in out Menu_Item);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Fl_Menu_Item is missing a method for getting the image set to it.</td>
+<td><pre>
+function Get_Image
+       (This : in Menu_Item)
+    return access FLTK.Images.Image'Class;
 </pre></td>
   </tr>
 
@@ -347,7 +360,11 @@ void image(Fl_Image *a);
 
 void image(Fl_Image &a);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Set_Image
+       (This : in out Menu_Item;
+        Pict : in out FLTK.Images.Image'Class);
+</pre></td>
   </tr>
 
   <tr>
@@ -355,7 +372,7 @@ void image(Fl_Image &a);
 int insert(int, const char *, int, Fl_Callback *,
     void *=0, int=0);
 </pre></td>
-<td>See Insert procedure in FLTK.Widgets.Menus</td>
+<td>Use the Insert subprograms in FLTK.Widgets.Menus instead.</td>
   </tr>
 
   <tr>
@@ -364,7 +381,7 @@ const char * label() const;
 </pre></td>
 <td><pre>
 function Get_Label
-       (Item : in Menu_Item)
+       (This : in Menu_Item)
     return String;
 </pre></td>
   </tr>
@@ -375,7 +392,7 @@ void label(const char *a);
 </pre></td>
 <td><pre>
 procedure Set_Label
-       (Item : in out Menu_Item;
+       (This : in out Menu_Item;
         Text : in     String);
 </pre></td>
   </tr>
@@ -384,7 +401,12 @@ procedure Set_Label
 <td><pre>
 void label(Fl_Labeltype a, const char *b);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Set_Label
+       (This : in out Menu_Item;
+        Kind : in     Label_Kind;
+        Text : in     String);
+</pre></td>
   </tr>
 
   <tr>
@@ -393,7 +415,7 @@ Fl_Color labelcolor() const;
 </pre></td>
 <td><pre>
 function Get_Label_Color
-       (Item : in Menu_Item)
+       (This : in Menu_Item)
     return Color;
 </pre></td>
   </tr>
@@ -404,7 +426,7 @@ void labelcolor(Fl_Color a);
 </pre></td>
 <td><pre>
 procedure Set_Label_Color
-       (Item : in out Menu_Item;
+       (This : in out Menu_Item;
         To   : in     Color);
 </pre></td>
   </tr>
@@ -415,7 +437,7 @@ Fl_Font labelfont() const;
 </pre></td>
 <td><pre>
 function Get_Label_Font
-       (Item : in Menu_Item)
+       (This : in Menu_Item)
     return Font_Kind;
 </pre></td>
   </tr>
@@ -426,7 +448,7 @@ void labelfont(Fl_Font a);
 </pre></td>
 <td><pre>
 procedure Set_Label_Font
-       (Item : in out Menu_Item;
+       (This : in out Menu_Item;
         To   : in     Font_Kind);
 </pre></td>
   </tr>
@@ -437,7 +459,7 @@ Fl_Fontsize labelsize() const;
 </pre></td>
 <td><pre>
 function Get_Label_Size
-       (Item : in Menu_Item)
+       (This : in Menu_Item)
     return Font_Size;
 </pre></td>
   </tr>
@@ -448,7 +470,7 @@ void labelsize(Fl_Fontsize a);
 </pre></td>
 <td><pre>
 procedure Set_Label_Size
-       (Item : in out Menu_Item;
+       (This : in out Menu_Item;
         To   : in     Font_Size);
 </pre></td>
   </tr>
@@ -459,7 +481,7 @@ Fl_Labeltype labeltype() const;
 </pre></td>
 <td><pre>
 function Get_Label_Type
-       (Item : in Menu_Item)
+       (This : in Menu_Item)
     return Label_Kind;
 </pre></td>
   </tr>
@@ -470,7 +492,7 @@ void labeltype(Fl_Labeltype a);
 </pre></td>
 <td><pre>
 procedure Set_Label_Type
-       (Item : in out Menu_Item;
+       (This : in out Menu_Item;
         To   : in     Label_Kind);
 </pre></td>
   </tr>
@@ -479,7 +501,7 @@ procedure Set_Label_Type
 <td><pre>
 int measure(int *h, const Fl_Menu_ *) const;
 </pre></td>
-<td>See Measure_Item procedure in FLTK.Widgets.Menus</td>
+<td>See Measure_Item in FLTK.Widgets.Menus.</td>
   </tr>
 
   <tr>
@@ -488,7 +510,7 @@ const Fl_Menu_Item * next(int=1) const;
 
 Fl_Menu_Item * next(int i=1);
 </pre></td>
-<td>Use FLTK.Widgets.Menus iterators instead</td>
+<td>Iterate through FLTK.Widgets.Menus instead.</td>
   </tr>
 
   <tr>
@@ -497,7 +519,7 @@ const Fl_Menu_Item * popup
    (int X, int Y, const char *title=0,
     const Fl_Menu_Item *picked=0, const Fl_Menu_*=0) const;
 </pre></td>
-<td>See Popup function in FLTK.Widgets.Menus</td>
+<td>See Popup in FLTK.Widgets.Menus.</td>
   </tr>
 
   <tr>
@@ -507,7 +529,7 @@ const Fl_Menu_Item * pulldown
     const Fl_Menu_Item *picked=0, const Fl_Menu_*=0,
     const Fl_Menu_Item *title=0, int menubar=0) const;
 </pre></td>
-<td>See Pulldown function in FLTK.Widgets.Menus</td>
+<td>See Pulldown in FLTK.Widgets.Menus.</td>
   </tr>
 
   <tr>
@@ -516,7 +538,7 @@ int radio() const;
 </pre></td>
 <td><pre>
 function Is_Radio
-       (Item : in Menu_Item)
+       (This : in Menu_Item)
     return Boolean;
 </pre></td>
   </tr>
@@ -525,7 +547,10 @@ function Is_Radio
 <td><pre>
 void set();
 </pre></td>
-<td>See void clear();</td>
+<td><pre>
+procedure Set
+       (This : in out Menu_Item);
+</pre></td>
   </tr>
 
   <tr>
@@ -534,7 +559,7 @@ void setonly();
 </pre></td>
 <td><pre>
 procedure Set_Only
-       (Item : in out Menu_Item);
+       (This : in out Menu_Item);
 </pre></td>
   </tr>
 
@@ -544,7 +569,7 @@ int shortcut() const;
 </pre></td>
 <td><pre>
 function Get_Shortcut
-       (Item : in Menu_Item)
+       (This : in Menu_Item)
     return Key_Combo;
 </pre></td>
   </tr>
@@ -555,7 +580,7 @@ void shortcut(int s);
 </pre></td>
 <td><pre>
 procedure Set_Shortcut
-       (Item : in out Menu_Item;
+       (This : in out Menu_Item;
         To   : in     Key_Combo);
 </pre></td>
   </tr>
@@ -566,7 +591,7 @@ void show();
 </pre></td>
 <td><pre>
 procedure Show
-       (Item : in out Menu_Item);
+       (This : in out Menu_Item);
 </pre></td>
   </tr>
 
@@ -574,42 +599,46 @@ procedure Show
 <td><pre>
 int size() const;
 </pre></td>
-<td>See Number_Of_Items function in FLTK.Widgets.Menus</td>
+<td>Use the Number_Of_Items function in FLTK.Widgets.Menus instead.</td>
   </tr>
 
   <tr>
 <td><pre>
 int submenu() const;
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Is_Submenu
+       (This : in Menu_Item)
+    return Boolean;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 const Fl_Menu_Item * test_shortcut() const;
 </pre></td>
-<td>&nbsp;</td>
+<td>Use the Test_Shortcut function in FLTK.Widgets.Menus instead.</td>
   </tr>
 
   <tr>
 <td><pre>
 void uncheck();
 </pre></td>
-<td>&nbsp;</td>
+<td>Marked as deprecated.</td>
   </tr>
 
   <tr>
 <td><pre>
 void * user_data() const;
 </pre></td>
-<td>&nbsp;</td>
+<td>Not used in public API.</td>
   </tr>
 
   <tr>
 <td><pre>
 void user_data(void *v);
 </pre></td>
-<td>&nbsp;</td>
+<td>Not used in public API.</td>
   </tr>
 
   <tr>
@@ -618,8 +647,17 @@ int value() const;
 </pre></td>
 <td><pre>
 function Get_State
-       (Item : in Menu_Item)
+       (This : in Menu_Item)
     return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Use set or clear methods.</td>
+<td><pre>
+procedure Set_State
+       (This : in out Menu_Item;
+        To   : in     Boolean);
 </pre></td>
   </tr>
 
@@ -629,7 +667,7 @@ int visible() const;
 </pre></td>
 <td><pre>
 function Is_Visible
-       (Item : in Menu_Item)
+       (This : in Menu_Item)
     return Boolean;
 </pre></td>
   </tr>

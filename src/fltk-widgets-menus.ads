@@ -12,6 +12,7 @@ with
 private with
 
     Ada.Containers.Vectors,
+    Ada.Finalization,
     Interfaces;
 
 
@@ -30,9 +31,16 @@ package FLTK.Widgets.Menus is
     subtype Extended_Index is Natural;
 
     No_Index : constant Extended_Index := Extended_Index'First;
-    No_Reference : exception;
 
     type Cursor is private;
+
+
+    --  If your menu item path names are longer than this,
+    --  then calls to Item_Pathname will raise an exception.
+    Item_Path_Max : constant Integer := 1023;
+
+
+    No_Reference_Error : exception;
 
 
 
@@ -50,11 +58,43 @@ package FLTK.Widgets.Menus is
 
 
     procedure Add
+           (This : in out Menu;
+            Text : in     String);
+
+    function Add
+           (This : in out Menu;
+            Text : in     String)
+        return Index;
+
+    procedure Add
            (This     : in out Menu;
             Text     : in     String;
             Action   : in     Widget_Callback := null;
             Shortcut : in     Key_Combo := No_Key;
             Flags    : in     Menu_Flag := Flag_Normal);
+
+    function Add
+           (This     : in out Menu;
+            Text     : in     String;
+            Action   : in     Widget_Callback := null;
+            Shortcut : in     Key_Combo := No_Key;
+            Flags    : in     Menu_Flag := Flag_Normal)
+        return Index;
+
+    procedure Add
+           (This     : in out Menu;
+            Text     : in     String;
+            Action   : in     Widget_Callback := null;
+            Shortcut : in     String;
+            Flags    : in     Menu_Flag := Flag_Normal);
+
+    function Add
+           (This     : in out Menu;
+            Text     : in     String;
+            Action   : in     Widget_Callback := null;
+            Shortcut : in     String;
+            Flags    : in     Menu_Flag := Flag_Normal)
+        return Index;
 
     procedure Insert
            (This     : in out Menu;
@@ -64,12 +104,50 @@ package FLTK.Widgets.Menus is
             Shortcut : in     Key_Combo := No_Key;
             Flags    : in     Menu_Flag := Flag_Normal);
 
+    function Insert
+           (This     : in out Menu;
+            Place    : in     Index;
+            Text     : in     String;
+            Action   : in     Widget_Callback := null;
+            Shortcut : in     Key_Combo := No_Key;
+            Flags    : in     Menu_Flag := Flag_Normal)
+        return Index;
+
+    procedure Insert
+           (This     : in out Menu;
+            Place    : in     Index;
+            Text     : in     String;
+            Action   : in     Widget_Callback := null;
+            Shortcut : in     String;
+            Flags    : in     Menu_Flag := Flag_Normal);
+
+    function Insert
+           (This     : in out Menu;
+            Place    : in     Index;
+            Text     : in     String;
+            Action   : in     Widget_Callback := null;
+            Shortcut : in     String;
+            Flags    : in     Menu_Flag := Flag_Normal)
+        return Index;
+
+    procedure Set_Items
+           (This  : in out Menu;
+            Items : in     FLTK.Menu_Items.Menu_Item_Array);
+
+    procedure Use_Same_Items
+           (This  : in out Menu;
+            Donor : in     Menu'Class);
+
     procedure Remove
            (This  : in out Menu;
             Place : in     Index);
 
     procedure Clear
            (This : in out Menu);
+
+    procedure Clear_Submenu
+           (This  : in out Menu;
+            Place : in     Index);
 
 
 
@@ -118,6 +196,16 @@ package FLTK.Widgets.Menus is
             Action : in Widget_Callback)
         return Extended_Index;
 
+    function Item_Pathname
+           (This : in Menu)
+        return String;
+
+    function Item_Pathname
+           (This : in Menu;
+            Item : in FLTK.Menu_Items.Menu_Item)
+        return String;
+
+    --  May not be what you expect due to submenu terminators
     function Number_Of_Items
            (This : in Menu)
         return Natural;
@@ -151,9 +239,51 @@ package FLTK.Widgets.Menus is
            (This  : in out Menu;
             Place : in     Index);
 
+    function Set_Chosen
+           (This  : in out Menu;
+            Place : in     Index)
+        return Boolean;
+
     procedure Set_Chosen
            (This : in out Menu;
             Item : in     FLTK.Menu_Items.Menu_Item);
+
+    function Set_Chosen
+           (This : in out Menu;
+            Item : in     FLTK.Menu_Items.Menu_Item)
+        return Boolean;
+
+
+
+
+    procedure Set_Only
+           (This : in out Menu;
+            Item : in out FLTK.Menu_Items.Menu_Item);
+
+    function Get_Label
+           (This  : in Menu;
+            Place : in Index)
+        return String;
+
+    procedure Set_Label
+           (This  : in out Menu;
+            Place : in     Index;
+            Text  : in     String);
+
+    procedure Set_Shortcut
+           (This  : in out Menu;
+            Place : in     Index;
+            Press : in     Key_Combo);
+
+    function Get_Flags
+           (This  : in Menu;
+            Place : in Index)
+        return Menu_Flag;
+
+    procedure Set_Flags
+           (This  : in out Menu;
+            Place : in     Index;
+            Flags : in     Menu_Flag);
 
 
 
@@ -217,6 +347,32 @@ package FLTK.Widgets.Menus is
             Initial    : in Extended_Index := No_Index)
         return Extended_Index;
 
+    procedure Picked
+           (This : in out Menu;
+            Item : in out FLTK.Menu_Items.Menu_Item);
+
+    function Find_Shortcut
+           (This        : in out Menu;
+            Require_Alt : in     Boolean := False)
+        return access FLTK.Menu_Items.Menu_Item'Class;
+
+    function Find_Shortcut
+           (This        : in out Menu;
+            Place       :    out Extended_Index;
+            Require_Alt : in     Boolean := False)
+        return access FLTK.Menu_Items.Menu_Item'Class;
+
+    function Test_Shortcut
+           (This : in out Menu)
+        return access FLTK.Menu_Items.Menu_Item'Class;
+
+
+
+
+    procedure Resize
+           (This : in out Menu;
+            W, H : in     Integer);
+
 
 
 
@@ -238,11 +394,13 @@ private
     type Item_Access is access FLTK.Menu_Items.Menu_Item;
 
     package Item_Vectors is new Ada.Containers.Vectors
-       (Index_Type => Positive,
+       (Index_Type   => Positive,
         Element_Type => Item_Access);
 
     type Menu is new Widget with record
         My_Items : Item_Vectors.Vector;
+        My_Find  : aliased FLTK.Menu_Items.Menu_Item;
+        My_Pick  : aliased FLTK.Menu_Items.Menu_Item;
     end record;
 
     overriding procedure Initialize
@@ -259,10 +417,6 @@ private
 
     procedure Extra_Final
            (This : in out Menu);
-
-
-    procedure Item_Hook (M, U : in Storage.Integer_Address);
-    pragma Convention (C, Item_Hook);
 
 
     type Cursor is record
@@ -293,6 +447,8 @@ private
         return Cursor;
 
 
+    pragma Inline (Use_Same_Items);
+
     pragma Inline (Has_Item);
     pragma Inline (Item);
     pragma Inline (Find_Item);
@@ -305,6 +461,13 @@ private
     pragma Inline (Chosen_Label);
     pragma Inline (Chosen_Index);
     pragma Inline (Set_Chosen);
+
+    pragma Inline (Set_Only);
+    pragma Inline (Get_Label);
+    pragma Inline (Set_Label);
+    pragma Inline (Set_Shortcut);
+    pragma Inline (Get_Flags);
+    pragma Inline (Set_Flags);
 
     pragma Inline (Get_Text_Color);
     pragma Inline (Set_Text_Color);
@@ -320,8 +483,20 @@ private
 
     pragma Inline (Popup);
     pragma Inline (Pulldown);
+    pragma Inline (Picked);
+    pragma Inline (Test_Shortcut);
+
+    pragma Inline (Resize);
 
     pragma Inline (Draw_Item);
+
+
+    type Menu_Final_Controller is new Ada.Finalization.Limited_Controlled with null record;
+
+    overriding procedure Finalize
+           (This : in out Menu_Final_Controller);
+
+    Cleanup : Menu_Final_Controller;
 
 
 end FLTK.Widgets.Menus;

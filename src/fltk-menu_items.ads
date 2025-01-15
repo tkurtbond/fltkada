@@ -6,6 +6,7 @@
 
 with
 
+    FLTK.Images,
     FLTK.Widgets;
 
 
@@ -17,13 +18,15 @@ package FLTK.Menu_Items is
     type Menu_Item_Reference (Data : not null access Menu_Item'Class) is limited null record
         with Implicit_Dereference => Data;
 
+    type Menu_Item_Array is array (Positive range <>) of Menu_Item;
+
 
 
 
     package Forge is
 
         --  Usually you don't bother with this and just add items
-        --  to Menus directly using the Add subprograms in that package.
+        --  to Menus directly using the Add/Insert subprograms in that package.
 
         function Create
                (Text        : in String;
@@ -38,151 +41,175 @@ package FLTK.Menu_Items is
 
 
     function Get_Callback
-           (Item : in Menu_Item)
+           (This : in Menu_Item)
         return FLTK.Widgets.Widget_Callback;
 
     procedure Set_Callback
-           (Item : in out Menu_Item;
+           (This : in out Menu_Item;
             Func : in     FLTK.Widgets.Widget_Callback);
 
     procedure Do_Callback
-           (Item   : in out Menu_Item;
+           (This   : in out Menu_Item;
             Widget : in out FLTK.Widgets.Widget'Class);
 
 
 
 
     function Has_Checkbox
-           (Item : in Menu_Item)
+           (This : in Menu_Item)
         return Boolean;
 
     function Is_Radio
-           (Item : in Menu_Item)
+           (This : in Menu_Item)
+        return Boolean;
+
+    function Is_Submenu
+           (This : in Menu_Item)
         return Boolean;
 
     function Get_State
-           (Item : in Menu_Item)
+           (This : in Menu_Item)
         return Boolean;
 
     procedure Set_State
-           (Item : in out Menu_Item;
+           (This : in out Menu_Item;
             To   : in     Boolean);
 
+    procedure Set
+           (This : in out Menu_Item);
+
+    procedure Clear
+           (This : in out Menu_Item);
+
     procedure Set_Only
-           (Item : in out Menu_Item);
+           (This : in out Menu_Item);
 
 
 
 
     function Get_Label
-           (Item : in Menu_Item)
+           (This : in Menu_Item)
         return String;
 
     procedure Set_Label
-           (Item : in out Menu_Item;
+           (This : in out Menu_Item;
+            Text : in     String);
+
+    procedure Set_Label
+           (This : in out Menu_Item;
+            Kind : in     Label_Kind;
             Text : in     String);
 
     function Get_Label_Color
-           (Item : in Menu_Item)
+           (This : in Menu_Item)
         return Color;
 
     procedure Set_Label_Color
-           (Item : in out Menu_Item;
+           (This : in out Menu_Item;
             To   : in     Color);
 
     function Get_Label_Font
-           (Item : in Menu_Item)
+           (This : in Menu_Item)
         return Font_Kind;
 
     procedure Set_Label_Font
-           (Item : in out Menu_Item;
+           (This : in out Menu_Item;
             To   : in     Font_Kind);
 
     function Get_Label_Size
-           (Item : in Menu_Item)
+           (This : in Menu_Item)
         return Font_Size;
 
     procedure Set_Label_Size
-           (Item : in out Menu_Item;
+           (This : in out Menu_Item;
             To   : in     Font_Size);
 
     function Get_Label_Type
-           (Item : in Menu_Item)
+           (This : in Menu_Item)
         return Label_Kind;
 
     procedure Set_Label_Type
-           (Item : in out Menu_Item;
+           (This : in out Menu_Item;
             To   : in     Label_Kind);
 
 
 
 
     function Get_Shortcut
-           (Item : in Menu_Item)
+           (This : in Menu_Item)
         return Key_Combo;
 
     procedure Set_Shortcut
-           (Item : in out Menu_Item;
+           (This : in out Menu_Item;
             To   : in     Key_Combo);
 
     function Get_Flags
-           (Item : in Menu_Item)
+           (This : in Menu_Item)
         return Menu_Flag;
 
     procedure Set_Flags
-           (Item : in out Menu_Item;
+           (This : in out Menu_Item;
             To   : in     Menu_Flag);
 
 
 
 
+    function Get_Image
+           (This : in Menu_Item)
+        return access FLTK.Images.Image'Class;
+
+    procedure Set_Image
+           (This : in out Menu_Item;
+            Pict : in out FLTK.Images.Image'Class);
+
+
+
+
     procedure Activate
-           (Item : in out Menu_Item);
+           (This : in out Menu_Item);
 
     procedure Deactivate
-           (Item : in out Menu_Item);
+           (This : in out Menu_Item);
 
     procedure Show
-           (Item : in out Menu_Item);
+           (This : in out Menu_Item);
 
     procedure Hide
-           (Item : in out Menu_Item);
+           (This : in out Menu_Item);
 
     function Is_Active
-           (Item : in Menu_Item)
+           (This : in Menu_Item)
         return Boolean;
 
     function Is_Visible
-           (Item : in Menu_Item)
+           (This : in Menu_Item)
         return Boolean;
 
     function Is_Active_And_Visible
-           (Item : in Menu_Item)
+           (This : in Menu_Item)
         return Boolean;
 
 
 private
 
 
-    type Menu_Item is new Wrapper with null record;
+    type Menu_Item is new Wrapper with record
+        Current_Image : access FLTK.Images.Image'Class;
+    end record;
 
     overriding procedure Finalize
            (This : in out Menu_Item);
-
-
 
 
     pragma Inline (Get_Callback);
     pragma Inline (Set_Callback);
     pragma Inline (Do_Callback);
 
-
     pragma Inline (Has_Checkbox);
     pragma Inline (Is_Radio);
     pragma Inline (Get_State);
     pragma Inline (Set_State);
     pragma Inline (Set_Only);
-
 
     pragma Inline (Get_Label);
     pragma Inline (Set_Label);
@@ -195,12 +222,13 @@ private
     pragma Inline (Get_Label_Type);
     pragma Inline (Set_Label_Type);
 
-
     pragma Inline (Get_Shortcut);
     pragma Inline (Set_Shortcut);
     pragma Inline (Get_Flags);
     pragma Inline (Set_Flags);
 
+    pragma Inline (Get_Image);
+    pragma Inline (Set_Image);
 
     pragma Inline (Activate);
     pragma Inline (Deactivate);
@@ -212,4 +240,5 @@ private
 
 
 end FLTK.Menu_Items;
+
 

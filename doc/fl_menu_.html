@@ -26,6 +26,11 @@
 
 </table>
 
+<p><b>Note:</b><br /><br />
+This Menu type should really be abstract but cannot be for technical binding reasons.
+If you try to use it directly you will get issues with the draw and handle methods.
+Either extend it and override those subprograms or use types already extended from it.</p>
+
 
 
 <table class="type">
@@ -54,6 +59,18 @@
   <tr>
     <td>&nbsp;</td>
     <td>Cursor</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Errors</th></tr>
+
+  <tr>
+<td>NULL</td>
+<td>No_Reference_Error</td>
   </tr>
 
 </table>
@@ -126,6 +143,22 @@ function Create
 
   <tr>
 <td><pre>
+int add(const char *);
+</pre></td>
+<td><pre>
+procedure Add
+       (This : in out Menu;
+        Text : in     String);
+
+function Add
+       (This : in out Menu;
+        Text : in     String)
+    return Index;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 int add(const char *, int shortcut, Fl_Callback *,
     void *=0, int=0);
 </pre></td>
@@ -136,6 +169,14 @@ procedure Add
         Action   : in     Widget_Callback := null;
         Shortcut : in     Key_Combo := No_Key;
         Flags    : in     Menu_Flag := Flag_Normal);
+
+function Add
+       (This     : in out Menu;
+        Text     : in     String;
+        Action   : in     Widget_Callback := null;
+        Shortcut : in     Key_Combo := No_Key;
+        Flags    : in     Menu_Flag := Flag_Normal)
+    return Index;
 </pre></td>
   </tr>
 
@@ -144,14 +185,22 @@ procedure Add
 int add(const char *a, const char *b, Fl_Callback *c,
     void *d=0, int e=0);
 </pre></td>
-<td>&nbsp;</td>
-  </tr>
-
-  <tr>
 <td><pre>
-int add(const char *);
+procedure Add
+       (This     : in out Menu;
+        Text     : in     String;
+        Action   : in     Widget_Callback := null;
+        Shortcut : in     String;
+        Flags    : in     Menu_Flag := Flag_Normal);
+
+function Add
+       (This     : in out Menu;
+        Text     : in     String;
+        Action   : in     Widget_Callback := null;
+        Shortcut : in     String;
+        Flags    : in     Menu_Flag := Flag_Normal)
+    return Index;
 </pre></td>
-<td>&nbsp;</td>
   </tr>
 
   <tr>
@@ -168,14 +217,22 @@ procedure Clear
 <td><pre>
 int clear_submenu(int index);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Clear_Submenu
+       (This  : in out Menu;
+        Place : in     Index);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 void copy(const Fl_Menu_Item *m, void *user_data=0);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Set_Items
+       (This  : in out Menu;
+        Items : in     FLTK.Menu_Items.Menu_Item_Array);
+</pre></td>
   </tr>
 
   <tr>
@@ -215,7 +272,7 @@ void down_color(unsigned c);
   </tr>
 
   <tr>
-<td>See draw method in Fl_Menu_Item</td>
+<td>See draw method in Fl_Menu_Item.</td>
 <td><pre>
 procedure Draw_Item
        (This       : in out Menu;
@@ -286,6 +343,22 @@ function Find_Item
   </tr>
 
   <tr>
+<td>See find_shortcut in Fl_Menu_Item.</td>
+<td><pre>
+function Find_Shortcut
+       (This        : in Menu;
+        Require_Alt : in Boolean := False)
+    return access FLTK.Menu_Items.Menu_Item'Class;
+
+function Find_Shortcut
+       (This        : in     Menu;
+        Place       :    out Extended_Index;
+        Require_Alt : in     Boolean := False)
+    return access FLTK.Menu_Items.Menu_Item'Class;
+</pre></td>
+  </tr>
+
+  <tr>
 <td><pre>
 void global();
 </pre></td>
@@ -296,7 +369,7 @@ procedure Make_Global
   </tr>
 
   <tr>
-<td>&nbsp;</td>
+<td>Check index values against the size method manually.</td>
 <td><pre>
 function Has_Item
        (This  : in Menu;
@@ -327,6 +400,15 @@ procedure Insert
         Action   : in     Widget_Callback := null;
         Shortcut : in     Key_Combo := No_Key;
         Flags    : in     Menu_Flag := Flag_Normal);
+
+function Insert
+       (This     : in out Menu;
+        Place    : in     Index;
+        Text     : in     String;
+        Action   : in     Widget_Callback := null;
+        Shortcut : in     Key_Combo := No_Key;
+        Flags    : in     Menu_Flag := Flag_Normal)
+    return Index;
 </pre></td>
   </tr>
 
@@ -335,11 +417,28 @@ procedure Insert
 int insert(int index, const char *a, const char *b,
     Fl_Callback *c, void *d=0, int e=0);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Insert
+       (This     : in out Menu;
+        Place    : in     Index;
+        Text     : in     String;
+        Action   : in     Widget_Callback := null;
+        Shortcut : in     String;
+        Flags    : in     Menu_Flag := Flag_Normal);
+
+function Insert
+       (This     : in out Menu;
+        Place    : in     Index;
+        Text     : in     String;
+        Action   : in     Widget_Callback := null;
+        Shortcut : in     String;
+        Flags    : in     Menu_Flag := Flag_Normal)
+    return Index;
+</pre></td>
   </tr>
 
   <tr>
-<td>&nbsp;</td>
+<td>Use the menu method to access the menu item array and index it directly.</td>
 <td><pre>
 function Item
        (This  : in Menu;
@@ -363,7 +462,16 @@ function Item
 int item_pathname(char *name, int namelen,
     const Fl_Menu_Item *finditem=0) const;
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Item_Pathname
+       (This : in Menu)
+    return String;
+
+function Item_Pathname
+       (This : in Menu;
+        Item : in FLTK.Menu_Items.Menu_Item)
+    return String;
+</pre></td>
   </tr>
 
   <tr>
@@ -376,7 +484,7 @@ function Iterate
   </tr>
 
   <tr>
-<td>See measure method in Fl_Menu_Item</td>
+<td>See measure method in Fl_Menu_Item.</td>
 <td><pre>
 procedure Measure_Item
        (This : in     Menu;
@@ -389,28 +497,42 @@ procedure Measure_Item
 <td><pre>
 const Fl_Menu_Item * menu() const;
 </pre></td>
-<td>Use iterators instead</td>
+<td>Use Item or Iterate as necessary to access specific items or walk the array.</td>
   </tr>
 
   <tr>
 <td><pre>
 void menu(const Fl_Menu_Item *m);
 </pre></td>
-<td>&nbsp;</td>
-  </tr>
-
-  <tr>
 <td><pre>
-void mode(int i, int fl);
+procedure Use_Same_Items
+       (This  : in out Menu;
+        Donor : in     Menu'Class);
 </pre></td>
-<td>See Set_Flags procedure in FLTK.Menu_Items</td>
   </tr>
 
   <tr>
 <td><pre>
 int mode(int i) const;
 </pre></td>
-<td>See Get_Flags function in FLTK.Menu_Items</td>
+<td><pre>
+function Get_Flags
+       (This  : in Menu
+        Place : in Index)
+    return Menu_Flag;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void mode(int i, int fl);
+</pre></td>
+<td><pre>
+procedure Set_Flags
+       (This  : in out Menu;
+        Place : in     Index;
+        Flags : in     Menu_Flag);
+</pre></td>
   </tr>
 
   <tr>
@@ -428,11 +550,15 @@ function Chosen
 <td><pre>
 const Fl_Menu_Item * picked(const Fl_Menu_Item *);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Picked
+       (This : in out Menu;
+        Item : in out FLTK.Menu_Items.Menu_Item);
+</pre></td>
   </tr>
 
   <tr>
-<td>See popup method in Fl_Menu_Item</td>
+<td>See popup method in Fl_Menu_Item.</td>
 <td><pre>
 function Popup
        (This    : in Menu;
@@ -444,7 +570,7 @@ function Popup
   </tr>
 
   <tr>
-<td>See pulldown method in Fl_Menu_Item</td>
+<td>See pulldown method in Fl_Menu_Item.</td>
 <td><pre>
 function Pulldown
        (This       : in Menu;
@@ -469,21 +595,35 @@ procedure Remove
 <td><pre>
 void replace(int, const char *);
 </pre></td>
-<td>See Set_Label procedure in FLTK.Menu_Items</td>
+<td><pre>
+procedure Set_Label
+       (This  : in out Menu;
+        Place : in     Index;
+        Text  : in     String);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 void setonly(Fl_Menu_Item *item);
 </pre></td>
-<td>See Set_Only procedure in FLTK.Menu_Items</td>
+<td><pre>
+procedure Set_Only
+       (This : in out Menu;
+        Item : in out Menu_Item);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 void shortcut(int i, int s);
 </pre></td>
-<td>See Set_Shortcut procedure in FLTK.Menu_Items</td>
+<td><pre>
+procedure Set_Shortcut
+       (This  : in out Menu;
+        Place : in     Index;
+        Press : in     Key_Combo);
+</pre></td>
   </tr>
 
   <tr>
@@ -501,14 +641,22 @@ function Number_Of_Items
 <td><pre>
 void size(int W, int H);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Resize
+       (This : in out Menu;
+        W, H : in     Integer);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 const Fl_Menu_Item * test_shortcut();
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Test_Shortcut
+       (This : in out Menu)
+    return access FLTK.Menu_Items.Menu_Item'Class;
+</pre></td>
   </tr>
 
   <tr>
@@ -526,7 +674,12 @@ function Chosen_Label
 <td><pre>
 const char * text(int i) const;
 </pre></td>
-<td>See Get_Label function in FLTK.Menu_Items</td>
+<td><pre>
+function Get_Label
+       (This  : in Menu;
+        Place : in Index)
+    return String;
+</pre></td>
   </tr>
 
   <tr>
@@ -614,6 +767,11 @@ int value(const Fl_Menu_Item *);
 procedure Set_Chosen
        (This : in out Menu;
         Item : in     FLTK.Menu_Items.Menu_Item);
+
+function Set_Chosen
+       (This : in out Menu;
+        Item : in     FLTK.Menu_Items.Menu_Item)
+    return Boolean;
 </pre></td>
   </tr>
 
@@ -625,6 +783,11 @@ int value(int i);
 procedure Set_Chosen
        (This  : in out Menu;
         Place : in     Index);
+
+function Set_Chosen
+       (This  : in out Menu;
+        Place : in     Index)
+    return Boolean;
 </pre></td>
   </tr>
 

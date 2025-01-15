@@ -45,10 +45,10 @@ package body FLTK.Menu_Items is
     pragma Import (C, fl_menu_item_get_user_data, "fl_menu_item_get_user_data");
     pragma Inline (fl_menu_item_get_user_data);
 
-    procedure fl_menu_item_set_user_data
+    procedure fl_menu_item_set_callback
            (MI, C : in Storage.Integer_Address);
-    pragma Import (C, fl_menu_item_set_user_data, "fl_menu_item_set_user_data");
-    pragma Inline (fl_menu_item_set_user_data);
+    pragma Import (C, fl_menu_item_set_callback, "fl_menu_item_set_callback");
+    pragma Inline (fl_menu_item_set_callback);
 
     procedure fl_menu_item_do_callback
            (MI, W : in Storage.Integer_Address);
@@ -69,6 +69,12 @@ package body FLTK.Menu_Items is
         return Interfaces.C.int;
     pragma Import (C, fl_menu_item_radio, "fl_menu_item_radio");
     pragma Inline (fl_menu_item_radio);
+
+    function fl_menu_item_submenu
+           (MI : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_menu_item_submenu, "fl_menu_item_submenu");
+    pragma Inline (fl_menu_item_submenu);
 
     function fl_menu_item_value
            (MI : in Storage.Integer_Address)
@@ -105,6 +111,13 @@ package body FLTK.Menu_Items is
             T  : in Interfaces.C.char_array);
     pragma Import (C, fl_menu_item_set_label, "fl_menu_item_set_label");
     pragma Inline (fl_menu_item_set_label);
+
+    procedure fl_menu_item_set_label2
+           (MI : in Storage.Integer_Address;
+            K  : in Interfaces.C.int;
+            T  : in Interfaces.C.char_array);
+    pragma Import (C, fl_menu_item_set_label2, "fl_menu_item_set_label2");
+    pragma Inline (fl_menu_item_set_label2);
 
     function fl_menu_item_get_labelcolor
            (MI : in Storage.Integer_Address)
@@ -184,6 +197,14 @@ package body FLTK.Menu_Items is
 
 
 
+    procedure fl_menu_item_image
+           (MI, I : in Storage.Integer_Address);
+    pragma Import (C, fl_menu_item_image, "fl_menu_item_image");
+    pragma Inline (fl_menu_item_image);
+
+
+
+
     procedure fl_menu_item_activate
            (MI : in Storage.Integer_Address);
     pragma Import (C, fl_menu_item_activate, "fl_menu_item_activate");
@@ -246,8 +267,8 @@ package body FLTK.Menu_Items is
                 Flags       : in Menu_Flag := Flag_Normal)
             return Menu_Item is
         begin
-            return Item : Menu_Item do
-                Item.Void_Ptr := new_fl_menu_item
+            return This : Menu_Item do
+                This.Void_Ptr := new_fl_menu_item
                    (Interfaces.C.To_C (Text),
                     Callback_Convert.To_Address (Action),
                     To_C (Shortcut),
@@ -263,79 +284,106 @@ package body FLTK.Menu_Items is
 
 
     function Get_Callback
-           (Item : in Menu_Item)
+           (This : in Menu_Item)
         return FLTK.Widgets.Widget_Callback is
     begin
-        return Callback_Convert.To_Access (fl_menu_item_get_user_data (Item.Void_Ptr));
+        return Callback_Convert.To_Access (fl_menu_item_get_user_data (This.Void_Ptr));
     end Get_Callback;
 
 
     procedure Set_Callback
-           (Item : in out Menu_Item;
+           (This : in out Menu_Item;
             Func : in     FLTK.Widgets.Widget_Callback) is
     begin
-        fl_menu_item_set_user_data
-           (Item.Void_Ptr,
+        --  Coordinating callback vs userdata is done in C++
+        fl_menu_item_set_callback
+           (This.Void_Ptr,
             Callback_Convert.To_Address (Func));
     end Set_Callback;
 
 
     procedure Do_Callback
-           (Item   : in out Menu_Item;
+           (This   : in out Menu_Item;
             Widget : in out FLTK.Widgets.Widget'Class) is
     begin
-        fl_menu_item_do_callback (Item.Void_Ptr, Wrapper (Widget).Void_Ptr);
+        fl_menu_item_do_callback (This.Void_Ptr, Wrapper (Widget).Void_Ptr);
     end Do_Callback;
 
 
 
 
     function Has_Checkbox
-           (Item : in Menu_Item)
+           (This : in Menu_Item)
         return Boolean is
     begin
-        return fl_menu_item_checkbox (Item.Void_Ptr) /= 0;
+        return fl_menu_item_checkbox (This.Void_Ptr) /= 0;
     end Has_Checkbox;
 
+
     function Is_Radio
-           (Item : in Menu_Item)
+           (This : in Menu_Item)
         return Boolean is
     begin
-        return fl_menu_item_radio (Item.Void_Ptr) /= 0;
+        return fl_menu_item_radio (This.Void_Ptr) /= 0;
     end Is_Radio;
 
-    function Get_State
-           (Item : in Menu_Item)
+
+    function Is_Submenu
+           (This : in Menu_Item)
         return Boolean is
     begin
-        return fl_menu_item_value (Item.Void_Ptr) /= 0;
+        return fl_menu_item_submenu (This.Void_Ptr) /= 0;
+    end Is_Submenu;
+
+
+    function Get_State
+           (This : in Menu_Item)
+        return Boolean is
+    begin
+        return fl_menu_item_value (This.Void_Ptr) /= 0;
     end Get_State;
 
+
     procedure Set_State
-           (Item : in out Menu_Item;
+           (This : in out Menu_Item;
             To   : in     Boolean) is
     begin
         if To then
-            fl_menu_item_set (Item.Void_Ptr);
+            fl_menu_item_set (This.Void_Ptr);
         else
-            fl_menu_item_clear (Item.Void_Ptr);
+            fl_menu_item_clear (This.Void_Ptr);
         end if;
     end Set_State;
 
-    procedure Set_Only
-           (Item : in out Menu_Item) is
+
+    procedure Set
+           (This : in out Menu_Item) is
     begin
-        fl_menu_item_setonly (Item.Void_Ptr);
+        fl_menu_item_set (This.Void_Ptr);
+    end Set;
+
+
+    procedure Clear
+           (This : in out Menu_Item) is
+    begin
+        fl_menu_item_clear (This.Void_Ptr);
+    end Clear;
+
+
+    procedure Set_Only
+           (This : in out Menu_Item) is
+    begin
+        fl_menu_item_setonly (This.Void_Ptr);
     end Set_Only;
 
 
 
 
     function Get_Label
-           (Item : in Menu_Item)
+           (This : in Menu_Item)
         return String
     is
-        Ptr : Interfaces.C.Strings.chars_ptr := fl_menu_item_get_label (Item.Void_Ptr);
+        Ptr : Interfaces.C.Strings.chars_ptr := fl_menu_item_get_label (This.Void_Ptr);
     begin
         if Ptr = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -344,156 +392,213 @@ package body FLTK.Menu_Items is
         end if;
     end Get_Label;
 
+
     procedure Set_Label
-           (Item : in out Menu_Item;
+           (This : in out Menu_Item;
             Text : in     String) is
     begin
-        fl_menu_item_set_label (Item.Void_Ptr, Interfaces.C.To_C (Text));
+        fl_menu_item_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
     end Set_Label;
 
+
+    procedure Set_Label
+           (This : in out Menu_Item;
+            Kind : in     Label_Kind;
+            Text : in     String) is
+    begin
+        fl_menu_item_set_label2 (This.Void_Ptr, Label_Kind'Pos (Kind), Interfaces.C.To_C (Text));
+    end Set_Label;
+
+
     function Get_Label_Color
-           (Item : in Menu_Item)
+           (This : in Menu_Item)
         return Color is
     begin
-        return Color (fl_menu_item_get_labelcolor (Item.Void_Ptr));
+        return Color (fl_menu_item_get_labelcolor (This.Void_Ptr));
     end Get_Label_Color;
 
+
     procedure Set_Label_Color
-           (Item : in out Menu_Item;
+           (This : in out Menu_Item;
             To   : in     Color) is
     begin
-        fl_menu_item_set_labelcolor (Item.Void_Ptr, Interfaces.C.unsigned (To));
+        fl_menu_item_set_labelcolor (This.Void_Ptr, Interfaces.C.unsigned (To));
     end Set_Label_Color;
 
+
     function Get_Label_Font
-           (Item : in Menu_Item)
-        return Font_Kind is
+           (This : in Menu_Item)
+        return Font_Kind
+    is
+        Result : Interfaces.C.int := fl_menu_item_get_labelfont (This.Void_Ptr);
     begin
-        return Font_Kind'Val (fl_menu_item_get_labelfont (Item.Void_Ptr));
+        return Font_Kind'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Menu_Item::labelfont returned unexpected Font value of " &
+        Interfaces.C.int'Image (Result);
     end Get_Label_Font;
 
+
     procedure Set_Label_Font
-           (Item : in out Menu_Item;
+           (This : in out Menu_Item;
             To   : in     Font_Kind) is
     begin
-        fl_menu_item_set_labelfont (Item.Void_Ptr, Font_Kind'Pos (To));
+        fl_menu_item_set_labelfont (This.Void_Ptr, Font_Kind'Pos (To));
     end Set_Label_Font;
 
+
     function Get_Label_Size
-           (Item : in Menu_Item)
-        return Font_Size is
+           (This : in Menu_Item)
+        return Font_Size
+    is
+        Result : Interfaces.C.int := fl_menu_item_get_labelsize (This.Void_Ptr);
     begin
-        return Font_Size (fl_menu_item_get_labelsize (Item.Void_Ptr));
+        return Font_Size (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Menu_Item::labelsize returned unexpected Size value of " &
+        Interfaces.C.int'Image (Result);
     end Get_Label_Size;
 
+
     procedure Set_Label_Size
-           (Item : in out Menu_Item;
+           (This : in out Menu_Item;
             To   : in     Font_Size) is
     begin
-        fl_menu_item_set_labelsize (Item.Void_Ptr, Interfaces.C.int (To));
+        fl_menu_item_set_labelsize (This.Void_Ptr, Interfaces.C.int (To));
     end Set_Label_Size;
 
+
     function Get_Label_Type
-           (Item : in Menu_Item)
-        return Label_Kind is
+           (This : in Menu_Item)
+        return Label_Kind
+    is
+        Result : Interfaces.C.int := fl_menu_item_get_labeltype (This.Void_Ptr);
     begin
-        return Label_Kind'Val (fl_menu_item_get_labeltype (Item.Void_Ptr));
+        return Label_Kind'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Menu_Item::labeltype returned unexpected Kind value of " &
+        Interfaces.C.int'Image (Result);
     end Get_Label_Type;
 
+
     procedure Set_Label_Type
-           (Item : in out Menu_Item;
+           (This : in out Menu_Item;
             To   : in     Label_Kind) is
     begin
-        fl_menu_item_set_labeltype (Item.Void_Ptr, Label_Kind'Pos (To));
+        fl_menu_item_set_labeltype (This.Void_Ptr, Label_Kind'Pos (To));
     end Set_Label_Type;
 
 
 
 
     function Get_Shortcut
-           (Item : in Menu_Item)
+           (This : in Menu_Item)
         return Key_Combo is
     begin
-        return To_Ada (Interfaces.C.unsigned_long (fl_menu_item_get_shortcut (Item.Void_Ptr)));
+        return To_Ada (Interfaces.C.unsigned_long (fl_menu_item_get_shortcut (This.Void_Ptr)));
     end Get_Shortcut;
 
+
     procedure Set_Shortcut
-           (Item : in out Menu_Item;
+           (This : in out Menu_Item;
             To   : in     Key_Combo) is
     begin
-        fl_menu_item_set_shortcut (Item.Void_Ptr, Interfaces.C.int (To_C (To)));
+        fl_menu_item_set_shortcut (This.Void_Ptr, Interfaces.C.int (To_C (To)));
     end Set_Shortcut;
 
 
     function Get_Flags
-           (Item : in Menu_Item)
+           (This : in Menu_Item)
         return Menu_Flag is
     begin
-        return Menu_Flag (fl_menu_item_get_flags (Item.Void_Ptr));
+        return Menu_Flag (fl_menu_item_get_flags (This.Void_Ptr));
     end Get_Flags;
 
 
     procedure Set_Flags
-           (Item : in out Menu_Item;
+           (This : in out Menu_Item;
             To   : in     Menu_Flag) is
     begin
-        fl_menu_item_set_flags (Item.Void_Ptr, Interfaces.C.unsigned_long (To));
+        fl_menu_item_set_flags (This.Void_Ptr, Interfaces.C.unsigned_long (To));
     end Set_Flags;
 
 
 
 
-    procedure Activate
-           (Item : in out Menu_Item) is
+    function Get_Image
+           (This : in Menu_Item)
+        return access FLTK.Images.Image'Class is
     begin
-        fl_menu_item_activate (Item.Void_Ptr);
+        return This.Current_Image;
+    end Get_Image;
+
+
+    procedure Set_Image
+           (This : in out Menu_Item;
+            Pict : in out FLTK.Images.Image'Class) is
+    begin
+        fl_menu_item_image (This.Void_Ptr, Wrapper (Pict).Void_Ptr);
+        This.Current_Image := Pict'Unchecked_Access;
+    end Set_Image;
+
+
+
+
+    procedure Activate
+           (This : in out Menu_Item) is
+    begin
+        fl_menu_item_activate (This.Void_Ptr);
     end Activate;
 
 
     procedure Deactivate
-           (Item : in out Menu_Item) is
+           (This : in out Menu_Item) is
     begin
-        fl_menu_item_deactivate (Item.Void_Ptr);
+        fl_menu_item_deactivate (This.Void_Ptr);
     end Deactivate;
 
 
     procedure Show
-           (Item : in out Menu_Item) is
+           (This : in out Menu_Item) is
     begin
-        fl_menu_item_show (Item.Void_Ptr);
+        fl_menu_item_show (This.Void_Ptr);
     end Show;
 
 
     procedure Hide
-           (Item : in out Menu_Item) is
+           (This : in out Menu_Item) is
     begin
-        fl_menu_item_hide (Item.Void_Ptr);
+        fl_menu_item_hide (This.Void_Ptr);
     end Hide;
 
 
     function Is_Active
-           (Item : in Menu_Item)
+           (This : in Menu_Item)
         return Boolean is
     begin
-        return fl_menu_item_active (Item.Void_Ptr) /= 0;
+        return fl_menu_item_active (This.Void_Ptr) /= 0;
     end Is_Active;
 
 
     function Is_Visible
-           (Item : in Menu_Item)
+           (This : in Menu_Item)
         return Boolean is
     begin
-        return fl_menu_item_visible (Item.Void_Ptr) /= 0;
+        return fl_menu_item_visible (This.Void_Ptr) /= 0;
     end Is_Visible;
 
 
     function Is_Active_And_Visible
-           (Item : in Menu_Item)
+           (This : in Menu_Item)
         return Boolean is
     begin
-        return fl_menu_item_activevisible (Item.Void_Ptr) /= 0;
+        return fl_menu_item_activevisible (This.Void_Ptr) /= 0;
     end Is_Active_And_Visible;
 
 
 end FLTK.Menu_Items;
+
 
