@@ -433,6 +433,19 @@ private
     pragma Inline (fl_widget_set_label);
 
 
+    function fl_widget_get_type
+           (W : in Storage.Integer_Address)
+        return Interfaces.C.unsigned_char;
+    pragma Import (C, fl_widget_get_type, "fl_widget_get_type");
+    pragma Inline (fl_widget_get_type);
+
+    procedure fl_widget_set_type
+           (W : in Storage.Integer_Address;
+            T : in Interfaces.C.unsigned_char);
+    pragma Import (C, fl_widget_set_type, "fl_widget_set_type");
+    pragma Inline (fl_widget_set_type);
+
+
     pragma Inline (Activate);
     pragma Inline (Deactivate);
     pragma Inline (Is_Active);

@@ -35,9 +35,13 @@ package FLTK.Widgets.Menus.Menu_Buttons is
 
 
 
+    function Get_Popup_Kind
+           (This : in Menu_Button)
+        return Popup_Buttons;
+
     procedure Set_Popup_Kind
            (This : in out Menu_Button;
-            Pop  : in     Popup_Buttons);
+            Kind : in     Popup_Buttons);
 
     function Popup
            (This : in out Menu_Button)
@@ -77,6 +81,7 @@ private
     with Inline;
 
 
+    pragma Inline (Get_Popup_Kind);
     pragma Inline (Set_Popup_Kind);
     pragma Inline (Popup);
 

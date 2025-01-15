@@ -80,15 +80,6 @@ function Handle
   </tr>
 
   <tr>
-<td>Get the index into the Fl_Menu_Item array and do a manual lookup.</td>
-<td><pre>
-function Get_Chosen
-       (This : in Choice)
-    return FLTK.Menu_Items.Menu_Item_Reference;
-</pre></td>
-  </tr>
-
-  <tr>
 <td><pre>
 int value() const;
 </pre></td>
@@ -101,23 +92,33 @@ function Chosen_Index
 
   <tr>
 <td><pre>
-int value(int v);
-</pre></td>
-<td><pre>
-procedure Set_Chosen
-       (This  : in out Choice;
-        Place : in     Index);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
 int value(const Fl_Menu_Item *v);
 </pre></td>
 <td><pre>
 procedure Set_Chosen
        (This : in out Choice;
         Item : in     FLTK.Menu_Items.Menu_Item);
+
+function Set_Chosen
+       (This : in out Choice;
+        Item : in     FLTK.Menu_Items.Menu_Item)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int value(int v);
+</pre></td>
+<td><pre>
+procedure Set_Chosen
+       (This  : in out Choice;
+        Place : in     Index);
+
+function Set_Chosen
+       (This  : in out Choice;
+        Place : in     Index)
+    return Boolean;
 </pre></td>
   </tr>
 

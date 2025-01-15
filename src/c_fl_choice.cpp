@@ -60,12 +60,12 @@ int fl_choice_value(CHOICE c) {
     return reinterpret_cast<Fl_Choice*>(c)->value();
 }
 
-int fl_choice_set_value(CHOICE c, int p) {
-    return reinterpret_cast<Fl_Choice*>(c)->value(p);
+int fl_choice_set_value(CHOICE c, void * i) {
+    return reinterpret_cast<Fl_Choice*>(c)->value(reinterpret_cast<Fl_Menu_Item*>(i));
 }
 
-int fl_choice_set_value2(CHOICE c, void * i) {
-    return reinterpret_cast<Fl_Choice*>(c)->value(reinterpret_cast<Fl_Menu_Item*>(i));
+int fl_choice_set_value2(CHOICE c, int p) {
+    return reinterpret_cast<Fl_Choice*>(c)->value(p);
 }
 
 

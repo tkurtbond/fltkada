@@ -43,14 +43,14 @@ package body FLTK.Widgets.Menus.Choices is
     pragma Inline (fl_choice_value);
 
     function fl_choice_set_value
-           (M : in Storage.Integer_Address;
-            I : in Interfaces.C.int)
+           (M, I : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_choice_set_value, "fl_choice_set_value");
     pragma Inline (fl_choice_set_value);
 
     function fl_choice_set_value2
-           (M, I : in Storage.Integer_Address)
+           (M : in Storage.Integer_Address;
+            I : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_choice_set_value2, "fl_choice_set_value2");
     pragma Inline (fl_choice_set_value2);
@@ -145,14 +145,6 @@ package body FLTK.Widgets.Menus.Choices is
     --  API Subprograms  --
     -----------------------
 
-    function Get_Chosen
-           (This : in Choice)
-        return FLTK.Menu_Items.Menu_Item_Reference is
-    begin
-        return (Data => This.My_Items.Element (This.Chosen_Index));
-    end Get_Chosen;
-
-
     function Chosen_Index
            (This : in Choice)
         return Extended_Index is
@@ -162,22 +154,40 @@ package body FLTK.Widgets.Menus.Choices is
 
 
     procedure Set_Chosen
-           (This  : in out Choice;
-            Place : in     Index)
-    is
-        Ignore_Ret : Interfaces.C.int;
-    begin
-        Ignore_Ret := fl_choice_set_value (This.Void_Ptr, Interfaces.C.int (Place) - 1);
-    end Set_Chosen;
-
-
-    procedure Set_Chosen
            (This : in out Choice;
             Item : in     FLTK.Menu_Items.Menu_Item)
     is
         Ignore_Ret : Interfaces.C.int;
     begin
-        Ignore_Ret := fl_choice_set_value2 (This.Void_Ptr, Wrapper (Item).Void_Ptr);
+        Ignore_Ret := fl_choice_set_value (This.Void_Ptr, Wrapper (Item).Void_Ptr);
+    end Set_Chosen;
+
+
+    function Set_Chosen
+           (This : in out Choice;
+            Item : in     FLTK.Menu_Items.Menu_Item)
+        return Boolean is
+    begin
+        return fl_choice_set_value (This.Void_Ptr, Wrapper (Item).Void_Ptr) /= 0;
+    end Set_Chosen;
+
+
+    procedure Set_Chosen
+           (This  : in out Choice;
+            Place : in     Index)
+    is
+        Ignore_Ret : Interfaces.C.int;
+    begin
+        Ignore_Ret := fl_choice_set_value2 (This.Void_Ptr, Interfaces.C.int (Place) - 1);
+    end Set_Chosen;
+
+
+    function Set_Chosen
+           (This  : in out Choice;
+            Place : in     Index)
+        return Boolean is
+    begin
+        return fl_choice_set_value2 (This.Void_Ptr, Interfaces.C.int (Place) - 1) /= 0;
     end Set_Chosen;
 
 

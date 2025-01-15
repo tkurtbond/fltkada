@@ -27,21 +27,27 @@ package FLTK.Widgets.Menus.Choices is
 
 
 
-    function Get_Chosen
-           (This : in Choice)
-        return FLTK.Menu_Items.Menu_Item_Reference;
-
     function Chosen_Index
            (This : in Choice)
         return Extended_Index;
 
     procedure Set_Chosen
+           (This : in out Choice;
+            Item : in     FLTK.Menu_Items.Menu_Item);
+
+    function Set_Chosen
+           (This : in out Choice;
+            Item : in     FLTK.Menu_Items.Menu_Item)
+        return Boolean;
+
+    procedure Set_Chosen
            (This  : in out Choice;
             Place : in     Index);
 
-    procedure Set_Chosen
-           (This : in out Choice;
-            Item : in     FLTK.Menu_Items.Menu_Item);
+    function Set_Chosen
+           (This  : in out Choice;
+            Place : in     Index)
+        return Boolean;
 
 
 
@@ -77,7 +83,6 @@ private
     with Inline;
 
 
-    pragma Inline (Chosen);
     pragma Inline (Chosen_Index);
     pragma Inline (Set_Chosen);
 

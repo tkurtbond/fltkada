@@ -31,12 +31,6 @@ package body FLTK.Widgets.Menus.Menu_Buttons is
 
 
 
-    procedure fl_menu_button_type
-           (M : in Storage.Integer_Address;
-            T : in Interfaces.C.unsigned);
-    pragma Import (C, fl_menu_button_type, "fl_menu_button_type");
-    pragma Inline (fl_menu_button_type);
-
     function fl_menu_button_popup
            (M : in Storage.Integer_Address)
         return Storage.Integer_Address;
@@ -179,11 +173,25 @@ package body FLTK.Widgets.Menus.Menu_Buttons is
     --  API Subprograms  --
     -----------------------
 
+    function Get_Popup_Kind
+           (This : in Menu_Button)
+        return Popup_Buttons
+    is
+        Result : Interfaces.C.unsigned_char := fl_widget_get_type (This.Void_Ptr);
+    begin
+        return Popup_Buttons'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Menu_Button::type returned unexpected Popup_Buttons value of " &
+        Interfaces.C.unsigned_char'Image (Result);
+    end Get_Popup_Kind;
+
+
     procedure Set_Popup_Kind
            (This : in out Menu_Button;
-            Pop  : in     Popup_Buttons) is
+            Kind : in     Popup_Buttons) is
     begin
-        fl_menu_button_type (This.Void_Ptr, Popup_Buttons'Pos (Pop));
+        fl_widget_set_type (This.Void_Ptr, Popup_Buttons'Pos (Kind));
     end Set_Popup_Kind;
 
 

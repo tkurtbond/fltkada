@@ -236,21 +236,21 @@ package FLTK.Widgets.Menus is
         return Extended_Index;
 
     procedure Set_Chosen
-           (This  : in out Menu;
-            Place : in     Index);
-
-    function Set_Chosen
-           (This  : in out Menu;
-            Place : in     Index)
-        return Boolean;
-
-    procedure Set_Chosen
            (This : in out Menu;
             Item : in     FLTK.Menu_Items.Menu_Item);
 
     function Set_Chosen
            (This : in out Menu;
             Item : in     FLTK.Menu_Items.Menu_Item)
+        return Boolean;
+
+    procedure Set_Chosen
+           (This  : in out Menu;
+            Place : in     Index);
+
+    function Set_Chosen
+           (This  : in out Menu;
+            Place : in     Index)
         return Boolean;
 
 

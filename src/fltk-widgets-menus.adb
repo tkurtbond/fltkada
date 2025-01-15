@@ -192,14 +192,14 @@ package body FLTK.Widgets.Menus is
     pragma Inline (fl_menu_value);
 
     function fl_menu_set_value
-           (M : in Storage.Integer_Address;
-            I : in Interfaces.C.int)
+           (M, I : in Storage.Integer_Address)
         return Interfaces.C.int;
     pragma Import (C, fl_menu_set_value, "fl_menu_set_value");
     pragma Inline (fl_menu_set_value);
 
     function fl_menu_set_value2
-           (M, I : in Storage.Integer_Address)
+           (M : in Storage.Integer_Address;
+            I : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_menu_set_value2, "fl_menu_set_value2");
     pragma Inline (fl_menu_set_value2);
@@ -1002,7 +1002,8 @@ package body FLTK.Widgets.Menus is
            (This : in Menu)
         return FLTK.Menu_Items.Menu_Item_Reference
     is
-        Place : Extended_Index := This.Chosen_Index;
+        Dis_This : access constant Menu'Class := This'Access;
+        Place : Extended_Index := Dis_This.Chosen_Index;
     begin
         if Place = No_Index then
             raise No_Reference_Error;
@@ -1034,40 +1035,40 @@ package body FLTK.Widgets.Menus is
 
 
     procedure Set_Chosen
-           (This  : in out Menu;
-            Place : in     Index)
+           (This : in out Menu;
+            Item : in     FLTK.Menu_Items.Menu_Item)
     is
         Ignore : Interfaces.C.int;
     begin
-        Ignore := fl_menu_set_value (This.Void_Ptr, Interfaces.C.int (Place) - 1);
+        Ignore := fl_menu_set_value (This.Void_Ptr, Wrapper (Item).Void_Ptr);
     end Set_Chosen;
 
 
     function Set_Chosen
-           (This  : in out Menu;
-            Place : in     Index)
+           (This : in out Menu;
+            Item : in     FLTK.Menu_Items.Menu_Item)
         return Boolean is
     begin
-        return fl_menu_set_value (This.Void_Ptr, Interfaces.C.int (Place) - 1) /= 0;
+        return fl_menu_set_value (This.Void_Ptr, Wrapper (Item).Void_Ptr) /= 0;
     end Set_Chosen;
 
 
     procedure Set_Chosen
-           (This : in out Menu;
-            Item : in     FLTK.Menu_Items.Menu_Item)
+           (This  : in out Menu;
+            Place : in     Index)
     is
         Ignore : Interfaces.C.int;
     begin
-        Ignore := fl_menu_set_value2 (This.Void_Ptr, Wrapper (Item).Void_Ptr);
+        Ignore := fl_menu_set_value2 (This.Void_Ptr, Interfaces.C.int (Place) - 1);
     end Set_Chosen;
 
 
     function Set_Chosen
-           (This : in out Menu;
-            Item : in     FLTK.Menu_Items.Menu_Item)
+           (This  : in out Menu;
+            Place : in     Index)
         return Boolean is
     begin
-        return fl_menu_set_value2 (This.Void_Ptr, Wrapper (Item).Void_Ptr) /= 0;
+        return fl_menu_set_value2 (This.Void_Ptr, Interfaces.C.int (Place) - 1) /= 0;
     end Set_Chosen;
 
 

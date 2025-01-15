@@ -41,8 +41,8 @@ extern "C" int fl_menu_size(MENU m);
 //  mvalue is subsumed by value
 extern "C" const char * fl_menu_text(MENU m);
 extern "C" int fl_menu_value(MENU m);
-extern "C" int fl_menu_set_value(MENU m, int p);
-extern "C" int fl_menu_set_value2(MENU m, void * i);
+extern "C" int fl_menu_set_value(MENU m, void * i);
+extern "C" int fl_menu_set_value2(MENU m, int p);
 
 
 extern "C" void fl_menu_setonly(MENU m, void * mi);

@@ -96,11 +96,20 @@ function Popup
   </tr>
 
   <tr>
-<td>Use the type method in Fl_Widget with the popup_buttons enum.</td>
+<td>Use the type methods in Fl_Widget with the popup_buttons enum.</td>
+<td><pre>
+function Get_Popup_Kind
+       (This : in Menu_Button)
+    return Popup_Buttons;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Use the type methods in Fl_Widget with the popup_buttons enum.</td>
 <td><pre>
 procedure Set_Popup_Kind
        (This : in out Menu_Button;
-        Pop  : in     Popup_Buttons);
+        Kind : in     Popup_Buttons);
 </pre></td>
   </tr>
 
