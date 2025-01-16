@@ -283,6 +283,18 @@ package body FLTK.Widgets.Groups.Input_Choices is
             end return;
         end Create;
 
+
+        function Create
+               (Parent     : in out Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Input_Choice is
+        begin
+            return This : Input_Choice := Create (X, Y, W, H, Text) do
+                Parent.Add (This);
+            end return;
+        end Create;
+
     end Forge;
 
 

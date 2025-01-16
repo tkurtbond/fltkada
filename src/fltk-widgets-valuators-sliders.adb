@@ -6,6 +6,7 @@
 
 with
 
+    FLTK.Widgets.Groups,
     Interfaces.C.Strings;
 
 
@@ -187,6 +188,18 @@ package body FLTK.Widgets.Valuators.Sliders is
 
 
         function Create
+               (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Slider is
+        begin
+            return This : Slider := Create (X, Y, W, H, Text) do
+                Parent.Add (This);
+            end return;
+        end Create;
+
+
+        function Create
                (Kind       : in Slider_Kind;
                 X, Y, W, H : in Integer;
                 Text       : in String := "")
@@ -201,6 +214,19 @@ package body FLTK.Widgets.Valuators.Sliders is
                     Interfaces.C.int (H),
                     Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
+            end return;
+        end Create;
+
+
+        function Create
+               (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+                Kind       : in     Slider_Kind;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Slider is
+        begin
+            return This : Slider := Create (Kind, X, Y, W, H, Text) do
+                Parent.Add (This);
             end return;
         end Create;
 

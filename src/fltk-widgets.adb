@@ -583,6 +583,18 @@ package body FLTK.Widgets is
             end return;
         end Create;
 
+
+        function Create
+               (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Widget is
+        begin
+            return This : Widget := Create (X, Y, W, H, Text) do
+                Parent.Add (This);
+            end return;
+        end Create;
+
     end Forge;
 
 

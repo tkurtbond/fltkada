@@ -36,8 +36,20 @@ package FLTK.Widgets.Groups.Windows is
             return Window;
 
         function Create
+               (Parent     : in out Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Window;
+
+        function Create
                (W, H : in Integer;
                 Text : in String := "")
+            return Window;
+
+        function Create
+               (Parent : in out Group'Class;
+                W, H   : in     Integer;
+                Text   : in     String := "")
             return Window;
 
     end Forge;

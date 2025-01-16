@@ -36,6 +36,12 @@ package FLTK.Widgets.Groups.Scrolls is
                 Text       : in String := "")
             return Scroll;
 
+        function Create
+               (Parent     : in out Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Scroll;
+
     end Forge;
 
 

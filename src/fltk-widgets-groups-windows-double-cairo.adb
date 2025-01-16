@@ -156,8 +156,20 @@ package body FLTK.Widgets.Groups.Windows.Double.Cairo is
 
 
         function Create
+               (Parent     : in out Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Cairo_Window is
+        begin
+            return This : Cairo_Window := Create (X, Y, W, H, Text) do
+                Parent.Add (This);
+            end return;
+        end Create;
+
+
+        function Create
                (W, H : in Integer;
-                Text : in String := "")
+                Text : in String)
             return Cairo_Window is
         begin
             return This : Cairo_Window do
@@ -171,6 +183,18 @@ package body FLTK.Widgets.Groups.Windows.Double.Cairo is
 
 
         function Create
+               (Parent : in out Group'Class;
+                W, H   : in     Integer;
+                Text   : in     String)
+            return Cairo_Window is
+        begin
+            return This : Cairo_Window := Create (W, H, Text) do
+                Parent.Add (This);
+            end return;
+        end Create;
+
+
+        function Create
                (W, H : in Integer)
             return Cairo_Window is
         begin
@@ -179,6 +203,17 @@ package body FLTK.Widgets.Groups.Windows.Double.Cairo is
                    (Interfaces.C.int (W),
                     Interfaces.C.int (H));
                 Extra_Init (This, This.Get_X, This.Get_Y, W, H, This.Get_Label);
+            end return;
+        end Create;
+
+
+        function Create
+               (Parent : in out Group'Class;
+                W, H   : in     Integer)
+            return Cairo_Window is
+        begin
+            return This : Cairo_Window := Create (W, H) do
+                Parent.Add (This);
             end return;
         end Create;
 

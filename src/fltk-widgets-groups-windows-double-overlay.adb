@@ -191,6 +191,18 @@ package body FLTK.Widgets.Groups.Windows.Double.Overlay is
 
 
         function Create
+               (Parent     : in out Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Overlay_Window is
+        begin
+            return This : Overlay_Window := Create (X, Y, W, H, Text) do
+                Parent.Add (This);
+            end return;
+        end Create;
+
+
+        function Create
                (W, H : in Integer;
                 Text : in String := "")
             return Overlay_Window is
@@ -201,6 +213,18 @@ package body FLTK.Widgets.Groups.Windows.Double.Overlay is
                     Interfaces.C.int (H),
                     Interfaces.C.To_C (Text));
                 Extra_Init (This, This.Get_X, This.Get_Y, W, H, Text);
+            end return;
+        end Create;
+
+
+        function Create
+               (Parent : in out Group'Class;
+                W, H   : in     Integer;
+                Text   : in     String := "")
+            return Overlay_Window is
+        begin
+            return This : Overlay_Window := Create (W, H, Text) do
+                Parent.Add (This);
             end return;
         end Create;
 

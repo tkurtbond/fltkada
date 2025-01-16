@@ -270,6 +270,18 @@ package body FLTK.Widgets.Groups.Spinners is
             end return;
         end Create;
 
+
+        function Create
+               (Parent     : in out Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Spinner is
+        begin
+            return This : Spinner := Create (X, Y, W, H, Text) do
+                Parent.Add (This);
+            end return;
+        end Create;
+
     end Forge;
 
 

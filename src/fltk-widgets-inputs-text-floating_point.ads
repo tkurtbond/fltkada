@@ -4,6 +4,11 @@
 --  Released into the public domain
 
 
+limited with
+
+    FLTK.Widgets.Groups;
+
+
 package FLTK.Widgets.Inputs.Text.Floating_Point is
 
 
@@ -20,6 +25,12 @@ package FLTK.Widgets.Inputs.Text.Floating_Point is
         function Create
                (X, Y, W, H : in Integer;
                 Text       : in String := "")
+            return Float_Input;
+
+        function Create
+               (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
             return Float_Input;
 
     end Forge;

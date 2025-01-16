@@ -22,6 +22,12 @@ package FLTK.Widgets.Groups.Tabbed is
                 Text       : in String := "")
             return Tabbed_Group;
 
+        function Create
+               (Parent     : in out Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Tabbed_Group;
+
     end Forge;
 
 

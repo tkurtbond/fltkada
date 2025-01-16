@@ -4,6 +4,11 @@
 --  Released into the public domain
 
 
+limited with
+
+    FLTK.Widgets.Groups;
+
+
 package FLTK.Widgets.Valuators.Dials is
 
 
@@ -22,6 +27,12 @@ package FLTK.Widgets.Valuators.Dials is
         function Create
                (X, Y, W, H : in Integer;
                 Text       : in String := "")
+            return Dial;
+
+        function Create
+               (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
             return Dial;
 
     end Forge;

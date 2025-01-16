@@ -7,6 +7,11 @@
 --  Return Buttons, but return is a reserved word, so they're Enter Buttons instead
 
 
+limited with
+
+    FLTK.Widgets.Groups;
+
+
 package FLTK.Widgets.Buttons.Enter is
 
 
@@ -23,6 +28,12 @@ package FLTK.Widgets.Buttons.Enter is
         function Create
                (X, Y, W, H : in Integer;
                 Text       : in String := "")
+            return Enter_Button;
+
+        function Create
+               (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
             return Enter_Button;
 
     end Forge;

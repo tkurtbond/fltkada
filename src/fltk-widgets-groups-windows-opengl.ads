@@ -48,8 +48,20 @@ package FLTK.Widgets.Groups.Windows.OpenGL is
             return GL_Window;
 
         function Create
+               (Parent     : in out Groups.Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return GL_Window;
+
+        function Create
                (W, H : in Integer;
                 Text : in String := "")
+            return GL_Window;
+
+        function Create
+               (Parent : in out Groups.Group'Class;
+                W, H   : in     Integer;
+                Text   : in     String := "")
             return GL_Window;
 
     end Forge;

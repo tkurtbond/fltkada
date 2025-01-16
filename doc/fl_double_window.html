@@ -75,6 +75,18 @@ function Create
   </tr>
 
   <tr>
+<td>Rely on the automatic use of begin when a group is created, or use begin/end
+explicitly, or add each widget to its intended parent group manually.</td>
+<td><pre>
+function Create
+       (Parent : in out Groups.Group'Class;
+        W, H   : in     Integer;
+        Text   : in     String := "")
+    return Double_Window;
+</pre></td>
+  </tr>
+
+  <tr>
 <td><pre>
 Fl_Double_Window(int X, int Y, int W, int H, const char *L=0);
 </pre></td>
@@ -82,6 +94,18 @@ Fl_Double_Window(int X, int Y, int W, int H, const char *L=0);
 function Create
        (X, Y, W, H : in Integer;
         Text       : in String := "")
+    return Double_Window;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Rely on the automatic use of begin when a group is created, or use begin/end
+explicitly, or add each widget to its intended parent group manually.</td>
+<td><pre>
+function Create
+       (Parent     : in out Groups.Group'Class;
+        X, Y, W, H : in     Integer;
+        Text       : in     String := "")
     return Double_Window;
 </pre></td>
   </tr>

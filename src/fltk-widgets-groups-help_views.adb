@@ -331,6 +331,18 @@ package body FLTK.Widgets.Groups.Help_Views is
             end return;
         end Create;
 
+
+        function Create
+               (Parent     : in out Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Help_View is
+        begin
+            return This : Help_View := Create (X, Y, W, H, Text) do
+                Parent.Add (This);
+            end return;
+        end Create;
+
     end Forge;
 
 

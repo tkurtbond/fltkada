@@ -4,6 +4,11 @@
 --  Released into the public domain
 
 
+limited with
+
+    FLTK.Widgets.Groups;
+
+
 package FLTK.Widgets.Clocks is
 
 
@@ -26,6 +31,12 @@ package FLTK.Widgets.Clocks is
         function Create
                (X, Y, W, H : in Integer;
                 Text       : in String := "")
+            return Clock;
+
+        function Create
+               (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
             return Clock;
 
     end Forge;

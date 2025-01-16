@@ -23,8 +23,20 @@ package FLTK.Widgets.Groups.Windows.Double.Overlay is
             return Overlay_Window;
 
         function Create
+               (Parent     : in out Groups.Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Overlay_Window;
+
+        function Create
                (W, H : in Integer;
                 Text : in String := "")
+            return Overlay_Window;
+
+        function Create
+               (Parent : in out Groups.Group'Class;
+                W, H   : in     Integer;
+                Text   : in     String := "")
             return Overlay_Window;
 
     end Forge;

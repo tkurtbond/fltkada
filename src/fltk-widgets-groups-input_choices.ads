@@ -29,6 +29,12 @@ package FLTK.Widgets.Groups.Input_Choices is
                 Text       : in String := "")
             return Input_Choice;
 
+        function Create
+               (Parent     : in out Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Input_Choice;
+
     end Forge;
 
 

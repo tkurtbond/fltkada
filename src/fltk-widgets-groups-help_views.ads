@@ -42,6 +42,12 @@ package FLTK.Widgets.Groups.Help_Views is
                 Text       : in String := "")
             return Help_View;
 
+        function Create
+               (Parent     : in out Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Help_View;
+
     end Forge;
 
 

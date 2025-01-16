@@ -317,6 +317,18 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
             end return;
         end Create;
 
+
+        function Create
+               (Parent     : in out Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return File_Browser is
+        begin
+            return This : File_Browser := Create (X, Y, W, H, Text) do
+                Parent.Add (This);
+            end return;
+        end Create;
+
     end Forge;
 
 

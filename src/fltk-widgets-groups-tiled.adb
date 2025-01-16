@@ -124,6 +124,18 @@ package body FLTK.Widgets.Groups.Tiled is
             end return;
         end Create;
 
+
+        function Create
+               (Parent     : in out Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Tiled_Group is
+        begin
+            return This : Tiled_Group := Create (X, Y, W, H, Text) do
+                Parent.Add (This);
+            end return;
+        end Create;
+
     end Forge;
 
 

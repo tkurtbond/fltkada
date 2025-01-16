@@ -4,6 +4,10 @@
 --  Released into the public domain
 
 
+limited with
+
+    FLTK.Widgets.Groups;
+
 private with
 
     Interfaces.C.Strings,
@@ -32,6 +36,12 @@ package FLTK.Widgets.Inputs is
         function Create
                (X, Y, W, H : in Integer;
                 Text       : in String := "")
+            return Input;
+
+        function Create
+               (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
             return Input;
 
     end Forge;

@@ -4,6 +4,11 @@
 --  Released into the public domain
 
 
+limited with
+
+    FLTK.Widgets.Groups;
+
+
 package FLTK.Widgets.Valuators.Value_Outputs is
 
 
@@ -20,6 +25,12 @@ package FLTK.Widgets.Valuators.Value_Outputs is
         function Create
                (X, Y, W, H : in Integer;
                 Text       : in String := "")
+            return Value_Output;
+
+        function Create
+               (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
             return Value_Output;
 
     end Forge;

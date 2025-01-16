@@ -42,6 +42,12 @@ package FLTK.Widgets.Groups is
                 Text       : in String := "")
             return Group;
 
+        function Create
+               (Parent     : in out Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Group;
+
     end Forge;
 
 

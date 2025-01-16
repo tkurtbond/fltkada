@@ -45,6 +45,12 @@ package FLTK.Widgets.Groups.Browsers is
                 Text       : in String := "")
             return Browser;
 
+        function Create
+               (Parent     : in out Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Browser;
+
     end Forge;
 
 

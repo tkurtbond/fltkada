@@ -20,6 +20,12 @@ package FLTK.Widgets.Groups.Browsers.Textline.Multi is
                 Text       : in String := "")
             return Multi_Browser;
 
+        function Create
+               (Parent     : in out Groups.Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Multi_Browser;
+
     end Forge;
 
 

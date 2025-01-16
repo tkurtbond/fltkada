@@ -285,6 +285,18 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
 
 
         function Create
+               (Parent     : in out Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return GL_Window is
+        begin
+            return This : GL_Window := Create (X, Y, W, H, Text) do
+                Parent.Add (This);
+            end return;
+        end Create;
+
+
+        function Create
                (W, H : in Integer;
                 Text : in String := "")
             return GL_Window is
@@ -295,6 +307,18 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
                     Interfaces.C.int (H),
                     Interfaces.C.To_C (Text));
                 Extra_Init (This, This.Get_X, This.Get_Y, W, H, Text);
+            end return;
+        end Create;
+
+
+        function Create
+               (Parent : in out Group'Class;
+                W, H   : in     Integer;
+                Text   : in     String := "")
+            return GL_Window is
+        begin
+            return This : GL_Window := Create (W, H, Text) do
+                Parent.Add (This);
             end return;
         end Create;
 

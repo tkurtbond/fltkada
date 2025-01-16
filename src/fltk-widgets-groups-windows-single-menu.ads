@@ -23,8 +23,20 @@ package FLTK.Widgets.Groups.Windows.Single.Menu is
             return Menu_Window;
 
         function Create
+               (Parent     : in out Groups.Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Menu_Window;
+
+        function Create
                (W, H : in Integer;
                 Text : in String := "")
+            return Menu_Window;
+
+        function Create
+               (Parent : in out Groups.Group'Class;
+                W, H   : in     Integer;
+                Text   : in     String := "")
             return Menu_Window;
 
     end Forge;

@@ -24,6 +24,12 @@ package FLTK.Widgets.Groups.Color_Choosers is
                 Text       : in String := "")
             return Color_Chooser;
 
+        function Create
+               (Parent     : in out Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Color_Chooser;
+
     end Forge;
 
 

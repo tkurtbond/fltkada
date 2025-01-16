@@ -22,6 +22,12 @@ package FLTK.Widgets.Groups.Wizards is
                 Text       : in String := "")
             return Wizard;
 
+        function Create
+               (Parent     : in out Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Wizard;
+
     end Forge;
 
 

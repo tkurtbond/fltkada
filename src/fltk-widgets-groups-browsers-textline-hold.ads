@@ -20,6 +20,12 @@ package FLTK.Widgets.Groups.Browsers.Textline.Hold is
                 Text       : in String := "")
             return Hold_Browser;
 
+        function Create
+               (Parent     : in out Groups.Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Hold_Browser;
+
     end Forge;
 
 

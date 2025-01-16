@@ -4,6 +4,11 @@
 --  Released into the public domain
 
 
+limited with
+
+    FLTK.Widgets.Groups;
+
+
 package FLTK.Widgets.Valuators.Sliders is
 
 
@@ -28,9 +33,22 @@ package FLTK.Widgets.Valuators.Sliders is
             return Slider;
 
         function Create
+               (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Slider;
+
+        function Create
                (Kind       : in Slider_Kind;
                 X, Y, W, H : in Integer;
                 Text       : in String := "")
+            return Slider;
+
+        function Create
+               (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+                Kind       : in     Slider_Kind;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
             return Slider;
 
     end Forge;

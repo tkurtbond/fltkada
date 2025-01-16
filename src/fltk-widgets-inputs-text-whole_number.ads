@@ -4,6 +4,11 @@
 --  Released into the public domain
 
 
+limited with
+
+    FLTK.Widgets.Groups;
+
+
 package FLTK.Widgets.Inputs.Text.Whole_Number is
 
 
@@ -20,6 +25,12 @@ package FLTK.Widgets.Inputs.Text.Whole_Number is
         function Create
                (X, Y, W, H : in Integer;
                 Text       : in String := "")
+            return Integer_Input;
+
+        function Create
+               (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
             return Integer_Input;
 
     end Forge;

@@ -46,6 +46,12 @@ package FLTK.Widgets.Groups.Text_Displays.Text_Editors is
                 Text       : in String := "")
             return Text_Editor;
 
+        function Create
+               (Parent     : in out Groups.Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Text_Editor;
+
     end Forge;
 
 

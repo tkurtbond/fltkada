@@ -6,6 +6,7 @@
 
 with
 
+    FLTK.Widgets.Groups,
     Interfaces.C.Strings;
 
 use type
@@ -130,6 +131,18 @@ package body FLTK.Widgets.Valuators.Adjusters is
                         Interfaces.C.int (H),
                         Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
+            end return;
+        end Create;
+
+
+        function Create
+               (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Adjuster is
+        begin
+            return This : Adjuster := Create (X, Y, W, H, Text) do
+                Parent.Add (This);
             end return;
         end Create;
 

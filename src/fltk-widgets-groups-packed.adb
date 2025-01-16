@@ -136,6 +136,18 @@ package body FLTK.Widgets.Groups.Packed is
             end return;
         end Create;
 
+
+        function Create
+               (Parent     : in out Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Packed_Group is
+        begin
+            return This : Packed_Group := Create (X, Y, W, H, Text) do
+                Parent.Add (This);
+            end return;
+        end Create;
+
     end Forge;
 
 

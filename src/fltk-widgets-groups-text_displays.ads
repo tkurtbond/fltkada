@@ -39,6 +39,12 @@ package FLTK.Widgets.Groups.Text_Displays is
                 Text       : in String := "")
             return Text_Display;
 
+        function Create
+               (Parent     : in out Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Text_Display;
+
     end Forge;
 
 

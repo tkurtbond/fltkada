@@ -9,6 +9,10 @@ with
     FLTK.Menu_Items,
     Ada.Iterator_Interfaces;
 
+limited with
+
+    FLTK.Widgets.Groups;
+
 private with
 
     Ada.Containers.Vectors,
@@ -50,6 +54,12 @@ package FLTK.Widgets.Menus is
         function Create
                (X, Y, W, H : in Integer;
                 Text       : in String := "")
+            return Menu;
+
+        function Create
+               (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
             return Menu;
 
     end Forge;

@@ -42,12 +42,29 @@ package FLTK.Widgets.Groups.Windows.Double.Cairo is
             return Cairo_Window;
 
         function Create
+               (Parent     : in out Groups.Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Cairo_Window;
+
+        function Create
                (W, H : in Integer;
-                Text : in String := "")
+                Text : in String)
+            return Cairo_Window;
+
+        function Create
+               (Parent : in out Groups.Group'Class;
+                W, H   : in     Integer;
+                Text   : in     String)
             return Cairo_Window;
 
         function Create
                (W, H : in Integer)
+            return Cairo_Window;
+
+        function Create
+               (Parent : in out Groups.Group'Class;
+                W, H   : in     Integer)
             return Cairo_Window;
 
     end Forge;

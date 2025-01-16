@@ -525,6 +525,18 @@ package body FLTK.Widgets.Groups.Text_Displays is
             end return;
         end Create;
 
+
+        function Create
+               (Parent     : in out Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Text_Display is
+        begin
+            return This : Text_Display := Create (X, Y, W, H, Text) do
+                Parent.Add (This);
+            end return;
+        end Create;
+
     end Forge;
 
 

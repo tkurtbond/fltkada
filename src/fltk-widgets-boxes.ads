@@ -4,6 +4,11 @@
 --  Released into the public domain
 
 
+limited with
+
+    FLTK.Widgets.Groups;
+
+
 package FLTK.Widgets.Boxes is
 
 
@@ -23,9 +28,22 @@ package FLTK.Widgets.Boxes is
             return Box;
 
         function Create
+               (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Box;
+
+        function Create
                (Kind       : in Box_Kind;
                 X, Y, W, H : in Integer;
                 Text       : in String := "")
+            return Box;
+
+        function Create
+               (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+                Kind       : in     Box_Kind;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
             return Box;
 
     end Forge;

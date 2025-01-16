@@ -8,6 +8,10 @@ with
 
     FLTK.Menu_Items;
 
+limited with
+
+    FLTK.Widgets.Groups;
+
 
 package FLTK.Widgets.Menus.Menu_Buttons is
 
@@ -28,6 +32,12 @@ package FLTK.Widgets.Menus.Menu_Buttons is
         function Create
                (X, Y, W, H : in Integer;
                 Text       : in String := "")
+            return Menu_Button;
+
+        function Create
+               (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
             return Menu_Button;
 
     end Forge;

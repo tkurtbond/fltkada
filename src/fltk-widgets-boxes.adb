@@ -6,6 +6,7 @@
 
 with
 
+    FLTK.Widgets.Groups,
     Interfaces.C;
 
 
@@ -118,6 +119,18 @@ package body FLTK.Widgets.Boxes is
 
 
         function Create
+               (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Box is
+        begin
+            return This : Box := Create (X, Y, W, H, Text) do
+                Parent.Add (This);
+            end return;
+        end Create;
+
+
+        function Create
                (Kind       : in Box_Kind;
                 X, Y, W, H : in Integer;
                 Text       : in String := "")
@@ -132,6 +145,19 @@ package body FLTK.Widgets.Boxes is
                     Interfaces.C.int (H),
                     Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
+            end return;
+        end Create;
+
+
+        function Create
+               (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+                Kind       : in     Box_Kind;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Box is
+        begin
+            return This : Box := Create (Kind, X, Y, W, H, Text) do
+                Parent.Add (This);
             end return;
         end Create;
 

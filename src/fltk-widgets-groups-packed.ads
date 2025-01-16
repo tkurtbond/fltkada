@@ -24,6 +24,12 @@ package FLTK.Widgets.Groups.Packed is
                 Text       : in String := "")
             return Packed_Group;
 
+        function Create
+               (Parent     : in out Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Packed_Group;
+
     end Forge;
 
 

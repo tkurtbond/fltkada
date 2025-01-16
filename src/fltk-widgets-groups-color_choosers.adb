@@ -205,6 +205,18 @@ package body FLTK.Widgets.Groups.Color_Choosers is
             end return;
         end Create;
 
+
+        function Create
+               (Parent     : in out Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Color_Chooser is
+        begin
+            return This : Color_Chooser := Create (X, Y, W, H, Text) do
+                Parent.Add (This);
+            end return;
+        end Create;
+
     end Forge;
 
 

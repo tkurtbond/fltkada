@@ -48,6 +48,12 @@ package FLTK.Widgets is
                 Text       : in String := "")
             return Widget;
 
+        function Create
+               (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Widget;
+
     end Forge;
 
 

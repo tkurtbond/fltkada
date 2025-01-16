@@ -29,6 +29,12 @@ package FLTK.Widgets.Groups.Spinners is
                 Text       : in String := "")
             return Spinner;
 
+        function Create
+               (Parent     : in out Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Spinner;
+
     end Forge;
 
 

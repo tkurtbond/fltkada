@@ -36,6 +36,12 @@ package FLTK.Widgets.Groups.Browsers.Check is
                 Text       : in String := "")
             return Check_Browser;
 
+        function Create
+               (Parent     : in out Groups.Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Check_Browser;
+
     end Forge;
 
 
