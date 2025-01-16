@@ -219,7 +219,6 @@ FLTK.Text_Buffers
 Widgets with incomplete APIs:
 
 Widgets
-Widgets.Groups.Input_Choices (menu)
 Widgets.Groups.Scrolls (attributes, resize, type, protected)
 Widgets.Groups.Text_Displays
 Widgets.Groups.Text_Displays.Text_Editors

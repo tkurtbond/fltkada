@@ -6,6 +6,7 @@
 
 with
 
+    FLTK.Menu_Items,
     FLTK.Widgets.Inputs.Text,
     FLTK.Widgets.Menus.Menu_Buttons;
 
@@ -43,6 +44,20 @@ package FLTK.Widgets.Groups.Input_Choices is
 
 
 
+
+    function Has_Item
+           (This  : in Input_Choice;
+            Place : in FLTK.Widgets.Menus.Index)
+        return Boolean;
+
+    function Item
+           (This  : in Input_Choice;
+            Place : in FLTK.Widgets.Menus.Index)
+        return FLTK.Menu_Items.Menu_Item_Reference;
+
+    procedure Use_Same_Items
+           (This  : in out Input_Choice;
+            Donor : in     FLTK.Widgets.Menus.Menu'Class);
 
     procedure Clear
            (This : in out Input_Choice);
@@ -138,6 +153,11 @@ private
 
     pragma Inline (Text_Field);
     pragma Inline (Button_Menu);
+
+    pragma Inline (Has_Item);
+    pragma Inline (Item);
+    pragma Inline (Use_Same_Items);
+    pragma Inline (Clear);
 
     pragma Inline (Has_Changed);
     pragma Inline (Clear_Changed);

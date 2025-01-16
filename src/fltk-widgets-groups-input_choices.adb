@@ -314,6 +314,32 @@ package body FLTK.Widgets.Groups.Input_Choices is
     --  API Subprograms  --
     -----------------------
 
+    function Has_Item
+           (This  : in Input_Choice;
+            Place : in FLTK.Widgets.Menus.Index)
+        return Boolean is
+    begin
+        return This.My_Menu_Button.Has_Item (Place);
+    end Has_Item;
+
+
+    function Item
+           (This  : in Input_Choice;
+            Place : in FLTK.Widgets.Menus.Index)
+        return FLTK.Menu_Items.Menu_Item_Reference is
+    begin
+        return This.My_Menu_Button.Item (Place);
+    end Item;
+
+
+    procedure Use_Same_Items
+           (This  : in out Input_Choice;
+            Donor : in     FLTK.Widgets.Menus.Menu'Class) is
+    begin
+        This.My_Menu_Button.Use_Same_Items (Donor);
+    end Use_Same_Items;
+
+
     procedure Clear
            (This : in out Input_Choice) is
     begin

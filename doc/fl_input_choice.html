@@ -157,17 +157,41 @@ procedure Set_Down_Box
   </tr>
 
   <tr>
+<td>Check index values against the size method of menubutton manually.</td>
+<td><pre>
+function Has_Item
+       (This  : in Input_Choice;
+        Place : in FLTK.Widgets.Menus.Index)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Use the menu method to access the menu item array and index it directly.</td>
+<td><pre>
+function Item
+       (This  : in Input_Choice;
+        Place : in FLTK.Widgets.Menus.Index)
+    return FLTK.Menu_Items.Menu_Item_Reference;
+</pre></td>
+  </tr>
+
+  <tr>
 <td><pre>
 const Fl_Menu_Item * menu();
 </pre></td>
-<td>&nbsp;</td>
+<td>Use Item or Button_Menu.Iterate as necessary to access specific items or walk the array.</td>
   </tr>
 
   <tr>
 <td><pre>
 void menu(const Fl_Menu_Item *m);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Use_Same_Items
+       (This  : in out Input_Choice;
+        Donor : in     FLTK.Widgets.Menus.Menu'Class);
+</pre></td>
   </tr>
 
   <tr>
