@@ -50,45 +50,45 @@ COLORCHOOSER new_fl_color_chooser(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_color_chooser(COLORCHOOSER n) {
-    delete reinterpret_cast<My_Color_Chooser*>(n);
+    delete static_cast<My_Color_Chooser*>(n);
 }
 
 
 
 
 double fl_color_chooser_r(COLORCHOOSER n) {
-    return reinterpret_cast<Fl_Color_Chooser*>(n)->r();
+    return static_cast<Fl_Color_Chooser*>(n)->r();
 }
 
 double fl_color_chooser_g(COLORCHOOSER n) {
-    return reinterpret_cast<Fl_Color_Chooser*>(n)->g();
+    return static_cast<Fl_Color_Chooser*>(n)->g();
 }
 
 double fl_color_chooser_b(COLORCHOOSER n) {
-    return reinterpret_cast<Fl_Color_Chooser*>(n)->b();
+    return static_cast<Fl_Color_Chooser*>(n)->b();
 }
 
 int fl_color_chooser_rgb(COLORCHOOSER n, int r, int g, int b) {
-    return reinterpret_cast<Fl_Color_Chooser*>(n)->rgb(r,g,b);
+    return static_cast<Fl_Color_Chooser*>(n)->rgb(r,g,b);
 }
 
 
 
 
 double fl_color_chooser_hue(COLORCHOOSER n) {
-    return reinterpret_cast<Fl_Color_Chooser*>(n)->hue();
+    return static_cast<Fl_Color_Chooser*>(n)->hue();
 }
 
 double fl_color_chooser_saturation(COLORCHOOSER n) {
-    return reinterpret_cast<Fl_Color_Chooser*>(n)->saturation();
+    return static_cast<Fl_Color_Chooser*>(n)->saturation();
 }
 
 double fl_color_chooser_value(COLORCHOOSER n) {
-    return reinterpret_cast<Fl_Color_Chooser*>(n)->value();
+    return static_cast<Fl_Color_Chooser*>(n)->value();
 }
 
 int fl_color_chooser_hsv(COLORCHOOSER n, int h, int s, int v) {
-    return reinterpret_cast<Fl_Color_Chooser*>(n)->hsv(h,s,v);
+    return static_cast<Fl_Color_Chooser*>(n)->hsv(h,s,v);
 }
 
 
@@ -106,22 +106,22 @@ void fl_color_chooser_rgb2hsv(double r, double g, double b, double &h, double &s
 
 
 int fl_color_chooser_get_mode(COLORCHOOSER n) {
-    return reinterpret_cast<Fl_Color_Chooser*>(n)->mode();
+    return static_cast<Fl_Color_Chooser*>(n)->mode();
 }
 
 void fl_color_chooser_set_mode(COLORCHOOSER n, int m) {
-    reinterpret_cast<Fl_Color_Chooser*>(n)->mode(m);
+    static_cast<Fl_Color_Chooser*>(n)->mode(m);
 }
 
 
 
 
 void fl_color_chooser_draw(COLORCHOOSER n) {
-    reinterpret_cast<My_Color_Chooser*>(n)->Fl_Color_Chooser::draw();
+    static_cast<My_Color_Chooser*>(n)->Fl_Color_Chooser::draw();
 }
 
 int fl_color_chooser_handle(COLORCHOOSER n, int e) {
-    return reinterpret_cast<My_Color_Chooser*>(n)->Fl_Color_Chooser::handle(e);
+    return static_cast<My_Color_Chooser*>(n)->Fl_Color_Chooser::handle(e);
 }
 
 

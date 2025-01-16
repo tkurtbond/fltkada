@@ -50,29 +50,29 @@ TILE new_fl_tile(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_tile(TILE t) {
-    delete reinterpret_cast<My_Tile*>(t);
+    delete static_cast<My_Tile*>(t);
 }
 
 
 
 
 void fl_tile_position(TILE t, int ox, int oy, int nx, int ny) {
-    reinterpret_cast<Fl_Tile*>(t)->position(ox,oy,nx,ny);
+    static_cast<Fl_Tile*>(t)->position(ox,oy,nx,ny);
 }
 
 void fl_tile_resize(TILE t, int x, int y, int w, int h) {
-    reinterpret_cast<Fl_Tile*>(t)->resize(x, y, w, h);
+    static_cast<Fl_Tile*>(t)->resize(x, y, w, h);
 }
 
 
 
 
 void fl_tile_draw(TILE n) {
-    reinterpret_cast<My_Tile*>(n)->Fl_Tile::draw();
+    static_cast<My_Tile*>(n)->Fl_Tile::draw();
 }
 
 int fl_tile_handle(TILE n, int e) {
-    return reinterpret_cast<My_Tile*>(n)->Fl_Tile::handle(e);
+    return static_cast<My_Tile*>(n)->Fl_Tile::handle(e);
 }
 
 

@@ -66,25 +66,25 @@ MENUBUTTON new_fl_menu_button(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_menu_button(MENUBUTTON m) {
-    delete reinterpret_cast<My_Menu_Button*>(m);
+    delete static_cast<My_Menu_Button*>(m);
 }
 
 
 
 
 const void * fl_menu_button_popup(MENUBUTTON m) {
-    return reinterpret_cast<Fl_Menu_Button*>(m)->popup();
+    return static_cast<Fl_Menu_Button*>(m)->popup();
 }
 
 
 
 
 void fl_menu_button_draw(MENUBUTTON m) {
-    reinterpret_cast<My_Menu_Button*>(m)->Fl_Menu_Button::draw();
+    static_cast<My_Menu_Button*>(m)->Fl_Menu_Button::draw();
 }
 
 int fl_menu_button_handle(MENUBUTTON m, int e) {
-    return reinterpret_cast<My_Menu_Button*>(m)->Fl_Menu_Button::handle(e);
+    return static_cast<My_Menu_Button*>(m)->Fl_Menu_Button::handle(e);
 }
 
 

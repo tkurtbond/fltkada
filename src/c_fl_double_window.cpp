@@ -66,49 +66,49 @@ DOUBLEWINDOW new_fl_double_window2(int w, int h, char* label) {
 }
 
 void free_fl_double_window(DOUBLEWINDOW d) {
-    delete reinterpret_cast<My_Double_Window*>(d);
+    delete static_cast<My_Double_Window*>(d);
 }
 
 
 
 
 void fl_double_window_show(DOUBLEWINDOW d) {
-    reinterpret_cast<Fl_Double_Window*>(d)->show();
+    static_cast<Fl_Double_Window*>(d)->show();
 }
 
 void fl_double_window_show2(DOUBLEWINDOW d, int c, void * v) {
-    reinterpret_cast<Fl_Double_Window*>(d)->show(c, static_cast<char**>(v));
+    static_cast<Fl_Double_Window*>(d)->show(c, static_cast<char**>(v));
 }
 
 void fl_double_window_hide(DOUBLEWINDOW d) {
-    reinterpret_cast<Fl_Double_Window*>(d)->hide();
+    static_cast<Fl_Double_Window*>(d)->hide();
 }
 
 void fl_double_window_flush(DOUBLEWINDOW d) {
-    reinterpret_cast<Fl_Double_Window*>(d)->flush();
+    static_cast<Fl_Double_Window*>(d)->flush();
 }
 
 void fl_double_window_flush2(DOUBLEWINDOW d, int e) {
     void (Fl_Double_Window::*myflush)(int) = &Friend_Double_Window::flush;
-    (reinterpret_cast<Fl_Double_Window*>(d)->*myflush)(e);
+    (static_cast<Fl_Double_Window*>(d)->*myflush)(e);
 }
 
 
 
 
 void fl_double_window_resize(DOUBLEWINDOW d, int x, int y, int w, int h) {
-    reinterpret_cast<Fl_Double_Window*>(d)->resize(x, y, w, h);
+    static_cast<Fl_Double_Window*>(d)->resize(x, y, w, h);
 }
 
 
 
 
 void fl_double_window_draw(DOUBLEWINDOW n) {
-    reinterpret_cast<My_Double_Window*>(n)->Fl_Double_Window::draw();
+    static_cast<My_Double_Window*>(n)->Fl_Double_Window::draw();
 }
 
 int fl_double_window_handle(DOUBLEWINDOW n, int e) {
-    return reinterpret_cast<My_Double_Window*>(n)->Fl_Double_Window::handle(e);
+    return static_cast<My_Double_Window*>(n)->Fl_Double_Window::handle(e);
 }
 
 

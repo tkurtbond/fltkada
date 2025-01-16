@@ -8,26 +8,26 @@
 #define FL_CLOCK_OUTPUT_GUARD
 
 
-typedef void* CLOCK_OUTPUT;
+typedef void* CLOCKOUTPUT;
 
 
-extern "C" CLOCK_OUTPUT new_fl_clock_output(int x, int y, int w, int h, char* label);
-extern "C" void free_fl_clock_output(CLOCK_OUTPUT c);
+extern "C" CLOCKOUTPUT new_fl_clock_output(int x, int y, int w, int h, char* label);
+extern "C" void free_fl_clock_output(CLOCKOUTPUT c);
 
 
-extern "C" int fl_clock_output_get_hour(CLOCK_OUTPUT c);
-extern "C" int fl_clock_output_get_minute(CLOCK_OUTPUT c);
-extern "C" int fl_clock_output_get_second(CLOCK_OUTPUT c);
+extern "C" int fl_clock_output_get_hour(CLOCKOUTPUT c);
+extern "C" int fl_clock_output_get_minute(CLOCKOUTPUT c);
+extern "C" int fl_clock_output_get_second(CLOCKOUTPUT c);
 
 
-extern "C" unsigned long fl_clock_output_get_value(CLOCK_OUTPUT c);
-extern "C" void fl_clock_output_set_value(CLOCK_OUTPUT c, unsigned long v);
-extern "C" void fl_clock_output_set_value2(CLOCK_OUTPUT c, int h, int m, int s);
+extern "C" unsigned long fl_clock_output_get_value(CLOCKOUTPUT c);
+extern "C" void fl_clock_output_set_value(CLOCKOUTPUT c, unsigned long v);
+extern "C" void fl_clock_output_set_value2(CLOCKOUTPUT c, int h, int m, int s);
 
 
-extern "C" void fl_clock_output_draw(CLOCK_OUTPUT c);
-extern "C" void fl_clock_output_draw2(CLOCK_OUTPUT c, int x, int y, int w, int h);
-extern "C" int fl_clock_output_handle(CLOCK_OUTPUT c, int e);
+extern "C" void fl_clock_output_draw(CLOCKOUTPUT c);
+extern "C" void fl_clock_output_draw2(CLOCKOUTPUT c, int x, int y, int w, int h);
+extern "C" int fl_clock_output_handle(CLOCKOUTPUT c, int e);
 
 
 #endif

@@ -50,18 +50,18 @@ SECRETINPUT new_fl_secret_input(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_secret_input(SECRETINPUT i) {
-    delete reinterpret_cast<My_Secret_Input*>(i);
+    delete static_cast<My_Secret_Input*>(i);
 }
 
 
 
 
 void fl_secret_input_draw(SECRETINPUT i) {
-    reinterpret_cast<My_Secret_Input*>(i)->Fl_Secret_Input::draw();
+    static_cast<My_Secret_Input*>(i)->Fl_Secret_Input::draw();
 }
 
 int fl_secret_input_handle(SECRETINPUT i, int e) {
-    return reinterpret_cast<My_Secret_Input*>(i)->Fl_Secret_Input::handle(e);
+    return static_cast<My_Secret_Input*>(i)->Fl_Secret_Input::handle(e);
 }
 
 

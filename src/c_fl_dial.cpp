@@ -62,51 +62,51 @@ DIAL new_fl_dial(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_dial(DIAL v) {
-    delete reinterpret_cast<My_Dial*>(v);
+    delete static_cast<My_Dial*>(v);
 }
 
 
 
 
 short fl_dial_get_angle1(DIAL v) {
-    return reinterpret_cast<Fl_Dial*>(v)->angle1();
+    return static_cast<Fl_Dial*>(v)->angle1();
 }
 
 void fl_dial_set_angle1(DIAL v, short t) {
-    reinterpret_cast<Fl_Dial*>(v)->angle1(t);
+    static_cast<Fl_Dial*>(v)->angle1(t);
 }
 
 short fl_dial_get_angle2(DIAL v) {
-    return reinterpret_cast<Fl_Dial*>(v)->angle2();
+    return static_cast<Fl_Dial*>(v)->angle2();
 }
 
 void fl_dial_set_angle2(DIAL v, short t) {
-    reinterpret_cast<Fl_Dial*>(v)->angle2(t);
+    static_cast<Fl_Dial*>(v)->angle2(t);
 }
 
 void fl_dial_set_angles(DIAL v, short a, short b) {
-    reinterpret_cast<Fl_Dial*>(v)->angles(a,b);
+    static_cast<Fl_Dial*>(v)->angles(a,b);
 }
 
 
 
 
 void fl_dial_draw(DIAL v) {
-    reinterpret_cast<My_Dial*>(v)->Fl_Dial::draw();
+    static_cast<My_Dial*>(v)->Fl_Dial::draw();
 }
 
 void fl_dial_draw2(DIAL v, int x, int y, int w, int h) {
     void (Fl_Dial::*mydraw)(int,int,int,int) = &Friend_Dial::draw;
-    (reinterpret_cast<Fl_Dial*>(v)->*mydraw)(x, y, w, h);
+    (static_cast<Fl_Dial*>(v)->*mydraw)(x, y, w, h);
 }
 
 int fl_dial_handle(DIAL v, int e) {
-    return reinterpret_cast<My_Dial*>(v)->Fl_Dial::handle(e);
+    return static_cast<My_Dial*>(v)->Fl_Dial::handle(e);
 }
 
 int fl_dial_handle2(DIAL v, int e, int x, int y, int w, int h) {
     int (Fl_Dial::*myhandle)(int,int,int,int,int) = &Friend_Dial::handle;
-    return (reinterpret_cast<Fl_Dial*>(v)->*myhandle)(e, x, y, w, h);
+    return (static_cast<Fl_Dial*>(v)->*myhandle)(e, x, y, w, h);
 }
 
 

@@ -10,12 +10,13 @@
 
 
 
-XBM_IMAGE new_fl_xbm_image(const char * f) {
+XBMIMAGE new_fl_xbm_image(const char * f) {
     Fl_XBM_Image *b = new Fl_XBM_Image(f);
     return b;
 }
 
-void free_fl_xbm_image(XBM_IMAGE b) {
-    delete reinterpret_cast<Fl_XBM_Image*>(b);
+void free_fl_xbm_image(XBMIMAGE b) {
+    delete static_cast<Fl_XBM_Image*>(b);
 }
+
 

@@ -55,18 +55,18 @@ BOX new_fl_box2(int k, int x, int y, int w, int h, char * label) {
 }
 
 void free_fl_box(BOX b) {
-    delete reinterpret_cast<My_Box*>(b);
+    delete static_cast<My_Box*>(b);
 }
 
 
 
 
 void fl_box_draw(BOX n) {
-    reinterpret_cast<My_Box*>(n)->Fl_Box::draw();
+    static_cast<My_Box*>(n)->Fl_Box::draw();
 }
 
 int fl_box_handle(BOX n, int e) {
-    return reinterpret_cast<My_Box*>(n)->Fl_Box::handle(e);
+    return static_cast<My_Box*>(n)->Fl_Box::handle(e);
 }
 
 

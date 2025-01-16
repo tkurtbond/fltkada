@@ -60,52 +60,52 @@ TABS new_fl_tabs(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_tabs(TABS t) {
-    delete reinterpret_cast<My_Tabs*>(t);
+    delete static_cast<My_Tabs*>(t);
 }
 
 
 
 
 void fl_tabs_client_area(TABS t, int * x, int * y, int * w, int * h, int i) {
-    reinterpret_cast<Fl_Tabs*>(t)->client_area(*x,*y,*w,*h,i);
+    static_cast<Fl_Tabs*>(t)->client_area(*x,*y,*w,*h,i);
 }
 
 
 
 
 void * fl_tabs_get_push(TABS t) {
-    return reinterpret_cast<Fl_Tabs*>(t)->push();
+    return static_cast<Fl_Tabs*>(t)->push();
 }
 
 void fl_tabs_set_push(TABS t, void * w) {
-    reinterpret_cast<Fl_Tabs*>(t)->push(reinterpret_cast<Fl_Widget*>(w));
+    static_cast<Fl_Tabs*>(t)->push(static_cast<Fl_Widget*>(w));
 }
 
 void * fl_tabs_get_value(TABS t) {
-    return reinterpret_cast<Fl_Tabs*>(t)->value();
+    return static_cast<Fl_Tabs*>(t)->value();
 }
 
 void fl_tabs_set_value(TABS t, void * w) {
-    reinterpret_cast<Fl_Tabs*>(t)->value(reinterpret_cast<Fl_Widget*>(w));
+    static_cast<Fl_Tabs*>(t)->value(static_cast<Fl_Widget*>(w));
 }
 
 void * fl_tabs_which(TABS t, int x, int y) {
-    return reinterpret_cast<Fl_Tabs*>(t)->which(x,y);
+    return static_cast<Fl_Tabs*>(t)->which(x,y);
 }
 
 
 
 
 void fl_tabs_draw(TABS t) {
-    reinterpret_cast<My_Tabs*>(t)->Fl_Tabs::draw();
+    static_cast<My_Tabs*>(t)->Fl_Tabs::draw();
 }
 
 void fl_tabs_redraw_tabs(TABS t) {
-    (reinterpret_cast<Fl_Tabs*>(t)->*(&Friend_Tabs::redraw_tabs))();
+    (static_cast<Fl_Tabs*>(t)->*(&Friend_Tabs::redraw_tabs))();
 }
 
 int fl_tabs_handle(TABS t, int e) {
-    return reinterpret_cast<My_Tabs*>(t)->Fl_Tabs::handle(e);
+    return static_cast<My_Tabs*>(t)->Fl_Tabs::handle(e);
 }
 
 

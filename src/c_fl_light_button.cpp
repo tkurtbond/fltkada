@@ -50,18 +50,18 @@ LIGHTBUTTON new_fl_light_button(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_light_button(LIGHTBUTTON b) {
-    delete reinterpret_cast<My_Light_Button*>(b);
+    delete static_cast<My_Light_Button*>(b);
 }
 
 
 
 
 void fl_light_button_draw(LIGHTBUTTON b) {
-    reinterpret_cast<My_Light_Button*>(b)->Fl_Light_Button::draw();
+    static_cast<My_Light_Button*>(b)->Fl_Light_Button::draw();
 }
 
 int fl_light_button_handle(LIGHTBUTTON b, int e) {
-    return reinterpret_cast<My_Light_Button*>(b)->Fl_Light_Button::handle(e);
+    return static_cast<My_Light_Button*>(b)->Fl_Light_Button::handle(e);
 }
 
 

@@ -8,11 +8,7 @@
 #define FL_IMAGE_GUARD
 
 
-
-
 typedef void* IMAGE;
-
-
 
 
 extern "C" IMAGE new_fl_image(int w, int h, int d);
@@ -23,8 +19,6 @@ extern "C" int fl_image_get_rgb_scaling();
 extern "C" void fl_image_set_rgb_scaling(int t);
 extern "C" IMAGE fl_image_copy(IMAGE i, int w, int h);
 extern "C" IMAGE fl_image_copy2(IMAGE i);
-
-
 
 
 extern "C" void fl_image_color_average(IMAGE i, int c, float b);
@@ -54,4 +48,5 @@ extern "C" void fl_image_draw_empty(IMAGE i, int x, int y);
 
 
 #endif
+
 

@@ -11,21 +11,21 @@
 
 
 BITMAP new_fl_bitmap(void *data, int w, int h) {
-    Fl_Bitmap *b = new Fl_Bitmap(reinterpret_cast<uchar*>(data), w, h);
+    Fl_Bitmap *b = new Fl_Bitmap(static_cast<uchar*>(data), w, h);
     return b;
 }
 
 void free_fl_bitmap(BITMAP b) {
-    delete reinterpret_cast<Fl_Bitmap*>(b);
+    delete static_cast<Fl_Bitmap*>(b);
 }
 
 BITMAP fl_bitmap_copy(BITMAP b, int w, int h) {
     //  virtual so disable dispatch
-    return reinterpret_cast<Fl_Bitmap*>(b)->Fl_Bitmap::copy(w, h);
+    return static_cast<Fl_Bitmap*>(b)->Fl_Bitmap::copy(w, h);
 }
 
 BITMAP fl_bitmap_copy2(BITMAP b) {
-    return reinterpret_cast<Fl_Bitmap*>(b)->copy();
+    return static_cast<Fl_Bitmap*>(b)->copy();
 }
 
 
@@ -33,18 +33,19 @@ BITMAP fl_bitmap_copy2(BITMAP b) {
 
 void fl_bitmap_uncache(BITMAP b) {
     // virtual so disable dispatch
-    reinterpret_cast<Fl_Bitmap*>(b)->Fl_Bitmap::uncache();
+    static_cast<Fl_Bitmap*>(b)->Fl_Bitmap::uncache();
 }
 
 
 
 
 void fl_bitmap_draw2(BITMAP b, int x, int y) {
-    reinterpret_cast<Fl_Bitmap*>(b)->draw(x, y);
+    static_cast<Fl_Bitmap*>(b)->draw(x, y);
 }
 
 void fl_bitmap_draw(BITMAP b, int x, int y, int w, int h, int cx, int cy) {
     // virtual so disable dispatch
-    reinterpret_cast<Fl_Bitmap*>(b)->Fl_Bitmap::draw(x, y, w, h, cx, cy);
+    static_cast<Fl_Bitmap*>(b)->Fl_Bitmap::draw(x, y, w, h, cx, cy);
 }
+
 

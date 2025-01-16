@@ -8,18 +8,12 @@
 #define FL_TEXT_BUFFER_GUARD
 
 
-
-
 typedef void* TEXTBUFFER;
-
-
 
 
 extern "C" TEXTBUFFER new_fl_text_buffer(int rs, int pgs);
 extern "C" void upref_fl_text_buffer(TEXTBUFFER tb);
 extern "C" void free_fl_text_buffer(TEXTBUFFER tb);
-
-
 
 
 extern "C" void fl_text_buffer_add_modify_callback(TEXTBUFFER tb, void * cb, void * ud);
@@ -76,10 +70,14 @@ extern "C" char * fl_text_buffer_highlight_text(TEXTBUFFER tb);
 extern "C" void fl_text_buffer_unhighlight(TEXTBUFFER tb);
 
 
-extern "C" int fl_text_buffer_findchar_forward(TEXTBUFFER tb, int start, unsigned int item, int * found);
-extern "C" int fl_text_buffer_findchar_backward(TEXTBUFFER tb, int start, unsigned int item, int * found);
-extern "C" int fl_text_buffer_search_forward(TEXTBUFFER tb, int start, const char * item, int * found, int mcase);
-extern "C" int fl_text_buffer_search_backward(TEXTBUFFER tb, int start, const char * item, int * found, int mcase);
+extern "C" int fl_text_buffer_findchar_forward(TEXTBUFFER tb, int start,
+    unsigned int item, int * found);
+extern "C" int fl_text_buffer_findchar_backward(TEXTBUFFER tb, int start,
+    unsigned int item, int * found);
+extern "C" int fl_text_buffer_search_forward(TEXTBUFFER tb, int start,
+    const char * item, int * found, int mcase);
+extern "C" int fl_text_buffer_search_backward(TEXTBUFFER tb, int start,
+    const char * item, int * found, int mcase);
 
 
 extern "C" int fl_text_buffer_word_start(TEXTBUFFER tb, int p);
@@ -98,4 +96,5 @@ extern "C" int fl_text_buffer_utf8_align(TEXTBUFFER tb, int p);
 
 
 #endif
+
 

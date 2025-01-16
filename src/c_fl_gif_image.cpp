@@ -10,12 +10,13 @@
 
 
 
-GIF_IMAGE new_fl_gif_image(const char * f) {
+GIFIMAGE new_fl_gif_image(const char * f) {
     Fl_GIF_Image *j = new Fl_GIF_Image(f);
     return j;
 }
 
-void free_fl_gif_image(GIF_IMAGE j) {
-    delete reinterpret_cast<Fl_GIF_Image*>(j);
+void free_fl_gif_image(GIFIMAGE j) {
+    delete static_cast<Fl_GIF_Image*>(j);
 }
+
 

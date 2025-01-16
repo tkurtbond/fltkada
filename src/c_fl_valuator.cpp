@@ -61,84 +61,84 @@ VALUATOR new_fl_valuator(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_valuator(VALUATOR v) {
-    delete reinterpret_cast<My_Valuator*>(v);
+    delete static_cast<My_Valuator*>(v);
 }
 
 
 
 
 double fl_valuator_clamp(VALUATOR v, double a) {
-    return reinterpret_cast<Fl_Valuator*>(v)->clamp(a);
+    return static_cast<Fl_Valuator*>(v)->clamp(a);
 }
 
 double fl_valuator_round(VALUATOR v, double a) {
-    return reinterpret_cast<Fl_Valuator*>(v)->round(a);
+    return static_cast<Fl_Valuator*>(v)->round(a);
 }
 
 double fl_valuator_increment(VALUATOR v, double a, int s) {
-    return reinterpret_cast<Fl_Valuator*>(v)->increment(a,s);
+    return static_cast<Fl_Valuator*>(v)->increment(a,s);
 }
 
 
 
 
 double fl_valuator_get_minimum(VALUATOR v) {
-    return reinterpret_cast<Fl_Valuator*>(v)->minimum();
+    return static_cast<Fl_Valuator*>(v)->minimum();
 }
 
 void fl_valuator_set_minimum(VALUATOR v, double t) {
-    reinterpret_cast<Fl_Valuator*>(v)->minimum(t);
+    static_cast<Fl_Valuator*>(v)->minimum(t);
 }
 
 double fl_valuator_get_maximum(VALUATOR v) {
-    return reinterpret_cast<Fl_Valuator*>(v)->maximum();
+    return static_cast<Fl_Valuator*>(v)->maximum();
 }
 
 void fl_valuator_set_maximum(VALUATOR v, double t) {
-    reinterpret_cast<Fl_Valuator*>(v)->maximum(t);
+    static_cast<Fl_Valuator*>(v)->maximum(t);
 }
 
 double fl_valuator_get_step(VALUATOR v) {
-    return reinterpret_cast<Fl_Valuator*>(v)->step();
+    return static_cast<Fl_Valuator*>(v)->step();
 }
 
 void fl_valuator_set_step_top(VALUATOR v, double t) {
-    reinterpret_cast<Fl_Valuator*>(v)->step(t);
+    static_cast<Fl_Valuator*>(v)->step(t);
 }
 
 void fl_valuator_set_step_bottom(VALUATOR v, int b) {
-    reinterpret_cast<Fl_Valuator*>(v)->step(b);
+    static_cast<Fl_Valuator*>(v)->step(b);
 }
 
 void fl_valuator_set_step(VALUATOR v, double t, int b) {
-    reinterpret_cast<Fl_Valuator*>(v)->step(t, b);
+    static_cast<Fl_Valuator*>(v)->step(t, b);
 }
 
 double fl_valuator_get_value(VALUATOR v) {
-    return reinterpret_cast<Fl_Valuator*>(v)->value();
+    return static_cast<Fl_Valuator*>(v)->value();
 }
 
 void fl_valuator_set_value(VALUATOR v, double t) {
-    reinterpret_cast<Fl_Valuator*>(v)->value(t);
+    static_cast<Fl_Valuator*>(v)->value(t);
 }
 
 void fl_valuator_bounds(VALUATOR v, double a, double b) {
-    reinterpret_cast<Fl_Valuator*>(v)->bounds(a,b);
+    static_cast<Fl_Valuator*>(v)->bounds(a,b);
 }
 
 void fl_valuator_precision(VALUATOR v, int s) {
-    reinterpret_cast<Fl_Valuator*>(v)->precision(s);
+    static_cast<Fl_Valuator*>(v)->precision(s);
 }
 
 void fl_valuator_range(VALUATOR v, double a, double b) {
-    reinterpret_cast<Fl_Valuator*>(v)->range(a,b);
+    static_cast<Fl_Valuator*>(v)->range(a,b);
 }
 
 
 
 
 void fl_valuator_value_damage(VALUATOR v) {
-    (reinterpret_cast<Fl_Valuator*>(v)->*(&Friend_Valuator::value_damage))();
+    (static_cast<Fl_Valuator*>(v)->*(&Friend_Valuator::value_damage))();
 }
 
 void fl_valuator_draw(VALUATOR v) {
@@ -150,7 +150,7 @@ void fl_valuator_draw(VALUATOR v) {
 }
 
 int fl_valuator_handle(VALUATOR v, int e) {
-    return reinterpret_cast<My_Valuator*>(v)->Fl_Valuator::handle(e);
+    return static_cast<My_Valuator*>(v)->Fl_Valuator::handle(e);
 }
 
 

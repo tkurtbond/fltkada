@@ -10,17 +10,17 @@
 
 
 
-PNG_IMAGE new_fl_png_image(const char * f) {
+PNGIMAGE new_fl_png_image(const char * f) {
     Fl_PNG_Image *p = new Fl_PNG_Image(f);
     return p;
 }
 
-PNG_IMAGE new_fl_png_image2(const char *name, void *data, int size) {
-    Fl_PNG_Image *p = new Fl_PNG_Image(name, reinterpret_cast<uchar*>(data), size);
+PNGIMAGE new_fl_png_image2(const char *name, void *data, int size) {
+    Fl_PNG_Image *p = new Fl_PNG_Image(name, static_cast<uchar*>(data), size);
     return p;
 }
 
-void free_fl_png_image(PNG_IMAGE p) {
-    delete reinterpret_cast<Fl_PNG_Image*>(p);
+void free_fl_png_image(PNGIMAGE p) {
+    delete static_cast<Fl_PNG_Image*>(p);
 }
 

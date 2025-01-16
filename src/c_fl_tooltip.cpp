@@ -16,7 +16,7 @@ void * fl_tooltip_get_current(void) {
 }
 
 void fl_tooltip_set_current(void * i) {
-    Fl_Tooltip::current(reinterpret_cast<Fl_Widget*>(i));
+    Fl_Tooltip::current(static_cast<Fl_Widget*>(i));
 }
 
 int fl_tooltip_enabled(void) {
@@ -32,7 +32,7 @@ void fl_tooltip_disable() {
 }
 
 void fl_tooltip_enter_area(void * i, int x, int y, int w, int h, const char * t) {
-    Fl_Tooltip::enter_area(reinterpret_cast<Fl_Widget*>(i),x,y,w,h,t);
+    Fl_Tooltip::enter_area(static_cast<Fl_Widget*>(i),x,y,w,h,t);
 }
 
 

@@ -190,203 +190,203 @@ ABSTRACTBROWSER new_fl_abstract_browser(int x, int y, int w, int h, char * label
 }
 
 void free_fl_abstract_browser(ABSTRACTBROWSER b) {
-    delete reinterpret_cast<My_Browser_*>(b);
+    delete static_cast<My_Browser_*>(b);
 }
 
 
 
 
 void * fl_abstract_browser_hscrollbar(ABSTRACTBROWSER b) {
-    return &reinterpret_cast<Fl_Browser_*>(b)->hscrollbar;
+    return &static_cast<Fl_Browser_*>(b)->hscrollbar;
 }
 
 void * fl_abstract_browser_scrollbar(ABSTRACTBROWSER b) {
-    return &reinterpret_cast<Fl_Browser_*>(b)->scrollbar;
+    return &static_cast<Fl_Browser_*>(b)->scrollbar;
 }
 
 
 
 
 int fl_abstract_browser_select(ABSTRACTBROWSER b, void * i, int v, int c) {
-    return reinterpret_cast<Fl_Browser_*>(b)->select(i, v, c);
+    return static_cast<Fl_Browser_*>(b)->select(i, v, c);
 }
 
 int fl_abstract_browser_select_only(ABSTRACTBROWSER b, void * i, int c) {
-    return reinterpret_cast<Fl_Browser_*>(b)->select_only(i, c);
+    return static_cast<Fl_Browser_*>(b)->select_only(i, c);
 }
 
 void * fl_abstract_browser_selection(ABSTRACTBROWSER b) {
-    return (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::selection))();
+    return (static_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::selection))();
 }
 
 int fl_abstract_browser_deselect(ABSTRACTBROWSER b, int c) {
-    return reinterpret_cast<Fl_Browser_*>(b)->deselect(c);
+    return static_cast<Fl_Browser_*>(b)->deselect(c);
 }
 
 void fl_abstract_browser_display(ABSTRACTBROWSER b, void * i) {
-    reinterpret_cast<Fl_Browser_*>(b)->display(i);
+    static_cast<Fl_Browser_*>(b)->display(i);
 }
 
 int fl_abstract_browser_displayed(ABSTRACTBROWSER b, void * i) {
-    return (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::displayed))(i);
+    return (static_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::displayed))(i);
 }
 
 void * fl_abstract_browser_find_item(ABSTRACTBROWSER b, int y) {
-    return (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::find_item))(y);
+    return (static_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::find_item))(y);
 }
 
 void * fl_abstract_browser_top(ABSTRACTBROWSER b) {
-    return (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::top))();
+    return (static_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::top))();
 }
 
 void fl_abstract_browser_sort(ABSTRACTBROWSER b, int f) {
-    reinterpret_cast<Fl_Browser_*>(b)->sort(f);
+    static_cast<Fl_Browser_*>(b)->sort(f);
 }
 
 
 
 
 unsigned char fl_abstract_browser_get_has_scrollbar(ABSTRACTBROWSER b) {
-    return reinterpret_cast<Fl_Browser_*>(b)->has_scrollbar();
+    return static_cast<Fl_Browser_*>(b)->has_scrollbar();
 }
 
 void fl_abstract_browser_set_has_scrollbar(ABSTRACTBROWSER b, unsigned char m) {
-    reinterpret_cast<Fl_Browser_*>(b)->has_scrollbar(m);
+    static_cast<Fl_Browser_*>(b)->has_scrollbar(m);
 }
 
 int fl_abstract_browser_get_hposition(ABSTRACTBROWSER b) {
-    return reinterpret_cast<Fl_Browser_*>(b)->hposition();
+    return static_cast<Fl_Browser_*>(b)->hposition();
 }
 
 void fl_abstract_browser_set_hposition(ABSTRACTBROWSER b, int p) {
-    reinterpret_cast<Fl_Browser_*>(b)->hposition(p);
+    static_cast<Fl_Browser_*>(b)->hposition(p);
 }
 
 int fl_abstract_browser_get_position(ABSTRACTBROWSER b) {
-    return reinterpret_cast<Fl_Browser_*>(b)->position();
+    return static_cast<Fl_Browser_*>(b)->position();
 }
 
 void fl_abstract_browser_set_position(ABSTRACTBROWSER b, int p) {
-    reinterpret_cast<Fl_Browser_*>(b)->position(p);
+    static_cast<Fl_Browser_*>(b)->position(p);
 }
 
 void fl_abstract_browser_scrollbar_left(ABSTRACTBROWSER b) {
-    reinterpret_cast<Fl_Browser_*>(b)->scrollbar_left();
+    static_cast<Fl_Browser_*>(b)->scrollbar_left();
 }
 
 void fl_abstract_browser_scrollbar_right(ABSTRACTBROWSER b) {
-    reinterpret_cast<Fl_Browser_*>(b)->scrollbar_right();
+    static_cast<Fl_Browser_*>(b)->scrollbar_right();
 }
 
 int fl_abstract_browser_get_scrollbar_size(ABSTRACTBROWSER b) {
-    return reinterpret_cast<Fl_Browser_*>(b)->scrollbar_size();
+    return static_cast<Fl_Browser_*>(b)->scrollbar_size();
 }
 
 void fl_abstract_browser_set_scrollbar_size(ABSTRACTBROWSER b, int s) {
-    reinterpret_cast<Fl_Browser_*>(b)->scrollbar_size(s);
+    static_cast<Fl_Browser_*>(b)->scrollbar_size(s);
 }
 
 
 
 
 unsigned int fl_abstract_browser_get_textcolor(ABSTRACTBROWSER b) {
-    return reinterpret_cast<Fl_Browser_*>(b)->textcolor();
+    return static_cast<Fl_Browser_*>(b)->textcolor();
 }
 
 void fl_abstract_browser_set_textcolor(ABSTRACTBROWSER b, unsigned int c) {
-    reinterpret_cast<Fl_Browser_*>(b)->textcolor(c);
+    static_cast<Fl_Browser_*>(b)->textcolor(c);
 }
 
 int fl_abstract_browser_get_textfont(ABSTRACTBROWSER b) {
-    return reinterpret_cast<Fl_Browser_*>(b)->textfont();
+    return static_cast<Fl_Browser_*>(b)->textfont();
 }
 
 void fl_abstract_browser_set_textfont(ABSTRACTBROWSER b, int f) {
-    reinterpret_cast<Fl_Browser_*>(b)->textfont(f);
+    static_cast<Fl_Browser_*>(b)->textfont(f);
 }
 
 int fl_abstract_browser_get_textsize(ABSTRACTBROWSER b) {
-    return reinterpret_cast<Fl_Browser_*>(b)->textsize();
+    return static_cast<Fl_Browser_*>(b)->textsize();
 }
 
 void fl_abstract_browser_set_textsize(ABSTRACTBROWSER b, int s) {
-    reinterpret_cast<Fl_Browser_*>(b)->textsize(s);
+    static_cast<Fl_Browser_*>(b)->textsize(s);
 }
 
 
 
 
 void fl_abstract_browser_resize(ABSTRACTBROWSER b, int x, int y, int w, int h) {
-    reinterpret_cast<Fl_Browser_*>(b)->resize(x, y, w, h);
+    static_cast<Fl_Browser_*>(b)->resize(x, y, w, h);
 }
 
 void fl_abstract_browser_bbox(ABSTRACTBROWSER b, int &x, int &y, int &w, int &h) {
-    (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::bbox))(x, y, w, h);
+    (static_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::bbox))(x, y, w, h);
 }
 
 int fl_abstract_browser_leftedge(ABSTRACTBROWSER b) {
-    return (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::leftedge))();
+    return (static_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::leftedge))();
 }
 
 void fl_abstract_browser_redraw_line(ABSTRACTBROWSER b, void * i) {
-    (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::redraw_line))(i);
+    (static_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::redraw_line))(i);
 }
 
 void fl_abstract_browser_redraw_lines(ABSTRACTBROWSER b) {
-    (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::redraw_lines))();
+    (static_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::redraw_lines))();
 }
 
 
 
 
 int fl_abstract_browser_full_width(ABSTRACTBROWSER b) {
-    return reinterpret_cast<My_Browser_*>(b)->Fl_Browser_::full_width();
+    return static_cast<My_Browser_*>(b)->Fl_Browser_::full_width();
 }
 
 int fl_abstract_browser_full_height(ABSTRACTBROWSER b) {
-    return reinterpret_cast<My_Browser_*>(b)->Fl_Browser_::full_height();
+    return static_cast<My_Browser_*>(b)->Fl_Browser_::full_height();
 }
 
 int fl_abstract_browser_incr_height(ABSTRACTBROWSER b) {
-    return reinterpret_cast<My_Browser_*>(b)->Fl_Browser_::incr_height();
+    return static_cast<My_Browser_*>(b)->Fl_Browser_::incr_height();
 }
 
 int fl_abstract_browser_item_quick_height(ABSTRACTBROWSER b, void * i) {
-    return reinterpret_cast<My_Browser_*>(b)->Fl_Browser_::item_quick_height(i);
+    return static_cast<My_Browser_*>(b)->Fl_Browser_::item_quick_height(i);
 }
 
 
 
 
 void fl_abstract_browser_new_list(ABSTRACTBROWSER b) {
-    (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::new_list))();
+    (static_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::new_list))();
 }
 
 void fl_abstract_browser_inserting(ABSTRACTBROWSER b, void * a1, void * a2) {
-    (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::inserting))(a1, a2);
+    (static_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::inserting))(a1, a2);
 }
 
 void fl_abstract_browser_deleting(ABSTRACTBROWSER b, void * item) {
-    (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::deleting))(item);
+    (static_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::deleting))(item);
 }
 
 void fl_abstract_browser_replacing(ABSTRACTBROWSER b, void * a1, void * a2) {
-    (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::replacing))(a1, a2);
+    (static_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::replacing))(a1, a2);
 }
 
 void fl_abstract_browser_swapping(ABSTRACTBROWSER b, void * a1, void * a2) {
-    (reinterpret_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::swapping))(a1, a2);
+    (static_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::swapping))(a1, a2);
 }
 
 
 
 
 void fl_abstract_browser_draw(ABSTRACTBROWSER b) {
-    reinterpret_cast<My_Browser_*>(b)->Fl_Browser_::draw();
+    static_cast<My_Browser_*>(b)->Fl_Browser_::draw();
 }
 
 int fl_abstract_browser_handle(ABSTRACTBROWSER b, int e) {
-    return reinterpret_cast<My_Browser_*>(b)->Fl_Browser_::handle(e);
+    return static_cast<My_Browser_*>(b)->Fl_Browser_::handle(e);
 }
 
 

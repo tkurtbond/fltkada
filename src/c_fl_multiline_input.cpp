@@ -50,18 +50,18 @@ MULTILINEINPUT new_fl_multiline_input(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_multiline_input(MULTILINEINPUT i) {
-    delete reinterpret_cast<My_Multiline_Input*>(i);
+    delete static_cast<My_Multiline_Input*>(i);
 }
 
 
 
 
 void fl_multiline_input_draw(MULTILINEINPUT i) {
-    reinterpret_cast<My_Multiline_Input*>(i)->Fl_Multiline_Input::draw();
+    static_cast<My_Multiline_Input*>(i)->Fl_Multiline_Input::draw();
 }
 
 int fl_multiline_input_handle(MULTILINEINPUT i, int e) {
-    return reinterpret_cast<My_Multiline_Input*>(i)->Fl_Multiline_Input::handle(e);
+    return static_cast<My_Multiline_Input*>(i)->Fl_Multiline_Input::handle(e);
 }
 
 

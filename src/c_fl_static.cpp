@@ -184,11 +184,13 @@ void fl_static_copy(const char * t, int l, int k) {
 }
 
 void fl_static_paste(void * r, int s) {
-    Fl::paste(reinterpret_cast<Fl_Widget&>(r),s);
+    Fl_Widget &ref = *static_cast<Fl_Widget*>(r);
+    Fl::paste(ref, s);
 }
 
 void fl_static_selection(void * o, char * t, int l) {
-    Fl::selection(reinterpret_cast<Fl_Widget&>(o),t,l);
+    Fl_Widget &ref = *static_cast<Fl_Widget*>(o);
+    Fl::selection(ref, t, l);
 }
 
 
@@ -229,7 +231,7 @@ void fl_static_set_visible_focus(int f) {
 
 
 void fl_static_default_atclose(void * w) {
-    Fl::default_atclose(reinterpret_cast<Fl_Window*>(w), 0);
+    Fl::default_atclose(static_cast<Fl_Window*>(w), 0);
 }
 
 void * fl_static_get_first_window() {
@@ -237,11 +239,11 @@ void * fl_static_get_first_window() {
 }
 
 void fl_static_set_first_window(void * w) {
-    Fl::first_window(reinterpret_cast<Fl_Window*>(w));
+    Fl::first_window(static_cast<Fl_Window*>(w));
 }
 
 void * fl_static_next_window(void * w) {
-    return Fl::next_window(reinterpret_cast<Fl_Window*>(w));
+    return Fl::next_window(static_cast<Fl_Window*>(w));
 }
 
 void * fl_static_modal() {

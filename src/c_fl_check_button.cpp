@@ -66,18 +66,18 @@ CHECKBUTTON new_fl_check_button(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_check_button(CHECKBUTTON b) {
-    delete reinterpret_cast<My_Check_Button*>(b);
+    delete static_cast<My_Check_Button*>(b);
 }
 
 
 
 
 void fl_check_button_draw(CHECKBUTTON b) {
-    reinterpret_cast<My_Check_Button*>(b)->Fl_Check_Button::draw();
+    static_cast<My_Check_Button*>(b)->Fl_Check_Button::draw();
 }
 
 int fl_check_button_handle(CHECKBUTTON b, int e) {
-    return reinterpret_cast<My_Check_Button*>(b)->Fl_Check_Button::handle(e);
+    return static_cast<My_Check_Button*>(b)->Fl_Check_Button::handle(e);
 }
 
 

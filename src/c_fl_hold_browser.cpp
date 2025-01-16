@@ -172,7 +172,7 @@ HOLDBROWSER new_fl_hold_browser(int x, int y, int w, int h, char * label) {
 }
 
 void free_fl_hold_browser(HOLDBROWSER b) {
-    delete reinterpret_cast<My_Hold_Browser*>(b);
+    delete static_cast<My_Hold_Browser*>(b);
 }
 
 
@@ -182,84 +182,84 @@ void free_fl_hold_browser(HOLDBROWSER b) {
 
 
 int fl_hold_browser_full_height(HOLDBROWSER c) {
-    return reinterpret_cast<My_Hold_Browser*>(c)->Fl_Hold_Browser::full_height();
+    return static_cast<My_Hold_Browser*>(c)->Fl_Hold_Browser::full_height();
 }
 
 int fl_hold_browser_incr_height(HOLDBROWSER c) {
-    return reinterpret_cast<My_Hold_Browser*>(c)->Fl_Hold_Browser::incr_height();
+    return static_cast<My_Hold_Browser*>(c)->Fl_Hold_Browser::incr_height();
 }
 
 
 
 
 int fl_hold_browser_item_width(HOLDBROWSER b, void * item) {
-    return reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_width(item);
+    return static_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_width(item);
 }
 
 int fl_hold_browser_item_height(HOLDBROWSER b, void * item) {
-    return reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_height(item);
+    return static_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_height(item);
 }
 
 void * fl_hold_browser_item_first(HOLDBROWSER b) {
-    return reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_first();
+    return static_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_first();
 }
 
 void * fl_hold_browser_item_last(HOLDBROWSER b) {
-    return reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_last();
+    return static_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_last();
 }
 
 void * fl_hold_browser_item_next(HOLDBROWSER b, void * item) {
-    return reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_next(item);
+    return static_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_next(item);
 }
 
 void * fl_hold_browser_item_prev(HOLDBROWSER b, void * item) {
-    return reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_prev(item);
+    return static_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_prev(item);
 }
 
 void * fl_hold_browser_item_at(HOLDBROWSER b, int index) {
-    return reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_at(index);
+    return static_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_at(index);
 }
 
 void fl_hold_browser_item_select(HOLDBROWSER b, void * item, int val) {
-    reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_select(item, val);
+    static_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_select(item, val);
 }
 
 int fl_hold_browser_item_selected(HOLDBROWSER b, void * item) {
-    return reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_selected(item);
+    return static_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_selected(item);
 }
 
 void fl_hold_browser_item_swap(HOLDBROWSER b, void * x, void * y) {
-    reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_swap(x, y);
+    static_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_swap(x, y);
 }
 
 const char * fl_hold_browser_item_text(HOLDBROWSER b, void * item) {
-    return reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_text(item);
+    return static_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_text(item);
 }
 
 void fl_hold_browser_item_draw(HOLDBROWSER b, void * item, int x, int y, int w, int h) {
-    reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_draw(item, x, y, w, h);
+    static_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::item_draw(item, x, y, w, h);
 }
 
 
 
 
 int fl_hold_browser_full_width(HOLDBROWSER c) {
-    return reinterpret_cast<My_Hold_Browser*>(c)->Fl_Hold_Browser::full_width();
+    return static_cast<My_Hold_Browser*>(c)->Fl_Hold_Browser::full_width();
 }
 
 int fl_hold_browser_item_quick_height(HOLDBROWSER c, void * i) {
-    return reinterpret_cast<My_Hold_Browser*>(c)->Fl_Hold_Browser::item_quick_height(i);
+    return static_cast<My_Hold_Browser*>(c)->Fl_Hold_Browser::item_quick_height(i);
 }
 
 
 
 
 void fl_hold_browser_draw(HOLDBROWSER b) {
-    reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::draw();
+    static_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::draw();
 }
 
 int fl_hold_browser_handle(HOLDBROWSER b, int e) {
-    return reinterpret_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::handle(e);
+    return static_cast<My_Hold_Browser*>(b)->Fl_Hold_Browser::handle(e);
 }
 
 

@@ -52,123 +52,123 @@ HELPVIEW new_fl_help_view(int x, int y, int w, int h, char * label) {
 }
 
 void free_fl_help_view(HELPVIEW v) {
-    delete reinterpret_cast<My_Help_View*>(v);
+    delete static_cast<My_Help_View*>(v);
 }
 
 
 
 
 void fl_help_view_clear_selection(HELPVIEW v) {
-    reinterpret_cast<Fl_Help_View*>(v)->clear_selection();
+    static_cast<Fl_Help_View*>(v)->clear_selection();
 }
 
 void fl_help_view_select_all(HELPVIEW v) {
-    reinterpret_cast<Fl_Help_View*>(v)->select_all();
+    static_cast<Fl_Help_View*>(v)->select_all();
 }
 
 
 
 
 int fl_help_view_find(HELPVIEW v, const char * s, int p) {
-    return reinterpret_cast<Fl_Help_View*>(v)->find(s, p);
+    return static_cast<Fl_Help_View*>(v)->find(s, p);
 }
 
 int fl_help_view_get_leftline(HELPVIEW v) {
-    return reinterpret_cast<Fl_Help_View*>(v)->leftline();
+    return static_cast<Fl_Help_View*>(v)->leftline();
 }
 
 void fl_help_view_set_leftline(HELPVIEW v, int t) {
-    reinterpret_cast<Fl_Help_View*>(v)->leftline(t);
+    static_cast<Fl_Help_View*>(v)->leftline(t);
 }
 
 int fl_help_view_get_topline(HELPVIEW v) {
-    return reinterpret_cast<Fl_Help_View*>(v)->topline();
+    return static_cast<Fl_Help_View*>(v)->topline();
 }
 
 void fl_help_view_set_topline(HELPVIEW v, int t) {
-    reinterpret_cast<Fl_Help_View*>(v)->topline(t);
+    static_cast<Fl_Help_View*>(v)->topline(t);
 }
 
 void fl_help_view_set_topline_target(HELPVIEW v, const char * t) {
-    reinterpret_cast<Fl_Help_View*>(v)->topline(t);
+    static_cast<Fl_Help_View*>(v)->topline(t);
 }
 
 
 
 
 const char * fl_help_view_directory(HELPVIEW v) {
-    return reinterpret_cast<Fl_Help_View*>(v)->directory();
+    return static_cast<Fl_Help_View*>(v)->directory();
 }
 
 const char * fl_help_view_filename(HELPVIEW v) {
-    return reinterpret_cast<Fl_Help_View*>(v)->filename();
+    return static_cast<Fl_Help_View*>(v)->filename();
 }
 
 int fl_help_view_load(HELPVIEW v, const char * f) {
-    return reinterpret_cast<Fl_Help_View*>(v)->load(f);
+    return static_cast<Fl_Help_View*>(v)->load(f);
 }
 
 const char * fl_help_view_title(HELPVIEW v) {
-    return reinterpret_cast<Fl_Help_View*>(v)->title();
+    return static_cast<Fl_Help_View*>(v)->title();
 }
 
 const char * fl_help_view_get_value(HELPVIEW v) {
-    return reinterpret_cast<Fl_Help_View*>(v)->value();
+    return static_cast<Fl_Help_View*>(v)->value();
 }
 
 void fl_help_view_set_value(HELPVIEW v, const char * t) {
-    reinterpret_cast<Fl_Help_View*>(v)->value(t);
+    static_cast<Fl_Help_View*>(v)->value(t);
 }
 
 void fl_help_view_link(HELPVIEW v, void * f) {
-    reinterpret_cast<Fl_Help_View*>(v)->link(reinterpret_cast<Fl_Help_Func*>(f));
+    static_cast<Fl_Help_View*>(v)->link(reinterpret_cast<Fl_Help_Func*>(f));
 }
 
 
 
 
 int fl_help_view_get_scrollbar_size(HELPVIEW v) {
-    return reinterpret_cast<Fl_Help_View*>(v)->scrollbar_size();
+    return static_cast<Fl_Help_View*>(v)->scrollbar_size();
 }
 
 void fl_help_view_set_scrollbar_size(HELPVIEW v, int s) {
-    reinterpret_cast<Fl_Help_View*>(v)->scrollbar_size(s);
+    static_cast<Fl_Help_View*>(v)->scrollbar_size(s);
 }
 
 int fl_help_view_get_size(HELPVIEW v) {
-    return reinterpret_cast<Fl_Help_View*>(v)->size();
+    return static_cast<Fl_Help_View*>(v)->size();
 }
 
 void fl_help_view_set_size(HELPVIEW v, int w, int h) {
-    reinterpret_cast<Fl_Help_View*>(v)->size(w, h);
+    static_cast<Fl_Help_View*>(v)->size(w, h);
 }
 
 void fl_help_view_resize(HELPVIEW v, int x, int y, int w, int h) {
-    reinterpret_cast<Fl_Help_View*>(v)->resize(x, y, w, h);
+    static_cast<Fl_Help_View*>(v)->resize(x, y, w, h);
 }
 
 unsigned int fl_help_view_get_textcolor(HELPVIEW v) {
-    return reinterpret_cast<Fl_Help_View*>(v)->textcolor();
+    return static_cast<Fl_Help_View*>(v)->textcolor();
 }
 
 void fl_help_view_set_textcolor(HELPVIEW v, unsigned int c) {
-    reinterpret_cast<Fl_Help_View*>(v)->textcolor(c);
+    static_cast<Fl_Help_View*>(v)->textcolor(c);
 }
 
 int fl_help_view_get_textfont(HELPVIEW v) {
-    return reinterpret_cast<Fl_Help_View*>(v)->textfont();
+    return static_cast<Fl_Help_View*>(v)->textfont();
 }
 
 void fl_help_view_set_textfont(HELPVIEW v, int f) {
-    reinterpret_cast<Fl_Help_View*>(v)->textfont(f);
+    static_cast<Fl_Help_View*>(v)->textfont(f);
 }
 
 int fl_help_view_get_textsize(HELPVIEW v) {
-    return reinterpret_cast<Fl_Help_View*>(v)->textsize();
+    return static_cast<Fl_Help_View*>(v)->textsize();
 }
 
 void fl_help_view_set_textsize(HELPVIEW v, int s) {
-    reinterpret_cast<Fl_Help_View*>(v)->textsize(s);
+    static_cast<Fl_Help_View*>(v)->textsize(s);
 }
 
 
@@ -176,17 +176,17 @@ void fl_help_view_set_textsize(HELPVIEW v, int s) {
 
 void fl_help_view_draw(HELPVIEW v) {
 #if FL_ABI_VERSION >= 10303
-    reinterpret_cast<My_Help_View*>(v)->Fl_Help_View::draw();
+    static_cast<My_Help_View*>(v)->Fl_Help_View::draw();
 #else
-    reinterpret_cast<My_Help_View*>(v)->Fl_Group::draw();
+    static_cast<My_Help_View*>(v)->Fl_Group::draw();
 #endif
 }
 
 int fl_help_view_handle(HELPVIEW v, int e) {
 #if FL_ABI_VERSION >= 10303
-    return reinterpret_cast<My_Help_View*>(v)->Fl_Help_View::handle(e);
+    return static_cast<My_Help_View*>(v)->Fl_Help_View::handle(e);
 #else
-    return reinterpret_cast<My_Help_View*>(v)->Fl_Group::handle(e);
+    return static_cast<My_Help_View*>(v)->Fl_Group::handle(e);
 #endif
 }
 

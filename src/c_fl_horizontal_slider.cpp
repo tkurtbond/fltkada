@@ -50,18 +50,18 @@ HORIZONTALSLIDER new_fl_horizontal_slider(int x, int y, int w, int h, char* labe
 }
 
 void free_fl_horizontal_slider(HORIZONTALSLIDER s) {
-    delete reinterpret_cast<My_Horizontal_Slider*>(s);
+    delete static_cast<My_Horizontal_Slider*>(s);
 }
 
 
 
 
 void fl_horizontal_slider_draw(HORIZONTALSLIDER s) {
-    reinterpret_cast<My_Horizontal_Slider*>(s)->Fl_Hor_Slider::draw();
+    static_cast<My_Horizontal_Slider*>(s)->Fl_Hor_Slider::draw();
 }
 
 int fl_horizontal_slider_handle(HORIZONTALSLIDER s, int e) {
-    return reinterpret_cast<My_Horizontal_Slider*>(s)->Fl_Hor_Slider::handle(e);
+    return static_cast<My_Horizontal_Slider*>(s)->Fl_Hor_Slider::handle(e);
 }
 
 

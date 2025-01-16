@@ -50,18 +50,18 @@ ROLLER new_fl_roller(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_roller(ROLLER r) {
-    delete reinterpret_cast<My_Roller*>(r);
+    delete static_cast<My_Roller*>(r);
 }
 
 
 
 
 void fl_roller_draw(ROLLER r) {
-    reinterpret_cast<My_Roller*>(r)->Fl_Roller::draw();
+    static_cast<My_Roller*>(r)->Fl_Roller::draw();
 }
 
 int fl_roller_handle(ROLLER r, int e) {
-    return reinterpret_cast<My_Roller*>(r)->Fl_Roller::handle(e);
+    return static_cast<My_Roller*>(r)->Fl_Roller::handle(e);
 }
 
 

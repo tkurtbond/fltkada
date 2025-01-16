@@ -11,42 +11,42 @@
 
 
 
-SHARED_IMAGE fl_shared_image_get(const char * f, int w, int h) {
+SHAREDIMAGE fl_shared_image_get(const char * f, int w, int h) {
     return Fl_Shared_Image::get(f, w, h);
 }
 
-SHARED_IMAGE fl_shared_image_get2(void * r) {
-    return Fl_Shared_Image::get(reinterpret_cast<Fl_RGB_Image*>(r), 0);
+SHAREDIMAGE fl_shared_image_get2(void * r) {
+    return Fl_Shared_Image::get(static_cast<Fl_RGB_Image*>(r), 0);
 }
 
-SHARED_IMAGE fl_shared_image_find(const char * n, int w, int h) {
+SHAREDIMAGE fl_shared_image_find(const char * n, int w, int h) {
     return Fl_Shared_Image::find(n, w, h);
 }
 
-void fl_shared_image_release(SHARED_IMAGE i) {
-    reinterpret_cast<Fl_Shared_Image*>(i)->release();
+void fl_shared_image_release(SHAREDIMAGE i) {
+    static_cast<Fl_Shared_Image*>(i)->release();
 }
 
-SHARED_IMAGE fl_shared_image_copy(SHARED_IMAGE i, int w, int h) {
+SHAREDIMAGE fl_shared_image_copy(SHAREDIMAGE i, int w, int h) {
     //  virtual so disable dispatch
-    return reinterpret_cast<Fl_Shared_Image*>(i)->Fl_Shared_Image::copy(w, h);
+    return static_cast<Fl_Shared_Image*>(i)->Fl_Shared_Image::copy(w, h);
 }
 
-SHARED_IMAGE fl_shared_image_copy2(SHARED_IMAGE i) {
-    return reinterpret_cast<Fl_Shared_Image*>(i)->copy();
+SHAREDIMAGE fl_shared_image_copy2(SHAREDIMAGE i) {
+    return static_cast<Fl_Shared_Image*>(i)->copy();
 }
 
 
 
 
-void fl_shared_image_color_average(SHARED_IMAGE i, int c, float b) {
+void fl_shared_image_color_average(SHAREDIMAGE i, int c, float b) {
     //  virtual so disable dispatch
-    reinterpret_cast<Fl_Shared_Image*>(i)->Fl_Shared_Image::color_average(c, b);
+    static_cast<Fl_Shared_Image*>(i)->Fl_Shared_Image::color_average(c, b);
 }
 
-void fl_shared_image_desaturate(SHARED_IMAGE i) {
+void fl_shared_image_desaturate(SHAREDIMAGE i) {
     //  virtual so disable dispatch
-    reinterpret_cast<Fl_Shared_Image*>(i)->Fl_Shared_Image::desaturate();
+    static_cast<Fl_Shared_Image*>(i)->Fl_Shared_Image::desaturate();
 }
 
 
@@ -56,25 +56,25 @@ int fl_shared_image_num_images() {
     return Fl_Shared_Image::num_images();
 }
 
-const char * fl_shared_image_name(SHARED_IMAGE i) {
-    return reinterpret_cast<Fl_Shared_Image*>(i)->name();
+const char * fl_shared_image_name(SHAREDIMAGE i) {
+    return static_cast<Fl_Shared_Image*>(i)->name();
 }
 
-int fl_shared_image_original(SHARED_IMAGE i) {
-    return reinterpret_cast<Fl_Shared_Image*>(i)->original();
+int fl_shared_image_original(SHAREDIMAGE i) {
+    return static_cast<Fl_Shared_Image*>(i)->original();
 }
 
-int fl_shared_image_refcount(SHARED_IMAGE i) {
-    return reinterpret_cast<Fl_Shared_Image*>(i)->refcount();
+int fl_shared_image_refcount(SHAREDIMAGE i) {
+    return static_cast<Fl_Shared_Image*>(i)->refcount();
 }
 
-void fl_shared_image_reload(SHARED_IMAGE i) {
-    reinterpret_cast<Fl_Shared_Image*>(i)->reload();
+void fl_shared_image_reload(SHAREDIMAGE i) {
+    static_cast<Fl_Shared_Image*>(i)->reload();
 }
 
-void fl_shared_image_uncache(SHARED_IMAGE i) {
+void fl_shared_image_uncache(SHAREDIMAGE i) {
     //  virtual so disable dispatch
-    reinterpret_cast<Fl_Shared_Image*>(i)->uncache();
+    static_cast<Fl_Shared_Image*>(i)->uncache();
 }
 
 
@@ -84,17 +84,17 @@ void fl_shared_image_scaling_algorithm(int v) {
     Fl_Shared_Image::scaling_algorithm(static_cast<Fl_RGB_Scaling>(v));
 }
 
-void fl_shared_image_scale(SHARED_IMAGE i, int w, int h, int p, int e) {
-    reinterpret_cast<Fl_Shared_Image*>(i)->scale(w, h, p, e);
+void fl_shared_image_scale(SHAREDIMAGE i, int w, int h, int p, int e) {
+    static_cast<Fl_Shared_Image*>(i)->scale(w, h, p, e);
 }
 
-void fl_shared_image_draw(SHARED_IMAGE i, int x, int y, int w, int h, int cx, int cy) {
+void fl_shared_image_draw(SHAREDIMAGE i, int x, int y, int w, int h, int cx, int cy) {
     //  virtual so disable dispatch
-    reinterpret_cast<Fl_Shared_Image*>(i)->Fl_Shared_Image::draw(x, y, w, h, cx, cy);
+    static_cast<Fl_Shared_Image*>(i)->Fl_Shared_Image::draw(x, y, w, h, cx, cy);
 }
 
-void fl_shared_image_draw2(SHARED_IMAGE i, int x, int y) {
-    reinterpret_cast<Fl_Shared_Image*>(i)->draw(x, y);
+void fl_shared_image_draw2(SHAREDIMAGE i, int x, int y) {
+    static_cast<Fl_Shared_Image*>(i)->draw(x, y);
 }
 
 

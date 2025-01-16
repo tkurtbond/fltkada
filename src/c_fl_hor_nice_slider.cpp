@@ -50,18 +50,18 @@ HORNICESLIDER new_fl_hor_nice_slider(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_hor_nice_slider(HORNICESLIDER s) {
-    delete reinterpret_cast<My_Hor_Nice_Slider*>(s);
+    delete static_cast<My_Hor_Nice_Slider*>(s);
 }
 
 
 
 
 void fl_hor_nice_slider_draw(HORNICESLIDER s) {
-    reinterpret_cast<My_Hor_Nice_Slider*>(s)->Fl_Hor_Nice_Slider::draw();
+    static_cast<My_Hor_Nice_Slider*>(s)->Fl_Hor_Nice_Slider::draw();
 }
 
 int fl_hor_nice_slider_handle(HORNICESLIDER s, int e) {
-    return reinterpret_cast<My_Hor_Nice_Slider*>(s)->Fl_Hor_Nice_Slider::handle(e);
+    return static_cast<My_Hor_Nice_Slider*>(s)->Fl_Hor_Nice_Slider::handle(e);
 }
 
 

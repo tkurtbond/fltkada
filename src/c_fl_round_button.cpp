@@ -50,18 +50,18 @@ ROUNDBUTTON new_fl_round_button(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_round_button(ROUNDBUTTON b) {
-    delete reinterpret_cast<My_Round_Button*>(b);
+    delete static_cast<My_Round_Button*>(b);
 }
 
 
 
 
 void fl_round_button_draw(ROUNDBUTTON b) {
-    reinterpret_cast<My_Round_Button*>(b)->Fl_Round_Button::draw();
+    static_cast<My_Round_Button*>(b)->Fl_Round_Button::draw();
 }
 
 int fl_round_button_handle(ROUNDBUTTON b, int e) {
-    return reinterpret_cast<My_Round_Button*>(b)->Fl_Round_Button::handle(e);
+    return static_cast<My_Round_Button*>(b)->Fl_Round_Button::handle(e);
 }
 
 

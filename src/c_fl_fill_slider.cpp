@@ -50,18 +50,18 @@ FILLSLIDER new_fl_fill_slider(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_fill_slider(FILLSLIDER s) {
-    delete reinterpret_cast<My_Fill_Slider*>(s);
+    delete static_cast<My_Fill_Slider*>(s);
 }
 
 
 
 
 void fl_fill_slider_draw(FILLSLIDER s) {
-    reinterpret_cast<My_Fill_Slider*>(s)->Fl_Fill_Slider::draw();
+    static_cast<My_Fill_Slider*>(s)->Fl_Fill_Slider::draw();
 }
 
 int fl_fill_slider_handle(FILLSLIDER s, int e) {
-    return reinterpret_cast<My_Fill_Slider*>(s)->Fl_Fill_Slider::handle(e);
+    return static_cast<My_Fill_Slider*>(s)->Fl_Fill_Slider::handle(e);
 }
 
 

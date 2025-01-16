@@ -16,90 +16,90 @@ HELPDIALOG new_fl_help_dialog() {
 }
 
 void free_fl_help_dialog(HELPDIALOG d) {
-    delete reinterpret_cast<Fl_Help_Dialog*>(d);
+    delete static_cast<Fl_Help_Dialog*>(d);
 }
 
 
 
 
 void fl_help_dialog_show(HELPDIALOG d) {
-    reinterpret_cast<Fl_Help_Dialog*>(d)->show();
+    static_cast<Fl_Help_Dialog*>(d)->show();
 }
 
 void fl_help_dialog_show2(HELPDIALOG d, int c, void * v) {
-    reinterpret_cast<Fl_Help_Dialog*>(d)->show(c, static_cast<char**>(v));
+    static_cast<Fl_Help_Dialog*>(d)->show(c, static_cast<char**>(v));
 }
 
 void fl_help_dialog_hide(HELPDIALOG d) {
-    reinterpret_cast<Fl_Help_Dialog*>(d)->hide();
+    static_cast<Fl_Help_Dialog*>(d)->hide();
 }
 
 int fl_help_dialog_visible(HELPDIALOG d) {
-    return reinterpret_cast<Fl_Help_Dialog*>(d)->visible();
+    return static_cast<Fl_Help_Dialog*>(d)->visible();
 }
 
 
 
 
 void fl_help_dialog_set_topline_number(HELPDIALOG d, int n) {
-    reinterpret_cast<Fl_Help_Dialog*>(d)->topline(n);
+    static_cast<Fl_Help_Dialog*>(d)->topline(n);
 }
 
 void fl_help_dialog_set_topline_target(HELPDIALOG d, const char * t) {
-    reinterpret_cast<Fl_Help_Dialog*>(d)->topline(t);
+    static_cast<Fl_Help_Dialog*>(d)->topline(t);
 }
 
 
 
 
 void fl_help_dialog_load(HELPDIALOG d, const char * n) {
-    reinterpret_cast<Fl_Help_Dialog*>(d)->load(n);
+    static_cast<Fl_Help_Dialog*>(d)->load(n);
 }
 
 const char * fl_help_dialog_get_value(HELPDIALOG d) {
-    return reinterpret_cast<Fl_Help_Dialog*>(d)->value();
+    return static_cast<Fl_Help_Dialog*>(d)->value();
 }
 
 void fl_help_dialog_set_value(HELPDIALOG d, const char * v) {
-    reinterpret_cast<Fl_Help_Dialog*>(d)->value(v);
+    static_cast<Fl_Help_Dialog*>(d)->value(v);
 }
 
 
 
 
 int fl_help_dialog_get_textsize(HELPDIALOG d) {
-    return reinterpret_cast<Fl_Help_Dialog*>(d)->textsize();
+    return static_cast<Fl_Help_Dialog*>(d)->textsize();
 }
 
 void fl_help_dialog_set_textsize(HELPDIALOG d, int s) {
-    reinterpret_cast<Fl_Help_Dialog*>(d)->textsize(s);
+    static_cast<Fl_Help_Dialog*>(d)->textsize(s);
 }
 
 
 
 
 int fl_help_dialog_get_x(HELPDIALOG d) {
-    return reinterpret_cast<Fl_Help_Dialog*>(d)->x();
+    return static_cast<Fl_Help_Dialog*>(d)->x();
 }
 
 int fl_help_dialog_get_y(HELPDIALOG d) {
-    return reinterpret_cast<Fl_Help_Dialog*>(d)->y();
+    return static_cast<Fl_Help_Dialog*>(d)->y();
 }
 
 int fl_help_dialog_get_w(HELPDIALOG d) {
-    return reinterpret_cast<Fl_Help_Dialog*>(d)->w();
+    return static_cast<Fl_Help_Dialog*>(d)->w();
 }
 
 int fl_help_dialog_get_h(HELPDIALOG d) {
-    return reinterpret_cast<Fl_Help_Dialog*>(d)->h();
+    return static_cast<Fl_Help_Dialog*>(d)->h();
 }
 
 void fl_help_dialog_resize(HELPDIALOG d, int xx, int yy, int ww, int hh) {
-    reinterpret_cast<Fl_Help_Dialog*>(d)->resize(xx, yy, ww, hh);
+    static_cast<Fl_Help_Dialog*>(d)->resize(xx, yy, ww, hh);
 }
 
 void fl_help_dialog_position(HELPDIALOG d, int xx, int yy) {
-    reinterpret_cast<Fl_Help_Dialog*>(d)->position(xx, yy);
+    static_cast<Fl_Help_Dialog*>(d)->position(xx, yy);
 }
 
 

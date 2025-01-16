@@ -50,7 +50,7 @@ RADIOROUNDBUTTON new_fl_radio_round_button(int x, int y, int w, int h, char* lab
 }
 
 void free_fl_radio_round_button(RADIOROUNDBUTTON b) {
-    delete reinterpret_cast<My_Radio_Round_Button*>(b);
+    delete static_cast<My_Radio_Round_Button*>(b);
 }
 
 
@@ -58,11 +58,11 @@ void free_fl_radio_round_button(RADIOROUNDBUTTON b) {
 
 
 void fl_radio_round_button_draw(RADIOROUNDBUTTON b) {
-    reinterpret_cast<My_Radio_Round_Button*>(b)->Fl_Radio_Round_Button::draw();
+    static_cast<My_Radio_Round_Button*>(b)->Fl_Radio_Round_Button::draw();
 }
 
 int fl_radio_round_button_handle(RADIOROUNDBUTTON b, int e) {
-    return reinterpret_cast<My_Radio_Round_Button*>(b)->Fl_Radio_Round_Button::handle(e);
+    return static_cast<My_Radio_Round_Button*>(b)->Fl_Radio_Round_Button::handle(e);
 }
 
 

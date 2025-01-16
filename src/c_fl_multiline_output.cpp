@@ -50,18 +50,18 @@ MULTILINEOUTPUT new_fl_multiline_output(int x, int y, int w, int h, char* label)
 }
 
 void free_fl_multiline_output(MULTILINEOUTPUT i) {
-    delete reinterpret_cast<My_Multiline_Output*>(i);
+    delete static_cast<My_Multiline_Output*>(i);
 }
 
 
 
 
 void fl_multiline_output_draw(MULTILINEOUTPUT i) {
-    reinterpret_cast<My_Multiline_Output*>(i)->Fl_Multiline_Output::draw();
+    static_cast<My_Multiline_Output*>(i)->Fl_Multiline_Output::draw();
 }
 
 int fl_multiline_output_handle(MULTILINEOUTPUT i, int e) {
-    return reinterpret_cast<My_Multiline_Output*>(i)->Fl_Multiline_Output::handle(e);
+    return static_cast<My_Multiline_Output*>(i)->Fl_Multiline_Output::handle(e);
 }
 
 

@@ -8,8 +8,6 @@
 #define FL_STATIC_GUARD
 
 
-
-
 extern "C" void fl_static_add_awake_handler(void * h, void * f);
 extern "C" void fl_static_get_awake_handler(void * &h, void * &f);
 
@@ -39,8 +37,10 @@ extern "C" int fl_static_has_idle(void * h, void * f);
 extern "C" void fl_static_remove_idle(void * h, void * f);
 
 
-extern "C" void fl_static_get_color(unsigned int c, unsigned char &r, unsigned char &g, unsigned char &b);
-extern "C" void fl_static_set_color(unsigned int c, unsigned char r, unsigned char g, unsigned char b);
+extern "C" void fl_static_get_color(unsigned int c,
+    unsigned char &r, unsigned char &g, unsigned char &b);
+extern "C" void fl_static_set_color(unsigned int c,
+    unsigned char r, unsigned char g, unsigned char b);
 extern "C" void fl_static_free_color(unsigned int c, int b);
 extern "C" void fl_static_foreground(unsigned int r, unsigned int g, unsigned int b);
 extern "C" void fl_static_background(unsigned int r, unsigned int g, unsigned int b);
@@ -105,4 +105,5 @@ extern "C" void fl_static_set_scrollbar_size(int s);
 
 
 #endif
+
 

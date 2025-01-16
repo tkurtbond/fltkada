@@ -65,18 +65,18 @@ TEXTINPUT new_fl_text_input(int x, int y, int w, int h, char * label) {
 }
 
 void free_fl_text_input(TEXTINPUT t) {
-    delete reinterpret_cast<My_Text_Input*>(t);
+    delete static_cast<My_Text_Input*>(t);
 }
 
 
 
 
 void fl_text_input_draw(TEXTINPUT t) {
-    reinterpret_cast<My_Text_Input*>(t)->Fl_Input::draw();
+    static_cast<My_Text_Input*>(t)->Fl_Input::draw();
 }
 
 int fl_text_input_handle(TEXTINPUT t, int e) {
-    return reinterpret_cast<My_Text_Input*>(t)->Fl_Input::handle(e);
+    return static_cast<My_Text_Input*>(t)->Fl_Input::handle(e);
 }
 
 

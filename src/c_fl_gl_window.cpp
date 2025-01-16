@@ -55,60 +55,60 @@ GLWINDOW new_fl_gl_window2(int w, int h, char* label) {
 }
 
 void free_fl_gl_window(GLWINDOW w) {
-    delete reinterpret_cast<My_Gl_Window*>(w);
+    delete static_cast<My_Gl_Window*>(w);
 }
 
 
 
 
 void fl_gl_window_show(GLWINDOW w) {
-    reinterpret_cast<Fl_Gl_Window*>(w)->show();
+    static_cast<Fl_Gl_Window*>(w)->show();
 }
 
 void fl_gl_window_show2(GLWINDOW w, int c, void * v) {
-    reinterpret_cast<Fl_Gl_Window*>(w)->show(c, static_cast<char**>(v));
+    static_cast<Fl_Gl_Window*>(w)->show(c, static_cast<char**>(v));
 }
 
 void fl_gl_window_hide(GLWINDOW w) {
-    reinterpret_cast<Fl_Gl_Window*>(w)->hide();
+    static_cast<Fl_Gl_Window*>(w)->hide();
 }
 
 void fl_gl_window_hide_overlay(GLWINDOW w) {
-    reinterpret_cast<Fl_Gl_Window*>(w)->hide_overlay();
+    static_cast<Fl_Gl_Window*>(w)->hide_overlay();
 }
 
 void fl_gl_window_flush(GLWINDOW w) {
-    reinterpret_cast<Fl_Gl_Window*>(w)->flush();
+    static_cast<Fl_Gl_Window*>(w)->flush();
 }
 
 
 
 
 int fl_gl_window_pixel_h(GLWINDOW w) {
-    return reinterpret_cast<Fl_Gl_Window*>(w)->pixel_h();
+    return static_cast<Fl_Gl_Window*>(w)->pixel_h();
 }
 
 int fl_gl_window_pixel_w(GLWINDOW w) {
-    return reinterpret_cast<Fl_Gl_Window*>(w)->pixel_w();
+    return static_cast<Fl_Gl_Window*>(w)->pixel_w();
 }
 
 float fl_gl_window_pixels_per_unit(GLWINDOW w) {
-    return reinterpret_cast<Fl_Gl_Window*>(w)->pixels_per_unit();
+    return static_cast<Fl_Gl_Window*>(w)->pixels_per_unit();
 }
 
 void fl_gl_window_resize(GLWINDOW gw, int x, int y, int w, int h) {
-    reinterpret_cast<Fl_Gl_Window*>(gw)->resize(x, y, w, h);
+    static_cast<Fl_Gl_Window*>(gw)->resize(x, y, w, h);
 }
 
 
 
 
 unsigned int fl_gl_window_get_mode(GLWINDOW w) {
-    return reinterpret_cast<Fl_Gl_Window*>(w)->mode();
+    return static_cast<Fl_Gl_Window*>(w)->mode();
 }
 
 void fl_gl_window_set_mode(GLWINDOW w, unsigned int a) {
-    reinterpret_cast<Fl_Gl_Window*>(w)->mode(a);
+    static_cast<Fl_Gl_Window*>(w)->mode(a);
 }
 
 int fl_gl_window_static_can_do(unsigned int m) {
@@ -116,76 +116,76 @@ int fl_gl_window_static_can_do(unsigned int m) {
 }
 
 int fl_gl_window_can_do(GLWINDOW w) {
-    return reinterpret_cast<Fl_Gl_Window*>(w)->can_do();
+    return static_cast<Fl_Gl_Window*>(w)->can_do();
 }
 
 int fl_gl_window_can_do_overlay(GLWINDOW w) {
-    return reinterpret_cast<Fl_Gl_Window*>(w)->can_do_overlay();
+    return static_cast<Fl_Gl_Window*>(w)->can_do_overlay();
 }
 
 
 
 
 void * fl_gl_window_get_context(GLWINDOW w) {
-    return reinterpret_cast<Fl_Gl_Window*>(w)->context();
+    return static_cast<Fl_Gl_Window*>(w)->context();
 }
 
 void fl_gl_window_set_context(GLWINDOW w, void * con, int des) {
-    reinterpret_cast<Fl_Gl_Window*>(w)->context(con, des);
+    static_cast<Fl_Gl_Window*>(w)->context(con, des);
 }
 
 char fl_gl_window_context_valid(GLWINDOW w) {
-    return reinterpret_cast<Fl_Gl_Window*>(w)->context_valid();
+    return static_cast<Fl_Gl_Window*>(w)->context_valid();
 }
 
 void fl_gl_window_set_context_valid(GLWINDOW w, char v) {
-    reinterpret_cast<Fl_Gl_Window*>(w)->context_valid(v);
+    static_cast<Fl_Gl_Window*>(w)->context_valid(v);
 }
 
 char fl_gl_window_valid(GLWINDOW w) {
-    return reinterpret_cast<Fl_Gl_Window*>(w)->valid();
+    return static_cast<Fl_Gl_Window*>(w)->valid();
 }
 
 void fl_gl_window_set_valid(GLWINDOW w, char v) {
-    reinterpret_cast<Fl_Gl_Window*>(w)->valid(v);
+    static_cast<Fl_Gl_Window*>(w)->valid(v);
 }
 
 void fl_gl_window_invalidate(GLWINDOW w) {
-    reinterpret_cast<Fl_Gl_Window*>(w)->invalidate();
+    static_cast<Fl_Gl_Window*>(w)->invalidate();
 }
 
 void fl_gl_window_make_current(GLWINDOW w) {
-    reinterpret_cast<Fl_Gl_Window*>(w)->make_current();
+    static_cast<Fl_Gl_Window*>(w)->make_current();
 }
 
 void fl_gl_window_make_overlay_current(GLWINDOW w) {
-    reinterpret_cast<Fl_Gl_Window*>(w)->make_overlay_current();
+    static_cast<Fl_Gl_Window*>(w)->make_overlay_current();
 }
 
 
 
 
 void fl_gl_window_ortho(GLWINDOW w) {
-    reinterpret_cast<Fl_Gl_Window*>(w)->ortho();
+    static_cast<Fl_Gl_Window*>(w)->ortho();
 }
 
 void fl_gl_window_redraw_overlay(GLWINDOW w) {
-    reinterpret_cast<Fl_Gl_Window*>(w)->redraw_overlay();
+    static_cast<Fl_Gl_Window*>(w)->redraw_overlay();
 }
 
 void fl_gl_window_swap_buffers(GLWINDOW w) {
-    reinterpret_cast<Fl_Gl_Window*>(w)->swap_buffers();
+    static_cast<Fl_Gl_Window*>(w)->swap_buffers();
 }
 
 
 
 
 void fl_gl_window_draw(GLWINDOW n) {
-    reinterpret_cast<My_Gl_Window*>(n)->Fl_Gl_Window::draw();
+    static_cast<My_Gl_Window*>(n)->Fl_Gl_Window::draw();
 }
 
 int fl_gl_window_handle(GLWINDOW n, int e) {
-    return reinterpret_cast<My_Gl_Window*>(n)->Fl_Gl_Window::handle(e);
+    return static_cast<My_Gl_Window*>(n)->Fl_Gl_Window::handle(e);
 }
 
 

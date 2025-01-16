@@ -75,59 +75,59 @@ BUTTON new_fl_button(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_button(BUTTON b) {
-    delete reinterpret_cast<My_Button*>(b);
+    delete static_cast<My_Button*>(b);
 }
 
 
 
 
 int fl_button_get_state(BUTTON b) {
-    return reinterpret_cast<Fl_Button*>(b)->Fl_Button::value();
+    return static_cast<Fl_Button*>(b)->Fl_Button::value();
 }
 
 void fl_button_set_state(BUTTON b, int s) {
-    reinterpret_cast<Fl_Button*>(b)->Fl_Button::value(s);
+    static_cast<Fl_Button*>(b)->Fl_Button::value(s);
 }
 
 void fl_button_set_only(BUTTON b) {
-    reinterpret_cast<Fl_Button*>(b)->Fl_Button::setonly();
+    static_cast<Fl_Button*>(b)->Fl_Button::setonly();
 }
 
 
 
 
 int fl_button_get_down_box(BUTTON b) {
-    return reinterpret_cast<Fl_Button*>(b)->Fl_Button::down_box();
+    return static_cast<Fl_Button*>(b)->Fl_Button::down_box();
 }
 
 void fl_button_set_down_box(BUTTON b, int t) {
-    reinterpret_cast<Fl_Button*>(b)->Fl_Button::down_box(static_cast<Fl_Boxtype>(t));
+    static_cast<Fl_Button*>(b)->Fl_Button::down_box(static_cast<Fl_Boxtype>(t));
 }
 
 int fl_button_get_shortcut(BUTTON b) {
-    return reinterpret_cast<Fl_Button*>(b)->Fl_Button::shortcut();
+    return static_cast<Fl_Button*>(b)->Fl_Button::shortcut();
 }
 
 void fl_button_set_shortcut(BUTTON b, int k) {
-    reinterpret_cast<Fl_Button*>(b)->Fl_Button::shortcut(k);
+    static_cast<Fl_Button*>(b)->Fl_Button::shortcut(k);
 }
 
 
 
 
 void fl_button_draw(BUTTON b) {
-    reinterpret_cast<My_Button*>(b)->Fl_Button::draw();
+    static_cast<My_Button*>(b)->Fl_Button::draw();
 }
 
 int fl_button_handle(BUTTON b, int e) {
-    return reinterpret_cast<My_Button*>(b)->Fl_Button::handle(e);
+    return static_cast<My_Button*>(b)->Fl_Button::handle(e);
 }
 
 
 
 
 void fl_button_simulate_key_action(BUTTON b) {
-    (reinterpret_cast<Fl_Button*>(b)->*(&Friend_Button::simulate_key_action))();
+    (static_cast<Fl_Button*>(b)->*(&Friend_Button::simulate_key_action))();
 }
 
 

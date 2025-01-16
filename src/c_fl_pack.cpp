@@ -50,29 +50,29 @@ PACK new_fl_pack(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_pack(PACK p) {
-    delete reinterpret_cast<My_Pack*>(p);
+    delete static_cast<My_Pack*>(p);
 }
 
 
 
 
 int fl_pack_get_spacing(PACK p) {
-    return reinterpret_cast<Fl_Pack*>(p)->spacing();
+    return static_cast<Fl_Pack*>(p)->spacing();
 }
 
 void fl_pack_set_spacing(PACK p, int t) {
-    reinterpret_cast<Fl_Pack*>(p)->spacing(t);
+    static_cast<Fl_Pack*>(p)->spacing(t);
 }
 
 
 
 
 void fl_pack_draw(PACK n) {
-    reinterpret_cast<My_Pack*>(n)->Fl_Pack::draw();
+    static_cast<My_Pack*>(n)->Fl_Pack::draw();
 }
 
 int fl_pack_handle(PACK n, int e) {
-    return reinterpret_cast<My_Pack*>(n)->Fl_Pack::handle(e);
+    return static_cast<My_Pack*>(n)->Fl_Pack::handle(e);
 }
 
 

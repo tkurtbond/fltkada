@@ -14,42 +14,42 @@
 
 //  Flattened C API
 
-IMAGE_SURFACE new_fl_image_surface(int w, int h, int r) {
+IMAGESURFACE new_fl_image_surface(int w, int h, int r) {
     Fl_Image_Surface *s = new Fl_Image_Surface(w,h,r);
     return s;
 }
 
-void free_fl_image_surface(IMAGE_SURFACE s) {
-    delete reinterpret_cast<Fl_Image_Surface*>(s);
+void free_fl_image_surface(IMAGESURFACE s) {
+    delete static_cast<Fl_Image_Surface*>(s);
 }
 
 
 
 
-void fl_image_surface_draw(IMAGE_SURFACE s, void * w, int dx, int dy) {
-    reinterpret_cast<Fl_Image_Surface*>(s)->draw(reinterpret_cast<Fl_Widget*>(w),dx,dy);
+void fl_image_surface_draw(IMAGESURFACE s, void * w, int dx, int dy) {
+    static_cast<Fl_Image_Surface*>(s)->draw(static_cast<Fl_Widget*>(w),dx,dy);
 }
 
-void fl_image_surface_draw_decorated_window(IMAGE_SURFACE s, void * w, int dx, int dy) {
-    reinterpret_cast<Fl_Image_Surface*>(s)->draw_decorated_window(reinterpret_cast<Fl_Window*>(w),dx,dy);
-}
-
-
-
-
-void * fl_image_surface_image(IMAGE_SURFACE s) {
-    return reinterpret_cast<Fl_Image_Surface*>(s)->image();
-}
-
-void * fl_image_surface_highres_image(IMAGE_SURFACE s) {
-    return reinterpret_cast<Fl_Image_Surface*>(s)->highres_image();
+void fl_image_surface_draw_decorated_window(IMAGESURFACE s, void * w, int dx, int dy) {
+    static_cast<Fl_Image_Surface*>(s)->draw_decorated_window(static_cast<Fl_Window*>(w),dx,dy);
 }
 
 
 
 
-void fl_image_surface_set_current(IMAGE_SURFACE s) {
-    reinterpret_cast<Fl_Image_Surface*>(s)->set_current();
+void * fl_image_surface_image(IMAGESURFACE s) {
+    return static_cast<Fl_Image_Surface*>(s)->image();
+}
+
+void * fl_image_surface_highres_image(IMAGESURFACE s) {
+    return static_cast<Fl_Image_Surface*>(s)->highres_image();
+}
+
+
+
+
+void fl_image_surface_set_current(IMAGESURFACE s) {
+    static_cast<Fl_Image_Surface*>(s)->set_current();
 }
 
 

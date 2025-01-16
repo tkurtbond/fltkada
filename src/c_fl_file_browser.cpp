@@ -191,49 +191,49 @@ FILEBROWSER new_fl_file_browser(int x, int y, int w, int h, char * label) {
 }
 
 void free_fl_file_browser(FILEBROWSER b) {
-    delete reinterpret_cast<My_File_Browser*>(b);
+    delete static_cast<My_File_Browser*>(b);
 }
 
 
 
 
 int fl_file_browser_load(FILEBROWSER b, const char * d, void * s) {
-    return reinterpret_cast<Fl_File_Browser*>(b)->load(d, reinterpret_cast<Fl_File_Sort_F*>(s));
+    return static_cast<Fl_File_Browser*>(b)->load(d, reinterpret_cast<Fl_File_Sort_F*>(s));
 }
 
 
 
 
 int fl_file_browser_get_filetype(FILEBROWSER b) {
-    return reinterpret_cast<Fl_File_Browser*>(b)->filetype();
+    return static_cast<Fl_File_Browser*>(b)->filetype();
 }
 
 void fl_file_browser_set_filetype(FILEBROWSER b, int f) {
-    reinterpret_cast<Fl_File_Browser*>(b)->filetype(f);
+    static_cast<Fl_File_Browser*>(b)->filetype(f);
 }
 
 const char * fl_file_browser_get_filter(FILEBROWSER b) {
-    return reinterpret_cast<Fl_File_Browser*>(b)->filter();
+    return static_cast<Fl_File_Browser*>(b)->filter();
 }
 
 void fl_file_browser_set_filter(FILEBROWSER b, const char * f) {
-    reinterpret_cast<Fl_File_Browser*>(b)->filter(f);
+    static_cast<Fl_File_Browser*>(b)->filter(f);
 }
 
 unsigned char fl_file_browser_get_iconsize(FILEBROWSER b) {
-    return reinterpret_cast<Fl_File_Browser*>(b)->iconsize();
+    return static_cast<Fl_File_Browser*>(b)->iconsize();
 }
 
 void fl_file_browser_set_iconsize(FILEBROWSER b, unsigned int i) {
-    reinterpret_cast<Fl_File_Browser*>(b)->iconsize(i);
+    static_cast<Fl_File_Browser*>(b)->iconsize(i);
 }
 
 int fl_file_browser_get_textsize(FILEBROWSER b) {
-    return reinterpret_cast<Fl_File_Browser*>(b)->textsize();
+    return static_cast<Fl_File_Browser*>(b)->textsize();
 }
 
 void fl_file_browser_set_textsize(FILEBROWSER b, int s) {
-    reinterpret_cast<Fl_File_Browser*>(b)->textsize(s);
+    static_cast<Fl_File_Browser*>(b)->textsize(s);
 }
 
 
@@ -243,89 +243,89 @@ void fl_file_browser_set_textsize(FILEBROWSER b, int s) {
 
 
 int fl_file_browser_full_height(FILEBROWSER c) {
-    //  return reinterpret_cast<My_File_Browser*>(c)->Fl_File_Browser::full_height();
-    return (reinterpret_cast<Fl_File_Browser*>(c)->*(&Friend_Browser::full_height))();
+    //  return static_cast<My_File_Browser*>(c)->Fl_File_Browser::full_height();
+    return (static_cast<Fl_File_Browser*>(c)->*(&Friend_Browser::full_height))();
 }
 
 int fl_file_browser_incr_height(FILEBROWSER c) {
-    //  return reinterpret_cast<My_File_Browser*>(c)->Fl_File_Browser::incr_height();
-    return (reinterpret_cast<Fl_File_Browser*>(c)->*(&Friend_Browser::incr_height))();
+    //  return static_cast<My_File_Browser*>(c)->Fl_File_Browser::incr_height();
+    return (static_cast<Fl_File_Browser*>(c)->*(&Friend_Browser::incr_height))();
 }
 
 
 
 
 int fl_file_browser_item_width(FILEBROWSER b, void * item) {
-    //  return reinterpret_cast<My_File_Browser*>(b)->Fl_File_Browser::item_width(item);
-    return (reinterpret_cast<Fl_File_Browser*>(b)->*(&Friend_Browser::item_width))(item);
+    //  return static_cast<My_File_Browser*>(b)->Fl_File_Browser::item_width(item);
+    return (static_cast<Fl_File_Browser*>(b)->*(&Friend_Browser::item_width))(item);
 }
 
 int fl_file_browser_item_height(FILEBROWSER b, void * item) {
-    //  return reinterpret_cast<My_File_Browser*>(b)->Fl_File_Browser::item_height(item);
-    return (reinterpret_cast<My_File_Browser*>(b)->*(&Friend_Browser::item_height))(item);
+    //  return static_cast<My_File_Browser*>(b)->Fl_File_Browser::item_height(item);
+    return (static_cast<Fl_File_Browser*>(b)->*(&Friend_Browser::item_height))(item);
 }
 
 void * fl_file_browser_item_first(FILEBROWSER b) {
-    return reinterpret_cast<My_File_Browser*>(b)->Fl_File_Browser::item_first();
+    return static_cast<My_File_Browser*>(b)->Fl_File_Browser::item_first();
 }
 
 void * fl_file_browser_item_last(FILEBROWSER b) {
-    return reinterpret_cast<My_File_Browser*>(b)->Fl_File_Browser::item_last();
+    return static_cast<My_File_Browser*>(b)->Fl_File_Browser::item_last();
 }
 
 void * fl_file_browser_item_next(FILEBROWSER b, void * item) {
-    return reinterpret_cast<My_File_Browser*>(b)->Fl_File_Browser::item_next(item);
+    return static_cast<My_File_Browser*>(b)->Fl_File_Browser::item_next(item);
 }
 
 void * fl_file_browser_item_prev(FILEBROWSER b, void * item) {
-    return reinterpret_cast<My_File_Browser*>(b)->Fl_File_Browser::item_prev(item);
+    return static_cast<My_File_Browser*>(b)->Fl_File_Browser::item_prev(item);
 }
 
 void * fl_file_browser_item_at(FILEBROWSER b, int index) {
-    return reinterpret_cast<My_File_Browser*>(b)->Fl_File_Browser::item_at(index);
+    return static_cast<My_File_Browser*>(b)->Fl_File_Browser::item_at(index);
 }
 
 void fl_file_browser_item_select(FILEBROWSER b, void * item, int val) {
-    reinterpret_cast<My_File_Browser*>(b)->Fl_File_Browser::item_select(item, val);
+    static_cast<My_File_Browser*>(b)->Fl_File_Browser::item_select(item, val);
 }
 
 int fl_file_browser_item_selected(FILEBROWSER b, void * item) {
-    return reinterpret_cast<My_File_Browser*>(b)->Fl_File_Browser::item_selected(item);
+    return static_cast<My_File_Browser*>(b)->Fl_File_Browser::item_selected(item);
 }
 
 void fl_file_browser_item_swap(FILEBROWSER b, void * x, void * y) {
-    reinterpret_cast<My_File_Browser*>(b)->Fl_File_Browser::item_swap(x, y);
+    static_cast<My_File_Browser*>(b)->Fl_File_Browser::item_swap(x, y);
 }
 
 const char * fl_file_browser_item_text(FILEBROWSER b, void * item) {
-    return reinterpret_cast<My_File_Browser*>(b)->Fl_File_Browser::item_text(item);
+    return static_cast<My_File_Browser*>(b)->Fl_File_Browser::item_text(item);
 }
 
 void fl_file_browser_item_draw(FILEBROWSER b, void * item, int x, int y, int w, int h) {
-    //  reinterpret_cast<My_File_Browser*>(b)->Fl_File_Browser::item_draw(item, x, y, w, h);
-    (reinterpret_cast<Fl_File_Browser*>(b)->*(&Friend_Browser::item_draw))(item, x, y, w, h);
+    //  static_cast<My_File_Browser*>(b)->Fl_File_Browser::item_draw(item, x, y, w, h);
+    (static_cast<Fl_File_Browser*>(b)->*(&Friend_Browser::item_draw))(item, x, y, w, h);
 }
 
 
 
 
 int fl_file_browser_full_width(FILEBROWSER c) {
-    return reinterpret_cast<My_File_Browser*>(c)->Fl_File_Browser::full_width();
+    return static_cast<My_File_Browser*>(c)->Fl_File_Browser::full_width();
 }
 
 int fl_file_browser_item_quick_height(FILEBROWSER c, void * i) {
-    return reinterpret_cast<My_File_Browser*>(c)->Fl_File_Browser::item_quick_height(i);
+    return static_cast<My_File_Browser*>(c)->Fl_File_Browser::item_quick_height(i);
 }
 
 
 
 
 void fl_file_browser_draw(FILEBROWSER b) {
-    reinterpret_cast<My_File_Browser*>(b)->Fl_File_Browser::draw();
+    static_cast<My_File_Browser*>(b)->Fl_File_Browser::draw();
 }
 
 int fl_file_browser_handle(FILEBROWSER b, int e) {
-    return reinterpret_cast<My_File_Browser*>(b)->Fl_File_Browser::handle(e);
+    return static_cast<My_File_Browser*>(b)->Fl_File_Browser::handle(e);
 }
 
 

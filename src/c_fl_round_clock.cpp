@@ -50,18 +50,18 @@ ROUNDCLOCK new_fl_round_clock(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_round_clock(ROUNDCLOCK c) {
-    delete reinterpret_cast<My_Round_Clock*>(c);
+    delete static_cast<My_Round_Clock*>(c);
 }
 
 
 
 
 void fl_round_clock_draw(ROUNDCLOCK c) {
-    reinterpret_cast<My_Round_Clock*>(c)->Fl_Round_Clock::draw();
+    static_cast<My_Round_Clock*>(c)->Fl_Round_Clock::draw();
 }
 
 int fl_round_clock_handle(ROUNDCLOCK c, int e) {
-    return reinterpret_cast<My_Round_Clock*>(c)->Fl_Round_Clock::handle(e);
+    return static_cast<My_Round_Clock*>(c)->Fl_Round_Clock::handle(e);
 }
 
 

@@ -183,107 +183,107 @@ BROWSER new_fl_browser(int x, int y, int w, int h, char * label) {
 }
 
 void free_fl_browser(BROWSER b) {
-    delete reinterpret_cast<My_Browser*>(b);
+    delete static_cast<My_Browser*>(b);
 }
 
 
 
 
 void fl_browser_add(BROWSER b, const char * text, void * d) {
-    reinterpret_cast<Fl_Browser*>(b)->add(text, d);
+    static_cast<Fl_Browser*>(b)->add(text, d);
 }
 
 void fl_browser_insert(BROWSER b, int line, const char * text, void * d) {
-    reinterpret_cast<Fl_Browser*>(b)->insert(line, text, d);
+    static_cast<Fl_Browser*>(b)->insert(line, text, d);
 }
 
 void fl_browser_move(BROWSER b, int to, int from) {
-    reinterpret_cast<Fl_Browser*>(b)->move(to, from);
+    static_cast<Fl_Browser*>(b)->move(to, from);
 }
 
 void fl_browser_swap(BROWSER b, int x, int y) {
-    reinterpret_cast<Fl_Browser*>(b)->swap(x, y);
+    static_cast<Fl_Browser*>(b)->swap(x, y);
 }
 
 void fl_browser_remove(BROWSER b, int line) {
-    reinterpret_cast<Fl_Browser*>(b)->remove(line);
+    static_cast<Fl_Browser*>(b)->remove(line);
 }
 
 void fl_browser_clear(BROWSER b) {
-    reinterpret_cast<Fl_Browser*>(b)->clear();
+    static_cast<Fl_Browser*>(b)->clear();
 }
 
 int fl_browser_size(BROWSER b) {
-    return reinterpret_cast<Fl_Browser*>(b)->size();
+    return static_cast<Fl_Browser*>(b)->size();
 }
 
 
 
 
 int fl_browser_load(BROWSER b, const char * f) {
-    return reinterpret_cast<Fl_Browser*>(b)->load(f);
+    return static_cast<Fl_Browser*>(b)->load(f);
 }
 
 const char * fl_browser_get_text(BROWSER b, int line) {
-    return reinterpret_cast<Fl_Browser*>(b)->text(line);
+    return static_cast<Fl_Browser*>(b)->text(line);
 }
 
 void fl_browser_set_text(BROWSER b, int line, const char * text) {
-    reinterpret_cast<Fl_Browser*>(b)->text(line, text);
+    static_cast<Fl_Browser*>(b)->text(line, text);
 }
 
 int fl_browser_get_textsize(BROWSER b) {
-    return reinterpret_cast<Fl_Browser*>(b)->textsize();
+    return static_cast<Fl_Browser*>(b)->textsize();
 }
 
 void fl_browser_set_textsize(BROWSER b, int size) {
-    reinterpret_cast<Fl_Browser*>(b)->textsize(size);
+    static_cast<Fl_Browser*>(b)->textsize(size);
 }
 
 
 
 
 char fl_browser_get_column_char(BROWSER b) {
-    return reinterpret_cast<Fl_Browser*>(b)->column_char();
+    return static_cast<Fl_Browser*>(b)->column_char();
 }
 
 void fl_browser_set_column_char(BROWSER b, char c) {
-    reinterpret_cast<Fl_Browser*>(b)->column_char(c);
+    static_cast<Fl_Browser*>(b)->column_char(c);
 }
 
 void fl_browser_set_column_widths(BROWSER b, void * w) {
-    reinterpret_cast<Fl_Browser*>(b)->column_widths(reinterpret_cast<const int *>(w));
+    static_cast<Fl_Browser*>(b)->column_widths(static_cast<const int *>(w));
 }
 
 char fl_browser_get_format_char(BROWSER b) {
-    return reinterpret_cast<Fl_Browser*>(b)->format_char();
+    return static_cast<Fl_Browser*>(b)->format_char();
 }
 
 void fl_browser_set_format_char(BROWSER b, char c) {
-    reinterpret_cast<Fl_Browser*>(b)->format_char(c);
+    static_cast<Fl_Browser*>(b)->format_char(c);
 }
 
 
 
 
 int fl_browser_get_topline(BROWSER b) {
-    return reinterpret_cast<Fl_Browser*>(b)->topline();
+    return static_cast<Fl_Browser*>(b)->topline();
 }
 
 void fl_browser_set_topline(BROWSER b, int line) {
-    reinterpret_cast<Fl_Browser*>(b)->topline(line);
+    static_cast<Fl_Browser*>(b)->topline(line);
 }
 
 void fl_browser_middleline(BROWSER b, int line) {
-    reinterpret_cast<Fl_Browser*>(b)->middleline(line);
+    static_cast<Fl_Browser*>(b)->middleline(line);
 }
 
 void fl_browser_bottomline(BROWSER b, int line) {
-    reinterpret_cast<Fl_Browser*>(b)->bottomline(line);
+    static_cast<Fl_Browser*>(b)->bottomline(line);
 }
 
 void fl_browser_lineposition(BROWSER b, int line, int p) {
-    reinterpret_cast<Fl_Browser*>(b)->lineposition
+    static_cast<Fl_Browser*>(b)->lineposition
         (line, static_cast<Fl_Browser::Fl_Line_Position>(p));
 }
 
@@ -291,133 +291,133 @@ void fl_browser_lineposition(BROWSER b, int line, int p) {
 
 
 int fl_browser_select(BROWSER b, int l, int v) {
-    return reinterpret_cast<Fl_Browser*>(b)->select(l, v);
+    return static_cast<Fl_Browser*>(b)->select(l, v);
 }
 
 int fl_browser_selected(BROWSER b, int l) {
-    return reinterpret_cast<Fl_Browser*>(b)->selected(l);
+    return static_cast<Fl_Browser*>(b)->selected(l);
 }
 
 int fl_browser_value(BROWSER b) {
-    return reinterpret_cast<Fl_Browser*>(b)->value();
+    return static_cast<Fl_Browser*>(b)->value();
 }
 
 
 
 
 int fl_browser_visible(BROWSER b, int l) {
-    return reinterpret_cast<Fl_Browser*>(b)->visible(l);
+    return static_cast<Fl_Browser*>(b)->visible(l);
 }
 
 void fl_browser_make_visible(BROWSER b, int l) {
-    reinterpret_cast<Fl_Browser*>(b)->make_visible(l);
+    static_cast<Fl_Browser*>(b)->make_visible(l);
 }
 
 int fl_browser_displayed(BROWSER b, int l) {
-    return reinterpret_cast<Fl_Browser*>(b)->displayed(l);
+    return static_cast<Fl_Browser*>(b)->displayed(l);
 }
 
 void fl_browser_show_line(BROWSER b, int l) {
-    reinterpret_cast<Fl_Browser*>(b)->show(l);
+    static_cast<Fl_Browser*>(b)->show(l);
 }
 
 void fl_browser_hide_line(BROWSER b, int l) {
-    reinterpret_cast<Fl_Browser*>(b)->hide(l);
+    static_cast<Fl_Browser*>(b)->hide(l);
 }
 
 void fl_browser_show(BROWSER b) {
-    reinterpret_cast<Fl_Browser*>(b)->show();
+    static_cast<Fl_Browser*>(b)->show();
 }
 
 void fl_browser_hide(BROWSER b) {
-    reinterpret_cast<Fl_Browser*>(b)->hide();
+    static_cast<Fl_Browser*>(b)->hide();
 }
 
 
 
 
 void fl_browser_set_size(BROWSER b, int w, int h) {
-    reinterpret_cast<Fl_Browser*>(b)->size(w, h);
+    static_cast<Fl_Browser*>(b)->size(w, h);
 }
 
 
 
 
 void fl_browser_set_icon(BROWSER b, int l, void * c) {
-    reinterpret_cast<Fl_Browser*>(b)->icon(l, reinterpret_cast<Fl_Image*>(c));
+    static_cast<Fl_Browser*>(b)->icon(l, static_cast<Fl_Image*>(c));
 }
 
 void fl_browser_remove_icon(BROWSER b, int l) {
-    reinterpret_cast<Fl_Browser*>(b)->remove_icon(l);
+    static_cast<Fl_Browser*>(b)->remove_icon(l);
 }
 
 
 
 
 int fl_browser_full_height(BROWSER c) {
-    return reinterpret_cast<My_Browser*>(c)->Fl_Browser::full_height();
+    return static_cast<My_Browser*>(c)->Fl_Browser::full_height();
 }
 
 int fl_browser_incr_height(BROWSER c) {
-    return reinterpret_cast<My_Browser*>(c)->Fl_Browser::incr_height();
+    return static_cast<My_Browser*>(c)->Fl_Browser::incr_height();
 }
 
 
 
 
 int fl_browser_item_width(BROWSER b, void * item) {
-    return reinterpret_cast<My_Browser*>(b)->Fl_Browser::item_width(item);
+    return static_cast<My_Browser*>(b)->Fl_Browser::item_width(item);
 }
 
 int fl_browser_item_height(BROWSER b, void * item) {
-    return reinterpret_cast<My_Browser*>(b)->Fl_Browser::item_height(item);
+    return static_cast<My_Browser*>(b)->Fl_Browser::item_height(item);
 }
 
 void * fl_browser_item_first(BROWSER b) {
-    return reinterpret_cast<My_Browser*>(b)->Fl_Browser::item_first();
+    return static_cast<My_Browser*>(b)->Fl_Browser::item_first();
 }
 
 void * fl_browser_item_last(BROWSER b) {
-    return reinterpret_cast<My_Browser*>(b)->Fl_Browser::item_last();
+    return static_cast<My_Browser*>(b)->Fl_Browser::item_last();
 }
 
 void * fl_browser_item_next(BROWSER b, void * item) {
-    return reinterpret_cast<My_Browser*>(b)->Fl_Browser::item_next(item);
+    return static_cast<My_Browser*>(b)->Fl_Browser::item_next(item);
 }
 
 void * fl_browser_item_prev(BROWSER b, void * item) {
-    return reinterpret_cast<My_Browser*>(b)->Fl_Browser::item_prev(item);
+    return static_cast<My_Browser*>(b)->Fl_Browser::item_prev(item);
 }
 
 void * fl_browser_item_at(BROWSER b, int index) {
-    return reinterpret_cast<My_Browser*>(b)->Fl_Browser::item_at(index);
+    return static_cast<My_Browser*>(b)->Fl_Browser::item_at(index);
 }
 
 void fl_browser_item_select(BROWSER b, void * item, int val) {
-    reinterpret_cast<My_Browser*>(b)->Fl_Browser::item_select(item, val);
+    static_cast<My_Browser*>(b)->Fl_Browser::item_select(item, val);
 }
 
 int fl_browser_item_selected(BROWSER b, void * item) {
-    return reinterpret_cast<My_Browser*>(b)->Fl_Browser::item_selected(item);
+    return static_cast<My_Browser*>(b)->Fl_Browser::item_selected(item);
 }
 
 void fl_browser_item_swap(BROWSER b, void * x, void * y) {
-    reinterpret_cast<My_Browser*>(b)->Fl_Browser::item_swap(x, y);
+    static_cast<My_Browser*>(b)->Fl_Browser::item_swap(x, y);
 }
 
 const char * fl_browser_item_text(BROWSER b, void * item) {
-    return reinterpret_cast<My_Browser*>(b)->Fl_Browser::item_text(item);
+    return static_cast<My_Browser*>(b)->Fl_Browser::item_text(item);
 }
 
 void fl_browser_item_draw(BROWSER b, void * item, int x, int y, int w, int h) {
-    reinterpret_cast<My_Browser*>(b)->Fl_Browser::item_draw(item, x, y, w, h);
+    static_cast<My_Browser*>(b)->Fl_Browser::item_draw(item, x, y, w, h);
 }
 
 
 
 
 int fl_browser_lineno(BROWSER b, void * item) {
-    return (reinterpret_cast<Fl_Browser*>(b)->*(&Friend_Browser::lineno))(item);
+    return (static_cast<Fl_Browser*>(b)->*(&Friend_Browser::lineno))(item);
 }
 
 
@@ -427,22 +427,22 @@ int fl_browser_lineno(BROWSER b, void * item) {
 
 
 int fl_browser_full_width(BROWSER c) {
-    return reinterpret_cast<My_Browser*>(c)->Fl_Browser::full_width();
+    return static_cast<My_Browser*>(c)->Fl_Browser::full_width();
 }
 
 int fl_browser_item_quick_height(BROWSER c, void * i) {
-    return reinterpret_cast<My_Browser*>(c)->Fl_Browser::item_quick_height(i);
+    return static_cast<My_Browser*>(c)->Fl_Browser::item_quick_height(i);
 }
 
 
 
 
 void fl_browser_draw(BROWSER b) {
-    reinterpret_cast<My_Browser*>(b)->Fl_Browser::draw();
+    static_cast<My_Browser*>(b)->Fl_Browser::draw();
 }
 
 int fl_browser_handle(BROWSER b, int e) {
-    return reinterpret_cast<My_Browser*>(b)->Fl_Browser::handle(e);
+    return static_cast<My_Browser*>(b)->Fl_Browser::handle(e);
 }
 
 

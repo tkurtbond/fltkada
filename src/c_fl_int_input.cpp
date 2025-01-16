@@ -50,18 +50,18 @@ INTINPUT new_fl_int_input(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_int_input(INTINPUT i) {
-    delete reinterpret_cast<My_Int_Input*>(i);
+    delete static_cast<My_Int_Input*>(i);
 }
 
 
 
 
 void fl_int_input_draw(INTINPUT i) {
-    reinterpret_cast<My_Int_Input*>(i)->Fl_Int_Input::draw();
+    static_cast<My_Int_Input*>(i)->Fl_Int_Input::draw();
 }
 
 int fl_int_input_handle(INTINPUT i, int e) {
-    return reinterpret_cast<My_Int_Input*>(i)->Fl_Int_Input::handle(e);
+    return static_cast<My_Int_Input*>(i)->Fl_Int_Input::handle(e);
 }
 
 

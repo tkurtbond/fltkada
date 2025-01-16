@@ -60,33 +60,33 @@ ADJUSTER new_fl_adjuster(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_adjuster(ADJUSTER a) {
-    delete reinterpret_cast<My_Adjuster*>(a);
+    delete static_cast<My_Adjuster*>(a);
 }
 
 
 
 
 int fl_adjuster_is_soft(ADJUSTER a) {
-    return reinterpret_cast<Fl_Adjuster*>(a)->soft();
+    return static_cast<Fl_Adjuster*>(a)->soft();
 }
 
 void fl_adjuster_set_soft(ADJUSTER a, int t) {
-    reinterpret_cast<Fl_Adjuster*>(a)->soft(t);
+    static_cast<Fl_Adjuster*>(a)->soft(t);
 }
 
 
 
 
 void fl_adjuster_value_damage(ADJUSTER a) {
-    (reinterpret_cast<Fl_Adjuster*>(a)->*(&Friend_Adjuster::value_damage))();
+    (static_cast<Fl_Adjuster*>(a)->*(&Friend_Adjuster::value_damage))();
 }
 
 void fl_adjuster_draw(ADJUSTER a) {
-    reinterpret_cast<My_Adjuster*>(a)->Fl_Adjuster::draw();
+    static_cast<My_Adjuster*>(a)->Fl_Adjuster::draw();
 }
 
 int fl_adjuster_handle(ADJUSTER a, int e) {
-    return reinterpret_cast<My_Adjuster*>(a)->Fl_Adjuster::handle(e);
+    return static_cast<My_Adjuster*>(a)->Fl_Adjuster::handle(e);
 }
 
 

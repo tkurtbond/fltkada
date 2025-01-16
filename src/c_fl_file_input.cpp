@@ -50,48 +50,48 @@ FILEINPUT new_fl_file_input(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_file_input(FILEINPUT i) {
-    delete reinterpret_cast<My_File_Input*>(i);
+    delete static_cast<My_File_Input*>(i);
 }
 
 
 
 
 int fl_file_input_get_down_box(FILEINPUT i) {
-    return reinterpret_cast<Fl_File_Input*>(i)->down_box();
+    return static_cast<Fl_File_Input*>(i)->down_box();
 }
 
 void fl_file_input_set_down_box(FILEINPUT i, int t) {
-    reinterpret_cast<Fl_File_Input*>(i)->down_box(static_cast<Fl_Boxtype>(t));
+    static_cast<Fl_File_Input*>(i)->down_box(static_cast<Fl_Boxtype>(t));
 }
 
 unsigned int fl_file_input_get_errorcolor(FILEINPUT i) {
-    return reinterpret_cast<Fl_File_Input*>(i)->errorcolor();
+    return static_cast<Fl_File_Input*>(i)->errorcolor();
 }
 
 void fl_file_input_set_errorcolor(FILEINPUT i, unsigned int t) {
-    reinterpret_cast<Fl_File_Input*>(i)->errorcolor(t);
+    static_cast<Fl_File_Input*>(i)->errorcolor(t);
 }
 
 
 
 
 const char * fl_file_input_get_value(FILEINPUT i) {
-    return reinterpret_cast<Fl_File_Input*>(i)->value();
+    return static_cast<Fl_File_Input*>(i)->value();
 }
 
 int fl_file_input_set_value(FILEINPUT i, const char * s, int len) {
-    return reinterpret_cast<Fl_File_Input*>(i)->value(s,len);
+    return static_cast<Fl_File_Input*>(i)->value(s,len);
 }
 
 
 
 
 void fl_file_input_draw(FILEINPUT i) {
-    reinterpret_cast<My_File_Input*>(i)->Fl_File_Input::draw();
+    static_cast<My_File_Input*>(i)->Fl_File_Input::draw();
 }
 
 int fl_file_input_handle(FILEINPUT i, int e) {
-    return reinterpret_cast<My_File_Input*>(i)->Fl_File_Input::handle(e);
+    return static_cast<My_File_Input*>(i)->Fl_File_Input::handle(e);
 }
 
 

@@ -65,41 +65,41 @@ SCROLLBAR new_fl_scrollbar(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_scrollbar(SCROLLBAR s) {
-    delete reinterpret_cast<My_Scrollbar*>(s);
+    delete static_cast<My_Scrollbar*>(s);
 }
 
 
 
 
 int fl_scrollbar_get_linesize(SCROLLBAR s) {
-    return reinterpret_cast<Fl_Scrollbar*>(s)->linesize();
+    return static_cast<Fl_Scrollbar*>(s)->linesize();
 }
 
 void fl_scrollbar_set_linesize(SCROLLBAR s, int t) {
-    reinterpret_cast<Fl_Scrollbar*>(s)->linesize(t);
+    static_cast<Fl_Scrollbar*>(s)->linesize(t);
 }
 
 int fl_scrollbar_get_value(SCROLLBAR s) {
-    return reinterpret_cast<Fl_Scrollbar*>(s)->value();
+    return static_cast<Fl_Scrollbar*>(s)->value();
 }
 
 void fl_scrollbar_set_value(SCROLLBAR s, int t) {
-    reinterpret_cast<Fl_Scrollbar*>(s)->value(t);
+    static_cast<Fl_Scrollbar*>(s)->value(t);
 }
 
 void fl_scrollbar_set_value2(SCROLLBAR s, int p, int w, int f, int t) {
-    reinterpret_cast<Fl_Scrollbar*>(s)->value(p,w,f,t);
+    static_cast<Fl_Scrollbar*>(s)->value(p,w,f,t);
 }
 
 
 
 
 void fl_scrollbar_draw(SCROLLBAR s) {
-    reinterpret_cast<My_Scrollbar*>(s)->Fl_Scrollbar::draw();
+    static_cast<My_Scrollbar*>(s)->Fl_Scrollbar::draw();
 }
 
 int fl_scrollbar_handle(SCROLLBAR s, int e) {
-    return reinterpret_cast<My_Scrollbar*>(s)->Fl_Scrollbar::handle(e);
+    return static_cast<My_Scrollbar*>(s)->Fl_Scrollbar::handle(e);
 }
 
 

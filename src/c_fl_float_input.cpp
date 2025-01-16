@@ -50,18 +50,18 @@ FLOATINPUT new_fl_float_input(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_float_input(FLOATINPUT i) {
-    delete reinterpret_cast<My_Float_Input*>(i);
+    delete static_cast<My_Float_Input*>(i);
 }
 
 
 
 
 void fl_float_input_draw(FLOATINPUT i) {
-    reinterpret_cast<My_Float_Input*>(i)->Fl_Float_Input::draw();
+    static_cast<My_Float_Input*>(i)->Fl_Float_Input::draw();
 }
 
 int fl_float_input_handle(FLOATINPUT i, int e) {
-    return reinterpret_cast<My_Float_Input*>(i)->Fl_Float_Input::handle(e);
+    return static_cast<My_Float_Input*>(i)->Fl_Float_Input::handle(e);
 }
 
 

@@ -172,7 +172,7 @@ SELECTBROWSER new_fl_select_browser(int x, int y, int w, int h, char * label) {
 }
 
 void free_fl_select_browser(SELECTBROWSER b) {
-    delete reinterpret_cast<My_Select_Browser*>(b);
+    delete static_cast<My_Select_Browser*>(b);
 }
 
 
@@ -181,84 +181,84 @@ void free_fl_select_browser(SELECTBROWSER b) {
 //  These have to be reimplemented due to relying on custom class extensions
 
 int fl_select_browser_full_height(SELECTBROWSER c) {
-    return reinterpret_cast<My_Select_Browser*>(c)->Fl_Select_Browser::full_height();
+    return static_cast<My_Select_Browser*>(c)->Fl_Select_Browser::full_height();
 }
 
 int fl_select_browser_incr_height(SELECTBROWSER c) {
-    return reinterpret_cast<My_Select_Browser*>(c)->Fl_Select_Browser::incr_height();
+    return static_cast<My_Select_Browser*>(c)->Fl_Select_Browser::incr_height();
 }
 
 
 
 
 int fl_select_browser_item_width(SELECTBROWSER b, void * item) {
-    return reinterpret_cast<My_Select_Browser*>(b)->Fl_Select_Browser::item_width(item);
+    return static_cast<My_Select_Browser*>(b)->Fl_Select_Browser::item_width(item);
 }
 
 int fl_select_browser_item_height(SELECTBROWSER b, void * item) {
-    return reinterpret_cast<My_Select_Browser*>(b)->Fl_Select_Browser::item_height(item);
+    return static_cast<My_Select_Browser*>(b)->Fl_Select_Browser::item_height(item);
 }
 
 void * fl_select_browser_item_first(SELECTBROWSER b) {
-    return reinterpret_cast<My_Select_Browser*>(b)->Fl_Select_Browser::item_first();
+    return static_cast<My_Select_Browser*>(b)->Fl_Select_Browser::item_first();
 }
 
 void * fl_select_browser_item_last(SELECTBROWSER b) {
-    return reinterpret_cast<My_Select_Browser*>(b)->Fl_Select_Browser::item_last();
+    return static_cast<My_Select_Browser*>(b)->Fl_Select_Browser::item_last();
 }
 
 void * fl_select_browser_item_next(SELECTBROWSER b, void * item) {
-    return reinterpret_cast<My_Select_Browser*>(b)->Fl_Select_Browser::item_next(item);
+    return static_cast<My_Select_Browser*>(b)->Fl_Select_Browser::item_next(item);
 }
 
 void * fl_select_browser_item_prev(SELECTBROWSER b, void * item) {
-    return reinterpret_cast<My_Select_Browser*>(b)->Fl_Select_Browser::item_prev(item);
+    return static_cast<My_Select_Browser*>(b)->Fl_Select_Browser::item_prev(item);
 }
 
 void * fl_select_browser_item_at(SELECTBROWSER b, int index) {
-    return reinterpret_cast<My_Select_Browser*>(b)->Fl_Select_Browser::item_at(index);
+    return static_cast<My_Select_Browser*>(b)->Fl_Select_Browser::item_at(index);
 }
 
 void fl_select_browser_item_select(SELECTBROWSER b, void * item, int val) {
-    reinterpret_cast<My_Select_Browser*>(b)->Fl_Select_Browser::item_select(item, val);
+    static_cast<My_Select_Browser*>(b)->Fl_Select_Browser::item_select(item, val);
 }
 
 int fl_select_browser_item_selected(SELECTBROWSER b, void * item) {
-    return reinterpret_cast<My_Select_Browser*>(b)->Fl_Select_Browser::item_selected(item);
+    return static_cast<My_Select_Browser*>(b)->Fl_Select_Browser::item_selected(item);
 }
 
 void fl_select_browser_item_swap(SELECTBROWSER b, void * x, void * y) {
-    reinterpret_cast<My_Select_Browser*>(b)->Fl_Select_Browser::item_swap(x, y);
+    static_cast<My_Select_Browser*>(b)->Fl_Select_Browser::item_swap(x, y);
 }
 
 const char * fl_select_browser_item_text(SELECTBROWSER b, void * item) {
-    return reinterpret_cast<My_Select_Browser*>(b)->Fl_Select_Browser::item_text(item);
+    return static_cast<My_Select_Browser*>(b)->Fl_Select_Browser::item_text(item);
 }
 
 void fl_select_browser_item_draw(SELECTBROWSER b, void * item, int x, int y, int w, int h) {
-    reinterpret_cast<My_Select_Browser*>(b)->Fl_Select_Browser::item_draw(item, x, y, w, h);
+    static_cast<My_Select_Browser*>(b)->Fl_Select_Browser::item_draw(item, x, y, w, h);
 }
 
 
 
 
 int fl_select_browser_full_width(SELECTBROWSER c) {
-    return reinterpret_cast<My_Select_Browser*>(c)->Fl_Select_Browser::full_width();
+    return static_cast<My_Select_Browser*>(c)->Fl_Select_Browser::full_width();
 }
 
 int fl_select_browser_item_quick_height(SELECTBROWSER c, void * i) {
-    return reinterpret_cast<My_Select_Browser*>(c)->Fl_Select_Browser::item_quick_height(i);
+    return static_cast<My_Select_Browser*>(c)->Fl_Select_Browser::item_quick_height(i);
 }
 
 
 
 
 void fl_select_browser_draw(SELECTBROWSER b) {
-    reinterpret_cast<My_Select_Browser*>(b)->Fl_Select_Browser::draw();
+    static_cast<My_Select_Browser*>(b)->Fl_Select_Browser::draw();
 }
 
 int fl_select_browser_handle(SELECTBROWSER b, int e) {
-    return reinterpret_cast<My_Select_Browser*>(b)->Fl_Select_Browser::handle(e);
+    return static_cast<My_Select_Browser*>(b)->Fl_Select_Browser::handle(e);
 }
 
 

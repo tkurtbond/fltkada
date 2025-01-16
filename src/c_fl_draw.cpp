@@ -16,7 +16,7 @@ void fl_draw_reset_spot() {
 }
 
 void fl_draw_set_spot(int f, int s, int x, int y, int w, int h, void * ptr) {
-    fl_set_spot(f, s, x, y, w, h, reinterpret_cast<Fl_Window*>(ptr));
+    fl_set_spot(f, s, x, y, w, h, static_cast<Fl_Window*>(ptr));
 }
 
 void fl_draw_set_status(int x, int y, int w, int h) {
@@ -201,7 +201,7 @@ void fl_draw_vertex(double x, double y) {
 
 
 void fl_draw_draw_image(void * data, int x, int y, int w, int h, int d, int l) {
-    fl_draw_image(reinterpret_cast<uchar*>(data), x, y, w, h, d, l);
+    fl_draw_image(static_cast<uchar*>(data), x, y, w, h, d, l);
 }
 
 void fl_draw_draw_image2(void * func, void * data, int x, int y, int w, int h, int d) {
@@ -209,7 +209,7 @@ void fl_draw_draw_image2(void * func, void * data, int x, int y, int w, int h, i
 }
 
 void fl_draw_draw_image_mono(void * data, int x, int y, int w, int h, int d, int l) {
-    fl_draw_image_mono(reinterpret_cast<uchar*>(data), x, y, w, h, d, l);
+    fl_draw_image_mono(static_cast<uchar*>(data), x, y, w, h, d, l);
 }
 
 void fl_draw_draw_image_mono2(void * func, void * data, int x, int y, int w, int h, int d) {
@@ -217,7 +217,7 @@ void fl_draw_draw_image_mono2(void * func, void * data, int x, int y, int w, int
 }
 
 void * fl_draw_read_image(void * data, int x, int y, int w, int h, int alpha) {
-    return fl_read_image(reinterpret_cast<uchar*>(data), x, y, w, h, alpha);
+    return fl_read_image(static_cast<uchar*>(data), x, y, w, h, alpha);
 }
 
 

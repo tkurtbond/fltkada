@@ -25,7 +25,7 @@ IMAGE new_fl_image(int w, int h, int d) {
 }
 
 void free_fl_image(IMAGE i) {
-    delete reinterpret_cast<My_Image*>(i);
+    delete static_cast<My_Image*>(i);
 }
 
 
@@ -41,11 +41,11 @@ void fl_image_set_rgb_scaling(int t) {
 
 IMAGE fl_image_copy(IMAGE i, int w, int h) {
     //  virtual so disable dispatch
-    return reinterpret_cast<Fl_Image*>(i)->Fl_Image::copy(w, h);
+    return static_cast<Fl_Image*>(i)->Fl_Image::copy(w, h);
 }
 
 IMAGE fl_image_copy2(IMAGE i) {
-    return reinterpret_cast<Fl_Image*>(i)->copy();
+    return static_cast<Fl_Image*>(i)->copy();
 }
 
 
@@ -53,23 +53,23 @@ IMAGE fl_image_copy2(IMAGE i) {
 
 void fl_image_color_average(IMAGE i, int c, float b) {
     //  virtual so disable dispatch
-    reinterpret_cast<Fl_Image*>(i)->Fl_Image::color_average(c, b);
+    static_cast<Fl_Image*>(i)->Fl_Image::color_average(c, b);
 }
 
 void fl_image_desaturate(IMAGE i) {
     //  virtual so disable dispatch
-    reinterpret_cast<Fl_Image*>(i)->Fl_Image::desaturate();
+    static_cast<Fl_Image*>(i)->Fl_Image::desaturate();
 }
 
 
 
 
 void fl_image_inactive(IMAGE i) {
-    reinterpret_cast<Fl_Image*>(i)->inactive();
+    static_cast<Fl_Image*>(i)->inactive();
 }
 
 int fl_image_fail(IMAGE i) {
-    switch (reinterpret_cast<Fl_Image*>(i)->fail()) {
+    switch (static_cast<Fl_Image*>(i)->fail()) {
         case Fl_Image::ERR_NO_IMAGE:
             return 1;
         case Fl_Image::ERR_FILE_ACCESS:
@@ -83,37 +83,37 @@ int fl_image_fail(IMAGE i) {
 
 void fl_image_uncache(IMAGE i) {
     //  virtual so disable dispatch
-    reinterpret_cast<Fl_Image*>(i)->Fl_Image::uncache();
+    static_cast<Fl_Image*>(i)->Fl_Image::uncache();
 }
 
 
 
 
 int fl_image_w(IMAGE i) {
-    return reinterpret_cast<Fl_Image*>(i)->w();
+    return static_cast<Fl_Image*>(i)->w();
 }
 
 int fl_image_h(IMAGE i) {
-    return reinterpret_cast<Fl_Image*>(i)->h();
+    return static_cast<Fl_Image*>(i)->h();
 }
 
 int fl_image_d(IMAGE i) {
-    return reinterpret_cast<Fl_Image*>(i)->d();
+    return static_cast<Fl_Image*>(i)->d();
 }
 
 int fl_image_ld(IMAGE i) {
-    return reinterpret_cast<Fl_Image*>(i)->ld();
+    return static_cast<Fl_Image*>(i)->ld();
 }
 
 int fl_image_count(IMAGE i) {
-    return reinterpret_cast<Fl_Image*>(i)->count();
+    return static_cast<Fl_Image*>(i)->count();
 }
 
 
 
 
 const void * fl_image_data(IMAGE i) {
-    return reinterpret_cast<Fl_Image*>(i)->data();
+    return static_cast<Fl_Image*>(i)->data();
 }
 
 char fl_image_get_pixel(char *c, int off) {
@@ -128,15 +128,15 @@ void fl_image_set_pixel(char *c, int off, char val) {
 
 
 void fl_image_draw(IMAGE i, int x, int y) {
-    reinterpret_cast<Fl_Image*>(i)->draw(x, y);
+    static_cast<Fl_Image*>(i)->draw(x, y);
 }
 
 void fl_image_draw2(IMAGE i, int x, int y, int w, int h, int cx, int cy) {
     //  virtual so disable dispatch
-    reinterpret_cast<Fl_Image*>(i)->Fl_Image::draw(x, y, w, h, cx, cy);
+    static_cast<Fl_Image*>(i)->Fl_Image::draw(x, y, w, h, cx, cy);
 }
 
 void fl_image_draw_empty(IMAGE i, int x, int y) {
-    reinterpret_cast<My_Image*>(i)->draw_empty(x, y);
+    static_cast<My_Image*>(i)->draw_empty(x, y);
 }
 

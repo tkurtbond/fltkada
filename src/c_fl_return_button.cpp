@@ -50,18 +50,18 @@ RETURNBUTTON new_fl_return_button(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_return_button(RETURNBUTTON b) {
-    delete reinterpret_cast<My_Return_Button*>(b);
+    delete static_cast<My_Return_Button*>(b);
 }
 
 
 
 
 void fl_return_button_draw(RETURNBUTTON b) {
-    reinterpret_cast<My_Return_Button*>(b)->Fl_Return_Button::draw();
+    static_cast<My_Return_Button*>(b)->Fl_Return_Button::draw();
 }
 
 int fl_return_button_handle(RETURNBUTTON b, int e) {
-    return reinterpret_cast<My_Return_Button*>(b)->Fl_Return_Button::handle(e);
+    return static_cast<My_Return_Button*>(b)->Fl_Return_Button::handle(e);
 }
 
 

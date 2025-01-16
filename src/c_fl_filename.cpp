@@ -17,12 +17,12 @@ const int fl_path_max = FL_PATH_MAX;
 
 
 void free_filename_file_list(void * l, int n) {
-    struct dirent ** p = reinterpret_cast<struct dirent **>(l);
+    struct dirent ** p = static_cast<struct dirent **>(l);
     fl_filename_free_list(&p, n);
 }
 
 const char * filename_dname(void * l, int n) {
-    return (reinterpret_cast<struct dirent **>(l)[n])->d_name;
+    return (static_cast<struct dirent **>(l)[n])->d_name;
 }
 
 
@@ -49,7 +49,7 @@ int filename_isdir(const char * name) {
 }
 
 int filename_list(const char * d, void * l, void * f) {
-    return fl_filename_list(d, reinterpret_cast<struct dirent ***>(l),
+    return fl_filename_list(d, static_cast<struct dirent ***>(l),
         reinterpret_cast<Fl_File_Sort_F*>(f));
 }
 

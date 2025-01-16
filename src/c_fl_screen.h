@@ -8,8 +8,6 @@
 #define FL_SCREEN_GUARD
 
 
-
-
 extern "C" int fl_screen_x();
 extern "C" int fl_screen_y();
 extern "C" int fl_screen_w();
@@ -36,4 +34,5 @@ extern "C" void fl_screen_xywh4(int &x, int &y, int &w, int &h, int px, int py, 
 
 
 #endif
+
 

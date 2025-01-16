@@ -50,184 +50,184 @@ INPUT new_fl_input(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_input(INPUT i) {
-    delete reinterpret_cast<My_Input*>(i);
+    delete static_cast<My_Input*>(i);
 }
 
 
 
 
 int fl_input_copy(INPUT i, int c) {
-    return reinterpret_cast<Fl_Input_*>(i)->copy(c);
+    return static_cast<Fl_Input_*>(i)->copy(c);
 }
 
 int fl_input_cut(INPUT i) {
-    return reinterpret_cast<Fl_Input_*>(i)->cut();
+    return static_cast<Fl_Input_*>(i)->cut();
 }
 
 int fl_input_cut2(INPUT i, int b) {
-    return reinterpret_cast<Fl_Input_*>(i)->cut(b);
+    return static_cast<Fl_Input_*>(i)->cut(b);
 }
 
 int fl_input_cut3(INPUT i, int a, int b) {
-    return reinterpret_cast<Fl_Input_*>(i)->cut(a,b);
+    return static_cast<Fl_Input_*>(i)->cut(a,b);
 }
 
 int fl_input_copy_cuts(INPUT i) {
-    return reinterpret_cast<Fl_Input_*>(i)->copy_cuts();
+    return static_cast<Fl_Input_*>(i)->copy_cuts();
 }
 
 int fl_input_undo(INPUT i) {
-    return reinterpret_cast<Fl_Input_*>(i)->undo();
+    return static_cast<Fl_Input_*>(i)->undo();
 }
 
 
 
 
 int fl_input_get_readonly(INPUT i) {
-    return reinterpret_cast<Fl_Input_*>(i)->readonly();
+    return static_cast<Fl_Input_*>(i)->readonly();
 }
 
 void fl_input_set_readonly(INPUT i, int t) {
-    reinterpret_cast<Fl_Input_*>(i)->readonly(t);
+    static_cast<Fl_Input_*>(i)->readonly(t);
 }
 
 int fl_input_get_tab_nav(INPUT i) {
-    return reinterpret_cast<Fl_Input_*>(i)->tab_nav();
+    return static_cast<Fl_Input_*>(i)->tab_nav();
 }
 
 void fl_input_set_tab_nav(INPUT i, int t) {
-    reinterpret_cast<Fl_Input_*>(i)->tab_nav(t);
+    static_cast<Fl_Input_*>(i)->tab_nav(t);
 }
 
 int fl_input_get_wrap(INPUT i) {
-    return reinterpret_cast<Fl_Input_*>(i)->wrap();
+    return static_cast<Fl_Input_*>(i)->wrap();
 }
 
 void fl_input_set_wrap(INPUT i, int t) {
-    reinterpret_cast<Fl_Input_*>(i)->wrap(t);
+    static_cast<Fl_Input_*>(i)->wrap(t);
 }
 
 
 
 
 int fl_input_get_input_type(INPUT i) {
-    return reinterpret_cast<Fl_Input_*>(i)->input_type();
+    return static_cast<Fl_Input_*>(i)->input_type();
 }
 
 void fl_input_set_input_type(INPUT i, int t) {
-    reinterpret_cast<Fl_Input_*>(i)->input_type(t);
+    static_cast<Fl_Input_*>(i)->input_type(t);
 }
 
 unsigned long fl_input_get_shortcut(INPUT i) {
-    return reinterpret_cast<Fl_Input_*>(i)->shortcut();
+    return static_cast<Fl_Input_*>(i)->shortcut();
 }
 
 void fl_input_set_shortcut(INPUT i, unsigned long t) {
-    reinterpret_cast<Fl_Input_*>(i)->shortcut(t);
+    static_cast<Fl_Input_*>(i)->shortcut(t);
 }
 
 int fl_input_get_mark(INPUT i) {
-    return reinterpret_cast<Fl_Input_*>(i)->mark();
+    return static_cast<Fl_Input_*>(i)->mark();
 }
 
 int fl_input_set_mark(INPUT i, int t) {
-    return reinterpret_cast<Fl_Input_*>(i)->mark(t);
+    return static_cast<Fl_Input_*>(i)->mark(t);
 }
 
 int fl_input_get_position(INPUT i) {
-    return reinterpret_cast<Fl_Input_*>(i)->position();
+    return static_cast<Fl_Input_*>(i)->position();
 }
 
 int fl_input_set_position(INPUT i, int t) {
-    return reinterpret_cast<Fl_Input_*>(i)->position(t);
+    return static_cast<Fl_Input_*>(i)->position(t);
 }
 
 int fl_input_set_position2(INPUT i, int p, int m) {
-    return reinterpret_cast<Fl_Input_*>(i)->position(p, m);
+    return static_cast<Fl_Input_*>(i)->position(p, m);
 }
 
 
 
 
 unsigned int fl_input_index(INPUT i, int p) {
-    return reinterpret_cast<Fl_Input_*>(i)->index(p);
+    return static_cast<Fl_Input_*>(i)->index(p);
 }
 
 int fl_input_insert(INPUT i, const char * s, int l) {
-    return reinterpret_cast<Fl_Input_*>(i)->insert(s,l);
+    return static_cast<Fl_Input_*>(i)->insert(s,l);
 }
 
 int fl_input_replace(INPUT i, int b, int e, const char * s, int l) {
-    return reinterpret_cast<Fl_Input_*>(i)->replace(b,e,s,l);
+    return static_cast<Fl_Input_*>(i)->replace(b,e,s,l);
 }
 
 const char * fl_input_get_value(INPUT i) {
-    return reinterpret_cast<Fl_Input_*>(i)->value();
+    return static_cast<Fl_Input_*>(i)->value();
 }
 
 int fl_input_set_value(INPUT i, char * s, int len) {
-    return reinterpret_cast<Fl_Input_*>(i)->value(s,len);
+    return static_cast<Fl_Input_*>(i)->value(s,len);
 }
 
 
 
 
 int fl_input_get_maximum_size(INPUT i) {
-    return reinterpret_cast<Fl_Input_*>(i)->maximum_size();
+    return static_cast<Fl_Input_*>(i)->maximum_size();
 }
 
 void fl_input_set_maximum_size(INPUT i, int t) {
-    reinterpret_cast<Fl_Input_*>(i)->maximum_size(t);
+    static_cast<Fl_Input_*>(i)->maximum_size(t);
 }
 
 int fl_input_get_size(INPUT i) {
-    return reinterpret_cast<Fl_Input_*>(i)->size();
+    return static_cast<Fl_Input_*>(i)->size();
 }
 
 
 
 
 unsigned int fl_input_get_cursor_color(INPUT i) {
-    return reinterpret_cast<Fl_Input_*>(i)->cursor_color();
+    return static_cast<Fl_Input_*>(i)->cursor_color();
 }
 
 void fl_input_set_cursor_color(INPUT i, unsigned int t) {
-    reinterpret_cast<Fl_Input_*>(i)->cursor_color(t);
+    static_cast<Fl_Input_*>(i)->cursor_color(t);
 }
 
 unsigned int fl_input_get_textcolor(INPUT i) {
-    return reinterpret_cast<Fl_Input_*>(i)->textcolor();
+    return static_cast<Fl_Input_*>(i)->textcolor();
 }
 
 void fl_input_set_textcolor(INPUT i, unsigned int t) {
-    reinterpret_cast<Fl_Input_*>(i)->textcolor(t);
+    static_cast<Fl_Input_*>(i)->textcolor(t);
 }
 
 int fl_input_get_textfont(INPUT i) {
-    return reinterpret_cast<Fl_Input_*>(i)->textfont();
+    return static_cast<Fl_Input_*>(i)->textfont();
 }
 
 void fl_input_set_textfont(INPUT i, int t) {
-    reinterpret_cast<Fl_Input_*>(i)->textfont(t);
+    static_cast<Fl_Input_*>(i)->textfont(t);
 }
 
 int fl_input_get_textsize(INPUT i) {
-    return reinterpret_cast<Fl_Input_*>(i)->textsize();
+    return static_cast<Fl_Input_*>(i)->textsize();
 }
 
 void fl_input_set_textsize(INPUT i, int t) {
-    reinterpret_cast<Fl_Input_*>(i)->textsize(t);
+    static_cast<Fl_Input_*>(i)->textsize(t);
 }
 
 
 
 
 void fl_input_set_size(INPUT i, int w, int h) {
-    reinterpret_cast<Fl_Input_*>(i)->size(w,h);
+    static_cast<Fl_Input_*>(i)->size(w,h);
 }
 
 void fl_input_resize(INPUT i, int x, int y, int w, int h) {
-    reinterpret_cast<Fl_Input_*>(i)->Fl_Input_::resize(x, y, w, h);
+    static_cast<Fl_Input_*>(i)->Fl_Input_::resize(x, y, w, h);
 }
 
 
@@ -243,7 +243,7 @@ void fl_input_draw(INPUT i) {
 }
 
 int fl_input_handle(INPUT i, int e) {
-    return reinterpret_cast<My_Input*>(i)->Fl_Input_::handle(e);
+    return static_cast<My_Input*>(i)->Fl_Input_::handle(e);
 }
 
 

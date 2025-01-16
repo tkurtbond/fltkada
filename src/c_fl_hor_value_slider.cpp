@@ -50,18 +50,18 @@ HORVALUESLIDER new_fl_hor_value_slider(int x, int y, int w, int h, char* label) 
 }
 
 void free_fl_hor_value_slider(HORVALUESLIDER s) {
-    delete reinterpret_cast<My_Hor_Value_Slider*>(s);
+    delete static_cast<My_Hor_Value_Slider*>(s);
 }
 
 
 
 
 void fl_hor_value_slider_draw(HORVALUESLIDER s) {
-    reinterpret_cast<My_Hor_Value_Slider*>(s)->Fl_Hor_Value_Slider::draw();
+    static_cast<My_Hor_Value_Slider*>(s)->Fl_Hor_Value_Slider::draw();
 }
 
 int fl_hor_value_slider_handle(HORVALUESLIDER s, int e) {
-    return reinterpret_cast<My_Hor_Value_Slider*>(s)->Fl_Hor_Value_Slider::handle(e);
+    return static_cast<My_Hor_Value_Slider*>(s)->Fl_Hor_Value_Slider::handle(e);
 }
 
 

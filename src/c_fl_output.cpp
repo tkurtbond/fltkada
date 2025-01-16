@@ -50,18 +50,18 @@ OUTPUTT new_fl_output(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_output(OUTPUTT i) {
-    delete reinterpret_cast<My_Output*>(i);
+    delete static_cast<My_Output*>(i);
 }
 
 
 
 
 void fl_output_draw(OUTPUTT i) {
-    reinterpret_cast<My_Output*>(i)->Fl_Output::draw();
+    static_cast<My_Output*>(i)->Fl_Output::draw();
 }
 
 int fl_output_handle(OUTPUTT i, int e) {
-    return reinterpret_cast<My_Output*>(i)->Fl_Output::handle(e);
+    return static_cast<My_Output*>(i)->Fl_Output::handle(e);
 }
 
 

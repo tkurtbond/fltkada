@@ -50,18 +50,18 @@ MENUBAR new_fl_menu_bar(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_menu_bar(MENUBAR m) {
-    delete reinterpret_cast<My_Menu_Bar*>(m);
+    delete static_cast<My_Menu_Bar*>(m);
 }
 
 
 
 
 void fl_menu_bar_draw(MENUBAR m) {
-    reinterpret_cast<My_Menu_Bar*>(m)->Fl_Menu_Bar::draw();
+    static_cast<My_Menu_Bar*>(m)->Fl_Menu_Bar::draw();
 }
 
 int fl_menu_bar_handle(MENUBAR m, int e) {
-    return reinterpret_cast<My_Menu_Bar*>(m)->Fl_Menu_Bar::handle(e);
+    return static_cast<My_Menu_Bar*>(m)->Fl_Menu_Bar::handle(e);
 }
 
 

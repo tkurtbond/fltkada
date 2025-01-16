@@ -50,56 +50,56 @@ VALUEOUTPUT new_fl_value_output(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_value_output(VALUEOUTPUT a) {
-    delete reinterpret_cast<My_Value_Output*>(a);
+    delete static_cast<My_Value_Output*>(a);
 }
 
 
 
 
 int fl_value_output_is_soft(VALUEOUTPUT a) {
-    return reinterpret_cast<Fl_Value_Output*>(a)->soft();
+    return static_cast<Fl_Value_Output*>(a)->soft();
 }
 
 void fl_value_output_set_soft(VALUEOUTPUT a, int t) {
-    reinterpret_cast<Fl_Value_Output*>(a)->soft(t);
+    static_cast<Fl_Value_Output*>(a)->soft(t);
 }
 
 
 
 
 unsigned int fl_value_output_get_text_color(VALUEOUTPUT v) {
-    return reinterpret_cast<Fl_Value_Output*>(v)->textcolor();
+    return static_cast<Fl_Value_Output*>(v)->textcolor();
 }
 
 void fl_value_output_set_text_color(VALUEOUTPUT v, unsigned int c) {
-    reinterpret_cast<Fl_Value_Output*>(v)->textcolor(static_cast<Fl_Color>(c));
+    static_cast<Fl_Value_Output*>(v)->textcolor(static_cast<Fl_Color>(c));
 }
 
 int fl_value_output_get_text_font(VALUEOUTPUT v) {
-    return reinterpret_cast<Fl_Value_Output*>(v)->textfont();
+    return static_cast<Fl_Value_Output*>(v)->textfont();
 }
 
 void fl_value_output_set_text_font(VALUEOUTPUT v, int f) {
-    reinterpret_cast<Fl_Value_Output*>(v)->textfont(static_cast<Fl_Font>(f));
+    static_cast<Fl_Value_Output*>(v)->textfont(static_cast<Fl_Font>(f));
 }
 
 int fl_value_output_get_text_size(VALUEOUTPUT v) {
-    return reinterpret_cast<Fl_Value_Output*>(v)->textsize();
+    return static_cast<Fl_Value_Output*>(v)->textsize();
 }
 
 void fl_value_output_set_text_size(VALUEOUTPUT v, int s) {
-    reinterpret_cast<Fl_Value_Output*>(v)->textsize(static_cast<Fl_Fontsize>(s));
+    static_cast<Fl_Value_Output*>(v)->textsize(static_cast<Fl_Fontsize>(s));
 }
 
 
 
 
 void fl_value_output_draw(VALUEOUTPUT a) {
-    reinterpret_cast<My_Value_Output*>(a)->Fl_Value_Output::draw();
+    static_cast<My_Value_Output*>(a)->Fl_Value_Output::draw();
 }
 
 int fl_value_output_handle(VALUEOUTPUT a, int e) {
-    return reinterpret_cast<My_Value_Output*>(a)->Fl_Value_Output::handle(e);
+    return static_cast<My_Value_Output*>(a)->Fl_Value_Output::handle(e);
 }
 
 

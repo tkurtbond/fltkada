@@ -24,8 +24,8 @@ class My_Fill_Dial : public Fl_Fill_Dial {
 public:
     using Fl_Fill_Dial::Fl_Fill_Dial;
 
-    friend void fl_fill_dial_draw(FILL_DIAL v);
-    friend int fl_fill_dial_handle(FILL_DIAL v, int e);
+    friend void fl_fill_dial_draw(FILLDIAL v);
+    friend int fl_fill_dial_handle(FILLDIAL v, int e);
 
     void draw();
     int handle(int e);
@@ -44,24 +44,24 @@ int My_Fill_Dial::handle(int e) {
 
 //  Flattened C API
 
-FILL_DIAL new_fl_fill_dial(int x, int y, int w, int h, char* label) {
+FILLDIAL new_fl_fill_dial(int x, int y, int w, int h, char* label) {
     My_Fill_Dial *v = new My_Fill_Dial(x, y, w, h, label);
     return v;
 }
 
-void free_fl_fill_dial(FILL_DIAL v) {
-    delete reinterpret_cast<My_Fill_Dial*>(v);
+void free_fl_fill_dial(FILLDIAL v) {
+    delete static_cast<My_Fill_Dial*>(v);
 }
 
 
 
 
-void fl_fill_dial_draw(FILL_DIAL v) {
-    reinterpret_cast<My_Fill_Dial*>(v)->Fl_Fill_Dial::draw();
+void fl_fill_dial_draw(FILLDIAL v) {
+    static_cast<My_Fill_Dial*>(v)->Fl_Fill_Dial::draw();
 }
 
-int fl_fill_dial_handle(FILL_DIAL v, int e) {
-    return reinterpret_cast<My_Fill_Dial*>(v)->Fl_Fill_Dial::handle(e);
+int fl_fill_dial_handle(FILLDIAL v, int e) {
+    return static_cast<My_Fill_Dial*>(v)->Fl_Fill_Dial::handle(e);
 }
 
 

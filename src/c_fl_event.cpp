@@ -21,7 +21,7 @@ void fl_event_set_event_dispatch(void * f) {
 }
 
 int fl_event_handle(int e, void * w) {
-    return Fl::handle_(e, reinterpret_cast<Fl_Window*>(w));
+    return Fl::handle_(e, static_cast<Fl_Window*>(w));
 }
 
 
@@ -32,7 +32,7 @@ void * fl_event_get_grab() {
 }
 
 void fl_event_set_grab(void * w) {
-    Fl::grab(reinterpret_cast<Fl_Window*>(w));
+    Fl::grab(static_cast<Fl_Window*>(w));
 }
 
 void * fl_event_get_pushed() {
@@ -40,7 +40,7 @@ void * fl_event_get_pushed() {
 }
 
 void fl_event_set_pushed(void * w) {
-    Fl::pushed(reinterpret_cast<Fl_Widget*>(w));
+    Fl::pushed(static_cast<Fl_Widget*>(w));
 }
 
 void * fl_event_get_belowmouse() {
@@ -48,7 +48,7 @@ void * fl_event_get_belowmouse() {
 }
 
 void fl_event_set_belowmouse(void * w) {
-    Fl::belowmouse(reinterpret_cast<Fl_Widget*>(w));
+    Fl::belowmouse(static_cast<Fl_Widget*>(w));
 }
 
 void * fl_event_get_focus() {
@@ -56,7 +56,7 @@ void * fl_event_get_focus() {
 }
 
 void fl_event_set_focus(void * w) {
-    Fl::focus(reinterpret_cast<Fl_Widget*>(w));
+    Fl::focus(static_cast<Fl_Widget*>(w));
 }
 
 

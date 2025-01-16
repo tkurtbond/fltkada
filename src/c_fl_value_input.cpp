@@ -50,92 +50,92 @@ VALUEINPUT new_fl_value_input(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_value_input(VALUEINPUT a) {
-    delete reinterpret_cast<My_Value_Input*>(a);
+    delete static_cast<My_Value_Input*>(a);
 }
 
 
 
 
 void * fl_value_input_get_input(VALUEINPUT v) {
-    return &(reinterpret_cast<Fl_Value_Input*>(v)->input);
+    return &(static_cast<Fl_Value_Input*>(v)->input);
 }
 
 
 
 
 unsigned int fl_value_input_get_cursor_color(VALUEINPUT v) {
-    return reinterpret_cast<Fl_Value_Input*>(v)->cursor_color();
+    return static_cast<Fl_Value_Input*>(v)->cursor_color();
 }
 
 void fl_value_input_set_cursor_color(VALUEINPUT v, unsigned int c) {
-    reinterpret_cast<Fl_Value_Input*>(v)->cursor_color(c);
+    static_cast<Fl_Value_Input*>(v)->cursor_color(c);
 }
 
 
 
 
 int fl_value_input_get_shortcut(VALUEINPUT v) {
-    return reinterpret_cast<Fl_Value_Input*>(v)->Fl_Value_Input::shortcut();
+    return static_cast<Fl_Value_Input*>(v)->Fl_Value_Input::shortcut();
 }
 
 void fl_value_input_set_shortcut(VALUEINPUT v, int k) {
-    reinterpret_cast<Fl_Value_Input*>(v)->Fl_Value_Input::shortcut(k);
+    static_cast<Fl_Value_Input*>(v)->Fl_Value_Input::shortcut(k);
 }
 
 
 
 
 int fl_value_input_is_soft(VALUEINPUT a) {
-    return reinterpret_cast<Fl_Value_Input*>(a)->soft();
+    return static_cast<Fl_Value_Input*>(a)->soft();
 }
 
 void fl_value_input_set_soft(VALUEINPUT a, int t) {
-    reinterpret_cast<Fl_Value_Input*>(a)->soft(t);
+    static_cast<Fl_Value_Input*>(a)->soft(t);
 }
 
 
 
 
 unsigned int fl_value_input_get_text_color(VALUEINPUT v) {
-    return reinterpret_cast<Fl_Value_Input*>(v)->textcolor();
+    return static_cast<Fl_Value_Input*>(v)->textcolor();
 }
 
 void fl_value_input_set_text_color(VALUEINPUT v, unsigned int c) {
-    reinterpret_cast<Fl_Value_Input*>(v)->textcolor(static_cast<Fl_Color>(c));
+    static_cast<Fl_Value_Input*>(v)->textcolor(static_cast<Fl_Color>(c));
 }
 
 int fl_value_input_get_text_font(VALUEINPUT v) {
-    return reinterpret_cast<Fl_Value_Input*>(v)->textfont();
+    return static_cast<Fl_Value_Input*>(v)->textfont();
 }
 
 void fl_value_input_set_text_font(VALUEINPUT v, int f) {
-    reinterpret_cast<Fl_Value_Input*>(v)->textfont(static_cast<Fl_Font>(f));
+    static_cast<Fl_Value_Input*>(v)->textfont(static_cast<Fl_Font>(f));
 }
 
 int fl_value_input_get_text_size(VALUEINPUT v) {
-    return reinterpret_cast<Fl_Value_Input*>(v)->textsize();
+    return static_cast<Fl_Value_Input*>(v)->textsize();
 }
 
 void fl_value_input_set_text_size(VALUEINPUT v, int s) {
-    reinterpret_cast<Fl_Value_Input*>(v)->textsize(static_cast<Fl_Fontsize>(s));
+    static_cast<Fl_Value_Input*>(v)->textsize(static_cast<Fl_Fontsize>(s));
 }
 
 
 
 
 void fl_value_input_resize(VALUEINPUT v, int x, int y, int w, int h) {
-    reinterpret_cast<Fl_Value_Input*>(v)->resize(x, y, w, h);
+    static_cast<Fl_Value_Input*>(v)->resize(x, y, w, h);
 }
 
 
 
 
 void fl_value_input_draw(VALUEINPUT a) {
-    reinterpret_cast<My_Value_Input*>(a)->Fl_Value_Input::draw();
+    static_cast<My_Value_Input*>(a)->Fl_Value_Input::draw();
 }
 
 int fl_value_input_handle(VALUEINPUT a, int e) {
-    return reinterpret_cast<My_Value_Input*>(a)->Fl_Value_Input::handle(e);
+    return static_cast<My_Value_Input*>(a)->Fl_Value_Input::handle(e);
 }
 
 

@@ -67,40 +67,40 @@ WIZARD new_fl_wizard(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_wizard(WIZARD w) {
-    delete reinterpret_cast<My_Wizard*>(w);
+    delete static_cast<My_Wizard*>(w);
 }
 
 
 
 
 void fl_wizard_next(WIZARD w) {
-    reinterpret_cast<Fl_Wizard*>(w)->next();
+    static_cast<Fl_Wizard*>(w)->next();
 }
 
 void fl_wizard_prev(WIZARD w) {
-    reinterpret_cast<Fl_Wizard*>(w)->prev();
+    static_cast<Fl_Wizard*>(w)->prev();
 }
 
 
 
 
 void * fl_wizard_get_visible(WIZARD w) {
-    return reinterpret_cast<Fl_Wizard*>(w)->value();
+    return static_cast<Fl_Wizard*>(w)->value();
 }
 
 void fl_wizard_set_visible(WIZARD w, void * i) {
-    reinterpret_cast<Fl_Wizard*>(w)->value(reinterpret_cast<Fl_Widget*>(i));
+    static_cast<Fl_Wizard*>(w)->value(static_cast<Fl_Widget*>(i));
 }
 
 
 
 
 void fl_wizard_draw(WIZARD w) {
-    reinterpret_cast<My_Wizard*>(w)->real_draw();
+    static_cast<My_Wizard*>(w)->real_draw();
 }
 
 int fl_wizard_handle(WIZARD w, int e) {
-    return reinterpret_cast<My_Wizard*>(w)->Fl_Wizard::handle(e);
+    return static_cast<My_Wizard*>(w)->Fl_Wizard::handle(e);
 }
 
 

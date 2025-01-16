@@ -65,52 +65,52 @@ OVERLAYWINDOW new_fl_overlay_window2(int w, int h, char *label) {
 }
 
 void free_fl_overlay_window(OVERLAYWINDOW w) {
-    delete reinterpret_cast<My_Overlay_Window*>(w);
+    delete static_cast<My_Overlay_Window*>(w);
 }
 
 
 
 
 int fl_overlay_window_can_do_overlay(OVERLAYWINDOW w) {
-    return reinterpret_cast<Fl_Overlay_Window*>(w)->can_do_overlay();
+    return static_cast<Fl_Overlay_Window*>(w)->can_do_overlay();
 }
 
 void fl_overlay_window_resize(OVERLAYWINDOW ow, int x, int y, int w, int h) {
-    reinterpret_cast<Fl_Overlay_Window*>(ow)->resize(x, y, w, h);
+    static_cast<Fl_Overlay_Window*>(ow)->resize(x, y, w, h);
 }
 
 
 
 
 void fl_overlay_window_show(OVERLAYWINDOW w) {
-    reinterpret_cast<Fl_Overlay_Window*>(w)->show();
+    static_cast<Fl_Overlay_Window*>(w)->show();
 }
 
 void fl_overlay_window_show2(OVERLAYWINDOW w, int c, void * v) {
-    reinterpret_cast<Fl_Overlay_Window*>(w)->show(c, static_cast<char**>(v));
+    static_cast<Fl_Overlay_Window*>(w)->show(c, static_cast<char**>(v));
 }
 
 void fl_overlay_window_hide(OVERLAYWINDOW w) {
-    reinterpret_cast<Fl_Overlay_Window*>(w)->hide();
+    static_cast<Fl_Overlay_Window*>(w)->hide();
 }
 
 void fl_overlay_window_flush(OVERLAYWINDOW w) {
-    reinterpret_cast<Fl_Overlay_Window*>(w)->flush();
+    static_cast<Fl_Overlay_Window*>(w)->flush();
 }
 
 
 
 
 void fl_overlay_window_redraw_overlay(OVERLAYWINDOW w) {
-    reinterpret_cast<Fl_Overlay_Window*>(w)->redraw_overlay();
+    static_cast<Fl_Overlay_Window*>(w)->redraw_overlay();
 }
 
 void fl_overlay_window_draw(OVERLAYWINDOW w) {
-    reinterpret_cast<My_Overlay_Window*>(w)->Fl_Overlay_Window::draw();
+    static_cast<My_Overlay_Window*>(w)->Fl_Overlay_Window::draw();
 }
 
 int fl_overlay_window_handle(OVERLAYWINDOW w, int e) {
-    return reinterpret_cast<My_Overlay_Window*>(w)->Fl_Overlay_Window::handle(e);
+    return static_cast<My_Overlay_Window*>(w)->Fl_Overlay_Window::handle(e);
 }
 
 

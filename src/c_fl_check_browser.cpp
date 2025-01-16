@@ -197,140 +197,140 @@ CHECKBROWSER new_fl_check_browser(int x, int y, int w, int h, char * label) {
 }
 
 void free_fl_check_browser(CHECKBROWSER c) {
-    delete reinterpret_cast<My_Check_Browser*>(c);
+    delete static_cast<My_Check_Browser*>(c);
 }
 
 
 
 
 int fl_check_browser_add(CHECKBROWSER c, const char * s, int b) {
-    return reinterpret_cast<Fl_Check_Browser*>(c)->add(s, b);
+    return static_cast<Fl_Check_Browser*>(c)->add(s, b);
 }
 
 int fl_check_browser_remove(CHECKBROWSER c, int i) {
-    return reinterpret_cast<Fl_Check_Browser*>(c)->remove(i);
+    return static_cast<Fl_Check_Browser*>(c)->remove(i);
 }
 
 void fl_check_browser_clear(CHECKBROWSER c) {
-    reinterpret_cast<Fl_Check_Browser*>(c)->clear();
+    static_cast<Fl_Check_Browser*>(c)->clear();
 }
 
 int fl_check_browser_nitems(CHECKBROWSER c) {
-    return reinterpret_cast<Fl_Check_Browser*>(c)->nitems();
+    return static_cast<Fl_Check_Browser*>(c)->nitems();
 }
 
 
 
 
 void fl_check_browser_check_all(CHECKBROWSER c) {
-    reinterpret_cast<Fl_Check_Browser*>(c)->check_all();
+    static_cast<Fl_Check_Browser*>(c)->check_all();
 }
 
 void fl_check_browser_check_none(CHECKBROWSER c) {
-    reinterpret_cast<Fl_Check_Browser*>(c)->check_none();
+    static_cast<Fl_Check_Browser*>(c)->check_none();
 }
 
 int fl_check_browser_get_checked(CHECKBROWSER c, int i) {
-    return reinterpret_cast<Fl_Check_Browser*>(c)->checked(i);
+    return static_cast<Fl_Check_Browser*>(c)->checked(i);
 }
 
 void fl_check_browser_set_checked(CHECKBROWSER c, int i, int b) {
-    reinterpret_cast<Fl_Check_Browser*>(c)->checked(i, b);
+    static_cast<Fl_Check_Browser*>(c)->checked(i, b);
 }
 
 int fl_check_browser_nchecked(CHECKBROWSER c) {
-    return reinterpret_cast<Fl_Check_Browser*>(c)->nchecked();
+    return static_cast<Fl_Check_Browser*>(c)->nchecked();
 }
 
 
 
 
 const char * fl_check_browser_text(CHECKBROWSER c, int i) {
-    return reinterpret_cast<Fl_Check_Browser*>(c)->text(i);
+    return static_cast<Fl_Check_Browser*>(c)->text(i);
 }
 
 int fl_check_browser_value(CHECKBROWSER c) {
-    return reinterpret_cast<Fl_Check_Browser*>(c)->value();
+    return static_cast<Fl_Check_Browser*>(c)->value();
 }
 
 
 
 
 int fl_check_browser_full_width(CHECKBROWSER c) {
-    return reinterpret_cast<My_Check_Browser*>(c)->Fl_Check_Browser::full_width();
+    return static_cast<My_Check_Browser*>(c)->Fl_Check_Browser::full_width();
 }
 
 int fl_check_browser_full_height(CHECKBROWSER c) {
-    return reinterpret_cast<My_Check_Browser*>(c)->Fl_Check_Browser::full_height();
+    return static_cast<My_Check_Browser*>(c)->Fl_Check_Browser::full_height();
 }
 
 int fl_check_browser_incr_height(CHECKBROWSER c) {
-    return reinterpret_cast<My_Check_Browser*>(c)->Fl_Check_Browser::incr_height();
+    return static_cast<My_Check_Browser*>(c)->Fl_Check_Browser::incr_height();
 }
 
 int fl_check_browser_item_quick_height(CHECKBROWSER c, void * i) {
-    return reinterpret_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_quick_height(i);
+    return static_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_quick_height(i);
 }
 
 
 
 
 int fl_check_browser_item_width(CHECKBROWSER c, void * i) {
-    return (reinterpret_cast<Fl_Check_Browser*>(c)->*(&Friend_Browser::item_width))(i);
-    //  return reinterpret_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_width(i);
+    return (static_cast<Fl_Check_Browser*>(c)->*(&Friend_Browser::item_width))(i);
+    //  return static_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_width(i);
 }
 
 int fl_check_browser_item_height(CHECKBROWSER c, void * i) {
-    return (reinterpret_cast<Fl_Check_Browser*>(c)->*(&Friend_Browser::item_height))(i);
-    //  return reinterpret_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_height(i);
+    return (static_cast<Fl_Check_Browser*>(c)->*(&Friend_Browser::item_height))(i);
+    //  return static_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_height(i);
 }
 
 void * fl_check_browser_item_first(CHECKBROWSER c) {
-    return (reinterpret_cast<Fl_Check_Browser*>(c)->*(&Friend_Browser::item_first))();
-    //  return reinterpret_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_first();
+    return (static_cast<Fl_Check_Browser*>(c)->*(&Friend_Browser::item_first))();
+    //  return static_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_first();
 }
 
 //  missing item_last
 
 void * fl_check_browser_item_next(CHECKBROWSER c, void * i) {
-    return (reinterpret_cast<Fl_Check_Browser*>(c)->*(&Friend_Browser::item_next))(i);
-    //  return reinterpret_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_next(i);
+    return (static_cast<Fl_Check_Browser*>(c)->*(&Friend_Browser::item_next))(i);
+    //  return static_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_next(i);
 }
 
 void * fl_check_browser_item_prev(CHECKBROWSER c, void * i) {
-    return (reinterpret_cast<Fl_Check_Browser*>(c)->*(&Friend_Browser::item_prev))(i);
-    //  return reinterpret_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_prev(i);
+    return (static_cast<Fl_Check_Browser*>(c)->*(&Friend_Browser::item_prev))(i);
+    //  return static_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_prev(i);
 }
 
 //  missing item_at
 
 void fl_check_browser_item_select(CHECKBROWSER c, void * i, int v) {
-    (reinterpret_cast<Fl_Check_Browser*>(c)->*(&Friend_Browser::item_select))(i, v);
-    //  reinterpret_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_select(i, v);
+    (static_cast<Fl_Check_Browser*>(c)->*(&Friend_Browser::item_select))(i, v);
+    //  static_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_select(i, v);
 }
 
 int fl_check_browser_item_selected(CHECKBROWSER c, void * i) {
-    return (reinterpret_cast<Fl_Check_Browser*>(c)->*(&Friend_Browser::item_selected))(i);
-    //  return reinterpret_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_selected(i);
+    return (static_cast<Fl_Check_Browser*>(c)->*(&Friend_Browser::item_selected))(i);
+    //  return static_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_selected(i);
 }
 
 //  missing item_swap
 //  missing item_text
 
 void fl_check_browser_item_draw(CHECKBROWSER c, void * item, int x, int y, int w, int h) {
-    (reinterpret_cast<Fl_Check_Browser*>(c)->*(&Friend_Browser::item_draw))(item, x, y, w, h);
-    //  reinterpret_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_draw(item, x, y, w, h);
+    (static_cast<Fl_Check_Browser*>(c)->*(&Friend_Browser::item_draw))(item, x, y, w, h);
+    //  static_cast<My_Check_Browser*>(c)->Fl_Check_Browser::item_draw(item, x, y, w, h);
 }
 
 
 
 
 void fl_check_browser_draw(CHECKBROWSER c) {
-    reinterpret_cast<My_Check_Browser*>(c)->Fl_Check_Browser::draw();
+    static_cast<My_Check_Browser*>(c)->Fl_Check_Browser::draw();
 }
 
 int fl_check_browser_handle(CHECKBROWSER c, int e) {
-    return reinterpret_cast<My_Check_Browser*>(c)->Fl_Check_Browser::handle(e);
+    return static_cast<My_Check_Browser*>(c)->Fl_Check_Browser::handle(e);
 }
 
 

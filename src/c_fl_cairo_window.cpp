@@ -61,7 +61,7 @@ CAIROWINDOW new_fl_cairo_window(int w, int h) {
 }
 
 void free_fl_cairo_window(CAIROWINDOW w) {
-    delete reinterpret_cast<My_Cairo_Window*>(w);
+    delete static_cast<My_Cairo_Window*>(w);
 }
 
 
@@ -69,7 +69,7 @@ void free_fl_cairo_window(CAIROWINDOW w) {
 
 void fl_cairo_window_set_draw_cb(CAIROWINDOW w, void * cb) {
     #ifdef FLTK_HAVE_CAIRO
-    reinterpret_cast<Fl_Cairo_Window*>(w)->set_draw_cb(reinterpret_cast<cairo_draw_cb>(cb));
+    static_cast<Fl_Cairo_Window*>(w)->set_draw_cb(reinterpret_cast<cairo_draw_cb>(cb));
     #else
     (void)(w);
     (void)(cb);
@@ -81,17 +81,17 @@ void fl_cairo_window_set_draw_cb(CAIROWINDOW w, void * cb) {
 
 void fl_cairo_window_draw(CAIROWINDOW w) {
     #ifdef FLTK_HAVE_CAIRO
-    reinterpret_cast<My_Cairo_Window*>(w)->Fl_Cairo_Window::draw();
+    static_cast<My_Cairo_Window*>(w)->Fl_Cairo_Window::draw();
     #else
-    reinterpret_cast<My_Cairo_Window*>(w)->Fl_Double_Window::draw();
+    static_cast<My_Cairo_Window*>(w)->Fl_Double_Window::draw();
     #endif
 }
 
 int fl_cairo_window_handle(CAIROWINDOW w, int e) {
     #ifdef FLTK_HAVE_CAIRO
-    return reinterpret_cast<My_Cairo_Window*>(w)->Fl_Cairo_Window::handle(e);
+    return static_cast<My_Cairo_Window*>(w)->Fl_Cairo_Window::handle(e);
     #else
-    return reinterpret_cast<My_Cairo_Window*>(w)->Fl_Double_Window::handle(e);
+    return static_cast<My_Cairo_Window*>(w)->Fl_Double_Window::handle(e);
     #endif
 }
 

@@ -50,18 +50,18 @@ HORFILLSLIDER new_fl_hor_fill_slider(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_hor_fill_slider(HORFILLSLIDER s) {
-    delete reinterpret_cast<My_Hor_Fill_Slider*>(s);
+    delete static_cast<My_Hor_Fill_Slider*>(s);
 }
 
 
 
 
 void fl_hor_fill_slider_draw(HORFILLSLIDER s) {
-    reinterpret_cast<My_Hor_Fill_Slider*>(s)->Fl_Hor_Fill_Slider::draw();
+    static_cast<My_Hor_Fill_Slider*>(s)->Fl_Hor_Fill_Slider::draw();
 }
 
 int fl_hor_fill_slider_handle(HORFILLSLIDER s, int e) {
-    return reinterpret_cast<My_Hor_Fill_Slider*>(s)->Fl_Hor_Fill_Slider::handle(e);
+    return static_cast<My_Hor_Fill_Slider*>(s)->Fl_Hor_Fill_Slider::handle(e);
 }
 
 

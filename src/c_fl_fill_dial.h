@@ -8,15 +8,15 @@
 #define FL_FILL_DIAL_GUARD
 
 
-typedef void* FILL_DIAL;
+typedef void* FILLDIAL;
 
 
-extern "C" FILL_DIAL new_fl_fill_dial(int x, int y, int w, int h, char* label);
-extern "C" void free_fl_fill_dial(FILL_DIAL v);
+extern "C" FILLDIAL new_fl_fill_dial(int x, int y, int w, int h, char* label);
+extern "C" void free_fl_fill_dial(FILLDIAL v);
 
 
-extern "C" void fl_fill_dial_draw(FILL_DIAL v);
-extern "C" int fl_fill_dial_handle(FILL_DIAL v, int e);
+extern "C" void fl_fill_dial_draw(FILLDIAL v);
+extern "C" int fl_fill_dial_handle(FILLDIAL v, int e);
 
 
 #endif

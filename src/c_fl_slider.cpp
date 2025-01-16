@@ -67,55 +67,55 @@ SLIDER new_fl_slider2(unsigned char k, int x, int y, int w, int h, char * label)
 }
 
 void free_fl_slider(SLIDER s) {
-    delete reinterpret_cast<My_Slider*>(s);
+    delete static_cast<My_Slider*>(s);
 }
 
 
 
 
 void fl_slider_set_bounds(SLIDER s, double a, double b) {
-    reinterpret_cast<Fl_Slider*>(s)->bounds(a,b);
+    static_cast<Fl_Slider*>(s)->bounds(a,b);
 }
 
 int fl_slider_get_slider(SLIDER s) {
-    return reinterpret_cast<Fl_Slider*>(s)->slider();
+    return static_cast<Fl_Slider*>(s)->slider();
 }
 
 void fl_slider_set_slider(SLIDER s, int t) {
-    reinterpret_cast<Fl_Slider*>(s)->slider(static_cast<Fl_Boxtype>(t));
+    static_cast<Fl_Slider*>(s)->slider(static_cast<Fl_Boxtype>(t));
 }
 
 float fl_slider_get_slider_size(SLIDER s) {
-    return reinterpret_cast<Fl_Slider*>(s)->slider_size();
+    return static_cast<Fl_Slider*>(s)->slider_size();
 }
 
 void fl_slider_set_slider_size(SLIDER s, double t) {
-    reinterpret_cast<Fl_Slider*>(s)->slider_size(t);
+    static_cast<Fl_Slider*>(s)->slider_size(t);
 }
 
 int fl_slider_scrollvalue(SLIDER s, int p, int z, int f, int t) {
-    return reinterpret_cast<Fl_Slider*>(s)->scrollvalue(p,z,f,t);
+    return static_cast<Fl_Slider*>(s)->scrollvalue(p,z,f,t);
 }
 
 
 
 
 void fl_slider_draw(SLIDER s) {
-    reinterpret_cast<My_Slider*>(s)->Fl_Slider::draw();
+    static_cast<My_Slider*>(s)->Fl_Slider::draw();
 }
 
 void fl_slider_draw2(SLIDER s, int x, int y, int w, int h) {
     void (Fl_Slider::*mydraw)(int,int,int,int) = &Friend_Slider::draw;
-    (reinterpret_cast<Fl_Slider*>(s)->*mydraw)(x, y, w, h);
+    (static_cast<Fl_Slider*>(s)->*mydraw)(x, y, w, h);
 }
 
 int fl_slider_handle(SLIDER s, int e) {
-    return reinterpret_cast<My_Slider*>(s)->Fl_Slider::handle(e);
+    return static_cast<My_Slider*>(s)->Fl_Slider::handle(e);
 }
 
 int fl_slider_handle2(SLIDER s, int e, int x, int y, int w, int h) {
     int (Fl_Slider::*myhandle)(int,int,int,int,int) = &Friend_Slider::handle;
-    return (reinterpret_cast<Fl_Slider*>(s)->*myhandle)(e, x, y, w, h);
+    return (static_cast<Fl_Slider*>(s)->*myhandle)(e, x, y, w, h);
 }
 
 

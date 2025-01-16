@@ -8,8 +8,6 @@
 #define FL_GUARD
 
 
-
-
 extern "C" size_t c_pointer_size();
 
 
@@ -38,4 +36,5 @@ extern "C" int fl_run();
 
 
 #endif
+
 

@@ -50,18 +50,18 @@ RADIOLIGHTBUTTON new_fl_radio_light_button(int x, int y, int w, int h, char* lab
 }
 
 void free_fl_radio_light_button(RADIOLIGHTBUTTON b) {
-    delete reinterpret_cast<My_Radio_Light_Button*>(b);
+    delete static_cast<My_Radio_Light_Button*>(b);
 }
 
 
 
 
 void fl_radio_light_button_draw(RADIOLIGHTBUTTON b) {
-    reinterpret_cast<My_Radio_Light_Button*>(b)->Fl_Radio_Light_Button::draw();
+    static_cast<My_Radio_Light_Button*>(b)->Fl_Radio_Light_Button::draw();
 }
 
 int fl_radio_light_button_handle(RADIOLIGHTBUTTON b, int e) {
-    return reinterpret_cast<My_Radio_Light_Button*>(b)->Fl_Radio_Light_Button::handle(e);
+    return static_cast<My_Radio_Light_Button*>(b)->Fl_Radio_Light_Button::handle(e);
 }
 
 

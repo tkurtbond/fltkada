@@ -50,25 +50,25 @@ REPEATBUTTON new_fl_repeat_button(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_repeat_button(REPEATBUTTON b) {
-    delete reinterpret_cast<My_Repeat_Button*>(b);
+    delete static_cast<My_Repeat_Button*>(b);
 }
 
 
 
 
 void fl_repeat_button_deactivate(REPEATBUTTON b) {
-    reinterpret_cast<Fl_Repeat_Button*>(b)->deactivate();
+    static_cast<Fl_Repeat_Button*>(b)->deactivate();
 }
 
 
 
 
 void fl_repeat_button_draw(REPEATBUTTON b) {
-    reinterpret_cast<My_Repeat_Button*>(b)->Fl_Repeat_Button::draw();
+    static_cast<My_Repeat_Button*>(b)->Fl_Repeat_Button::draw();
 }
 
 int fl_repeat_button_handle(REPEATBUTTON b, int e) {
-    return reinterpret_cast<My_Repeat_Button*>(b)->Fl_Repeat_Button::handle(e);
+    return static_cast<My_Repeat_Button*>(b)->Fl_Repeat_Button::handle(e);
 }
 
 

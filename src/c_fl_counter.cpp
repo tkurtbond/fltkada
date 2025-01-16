@@ -50,64 +50,64 @@ COUNTER new_fl_counter(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_counter(COUNTER c) {
-    delete reinterpret_cast<My_Counter*>(c);
+    delete static_cast<My_Counter*>(c);
 }
 
 
 
 
 double fl_counter_get_step(COUNTER c) {
-    return reinterpret_cast<Fl_Counter*>(c)->step();
+    return static_cast<Fl_Counter*>(c)->step();
 }
 
 void fl_counter_set_step_top(COUNTER c, double t) {
-    reinterpret_cast<Fl_Counter*>(c)->step(t);
+    static_cast<Fl_Counter*>(c)->step(t);
 }
 
 void fl_counter_set_lstep(COUNTER c, double t) {
-    reinterpret_cast<Fl_Counter*>(c)->lstep(t);
+    static_cast<Fl_Counter*>(c)->lstep(t);
 }
 
 void fl_counter_set_step_both(COUNTER c, double s, double l) {
-    reinterpret_cast<Fl_Counter*>(c)->step(s, l);
+    static_cast<Fl_Counter*>(c)->step(s, l);
 }
 
 
 
 
 unsigned int fl_counter_get_textcolor(COUNTER c) {
-    return reinterpret_cast<Fl_Counter*>(c)->textcolor();
+    return static_cast<Fl_Counter*>(c)->textcolor();
 }
 
 void fl_counter_set_textcolor(COUNTER c, unsigned int t) {
-    reinterpret_cast<Fl_Counter*>(c)->textcolor(t);
+    static_cast<Fl_Counter*>(c)->textcolor(t);
 }
 
 int fl_counter_get_textfont(COUNTER c) {
-    return reinterpret_cast<Fl_Counter*>(c)->textfont();
+    return static_cast<Fl_Counter*>(c)->textfont();
 }
 
 void fl_counter_set_textfont(COUNTER c, int t) {
-    reinterpret_cast<Fl_Counter*>(c)->textfont(t);
+    static_cast<Fl_Counter*>(c)->textfont(t);
 }
 
 int fl_counter_get_textsize(COUNTER c) {
-    return reinterpret_cast<Fl_Counter*>(c)->textsize();
+    return static_cast<Fl_Counter*>(c)->textsize();
 }
 
 void fl_counter_set_textsize(COUNTER c, int t) {
-    reinterpret_cast<Fl_Counter*>(c)->textsize(t);
+    static_cast<Fl_Counter*>(c)->textsize(t);
 }
 
 
 
 
 void fl_counter_draw(COUNTER c) {
-    reinterpret_cast<My_Counter*>(c)->Fl_Counter::draw();
+    static_cast<My_Counter*>(c)->Fl_Counter::draw();
 }
 
 int fl_counter_handle(COUNTER c, int e) {
-    return reinterpret_cast<My_Counter*>(c)->Fl_Counter::handle(e);
+    return static_cast<My_Counter*>(c)->Fl_Counter::handle(e);
 }
 
 

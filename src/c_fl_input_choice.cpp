@@ -50,102 +50,102 @@ INPUTCHOICE new_fl_input_choice(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_input_choice(INPUTCHOICE n) {
-    delete reinterpret_cast<My_Input_Choice*>(n);
+    delete static_cast<My_Input_Choice*>(n);
 }
 
 
 
 
 void * fl_input_choice_input(INPUTCHOICE n) {
-    return reinterpret_cast<Fl_Input_Choice*>(n)->input();
+    return static_cast<Fl_Input_Choice*>(n)->input();
 }
 
 void * fl_input_choice_menubutton(INPUTCHOICE n) {
-    return reinterpret_cast<Fl_Input_Choice*>(n)->menubutton();
+    return static_cast<Fl_Input_Choice*>(n)->menubutton();
 }
 
 
 
 
 void fl_input_choice_clear(INPUTCHOICE n) {
-    reinterpret_cast<Fl_Input_Choice*>(n)->clear();
+    static_cast<Fl_Input_Choice*>(n)->clear();
 }
 
 
 
 
 int fl_input_choice_changed(INPUTCHOICE n) {
-    return reinterpret_cast<Fl_Input_Choice*>(n)->changed();
+    return static_cast<Fl_Input_Choice*>(n)->changed();
 }
 
 void fl_input_choice_clear_changed(INPUTCHOICE n) {
-    reinterpret_cast<Fl_Input_Choice*>(n)->clear_changed();
+    static_cast<Fl_Input_Choice*>(n)->clear_changed();
 }
 
 void fl_input_choice_set_changed(INPUTCHOICE n) {
-    reinterpret_cast<Fl_Input_Choice*>(n)->set_changed();
+    static_cast<Fl_Input_Choice*>(n)->set_changed();
 }
 
 int fl_input_choice_get_down_box(INPUTCHOICE n) {
-    return reinterpret_cast<Fl_Input_Choice*>(n)->down_box();
+    return static_cast<Fl_Input_Choice*>(n)->down_box();
 }
 
 void fl_input_choice_set_down_box(INPUTCHOICE n, int t) {
-    reinterpret_cast<Fl_Input_Choice*>(n)->down_box(static_cast<Fl_Boxtype>(t));
+    static_cast<Fl_Input_Choice*>(n)->down_box(static_cast<Fl_Boxtype>(t));
 }
 
 unsigned int fl_input_choice_get_textcolor(INPUTCHOICE n) {
-    return reinterpret_cast<Fl_Input_Choice*>(n)->textcolor();
+    return static_cast<Fl_Input_Choice*>(n)->textcolor();
 }
 
 void fl_input_choice_set_textcolor(INPUTCHOICE n, unsigned int t) {
-    reinterpret_cast<Fl_Input_Choice*>(n)->textcolor(t);
+    static_cast<Fl_Input_Choice*>(n)->textcolor(t);
 }
 
 int fl_input_choice_get_textfont(INPUTCHOICE n) {
-    return reinterpret_cast<Fl_Input_Choice*>(n)->textfont();
+    return static_cast<Fl_Input_Choice*>(n)->textfont();
 }
 
 void fl_input_choice_set_textfont(INPUTCHOICE n, int t) {
-    reinterpret_cast<Fl_Input_Choice*>(n)->textfont(t);
+    static_cast<Fl_Input_Choice*>(n)->textfont(t);
 }
 
 int fl_input_choice_get_textsize(INPUTCHOICE n) {
-    return reinterpret_cast<Fl_Input_Choice*>(n)->textsize();
+    return static_cast<Fl_Input_Choice*>(n)->textsize();
 }
 
 void fl_input_choice_set_textsize(INPUTCHOICE n, int t) {
-    reinterpret_cast<Fl_Input_Choice*>(n)->textsize(t);
+    static_cast<Fl_Input_Choice*>(n)->textsize(t);
 }
 
 const char * fl_input_choice_get_value(INPUTCHOICE n) {
-    return reinterpret_cast<Fl_Input_Choice*>(n)->value();
+    return static_cast<Fl_Input_Choice*>(n)->value();
 }
 
 void fl_input_choice_set_value(INPUTCHOICE n, const char * t) {
-    reinterpret_cast<Fl_Input_Choice*>(n)->value(t);
+    static_cast<Fl_Input_Choice*>(n)->value(t);
 }
 
 void fl_input_choice_set_value2(INPUTCHOICE n, int t) {
-    reinterpret_cast<Fl_Input_Choice*>(n)->value(t);
+    static_cast<Fl_Input_Choice*>(n)->value(t);
 }
 
 
 
 
 void fl_input_choice_resize(INPUTCHOICE n, int x, int y, int w, int h) {
-    reinterpret_cast<Fl_Input_Choice*>(n)->resize(x, y, w, h);
+    static_cast<Fl_Input_Choice*>(n)->resize(x, y, w, h);
 }
 
 
 
 
 void fl_input_choice_draw(INPUTCHOICE n) {
-    reinterpret_cast<My_Input_Choice*>(n)->Fl_Input_Choice::draw();
+    static_cast<My_Input_Choice*>(n)->Fl_Input_Choice::draw();
 }
 
 int fl_input_choice_handle(INPUTCHOICE n, int e) {
-    return reinterpret_cast<My_Input_Choice*>(n)->Fl_Input_Choice::handle(e);
+    return static_cast<My_Input_Choice*>(n)->Fl_Input_Choice::handle(e);
 }
 
 

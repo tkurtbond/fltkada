@@ -50,45 +50,45 @@ VALUESLIDER new_fl_value_slider(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_value_slider(VALUESLIDER s) {
-    delete reinterpret_cast<My_Value_Slider*>(s);
+    delete static_cast<My_Value_Slider*>(s);
 }
 
 
 
 
 unsigned int fl_value_slider_get_textcolor(VALUESLIDER s) {
-    return reinterpret_cast<Fl_Value_Slider*>(s)->textcolor();
+    return static_cast<Fl_Value_Slider*>(s)->textcolor();
 }
 
 void fl_value_slider_set_textcolor(VALUESLIDER s, unsigned int t) {
-    reinterpret_cast<Fl_Value_Slider*>(s)->textcolor(t);
+    static_cast<Fl_Value_Slider*>(s)->textcolor(t);
 }
 
 int fl_value_slider_get_textfont(VALUESLIDER s) {
-    return reinterpret_cast<Fl_Value_Slider*>(s)->textfont();
+    return static_cast<Fl_Value_Slider*>(s)->textfont();
 }
 
 void fl_value_slider_set_textfont(VALUESLIDER s, int t) {
-    reinterpret_cast<Fl_Value_Slider*>(s)->textfont(t);
+    static_cast<Fl_Value_Slider*>(s)->textfont(t);
 }
 
 int fl_value_slider_get_textsize(VALUESLIDER s) {
-    return reinterpret_cast<Fl_Value_Slider*>(s)->textsize();
+    return static_cast<Fl_Value_Slider*>(s)->textsize();
 }
 
 void fl_value_slider_set_textsize(VALUESLIDER s, int t) {
-    reinterpret_cast<Fl_Value_Slider*>(s)->textsize(t);
+    static_cast<Fl_Value_Slider*>(s)->textsize(t);
 }
 
 
 
 
 void fl_value_slider_draw(VALUESLIDER s) {
-    reinterpret_cast<My_Value_Slider*>(s)->Fl_Value_Slider::draw();
+    static_cast<My_Value_Slider*>(s)->Fl_Value_Slider::draw();
 }
 
 int fl_value_slider_handle(VALUESLIDER s, int e) {
-    return reinterpret_cast<My_Value_Slider*>(s)->Fl_Value_Slider::handle(e);
+    return static_cast<My_Value_Slider*>(s)->Fl_Value_Slider::handle(e);
 }
 
 

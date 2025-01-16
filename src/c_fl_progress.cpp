@@ -50,45 +50,45 @@ PROGRESS new_fl_progress(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_progress(PROGRESS p) {
-    delete reinterpret_cast<My_Progress*>(p);
+    delete static_cast<My_Progress*>(p);
 }
 
 
 
 
 float fl_progress_get_minimum(PROGRESS p) {
-    return reinterpret_cast<Fl_Progress*>(p)->minimum();
+    return static_cast<Fl_Progress*>(p)->minimum();
 }
 
 void fl_progress_set_minimum(PROGRESS p, float t) {
-    reinterpret_cast<Fl_Progress*>(p)->minimum(t);
+    static_cast<Fl_Progress*>(p)->minimum(t);
 }
 
 float fl_progress_get_maximum(PROGRESS p) {
-    return reinterpret_cast<Fl_Progress*>(p)->maximum();
+    return static_cast<Fl_Progress*>(p)->maximum();
 }
 
 void fl_progress_set_maximum(PROGRESS p, float t) {
-    reinterpret_cast<Fl_Progress*>(p)->maximum(t);
+    static_cast<Fl_Progress*>(p)->maximum(t);
 }
 
 float fl_progress_get_value(PROGRESS p) {
-    return reinterpret_cast<Fl_Progress*>(p)->value();
+    return static_cast<Fl_Progress*>(p)->value();
 }
 
 void fl_progress_set_value(PROGRESS p, float t) {
-    reinterpret_cast<Fl_Progress*>(p)->value(t);
+    static_cast<Fl_Progress*>(p)->value(t);
 }
 
 
 
 
 void fl_progress_draw(PROGRESS p) {
-    reinterpret_cast<My_Progress*>(p)->Fl_Progress::draw();
+    static_cast<My_Progress*>(p)->Fl_Progress::draw();
 }
 
 int fl_progress_handle(PROGRESS p, int e) {
-    return reinterpret_cast<My_Progress*>(p)->Fl_Progress::handle(e);
+    return static_cast<My_Progress*>(p)->Fl_Progress::handle(e);
 }
 
 

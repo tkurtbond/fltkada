@@ -24,8 +24,8 @@ class My_Simple_Counter : public Fl_Simple_Counter {
 public:
     using Fl_Simple_Counter::Fl_Simple_Counter;
 
-    friend void fl_simple_counter_draw(SIMPLE_COUNTER c);
-    friend int fl_simple_counter_handle(SIMPLE_COUNTER c, int e);
+    friend void fl_simple_counter_draw(SIMPLECOUNTER c);
+    friend int fl_simple_counter_handle(SIMPLECOUNTER c, int e);
 
     void draw();
     int handle(int e);
@@ -44,24 +44,24 @@ int My_Simple_Counter::handle(int e) {
 
 //  Flattened C API
 
-SIMPLE_COUNTER new_fl_simple_counter(int x, int y, int w, int h, char* label) {
+SIMPLECOUNTER new_fl_simple_counter(int x, int y, int w, int h, char* label) {
     My_Simple_Counter *c = new My_Simple_Counter(x, y, w, h, label);
     return c;
 }
 
-void free_fl_simple_counter(SIMPLE_COUNTER c) {
-    delete reinterpret_cast<My_Simple_Counter*>(c);
+void free_fl_simple_counter(SIMPLECOUNTER c) {
+    delete static_cast<My_Simple_Counter*>(c);
 }
 
 
 
 
-void fl_simple_counter_draw(SIMPLE_COUNTER c) {
-    reinterpret_cast<My_Simple_Counter*>(c)->Fl_Simple_Counter::draw();
+void fl_simple_counter_draw(SIMPLECOUNTER c) {
+    static_cast<My_Simple_Counter*>(c)->Fl_Simple_Counter::draw();
 }
 
-int fl_simple_counter_handle(SIMPLE_COUNTER c, int e) {
-    return reinterpret_cast<My_Simple_Counter*>(c)->Fl_Simple_Counter::handle(e);
+int fl_simple_counter_handle(SIMPLECOUNTER c, int e) {
+    return static_cast<My_Simple_Counter*>(c)->Fl_Simple_Counter::handle(e);
 }
 
 

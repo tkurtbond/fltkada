@@ -50,18 +50,18 @@ TOGGLEBUTTON new_fl_toggle_button(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_toggle_button(TOGGLEBUTTON b) {
-    delete reinterpret_cast<My_Toggle_Button*>(b);
+    delete static_cast<My_Toggle_Button*>(b);
 }
 
 
 
 
 void fl_toggle_button_draw(TOGGLEBUTTON b) {
-    reinterpret_cast<My_Toggle_Button*>(b)->Fl_Toggle_Button::draw();
+    static_cast<My_Toggle_Button*>(b)->Fl_Toggle_Button::draw();
 }
 
 int fl_toggle_button_handle(TOGGLEBUTTON b, int e) {
-    return reinterpret_cast<My_Toggle_Button*>(b)->Fl_Toggle_Button::handle(e);
+    return static_cast<My_Toggle_Button*>(b)->Fl_Toggle_Button::handle(e);
 }
 
 

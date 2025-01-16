@@ -50,7 +50,7 @@ SCROLL new_fl_scroll(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_scroll(SCROLL s) {
-    delete reinterpret_cast<My_Scroll*>(s);
+    delete static_cast<My_Scroll*>(s);
 }
 
 
@@ -68,41 +68,41 @@ void * fl_scroll_scrollbar(SCROLL s) {
 
 
 void fl_scroll_to(SCROLL s, int x, int y) {
-    reinterpret_cast<Fl_Scroll*>(s)->scroll_to(x, y);
+    static_cast<Fl_Scroll*>(s)->scroll_to(x, y);
 }
 
 void fl_scroll_set_type(SCROLL s, int t) {
-    reinterpret_cast<Fl_Scroll*>(s)->type(t);
+    static_cast<Fl_Scroll*>(s)->type(t);
 }
 
 
 
 
 int fl_scroll_get_size(SCROLL s) {
-    return reinterpret_cast<Fl_Scroll*>(s)->scrollbar_size();
+    return static_cast<Fl_Scroll*>(s)->scrollbar_size();
 }
 
 void fl_scroll_set_size(SCROLL s, int t) {
-    reinterpret_cast<Fl_Scroll*>(s)->scrollbar_size(t);
+    static_cast<Fl_Scroll*>(s)->scrollbar_size(t);
 }
 
 int fl_scroll_xposition(SCROLL s) {
-    return reinterpret_cast<Fl_Scroll*>(s)->xposition();
+    return static_cast<Fl_Scroll*>(s)->xposition();
 }
 
 int fl_scroll_yposition(SCROLL s) {
-    return reinterpret_cast<Fl_Scroll*>(s)->yposition();
+    return static_cast<Fl_Scroll*>(s)->yposition();
 }
 
 
 
 
 void fl_scroll_draw(SCROLL s) {
-    reinterpret_cast<My_Scroll*>(s)->Fl_Scroll::draw();
+    static_cast<My_Scroll*>(s)->Fl_Scroll::draw();
 }
 
 int fl_scroll_handle(SCROLL s, int e) {
-    return reinterpret_cast<My_Scroll*>(s)->Fl_Scroll::handle(e);
+    return static_cast<My_Scroll*>(s)->Fl_Scroll::handle(e);
 }
 
 

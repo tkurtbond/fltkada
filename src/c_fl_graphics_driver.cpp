@@ -11,52 +11,53 @@
 
 
 
-unsigned int fl_graphics_driver_color(GRAPHICS_DRIVER g) {
-    return reinterpret_cast<Fl_Graphics_Driver*>(g)->color();
+unsigned int fl_graphics_driver_color(GRAPHICSDRIVER g) {
+    return static_cast<Fl_Graphics_Driver*>(g)->color();
 }
 
 
 
 
-int fl_graphics_driver_descent(GRAPHICS_DRIVER g) {
+int fl_graphics_driver_descent(GRAPHICSDRIVER g) {
     //  virtual so disable dispatch
-    return reinterpret_cast<Fl_Graphics_Driver*>(g)->Fl_Graphics_Driver::descent();
+    return static_cast<Fl_Graphics_Driver*>(g)->Fl_Graphics_Driver::descent();
 }
 
-int fl_graphics_driver_height(GRAPHICS_DRIVER g) {
+int fl_graphics_driver_height(GRAPHICSDRIVER g) {
     //  virtual so disable dispatch
-    return reinterpret_cast<Fl_Graphics_Driver*>(g)->Fl_Graphics_Driver::height();
+    return static_cast<Fl_Graphics_Driver*>(g)->Fl_Graphics_Driver::height();
 }
 
-double fl_graphics_driver_width(GRAPHICS_DRIVER g, unsigned int c) {
+double fl_graphics_driver_width(GRAPHICSDRIVER g, unsigned int c) {
     //  virtual so disable dispatch
-    return reinterpret_cast<Fl_Graphics_Driver*>(g)->Fl_Graphics_Driver::width(c);
+    return static_cast<Fl_Graphics_Driver*>(g)->Fl_Graphics_Driver::width(c);
 }
 
-double fl_graphics_driver_width2(GRAPHICS_DRIVER g, const char * s, int l) {
+double fl_graphics_driver_width2(GRAPHICSDRIVER g, const char * s, int l) {
     //  virtual so disable dispatch
-    return reinterpret_cast<Fl_Graphics_Driver*>(g)->Fl_Graphics_Driver::width(s,l);
+    return static_cast<Fl_Graphics_Driver*>(g)->Fl_Graphics_Driver::width(s,l);
 }
 
-int fl_graphics_driver_get_font(GRAPHICS_DRIVER g) {
-    return reinterpret_cast<Fl_Graphics_Driver*>(g)->font();
+int fl_graphics_driver_get_font(GRAPHICSDRIVER g) {
+    return static_cast<Fl_Graphics_Driver*>(g)->font();
 }
 
-int fl_graphics_driver_size(GRAPHICS_DRIVER g) {
-    return reinterpret_cast<Fl_Graphics_Driver*>(g)->size();
+int fl_graphics_driver_size(GRAPHICSDRIVER g) {
+    return static_cast<Fl_Graphics_Driver*>(g)->size();
 }
 
-void fl_graphics_driver_set_font(GRAPHICS_DRIVER g, int f, int s) {
+void fl_graphics_driver_set_font(GRAPHICSDRIVER g, int f, int s) {
     //  virtual so disable dispatch
-    reinterpret_cast<Fl_Graphics_Driver*>(g)->Fl_Graphics_Driver::font(f,s);
+    static_cast<Fl_Graphics_Driver*>(g)->Fl_Graphics_Driver::font(f,s);
 }
 
 
 
 
-void fl_graphics_driver_draw_scaled(GRAPHICS_DRIVER g, void * i, int x, int y, int w, int h) {
+void fl_graphics_driver_draw_scaled(GRAPHICSDRIVER g, void * i, int x, int y, int w, int h) {
     //  virtual so disable dispatch
-    reinterpret_cast<Fl_Graphics_Driver*>(g)->Fl_Graphics_Driver::draw_scaled(reinterpret_cast<Fl_Image*>(i),x,y,w,h);
+    static_cast<Fl_Graphics_Driver*>(g)->Fl_Graphics_Driver::draw_scaled
+        (static_cast<Fl_Image*>(i),x,y,w,h);
 }
 
 

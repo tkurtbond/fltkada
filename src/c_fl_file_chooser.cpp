@@ -39,33 +39,33 @@ FILECHOOSER new_fl_file_chooser(const char * n, const char * p, int k, const cha
 }
 
 void free_fl_file_chooser(FILECHOOSER f) {
-    delete reinterpret_cast<Fl_File_Chooser*>(f);
+    delete static_cast<Fl_File_Chooser*>(f);
 }
 
 
 
 
 void * fl_file_chooser_get_user_data(FILECHOOSER f) {
-    return reinterpret_cast<Fl_File_Chooser*>(f)->user_data();
+    return static_cast<Fl_File_Chooser*>(f)->user_data();
 }
 
 void fl_file_chooser_set_user_data(FILECHOOSER f, void * ud) {
-    reinterpret_cast<Fl_File_Chooser*>(f)->user_data(ud);
+    static_cast<Fl_File_Chooser*>(f)->user_data(ud);
 }
 
 
 
 
 void * fl_file_chooser_newbutton(FILECHOOSER f) {
-    return reinterpret_cast<Fl_File_Chooser*>(f)->newButton;
+    return static_cast<Fl_File_Chooser*>(f)->newButton;
 }
 
 void * fl_file_chooser_previewbutton(FILECHOOSER f) {
-    return reinterpret_cast<Fl_File_Chooser*>(f)->previewButton;
+    return static_cast<Fl_File_Chooser*>(f)->previewButton;
 }
 
 void * fl_file_chooser_showhiddenbutton(FILECHOOSER f) {
-    return reinterpret_cast<Fl_File_Chooser*>(f)->showHiddenButton;
+    return static_cast<Fl_File_Chooser*>(f)->showHiddenButton;
 }
 
 
@@ -187,154 +187,154 @@ void fl_file_chooser_set_show_label(const char * s) {
 
 
 void * fl_file_chooser_add_extra(FILECHOOSER f, void * w) {
-    return reinterpret_cast<Fl_File_Chooser*>(f)->add_extra(reinterpret_cast<Fl_Widget*>(w));
+    return static_cast<Fl_File_Chooser*>(f)->add_extra(static_cast<Fl_Widget*>(w));
 }
 
 typedef void (*Chooser_Callback)(Fl_File_Chooser *, void *);
 
 void fl_file_chooser_callback(FILECHOOSER f, void * c, void * u) {
-    reinterpret_cast<Fl_File_Chooser*>(f)->callback(reinterpret_cast<Chooser_Callback>(c), u);
+    static_cast<Fl_File_Chooser*>(f)->callback(reinterpret_cast<Chooser_Callback>(c), u);
 }
 
 
 
 
 unsigned int fl_file_chooser_get_color(FILECHOOSER f) {
-    return reinterpret_cast<Fl_File_Chooser*>(f)->color();
+    return static_cast<Fl_File_Chooser*>(f)->color();
 }
 
 void fl_file_chooser_set_color(FILECHOOSER f, unsigned int c) {
-    reinterpret_cast<Fl_File_Chooser*>(f)->color(c);
+    static_cast<Fl_File_Chooser*>(f)->color(c);
 }
 
 unsigned char fl_file_chooser_get_iconsize(FILECHOOSER f) {
-    return reinterpret_cast<Fl_File_Chooser*>(f)->iconsize();
+    return static_cast<Fl_File_Chooser*>(f)->iconsize();
 }
 
 void fl_file_chooser_set_iconsize(FILECHOOSER f, unsigned char i) {
-    reinterpret_cast<Fl_File_Chooser*>(f)->iconsize(i);
+    static_cast<Fl_File_Chooser*>(f)->iconsize(i);
 }
 
 const char * fl_file_chooser_get_label(FILECHOOSER f) {
-    return reinterpret_cast<Fl_File_Chooser*>(f)->label();
+    return static_cast<Fl_File_Chooser*>(f)->label();
 }
 
 void fl_file_chooser_set_label(FILECHOOSER f, const char * t) {
-    reinterpret_cast<Fl_File_Chooser*>(f)->label(t);
+    static_cast<Fl_File_Chooser*>(f)->label(t);
 }
 
 const char * fl_file_chooser_get_ok_label(FILECHOOSER f) {
-    return reinterpret_cast<Fl_File_Chooser*>(f)->ok_label();
+    return static_cast<Fl_File_Chooser*>(f)->ok_label();
 }
 
 void fl_file_chooser_set_ok_label(FILECHOOSER f, const char * t) {
-    reinterpret_cast<Fl_File_Chooser*>(f)->ok_label(t);
+    static_cast<Fl_File_Chooser*>(f)->ok_label(t);
 }
 
 int fl_file_chooser_get_preview(FILECHOOSER f) {
-    return reinterpret_cast<Fl_File_Chooser*>(f)->preview();
+    return static_cast<Fl_File_Chooser*>(f)->preview();
 }
 
 void fl_file_chooser_set_preview(FILECHOOSER f, int p) {
-    reinterpret_cast<Fl_File_Chooser*>(f)->preview(p);
+    static_cast<Fl_File_Chooser*>(f)->preview(p);
 }
 
 unsigned int fl_file_chooser_get_textcolor(FILECHOOSER f) {
-    return reinterpret_cast<Fl_File_Chooser*>(f)->textcolor();
+    return static_cast<Fl_File_Chooser*>(f)->textcolor();
 }
 
 void fl_file_chooser_set_textcolor(FILECHOOSER f, unsigned int c) {
-    reinterpret_cast<Fl_File_Chooser*>(f)->textcolor(c);
+    static_cast<Fl_File_Chooser*>(f)->textcolor(c);
 }
 
 int fl_file_chooser_get_textfont(FILECHOOSER f) {
-    return reinterpret_cast<Fl_File_Chooser*>(f)->textfont();
+    return static_cast<Fl_File_Chooser*>(f)->textfont();
 }
 
 void fl_file_chooser_set_textfont(FILECHOOSER f, int n) {
-    reinterpret_cast<Fl_File_Chooser*>(f)->textfont(n);
+    static_cast<Fl_File_Chooser*>(f)->textfont(n);
 }
 
 int fl_file_chooser_get_textsize(FILECHOOSER f) {
-    return reinterpret_cast<Fl_File_Chooser*>(f)->textsize();
+    return static_cast<Fl_File_Chooser*>(f)->textsize();
 }
 
 void fl_file_chooser_set_textsize(FILECHOOSER f, int s) {
-    reinterpret_cast<Fl_File_Chooser*>(f)->textsize(s);
+    static_cast<Fl_File_Chooser*>(f)->textsize(s);
 }
 
 int fl_file_chooser_get_type(FILECHOOSER f) {
-    return reinterpret_cast<Fl_File_Chooser*>(f)->type();
+    return static_cast<Fl_File_Chooser*>(f)->type();
 }
 
 void fl_file_chooser_set_type(FILECHOOSER f, int t) {
-    reinterpret_cast<Fl_File_Chooser*>(f)->type(t);
+    static_cast<Fl_File_Chooser*>(f)->type(t);
 }
 
 
 
 
 int fl_file_chooser_count(FILECHOOSER f) {
-    return reinterpret_cast<Fl_File_Chooser*>(f)->count();
+    return static_cast<Fl_File_Chooser*>(f)->count();
 }
 
 const char * fl_file_chooser_get_directory(FILECHOOSER f) {
-    return reinterpret_cast<Fl_File_Chooser*>(f)->directory();
+    return static_cast<Fl_File_Chooser*>(f)->directory();
 }
 
 void fl_file_chooser_set_directory(FILECHOOSER f, const char * v) {
-    reinterpret_cast<Fl_File_Chooser*>(f)->directory(v);
+    static_cast<Fl_File_Chooser*>(f)->directory(v);
 }
 
 const char * fl_file_chooser_get_filter(FILECHOOSER f) {
-    return reinterpret_cast<Fl_File_Chooser*>(f)->filter();
+    return static_cast<Fl_File_Chooser*>(f)->filter();
 }
 
 void fl_file_chooser_set_filter(FILECHOOSER f, const char * v) {
-    reinterpret_cast<Fl_File_Chooser*>(f)->filter(v);
+    static_cast<Fl_File_Chooser*>(f)->filter(v);
 }
 
 int fl_file_chooser_get_filter_value(FILECHOOSER f) {
-    return reinterpret_cast<Fl_File_Chooser*>(f)->filter_value();
+    return static_cast<Fl_File_Chooser*>(f)->filter_value();
 }
 
 void fl_file_chooser_set_filter_value(FILECHOOSER f, int v) {
-    reinterpret_cast<Fl_File_Chooser*>(f)->filter_value(v);
+    static_cast<Fl_File_Chooser*>(f)->filter_value(v);
 }
 
 void fl_file_chooser_rescan(FILECHOOSER f) {
-    reinterpret_cast<Fl_File_Chooser*>(f)->rescan();
+    static_cast<Fl_File_Chooser*>(f)->rescan();
 }
 
 void fl_file_chooser_rescan_keep_filename(FILECHOOSER f) {
-    reinterpret_cast<Fl_File_Chooser*>(f)->rescan_keep_filename();
+    static_cast<Fl_File_Chooser*>(f)->rescan_keep_filename();
 }
 
 const char * fl_file_chooser_get_value(FILECHOOSER f, int n) {
-    return reinterpret_cast<Fl_File_Chooser*>(f)->value(n);
+    return static_cast<Fl_File_Chooser*>(f)->value(n);
 }
 
 void fl_file_chooser_set_value(FILECHOOSER f, const char * v) {
-    reinterpret_cast<Fl_File_Chooser*>(f)->value(v);
+    static_cast<Fl_File_Chooser*>(f)->value(v);
 }
 
 
 
 
 void fl_file_chooser_show(FILECHOOSER f) {
-    reinterpret_cast<Fl_File_Chooser*>(f)->show();
+    static_cast<Fl_File_Chooser*>(f)->show();
 }
 
 void fl_file_chooser_hide(FILECHOOSER f) {
-    reinterpret_cast<Fl_File_Chooser*>(f)->hide();
+    static_cast<Fl_File_Chooser*>(f)->hide();
 }
 
 int fl_file_chooser_shown(FILECHOOSER f) {
-    return reinterpret_cast<Fl_File_Chooser*>(f)->shown();
+    return static_cast<Fl_File_Chooser*>(f)->shown();
 }
 
 int fl_file_chooser_visible(FILECHOOSER f) {
-    return reinterpret_cast<Fl_File_Chooser*>(f)->visible();
+    return static_cast<Fl_File_Chooser*>(f)->visible();
 }
 
 

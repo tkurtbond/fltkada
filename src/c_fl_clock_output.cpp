@@ -35,8 +35,8 @@ class My_Clock_Output : public Fl_Clock_Output {
 public:
     using Fl_Clock_Output::Fl_Clock_Output;
 
-    friend void fl_clock_output_draw(CLOCK_OUTPUT c);
-    friend int fl_clock_output_handle(CLOCK_OUTPUT c, int e);
+    friend void fl_clock_output_draw(CLOCKOUTPUT c);
+    friend int fl_clock_output_handle(CLOCKOUTPUT c, int e);
 
     void draw();
     int handle(int e);
@@ -55,57 +55,57 @@ int My_Clock_Output::handle(int e) {
 
 //  Flattened C API
 
-CLOCK_OUTPUT new_fl_clock_output(int x, int y, int w, int h, char* label) {
+CLOCKOUTPUT new_fl_clock_output(int x, int y, int w, int h, char* label) {
     My_Clock_Output *c = new My_Clock_Output(x, y, w, h, label);
     return c;
 }
 
-void free_fl_clock_output(CLOCK_OUTPUT c) {
-    delete reinterpret_cast<My_Clock_Output*>(c);
+void free_fl_clock_output(CLOCKOUTPUT c) {
+    delete static_cast<My_Clock_Output*>(c);
 }
 
 
 
 
-int fl_clock_output_get_hour(CLOCK_OUTPUT c) {
-    return reinterpret_cast<Fl_Clock_Output*>(c)->Fl_Clock_Output::hour();
+int fl_clock_output_get_hour(CLOCKOUTPUT c) {
+    return static_cast<Fl_Clock_Output*>(c)->Fl_Clock_Output::hour();
 }
 
-int fl_clock_output_get_minute(CLOCK_OUTPUT c) {
-    return reinterpret_cast<Fl_Clock_Output*>(c)->Fl_Clock_Output::minute();
+int fl_clock_output_get_minute(CLOCKOUTPUT c) {
+    return static_cast<Fl_Clock_Output*>(c)->Fl_Clock_Output::minute();
 }
 
-int fl_clock_output_get_second(CLOCK_OUTPUT c) {
-    return reinterpret_cast<Fl_Clock_Output*>(c)->Fl_Clock_Output::second();
-}
-
-
-unsigned long fl_clock_output_get_value(CLOCK_OUTPUT c) {
-    return reinterpret_cast<Fl_Clock_Output*>(c)->Fl_Clock_Output::value();
-}
-
-void fl_clock_output_set_value(CLOCK_OUTPUT c, unsigned long v) {
-    reinterpret_cast<Fl_Clock_Output*>(c)->Fl_Clock_Output::value(v);
-}
-
-void fl_clock_output_set_value2(CLOCK_OUTPUT c, int h, int m, int s) {
-    reinterpret_cast<Fl_Clock_Output*>(c)->Fl_Clock_Output::value(h,m,s);
+int fl_clock_output_get_second(CLOCKOUTPUT c) {
+    return static_cast<Fl_Clock_Output*>(c)->Fl_Clock_Output::second();
 }
 
 
-
-
-void fl_clock_output_draw(CLOCK_OUTPUT c) {
-    reinterpret_cast<My_Clock_Output*>(c)->Fl_Clock_Output::draw();
+unsigned long fl_clock_output_get_value(CLOCKOUTPUT c) {
+    return static_cast<Fl_Clock_Output*>(c)->Fl_Clock_Output::value();
 }
 
-void fl_clock_output_draw2(CLOCK_OUTPUT c, int x, int y, int w, int h) {
+void fl_clock_output_set_value(CLOCKOUTPUT c, unsigned long v) {
+    static_cast<Fl_Clock_Output*>(c)->Fl_Clock_Output::value(v);
+}
+
+void fl_clock_output_set_value2(CLOCKOUTPUT c, int h, int m, int s) {
+    static_cast<Fl_Clock_Output*>(c)->Fl_Clock_Output::value(h,m,s);
+}
+
+
+
+
+void fl_clock_output_draw(CLOCKOUTPUT c) {
+    static_cast<My_Clock_Output*>(c)->Fl_Clock_Output::draw();
+}
+
+void fl_clock_output_draw2(CLOCKOUTPUT c, int x, int y, int w, int h) {
     void (Fl_Clock_Output::*mydraw)(int,int,int,int) = &Friend_Clock_Output::draw;
-    (reinterpret_cast<Fl_Clock_Output*>(c)->*mydraw)(x, y, w, h);
+    (static_cast<Fl_Clock_Output*>(c)->*mydraw)(x, y, w, h);
 }
 
-int fl_clock_output_handle(CLOCK_OUTPUT c, int e) {
-    return reinterpret_cast<My_Clock_Output*>(c)->Fl_Clock_Output::handle(e);
+int fl_clock_output_handle(CLOCKOUTPUT c, int e) {
+    return static_cast<My_Clock_Output*>(c)->Fl_Clock_Output::handle(e);
 }
 
 

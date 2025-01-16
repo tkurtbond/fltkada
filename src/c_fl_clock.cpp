@@ -55,18 +55,18 @@ CLOCK new_fl_clock2(unsigned char k, int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_clock(CLOCK c) {
-    delete reinterpret_cast<My_Clock*>(c);
+    delete static_cast<My_Clock*>(c);
 }
 
 
 
 
 void fl_clock_draw(CLOCK c) {
-    reinterpret_cast<My_Clock*>(c)->Fl_Clock::draw();
+    static_cast<My_Clock*>(c)->Fl_Clock::draw();
 }
 
 int fl_clock_handle(CLOCK c, int e) {
-    return reinterpret_cast<My_Clock*>(c)->Fl_Clock::handle(e);
+    return static_cast<My_Clock*>(c)->Fl_Clock::handle(e);
 }
 
 

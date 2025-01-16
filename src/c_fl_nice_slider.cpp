@@ -50,18 +50,18 @@ NICESLIDER new_fl_nice_slider(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_nice_slider(NICESLIDER s) {
-    delete reinterpret_cast<My_Nice_Slider*>(s);
+    delete static_cast<My_Nice_Slider*>(s);
 }
 
 
 
 
 void fl_nice_slider_draw(NICESLIDER s) {
-    reinterpret_cast<My_Nice_Slider*>(s)->Fl_Nice_Slider::draw();
+    static_cast<My_Nice_Slider*>(s)->Fl_Nice_Slider::draw();
 }
 
 int fl_nice_slider_handle(NICESLIDER s, int e) {
-    return reinterpret_cast<My_Nice_Slider*>(s)->Fl_Nice_Slider::handle(e);
+    return static_cast<My_Nice_Slider*>(s)->Fl_Nice_Slider::handle(e);
 }
 
 

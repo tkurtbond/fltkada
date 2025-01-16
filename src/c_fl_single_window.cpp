@@ -55,40 +55,40 @@ SINGLEWINDOW new_fl_single_window2(int x, int y, char* label) {
 }
 
 void free_fl_single_window(SINGLEWINDOW w) {
-    delete reinterpret_cast<My_Single_Window*>(w);
+    delete static_cast<My_Single_Window*>(w);
 }
 
 
 
 
 void fl_single_window_show(SINGLEWINDOW w) {
-    reinterpret_cast<Fl_Single_Window*>(w)->show();
+    static_cast<Fl_Single_Window*>(w)->show();
 }
 
 void fl_single_window_show2(SINGLEWINDOW w, int c, void * v) {
-    reinterpret_cast<Fl_Single_Window*>(w)->show(c, static_cast<char**>(v));
+    static_cast<Fl_Single_Window*>(w)->show(c, static_cast<char**>(v));
 }
 
 void fl_single_window_flush(SINGLEWINDOW w) {
-    reinterpret_cast<Fl_Single_Window*>(w)->flush();
+    static_cast<Fl_Single_Window*>(w)->flush();
 }
 
 
 
 
 void fl_single_window_make_current(SINGLEWINDOW w) {
-    reinterpret_cast<Fl_Single_Window*>(w)->Fl_Window::make_current();
+    static_cast<Fl_Single_Window*>(w)->Fl_Window::make_current();
 }
 
 
 
 
 void fl_single_window_draw(SINGLEWINDOW n) {
-    reinterpret_cast<My_Single_Window*>(n)->Fl_Single_Window::draw();
+    static_cast<My_Single_Window*>(n)->Fl_Single_Window::draw();
 }
 
 int fl_single_window_handle(SINGLEWINDOW n, int e) {
-    return reinterpret_cast<My_Single_Window*>(n)->Fl_Single_Window::handle(e);
+    return static_cast<My_Single_Window*>(n)->Fl_Single_Window::handle(e);
 }
 
 

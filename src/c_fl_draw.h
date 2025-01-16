@@ -8,8 +8,6 @@
 #define FL_DRAW_GUARD
 
 
-
-
 extern "C" void fl_draw_reset_spot();
 extern "C" void fl_draw_set_spot(int f, int s, int x, int y, int w, int h, void * ptr);
 extern "C" void fl_draw_set_status(int x, int y, int w, int h);
@@ -135,4 +133,5 @@ extern "C" void fl_draw_end_polygon();
 
 
 #endif
+
 

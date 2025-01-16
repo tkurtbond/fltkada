@@ -8,11 +8,7 @@
 #define FL_PIXMAP_GUARD
 
 
-
-
 typedef void* PIXMAP;
-
-
 
 
 extern "C" void free_fl_pixmap(PIXMAP b);
@@ -32,4 +28,5 @@ extern "C" void fl_pixmap_draw(PIXMAP b, int x, int y, int w, int h, int cx, int
 
 
 #endif
+
 

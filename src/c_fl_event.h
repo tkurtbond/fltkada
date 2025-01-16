@@ -8,8 +8,6 @@
 #define FL_EVENT_GUARD
 
 
-
-
 extern "C" void fl_event_add_handler(void * f);
 extern "C" void fl_event_set_event_dispatch(void * f);
 extern "C" int fl_event_handle(int e, void * w);
@@ -64,4 +62,5 @@ extern "C" int fl_event_shift();
 
 
 #endif
+
 

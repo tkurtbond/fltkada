@@ -8,11 +8,7 @@
 #define FL_BITMAP_GUARD
 
 
-
-
 typedef void* BITMAP;
-
-
 
 
 extern "C" BITMAP new_fl_bitmap(void *data, int w, int h);
@@ -29,4 +25,5 @@ extern "C" void fl_bitmap_draw(BITMAP b, int x, int y, int w, int h, int cx, int
 
 
 #endif
+
 

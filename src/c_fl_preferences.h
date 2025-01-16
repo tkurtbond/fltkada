@@ -8,11 +8,7 @@
 #define FL_PREFERENCES_GUARD
 
 
-
-
 typedef void* PREFS;
-
-
 
 
 extern const int root_fl_prefs_system;
@@ -21,11 +17,7 @@ extern const int root_fl_prefs_user;
 extern const int const_fl_path_max;
 
 
-
-
 extern "C" const char * fl_preferences_new_uuid();
-
-
 
 
 extern "C" PREFS new_fl_pref_database_path(char * p, char * v, char * a);
@@ -38,8 +30,6 @@ extern "C" PREFS new_fl_pref_group_memory(char * n);
 extern "C" PREFS new_fl_pref_group_name(PREFS e, char * n);
 extern "C" PREFS new_fl_pref_group_index(PREFS e, int i);
 extern "C" void free_fl_pref_group(PREFS e);
-
-
 
 
 extern "C" void fl_preferences_flush(PREFS e);
@@ -92,4 +82,5 @@ extern "C" int fl_preferences_set_void(PREFS e, const char * k, const void * d, 
 
 
 #endif
+
 

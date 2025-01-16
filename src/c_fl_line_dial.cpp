@@ -24,8 +24,8 @@ class My_Line_Dial : public Fl_Line_Dial {
 public:
     using Fl_Line_Dial::Fl_Line_Dial;
 
-    friend void fl_line_dial_draw(LINE_DIAL v);
-    friend int fl_line_dial_handle(LINE_DIAL v, int e);
+    friend void fl_line_dial_draw(LINEDIAL v);
+    friend int fl_line_dial_handle(LINEDIAL v, int e);
 
     void draw();
     int handle(int e);
@@ -44,24 +44,24 @@ int My_Line_Dial::handle(int e) {
 
 //  Flattened C API
 
-LINE_DIAL new_fl_line_dial(int x, int y, int w, int h, char* label) {
+LINEDIAL new_fl_line_dial(int x, int y, int w, int h, char* label) {
     My_Line_Dial *v = new My_Line_Dial(x, y, w, h, label);
     return v;
 }
 
-void free_fl_line_dial(LINE_DIAL v) {
-    delete reinterpret_cast<My_Line_Dial*>(v);
+void free_fl_line_dial(LINEDIAL v) {
+    delete static_cast<My_Line_Dial*>(v);
 }
 
 
 
 
-void fl_line_dial_draw(LINE_DIAL v) {
-    reinterpret_cast<My_Line_Dial*>(v)->Fl_Line_Dial::draw();
+void fl_line_dial_draw(LINEDIAL v) {
+    static_cast<My_Line_Dial*>(v)->Fl_Line_Dial::draw();
 }
 
-int fl_line_dial_handle(LINE_DIAL v, int e) {
-    return reinterpret_cast<My_Line_Dial*>(v)->Fl_Line_Dial::handle(e);
+int fl_line_dial_handle(LINEDIAL v, int e) {
+    return static_cast<My_Line_Dial*>(v)->Fl_Line_Dial::handle(e);
 }
 
 
