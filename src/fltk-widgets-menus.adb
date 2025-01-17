@@ -495,8 +495,10 @@ package body FLTK.Widgets.Menus is
     procedure Initialize
            (This : in out Menu) is
     begin
-        This.Draw_Ptr   := fl_menu_draw'Address;
-        This.Handle_Ptr := fl_menu_handle'Address;
+        This.Draw_Ptr     := fl_menu_draw'Address;
+        This.Handle_Ptr   := fl_menu_handle'Address;
+        This.Get_Item_Ptr := fl_menu_get_item'Address;
+        This.Value_Ptr    := fl_menu_value'Address;
         Wrapper (This.My_Find).Needs_Dealloc := False;
         Wrapper (This.My_Pick).Needs_Dealloc := False;
     end Initialize;
@@ -735,6 +737,7 @@ package body FLTK.Widgets.Menus is
         end loop;
         Pointers (Pointers'Last) := Null_Item;
         fl_menu_copy (This.Void_Ptr, Storage.To_Integer (Pointers (Pointers'First)'Address));
+        This.Adjust_Item_Store;
     end Set_Items;
 
 
@@ -744,6 +747,7 @@ package body FLTK.Widgets.Menus is
     begin
         --  Donor menu() pointer will be obtained in C++
         fl_menu_set_menu (This.Void_Ptr, Donor.Void_Ptr);
+        This.Adjust_Item_Store;
     end Use_Same_Items;
 
 
@@ -810,10 +814,17 @@ package body FLTK.Widgets.Menus is
     function Item
            (This  : in Menu;
             Place : in Index)
-        return FLTK.Menu_Items.Menu_Item_Reference is
+        return FLTK.Menu_Items.Menu_Item_Reference
+    is
+        function my_get_item
+               (M : in Storage.Integer_Address;
+                P : in Interfaces.C.int)
+            return Storage.Integer_Address;
+        for my_get_item'Address use This.Get_Item_Ptr;
+        pragma Import (Ada, my_get_item);
     begin
         Wrapper (This.My_Items (Place).all).Void_Ptr :=
-            fl_menu_get_item (This.Void_Ptr, Interfaces.C.int (Place) - 1);
+            my_get_item (This.Void_Ptr, Interfaces.C.int (Place) - 1);
         return (Data => This.My_Items (Place).all'Unchecked_Access);
     end Item;
 
@@ -1015,8 +1026,7 @@ package body FLTK.Widgets.Menus is
            (This : in Menu)
         return FLTK.Menu_Items.Menu_Item_Reference
     is
-        Dis_This : access constant Menu'Class := This'Access;
-        Place : Extended_Index := Dis_This.Chosen_Index;
+        Place : Extended_Index := This.Chosen_Index;
     begin
         if Place = No_Index then
             raise No_Reference_Error;
@@ -1041,9 +1051,15 @@ package body FLTK.Widgets.Menus is
 
     function Chosen_Index
            (This : in Menu)
-        return Extended_Index is
+        return Extended_Index
+    is
+        function my_value
+               (M : in Storage.Integer_Address)
+            return Interfaces.C.int;
+        for my_value'Address use This.Value_Ptr;
+        pragma Import (Ada, my_value);
     begin
-        return Extended_Index (fl_menu_value (This.Void_Ptr) + 1);
+        return Extended_Index (my_value (This.Void_Ptr) + 1);
     end Chosen_Index;
 
 

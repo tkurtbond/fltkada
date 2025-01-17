@@ -102,6 +102,7 @@ FLTK.Widgets.Inputs.Text.Whole_Number
 FLTK.Widgets.Menus
 FLTK.Widgets.Menus.Choices
 FLTK.Widgets.Menus.Menu_Bars
+FLTK.Widgets.Menus.Menu_Bars.Systemwide
 FLTK.Widgets.Menus.Menu_Buttons
 FLTK.Widgets.Positioners
 FLTK.Widgets.Progress_Bars
@@ -142,7 +143,6 @@ Fl_GDI_Printer_Graphics_Driver
 Fl_Glut_Window
 Fl_Postscript_Graphics_Driver
 Fl_Quartz_Graphics_Driver
-Fl_Sys_Menu_Bar
 Fl_Table
 Fl_Table_Row
 Fl_Tree

@@ -17,7 +17,8 @@ private with
 
     Ada.Containers.Vectors,
     Ada.Finalization,
-    Interfaces;
+    Interfaces,
+    System;
 
 
 package FLTK.Widgets.Menus is
@@ -408,9 +409,11 @@ private
         Element_Type => Item_Access);
 
     type Menu is new Widget with record
-        My_Items : Item_Vectors.Vector;
-        My_Find  : aliased FLTK.Menu_Items.Menu_Item;
-        My_Pick  : aliased FLTK.Menu_Items.Menu_Item;
+        My_Items     : Item_Vectors.Vector;
+        My_Find      : aliased FLTK.Menu_Items.Menu_Item;
+        My_Pick      : aliased FLTK.Menu_Items.Menu_Item;
+        Get_Item_Ptr : System.Address;
+        Value_Ptr    : System.Address;
     end record;
 
     overriding procedure Initialize
@@ -426,6 +429,11 @@ private
     with Inline;
 
     procedure Extra_Final
+           (This : in out Menu);
+
+
+    --  Used internally after every time the number of menu items is meddled with
+    procedure Adjust_Item_Store
            (This : in out Menu);
 
 
@@ -456,8 +464,6 @@ private
             Place  : in Cursor)
         return Cursor;
 
-
-    pragma Inline (Use_Same_Items);
 
     pragma Inline (Has_Item);
     pragma Inline (Item);

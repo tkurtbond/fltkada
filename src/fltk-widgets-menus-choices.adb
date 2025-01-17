@@ -74,6 +74,16 @@ package body FLTK.Widgets.Menus.Choices is
 
 
 
+    function fl_menu_get_item
+           (M : in Storage.Integer_Address;
+            I : in Interfaces.C.int)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_menu_get_item, "fl_menu_get_item");
+    pragma Inline (fl_menu_get_item);
+
+
+
+
     -------------------
     --  Destructors  --
     -------------------
@@ -114,8 +124,10 @@ package body FLTK.Widgets.Menus.Choices is
     procedure Initialize
            (This : in out Choice) is
     begin
-        This.Draw_Ptr := fl_choice_draw'Address;
-        This.Handle_Ptr := fl_choice_handle'Address;
+        This.Draw_Ptr     := fl_choice_draw'Address;
+        This.Handle_Ptr   := fl_choice_handle'Address;
+        This.Get_Item_Ptr := fl_menu_get_item'Address;
+        This.Value_Ptr    := fl_choice_value'Address;
     end Initialize;
 
 
@@ -162,7 +174,7 @@ package body FLTK.Widgets.Menus.Choices is
            (This : in Choice)
         return Extended_Index is
     begin
-        return Extended_Index (fl_choice_value (This.Void_Ptr) + 1);
+        return Menu (This).Chosen_Index;
     end Chosen_Index;
 
 

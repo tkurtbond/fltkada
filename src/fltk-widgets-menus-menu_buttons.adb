@@ -62,6 +62,22 @@ package body FLTK.Widgets.Menus.Menu_Buttons is
 
 
 
+    function fl_menu_get_item
+           (M : in Storage.Integer_Address;
+            I : in Interfaces.C.int)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_menu_get_item, "fl_menu_get_item");
+    pragma Inline (fl_menu_get_item);
+
+    function fl_menu_value
+           (M : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_menu_value, "fl_menu_value");
+    pragma Inline (fl_menu_value);
+
+
+
+
     -------------------
     --  Destructors  --
     -------------------
@@ -142,8 +158,10 @@ package body FLTK.Widgets.Menus.Menu_Buttons is
     procedure Initialize
            (This : in out Menu_Button) is
     begin
-        This.Draw_Ptr   := fl_menu_button_draw'Address;
-        This.Handle_Ptr := fl_menu_button_handle'Address;
+        This.Draw_Ptr     := fl_menu_button_draw'Address;
+        This.Handle_Ptr   := fl_menu_button_handle'Address;
+        This.Get_Item_Ptr := fl_menu_get_item'Address;
+        This.Value_Ptr    := fl_menu_value'Address;
     end Initialize;
 
 

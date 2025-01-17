@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Sys_Menu_Bar Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Sys_Menu_Bar Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Sys_Menu_Bar</td>
+    <td>FLTK.Widgets.Menus.Menu_Bars.Systemwide</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Sys_Menu_Bar</td>
+    <td>System_Menu_Bar</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>System_Menu_Bar_Reference</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Sys_Menu_Bar(int x, int y, int w, int h, const char *l=0);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return System_Menu_Bar;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Rely on the automatic use of begin when a group is created, or use begin/end
+explicitly, or add each widget to its intended parent group manually.</td>
+<td><pre>
+function Create
+       (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+        X, Y, W, H : in     Integer;
+        Text       : in     String := "")
+    return System_Menu_Bar;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+int add(const char *label, const char *shortcut,
+    Fl_Callback *cb, void *user_data=0, int flags=0);
+</pre></td>
+<td><pre>
+procedure Add
+       (This     : in out System_Menu_Bar;
+        Text     : in     String;
+        Action   : in     Widget_Callback := null;
+        Shortcut : in     String;
+        Flags    : in     Menu_Flag := Flag_Normal);
+
+function Add
+       (This     : in out System_Menu_Bar;
+        Text     : in     String;
+        Action   : in     Widget_Callback := null;
+        Shortcut : in     String;
+        Flags    : in     Menu_Flag := Flag_Normal)
+    return Index;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int add(const char *label, int shortcut, Fl_Callback *,
+    void *user_data=0, int flags=0);
+</pre></td>
+<td><pre>
+procedure Add
+       (This     : in out System_Menu_Bar;
+        Text     : in     String;
+        Action   : in     Widget_Callback := null;
+        Shortcut : in     Key_Combo := No_Key;
+        Flags    : in     Menu_Flag := Flag_Normal);
+
+function Add
+       (This     : in out System_Menu_Bar;
+        Text     : in     String;
+        Action   : in     Widget_Callback := null;
+        Shortcut : in     Key_Combo := No_Key;
+        Flags    : in     Menu_Flag := Flag_Normal)
+    return Index;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int add(const char *str);
+</pre></td>
+<td><pre>
+procedure Add
+       (This : in out System_Menu_Bar;
+        Text : in     String);
+
+function Add
+       (This : in out System_Menu_Bar;
+        Text : in     String)
+    return Index;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void clear();
+</pre></td>
+<td><pre>
+procedure Clear
+       (This : in out System_Menu_Bar);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int clear_submenu(int index);
+</pre></td>
+<td><pre>
+procedure Clear_Submenu
+       (This  : in out System_Menu_Bar;
+        Place : in     Index);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void global();
+</pre></td>
+<td><pre>
+procedure Make_Global
+       (This : in out System_Menu_Bar);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int insert(int index, const char *label, const char *shortcut,
+    Fl_Callback *cb, void *user_data=0, int flags=0);
+</pre></td>
+<td><pre>
+procedure Insert
+       (This     : in out System_Menu_Bar;
+        Place    : in     Index;
+        Text     : in     String;
+        Action   : in     Widget_Callback := null;
+        Shortcut : in     String;
+        Flags    : in     Menu_Flag := Flag_Normal);
+
+function Insert
+       (This     : in out System_Menu_Bar;
+        Place    : in     Index;
+        Text     : in     String;
+        Action   : in     Widget_Callback := null;
+        Shortcut : in     String;
+        Flags    : in     Menu_Flag := Flag_Normal)
+    return Index;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int insert(int index, const char *label, int shortcut,
+    Fl_Callback *cb, void *user_data=0, int flags=0);
+</pre></td>
+<td><pre>
+procedure Insert
+       (This     : in out System_Menu_Bar;
+        Place    : in     Index;
+        Text     : in     String;
+        Action   : in     Widget_Callback := null;
+        Shortcut : in     Key_Combo := No_Key;
+        Flags    : in     Menu_Flag := Flag_Normal);
+
+function Insert
+       (This     : in out System_Menu_Bar;
+        Place    : in     Index;
+        Text     : in     String;
+        Action   : in     Widget_Callback := null;
+        Shortcut : in     Key_Combo := No_Key;
+        Flags    : in     Menu_Flag := Flag_Normal)
+    return Index;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Use the menu method to access the menu item array and index it directly.</td>
+<td><pre>
+function Item
+       (This  : in System_Menu_Bar;
+        Place : in Index)
+    return FLTK.Menu_Items.Menu_Item_Reference;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const Fl_Menu_Item * menu() const;
+</pre></td>
+<td>Use Item or Iterate as necessary to access specific items or walk the array.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void menu(const Fl_Menu_Item *m);
+</pre></td>
+<td><pre>
+procedure Use_Same_Items
+       (This  : in out System_Menu_Bar;
+        Donor : in     Menu'Class);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int mode(int i) const;
+</pre></td>
+<td><pre>
+function Get_Flags
+       (This  : in System_Menu_Bar;
+        Place : in Index)
+    return Menu_Flag;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void mode(int i, int fl);
+</pre></td>
+<td><pre>
+procedure Set_Flags
+       (This  : in out System_Menu_Bar;
+        Place : in     Index;
+        Flags : in     Menu_Flag);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void remove(int n);
+</pre></td>
+<td><pre>
+procedure Remove
+       (This  : in out System_Menu_Bar;
+        Place : in     Index);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void replace(int index, const char *name);
+</pre></td>
+<td><pre>
+procedure Set_Label
+       (This  : in out System_Menu_Bar;
+        Place : in     Index;
+        Text  : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void setonly(Fl_Menu_Item *item);
+</pre></td>
+<td><pre>
+procedure Set_Only
+       (This : in out System_Menu_Bar;
+        Item : in out FLTK.Menu_Items.Menu_Item);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void shortcut(int i, int s);
+</pre></td>
+<td><pre>
+procedure Set_Shortcut
+       (This  : in out System_Menu_Bar;
+        Place : in     Index;
+        Press : in     Key_Combo);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void update();
+</pre></td>
+<td><pre>
+procedure Update
+       (This : in out System_Menu_Bar);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out System_Menu_Bar);
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
+
