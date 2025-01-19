@@ -30,7 +30,7 @@ int fl_draw_can_do_alpha_blending() {
     return fl_can_do_alpha_blending();
 }
 
-const char * fl_draw_shortcut_label(unsigned long shortcut) {
+const char * fl_draw_shortcut_label(unsigned int shortcut) {
     return fl_shortcut_label(shortcut);
 }
 

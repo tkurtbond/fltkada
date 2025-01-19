@@ -136,6 +136,7 @@ package FLTK is
     Right_Key        : constant Keypress;
     Up_Key           : constant Keypress;
     Escape_Key       : constant Keypress;
+    Tab_Key          : constant Keypress;
 
     type Mouse_Button is (No_Button, Left_Button, Middle_Button, Right_Button);
 
@@ -151,10 +152,15 @@ package FLTK is
     function "+" (Left : in Modifier; Right : in Keypress) return Key_Combo;
     function "+" (Left : in Modifier; Right : in Mouse_Button) return Key_Combo;
     function "+" (Left : in Modifier; Right : in Key_Combo) return Key_Combo;
-    Mod_None  : constant Modifier;
-    Mod_Shift : constant Modifier;
-    Mod_Ctrl  : constant Modifier;
-    Mod_Alt   : constant Modifier;
+    Mod_None        : constant Modifier;
+    Mod_Shift       : constant Modifier;
+    Mod_Caps_Lock   : constant Modifier;
+    Mod_Ctrl        : constant Modifier;
+    Mod_Alt         : constant Modifier;
+    Mod_Num_Lock    : constant Modifier;
+    Mod_Meta        : constant Modifier;
+    Mod_Scroll_Lock : constant Modifier;
+    Mod_Command     : constant Modifier;
 
 
 
@@ -467,41 +473,49 @@ private
 
     function To_C
            (Key : in Key_Combo)
-        return Interfaces.C.unsigned_long;
+        return Interfaces.C.int;
 
     function To_Ada
-           (Key : in Interfaces.C.unsigned_long)
+           (Key : in Interfaces.C.int)
         return Key_Combo;
 
     function To_C
            (Key : in Keypress)
-        return Interfaces.C.unsigned_long;
+        return Interfaces.C.int;
 
     function To_Ada
-           (Key : in Interfaces.C.unsigned_long)
+           (Key : in Interfaces.C.int)
         return Keypress;
 
     function To_C
            (Modi : in Modifier)
-        return Interfaces.C.unsigned_long;
+        return Interfaces.C.int;
 
     function To_Ada
-           (Modi : in Interfaces.C.unsigned_long)
+           (Modi : in Interfaces.C.int)
         return Modifier;
 
     function To_C
            (Button : in Mouse_Button)
-        return Interfaces.C.unsigned_long;
+        return Interfaces.C.int;
 
     function To_Ada
-           (Button : in Interfaces.C.unsigned_long)
+           (Button : in Interfaces.C.int)
         return Mouse_Button;
 
     --  these values designed to align with FLTK enumeration types
-    Mod_None  : constant Modifier := 2#00000000#;
-    Mod_Shift : constant Modifier := 2#00000001#;
-    Mod_Ctrl  : constant Modifier := 2#00000100#;
-    Mod_Alt   : constant Modifier := 2#00001000#;
+    Mod_None        : constant Modifier := 2#00000000#;
+    Mod_Shift       : constant Modifier := 2#00000001#;
+    Mod_Caps_Lock   : constant Modifier := 2#00000010#;
+    Mod_Ctrl        : constant Modifier := 2#00000100#;
+    Mod_Alt         : constant Modifier := 2#00001000#;
+    Mod_Num_Lock    : constant Modifier := 2#00010000#;
+    --  Missing                            2#00100000#;
+    Mod_Meta        : constant Modifier := 2#01000000#;
+    Mod_Scroll_Lock : constant Modifier := 2#10000000#;
+
+    --  If this is Apple then Mod_Meta, otherwise Mod_Ctrl
+    pragma Import (C, Mod_Command, "fl_mod_command");
 
     No_Key : constant Key_Combo := (Modcode => Mod_None, Keycode => 0, Mousecode => No_Button);
 
@@ -520,6 +534,7 @@ private
     Right_Key        : constant Keypress := 16#ff53#;
     Up_Key           : constant Keypress := 16#ff52#;
     Escape_Key       : constant Keypress := 16#ff1b#;
+    Tab_Key          : constant Keypress := 16#ff09#;
 
 
 

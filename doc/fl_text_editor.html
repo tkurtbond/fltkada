@@ -57,7 +57,7 @@
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>Key_Func</td>
     <td>Default_Key_Func</td>
   </tr>
 
@@ -67,8 +67,27 @@
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
-    <td>Key_Binding_List</td>
+    <td>Key_Binding</td>
+    <td>Key_Binding_Array</td>
+  </tr>
+
+  <tr>
+    <td>Key_Binding</td>
+    <td>Key_Binding_Vectors.Vector</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Attributes</th></tr>
+
+  <tr>
+<td>Use the add_default_key_bindings function.</td>
+<td><pre>
+Default_Key_Bindings : constant Key_Binding_Array := ...
+</pre></td>
   </tr>
 
 </table>
@@ -82,7 +101,9 @@
 <td><pre>
 static Key_Binding * global_key_bindings;
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+Global_Key_Bindings : Key_Binding_Vectors.Vector;
+</pre></td>
   </tr>
 
 </table>
@@ -169,7 +190,7 @@ procedure KF_Ctrl_Shift_Up
 static int kf_copy(int c, Fl_Text_Editor *e);
 </pre></td>
 <td><pre>
-procedure Copy
+procedure KF_Copy
        (This : in out Text_Editor'Class);
 </pre></td>
   </tr>
@@ -210,7 +231,7 @@ procedure KF_Ctrl_Up
 static int kf_cut(int c, Fl_Text_Editor *e);
 </pre></td>
 <td><pre>
-procedure Cut
+procedure KF_Cut
        (This : in out Text_Editor'Class);
 </pre></td>
   </tr>
@@ -220,7 +241,7 @@ procedure Cut
 static int kf_default(int c, Fl_Text_Editor *e);
 </pre></td>
 <td><pre>
-procedure Default
+procedure KF_Default
        (This : in out Text_Editor'Class;
         Key  : in     Key_Combo);
 </pre></td>
@@ -231,7 +252,7 @@ procedure Default
 static int kf_delete(int c, Fl_Text_Editor *e);
 </pre></td>
 <td><pre>
-procedure Delete
+procedure KF_Delete
        (This : in out Text_Editor'Class);
 </pre></td>
   </tr>
@@ -310,21 +331,70 @@ procedure KF_Left
 <td><pre>
 static int kf_m_s_move(int c, Fl_Text_Editor *e);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure KF_Meta_Shift_Home
+       (This : in out Text_Editor'Class);
+
+procedure KF_Meta_Shift_End
+       (This : in out Text_Editor'Class);
+
+procedure KF_Meta_Shift_Page_Down
+       (This : in out Text_Editor'Class);
+
+procedure KF_Meta_Shift_Page_Up
+       (This : in out Text_Editor'Class);
+
+procedure KF_Meta_Shift_Down
+       (This : in out Text_Editor'Class);
+
+procedure KF_Meta_Shift_Left
+       (This : in out Text_Editor'Class);
+
+procedure KF_Meta_Shift_Right
+       (This : in out Text_Editor'Class);
+
+procedure KF_Meta_Shift_Up
+       (This : in out Text_Editor'Class);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 static int kf_meta_move(int c, Fl_Text_Editor *e);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure KF_Meta_Home
+       (This : in out Text_Editor'Class);
+
+procedure KF_Meta_End
+       (This : in out Text_Editor'Class);
+
+procedure KF_Meta_Page_Down
+       (This : in out Text_Editor'Class);
+
+procedure KF_Meta_Page_Up
+       (This : in out Text_Editor'Class);
+
+procedure KF_Meta_Down
+       (This : in out Text_Editor'Class);
+
+procedure KF_Meta_Left
+       (This : in out Text_Editor'Class);
+
+procedure KF_Meta_Right
+       (This : in out Text_Editor'Class);
+
+procedure KF_Meta_Up
+       (This : in out Text_Editor'Class);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 static int kf_move(int c, Fl_Text_Editor *e);
 </pre></td>
-<td>&nbsp;</td>
+<td>Already covered by KF_Home, KF_End, KF_Page_Down, KF_Page_Up,
+KF_Down, KF_Left, KF_Right, KF_Up.</td>
   </tr>
 
   <tr>
@@ -352,7 +422,7 @@ procedure KF_Page_Up
 static int kf_paste(int c, Fl_Text_Editor *e);
 </pre></td>
 <td><pre>
-procedure Paste
+procedure KF_Paste
        (This : in out Text_Editor'Class);
 </pre></td>
   </tr>
@@ -372,7 +442,7 @@ procedure KF_Right
 static int kf_select_all(int c, Fl_Text_Editor *e);
 </pre></td>
 <td><pre>
-procedure Select_All
+procedure KF_Select_All
        (This : in out Text_Editor'Class);
 </pre></td>
   </tr>
@@ -409,11 +479,19 @@ procedure KF_Shift_Up
   </tr>
 
   <tr>
+<td>Write your own function to handle a tab press.</td>
+<td><pre>
+procedure KF_Tab
+       (This : in out Text_Editor'Class);
+</pre></td>
+  </tr>
+
+  <tr>
 <td><pre>
 static int kf_undo(int c, Fl_Text_Editor *e);
 </pre></td>
 <td><pre>
-procedure Undo
+procedure KF_Undo
        (This : in out Text_Editor'Class);
 </pre></td>
   </tr>
@@ -439,18 +517,7 @@ procedure KF_Up
 <td><pre>
 void add_default_key_bindings(Key_Binding **list);
 </pre></td>
-<td>&nbsp;</td>
-  </tr>
-
-  <tr>
-<td><pre>
-void add_key_binding(int key, int state, Key_Func f, Key_Binding **list);
-</pre></td>
-<td><pre>
-procedure Add_Key_Binding
-       (This : in out Text_Editor;
-        Bind : in     Key_Binding);
-</pre></td>
+<td>Construct an array or populate a vector manually using the Default_Key_Bindings array.</td>
   </tr>
 
   <tr>
@@ -462,23 +529,28 @@ procedure Add_Key_Binding
        (This : in out Text_Editor;
         Key  : in     Key_Combo;
         Func : in     Key_Func);
+
+procedure Add_Key_Binding
+       (This : in out Text_Editor;
+        Bind : in     Key_Binding);
 </pre></td>
   </tr>
 
   <tr>
-<td>&nbsp;</td>
+<td><pre>
+void add_key_binding(int key, int state, Key_Func f,
+    Key_Binding **list);
+</pre></td>
+<td>Construct an array or populate a vector manually.</td>
+  </tr>
+
+  <tr>
+<td>Add key bindings to an Fl_Text_Editor one by one.</td>
 <td><pre>
 procedure Add_Key_Bindings
        (This : in out Text_Editor;
-        List : in     Key_Binding_List);
+        Bind : in     Key_Binding_Array);
 </pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-Key_Func bound_key_function(int key, int state, Key_Binding *list) const;
-</pre></td>
-<td>&nbsp;</td>
   </tr>
 
   <tr>
@@ -494,6 +566,24 @@ function Get_Bound_Key_Function
   </tr>
 
   <tr>
+<td>After adding a key binding to an editor there does not appear to
+be a way to obtain a full accounting of what bindings exist afterwards.</td>
+<td><pre>
+function Get_All_Bound_Key_Functions
+       (This : in Text_Editor)
+    return Key_Binding_Array;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Key_Func bound_key_function(int key, int state,
+    Key_Binding *list) const;
+</pre></td>
+<td>Search an array or vector using standard operations.</td>
+  </tr>
+
+  <tr>
 <td><pre>
 void default_key_function(Key_Func f);
 </pre></td>
@@ -505,7 +595,7 @@ procedure Set_Default_Key_Function
   </tr>
 
   <tr>
-<td>&nbsp;</td>
+<td>Keep track of what default key function you set manually.</td>
 <td><pre>
 function Get_Default_Key_Function
        (This : in Text_Editor)
@@ -527,17 +617,6 @@ function Handle
 
   <tr>
 <td><pre>
-void insert_mode(int b);
-</pre></td>
-<td><pre>
-procedure Set_Insert_Mode
-       (This : in out Text_Editor;
-        To   : in     Insert_Mode);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
 int insert_mode();
 </pre></td>
 <td><pre>
@@ -549,12 +628,12 @@ function Get_Insert_Mode
 
   <tr>
 <td><pre>
-void remove_all_key_bindings(Key_Binding **list);
+void insert_mode(int b);
 </pre></td>
 <td><pre>
-procedure Remove_Key_Bindings
+procedure Set_Insert_Mode
        (This : in out Text_Editor;
-        List : in     Key_Binding_List);
+        To   : in     Insert_Mode);
 </pre></td>
   </tr>
 
@@ -570,13 +649,9 @@ procedure Remove_All_Key_Bindings
 
   <tr>
 <td><pre>
-void remove_key_binding(int key, int state, Key_Binding **list);
+void remove_all_key_bindings(Key_Binding **list);
 </pre></td>
-<td><pre>
-procedure Remove_Key_Binding
-       (This : in out Text_Editor;
-        Bind : in     Key_Binding);
-</pre></td>
+<td>Use standard operations to manipulate an array or vector.</td>
   </tr>
 
   <tr>
@@ -587,6 +662,26 @@ void remove_key_binding(int key, int state);
 procedure Remove_Key_Binding
        (This : in out Text_Editor;
         Key  : in     Key_Combo);
+
+procedure Remove_Key_Binding
+       (This : in out Text_Editor;
+        Bind : in     Key_Binding);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void remove_key_binding(int key, int state, Key_Binding **list);
+</pre></td>
+<td>Use standard operations to manipulate an array or vector.</td>
+  </tr>
+
+  <tr>
+<td>Remove key bindings from an Fl_Text_Editor one by one.</td>
+<td><pre>
+procedure Remove_Key_Bindings
+       (This : in out Text_Editor;
+        Bind : in     Key_Binding_Array);
 </pre></td>
   </tr>
 
@@ -623,14 +718,21 @@ procedure Set_Tab_Mode
 <td><pre>
 int handle_key();
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Handle_Key
+       (This : in out Text_Editor)
+    return Event_Outcome;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 void maybe_do_callback();
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Maybe_Do_Callback
+       (This : in out Text_Editor);
+</pre></td>
   </tr>
 
 </table>

@@ -18,6 +18,17 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 
 
+//  Non-friend protected access
+
+class Friend_Text_Editor : Fl_Text_Editor {
+public:
+    using Fl_Text_Editor::handle_key;
+    using Fl_Text_Editor::maybe_do_callback;
+};
+
+
+
+
 //  Attaching all relevant hooks and friends
 
 class My_Text_Editor : public Fl_Text_Editor {
@@ -249,13 +260,79 @@ void fl_text_editor_ctrl_shift_up(TEXTEDITOR te) {
 
 
 
+void fl_text_editor_meta_home(TEXTEDITOR te) {
+    Fl_Text_Editor::kf_meta_move(FL_Home, static_cast<Fl_Text_Editor*>(te));
+}
+
+void fl_text_editor_meta_end(TEXTEDITOR te) {
+    Fl_Text_Editor::kf_meta_move(FL_End, static_cast<Fl_Text_Editor*>(te));
+}
+
+void fl_text_editor_meta_page_down(TEXTEDITOR te) {
+    Fl_Text_Editor::kf_meta_move(FL_Page_Down, static_cast<Fl_Text_Editor*>(te));
+}
+
+void fl_text_editor_meta_page_up(TEXTEDITOR te) {
+    Fl_Text_Editor::kf_meta_move(FL_Page_Up, static_cast<Fl_Text_Editor*>(te));
+}
+
+void fl_text_editor_meta_down(TEXTEDITOR te) {
+    Fl_Text_Editor::kf_meta_move(FL_Down, static_cast<Fl_Text_Editor*>(te));
+}
+
+void fl_text_editor_meta_left(TEXTEDITOR te) {
+    Fl_Text_Editor::kf_meta_move(FL_Left, static_cast<Fl_Text_Editor*>(te));
+}
+
+void fl_text_editor_meta_right(TEXTEDITOR te) {
+    Fl_Text_Editor::kf_meta_move(FL_Right, static_cast<Fl_Text_Editor*>(te));
+}
+
+void fl_text_editor_meta_up(TEXTEDITOR te) {
+    Fl_Text_Editor::kf_meta_move(FL_Up, static_cast<Fl_Text_Editor*>(te));
+}
+
+
+
+
+void fl_text_editor_meta_shift_home(TEXTEDITOR te) {
+    Fl_Text_Editor::kf_m_s_move(FL_Home, static_cast<Fl_Text_Editor*>(te));
+}
+
+void fl_text_editor_meta_shift_end(TEXTEDITOR te) {
+    Fl_Text_Editor::kf_m_s_move(FL_End, static_cast<Fl_Text_Editor*>(te));
+}
+
+void fl_text_editor_meta_shift_page_down(TEXTEDITOR te) {
+    Fl_Text_Editor::kf_m_s_move(FL_Page_Down, static_cast<Fl_Text_Editor*>(te));
+}
+
+void fl_text_editor_meta_shift_page_up(TEXTEDITOR te) {
+    Fl_Text_Editor::kf_m_s_move(FL_Page_Up, static_cast<Fl_Text_Editor*>(te));
+}
+
+void fl_text_editor_meta_shift_down(TEXTEDITOR te) {
+    Fl_Text_Editor::kf_m_s_move(FL_Down, static_cast<Fl_Text_Editor*>(te));
+}
+
+void fl_text_editor_meta_shift_left(TEXTEDITOR te) {
+    Fl_Text_Editor::kf_m_s_move(FL_Left, static_cast<Fl_Text_Editor*>(te));
+}
+
+void fl_text_editor_meta_shift_right(TEXTEDITOR te) {
+    Fl_Text_Editor::kf_m_s_move(FL_Right, static_cast<Fl_Text_Editor*>(te));
+}
+
+void fl_text_editor_meta_shift_up(TEXTEDITOR te) {
+    Fl_Text_Editor::kf_m_s_move(FL_Up, static_cast<Fl_Text_Editor*>(te));
+}
+
+
+
+
 void fl_text_editor_add_key_binding(TEXTEDITOR te, int k, int s, void * f) {
     static_cast<Fl_Text_Editor*>(te)->add_key_binding
         (k, s, reinterpret_cast<Fl_Text_Editor::Key_Func>(f));
-}
-
-void fl_text_editor_remove_key_binding(TEXTEDITOR te, int k, int s) {
-    static_cast<Fl_Text_Editor*>(te)->remove_key_binding(k, s);
 }
 
 void fl_text_editor_remove_all_key_bindings(TEXTEDITOR te) {
@@ -308,6 +385,14 @@ void fl_text_editor_draw(TEXTEDITOR te) {
 
 int fl_text_editor_handle(TEXTEDITOR te, int e) {
     return static_cast<My_Text_Editor*>(te)->Fl_Text_Editor::handle(e);
+}
+
+int fl_text_editor_handle_key(TEXTEDITOR te) {
+    return (static_cast<Fl_Text_Editor*>(te)->*(&Friend_Text_Editor::handle_key))();
+}
+
+void fl_text_editor_maybe_do_callback(TEXTEDITOR te) {
+    (static_cast<Fl_Text_Editor*>(te)->*(&Friend_Text_Editor::maybe_do_callback))();
 }
 
 

@@ -26,7 +26,7 @@ package body FLTK.Menu_Items is
     function new_fl_menu_item
            (T    : in Interfaces.C.char_array;
             C    : in Storage.Integer_Address;
-            S, F : in Interfaces.C.unsigned_long)
+            S, F : in Interfaces.C.int)
         return Storage.Integer_Address;
     pragma Import (C, new_fl_menu_item, "new_fl_menu_item");
     pragma Inline (new_fl_menu_item);
@@ -184,13 +184,13 @@ package body FLTK.Menu_Items is
 
     function fl_menu_item_get_flags
            (MI : in Storage.Integer_Address)
-        return Interfaces.C.unsigned_long;
+        return Interfaces.C.int;
     pragma Import (C, fl_menu_item_get_flags, "fl_menu_item_get_flags");
     pragma Inline (fl_menu_item_get_flags);
 
     procedure fl_menu_item_set_flags
            (MI : in Storage.Integer_Address;
-            F  : in Interfaces.C.unsigned_long);
+            F  : in Interfaces.C.int);
     pragma Import (C, fl_menu_item_set_flags, "fl_menu_item_set_flags");
     pragma Inline (fl_menu_item_set_flags);
 
@@ -272,7 +272,7 @@ package body FLTK.Menu_Items is
                    (Interfaces.C.To_C (Text),
                     Callback_Convert.To_Address (Action),
                     To_C (Shortcut),
-                    Interfaces.C.unsigned_long (Flags));
+                    Interfaces.C.int (Flags));
             end return;
         end Create;
 
@@ -498,7 +498,7 @@ package body FLTK.Menu_Items is
            (This : in Menu_Item)
         return Key_Combo is
     begin
-        return To_Ada (Interfaces.C.unsigned_long (fl_menu_item_get_shortcut (This.Void_Ptr)));
+        return To_Ada (fl_menu_item_get_shortcut (This.Void_Ptr));
     end Get_Shortcut;
 
 
@@ -522,7 +522,7 @@ package body FLTK.Menu_Items is
            (This : in out Menu_Item;
             To   : in     Menu_Flag) is
     begin
-        fl_menu_item_set_flags (This.Void_Ptr, Interfaces.C.unsigned_long (To));
+        fl_menu_item_set_flags (This.Void_Ptr, Interfaces.C.int (To));
     end Set_Flags;
 
 

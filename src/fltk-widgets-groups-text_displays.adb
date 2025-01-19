@@ -478,8 +478,11 @@ package body FLTK.Widgets.Groups.Text_Displays is
         Extra_Final (This);
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_text_display (This.Void_Ptr);
-            free_fl_text_buffer (This.Raw_Buffer);
             This.Void_Ptr := Null_Pointer;
+            if This.Raw_Buffer /= Null_Pointer then
+                free_fl_text_buffer (This.Raw_Buffer);  --  buffer is reference counted
+                This.Raw_Buffer := Null_Pointer;
+            end if;
         end if;
     end Finalize;
 

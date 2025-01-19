@@ -12,7 +12,7 @@ typedef void* MENUITEM;
 
 
 extern "C" void * null_fl_menu_item();
-extern "C" void * new_fl_menu_item(char * t, void * c, unsigned long s, unsigned long f);
+extern "C" void * new_fl_menu_item(char * t, void * c, int s, int f);
 extern "C" void free_fl_menu_item(MENUITEM mi);
 
 
@@ -45,8 +45,8 @@ extern "C" void fl_menu_item_set_labeltype(MENUITEM mi, int t);
 
 extern "C" int fl_menu_item_get_shortcut(MENUITEM mi);
 extern "C" void fl_menu_item_set_shortcut(MENUITEM mi, int s);
-extern "C" unsigned long fl_menu_item_get_flags(MENUITEM mi);
-extern "C" void fl_menu_item_set_flags(MENUITEM mi, unsigned long f);
+extern "C" int fl_menu_item_get_flags(MENUITEM mi);
+extern "C" void fl_menu_item_set_flags(MENUITEM mi, int f);
 
 
 extern "C" void fl_menu_item_image(MENUITEM mi, void * i);

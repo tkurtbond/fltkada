@@ -27,7 +27,7 @@ void * null_fl_menu_item() {
     return mi;
 }
 
-void * new_fl_menu_item(char * t, void * c, unsigned long s, unsigned long f) {
+void * new_fl_menu_item(char * t, void * c, int s, int f) {
     Fl_Menu_Item *mi = new Fl_Menu_Item;
     mi->callback(c==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), c);
     mi->flags = static_cast<int>(f);
@@ -145,11 +145,11 @@ void fl_menu_item_set_shortcut(MENUITEM mi, int s) {
     static_cast<Fl_Menu_Item*>(mi)->shortcut(s);
 }
 
-unsigned long fl_menu_item_get_flags(MENUITEM mi) {
+int fl_menu_item_get_flags(MENUITEM mi) {
     return static_cast<Fl_Menu_Item*>(mi)->flags;
 }
 
-void fl_menu_item_set_flags(MENUITEM mi, unsigned long f) {
+void fl_menu_item_set_flags(MENUITEM mi, int f) {
     static_cast<Fl_Menu_Item*>(mi)->flags = f;
 }
 

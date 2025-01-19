@@ -118,11 +118,11 @@ void fl_input_set_input_type(INPUT i, int t) {
     static_cast<Fl_Input_*>(i)->input_type(t);
 }
 
-unsigned long fl_input_get_shortcut(INPUT i) {
+int fl_input_get_shortcut(INPUT i) {
     return static_cast<Fl_Input_*>(i)->shortcut();
 }
 
-void fl_input_set_shortcut(INPUT i, unsigned long t) {
+void fl_input_set_shortcut(INPUT i, int t) {
     static_cast<Fl_Input_*>(i)->shortcut(t);
 }
 

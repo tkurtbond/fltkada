@@ -56,9 +56,9 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
     function fl_sys_menu_bar_add2
            (M : in Storage.Integer_Address;
             T : in Interfaces.C.char_array;
-            S : in Interfaces.C.unsigned_long;
+            S : in Interfaces.C.int;
             U : in Storage.Integer_Address;
-            F : in Interfaces.C.unsigned_long)
+            F : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_sys_menu_bar_add2, "fl_sys_menu_bar_add2");
     pragma Inline (fl_sys_menu_bar_add2);
@@ -67,7 +67,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
            (M    : in Storage.Integer_Address;
             T, S : in Interfaces.C.char_array;
             U    : in Storage.Integer_Address;
-            F    : in Interfaces.C.unsigned_long)
+            F    : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_sys_menu_bar_add3, "fl_sys_menu_bar_add3");
     pragma Inline (fl_sys_menu_bar_add3);
@@ -76,9 +76,9 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
            (M : in Storage.Integer_Address;
             P : in Interfaces.C.int;
             T : in Interfaces.C.char_array;
-            S : in Interfaces.C.unsigned_long;
+            S : in Interfaces.C.int;
             U : in Storage.Integer_Address;
-            F : in Interfaces.C.unsigned_long)
+            F : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_sys_menu_bar_insert, "fl_sys_menu_bar_insert");
     pragma Inline (fl_sys_menu_bar_insert);
@@ -88,7 +88,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             P    : in Interfaces.C.int;
             T, S : in Interfaces.C.char_array;
             U    : in Storage.Integer_Address;
-            F    : in Interfaces.C.unsigned_long)
+            F    : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_sys_menu_bar_insert2, "fl_sys_menu_bar_insert2");
     pragma Inline (fl_sys_menu_bar_insert2);
@@ -144,21 +144,21 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
     procedure fl_sys_menu_bar_shortcut
            (M : in Storage.Integer_Address;
             I : in Interfaces.C.int;
-            S : in Interfaces.C.unsigned_long);
+            S : in Interfaces.C.int);
     pragma Import (C, fl_sys_menu_bar_shortcut, "fl_sys_menu_bar_shortcut");
     pragma Inline (fl_sys_menu_bar_shortcut);
 
     function fl_sys_menu_bar_get_mode
            (M : in Storage.Integer_Address;
             I : in Interfaces.C.int)
-        return Interfaces.C.unsigned_long;
+        return Interfaces.C.int;
     pragma Import (C, fl_sys_menu_bar_get_mode, "fl_sys_menu_bar_get_mode");
     pragma Inline (fl_sys_menu_bar_get_mode);
 
     procedure fl_sys_menu_bar_set_mode
            (M : in Storage.Integer_Address;
             I : in Interfaces.C.int;
-            F : in Interfaces.C.unsigned_long);
+            F : in Interfaces.C.int);
     pragma Import (C, fl_sys_menu_bar_set_mode, "fl_sys_menu_bar_set_mode");
     pragma Inline (fl_sys_menu_bar_set_mode);
 
@@ -324,7 +324,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Interfaces.C.To_C (Text),
             To_C (Shortcut),
             Callback_Convert.To_Address (Action),
-            Interfaces.C.unsigned_long (Flags));
+            Interfaces.C.int (Flags));
     begin
         This.Adjust_Item_Store;
     end Add;
@@ -343,7 +343,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Interfaces.C.To_C (Text),
             To_C (Shortcut),
             Callback_Convert.To_Address (Action),
-            Interfaces.C.unsigned_long (Flags));
+            Interfaces.C.int (Flags));
     begin
         This.Adjust_Item_Store;
         return Index (Added_Spot + 1);
@@ -362,7 +362,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Interfaces.C.To_C (Text),
             Interfaces.C.To_C (Shortcut),
             Callback_Convert.To_Address (Action),
-            Interfaces.C.unsigned_long (Flags));
+            Interfaces.C.int (Flags));
     begin
         This.Adjust_Item_Store;
     end Add;
@@ -381,7 +381,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Interfaces.C.To_C (Text),
             Interfaces.C.To_C (Shortcut),
             Callback_Convert.To_Address (Action),
-            Interfaces.C.unsigned_long (Flags));
+            Interfaces.C.int (Flags));
     begin
         This.Adjust_Item_Store;
         return Index (Added_Spot + 1);
@@ -402,7 +402,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Interfaces.C.To_C (Text),
             To_C (Shortcut),
             Callback_Convert.To_Address (Action),
-            Interfaces.C.unsigned_long (Flags));
+            Interfaces.C.int (Flags));
     begin
         This.Adjust_Item_Store;
     end Insert;
@@ -423,7 +423,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Interfaces.C.To_C (Text),
             To_C (Shortcut),
             Callback_Convert.To_Address (Action),
-            Interfaces.C.unsigned_long (Flags));
+            Interfaces.C.int (Flags));
     begin
         This.Adjust_Item_Store;
         return Index (Added_Spot + 1);
@@ -444,7 +444,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Interfaces.C.To_C (Text),
             Interfaces.C.To_C (Shortcut),
             Callback_Convert.To_Address (Action),
-            Interfaces.C.unsigned_long (Flags));
+            Interfaces.C.int (Flags));
     begin
         This.Adjust_Item_Store;
     end Insert;
@@ -465,7 +465,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Interfaces.C.To_C (Text),
             Interfaces.C.To_C (Shortcut),
             Callback_Convert.To_Address (Action),
-            Interfaces.C.unsigned_long (Flags));
+            Interfaces.C.int (Flags));
     begin
         This.Adjust_Item_Store;
         return Index (Added_Spot + 1);
@@ -585,7 +585,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
         fl_sys_menu_bar_set_mode
            (This.Void_Ptr,
             Interfaces.C.int (Place) - 1,
-            Interfaces.C.unsigned_long (Flags));
+            Interfaces.C.int (Flags));
     end Set_Flags;
 
 

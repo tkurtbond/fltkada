@@ -138,13 +138,13 @@ package body FLTK.Widgets.Inputs is
 
     function fl_input_get_shortcut
            (I : in Storage.Integer_Address)
-        return Interfaces.C.unsigned_long;
+        return Interfaces.C.int;
     pragma Import (C, fl_input_get_shortcut, "fl_input_get_shortcut");
     pragma Inline (fl_input_get_shortcut);
 
     procedure fl_input_set_shortcut
            (I : in Storage.Integer_Address;
-            T : in Interfaces.C.unsigned_long);
+            T : in Interfaces.C.int);
     pragma Import (C, fl_input_set_shortcut, "fl_input_set_shortcut");
     pragma Inline (fl_input_set_shortcut);
 

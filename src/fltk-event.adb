@@ -120,12 +120,12 @@ package body FLTK.Event is
     pragma Inline (fl_event_get);
 
     function fl_event_state
-        return Interfaces.C.unsigned_long;
+        return Interfaces.C.int;
     pragma Import (C, fl_event_state, "fl_event_state");
     pragma Inline (fl_event_state);
 
     function fl_event_check_state
-           (S : in Interfaces.C.unsigned_long)
+           (S : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_event_check_state, "fl_event_check_state");
     pragma Inline (fl_event_check_state);
@@ -213,23 +213,23 @@ package body FLTK.Event is
 
 
     function fl_event_key
-        return Interfaces.C.unsigned_long;
+        return Interfaces.C.int;
     pragma Import (C, fl_event_key, "fl_event_key");
     pragma Inline (fl_event_key);
 
     function fl_event_original_key
-        return Interfaces.C.unsigned_long;
+        return Interfaces.C.int;
     pragma Import (C, fl_event_original_key, "fl_event_original_key");
     pragma Inline (fl_event_original_key);
 
     function fl_event_key_during
-           (K : in Interfaces.C.unsigned_long)
+           (K : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_event_key_during, "fl_event_key_during");
     pragma Inline (fl_event_key_during);
 
     function fl_event_get_key
-           (K : in Interfaces.C.unsigned_long)
+           (K : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_event_get_key, "fl_event_get_key");
     pragma Inline (fl_event_get_key);

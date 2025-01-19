@@ -11,9 +11,9 @@
 
 
 class My_Text_Buffer : public Fl_Text_Buffer {
-    public:
-        using Fl_Text_Buffer::Fl_Text_Buffer;
-        int reference_count = 0;
+public:
+    using Fl_Text_Buffer::Fl_Text_Buffer;
+    int reference_count = 0;
 };
 
 

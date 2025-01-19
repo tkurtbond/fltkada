@@ -72,8 +72,27 @@ extern "C" void fl_text_editor_ctrl_shift_right(TEXTEDITOR te);
 extern "C" void fl_text_editor_ctrl_shift_up(TEXTEDITOR te);
 
 
+extern "C" void fl_text_editor_meta_home(TEXTEDITOR te);
+extern "C" void fl_text_editor_meta_end(TEXTEDITOR te);
+extern "C" void fl_text_editor_meta_page_down(TEXTEDITOR te);
+extern "C" void fl_text_editor_meta_page_up(TEXTEDITOR te);
+extern "C" void fl_text_editor_meta_down(TEXTEDITOR te);
+extern "C" void fl_text_editor_meta_left(TEXTEDITOR te);
+extern "C" void fl_text_editor_meta_right(TEXTEDITOR te);
+extern "C" void fl_text_editor_meta_up(TEXTEDITOR te);
+
+
+extern "C" void fl_text_editor_meta_shift_home(TEXTEDITOR te);
+extern "C" void fl_text_editor_meta_shift_end(TEXTEDITOR te);
+extern "C" void fl_text_editor_meta_shift_page_down(TEXTEDITOR te);
+extern "C" void fl_text_editor_meta_shift_page_up(TEXTEDITOR te);
+extern "C" void fl_text_editor_meta_shift_down(TEXTEDITOR te);
+extern "C" void fl_text_editor_meta_shift_left(TEXTEDITOR te);
+extern "C" void fl_text_editor_meta_shift_right(TEXTEDITOR te);
+extern "C" void fl_text_editor_meta_shift_up(TEXTEDITOR te);
+
+
 extern "C" void fl_text_editor_add_key_binding(TEXTEDITOR te, int k, int s, void * f);
-extern "C" void fl_text_editor_remove_key_binding(TEXTEDITOR te, int k, int s);
 extern "C" void fl_text_editor_remove_all_key_bindings(TEXTEDITOR te);
 extern "C" void fl_text_editor_set_default_key_function(TEXTEDITOR te, void * f);
 
@@ -88,6 +107,8 @@ extern "C" void fl_text_editor_set_tab_nav(TEXTEDITOR te, int t);
 
 extern "C" void fl_text_editor_draw(TEXTEDITOR te);
 extern "C" int fl_text_editor_handle(TEXTEDITOR te, int e);
+extern "C" int fl_text_editor_handle_key(TEXTEDITOR te);
+extern "C" void fl_text_editor_maybe_do_callback(TEXTEDITOR te);
 
 
 #endif

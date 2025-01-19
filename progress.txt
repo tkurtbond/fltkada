@@ -146,7 +146,11 @@ Fl_Quartz_Graphics_Driver
 Fl_Table
 Fl_Table_Row
 Fl_Tree
+Fl_Tree_Item
+Fl_Tree_Prefs
 Fl_Xlib_Graphics_Driver
+gl
+glut
 
 
 Doesn't need an internal Graphics_Driver:
@@ -221,7 +225,6 @@ Widgets with incomplete APIs:
 Widgets
 Widgets.Groups.Scrolls (attributes, resize, type, protected)
 Widgets.Groups.Text_Displays
-Widgets.Groups.Text_Displays.Text_Editors
 Widgets.Groups.Windows
 Widgets.Valuators (format) (a few derivative classes need type() checked too)
 

@@ -271,7 +271,7 @@ package body FLTK.Widgets.Buttons is
            (This : in Button)
         return Key_Combo is
     begin
-        return To_Ada (Interfaces.C.unsigned_long (fl_button_get_shortcut (This.Void_Ptr)));
+        return To_Ada (fl_button_get_shortcut (This.Void_Ptr));
     end Get_Shortcut;
 
 

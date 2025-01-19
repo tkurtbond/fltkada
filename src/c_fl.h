@@ -8,6 +8,9 @@
 #define FL_GUARD
 
 
+extern "C" const short fl_mod_command;
+
+
 extern "C" size_t c_pointer_size();
 
 

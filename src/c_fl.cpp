@@ -10,6 +10,11 @@
 
 
 
+const short fl_mod_command = FL_COMMAND >> 16;
+
+
+
+
 size_t c_pointer_size() {
     return sizeof(void*);
 }

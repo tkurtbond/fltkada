@@ -14,7 +14,7 @@ extern "C" void fl_draw_set_status(int x, int y, int w, int h);
 
 
 extern "C" int fl_draw_can_do_alpha_blending();
-extern "C" const char * fl_draw_shortcut_label(unsigned long shortcut);
+extern "C" const char * fl_draw_shortcut_label(unsigned int shortcut);
 
 
 extern "C" const char * fl_draw_latin1_to_local(const char *t, int n);

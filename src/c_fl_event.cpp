@@ -85,11 +85,11 @@ int fl_event_get() {
     return Fl::event();
 }
 
-unsigned long fl_event_state() {
+int fl_event_state() {
     return Fl::event_state();
 }
 
-int fl_event_check_state(unsigned long s) {
+int fl_event_check_state(int s) {
     return Fl::event_state(s);
 }
 
@@ -159,19 +159,19 @@ int fl_event_inside(int x, int y, int w, int h) {
 
 
 
-unsigned long fl_event_key() {
+int fl_event_key() {
     return Fl::event_key();
 }
 
-unsigned long fl_event_original_key() {
+int fl_event_original_key() {
     return Fl::event_original_key();
 }
 
-int fl_event_key_during(unsigned long k) {
+int fl_event_key_during(int k) {
     return Fl::event_key(k);
 }
 
-int fl_event_get_key(unsigned long k) {
+int fl_event_get_key(int k) {
     return Fl::get_key(k);
 }
 

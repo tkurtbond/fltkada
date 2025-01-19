@@ -63,26 +63,22 @@ int fl_sys_menu_bar_add(SYSMENUBAR m, const char * t) {
     return static_cast<Fl_Sys_Menu_Bar*>(m)->add(t);
 }
 
-int fl_sys_menu_bar_add2(SYSMENUBAR m, const char * t, unsigned long s, void * u, unsigned long f) {
+int fl_sys_menu_bar_add2(SYSMENUBAR m, const char * t, int s, void * u, int f) {
     return static_cast<Fl_Sys_Menu_Bar*>(m)->add(t, s,
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
 }
 
-int fl_sys_menu_bar_add3(SYSMENUBAR m, const char * t, const char * s, void * u, unsigned long f) {
+int fl_sys_menu_bar_add3(SYSMENUBAR m, const char * t, const char * s, void * u, int f) {
     return static_cast<Fl_Sys_Menu_Bar*>(m)->add(t, s,
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
 }
 
-int fl_sys_menu_bar_insert(SYSMENUBAR m, int p, const char * t, unsigned long s,
-    void * u, unsigned long f)
-{
+int fl_sys_menu_bar_insert(SYSMENUBAR m, int p, const char * t, int s, void * u, int f) {
     return static_cast<Fl_Sys_Menu_Bar*>(m)->insert(p, t, s,
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
 }
 
-int fl_sys_menu_bar_insert2(SYSMENUBAR m, int p, const char * t, const char * s,
-    void * u, unsigned long f)
-{
+int fl_sys_menu_bar_insert2(SYSMENUBAR m, int p, const char * t, const char * s, void * u, int f) {
     return static_cast<Fl_Sys_Menu_Bar*>(m)->insert(p, t, s,
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
 }
@@ -121,15 +117,15 @@ void fl_sys_menu_bar_replace(SYSMENUBAR m, int i, const char * t) {
     static_cast<Fl_Sys_Menu_Bar*>(m)->replace(i, t);
 }
 
-void fl_sys_menu_bar_shortcut(SYSMENUBAR m, int i, unsigned long s) {
+void fl_sys_menu_bar_shortcut(SYSMENUBAR m, int i, int s) {
     static_cast<Fl_Sys_Menu_Bar*>(m)->shortcut(i, s);
 }
 
-unsigned long fl_sys_menu_bar_get_mode(SYSMENUBAR m, int i) {
+int fl_sys_menu_bar_get_mode(SYSMENUBAR m, int i) {
     return static_cast<Fl_Sys_Menu_Bar*>(m)->mode(i);
 }
 
-void fl_sys_menu_bar_set_mode(SYSMENUBAR m, int i, unsigned long f) {
+void fl_sys_menu_bar_set_mode(SYSMENUBAR m, int i, int f) {
     static_cast<Fl_Sys_Menu_Bar*>(m)->mode(i, f);
 }
 

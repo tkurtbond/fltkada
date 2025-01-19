@@ -299,7 +299,7 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
            (This : in Value_Input)
         return Key_Combo is
     begin
-        return To_Ada (Interfaces.C.unsigned_long (fl_value_input_get_shortcut (This.Void_Ptr)));
+        return To_Ada (fl_value_input_get_shortcut (This.Void_Ptr));
     end Get_Shortcut;
 
 

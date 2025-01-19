@@ -33,8 +33,8 @@ extern "C" void fl_input_set_wrap(INPUT i, int t);
 
 extern "C" int fl_input_get_input_type(INPUT i);
 extern "C" void fl_input_set_input_type(INPUT i, int t);
-extern "C" unsigned long fl_input_get_shortcut(INPUT i);
-extern "C" void fl_input_set_shortcut(INPUT i, unsigned long t);
+extern "C" int fl_input_get_shortcut(INPUT i);
+extern "C" void fl_input_set_shortcut(INPUT i, int t);
 extern "C" int fl_input_get_mark(INPUT i);
 extern "C" int fl_input_set_mark(INPUT i, int t);
 extern "C" int fl_input_get_position(INPUT i);

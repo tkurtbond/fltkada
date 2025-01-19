@@ -210,14 +210,14 @@ package body FLTK is
 
     function To_C
            (Key : in Key_Combo)
-        return Interfaces.C.unsigned_long is
+        return Interfaces.C.int is
     begin
         return To_C (Key.Modcode) + To_C (Key.Keycode) + To_C (Key.Mousecode);
     end To_C;
 
 
     function To_Ada
-           (Key : in Interfaces.C.unsigned_long)
+           (Key : in Interfaces.C.int)
         return Key_Combo is
     begin
         return Result : Key_Combo do
@@ -230,14 +230,14 @@ package body FLTK is
 
     function To_C
            (Key : in Keypress)
-        return Interfaces.C.unsigned_long is
+        return Interfaces.C.int is
     begin
-        return Interfaces.C.unsigned_long (Key);
+        return Interfaces.C.int (Key);
     end To_C;
 
 
     function To_Ada
-           (Key : in Interfaces.C.unsigned_long)
+           (Key : in Interfaces.C.int)
         return Keypress is
     begin
         return Keypress (Key mod 65536);
@@ -246,14 +246,14 @@ package body FLTK is
 
     function To_C
            (Modi : in Modifier)
-        return Interfaces.C.unsigned_long is
+        return Interfaces.C.int is
     begin
-        return Interfaces.C.unsigned_long (Modi) * 65536;
+        return Interfaces.C.int (Modi) * 65536;
     end To_C;
 
 
     function To_Ada
-           (Modi : in Interfaces.C.unsigned_long)
+           (Modi : in Interfaces.C.int)
         return Modifier is
     begin
         return Modifier ((Modi / 65536) mod 256);
@@ -262,7 +262,7 @@ package body FLTK is
 
     function To_C
            (Button : in Mouse_Button)
-        return Interfaces.C.unsigned_long is
+        return Interfaces.C.int is
     begin
         case Button is
             when Left_Button => return 1 * (256 ** 3);
@@ -274,7 +274,7 @@ package body FLTK is
 
 
     function To_Ada
-           (Button : in Interfaces.C.unsigned_long)
+           (Button : in Interfaces.C.int)
         return Mouse_Button is
     begin
         case (Button / (256 ** 3)) is

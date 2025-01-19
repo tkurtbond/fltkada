@@ -53,7 +53,7 @@ package body FLTK.Draw is
     pragma Inline (fl_draw_can_do_alpha_blending);
 
     function fl_draw_shortcut_label
-           (Shortcut : in Interfaces.C.unsigned_long)
+           (Shortcut : in Interfaces.C.unsigned)
         return Interfaces.C.Strings.chars_ptr;
     pragma Import (C, fl_draw_shortcut_label, "fl_draw_shortcut_label");
     pragma Inline (fl_draw_shortcut_label);
@@ -694,7 +694,7 @@ package body FLTK.Draw is
         return String is
     begin
         return Interfaces.C.Strings.Value
-            (fl_draw_shortcut_label (To_C (Keys)));
+            (fl_draw_shortcut_label (Interfaces.C.unsigned (To_C (Keys))));
     end Shortcut_Label;
 
 

@@ -30,8 +30,8 @@ extern "C" int fl_event_length();
 
 
 extern "C" int fl_event_get();
-extern "C" unsigned long fl_event_state();
-extern "C" int fl_event_check_state(unsigned long s);
+extern "C" int fl_event_state();
+extern "C" int fl_event_check_state(int s);
 
 
 extern "C" int fl_event_x();
@@ -51,10 +51,10 @@ extern "C" int fl_event_button3();
 extern "C" int fl_event_inside(int x, int y, int w, int h);
 
 
-extern "C" unsigned long fl_event_key();
-extern "C" unsigned long fl_event_original_key();
-extern "C" int fl_event_key_during(unsigned long k);
-extern "C" int fl_event_get_key(unsigned long k);
+extern "C" int fl_event_key();
+extern "C" int fl_event_original_key();
+extern "C" int fl_event_key_during(int k);
+extern "C" int fl_event_get_key(int k);
 extern "C" int fl_event_ctrl();
 extern "C" int fl_event_alt();
 extern "C" int fl_event_command();

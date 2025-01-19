@@ -6,15 +6,19 @@
 
 with
 
+    Ada.Assertions,
+    Ada.Characters.Latin_1,
     FLTK.Event,
     Interfaces.C;
 
-use type
-
-    Interfaces.C.unsigned_long;
-
 
 package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
+
+
+    package Chk   renames Ada.Assertions;
+    package Latin renames Ada.Characters.Latin_1;
+
+
 
 
     ------------------------
@@ -273,19 +277,98 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+    procedure fl_text_editor_meta_home
+           (TE : in Storage.Integer_Address);
+    pragma Import (C, fl_text_editor_meta_home, "fl_text_editor_meta_home");
+    pragma Inline (fl_text_editor_meta_home);
+
+    procedure fl_text_editor_meta_end
+           (TE : in Storage.Integer_Address);
+    pragma Import (C, fl_text_editor_meta_end, "fl_text_editor_meta_end");
+    pragma Inline (fl_text_editor_meta_end);
+
+    procedure fl_text_editor_meta_page_down
+           (TE : in Storage.Integer_Address);
+    pragma Import (C, fl_text_editor_meta_page_down, "fl_text_editor_meta_page_down");
+    pragma Inline (fl_text_editor_meta_page_down);
+
+    procedure fl_text_editor_meta_page_up
+           (TE : in Storage.Integer_Address);
+    pragma Import (C, fl_text_editor_meta_page_up, "fl_text_editor_meta_page_up");
+    pragma Inline (fl_text_editor_meta_page_up);
+
+    procedure fl_text_editor_meta_down
+           (TE : in Storage.Integer_Address);
+    pragma Import (C, fl_text_editor_meta_down, "fl_text_editor_meta_down");
+    pragma Inline (fl_text_editor_meta_down);
+
+    procedure fl_text_editor_meta_left
+           (TE : in Storage.Integer_Address);
+    pragma Import (C, fl_text_editor_meta_left, "fl_text_editor_meta_left");
+    pragma Inline (fl_text_editor_meta_left);
+
+    procedure fl_text_editor_meta_right
+           (TE : in Storage.Integer_Address);
+    pragma Import (C, fl_text_editor_meta_right, "fl_text_editor_meta_right");
+    pragma Inline (fl_text_editor_meta_right);
+
+    procedure fl_text_editor_meta_up
+           (TE : in Storage.Integer_Address);
+    pragma Import (C, fl_text_editor_meta_up, "fl_text_editor_meta_up");
+    pragma Inline (fl_text_editor_meta_up);
+
+
+
+
+    procedure fl_text_editor_meta_shift_home
+           (TE : in Storage.Integer_Address);
+    pragma Import (C, fl_text_editor_meta_shift_home, "fl_text_editor_meta_shift_home");
+    pragma Inline (fl_text_editor_meta_shift_home);
+
+    procedure fl_text_editor_meta_shift_end
+           (TE : in Storage.Integer_Address);
+    pragma Import (C, fl_text_editor_meta_shift_end, "fl_text_editor_meta_shift_end");
+    pragma Inline (fl_text_editor_meta_shift_end);
+
+    procedure fl_text_editor_meta_shift_page_down
+           (TE : in Storage.Integer_Address);
+    pragma Import (C, fl_text_editor_meta_shift_page_down, "fl_text_editor_meta_shift_page_down");
+    pragma Inline (fl_text_editor_meta_shift_page_down);
+
+    procedure fl_text_editor_meta_shift_page_up
+           (TE : in Storage.Integer_Address);
+    pragma Import (C, fl_text_editor_meta_shift_page_up, "fl_text_editor_meta_shift_page_up");
+    pragma Inline (fl_text_editor_meta_shift_page_up);
+
+    procedure fl_text_editor_meta_shift_down
+           (TE : in Storage.Integer_Address);
+    pragma Import (C, fl_text_editor_meta_shift_down, "fl_text_editor_meta_shift_down");
+    pragma Inline (fl_text_editor_meta_shift_down);
+
+    procedure fl_text_editor_meta_shift_left
+           (TE : in Storage.Integer_Address);
+    pragma Import (C, fl_text_editor_meta_shift_left, "fl_text_editor_meta_shift_left");
+    pragma Inline (fl_text_editor_meta_shift_left);
+
+    procedure fl_text_editor_meta_shift_right
+           (TE : in Storage.Integer_Address);
+    pragma Import (C, fl_text_editor_meta_shift_right, "fl_text_editor_meta_shift_right");
+    pragma Inline (fl_text_editor_meta_shift_right);
+
+    procedure fl_text_editor_meta_shift_up
+           (TE : in Storage.Integer_Address);
+    pragma Import (C, fl_text_editor_meta_shift_up, "fl_text_editor_meta_shift_up");
+    pragma Inline (fl_text_editor_meta_shift_up);
+
+
+
+
     procedure fl_text_editor_add_key_binding
            (TE   : in Storage.Integer_Address;
             K, S : in Interfaces.C.int;
             F    : in Storage.Integer_Address);
     pragma Import (C, fl_text_editor_add_key_binding, "fl_text_editor_add_key_binding");
     pragma Inline (fl_text_editor_add_key_binding);
-
-    --  this particular procedure won't be necessary when FLTK keybindings fixed
-    procedure fl_text_editor_remove_key_binding
-           (TE   : in Storage.Integer_Address;
-            K, S : in Interfaces.C.int);
-    pragma Import (C, fl_text_editor_remove_key_binding, "fl_text_editor_remove_key_binding");
-    pragma Inline (fl_text_editor_remove_key_binding);
 
     procedure fl_text_editor_remove_all_key_bindings
            (TE : in Storage.Integer_Address);
@@ -344,6 +427,17 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
     pragma Import (C, fl_text_editor_handle, "fl_text_editor_handle");
     pragma Inline (fl_text_editor_handle);
 
+    function fl_text_editor_handle_key
+           (TE : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_editor_handle_key, "fl_text_editor_handle_key");
+    pragma Inline (fl_text_editor_handle_key);
+
+    procedure fl_text_editor_maybe_do_callback
+           (TE : in Storage.Integer_Address);
+    pragma Import (C, fl_text_editor_maybe_do_callback, "fl_text_editor_maybe_do_callback");
+    pragma Inline (fl_text_editor_maybe_do_callback);
+
 
 
 
@@ -358,24 +452,39 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
     is
         Editor_Ptr : Storage.Integer_Address := fl_widget_get_user_data (E);
         Ada_Editor : access Text_Editor'Class;
-        Modi : Modifier := FLTK.Event.Last_Modifier;
-        Actual_Key : Keypress := FLTK.Event.Last_Key; --  fuck you FLTK, give me the real code
-        Ada_Key : Key_Combo := To_Ada (To_C (Actual_Key) + To_C (Modi));
 
-        Found_Binding : Boolean := False;
+        Extra_Keys : Modifier  := FLTK.Event.Last_Modifier;
+        Actual_Key : Keypress  := FLTK.Event.Last_Key;  --  fuck you FLTK, give me the real code
+        Ada_Key    : Key_Combo := Extra_Keys + Actual_Key;
+
+        --  For whatever reason, if a regular key function is used then FLTK will
+        --  give you the key code, but if a default key function is used instead it
+        --  will give you the first character in the textual representation, which
+        --  is not ideal. This is why we have to grab the Last_Key manually.
     begin
         pragma Assert (Editor_Ptr /= Null_Pointer);
         Ada_Editor := Editor_Convert.To_Pointer (Storage.To_Address (Editor_Ptr));
+        for B of Global_Key_Bindings loop
+            if B.Key = Ada_Key and B.Func /= null then
+                B.Func (Ada_Editor.all);
+                return Event_Outcome'Pos (Handled);
+            end if;
+        end loop;
         for B of Ada_Editor.Bindings loop
             if B.Key = Ada_Key then
                 B.Func (Ada_Editor.all);
-                Found_Binding := True;
+                return Event_Outcome'Pos (Handled);
             end if;
         end loop;
-        if not Found_Binding and then Ada_Editor.Default_Func /= null then
+        if Ada_Editor.Default_Func /= null then
             Ada_Editor.Default_Func (Ada_Editor.all, Ada_Key);
+            return Event_Outcome'Pos (Handled);
         end if;
-        return 1;
+        return Event_Outcome'Pos (Not_Handled);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Editor C++ object had no user data reference back to the " &
+        "corresponding Ada object in the Key_Func hook";
     end Key_Func_Hook;
 
 
@@ -398,42 +507,13 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
         Extra_Final (This);
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_text_editor (This.Void_Ptr);
-            free_fl_text_buffer (This.Raw_Buffer);
             This.Void_Ptr := Null_Pointer;
+            if This.Raw_Buffer /= Null_Pointer then
+                free_fl_text_buffer (This.Raw_Buffer);  --  buffer is reference counted
+                This.Raw_Buffer := Null_Pointer;
+            end if;
         end if;
     end Finalize;
-
-
-
-
-    --  remove this type and array once FLTK keybindings fixed
-    --  type To_Remove is record
-    --      Press : Keypress;
-    --      Modif : Interfaces.C.int;
-    --  end record;
-
-    --  To_Remove_List : array (Positive range <>) of To_Remove :=
-    --         ((Home_Key,      0),
-    --          (End_Key,       0),
-    --          (Page_Down_Key, 0),
-    --          (Page_Up_Key,   0),
-    --          (Down_Key,      0),
-    --          (Left_Key,      0),
-    --          (Right_Key,     0),
-    --          (Up_Key,        0),
-    --          (Character'Pos ('/'),    Interfaces.C.int (Mod_Ctrl)),
-    --          (Delete_Key,    Interfaces.C.int (Mod_Shift)),
-    --          (Insert_Key,    Interfaces.C.int (Mod_Ctrl)),
-    --          (Insert_Key,    Interfaces.C.int (Mod_Shift)));
-
-    --  use type Interfaces.C.int;
-    --  To_Remove_Weird : array (Positive range <>) of To_Remove :=
-    --         ((Enter_Key,        -1),
-    --          (Keypad_Enter_Key, -1),
-    --          (Backspace_Key,    -1),
-    --          (Insert_Key,       -1),
-    --          (Delete_Key,       -1),
-    --          (Escape_Key,       -1));
 
 
 
@@ -447,43 +527,16 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
             X, Y, W, H : in     Integer;
             Text       : in     String) is
     begin
-        --  change things over so key bindings are all handled from the Ada side
-        This.Bindings := Binding_Vectors.Empty_Vector;
         for B of Default_Key_Bindings loop
             This.Bindings.Append (B);
         end loop;
-        This.Default_Func := Default'Access;
+        This.Default_Func := KF_Default'Access;
 
-        --  remove these loops and uncomment subsequent "remove_all_key_bindings"
-        --  when FLTK keybindings fixed
-        --  for B of To_Remove_List loop
-        --      fl_text_editor_remove_key_binding
-        --             (This.Void_Ptr,
-        --              Interfaces.C.int (B.Press),
-        --              B.Modif * 65536);
-        --  end loop;
-        --  for B of To_Remove_Weird loop
-        --      fl_text_editor_remove_key_binding
-        --             (This.Void_Ptr,
-        --              Interfaces.C.int (B.Press),
-        --              B.Modif);
-        --  end loop;
+        --  change things over so key bindings are all handled from the Ada side
         fl_text_editor_remove_all_key_bindings (This.Void_Ptr);
-
         fl_text_editor_set_default_key_function
            (This.Void_Ptr, Storage.To_Integer (Key_Func_Hook'Address));
 
-        --  this is irritatingly required due to how FLTK handles certain keys
-        --  for B of Default_Key_Bindings loop
-        --      --  remove this conditional once FLTK keybindings fixed
-        --      if B.Key.Modcode = Mod_None then
-        --          fl_text_editor_add_key_binding
-        --                 (This.Void_Ptr,
-        --                  Interfaces.C.int (B.Key.Keycode),
-        --                  Interfaces.C.int (B.Key.Modcode) * 65536,
-        --                  Key_Func_Hook'Address);
-        --      end if;
-        --  end loop;
         Extra_Init (Text_Display (This), X, Y, W, H, Text);
     end Extra_Init;
 
@@ -507,11 +560,11 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
         begin
             return This : Text_Editor do
                 This.Void_Ptr := new_fl_text_editor
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -537,58 +590,58 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
     --  API Subprograms  --
     -----------------------
 
-    procedure Default
+    procedure KF_Default
            (This : in out Text_Editor'Class;
             Key  : in     Key_Combo) is
     begin
         fl_text_editor_default
-               (This.Void_Ptr,
-                Interfaces.C.int (Key.Keycode));
-    end Default;
+           (This.Void_Ptr,
+            Interfaces.C.int (Key.Keycode));
+    end KF_Default;
 
 
 
 
-    procedure Undo
+    procedure KF_Undo
            (This : in out Text_Editor'Class) is
     begin
         fl_text_editor_undo (This.Void_Ptr);
-    end Undo;
+    end KF_Undo;
 
 
-    procedure Cut
+    procedure KF_Cut
            (This : in out Text_Editor'Class) is
     begin
         fl_text_editor_cut (This.Void_Ptr);
-    end Cut;
+    end KF_Cut;
 
 
-    procedure Copy
+    procedure KF_Copy
            (This : in out Text_Editor'Class) is
     begin
         fl_text_editor_copy (This.Void_Ptr);
-    end Copy;
+    end KF_Copy;
 
 
-    procedure Paste
+    procedure KF_Paste
            (This : in out Text_Editor'Class) is
     begin
         fl_text_editor_paste (This.Void_Ptr);
-    end Paste;
+    end KF_Paste;
 
 
-    procedure Delete
+    procedure KF_Delete
            (This : in out Text_Editor'Class) is
     begin
         fl_text_editor_delete (This.Void_Ptr);
-    end Delete;
+    end KF_Delete;
 
 
-    procedure Select_All
+    procedure KF_Select_All
            (This : in out Text_Editor'Class) is
     begin
         fl_text_editor_select_all (This.Void_Ptr);
-    end Select_All;
+    end KF_Select_All;
 
 
 
@@ -619,6 +672,13 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
     begin
         fl_text_editor_ignore (This.Void_Ptr);
     end KF_Ignore;
+
+
+    procedure KF_Tab
+           (This : in out Text_Editor'Class) is
+    begin
+        This.Insert_Text (Latin.HT & "");
+    end KF_Tab;
 
 
 
@@ -855,12 +915,130 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+    procedure KF_Meta_Home
+           (This : in out Text_Editor'Class) is
+    begin
+        fl_text_editor_meta_home (This.Void_Ptr);
+    end KF_Meta_Home;
+
+
+    procedure KF_Meta_End
+           (This : in out Text_Editor'Class) is
+    begin
+        fl_text_editor_meta_end (This.Void_Ptr);
+    end KF_Meta_End;
+
+
+    procedure KF_Meta_Page_Down
+           (This : in out Text_Editor'Class) is
+    begin
+        fl_text_editor_meta_page_down (This.Void_Ptr);
+    end KF_Meta_Page_Down;
+
+
+    procedure KF_Meta_Page_Up
+           (This : in out Text_Editor'Class) is
+    begin
+        fl_text_editor_meta_page_up (This.Void_Ptr);
+    end KF_Meta_Page_Up;
+
+
+    procedure KF_Meta_Down
+           (This : in out Text_Editor'Class) is
+    begin
+        fl_text_editor_meta_down (This.Void_Ptr);
+    end KF_Meta_Down;
+
+
+    procedure KF_Meta_Left
+           (This : in out Text_Editor'Class) is
+    begin
+        fl_text_editor_meta_left (This.Void_Ptr);
+    end KF_Meta_Left;
+
+
+    procedure KF_Meta_Right
+           (This : in out Text_Editor'Class) is
+    begin
+        fl_text_editor_meta_right (This.Void_Ptr);
+    end KF_Meta_Right;
+
+
+    procedure KF_Meta_Up
+           (This : in out Text_Editor'Class) is
+    begin
+        fl_text_editor_meta_up (This.Void_Ptr);
+    end KF_Meta_Up;
+
+
+
+
+    procedure KF_Meta_Shift_Home
+           (This : in out Text_Editor'Class) is
+    begin
+        fl_text_editor_meta_shift_home (This.Void_Ptr);
+    end KF_Meta_Shift_Home;
+
+
+    procedure KF_Meta_Shift_End
+           (This : in out Text_Editor'Class) is
+    begin
+        fl_text_editor_meta_shift_end (This.Void_Ptr);
+    end KF_Meta_Shift_End;
+
+
+    procedure KF_Meta_Shift_Page_Down
+           (This : in out Text_Editor'Class) is
+    begin
+        fl_text_editor_meta_shift_page_down (This.Void_Ptr);
+    end KF_Meta_Shift_Page_Down;
+
+
+    procedure KF_Meta_Shift_Page_Up
+           (This : in out Text_Editor'Class) is
+    begin
+        fl_text_editor_meta_shift_page_up (This.Void_Ptr);
+    end KF_Meta_Shift_Page_Up;
+
+
+    procedure KF_Meta_Shift_Down
+           (This : in out Text_Editor'Class) is
+    begin
+        fl_text_editor_meta_shift_down (This.Void_Ptr);
+    end KF_Meta_Shift_Down;
+
+
+    procedure KF_Meta_Shift_Left
+           (This : in out Text_Editor'Class) is
+    begin
+        fl_text_editor_meta_shift_left (This.Void_Ptr);
+    end KF_Meta_Shift_Left;
+
+
+    procedure KF_Meta_Shift_Right
+           (This : in out Text_Editor'Class) is
+    begin
+        fl_text_editor_meta_shift_right (This.Void_Ptr);
+    end KF_Meta_Shift_Right;
+
+
+    procedure KF_Meta_Shift_Up
+           (This : in out Text_Editor'Class) is
+    begin
+        fl_text_editor_meta_shift_up (This.Void_Ptr);
+    end KF_Meta_Shift_Up;
+
+
+
+
     procedure Add_Key_Binding
            (This : in out Text_Editor;
             Key  : in     Key_Combo;
             Func : in     Key_Func) is
     begin
-        This.Bindings.Append ((Key, Func));
+        if Func /= null then
+            This.Bindings.Append ((Key, Func));
+        end if;
     end Add_Key_Binding;
 
 
@@ -868,16 +1046,20 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
            (This : in out Text_Editor;
             Bind : in     Key_Binding) is
     begin
-        This.Bindings.Append (Bind);
+        if Bind.Func /= null then
+            This.Bindings.Append (Bind);
+        end if;
     end Add_Key_Binding;
 
 
     procedure Add_Key_Bindings
            (This : in out Text_Editor;
-            List : in     Key_Binding_List) is
+            Bind : in     Key_Binding_Array) is
     begin
-        for I of List loop
-            This.Bindings.Append (I);
+        for Item of Bind loop
+            if Item.Func /= null then
+                This.Bindings.Append (Item);
+            end if;
         end loop;
     end Add_Key_Bindings;
 
@@ -896,56 +1078,48 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
     end Get_Bound_Key_Function;
 
 
+    function Get_All_Bound_Key_Functions
+           (This : in Text_Editor)
+        return Key_Binding_Array is
+    begin
+        return Result : Key_Binding_Array (1 .. Integer (This.Bindings.Length)) do
+            for Place in Result'Range loop
+                Result (Place) := This.Bindings.Element (Place);
+            end loop;
+        end return;
+    end Get_All_Bound_Key_Functions;
+
+
     procedure Remove_Key_Binding
            (This : in out Text_Editor;
-            Key  : in     Key_Combo)
-    is
-        use type Interfaces.C.int;
+            Key  : in     Key_Combo) is
     begin
         for I in reverse 1 .. Integer (This.Bindings.Length) loop
-            if This.Bindings.Reference (I).Key = Key then
+            if This.Bindings.Element (I).Key = Key then
                 This.Bindings.Delete (I);
             end if;
         end loop;
-
-        --  remove this once FLTK keybindings fixed
-        --  if Key.Modcode /= Mod_None then
-        --      fl_text_editor_remove_key_binding
-        --             (This.Void_Ptr,
-        --              Interfaces.C.int (Key.Keycode),
-        --              Interfaces.C.int (Key.Modcode) * 65536);
-        --  end if;
     end Remove_Key_Binding;
 
 
     procedure Remove_Key_Binding
            (This : in out Text_Editor;
-            Bind : in     Key_Binding)
-    is
-        --  use type Interfaces.C.int;
+            Bind : in     Key_Binding) is
     begin
         for I in reverse 1 .. Integer (This.Bindings.Length) loop
-            if This.Bindings.Reference (I).Key = Bind.Key then
+            if This.Bindings.Element (I) = Bind then
                 This.Bindings.Delete (I);
             end if;
         end loop;
-
-        --  remove this once FLTK keybindings fixed
-        --  if Bind.Key.Modcode /= Mod_None then
-        --      fl_text_editor_remove_key_binding
-        --             (This.Void_Ptr,
-        --              Interfaces.C.int (Bind.Key.Keycode),
-        --              Interfaces.C.int (Bind.Key.Modcode) * 65536);
-        --  end if;
     end Remove_Key_Binding;
 
 
     procedure Remove_Key_Bindings
            (This : in out Text_Editor;
-            List : in     Key_Binding_List) is
+            Bind : in     Key_Binding_Array) is
     begin
-        for I of List loop
-            This.Remove_Key_Binding (I);
+        for Item of Bind loop
+            This.Remove_Key_Binding (Item);
         end loop;
     end Remove_Key_Bindings;
 
@@ -953,11 +1127,7 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
     procedure Remove_All_Key_Bindings
            (This : in out Text_Editor) is
     begin
-        This.Bindings := Binding_Vectors.Empty_Vector;
-        --  This.Default_Func := null;
-
-        --  remove this once FLTK keybindings fixed
-        --  fl_text_editor_remove_all_key_bindings (This.Void_Ptr);
+        This.Bindings.Clear;
     end Remove_All_Key_Bindings;
 
 
@@ -981,9 +1151,15 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
     function Get_Insert_Mode
            (This : in Text_Editor)
-        return Insert_Mode is
+        return Insert_Mode
+    is
+        Result : Interfaces.C.int := fl_text_editor_get_insert_mode (This.Void_Ptr);
     begin
-        return Insert_Mode'Val (fl_text_editor_get_insert_mode (This.Void_Ptr));
+        return Insert_Mode'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Editor::insert_mode returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Get_Insert_Mode;
 
 
@@ -999,11 +1175,15 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
     function Get_Tab_Mode
            (This : in Text_Editor)
-        return Tab_Navigation is
+        return Tab_Navigation
+    is
+        Result : Interfaces.C.int := fl_text_editor_get_tab_nav (This.Void_Ptr);
     begin
-        return Tab_Navigation'Val (fl_text_editor_get_tab_nav (This.Void_Ptr));
+        return Tab_Navigation'Val (Result);
     exception
-    when Constraint_Error => raise Internal_FLTK_Error;
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Editor::tab_nav returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Get_Tab_Mode;
 
 
@@ -1024,6 +1204,27 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
     begin
         return Text_Display (This).Handle (Event);
     end Handle;
+
+
+    function Handle_Key
+           (This : in out Text_Editor)
+        return Event_Outcome
+    is
+        Result : Interfaces.C.int := fl_text_editor_handle_key (This.Void_Ptr);
+    begin
+        return Event_Outcome'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Editor::handle_key returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Handle_Key;
+
+
+    procedure Maybe_Do_Callback
+           (This : in out Text_Editor) is
+    begin
+        fl_text_editor_maybe_do_callback (This.Void_Ptr);
+    end Maybe_Do_Callback;
 
 
 end FLTK.Widgets.Groups.Text_Displays.Text_Editors;
