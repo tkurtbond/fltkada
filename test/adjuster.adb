@@ -15,7 +15,7 @@ with
     FLTK.Widgets.Valuators.Adjusters;
 
 
-function Adjuster_Test
+function Adjuster
     return Integer
 is
 
@@ -74,6 +74,6 @@ begin
     return FLTK.Run;
 
 
-end Adjuster_Test;
+end Adjuster;
 
 
