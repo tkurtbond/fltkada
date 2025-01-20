@@ -6,11 +6,20 @@
 
 with
 
+    Ada.Assertions,
     FLTK.Widgets.Groups,
-    Interfaces.C.Strings;
+    Interfaces.C.Strings,
+    System.Address_To_Access_Conversions;
 
 
 package body FLTK.Widgets.Valuators is
+
+
+    package Chk renames Ada.Assertions;
+
+    package Valuator_Convert is new System.Address_To_Access_Conversions (Valuator'Class);
+
+
 
 
     ------------------------
@@ -28,6 +37,16 @@ package body FLTK.Widgets.Valuators is
            (V : in Storage.Integer_Address);
     pragma Import (C, free_fl_valuator, "free_fl_valuator");
     pragma Inline (free_fl_valuator);
+
+
+
+
+    function fl_valuator_format
+           (V : in     Storage.Integer_Address;
+            B :    out Interfaces.C.char_array)
+        return Interfaces.C.int;
+    pragma Import (C, fl_valuator_format, "fl_valuator_format");
+    pragma Inline (fl_valuator_format);
 
 
 
@@ -159,6 +178,44 @@ package body FLTK.Widgets.Valuators is
 
 
 
+    ----------------------
+    --  Callback Hooks  --
+    ----------------------
+
+    function Valuator_Format_Hook
+           (Userdata : in Storage.Integer_Address;
+            Buffer   : in Interfaces.C.Strings.chars_ptr)
+        return Interfaces.C.int;
+    pragma Export (C, Valuator_Format_Hook, "valuator_format_hook");
+
+    function Valuator_Format_Hook
+           (Userdata : in Storage.Integer_Address;
+            Buffer   : in Interfaces.C.Strings.chars_ptr)
+        return Interfaces.C.int
+    is
+        Ada_Obj : access Valuator'Class;
+    begin
+        pragma Assert (Userdata /= Null_Pointer);
+        Ada_Obj := Valuator_Convert.To_Pointer (Storage.To_Address (Userdata));
+        declare
+            String_Result : String := Ada_Obj.Format;
+        begin
+            if String_Result'Length <= FLTK.Buffer_Size then
+                Interfaces.C.Strings.Update (Buffer, 0, String_Result);
+                return String_Result'Length;
+            else
+                Interfaces.C.Strings.Update (Buffer, 0, String_Result (1 .. Buffer_Size));
+                return Interfaces.C.int (FLTK.Buffer_Size);
+            end if;
+        end;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Valuator::format callback hook was passed null userdata wrapper reference pointer";
+    end Valuator_Format_Hook;
+
+
+
+
     -------------------
     --  Destructors  --
     -------------------
@@ -242,6 +299,20 @@ package body FLTK.Widgets.Valuators is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    function Format
+           (This : in Valuator)
+        return String
+    is
+        Buffer : Interfaces.C.char_array :=
+            (1 .. Interfaces.C.size_t (FLTK.Buffer_Size) => Interfaces.C.To_C (Character'Val (0)));
+        Result : Interfaces.C.int := fl_valuator_format (This.Void_Ptr, Buffer);
+    begin
+        return Interfaces.C.To_Ada (Buffer (1 .. Interfaces.C.size_t (Result)), False);
+    end Format;
+
+
+
 
     function Clamp
            (This  : in Valuator;

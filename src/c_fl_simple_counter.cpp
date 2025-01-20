@@ -15,6 +15,8 @@
 extern "C" void widget_draw_hook(void * ud);
 extern "C" int widget_handle_hook(void * ud, int e);
 
+extern "C" int valuator_format_hook(void * ud, char * buf);
+
 
 
 
@@ -27,9 +29,14 @@ public:
     friend void fl_simple_counter_draw(SIMPLECOUNTER c);
     friend int fl_simple_counter_handle(SIMPLECOUNTER c, int e);
 
+    int format(char * buf);
     void draw();
     int handle(int e);
 };
+
+int My_Simple_Counter::format(char * buf) {
+    return valuator_format_hook(this->user_data(), buf);
+}
 
 void My_Simple_Counter::draw() {
     widget_draw_hook(this->user_data());

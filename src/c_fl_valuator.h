@@ -15,6 +15,9 @@ extern "C" VALUATOR new_fl_valuator(int x, int y, int w, int h, char* label);
 extern "C" void free_fl_valuator(VALUATOR v);
 
 
+extern "C" int fl_valuator_format(VALUATOR v, char * buf);
+
+
 extern "C" double fl_valuator_clamp(VALUATOR v, double a);
 extern "C" double fl_valuator_round(VALUATOR v, double a);
 extern "C" double fl_valuator_increment(VALUATOR v, double a, int s);

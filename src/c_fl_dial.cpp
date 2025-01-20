@@ -15,6 +15,8 @@
 extern "C" void widget_draw_hook(void * ud);
 extern "C" int widget_handle_hook(void * ud, int e);
 
+extern "C" int valuator_format_hook(void * ud, char * buf);
+
 
 
 
@@ -39,9 +41,14 @@ public:
     friend void fl_dial_draw(DIAL v);
     friend int fl_dial_handle(DIAL v, int e);
 
+    int format(char * buf);
     void draw();
     int handle(int e);
 };
+
+int My_Dial::format(char * buf) {
+    return valuator_format_hook(this->user_data(), buf);
+}
 
 void My_Dial::draw() {
     widget_draw_hook(this->user_data());

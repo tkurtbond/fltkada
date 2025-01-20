@@ -30,6 +30,8 @@ void fl_scrollbar_extra_final(void * adaobj) {
 extern "C" void widget_draw_hook(void * ud);
 extern "C" int widget_handle_hook(void * ud, int e);
 
+extern "C" int valuator_format_hook(void * ud, char * buf);
+
 
 
 
@@ -42,9 +44,14 @@ public:
     friend void fl_scrollbar_draw(SCROLLBAR s);
     friend int fl_scrollbar_handle(SCROLLBAR s, int e);
 
+    int format(char * buf);
     void draw();
     int handle(int e);
 };
+
+int My_Scrollbar::format(char * buf) {
+    return valuator_format_hook(this->user_data(), buf);
+}
 
 void My_Scrollbar::draw() {
     widget_draw_hook(this->user_data());

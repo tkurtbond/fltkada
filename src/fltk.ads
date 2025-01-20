@@ -30,6 +30,9 @@ package FLTK is
     --  acted in a way that the binding really did not expect.
     Internal_FLTK_Error : exception;
 
+    --  Text buffers for marshalling purposes will be this size.
+    Buffer_Size : constant Natural := 1024;
+
 
 
 

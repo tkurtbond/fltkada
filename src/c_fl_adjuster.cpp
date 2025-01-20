@@ -15,6 +15,8 @@
 extern "C" void widget_draw_hook(void * ud);
 extern "C" int widget_handle_hook(void * ud, int e);
 
+extern "C" int valuator_format_hook(void * ud, char * buf);
+
 
 
 
@@ -37,9 +39,14 @@ public:
     friend void fl_adjuster_draw(ADJUSTER a);
     friend int fl_adjuster_handle(ADJUSTER a, int e);
 
+    int format(char * buf);
     void draw();
     int handle(int e);
 };
+
+int My_Adjuster::format(char * buf) {
+    return valuator_format_hook(this->user_data(), buf);
+}
 
 void My_Adjuster::draw() {
     widget_draw_hook(this->user_data());

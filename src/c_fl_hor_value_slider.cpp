@@ -15,6 +15,8 @@
 extern "C" void widget_draw_hook(void * ud);
 extern "C" int widget_handle_hook(void * ud, int e);
 
+extern "C" int valuator_format_hook(void * ud, char * buf);
+
 
 
 
@@ -27,9 +29,14 @@ public:
     friend void fl_hor_value_slider_draw(HORVALUESLIDER s);
     friend int fl_hor_value_slider_handle(HORVALUESLIDER s, int e);
 
+    int format(char * buf);
     void draw();
     int handle(int e);
 };
+
+int My_Hor_Value_Slider::format(char * buf) {
+    return valuator_format_hook(this->user_data(), buf);
+}
 
 void My_Hor_Value_Slider::draw() {
     widget_draw_hook(this->user_data());

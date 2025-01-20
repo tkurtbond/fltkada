@@ -42,7 +42,7 @@ package FLTK.Widgets.Menus is
 
     --  If your menu item path names are longer than this,
     --  then calls to Item_Pathname will raise an exception.
-    Item_Path_Max : constant Integer := 1023;
+    Item_Path_Max : constant Natural := Integer'Max (0, FLTK.Buffer_Size - 1);
 
 
     No_Reference_Error : exception;

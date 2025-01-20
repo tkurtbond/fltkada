@@ -15,6 +15,8 @@
 extern "C" void widget_draw_hook(void * ud);
 extern "C" int widget_handle_hook(void * ud, int e);
 
+extern "C" int valuator_format_hook(void * ud, char * buf);
+
 
 
 
@@ -38,9 +40,14 @@ public:
     friend void fl_valuator_draw(VALUATOR v);
     friend int fl_valuator_handle(VALUATOR v, int e);
 
+    int format(char * buf);
     void draw();
     int handle(int e);
 };
+
+int My_Valuator::format(char * buf) {
+    return valuator_format_hook(this->user_data(), buf);
+}
 
 void My_Valuator::draw() {
     widget_draw_hook(this->user_data());
@@ -62,6 +69,13 @@ VALUATOR new_fl_valuator(int x, int y, int w, int h, char* label) {
 
 void free_fl_valuator(VALUATOR v) {
     delete static_cast<My_Valuator*>(v);
+}
+
+
+
+
+int fl_valuator_format(VALUATOR v, char * buf) {
+    return static_cast<Fl_Valuator*>(v)->Fl_Valuator::format(buf);
 }
 
 

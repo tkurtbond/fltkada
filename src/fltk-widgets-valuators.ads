@@ -38,6 +38,14 @@ package FLTK.Widgets.Valuators is
 
 
 
+    --  You may override this to change the formatting of the Valuator
+    function Format
+           (This : in Valuator)
+        return String;
+
+
+
+
     function Clamp
            (This  : in Valuator;
             Input : in Long_Float)
