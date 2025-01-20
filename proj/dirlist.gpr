@@ -1,0 +1,28 @@
+
+
+with
+
+    "fltkada",
+    "shared";
+
+
+project Dirlist is
+
+
+    for Languages use ("Ada");
+
+    for Source_Dirs use ("../test/**");
+    for Object_Dir use "../obj";
+    for Exec_Dir use "../bin";
+    for Main use ("dirlist.adb");
+
+    package Builder is
+        for Executable ("dirlist.adb") use "dirlist";
+    end Builder;
+
+    package Compiler renames Shared.Compiler;
+
+
+end Dirlist;
+
+

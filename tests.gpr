@@ -1,0 +1,13 @@
+
+
+aggregate project Tests is
+
+    for Project_Files use
+       ("proj/adjuster_test.gpr",
+        "proj/compare.gpr",
+        "proj/dirlist.gpr",
+        "proj/page_formats.gpr");
+
+end Tests;
+
+

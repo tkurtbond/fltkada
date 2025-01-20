@@ -1,6 +1,6 @@
 
 
-project Tool is
+project Tools is
 
 
     for Languages use ("Ada");
@@ -22,6 +22,6 @@ project Tool is
     end Compiler;
 
 
-end Tool;
+end Tools;
 
 
