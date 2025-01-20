@@ -286,26 +286,30 @@ package body FLTK.Widgets.Valuators.Dials is
 
 
 
-    function Get_Dial_Type
+    function Get_Kind
            (This : in Dial)
-        return Dial_Kind is
+        return Dial_Kind
+    is
+        Result : Interfaces.C.unsigned_char := fl_widget_get_type (This.Void_Ptr);
     begin
-        return Dial_Kind'Val (fl_widget_get_type (This.Void_Ptr));
+        return Dial_Kind'Val (Result);
     exception
-    when Constraint_Error => raise Internal_FLTK_Error;
-    end Get_Dial_Type;
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Dial::type returned unexpected unsigned char value of " &
+        Interfaces.C.unsigned_char'Image (Result);
+    end Get_Kind;
 
 
     package body Extra is
 
-        procedure Set_Dial_Type
+        procedure Set_Kind
                (This : in out Dial;
                 To   : in     Dial_Kind) is
         begin
             fl_widget_set_type (This.Void_Ptr, Dial_Kind'Pos (To));
-        end Set_Dial_Type;
+        end Set_Kind;
 
-        pragma Inline (Set_Dial_Type);
+        pragma Inline (Set_Kind);
 
     end Extra;
 

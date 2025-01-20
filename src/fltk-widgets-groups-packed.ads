@@ -43,11 +43,11 @@ package FLTK.Widgets.Groups.Packed is
            (This : in out Packed_Group;
             To   : in     Integer);
 
-    function Get_Pack_Type
+    function Get_Kind
            (This : in Packed_Group)
         return Pack_Kind;
 
-    procedure Set_Pack_Type
+    procedure Set_Kind
            (This : in out Packed_Group;
             Kind : in     Pack_Kind);
 
@@ -82,8 +82,8 @@ private
 
     pragma Inline (Get_Spacing);
     pragma Inline (Set_Spacing);
-    pragma Inline (Get_Pack_Type);
-    pragma Inline (Set_Pack_Type);
+    pragma Inline (Get_Kind);
+    pragma Inline (Set_Kind);
 
     pragma Inline (Draw);
 

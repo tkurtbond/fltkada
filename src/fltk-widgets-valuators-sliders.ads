@@ -18,9 +18,9 @@ package FLTK.Widgets.Valuators.Sliders is
         with Implicit_Dereference => Data;
 
     type Slider_Kind is
-       (Vertical_Kind, Horizontal_Kind,
-        Vert_Fill_Kind, Hor_Fill_Kind,
-        Vert_Nice_Kind, Hor_Nice_Kind);
+       (Vertical_Slider,      Horizontal_Slider,
+        Vertical_Fill_Slider, Horizontal_Fill_Slider,
+        Vertical_Nice_Slider, Horizontal_Nice_Slider);
 
 
 
@@ -107,13 +107,13 @@ package FLTK.Widgets.Valuators.Sliders is
 
 
 
-    function Get_Slider_Type
+    function Get_Kind
            (This : in Slider)
         return Slider_Kind;
 
     package Extra is
 
-        procedure Set_Slider_Type
+        procedure Set_Kind
                (This : in out Slider;
                 To   : in     Slider_Kind);
 
@@ -152,7 +152,7 @@ private
     pragma Inline (Draw);
     pragma Inline (Handle);
 
-    pragma Inline (Get_Slider_Type);
+    pragma Inline (Get_Kind);
 
 
 end FLTK.Widgets.Valuators.Sliders;

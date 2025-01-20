@@ -309,6 +309,36 @@ package body FLTK.Widgets.Valuators.Counters is
     end Handle;
 
 
+
+
+    function Get_Kind
+           (This : in out Counter)
+        return Counter_Kind
+    is
+        Result : Interfaces.C.unsigned_char := fl_widget_get_type (This.Void_Ptr);
+    begin
+        return Counter_Kind'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Counter::type returned unexpected unsigned char value of " &
+        Interfaces.C.unsigned_char'Image (Result);
+    end Get_Kind;
+
+
+    package body Extra is
+
+        procedure Set_Kind
+               (This  : in out Counter;
+                Value : in     Counter_Kind) is
+        begin
+            fl_widget_set_type (This.Void_Ptr, Counter_Kind'Pos (Value));
+        end Set_Kind;
+
+        pragma Inline (Set_Kind);
+
+    end Extra;
+
+
 end FLTK.Widgets.Valuators.Counters;
 
 

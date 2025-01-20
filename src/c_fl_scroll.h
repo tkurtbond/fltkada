@@ -20,13 +20,12 @@ extern "C" void * fl_scroll_scrollbar(SCROLL s);
 
 
 extern "C" void fl_scroll_to(SCROLL s, int x, int y);
-extern "C" void fl_scroll_set_type(SCROLL s, int t);
+extern "C" int fl_scroll_xposition(SCROLL s);
+extern "C" int fl_scroll_yposition(SCROLL s);
 
 
 extern "C" int fl_scroll_get_size(SCROLL s);
 extern "C" void fl_scroll_set_size(SCROLL s, int t);
-extern "C" int fl_scroll_xposition(SCROLL s);
-extern "C" int fl_scroll_yposition(SCROLL s);
 
 
 extern "C" void fl_scroll_draw(SCROLL s);

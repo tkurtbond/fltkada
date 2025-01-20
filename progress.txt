@@ -226,6 +226,5 @@ Widgets
 Widgets.Groups.Scrolls (attributes, resize, type, protected)
 Widgets.Groups.Text_Displays
 Widgets.Groups.Windows
-Widgets.Valuators (a few derivative classes need type() checked)
 
 

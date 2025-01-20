@@ -146,11 +146,11 @@ void fl_spinner_set_format(SPINNER n, const char * f) {
     static_cast<Fl_Spinner*>(n)->format(f);
 }
 
-int fl_spinner_get_type(SPINNER n) {
+unsigned char fl_spinner_get_type(SPINNER n) {
     return static_cast<Fl_Spinner*>(n)->type();
 }
 
-void fl_spinner_set_type(SPINNER n, int t) {
+void fl_spinner_set_type(SPINNER n, unsigned char t) {
     static_cast<Fl_Spinner*>(n)->type(t);
 }
 

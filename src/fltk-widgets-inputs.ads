@@ -23,8 +23,9 @@ package FLTK.Widgets.Inputs is
         with Implicit_Dereference => Data;
 
     type Input_Kind is
-       (Normal_Kind, Float_Kind, Integer_Kind, Multiline_Kind,
-        Secret_Kind, Readonly_Kind, Wrap_Kind);
+       (Normal_Field, Float_Field,  Integer_Field,   Multi_In_Field,
+        Secret_Field, Output_Field, Multi_Out_Field, Wrap_Field,
+        Multi_In_Wrap_Field, Multi_Out_Wrap_Field);
 
     type Clipboard_Kind is (Selection_Buffer, Cut_Paste_Board);
 
@@ -127,7 +128,7 @@ package FLTK.Widgets.Inputs is
 
 
 
-    function Get_Input_Type
+    function Get_Kind
            (This : in Input)
         return Input_Kind;
 
@@ -283,7 +284,7 @@ package FLTK.Widgets.Inputs is
 
     package Extra is
 
-        procedure Set_Input_Type
+        procedure Set_Kind
                (This : in out Input;
                 To   : in     Input_Kind);
 
@@ -324,7 +325,7 @@ private
     pragma Inline (Is_Wrap);
     pragma Inline (Set_Wrap);
 
-    pragma Inline (Get_Input_Type);
+    pragma Inline (Get_Kind);
     pragma Inline (Get_Shortcut_Key);
     pragma Inline (Set_Shortcut_Key);
     pragma Inline (Get_Mark);
@@ -358,13 +359,16 @@ private
 
 
     Input_Kind_Values : array (Input_Kind) of Interfaces.C.int :=
-       (Normal_Kind    => 0,
-        Float_Kind     => 1,
-        Integer_Kind   => 2,
-        Multiline_Kind => 4,
-        Secret_Kind    => 5,
-        Readonly_Kind  => 8,
-        Wrap_Kind      => 16);
+       (Normal_Field         => 0,
+        Float_Field          => 1,
+        Integer_Field        => 2,
+        Multi_In_Field       => 4,
+        Secret_Field         => 5,
+        Output_Field         => 8,
+        Multi_Out_Field      => 12,
+        Wrap_Field           => 16,
+        Multi_In_Wrap_Field  => 20,
+        Multi_Out_Wrap_Field => 28);
 
 
     function fl_input_get_value

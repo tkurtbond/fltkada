@@ -17,7 +17,7 @@ package FLTK.Widgets.Valuators.Dials is
     type Dial_Reference (Data : not null access Dial'Class) is limited null record
         with Implicit_Dereference => Data;
 
-    type Dial_Kind is (Normal_Kind, Line_Kind, Fill_Kind);
+    type Dial_Kind is (Normal_Dial, Line_Dial, Fill_Dial);
 
 
 
@@ -84,13 +84,13 @@ package FLTK.Widgets.Valuators.Dials is
 
 
 
-    function Get_Dial_Type
+    function Get_Kind
            (This : in Dial)
         return Dial_Kind;
 
     package Extra is
 
-        procedure Set_Dial_Type
+        procedure Set_Kind
                (This : in out Dial;
                 To   : in     Dial_Kind);
 
@@ -128,7 +128,7 @@ private
     pragma Inline (Draw);
     pragma Inline (Handle);
 
-    pragma Inline (Get_Dial_Type);
+    pragma Inline (Get_Kind);
 
 
 end FLTK.Widgets.Valuators.Dials;

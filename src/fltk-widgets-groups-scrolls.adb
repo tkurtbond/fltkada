@@ -8,6 +8,10 @@ with
 
     Interfaces.C;
 
+use type
+
+    Interfaces.C.unsigned_char;
+
 
 package body FLTK.Widgets.Groups.Scrolls is
 
@@ -52,11 +56,17 @@ package body FLTK.Widgets.Groups.Scrolls is
     pragma Import (C, fl_scroll_to, "fl_scroll_to");
     pragma Inline (fl_scroll_to);
 
-    procedure fl_scroll_set_type
-           (S : in Storage.Integer_Address;
-            T : in Interfaces.C.int);
-    pragma Import (C, fl_scroll_set_type, "fl_scroll_set_type");
-    pragma Inline (fl_scroll_set_type);
+    function fl_scroll_xposition
+           (S : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_scroll_xposition, "fl_scroll_xposition");
+    pragma Inline (fl_scroll_xposition);
+
+    function fl_scroll_yposition
+           (S : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_scroll_yposition, "fl_scroll_yposition");
+    pragma Inline (fl_scroll_yposition);
 
 
 
@@ -72,18 +82,6 @@ package body FLTK.Widgets.Groups.Scrolls is
             T : in Interfaces.C.int);
     pragma Import (C, fl_scroll_set_size, "fl_scroll_set_size");
     pragma Inline (fl_scroll_set_size);
-
-    function fl_scroll_xposition
-           (S : in Storage.Integer_Address)
-        return Interfaces.C.int;
-    pragma Import (C, fl_scroll_xposition, "fl_scroll_xposition");
-    pragma Inline (fl_scroll_xposition);
-
-    function fl_scroll_yposition
-           (S : in Storage.Integer_Address)
-        return Interfaces.C.int;
-    pragma Import (C, fl_scroll_yposition, "fl_scroll_yposition");
-    pragma Inline (fl_scroll_yposition);
 
 
 
@@ -269,12 +267,20 @@ package body FLTK.Widgets.Groups.Scrolls is
     end Scroll_To;
 
 
-    procedure Set_Type
-           (This : in out Scroll;
-            Mode : in     Scroll_Kind) is
+    function Get_Scroll_X
+           (This : in Scroll)
+        return Integer is
     begin
-        fl_scroll_set_type (This.Void_Ptr, Scroll_Kind'Pos (Mode));
-    end Set_Type;
+        return Integer (fl_scroll_xposition (This.Void_Ptr));
+    end Get_Scroll_X;
+
+
+    function Get_Scroll_Y
+           (This : in Scroll)
+        return Integer is
+    begin
+        return Integer (fl_scroll_yposition (This.Void_Ptr));
+    end Get_Scroll_Y;
 
 
 
@@ -295,20 +301,26 @@ package body FLTK.Widgets.Groups.Scrolls is
     end Set_Scrollbar_Size;
 
 
-    function Get_Scroll_X
+    function Get_Kind
            (This : in Scroll)
-        return Integer is
+        return Scroll_Kind
+    is
+        Result : Interfaces.C.unsigned_char := fl_widget_get_type (This.Void_Ptr);
     begin
-        return Integer (fl_scroll_xposition (This.Void_Ptr));
-    end Get_Scroll_X;
+        return Scroll_Kind'Val (Result - 1);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Scroll::type returned unexpected unsigned char value of " &
+        Interfaces.C.unsigned_char'Image (Result);
+    end Get_Kind;
 
 
-    function Get_Scroll_Y
-           (This : in Scroll)
-        return Integer is
+    procedure Set_Kind
+           (This : in out Scroll;
+            Mode : in     Scroll_Kind) is
     begin
-        return Integer (fl_scroll_yposition (This.Void_Ptr));
-    end Get_Scroll_Y;
+        fl_widget_set_type (This.Void_Ptr, Scroll_Kind'Pos (Mode));
+    end Set_Kind;
 
 
 

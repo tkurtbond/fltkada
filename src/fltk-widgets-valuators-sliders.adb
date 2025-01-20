@@ -349,26 +349,30 @@ package body FLTK.Widgets.Valuators.Sliders is
 
 
 
-    function Get_Slider_Type
+    function Get_Kind
            (This : in Slider)
-        return Slider_Kind is
+        return Slider_Kind
+    is
+        Result : Interfaces.C.unsigned_char := fl_widget_get_type (This.Void_Ptr);
     begin
-        return Slider_Kind'Val (fl_widget_get_type (This.Void_Ptr));
+        return Slider_Kind'Val (Result);
     exception
-    when Constraint_Error => raise Internal_FLTK_Error;
-    end Get_Slider_Type;
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Slider::type returned unexpected unsigned char value of " &
+        Interfaces.C.unsigned_char'Image (Result);
+    end Get_Kind;
 
 
     package body Extra is
 
-        procedure Set_Slider_Type
+        procedure Set_Kind
                (This : in out Slider;
                 To   : in     Slider_Kind) is
         begin
             fl_widget_set_type (This.Void_Ptr, Slider_Kind'Pos (To));
-        end Set_Slider_Type;
+        end Set_Kind;
 
-        pragma Inline (Set_Slider_Type);
+        pragma Inline (Set_Kind);
 
     end Extra;
 

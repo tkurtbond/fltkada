@@ -124,11 +124,11 @@ package FLTK.Menu_Items is
            (This : in out Menu_Item;
             To   : in     Font_Size);
 
-    function Get_Label_Type
+    function Get_Label_Kind
            (This : in Menu_Item)
         return Label_Kind;
 
-    procedure Set_Label_Type
+    procedure Set_Label_Kind
            (This : in out Menu_Item;
             To   : in     Label_Kind);
 
@@ -219,8 +219,8 @@ private
     pragma Inline (Set_Label_Font);
     pragma Inline (Get_Label_Size);
     pragma Inline (Set_Label_Size);
-    pragma Inline (Get_Label_Type);
-    pragma Inline (Set_Label_Type);
+    pragma Inline (Get_Label_Kind);
+    pragma Inline (Set_Label_Kind);
 
     pragma Inline (Get_Shortcut);
     pragma Inline (Set_Shortcut);

@@ -586,7 +586,7 @@ package body FLTK.Widgets.Inputs is
 
 
 
-    function Get_Input_Type
+    function Get_Kind
            (This : in Input)
         return Input_Kind
     is
@@ -597,8 +597,8 @@ package body FLTK.Widgets.Inputs is
                 return V;
             end if;
         end loop;
-        return Normal_Kind;
-    end Get_Input_Type;
+        return Normal_Field;
+    end Get_Kind;
 
 
     function Get_Shortcut_Key
@@ -930,14 +930,14 @@ package body FLTK.Widgets.Inputs is
 
     package body Extra is
 
-        procedure Set_Input_Type
+        procedure Set_Kind
                (This : in out Input;
                 To   : in     Input_Kind) is
         begin
             fl_input_set_input_type (This.Void_Ptr, Input_Kind_Values (To));
-        end Set_Input_Type;
+        end Set_Kind;
 
-        pragma Inline (Set_Input_Type);
+        pragma Inline (Set_Kind);
 
     end Extra;
 

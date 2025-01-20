@@ -10,7 +10,7 @@ with
 
 use type
 
-    Interfaces.C.int,
+    Interfaces.C.unsigned_char,
     Interfaces.C.Strings.chars_ptr;
 
 
@@ -170,13 +170,13 @@ package body FLTK.Widgets.Groups.Spinners is
 
     function fl_spinner_get_type
            (S : in Storage.Integer_Address)
-        return Interfaces.C.int;
+        return Interfaces.C.unsigned_char;
     pragma Import (C, fl_spinner_get_type, "fl_spinner_get_type");
     pragma Inline (fl_spinner_get_type);
 
     procedure fl_spinner_set_type
            (S : in Storage.Integer_Address;
-            T : in Interfaces.C.int);
+            T : in Interfaces.C.unsigned_char);
     pragma Import (C, fl_spinner_set_type, "fl_spinner_set_type");
     pragma Inline (fl_spinner_set_type);
 
@@ -483,20 +483,26 @@ package body FLTK.Widgets.Groups.Spinners is
     end Set_Format;
 
 
-    function Get_Type
+    function Get_Kind
            (This : in Spinner)
-        return Spinner_Kind is
+        return Spinner_Kind
+    is
+        Result : Interfaces.C.unsigned_char := fl_spinner_get_type (This.Void_Ptr);
     begin
-        return Spinner_Kind'Val (fl_spinner_get_type (This.Void_Ptr) - 1);
-    end Get_Type;
+        return Spinner_Kind'Val (Result - 1);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Spinner::type returned unexpected unsigned char value of " &
+        Interfaces.C.unsigned_char'Image (Result);
+    end Get_Kind;
 
 
-    procedure Set_Type
+    procedure Set_Kind
            (This : in out Spinner;
             To   : in     Spinner_Kind) is
     begin
         fl_spinner_set_type (This.Void_Ptr, Spinner_Kind'Pos (To) + 1);
-    end Set_Type;
+    end Set_Kind;
 
 
 

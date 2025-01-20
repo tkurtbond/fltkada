@@ -470,7 +470,7 @@ package body FLTK.Menu_Items is
     end Set_Label_Size;
 
 
-    function Get_Label_Type
+    function Get_Label_Kind
            (This : in Menu_Item)
         return Label_Kind
     is
@@ -481,15 +481,15 @@ package body FLTK.Menu_Items is
     when Constraint_Error => raise Internal_FLTK_Error with
         "Fl_Menu_Item::labeltype returned unexpected Kind value of " &
         Interfaces.C.int'Image (Result);
-    end Get_Label_Type;
+    end Get_Label_Kind;
 
 
-    procedure Set_Label_Type
+    procedure Set_Label_Kind
            (This : in out Menu_Item;
             To   : in     Label_Kind) is
     begin
         fl_menu_item_set_labeltype (This.Void_Ptr, Label_Kind'Pos (To));
-    end Set_Label_Type;
+    end Set_Label_Kind;
 
 
 

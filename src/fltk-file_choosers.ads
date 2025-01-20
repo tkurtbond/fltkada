@@ -238,11 +238,11 @@ package FLTK.File_Choosers is
            (This : in out File_Chooser;
             Size : in     Font_Size);
 
-    function Get_Chooser_Kind
+    function Get_Kind
            (This : in File_Chooser)
         return Chooser_Kind;
 
-    procedure Set_Chooser_Kind
+    procedure Set_Kind
            (This : in out File_Chooser;
             Kind : in     Chooser_Kind);
 
@@ -379,7 +379,7 @@ private
     pragma Inline (Set_Text_Font);
     pragma Inline (Get_Text_Size);
     pragma Inline (Set_Text_Size);
-    pragma Inline (Set_Chooser_Kind);
+    pragma Inline (Set_Kind);
 
     pragma Inline (Number_Selected);
     pragma Inline (Get_Filter_Index);

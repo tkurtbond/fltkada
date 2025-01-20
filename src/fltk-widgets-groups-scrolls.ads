@@ -18,13 +18,13 @@ package FLTK.Widgets.Groups.Scrolls is
         with Implicit_Dereference => Data;
 
     type Scroll_Kind is
-           (Horizontal,
-            Vertical,
-            Both,
-            Always_On,
-            Horizontal_Always,
-            Vertical_Always,
-            Both_Always);
+       (Horizontal,
+        Vertical,
+        Both,
+        Always_On,
+        Horizontal_Always,
+        Vertical_Always,
+        Both_Always);
 
 
 
@@ -68,9 +68,15 @@ package FLTK.Widgets.Groups.Scrolls is
            (This : in out Scroll;
             X, Y : in     Integer);
 
-    procedure Set_Type
-           (This : in out Scroll;
-            Mode : in     Scroll_Kind);
+    --  These two functions are far too similar in name and
+    --  function to the Get_X and Get_Y for Widgets.
+    function Get_Scroll_X
+           (This : in Scroll)
+        return Integer;
+
+    function Get_Scroll_Y
+           (This : in Scroll)
+        return Integer;
 
 
 
@@ -83,15 +89,13 @@ package FLTK.Widgets.Groups.Scrolls is
            (This : in out Scroll;
             To   : in     Integer);
 
-    --  These two functions are far too similar in name and
-    --  function to the Get_X and Get_Y for Widgets.
-    function Get_Scroll_X
+    function Get_Kind
            (This : in Scroll)
-        return Integer;
+        return Scroll_Kind;
 
-    function Get_Scroll_Y
-           (This : in Scroll)
-        return Integer;
+    procedure Set_Kind
+           (This : in out Scroll;
+            Mode : in     Scroll_Kind);
 
 
 
@@ -130,12 +134,13 @@ private
     pragma Inline (Clear);
 
     pragma Inline (Scroll_To);
-    pragma Inline (Set_Type);
+    pragma Inline (Get_Scroll_X);
+    pragma Inline (Get_Scroll_Y);
 
     pragma Inline (Get_Scrollbar_Size);
     pragma Inline (Set_Scrollbar_Size);
-    pragma Inline (Get_Scroll_X);
-    pragma Inline (Get_Scroll_Y);
+    pragma Inline (Get_Kind);
+    pragma Inline (Set_Kind);
 
     pragma Inline (Draw);
     pragma Inline (Handle);

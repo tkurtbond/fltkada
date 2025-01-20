@@ -198,9 +198,18 @@ function Get_Scroll_Y
   </tr>
 
   <tr>
-<td>&nbsp;</td>
+<td>See type method in Fl_Widget.</td>
 <td><pre>
-procedure Set_Type
+function Get_Kind
+       (This : in Scroll)
+    return Scroll_Kind;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>See type method in Fl_Widget.</td>
+<td><pre>
+procedure Set_Kind
        (This : in out Scroll;
         Mode : in     Scroll_Kind);
 </pre></td>

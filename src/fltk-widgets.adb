@@ -1009,20 +1009,26 @@ package body FLTK.Widgets is
     end Set_Label_Size;
 
 
-    function Get_Label_Type
+    function Get_Label_Kind
            (This : in Widget)
-        return Label_Kind is
+        return Label_Kind
+    is
+        Result : Interfaces.C.int := fl_widget_get_labeltype (This.Void_Ptr);
     begin
-        return Label_Kind'Val (fl_widget_get_labeltype (This.Void_Ptr));
-    end Get_Label_Type;
+        return Label_Kind'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Widget::labeltype returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Get_Label_Kind;
 
 
-    procedure Set_Label_Type
+    procedure Set_Label_Kind
            (This  : in out Widget;
             Label : in     Label_Kind) is
     begin
         fl_widget_set_labeltype (This.Void_Ptr, Label_Kind'Pos (Label));
-    end Set_Label_Type;
+    end Set_Label_Kind;
 
 
     procedure Measure_Label

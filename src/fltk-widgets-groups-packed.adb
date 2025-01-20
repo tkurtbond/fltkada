@@ -43,18 +43,6 @@ package body FLTK.Widgets.Groups.Packed is
     pragma Import (C, fl_pack_set_spacing, "fl_pack_set_spacing");
     pragma Inline (fl_pack_set_spacing);
 
-    function fl_widget_get_type
-           (P : in Storage.Integer_Address)
-        return Interfaces.C.unsigned_char;
-    pragma Import (C, fl_widget_get_type, "fl_widget_get_type");
-    pragma Inline (fl_widget_get_type);
-
-    procedure fl_widget_set_type
-           (P : in Storage.Integer_Address;
-            T : in Interfaces.C.unsigned_char);
-    pragma Import (C, fl_widget_set_type, "fl_widget_set_type");
-    pragma Inline (fl_widget_set_type);
-
 
 
 
@@ -173,22 +161,26 @@ package body FLTK.Widgets.Groups.Packed is
     end Set_Spacing;
 
 
-    function Get_Pack_Type
+    function Get_Kind
            (This : in Packed_Group)
-        return Pack_Kind is
+        return Pack_Kind
+    is
+        Result : Interfaces.C.unsigned_char := fl_widget_get_type (This.Void_Ptr);
     begin
-        return Pack_Kind'Val (fl_widget_get_type (This.Void_Ptr));
+        return Pack_Kind'Val (Result);
     exception
-    when Constraint_Error => raise Internal_FLTK_Error;
-    end Get_Pack_Type;
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Pack::type returned unexpected unsigned char value of " &
+        Interfaces.C.unsigned_char'Image (Result);
+    end Get_Kind;
 
 
-    procedure Set_Pack_Type
+    procedure Set_Kind
            (This : in out Packed_Group;
             Kind : in     Pack_Kind) is
     begin
         fl_widget_set_type (This.Void_Ptr, Pack_Kind'Pos (Kind));
-    end Set_Pack_Type;
+    end Set_Kind;
 
 
 

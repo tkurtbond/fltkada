@@ -71,8 +71,12 @@ void fl_scroll_to(SCROLL s, int x, int y) {
     static_cast<Fl_Scroll*>(s)->scroll_to(x, y);
 }
 
-void fl_scroll_set_type(SCROLL s, int t) {
-    static_cast<Fl_Scroll*>(s)->type(t);
+int fl_scroll_xposition(SCROLL s) {
+    return static_cast<Fl_Scroll*>(s)->xposition();
+}
+
+int fl_scroll_yposition(SCROLL s) {
+    return static_cast<Fl_Scroll*>(s)->yposition();
 }
 
 
@@ -84,14 +88,6 @@ int fl_scroll_get_size(SCROLL s) {
 
 void fl_scroll_set_size(SCROLL s, int t) {
     static_cast<Fl_Scroll*>(s)->scrollbar_size(t);
-}
-
-int fl_scroll_xposition(SCROLL s) {
-    return static_cast<Fl_Scroll*>(s)->xposition();
-}
-
-int fl_scroll_yposition(SCROLL s) {
-    return static_cast<Fl_Scroll*>(s)->yposition();
 }
 
 

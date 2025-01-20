@@ -41,6 +41,11 @@
     <td>Counter_Reference</td>
   </tr>
 
+  <tr>
+    <td>uchar</td>
+    <td>Counter_Kind</td>
+  </tr>
+
 </table>
 
 
@@ -207,6 +212,24 @@ void textsize(Fl_Fontsize s);
 procedure Set_Text_Size
        (This : in out Counter;
         To   : in     Font_Size);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>See type method for Fl_Widget.</td>
+<td><pre>
+function Get_Kind
+       (This : in out Counter)
+    return Counter_Kind;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>See type method for Fl_Widget.</td>
+<td><pre>
+procedure Set_Kind
+       (This  : in out Counter;
+        Value : in     Counter_Kind);
 </pre></td>
   </tr>
 

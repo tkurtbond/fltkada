@@ -1118,7 +1118,7 @@ package body FLTK.File_Choosers is
     end Set_Text_Size;
 
 
-    function Get_Chooser_Kind
+    function Get_Kind
            (This : in File_Chooser)
         return Chooser_Kind
     is
@@ -1127,16 +1127,18 @@ package body FLTK.File_Choosers is
         pragma Assert (Ret in 0 .. Chooser_Kind'Pos (Chooser_Kind'Last));
         return Chooser_Kind'Val (Ret);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
-    end Get_Chooser_Kind;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_File_Chooser::type returned unexpected int value of " &
+        Interfaces.C.int'Image (Ret);
+    end Get_Kind;
 
 
-    procedure Set_Chooser_Kind
+    procedure Set_Kind
            (This : in out File_Chooser;
             Kind : in     Chooser_Kind) is
     begin
         fl_file_chooser_set_type (This.Void_Ptr, Chooser_Kind'Pos (Kind));
-    end Set_Chooser_Kind;
+    end Set_Kind;
 
 
 

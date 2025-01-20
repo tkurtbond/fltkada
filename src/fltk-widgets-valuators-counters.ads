@@ -17,6 +17,8 @@ package FLTK.Widgets.Valuators.Counters is
     type Counter_Reference (Data : not null access Counter'Class) is
         limited null record with Implicit_Dereference => Data;
 
+    type Counter_Kind is (Normal_Counter, Simple_Counter);
+
 
 
 
@@ -97,6 +99,21 @@ package FLTK.Widgets.Valuators.Counters is
         return Event_Outcome;
 
 
+
+
+    function Get_Kind
+           (This : in out Counter)
+        return Counter_Kind;
+
+    package Extra is
+
+        procedure Set_Kind
+               (This  : in out Counter;
+                Value : in     Counter_Kind);
+
+    end Extra;
+
+
 private
 
 
@@ -137,6 +154,8 @@ private
 
     pragma Inline (Draw);
     pragma Inline (Handle);
+
+    pragma Inline (Get_Kind);
 
 
 end FLTK.Widgets.Valuators.Counters;

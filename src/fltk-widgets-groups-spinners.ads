@@ -134,11 +134,11 @@ package FLTK.Widgets.Groups.Spinners is
            (This : in out Spinner;
             To   : in     String);
 
-    function Get_Type
+    function Get_Kind
            (This : in Spinner)
         return Spinner_Kind;
 
-    procedure Set_Type
+    procedure Set_Kind
            (This : in out Spinner;
             To   : in     Spinner_Kind);
 
@@ -203,8 +203,8 @@ private
     pragma Inline (Get_Value);
     pragma Inline (Set_Value);
 
-    pragma Inline (Get_Type);
-    pragma Inline (Set_Type);
+    pragma Inline (Get_Kind);
+    pragma Inline (Set_Kind);
 
     pragma Inline (Resize);
 
