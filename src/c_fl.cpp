@@ -4,6 +4,7 @@
 //  Released into the public domain
 
 
+#include <FL/Enumerations.H>
 #include <FL/Fl.H>
 #include "c_fl.h"
 
@@ -17,6 +18,13 @@ const short fl_mod_command = FL_COMMAND >> 16;
 
 size_t c_pointer_size() {
     return sizeof(void*);
+}
+
+
+
+
+unsigned int fl_enum_rgb_color(unsigned char r, unsigned char g, unsigned char b) {
+    return fl_rgb_color(r, g, b);
 }
 
 

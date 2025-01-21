@@ -14,6 +14,9 @@ extern "C" const short fl_mod_command;
 extern "C" size_t c_pointer_size();
 
 
+extern "C" unsigned int fl_enum_rgb_color(unsigned char r, unsigned char g, unsigned char b);
+
+
 extern "C" int fl_abi_check(int v);
 extern "C" int fl_abi_version();
 extern "C" int fl_api_version();

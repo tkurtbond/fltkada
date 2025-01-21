@@ -44,7 +44,11 @@ package FLTK is
     type Color_Component is mod 256;
     type Color_Component_Array is array (Positive range <>) of aliased Color_Component;
 
-    --  Examples of RGB colors
+    function RGB_Color
+           (R, G, B : in Color_Component)
+        return Color;
+
+    --  Examples of RGB colors without the above function
     --  The lowest byte has to be 00 for the color to be RGB
     RGB_Red_Color   : constant Color := 16#ff000000#;
     RGB_Green_Color : constant Color := 16#00ff0000#;
@@ -423,6 +427,7 @@ private
 
     for Color_Component_Array'Component_Size use Interfaces.C.CHAR_BIT;
     pragma Convention (C, Color_Component_Array);
+    pragma Pack (Color_Component_Array);
 
 
 

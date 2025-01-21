@@ -17,6 +17,15 @@ use type
 package body FLTK is
 
 
+    function fl_enum_rgb_color
+           (R, G, B : in Interfaces.C.unsigned_char)
+        return Interfaces.C.unsigned;
+    pragma Import (C, fl_enum_rgb_color, "fl_enum_rgb_color");
+    pragma Inline (fl_enum_rgb_color);
+
+
+
+
     function fl_abi_check
            (V : in Interfaces.C.int)
         return Interfaces.C.int;
@@ -96,6 +105,19 @@ package body FLTK is
     begin
         This.Void_Ptr := Null_Pointer;
     end Initialize;
+
+
+
+
+    function RGB_Color
+           (R, G, B : in Color_Component)
+        return Color is
+    begin
+        return Color (fl_enum_rgb_color
+           (Interfaces.C.unsigned_char (R),
+            Interfaces.C.unsigned_char (G),
+            Interfaces.C.unsigned_char (B)));
+    end RGB_Color;
 
 
 
