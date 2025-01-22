@@ -17,6 +17,7 @@ project Tests is
     for Main use
        ("adjuster.adb",
         "animated.adb",
+        "arc.adb",
         "compare.adb",
         "dirlist.adb",
         "page_formats.adb");
@@ -24,6 +25,7 @@ project Tests is
     package Builder is
         for Executable ("adjuster.adb")     use "adjuster";
         for Executable ("animated.adb")     use "animated";
+        for Executable ("arc.adb")          use "arc";
         for Executable ("compare.adb")      use "compare";
         for Executable ("dirlist.adb")      use "dirlist";
         for Executable ("page_formats.adb") use "page_formats";

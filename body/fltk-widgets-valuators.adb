@@ -198,13 +198,16 @@ package body FLTK.Widgets.Valuators is
         pragma Assert (Userdata /= Null_Pointer);
         Ada_Obj := Valuator_Convert.To_Pointer (Storage.To_Address (Userdata));
         declare
+            --  God this whole Format method is sketchy as hell.
+            --  ...what? This is the area to declare things and that needed declaring.
             String_Result : String := Ada_Obj.Format;
         begin
             if String_Result'Length <= FLTK.Buffer_Size then
-                Interfaces.C.Strings.Update (Buffer, 0, String_Result);
+                Interfaces.C.Strings.Update (Buffer, 0, Interfaces.C.To_C (String_Result), False);
                 return String_Result'Length;
             else
-                Interfaces.C.Strings.Update (Buffer, 0, String_Result (1 .. Buffer_Size));
+                Interfaces.C.Strings.Update
+                    (Buffer, 0, Interfaces.C.To_C (String_Result (1 .. Buffer_Size)), False);
                 return Interfaces.C.int (FLTK.Buffer_Size);
             end if;
         end;
