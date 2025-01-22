@@ -18,6 +18,8 @@ project Tests is
        ("adjuster.adb",
         "animated.adb",
         "arc.adb",
+        "ask.adb",
+        "bitmap.adb",
         "compare.adb",
         "dirlist.adb",
         "page_formats.adb");
@@ -26,6 +28,8 @@ project Tests is
         for Executable ("adjuster.adb")     use "adjuster";
         for Executable ("animated.adb")     use "animated";
         for Executable ("arc.adb")          use "arc";
+        for Executable ("ask.adb")          use "ask";
+        for Executable ("bitmap.adb")       use "bitmap";
         for Executable ("compare.adb")      use "compare";
         for Executable ("dirlist.adb")      use "dirlist";
         for Executable ("page_formats.adb") use "page_formats";
