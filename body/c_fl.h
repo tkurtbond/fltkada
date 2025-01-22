@@ -8,6 +8,32 @@
 #define FL_GUARD
 
 
+extern "C" const short fl_align_center;
+extern "C" const short fl_align_top;
+extern "C" const short fl_align_bottom;
+extern "C" const short fl_align_left;
+extern "C" const short fl_align_right;
+extern "C" const short fl_align_inside;
+extern "C" const short fl_align_text_over_image;
+extern "C" const short fl_align_image_over_text;
+extern "C" const short fl_align_clip;
+extern "C" const short fl_align_wrap;
+extern "C" const short fl_align_image_next_to_text;
+extern "C" const short fl_align_text_next_to_image;
+extern "C" const short fl_align_image_backdrop;
+extern "C" const short fl_align_top_left;
+extern "C" const short fl_align_top_right;
+extern "C" const short fl_align_bottom_left;
+extern "C" const short fl_align_bottom_right;
+extern "C" const short fl_align_left_top;
+extern "C" const short fl_align_right_top;
+extern "C" const short fl_align_left_bottom;
+extern "C" const short fl_align_right_bottom;
+extern "C" const short fl_align_nowrap;
+extern "C" const short fl_align_all_position;
+extern "C" const short fl_align_all_image;
+
+
 extern "C" const short fl_mod_command;
 
 

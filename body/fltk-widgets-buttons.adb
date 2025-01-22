@@ -226,6 +226,14 @@ package body FLTK.Widgets.Buttons is
     --  API Subprograms  --
     -----------------------
 
+    function Is_On
+           (This : in Button)
+        return Boolean is
+    begin
+        return This.Get_State = On;
+    end Is_On;
+
+
     function Get_State
            (This : in Button)
         return State is

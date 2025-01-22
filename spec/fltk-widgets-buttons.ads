@@ -40,6 +40,10 @@ package FLTK.Widgets.Buttons is
 
 
 
+    function Is_On
+           (This : in Button)
+        return Boolean;
+
     function Get_State
            (This : in Button)
         return State;
@@ -110,6 +114,7 @@ private
     with Inline;
 
 
+    pragma Inline (Is_On);
     pragma Inline (Get_State);
     pragma Inline (Set_State);
     pragma Inline (Set_Only);

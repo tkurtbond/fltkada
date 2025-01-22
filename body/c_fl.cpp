@@ -11,6 +11,34 @@
 
 
 
+const short fl_align_center             = FL_ALIGN_CENTER;
+const short fl_align_top                = FL_ALIGN_TOP;
+const short fl_align_bottom             = FL_ALIGN_BOTTOM;
+const short fl_align_left               = FL_ALIGN_LEFT;
+const short fl_align_right              = FL_ALIGN_RIGHT;
+const short fl_align_inside             = FL_ALIGN_INSIDE;
+const short fl_align_text_over_image    = FL_ALIGN_TEXT_OVER_IMAGE;
+const short fl_align_image_over_text    = FL_ALIGN_IMAGE_OVER_TEXT;
+const short fl_align_clip               = FL_ALIGN_CLIP;
+const short fl_align_wrap               = FL_ALIGN_WRAP;
+const short fl_align_image_next_to_text = FL_ALIGN_IMAGE_NEXT_TO_TEXT;
+const short fl_align_text_next_to_image = FL_ALIGN_TEXT_NEXT_TO_IMAGE;
+const short fl_align_image_backdrop     = FL_ALIGN_IMAGE_BACKDROP;
+const short fl_align_top_left           = FL_ALIGN_TOP_LEFT;
+const short fl_align_top_right          = FL_ALIGN_TOP_RIGHT;
+const short fl_align_bottom_left        = FL_ALIGN_BOTTOM_LEFT;
+const short fl_align_bottom_right       = FL_ALIGN_BOTTOM_RIGHT;
+const short fl_align_left_top           = FL_ALIGN_LEFT_TOP;
+const short fl_align_right_top          = FL_ALIGN_RIGHT_TOP;
+const short fl_align_left_bottom        = FL_ALIGN_LEFT_BOTTOM;
+const short fl_align_right_bottom       = FL_ALIGN_RIGHT_BOTTOM;
+const short fl_align_nowrap             = FL_ALIGN_NOWRAP;
+const short fl_align_all_position       = FL_ALIGN_POSITION_MASK;
+const short fl_align_all_image          = FL_ALIGN_IMAGE_MASK;
+
+
+
+
 const short fl_mod_command = FL_COMMAND >> 16;
 
 

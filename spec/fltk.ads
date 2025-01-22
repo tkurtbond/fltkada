@@ -90,12 +90,36 @@ package FLTK is
 
 
 
+    --  This should be a bitmask, except there are magic values...
     type Alignment is private;
-    Align_Center : constant Alignment;
-    Align_Top    : constant Alignment;
-    Align_Bottom : constant Alignment;
-    Align_Left   : constant Alignment;
-    Align_Right  : constant Alignment;
+
+    function "+" (Left, Right : in Alignment) return Alignment;
+    function "-" (Left, Right : in Alignment) return Alignment;
+
+    Align_Center             : constant Alignment;
+    Align_Top                : constant Alignment;
+    Align_Bottom             : constant Alignment;
+    Align_Left               : constant Alignment;
+    Align_Right              : constant Alignment;
+    Align_Inside             : constant Alignment;
+    Align_Text_Over_Image    : constant Alignment;
+    Align_Image_Over_Text    : constant Alignment;
+    Align_Clip               : constant Alignment;
+    Align_Wrap               : constant Alignment;
+    Align_Image_Next_To_Text : constant Alignment;
+    Align_Text_Next_To_Image : constant Alignment;
+    Align_Image_Backdrop     : constant Alignment;
+    Align_Top_Left           : constant Alignment;
+    Align_Top_Right          : constant Alignment;
+    Align_Bottom_Left        : constant Alignment;
+    Align_Bottom_Right       : constant Alignment;
+    Align_Left_Top           : constant Alignment;
+    Align_Right_Top          : constant Alignment;
+    Align_Left_Bottom        : constant Alignment;
+    Align_Right_Bottom       : constant Alignment;
+    Align_Nowrap             : constant Alignment;
+    Align_All_Position       : constant Alignment;
+    Align_All_Image          : constant Alignment;
 
 
 
@@ -432,12 +456,36 @@ private
 
 
 
-    type Alignment is new Interfaces.Unsigned_16;
-    Align_Center : constant Alignment := 0;
-    Align_Top    : constant Alignment := 1;
-    Align_Bottom : constant Alignment := 2;
-    Align_Left   : constant Alignment := 4;
-    Align_Right  : constant Alignment := 8;
+    --  Default value here is Align_Center
+    type Alignment is mod 2 ** 16
+    with Default_Value => 0;
+
+    for Alignment'Size use 16;
+
+    pragma Import (C, Align_Center,             "fl_align_center");
+    pragma Import (C, Align_Top,                "fl_align_top");
+    pragma Import (C, Align_Bottom,             "fl_align_bottom");
+    pragma Import (C, Align_Left,               "fl_align_left");
+    pragma Import (C, Align_Right,              "fl_align_right");
+    pragma Import (C, Align_Inside,             "fl_align_inside");
+    pragma Import (C, Align_Text_Over_Image,    "fl_align_text_over_image");
+    pragma Import (C, Align_Image_Over_Text,    "fl_align_image_over_text");
+    pragma Import (C, Align_Clip,               "fl_align_clip");
+    pragma Import (C, Align_Wrap,               "fl_align_wrap");
+    pragma Import (C, Align_Image_Next_To_Text, "fl_align_image_next_to_text");
+    pragma Import (C, Align_Text_Next_To_Image, "fl_align_text_next_to_image");
+    pragma Import (C, Align_Image_Backdrop,     "fl_align_image_backdrop");
+    pragma Import (C, Align_Top_Left,           "fl_align_top_left");
+    pragma Import (C, Align_Top_Right,          "fl_align_top_right");
+    pragma Import (C, Align_Bottom_Left,        "fl_align_bottom_left");
+    pragma Import (C, Align_Bottom_Right,       "fl_align_bottom_right");
+    pragma Import (C, Align_Left_Top,           "fl_align_left_top");
+    pragma Import (C, Align_Right_Top,          "fl_align_right_top");
+    pragma Import (C, Align_Left_Bottom,        "fl_align_left_bottom");
+    pragma Import (C, Align_Right_Bottom,       "fl_align_right_bottom");
+    pragma Import (C, Align_Nowrap,             "fl_align_nowrap");
+    pragma Import (C, Align_All_Position,       "fl_align_all_position");
+    pragma Import (C, Align_All_Image,          "fl_align_all_image");
 
 
 

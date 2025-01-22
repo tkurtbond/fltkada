@@ -122,6 +122,24 @@ package body FLTK is
 
 
 
+    function "+"
+           (Left, Right : in Alignment)
+        return Alignment is
+    begin
+        return Left or Right;
+    end "+";
+
+
+    function "-"
+           (Left, Right : in Alignment)
+        return Alignment is
+    begin
+        return Left and (not Right);
+    end "-";
+
+
+
+
     function Press
            (Key : in Pressable_Key)
         return Keypress is
