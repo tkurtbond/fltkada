@@ -1,5 +1,10 @@
 
 
+with
+
+    "proj/common";
+
+
 project Tools is
 
 
@@ -15,9 +20,7 @@ project Tools is
         for Executable ("template.adb") use "template";
     end Builder;
 
-    package Compiler is
-        for Default_Switches("Ada") use ("-gnaty4aAbcefhiklM100nprt");
-    end Compiler;
+    package Compiler renames Common.Compiler;
 
 
 end Tools;

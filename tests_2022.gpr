@@ -1,0 +1,32 @@
+
+
+with
+
+    "fltkada",
+    "proj/common";
+
+
+project Tests_2022 is
+
+
+    for Languages use ("Ada");
+
+    for Source_Dirs use ("test");
+    for Object_Dir use "obj";
+    for Exec_Dir use "bin";
+
+    for Main use
+       ("animated.adb",
+        "arc.adb");
+
+    package Builder is
+        for Executable ("animated.adb") use "animated";
+        for Executable ("arc.adb") use "arc";
+    end Builder;
+
+    package Compiler renames Common.Compiler;
+
+
+end Tests_2022;
+
+

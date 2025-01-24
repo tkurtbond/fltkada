@@ -16,8 +16,7 @@ with
 
 use type
 
-    FLTK.Alignment,
-    FLTK.Widgets.Buttons.State;
+    FLTK.Alignment;
 
 
 function Bitmap
@@ -35,6 +34,8 @@ is
     Sorceress_Height : constant Integer := 75;
 
 
+    --  It would be slightly more concise to write these numbers in base 10 here
+    --  but it is vastly easier to use copy/replace on the 0x syntax
     Sorceress_Bits : constant FLTK.Color_Component_Array :=
     (16#fc#, 16#7e#, 16#40#, 16#20#, 16#90#, 16#00#, 16#07#, 16#80#, 16#23#, 16#00#, 16#00#, 16#c6#,
      16#c1#, 16#41#, 16#98#, 16#b8#, 16#01#, 16#07#, 16#66#, 16#00#, 16#15#, 16#9f#, 16#03#, 16#47#,

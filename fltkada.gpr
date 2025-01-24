@@ -1,5 +1,10 @@
 
 
+with
+
+    "proj/common";
+
+
 library project FLTKAda is
 
 
@@ -11,10 +16,7 @@ library project FLTKAda is
     for Library_Name use "fltkada";
     for Library_Kind use "dynamic";
 
-    package Compiler is
-        for Default_Switches("Ada") use ("-gnaty4aAbcefhiklM100nprt");
-        for Default_Switches("C++") use ("-Wall","-Wextra","-std=c++11");
-    end Compiler;
+    package Compiler renames Common.Compiler;
 
 
 end FLTKAda;

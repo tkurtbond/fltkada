@@ -7,6 +7,9 @@
 --  Alpha rendering benchmark test program functionality duplicated in Ada
 
 
+pragma Ada_2022;
+
+
 with
 
     FLTK.Draw,
@@ -33,9 +36,6 @@ is
 
     subtype Image_Data is FLTK.Color_Component_Array (1 .. Dimension ** 2 * Channels);
     type Image_Data_Array is array (Positive range <>) of Image_Data;
-
-    type RGB_Image_Access is access RGB.RGB_Image;
-    type RGB_Image_Access_Array is array (Positive range <>) of RGB_Image_Access;
 
 
     procedure Black_Box_Corner
@@ -114,7 +114,7 @@ is
     end Moving_Blob;
 
 
-    function Make_Images
+    function Make_Image_Data
         return Image_Data_Array is
     begin
         return Pict_Data : Image_Data_Array (1 .. Frames) := (others => (others => 0)) do
@@ -124,11 +124,15 @@ is
                 Moving_Blob      (Pict_Data (Index), Index);
             end loop;
         end return;
-    end Make_Images;
+    end Make_Image_Data;
 
 
-    Frame_Image_Data : Image_Data_Array := Make_Images;
-    Frame_Images : RGB_Image_Access_Array (1 .. Frames);
+    Frame_Image_Data : constant Image_Data_Array := Make_Image_Data;
+
+    --  This syntax requires Ada 2022, but it allows all overt heap usage to be avoided
+    Frame_Images : array (Positive range <>) of RGB.RGB_Image :=
+       (for Index in Frame_Image_Data'Range =>
+        RGB.Forge.Create (Frame_Image_Data (Index), Dimension, Dimension, Channels));
 
 
     Current_Frame : Integer range 1 .. Frames := 1;
@@ -154,17 +158,12 @@ is
     begin
         The_Window.Redraw;
         Stc.Repeat_Timeout (1.0 / 24.0, Frame_Update'Unrestricted_Access);
-        Current_Frame := (Current_Frame + 1) mod Frames + 1;
+        Current_Frame := Current_Frame mod Frames + 1;
     end Frame_Update;
 
 
 begin
 
-
-    for Index in Frame_Images'Range loop
-        Frame_Images (Index) := new RGB.RGB_Image'(RGB.Forge.Create
-            (Frame_Image_Data (Index), Dimension, Dimension, Channels));
-    end loop;
 
     The_Window.Set_Background_Color (FLTK.RGB_Color (142, 0, 0));
     The_Window.Show_With_Args;

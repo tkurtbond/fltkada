@@ -7,6 +7,9 @@
 --  Arc drawing test program functionality duplicated in Ada
 
 
+pragma Ada_2022;
+
+
 with
 
     FLTK.Draw,
@@ -74,39 +77,23 @@ is
         Index : Integer range Arg_Values'Range;
     end record;
 
+    X_Str      : aliased constant String := "X";
+    Y_Str      : aliased constant String := "Y";
+    R_Str      : aliased constant String := "R";
+    Start_Str  : aliased constant String := "start";
+    End_Str    : aliased constant String := "end";
+    Rotate_Str : aliased constant String := "rotate";
 
-    --  Trying out some stack allocation for this one
+    --  A straight up array of strings is not possible because of the different lengths
+    Slider_Labels : constant array (Positive range <>) of access constant String :=
+       (X_Str'Access,     Y_Str'Access,   R_Str'Access,
+        Start_Str'Access, End_Str'Access, Rotate_Str'Access);
 
-    Slider_One   : aliased My_Slider :=
-       (HV.Forge.Create (The_Window, 50, 300, 240, 25, "X")
-        with Index => 1);
-
-    Slider_Two   : aliased My_Slider :=
-       (HV.Forge.Create (The_Window, 50, 325, 240, 25, "Y")
-        with Index => 2);
-
-    Slider_Three : aliased My_Slider :=
-       (HV.Forge.Create (The_Window, 50, 350, 240, 25, "R")
-        with Index => 3);
-
-    Slider_Four  : aliased My_Slider :=
-       (HV.Forge.Create (The_Window, 50, 375, 240, 25, "start")
-        with Index => 4);
-
-    Slider_Five  : aliased My_Slider :=
-       (HV.Forge.Create (The_Window, 50, 400, 240, 25, "end")
-        with Index => 5);
-
-    Slider_Six   : aliased My_Slider :=
-       (HV.Forge.Create (The_Window, 50, 425, 240, 25, "rotate")
-        with Index => 6);
-
-
-    type Slider_Access is access all My_Slider;
-
-    Sliders : array (Positive range <>) of Slider_Access :=
-        (Slider_One'Access,  Slider_Two'Access,  Slider_Three'Access,
-         Slider_Four'Access, Slider_Five'Access, Slider_Six'Access);
+    --  This syntax requires Ada 2022, but it allows all overt heap usage to be avoided
+    Sliders : array (Positive range <>) of My_Slider :=
+       (for Place in Slider_Labels'Range =>
+       (HV.Forge.Create (The_Window, 50, 275 + Place * 25, 240, 25, Slider_Labels (Place).all)
+        with Index => Place));
 
 
     procedure Slider_Callback
@@ -122,7 +109,7 @@ is
 begin
 
 
-    for Place in Integer range 1 .. 6 loop
+    for Place in Sliders'Range loop
         if Place <= 3 then
             Sliders (Place).Set_Minimum (0.0);
             Sliders (Place).Set_Maximum (300.0);

@@ -91,21 +91,20 @@ is
     Stop : Boolean := False;
 
     procedure Timer_Callback is
-        Change : Long_Float := 5.0;
         Message_Icon : BX.Box_Reference := AK.Get_Message_Icon;
-        My_Color : FLTK.Color;
+        My_Color     : FLTK.Color;
     begin
-        Stc.Repeat_Timeout (Change, Timer_Callback'Unrestricted_Access);
-
         if Stop then
             Message_Icon.Set_Background_Color (FLTK.White_Color);
             return;
         end if;
 
+        Stc.Repeat_Timeout (5.0, Timer_Callback'Unrestricted_Access);
+
         My_Color := Message_Icon.Get_Background_Color;
         My_Color := (My_Color + 1) mod 32;
         if My_Color = Message_Icon.Get_Label_Color then
-            My_Color := My_Color + 1;
+            My_Color := (My_Color + 1) mod 32;
         end if;
         Message_Icon.Set_Background_Color (My_Color);
 
