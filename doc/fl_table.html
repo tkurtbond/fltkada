@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Table Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Table Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Table</td>
+    <td>FLTK.Widgets.Groups.Tables</td>
+  </tr>
+
+</table>
+
+<p><b>Note:</b><br /><br />
+This Table type should really be abstract but cannot be for technical binding reasons.
+If you try to use it directly you will get issues with the draw_cell method. Either
+extend it and override that subprogram or use types already extended from it.</p>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Table</td>
+    <td>Table</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Table_Reference</td>
+  </tr>
+
+  <tr>
+    <td>TableContext</td>
+    <td>Table_Context</td>
+  </tr>
+
+  <tr>
+    <td>ResizeFlag</td>
+    <td>Resize_Flag</td>
+  </tr>
+
+  <tr>
+    <td>int</td>
+    <td>Tab_Navigation</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Errors</th></tr>
+
+  <tr>
+<td>int</td>
+<td>Out_Of_Range_Error</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Attributes</th></tr>
+
+  <tr>
+<td><pre>
+int botrow;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int current_col;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int current_row;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Scrollbar * hscrollbar;
+</pre></td>
+<td><pre>
+function H_Bar
+       (This : in out Table)
+    return Valuators.Sliders.Scrollbars.Scrollbar_Reference;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int leftcol;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int leftcol_scrollpos;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int rightcol;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int select_col;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int select_row;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Scroll * table;
+</pre></td>
+<td><pre>
+function Scroll_Area
+       (This : in out Table)
+    return Scrolls.Scroll_Reference;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int table_h;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int table_w;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int tih;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int tiw;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int tix;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int tiy;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int toh;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int toprow;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int toprow_scrollpos;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int tow;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int tox;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int toy;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Scrollbar * vscrollbar;
+</pre></td>
+<td><pre>
+function V_Bar
+       (This : in out Table)
+    return Valuators.Sliders.Scrollbars.Scrollbar_Reference;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int wih;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int wiw;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int wix;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int wiy;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Table(int X, int Y, int W, int H, const char *l=0);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return Table;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Rely on the automatic use of begin when a group is created, or use begin/end
+explicitly, or add each widget to its intended parent group manually.</td>
+<td><pre>
+function Create
+       (Parent     : in out Groups.Group'Class;
+        X, Y, W, H : in     Integer;
+        Text       : in     String := "")
+    return Table;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void add(Fl_Widget &wgt);
+
+void add(Fl_Widget *wgt);
+</pre></td>
+<td><pre>
+procedure Add
+       (This : in out Table;
+        Item : in out Widget'Class);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Widget * const * array();
+</pre></td>
+<td>Use iterators instead.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void begin();
+</pre></td>
+<td><pre>
+procedure Begin_Current
+       (This : in out Table);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void callback(Fl_Widget *, void *);
+</pre>(This signature is wrong due to Doxygen weirdness.)</td>
+<td><pre>
+procedure Set_Callback
+       (This : in out Table;
+        Func : in     Widget_Callback);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int callback_col();
+</pre></td>
+<td><pre>
+function Callback_Column
+       (This : in Table)
+    return Positive;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+TableContext callback_context();
+</pre></td>
+<td><pre>
+function Callback_Context
+       (This : in Table)
+    return Table_Context;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int callback_row();
+</pre></td>
+<td><pre>
+function Callback_Row
+       (This : in Table)
+    return Positive;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Check if the index value is in range manually.</td>
+<td><pre>
+function Has_Child
+       (This  : in Table;
+        Place : in Index)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>&nbsp;</td>
+<td><pre>
+function Has_Child
+       (Place : in Cursor)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Widget * child(int n) const;
+</pre></td>
+<td><pre>
+function Child
+       (This  : in Table;
+        Place : in Index)
+    return Widget_Reference
+with Pre => This.Has_Child (Place);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>&nbsp;</td>
+<td><pre>
+function Child
+       (This  : in Table;
+        Place : in Cursor)
+    return Widget_Reference;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int children() const;
+</pre></td>
+<td><pre>
+function Number_Of_Children
+       (This : in Table)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual void clear();
+</pre></td>
+<td><pre>
+procedure Clear
+       (This : in out Table);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int col_header();
+</pre></td>
+<td><pre>
+function Column_Headers_Enabled
+       (This : in Table)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void col_header(int flag);
+</pre></td>
+<td><pre>
+procedure Set_Column_Headers
+       (This  : in out Table;
+        Value : in     Boolean);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Color col_header_color();
+</pre></td>
+<td><pre>
+function Get_Column_Header_Color
+       (This : in Table)
+    return Color;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void col_header_color(Fl_Color val);
+</pre></td>
+<td><pre>
+procedure Set_Column_Header_Color
+       (This  : in out Table;
+        Value : in     Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int col_header_height();
+</pre></td>
+<td><pre>
+function Get_Column_Header_Height
+       (This : in Table)
+    return Positive;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void col_header_height(int height);
+</pre></td>
+<td><pre>
+procedure Set_Column_Header_Height
+       (This  : in out Table;
+        Value : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int col_position();
+</pre></td>
+<td><pre>
+function Get_Column_Position
+       (This : in Table)
+    return Positive;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void col_position(int col);
+</pre></td>
+<td><pre>
+procedure Set_Column_Position
+       (This  : in out Table;
+        Value : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int col_resize();
+</pre></td>
+<td><pre>
+function Column_Resize_Allowed
+       (This : in Table)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void col_resize(int flag);
+</pre></td>
+<td><pre>
+procedure Set_Column_Resize
+       (This  : in out Table;
+        Value : in     Boolean);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int col_resize_min();
+</pre></td>
+<td><pre>
+function Get_Column_Resize_Minimum
+       (This : in Table)
+    return Positive;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void col_resize_min(int val);
+</pre></td>
+<td><pre>
+procedure Set_Column_Resize_Minimum
+       (This  : in out Table;
+        Value : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int col_width(int col);
+</pre></td>
+<td><pre>
+function Get_Column_Width
+       (This   : in Table;
+        Column : in Positive)
+    return Positive;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void col_width(int col, int width);
+</pre></td>
+<td><pre>
+procedure Set_Column_Width
+       (This   : in out Table;
+        Column : in     Positive;
+        Value  : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void col_width_all(int width);
+</pre></td>
+<td><pre>
+procedure Set_All_Columns_Width
+       (This  : in out Table;
+        Value : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int cols();
+</pre></td>
+<td><pre>
+function Get_Columns
+       (This : in Table)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual void cols(int val);
+</pre></td>
+<td><pre>
+procedure Set_Columns
+       (This  : in out Table;
+        Value : in     Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void do_callback(TableContext context, int row, int col);
+</pre></td>
+<td><pre>
+procedure Do_Callback
+       (This        : in out Table;
+        Context     : in     Table_Context;
+        Row, Column : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw(void);
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Table);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void end();
+</pre></td>
+<td><pre>
+procedure End_Current
+       (This : in out Table);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int find(const Fl_Widget &wgt) const;
+
+int find(const Fl_Widget *wgt) const;
+</pre></td>
+<td><pre>
+function Find
+       (This : in Table;
+        Item : in Widget'Class)
+    return Extended_Index;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void get_selection(int &row_top, int &col_left,
+    int &row_bot, int &col_right);
+</pre></td>
+<td><pre>
+procedure Get_Selection
+       (This         : in     Table;
+        Row_Top      :    out Positive;
+        Column_Left  :    out Positive;
+        Row_Bottom   :    out Positive;
+        Column_Right :    out Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void init_sizes();
+</pre></td>
+<td><pre>
+procedure Reset_Sizes
+       (This : in out Table);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void insert(Fl_Widget &wgt, Fl_Widget &w2);
+</pre></td>
+<td><pre>
+procedure Insert
+       (This   : in out Table;
+        Item   : in out Widget'Class;
+        Before : in     Widget'Class);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void insert(Fl_Widget &wgt, int n);
+</pre></td>
+<td><pre>
+procedure Insert
+       (This  : in out Table;
+        Item  : in out Widget'Class;
+        Place : in     Index);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int is_interactive_resize();
+</pre></td>
+<td><pre>
+function Is_Interactive_Resize
+       (This : in Table)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int is_selected(int r, int c);
+</pre></td>
+<td><pre>
+function Is_Selected
+       (This        : in Table;
+        Row, Column : in Positive)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int move_cursor(int R, int C);
+
+int move_cursor(int R, int C, int shiftselect);
+</pre></td>
+<td><pre>
+procedure Move_Cursor
+       (This         : in out Table;
+        Row, Column  : in     Positive;
+        Shift_Select : in     Boolean := True);
+
+function Move_Cursor
+       (This         : in out Table;
+        Row, Column  : in     Positive;
+        Shift_Select : in     Boolean := True)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void remove(Fl_Widget &wgt);
+</pre></td>
+<td><pre>
+procedure Remove
+       (This : in out Table;
+        Item : in out Widget'Class);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void resize(int X, int Y, int W, int H);
+</pre></td>
+<td><pre>
+procedure Resize
+       (This       : in out Table;
+        X, Y, W, H : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int row_header();
+</pre></td>
+<td><pre>
+function Row_Headers_Enabled
+       (This : in Table)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void row_header(int flag);
+</pre></td>
+<td><pre>
+procedure Set_Row_Headers
+       (This  : in out Table;
+        Value : in     Boolean);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Color row_header_color();
+</pre></td>
+<td><pre>
+function Get_Row_Header_Color
+       (This : in Table)
+    return Color;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void row_header_color(Fl_Color val);
+</pre></td>
+<td><pre>
+procedure Set_Row_Header_Color
+       (This  : in out Table;
+        Value : in     Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int row_header_width();
+</pre></td>
+<td><pre>
+function Get_Row_Header_Width
+       (This : in Table)
+    return Positive;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void row_header_width(int width);
+</pre></td>
+<td><pre>
+procedure Set_Row_Header_Width
+       (This  : in out Table;
+        Value : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int row_height(int row);
+</pre></td>
+<td><pre>
+function Get_Row_Height
+       (This : in Table;
+        Row  : in Positive)
+    return Positive;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void row_height(int row, int height);
+</pre></td>
+<td><pre>
+procedure Set_Row_Height
+       (This  : in out Table;
+        Row   : in     Positive;
+        Value : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void row_height_all(int height);
+</pre></td>
+<td><pre>
+procedure Set_All_Rows_Height
+       (This  : in out Table;
+        Value : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int row_position();
+</pre></td>
+<td><pre>
+function Get_Row_Position
+       (This : in Table)
+    return Positive;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void row_position(int row);
+</pre></td>
+<td><pre>
+procedure Set_Row_Position
+       (This  : in out Table;
+        Value : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int row_resize();
+</pre></td>
+<td><pre>
+function Row_Resize_Allowed
+       (This : in Table)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void row_resize(int flag);
+</pre></td>
+<td><pre>
+procedure Set_Row_Resize
+       (This  : in out Table;
+        Value : in     Boolean);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int row_resize_min();
+</pre></td>
+<td><pre>
+function Get_Row_Resize_Minimum
+       (This : in Table)
+    return Positive;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void row_resize_min(int val);
+</pre></td>
+<td><pre>
+procedure Set_Row_Resize_Minimum
+       (This  : in out Table;
+        Value : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int rows();
+</pre></td>
+<td><pre>
+function Get_Rows
+       (This : in Table)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual void rows(int val);
+</pre></td>
+<td><pre>
+procedure Set_Rows
+       (This  : in out Table;
+        Value : in     Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int scrollbar_size() const;
+</pre></td>
+<td><pre>
+function Get_Scrollbar_Size
+       (This : in Table)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void scrollbar_size(int newSize);
+</pre></td>
+<td><pre>
+procedure Set_Scrollbar_Size
+       (This  : in out Table;
+        Value : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void set_selection(int row_top, int col_left,
+    int row_bot, int col_right);
+</pre></td>
+<td><pre>
+procedure Set_Selection
+       (This         : in out Table;
+        Row_Top      : in     Positive;
+        Column_Left  : in     Positive;
+        Row_Bottom   : in     Positive;
+        Column_Right : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int tab_cell_nav() const;
+</pre></td>
+<td><pre>
+function Get_Tab_Mode
+       (This : in Table)
+    return Tab_Navigation;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void tab_cell_nav(int val);
+</pre></td>
+<td><pre>
+procedure Set_Tab_Mode
+       (This  : in out Table;
+        Value : in     Tab_Navigation);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void table_box(Fl_Boxtype val);
+</pre></td>
+<td><pre>
+procedure Set_Table_Box
+       (This : in out Table;
+        Box  : in     Box_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Boxtype table_box(void);
+</pre></td>
+<td><pre>
+function Get_Table_Box
+       (This : in Table)
+    return Box_Kind;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int top_row();
+</pre></td>
+<td><pre>
+function Get_Top_Row
+       (This : in Table)
+    return Positive;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void top_row(int row);
+</pre></td>
+<td><pre>
+procedure Set_Top_Row
+       (This  : in out Table;
+        Value : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void visible_cells(int &r1, int &r2, int &c1, int &c2);
+</pre></td>
+<td><pre>
+procedure Get_Visible_Cells
+       (This         : in     Table;
+        Row_Top      :    out Positive;
+        Column_Left  :    out Positive;
+        Row_Bottom   :    out Natural;
+        Column_Right :    out Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void when(Fl_When flags);
+</pre></td>
+<td><pre>
+procedure Set_When
+       (This  : in out Table;
+        Value : in     Callback_Flag);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+static void scroll_cb(Fl_Widget *, void *);
+</pre></td>
+<td><pre>
+procedure Scroll_Callback
+       (Item : in out Widget'Class);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void change_cursor(Fl_Cursor newcursor);
+</pre></td>
+<td><pre>
+procedure Set_Cursor_Kind
+       (This : in out Table;
+        Kind : in     Mouse_Cursor_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+long col_scroll_position(int col);
+</pre></td>
+<td><pre>
+function Get_Column_Scroll_Position
+       (This   : in Table;
+        Column : in Positive)
+    return Long_Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+TableContext cursor2rowcol(int &R, int &C, ResizeFlag &resizeflag);
+</pre></td>
+<td><pre>
+procedure Cursor_To_Row_Column
+       (This        : in     Table;
+        Row, Column :    out Positive;
+        Context     :    out Table_Context;
+        Resize      :    out Resize_Flag);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void damage_zone(int r1, int c1, int r2, int c2, int r3=0, int c3=0);
+</pre></td>
+<td><pre>
+procedure Damage_Zone
+       (This         : in out Table;
+        Row_Top      : in     Positive;
+        Column_Left  : in     Positive;
+        Row_Bottom   : in     Positive;
+        Column_Right : in     Positive;
+        Reach_Row    : in     Positive := 1;
+        Reach_Column : in     Positive := 1);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual void draw_cell(TableContext context, int R=0, int C=0,
+    int X=0, int Y=0, int W=0, int H=0);
+</pre></td>
+<td><pre>
+procedure Draw_Cell
+       (This        : in out Table;
+        Context     : in     Table_Context;
+        Row, Column : in     Natural := 0;
+        X, Y, W, H  : in     Integer := 0);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int find_cell(TableContext context, int R, int C,
+    int &X, int &Y, int &W, int &H);
+</pre></td>
+<td><pre>
+procedure Cell_Dimensions
+       (This        : in     Table;
+        Context     : in     Table_Context;
+        Row, Column : in     Positive;
+        X, Y, W, H  :    out Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void get_bounds(TableContext context, int &X, int &Y, int &W, int &H);
+</pre></td>
+<td><pre>
+procedure Bounding_Region
+       (This       : in     Table;
+        Context    : in     Table_Context;
+        X, Y, W, H :    out Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int handle(int e);
+</pre></td>
+<td><pre>
+function Handle
+       (This  : in out Table;
+        Event : in     Event_Kind)
+    return Event_Outcome;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int is_fltk_container();
+</pre></td>
+<td><pre>
+function Used_As_Container
+       (This : in Table)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void recalc_dimensions();
+</pre></td>
+<td><pre>
+procedure Recalculate_Dimensions
+       (This : in out Table);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void redraw_range(int topRow, int botRow, int leftCol, int rightCol);
+</pre></td>
+<td><pre>
+procedure Redraw_Range
+       (This         : in out Table;
+        Row_Top      : in     Positive;
+        Column_Left  : in     Positive;
+        Row_Bottom   : in     Positive;
+        Column_Right : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int row_col_clamp(TableContext context, int &R, int &C);
+</pre></td>
+<td><pre>
+procedure Row_Column_Clamp
+       (This        : in     Table;
+        Context     : in     Table_Context;
+        Row, Column : in out Integer);
+
+function Row_Column_Clamp
+       (This        : in     Table;
+        Context     : in     Table_Context;
+        Row, Column : in out Integer)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+long row_scroll_position(int row);
+</pre></td>
+<td><pre>
+function Get_Row_Scroll_Position
+       (This : in Table;
+        Row  : in Positive)
+    return Long_Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void table_resized();
+</pre></td>
+<td><pre>
+procedure Table_Resized
+       (This : in out Table);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void table_scrolled();
+</pre></td>
+<td><pre>
+procedure Table_Scrolled
+       (This : in out Table);
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
+

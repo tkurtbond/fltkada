@@ -102,8 +102,8 @@ package FLTK.Widgets.Groups is
         return Widget_Reference;
 
     function Find
-           (This : in     Group;
-            Item : in out Widget'Class)
+           (This : in Group;
+            Item : in Widget'Class)
         return Extended_Index;
 
     function Number_Of_Children

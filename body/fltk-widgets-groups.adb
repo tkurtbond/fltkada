@@ -388,8 +388,8 @@ package body FLTK.Widgets.Groups is
 
 
     function Find
-           (This : in     Group;
-            Item : in out Widget'Class)
+           (This : in Group;
+            Item : in Widget'Class)
         return Extended_Index
     is
         Result : Interfaces.C.int := fl_group_find (This.Void_Ptr, Item.Void_Ptr);

@@ -79,6 +79,7 @@ FLTK.Widgets.Groups.Packed
 FLTK.Widgets.Groups.Scrolls
 FLTK.Widgets.Groups.Spinners
 FLTK.Widgets.Groups.Tabbed
+FLTK.Widgets.Groups.Tables
 FLTK.Widgets.Groups.Text_Displays
 FLTK.Widgets.Groups.Text_Displays.Text_Editors
 FLTK.Widgets.Groups.Tiled
@@ -143,7 +144,6 @@ Fl_GDI_Printer_Graphics_Driver
 Fl_Glut_Window
 Fl_Postscript_Graphics_Driver
 Fl_Quartz_Graphics_Driver
-Fl_Table
 Fl_Table_Row
 Fl_Tree
 Fl_Tree_Item
@@ -203,6 +203,9 @@ Fl_Positioner has poor docs for value/xvalue/yvalue set methods
 code for Fl_Menu_Item::test_shortcut seems to use FL_SUBMENU to assume userdata
 points to another menu item array, not FL_SUBMENU_POINTER, is this still in
 the latest version?
+
+Fl_Table::callback has wrong signature, still around and unfixed in 1.4
+possibly this hasn't been noticed because it's only visible to doxygen
 
 
 

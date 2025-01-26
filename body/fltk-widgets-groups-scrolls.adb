@@ -6,7 +6,7 @@
 
 with
 
-    Interfaces.C;
+    Interfaces.C.Strings;
 
 use type
 
@@ -105,6 +105,22 @@ package body FLTK.Widgets.Groups.Scrolls is
     --  Destructors  --
     -------------------
 
+    --  I used the FFI to bypass namespace rules and all I got was this lousy tshirt
+    procedure scroll_extra_final_hook
+           (Ada_Obj : in Storage.Integer_Address);
+    pragma Export (C, scroll_extra_final_hook, "scroll_extra_final_hook");
+
+    procedure scroll_extra_final_hook
+           (Ada_Obj : in Storage.Integer_Address)
+    is
+        My_Scroll : Scroll;
+        for My_Scroll'Address use Storage.To_Address (Ada_Obj);
+        pragma Import (Ada, My_Scroll);
+    begin
+        Extra_Final (My_Scroll);
+    end scroll_extra_final_hook;
+
+
     --  It's the only way to be sure
     procedure fl_scrollbar_extra_final
            (Ada_Obj : in Storage.Integer_Address);
@@ -137,6 +153,30 @@ package body FLTK.Widgets.Groups.Scrolls is
     --------------------
     --  Constructors  --
     --------------------
+
+    --  Quite right sir, stop the boat!
+    procedure scroll_extra_init_hook
+           (Ada_Obj    : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int;
+            C_Str      : in Interfaces.C.Strings.chars_ptr);
+    pragma Export (C, scroll_extra_init_hook, "scroll_extra_init_hook");
+
+    procedure scroll_extra_init_hook
+           (Ada_Obj    : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int;
+            C_Str      : in Interfaces.C.Strings.chars_ptr)
+    is
+        My_Scroll : Scroll;
+        for My_Scroll'Address use Storage.To_Address (Ada_Obj);
+        pragma Import (Ada, My_Scroll);
+    begin
+        Extra_Init
+           (My_Scroll,
+            Integer (X), Integer (Y),
+            Integer (W), Integer (H),
+            Interfaces.C.Strings.Value (C_Str));
+    end scroll_extra_init_hook;
+
 
     --  Hold on, I know a shortcut
     procedure fl_scrollbar_extra_init
