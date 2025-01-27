@@ -80,6 +80,7 @@ FLTK.Widgets.Groups.Scrolls
 FLTK.Widgets.Groups.Spinners
 FLTK.Widgets.Groups.Tabbed
 FLTK.Widgets.Groups.Tables
+FLTK.Widgets.Groups.Tables.Row
 FLTK.Widgets.Groups.Text_Displays
 FLTK.Widgets.Groups.Text_Displays.Text_Editors
 FLTK.Widgets.Groups.Tiled
@@ -144,7 +145,6 @@ Fl_GDI_Printer_Graphics_Driver
 Fl_Glut_Window
 Fl_Postscript_Graphics_Driver
 Fl_Quartz_Graphics_Driver
-Fl_Table_Row
 Fl_Tree
 Fl_Tree_Item
 Fl_Tree_Prefs

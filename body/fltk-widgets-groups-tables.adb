@@ -824,8 +824,9 @@ package body FLTK.Widgets.Groups.Tables is
     procedure Initialize
            (This : in out Table) is
     begin
-        This.Draw_Ptr   := fl_table_draw'Address;
-        This.Handle_Ptr := fl_table_handle'Address;
+        This.Draw_Ptr      := fl_table_draw'Address;
+        This.Handle_Ptr    := fl_table_handle'Address;
+        This.Draw_Cell_Ptr := fl_table_draw_cell'Address;
     end Initialize;
 
 
@@ -1804,6 +1805,12 @@ package body FLTK.Widgets.Groups.Tables is
             Row, Column : in     Natural := 0;
             X, Y, W, H  : in     Integer := 0)
     is
+        procedure my_draw_cell
+               (T                   : in Storage.Integer_Address;
+                E, R, C, X, Y, W, H : in Interfaces.C.int);
+        for my_draw_cell'Address use This.Draw_Cell_Ptr;
+        pragma Import (Ada, my_draw_cell);
+
         C_Row, C_Column : Interfaces.C.int;
     begin
         case Context is
@@ -1820,7 +1827,7 @@ package body FLTK.Widgets.Groups.Tables is
             C_Row := Interfaces.C.int (Row);
             C_Column := Interfaces.C.int (Column);
         end case;
-        fl_table_draw_cell
+        my_draw_cell
            (This.Void_Ptr,
             To_Cint (Context),
             C_Row, C_Column,
@@ -1884,7 +1891,7 @@ package body FLTK.Widgets.Groups.Tables is
             Interfaces.C.int (H));
     begin
         if Result = -1 then
-            raise Out_Of_Range_Error with
+            raise Range_Error with
                 "Row = " & Integer'Image (Row) & ", Column = " & Integer'Image (Column);
         else
             pragma Assert (Result = 0);

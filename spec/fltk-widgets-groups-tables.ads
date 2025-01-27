@@ -11,7 +11,8 @@ with
 
 private with
 
-    Interfaces.C;
+    Interfaces.C,
+    System;
 
 
 package FLTK.Widgets.Groups.Tables is
@@ -31,7 +32,7 @@ package FLTK.Widgets.Groups.Tables is
     type Tab_Navigation is (Widget_Focus, Navigate_Cells);
 
 
-    Out_Of_Range_Error : exception;
+    Range_Error : exception;
 
 
 
@@ -493,6 +494,7 @@ private
     type Table is new Group with record
         Horizon, Vertigo : aliased Valuators.Sliders.Scrollbars.Scrollbar;
         Playing_Area     : aliased Scrolls.Scroll;
+        Draw_Cell_Ptr    : System.Address;
     end record;
 
     overriding procedure Initialize
