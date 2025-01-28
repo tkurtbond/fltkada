@@ -12,6 +12,10 @@ with
 package body FLTK.Images.Tiled is
 
 
+    ------------------------
+    --  Functions From C  --
+    ------------------------
+
     function new_fl_tiled_image
            (T    : in Storage.Integer_Address;
             W, H : in Interfaces.C.int)
@@ -80,6 +84,10 @@ package body FLTK.Images.Tiled is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
     overriding procedure Finalize
            (This : in out Tiled_Image) is
     begin
@@ -93,7 +101,7 @@ package body FLTK.Images.Tiled is
 
 
     --------------------
-    --  Construction  --
+    --  Constructors  --
     --------------------
 
     package body Forge is
@@ -115,6 +123,10 @@ package body FLTK.Images.Tiled is
 
     end Forge;
 
+
+
+
+    --  Copying  --
 
     function Copy
            (This          : in Tiled_Image;
@@ -146,9 +158,7 @@ package body FLTK.Images.Tiled is
 
 
 
-    ---------------------
     --  Miscellaneous  --
-    ---------------------
 
     procedure Inactive
            (This : in out Tiled_Image) is
@@ -169,9 +179,7 @@ package body FLTK.Images.Tiled is
 
 
 
-    --------------
     --  Colors  --
-    --------------
 
     procedure Color_Average
            (This   : in out Tiled_Image;
@@ -198,6 +206,8 @@ package body FLTK.Images.Tiled is
 
 
 
+    --  Drawing  --
+
     procedure Draw
            (This : in Tiled_Image;
             X, Y : in Integer) is
@@ -210,9 +220,9 @@ package body FLTK.Images.Tiled is
 
 
     procedure Draw
-           (This       : in Tiled_Image;
-            X, Y, W, H : in Integer;
-            CX, CY     : in Integer) is
+           (This           : in Tiled_Image;
+            X, Y, W, H     : in Integer;
+            Clip_X, Clip_Y : in Integer) is
     begin
         fl_tiled_image_draw2
            (This.Void_Ptr,
@@ -220,10 +230,11 @@ package body FLTK.Images.Tiled is
             Interfaces.C.int (Y),
             Interfaces.C.int (W),
             Interfaces.C.int (H),
-            Interfaces.C.int (CX),
-            Interfaces.C.int (CY));
+            Interfaces.C.int (Clip_X),
+            Interfaces.C.int (Clip_Y));
     end Draw;
 
 
 end FLTK.Images.Tiled;
+
 

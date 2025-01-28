@@ -59,7 +59,42 @@ int alloc_array;
 <td><pre>
 const uchar * array;
 </pre></td>
-<td>Intentionally left unbound.</td>
+<td><pre>
+function Data_Size
+       (This : in RGB_Image)
+    return Natural;
+
+function Get_Datum
+       (This  : in RGB_Image;
+        Place : in Positive)
+    return Color_Component
+with Pre => Place <= This.Data_Size;
+
+procedure Set_Datum
+       (This  : in out RGB_Image;
+        Place : in     Positive;
+        Value : in     Color_Component)
+with Pre => Place <= This.Data_Size;
+
+function Slice
+       (This : in RGB_Image;
+        Low  : in Positive;
+        High : in Natural)
+    return Color_Component_Array
+with Pre => High <= This.Data_Size,
+    Post => Slice'Result'Length = Integer'Max (0, High - Low + 1);
+
+procedure Overwrite
+       (This   : in out RGB_Image;
+        Place  : in     Positive;
+        Values : in     Color_Component_Array)
+with Pre => Place + Values'Length - 1 <= This.Data_Size;
+
+function All_Data
+       (This : in RGB_Image)
+    return Color_Component_Array
+with Post => All_Data'Result'Length = This.Data_Size;
+</pre></td>
   </tr>
 
 </table>
@@ -78,8 +113,12 @@ function Create
        (Data          : in Color_Component_Array;
         Width, Height : in Natural;
         Depth         : in Natural := 3;
-        Line_Data     : in Natural := 0)
-    return RGB_Image;
+        Line_Size     : in Natural := 0)
+    return RGB_Image
+with Pre => (if Line_Size = 0
+    then Data'Length = Width * Height * Depth
+    else Data'Length = Line_Size * Height)
+    and Data'Length <= Get_Max_Size;
 </pre></td>
   </tr>
 
@@ -181,9 +220,9 @@ virtual void draw(int X, int Y, int W, int H,
 </pre></td>
 <td><pre>
 procedure Draw
-       (This       : in RGB_Image;
-        X, Y, W, H : in Integer;
-        CX, CY     : in Integer := 0);
+       (This           : in RGB_Image;
+        X, Y, W, H     : in Integer;
+        Clip_X, Clip_Y : in Integer := 0);
 </pre></td>
   </tr>
 

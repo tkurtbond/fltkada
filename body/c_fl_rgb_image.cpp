@@ -66,6 +66,13 @@ void fl_rgb_image_uncache(RGBIMAGE i) {
 
 
 
+const void * fl_rgb_image_data(RGBIMAGE i) {
+    return static_cast<const void*>(static_cast<Fl_RGB_Image*>(i)->array);
+}
+
+
+
+
 void fl_rgb_image_draw2(RGBIMAGE i, int x, int y) {
     static_cast<Fl_RGB_Image*>(i)->draw(x, y);
 }

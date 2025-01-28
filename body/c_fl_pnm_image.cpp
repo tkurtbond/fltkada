@@ -19,3 +19,4 @@ void free_fl_pnm_image(PNMIMAGE p) {
     delete static_cast<Fl_PNM_Image*>(p);
 }
 
+

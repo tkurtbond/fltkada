@@ -7,10 +7,6 @@
 package FLTK.Images.RGB.JPEG is
 
 
-    -------------
-    --  Types  --
-    -------------
-
     type JPEG_Image is new RGB_Image with private;
 
     type JPEG_Image_Reference (Data : not null access JPEG_Image'Class) is
@@ -18,10 +14,6 @@ package FLTK.Images.RGB.JPEG is
 
 
 
-
-    --------------------
-    --  Construction  --
-    --------------------
 
     package Forge is
 
@@ -47,4 +39,5 @@ private
 
 
 end FLTK.Images.RGB.JPEG;
+
 

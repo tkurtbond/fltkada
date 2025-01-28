@@ -7,10 +7,6 @@
 package FLTK.Images.RGB.PNM is
 
 
-    -------------
-    --  Types  --
-    -------------
-
     type PNM_Image is new RGB_Image with private;
 
     type PNM_Image_Reference (Data : not null access PNM_Image'Class) is limited null record
@@ -18,10 +14,6 @@ package FLTK.Images.RGB.PNM is
 
 
 
-
-    --------------------
-    --  Construction  --
-    --------------------
 
     package Forge is
 
@@ -42,4 +34,5 @@ private
 
 
 end FLTK.Images.RGB.PNM;
+
 

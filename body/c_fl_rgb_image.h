@@ -27,6 +27,9 @@ extern "C" void fl_rgb_image_desaturate(RGBIMAGE i);
 extern "C" void fl_rgb_image_uncache(RGBIMAGE i);
 
 
+extern "C" const void * fl_rgb_image_data(RGBIMAGE i);
+
+
 extern "C" void fl_rgb_image_draw2(RGBIMAGE i, int x, int y);
 extern "C" void fl_rgb_image_draw(RGBIMAGE i, int x, int y, int w, int h, int cx, int cy);
 

@@ -7,10 +7,6 @@
 package FLTK.Images.RGB.BMP is
 
 
-    -------------
-    --  Types  --
-    -------------
-
     type BMP_Image is new RGB_Image with private;
 
     type BMP_Image_Reference (Data : not null access BMP_Image'Class) is limited null record
@@ -18,10 +14,6 @@ package FLTK.Images.RGB.BMP is
 
 
 
-
-    --------------------
-    --  Construction  --
-    --------------------
 
     package Forge is
 
@@ -42,4 +34,5 @@ private
 
 
 end FLTK.Images.RGB.BMP;
+
 

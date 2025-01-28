@@ -12,6 +12,10 @@ with
 package body FLTK.Images.RGB is
 
 
+    ------------------------
+    --  Functions From C  --
+    ------------------------
+
     function new_fl_rgb_image
            (Data       : in Storage.Integer_Address;
             W, H, D, L : in Interfaces.C.int)
@@ -80,6 +84,15 @@ package body FLTK.Images.RGB is
 
 
 
+    function fl_rgb_image_data
+           (I : in Storage.Integer_Address)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_rgb_image_data, "fl_rgb_image_data");
+    pragma Inline (fl_rgb_image_data);
+
+
+
+
     procedure fl_rgb_image_draw2
            (I    : in Storage.Integer_Address;
             X, Y : in Interfaces.C.int);
@@ -95,6 +108,10 @@ package body FLTK.Images.RGB is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
     overriding procedure Finalize
            (This : in out RGB_Image) is
     begin
@@ -108,7 +125,7 @@ package body FLTK.Images.RGB is
 
 
     --------------------
-    --  Construction  --
+    --  Constructors  --
     --------------------
 
     package body Forge is
@@ -117,7 +134,7 @@ package body FLTK.Images.RGB is
                (Data          : in Color_Component_Array;
                 Width, Height : in Natural;
                 Depth         : in Natural := 3;
-                Line_Data     : in Natural := 0)
+                Line_Size     : in Natural := 0)
             return RGB_Image is
         begin
             return This : RGB_Image do
@@ -126,15 +143,10 @@ package body FLTK.Images.RGB is
                     Interfaces.C.int (Width),
                     Interfaces.C.int (Height),
                     Interfaces.C.int (Depth),
-                    Interfaces.C.int (Line_Data));
-                case fl_image_fail (This.Void_Ptr) is
-                    when 1 => raise No_Image_Error;
-                    when 2 => raise File_Access_Error;
-                    when 3 => raise Format_Error;
-                    when others => null;
-                end case;
+                    Interfaces.C.int (Line_Size));
             end return;
         end Create;
+
 
         function Create
                (Data       : in FLTK.Images.Pixmaps.Pixmap'Class;
@@ -145,17 +157,15 @@ package body FLTK.Images.RGB is
                 This.Void_Ptr := new_fl_rgb_image2
                    (Wrapper (Data).Void_Ptr,
                     Interfaces.C.unsigned (Background));
-                case fl_image_fail (This.Void_Ptr) is
-                    when 1 => raise No_Image_Error;
-                    when 2 => raise File_Access_Error;
-                    when 3 => raise Format_Error;
-                    when others => null;
-                end case;
             end return;
         end Create;
 
     end Forge;
 
+
+
+
+    --  Copying  --
 
     function Get_Max_Size
         return Natural is
@@ -197,9 +207,7 @@ package body FLTK.Images.RGB is
 
 
 
-    --------------
     --  Colors  --
-    --------------
 
     procedure Color_Average
            (This   : in out RGB_Image;
@@ -222,9 +230,7 @@ package body FLTK.Images.RGB is
 
 
 
-    ----------------
     --  Activity  --
-    ----------------
 
     procedure Uncache
            (This : in out RGB_Image) is
@@ -235,9 +241,90 @@ package body FLTK.Images.RGB is
 
 
 
-    ---------------
+    --  Pixel Data  --
+
+    function Data_Size
+           (This : in RGB_Image)
+        return Natural
+    is
+        Per_Line : Natural := This.Get_Line_Size;
+    begin
+        if Per_Line = 0 then
+            return This.Get_W * This.Get_D * This.Get_H;
+        else
+            return Per_Line * This.Get_H;
+        end if;
+    end Data_Size;
+
+
+    function Get_Datum
+           (This  : in RGB_Image;
+            Place : in Positive)
+        return Color_Component
+    is
+        The_Data : Color_Component_Array (1 .. This.Data_Size);
+        for The_Data'Address use Storage.To_Address (fl_rgb_image_data (This.Void_Ptr));
+        pragma Import (Ada, The_Data);
+    begin
+        return The_Data (Place);
+    end Get_Datum;
+
+
+    procedure Set_Datum
+           (This  : in out RGB_Image;
+            Place : in     Positive;
+            Value : in     Color_Component)
+    is
+        The_Data : Color_Component_Array (1 .. This.Data_Size);
+        for The_Data'Address use Storage.To_Address (fl_rgb_image_data (This.Void_Ptr));
+        pragma Import (Ada, The_Data);
+    begin
+        The_Data (Place) := Value;
+    end Set_Datum;
+
+
+    function Slice
+           (This : in RGB_Image;
+            Low  : in Positive;
+            High : in Natural)
+        return Color_Component_Array
+    is
+        The_Data : Color_Component_Array (1 .. This.Data_Size);
+        for The_Data'Address use Storage.To_Address (fl_rgb_image_data (This.Void_Ptr));
+        pragma Import (Ada, The_Data);
+    begin
+        return The_Data (Low .. High);
+    end Slice;
+
+
+    procedure Overwrite
+           (This   : in out RGB_Image;
+            Place  : in     Positive;
+            Values : in     Color_Component_Array)
+    is
+        The_Data : Color_Component_Array (1 .. This.Data_Size);
+        for The_Data'Address use Storage.To_Address (fl_rgb_image_data (This.Void_Ptr));
+        pragma Import (Ada, The_Data);
+    begin
+        The_Data (Place .. Place + Values'Length - 1) := Values;
+    end Overwrite;
+
+
+    function All_Data
+           (This : in RGB_Image)
+        return Color_Component_Array
+    is
+        The_Data : Color_Component_Array (1 .. This.Data_Size);
+        for The_Data'Address use Storage.To_Address (fl_rgb_image_data (This.Void_Ptr));
+        pragma Import (Ada, The_Data);
+    begin
+        return The_Data;
+    end All_Data;
+
+
+
+
     --  Drawing  --
-    ---------------
 
     procedure Draw
            (This : in RGB_Image;
@@ -251,9 +338,9 @@ package body FLTK.Images.RGB is
 
 
     procedure Draw
-           (This       : in RGB_Image;
-            X, Y, W, H : in Integer;
-            CX, CY     : in Integer := 0) is
+           (This           : in RGB_Image;
+            X, Y, W, H     : in Integer;
+            Clip_X, Clip_Y : in Integer := 0) is
     begin
         fl_rgb_image_draw
            (This.Void_Ptr,
@@ -261,10 +348,11 @@ package body FLTK.Images.RGB is
             Interfaces.C.int (Y),
             Interfaces.C.int (W),
             Interfaces.C.int (H),
-            Interfaces.C.int (CX),
-            Interfaces.C.int (CY));
+            Interfaces.C.int (Clip_X),
+            Interfaces.C.int (Clip_Y));
     end Draw;
 
 
 end FLTK.Images.RGB;
+
 

@@ -10,7 +10,6 @@
 with
 
     FLTK.Images.Bitmaps,
-    FLTK.Widgets.Buttons,
     FLTK.Widgets.Buttons.Toggle,
     FLTK.Widgets.Groups.Windows.Double;
 

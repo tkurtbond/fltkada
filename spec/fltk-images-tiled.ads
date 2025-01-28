@@ -7,10 +7,6 @@
 package FLTK.Images.Tiled is
 
 
-    -------------
-    --  Types  --
-    -------------
-
     type Tiled_Image is new Image with private;
 
     type Tiled_Image_Reference (Data : not null access Tiled_Image'Class) is
@@ -18,10 +14,6 @@ package FLTK.Images.Tiled is
 
 
 
-
-    --------------------
-    --  Construction  --
-    --------------------
 
     package Forge is
 
@@ -31,6 +23,11 @@ package FLTK.Images.Tiled is
             return Tiled_Image;
 
     end Forge;
+
+
+
+
+    --  Copying  --
 
     function Copy
            (This          : in Tiled_Image;
@@ -44,9 +41,7 @@ package FLTK.Images.Tiled is
 
 
 
-    ---------------------
     --  Miscellaneous  --
-    ---------------------
 
     procedure Inactive
            (This : in out Tiled_Image);
@@ -58,9 +53,7 @@ package FLTK.Images.Tiled is
 
 
 
-    --------------
     --  Colors  --
-    --------------
 
     procedure Color_Average
            (This   : in out Tiled_Image;
@@ -73,18 +66,16 @@ package FLTK.Images.Tiled is
 
 
 
-    ---------------
     --  Drawing  --
-    ---------------
 
     procedure Draw
            (This : in Tiled_Image;
             X, Y : in Integer);
 
     procedure Draw
-           (This       : in Tiled_Image;
-            X, Y, W, H : in Integer;
-            CX, CY     : in Integer);
+           (This           : in Tiled_Image;
+            X, Y, W, H     : in Integer;
+            Clip_X, Clip_Y : in Integer);
 
 
 private
@@ -100,17 +91,15 @@ private
 
     pragma Inline (Copy);
 
-
     pragma Inline (Inactive);
     pragma Inline (Tile);
 
-
     pragma Inline (Color_Average);
     pragma Inline (Desaturate);
-
 
     pragma Inline (Draw);
 
 
 end FLTK.Images.Tiled;
+
 

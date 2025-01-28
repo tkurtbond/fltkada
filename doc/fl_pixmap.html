@@ -41,6 +41,31 @@
     <td>Pixmap_Reference</td>
   </tr>
 
+  <tr>
+    <td>char *</td>
+    <td>Header</td>
+  </tr>
+
+  <tr>
+    <td>char</td>
+    <td>Color_Kind</td>
+  </tr>
+
+  <tr>
+    <td>char *</td>
+    <td>Color_Definition</td>
+  </tr>
+
+  <tr>
+    <td>char **</td>
+    <td>Color_Definition_Array</td>
+  </tr>
+
+  <tr>
+    <td>char **</td>
+    <td>Pixmap_Data</td>
+  </tr>
+
 </table>
 
 
@@ -72,7 +97,19 @@ Fl_Pixmap(const char *const *D);
 
 Fl_Pixmap(const uchar *const *D);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Create
+       (Values : in Header;
+        Colors : in Color_Definition_Array;
+        Pixels : in Pixmap_Data)
+    return Pixmap
+with Pre =>
+    Colors'Length = Values.Colors and
+    Pixels'Length (1) = Values.Height and
+    (for all Definition of Colors =>
+        Ada.Strings.Unbounded.Length (Definition.Name) = Values.Per_Pixel) and
+    Pixels'Length (2) = Values.Width * Values.Per_Pixel;
+</pre></td>
   </tr>
 
 </table>
@@ -134,9 +171,9 @@ virtual void draw(int X, int Y, int W, int H,
 </pre></td>
 <td><pre>
 procedure Draw
-       (This       : in Pixmap;
-        X, Y, W, H : in Integer;
-        CX, CY     : in Integer := 0);
+       (This           : in Pixmap;
+        X, Y, W, H     : in Integer;
+        Clip_X, Clip_Y : in Integer := 0);
 </pre></td>
   </tr>
 

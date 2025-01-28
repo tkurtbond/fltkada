@@ -12,6 +12,10 @@ with
 package body FLTK.Images.RGB.PNG is
 
 
+    ------------------------
+    --  Functions From C  --
+    ------------------------
+
     function new_fl_png_image
            (F : in Interfaces.C.char_array)
         return Storage.Integer_Address;
@@ -34,6 +38,10 @@ package body FLTK.Images.RGB.PNG is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
     overriding procedure Finalize
            (This : in out PNG_Image) is
     begin
@@ -47,7 +55,7 @@ package body FLTK.Images.RGB.PNG is
 
 
     --------------------
-    --  Construction  --
+    --  Constructors  --
     --------------------
 
     package body Forge is
@@ -59,14 +67,10 @@ package body FLTK.Images.RGB.PNG is
             return This : PNG_Image do
                 This.Void_Ptr := new_fl_png_image
                    (Interfaces.C.To_C (Filename));
-                case fl_image_fail (This.Void_Ptr) is
-                    when 1 => raise No_Image_Error;
-                    when 2 => raise File_Access_Error;
-                    when 3 => raise Format_Error;
-                    when others => null;
-                end case;
+                Raise_Fail_Errors (This);
             end return;
         end Create;
+
 
         function Create
                (Name : in String := "";
@@ -78,12 +82,7 @@ package body FLTK.Images.RGB.PNG is
                    (Interfaces.C.To_C (Name),
                     Storage.To_Integer (Data (Data'First)'Address),
                     Data'Length);
-                case fl_image_fail (This.Void_Ptr) is
-                    when 1 => raise No_Image_Error;
-                    when 2 => raise File_Access_Error;
-                    when 3 => raise Format_Error;
-                    when others => null;
-                end case;
+                Raise_Fail_Errors (This);
             end return;
         end Create;
 
@@ -91,4 +90,5 @@ package body FLTK.Images.RGB.PNG is
 
 
 end FLTK.Images.RGB.PNG;
+
 

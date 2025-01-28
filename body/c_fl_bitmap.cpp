@@ -39,6 +39,13 @@ void fl_bitmap_uncache(BITMAP b) {
 
 
 
+const void * fl_bitmap_data(BITMAP b) {
+    return static_cast<const void*>(static_cast<Fl_Bitmap*>(b)->array);
+}
+
+
+
+
 void fl_bitmap_draw2(BITMAP b, int x, int y) {
     static_cast<Fl_Bitmap*>(b)->draw(x, y);
 }

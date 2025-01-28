@@ -12,6 +12,10 @@ with
 package body FLTK.Images.Bitmaps is
 
 
+    ------------------------
+    --  Functions From C  --
+    ------------------------
+
     function new_fl_bitmap
            (D    : in Storage.Integer_Address;
             W, H : in Interfaces.C.int)
@@ -48,6 +52,15 @@ package body FLTK.Images.Bitmaps is
 
 
 
+    function fl_bitmap_data
+           (B : in Storage.Integer_Address)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_bitmap_data, "fl_bitmap_data");
+    pragma Inline (fl_bitmap_data);
+
+
+
+
     procedure fl_bitmap_draw2
            (I    : in Storage.Integer_Address;
             X, Y : in Interfaces.C.int);
@@ -63,6 +76,10 @@ package body FLTK.Images.Bitmaps is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
     overriding procedure Finalize
            (This : in out Bitmap) is
     begin
@@ -76,7 +93,7 @@ package body FLTK.Images.Bitmaps is
 
 
     --------------------
-    --  Construction  --
+    --  Constructors  --
     --------------------
 
     package body Forge is
@@ -91,22 +108,30 @@ package body FLTK.Images.Bitmaps is
                    (Storage.To_Integer (Data (Data'First)'Address),
                     Interfaces.C.int (Width),
                     Interfaces.C.int (Height));
-                case fl_image_fail (This.Void_Ptr) is
-                    when 1 =>
-                        --  raise No_Image_Error;
-                        null;
-                        --  Since the image depth and line data are both zero here,
-                        --  the fail method will think there's no image even though
-                        --  nothing is wrong. This is a bug in FLTK.
-                    when 2 => raise File_Access_Error;
-                    when 3 => raise Format_Error;
-                    when others => null;
-                end case;
             end return;
         end Create;
 
     end Forge;
 
+
+
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
+    function To_Next_Byte
+           (Bits : in Natural)
+        return Natural is
+    begin
+        return Integer (Float'Ceiling (Float (Bits) / Float (Color_Component_Array'Component_Size)))
+            * Color_Component_Array'Component_Size;
+    end To_Next_Byte;
+
+
+
+
+    --  Copying  --
 
     function Copy
            (This          : in Bitmap;
@@ -134,9 +159,7 @@ package body FLTK.Images.Bitmaps is
 
 
 
-    ----------------
     --  Activity  --
-    ----------------
 
     procedure Uncache
            (This : in out Bitmap) is
@@ -146,9 +169,85 @@ package body FLTK.Images.Bitmaps is
 
 
 
-    ---------------
+
+    --  Pixel Data  --
+
+    function Data_Size
+           (This : in Bitmap)
+        return Natural is
+    begin
+        return To_Next_Byte (This.Get_W) * This.Get_H;
+    end Data_Size;
+
+
+    function Get_Datum
+           (This  : in Bitmap;
+            Place : in Positive)
+        return Color_Component
+    is
+        The_Data : Color_Component_Array (1 .. This.Data_Size);
+        for The_Data'Address use Storage.To_Address (fl_bitmap_data (This.Void_Ptr));
+        pragma Import (Ada, The_Data);
+    begin
+        return The_Data (Place);
+    end Get_Datum;
+
+
+    procedure Set_Datum
+           (This  : in out Bitmap;
+            Place : in     Positive;
+            Value : in     Color_Component)
+    is
+        The_Data : Color_Component_Array (1 .. This.Data_Size);
+        for The_Data'Address use Storage.To_Address (fl_bitmap_data (This.Void_Ptr));
+        pragma Import (Ada, The_Data);
+    begin
+        The_Data (Place) := Value;
+    end Set_Datum;
+
+
+    function Slice
+           (This : in Bitmap;
+            Low  : in Positive;
+            High : in Natural)
+        return Color_Component_Array
+    is
+        The_Data : Color_Component_Array (1 .. This.Data_Size);
+        for The_Data'Address use Storage.To_Address (fl_bitmap_data (This.Void_Ptr));
+        pragma Import (Ada, The_Data);
+    begin
+        return The_Data (Low .. High);
+    end Slice;
+
+
+    procedure Overwrite
+           (This   : in out Bitmap;
+            Place  : in     Positive;
+            Values : in     Color_Component_Array)
+    is
+        The_Data : Color_Component_Array (1 .. This.Data_Size);
+        for The_Data'Address use Storage.To_Address (fl_bitmap_data (This.Void_Ptr));
+        pragma Import (Ada, The_Data);
+    begin
+        The_Data (Place .. Place + Values'Length - 1) := Values;
+    end Overwrite;
+
+
+    function All_Data
+           (This : in Bitmap)
+        return Color_Component_Array
+    is
+        The_Data : Color_Component_Array (1 .. This.Data_Size);
+        for The_Data'Address use Storage.To_Address (fl_bitmap_data (This.Void_Ptr));
+        pragma Import (Ada, The_Data);
+    begin
+        return The_Data;
+    end All_Data;
+
+
+
+
     --  Drawing  --
-    ---------------
 
     procedure Draw
            (This : in Bitmap;
@@ -162,9 +261,9 @@ package body FLTK.Images.Bitmaps is
 
 
     procedure Draw
-           (This       : in Bitmap;
-            X, Y, W, H : in Integer;
-            CX, CY     : in Integer := 0) is
+           (This           : in Bitmap;
+            X, Y, W, H     : in Integer;
+            Clip_X, Clip_Y : in Integer := 0) is
     begin
         fl_bitmap_draw
            (This.Void_Ptr,
@@ -172,10 +271,11 @@ package body FLTK.Images.Bitmaps is
             Interfaces.C.int (Y),
             Interfaces.C.int (W),
             Interfaces.C.int (H),
-            Interfaces.C.int (CX),
-            Interfaces.C.int (CY));
+            Interfaces.C.int (Clip_X),
+            Interfaces.C.int (Clip_Y));
     end Draw;
 
 
 end FLTK.Images.Bitmaps;
+
 

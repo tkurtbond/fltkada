@@ -11,7 +11,10 @@
 typedef void* PIXMAP;
 
 
+extern "C" PIXMAP new_fl_pixmap(void * d);
 extern "C" void free_fl_pixmap(PIXMAP b);
+
+
 extern "C" PIXMAP fl_pixmap_copy(PIXMAP b, int w, int h);
 extern "C" PIXMAP fl_pixmap_copy2(PIXMAP b);
 

@@ -21,7 +21,8 @@ project Tests is
         "bitmap.adb",
         "compare.adb",
         "dirlist.adb",
-        "page_formats.adb");
+        "page_formats.adb",
+        "pixmap.adb");
 
     package Builder is
         for Executable ("adjuster.adb")     use "adjuster";
@@ -30,6 +31,7 @@ project Tests is
         for Executable ("compare.adb")      use "compare";
         for Executable ("dirlist.adb")      use "dirlist";
         for Executable ("page_formats.adb") use "page_formats";
+        for Executable ("pixmap.adb")       use "pixmap";
     end Builder;
 
     package Compiler renames Common.Compiler;

@@ -84,21 +84,21 @@
 <td><pre>
 static const int ERR_FILE_ACCESS = -2;
 </pre></td>
-<td>&nbsp;</td>
+<td>See the errors table.</td>
   </tr>
 
   <tr>
 <td><pre>
 static const int ERR_FORMAT = -3;
 </pre></td>
-<td>&nbsp;</td>
+<td>See the errors table.</td>
   </tr>
 
   <tr>
 <td><pre>
 static const int ERR_NO_IMAGE = -1;
 </pre></td>
-<td>&nbsp;</td>
+<td>See the errors table.</td>
   </tr>
 
 </table>
@@ -192,20 +192,7 @@ function Copy
 <td><pre>
 int count() const;
 </pre></td>
-<td><pre>
-function Get_Data_Count
-       (This : in Image)
-    return Natural;
-</pre></td>
-  </tr>
-
-  <tr>
-<td>&nbsp;</td>
-<td><pre>
-function Get_Data_Size
-       (This : in Image)
-    return Natural;
-</pre></td>
+<td>Intentionally left unbound.</td>
   </tr>
 
   <tr>
@@ -223,53 +210,8 @@ function Get_D
 <td><pre>
 const char * const * data() const;
 </pre></td>
-<td><pre>
-function Get_Datum
-       (This     : in Image;
-        Data     : in Positive;
-        Position : in Positive)
-    return Color_Component
-with Pre =>
-        Data <= Get_Data_Count (This) and
-        Position <= Get_Data_Size (This);
-
-procedure Set_Datum
-       (This     : in out Image;
-        Data     : in     Positive;
-        Position : in     Positive;
-        Value    : in     Color_Component)
-with Pre =>
-        Data <= Get_Data_Count (This) and
-        Position <= Get_Data_Size (This);
-
-function Get_Data
-       (This     : in Image;
-        Data     : in Positive;
-        Position : in Positive;
-        Count    : in Natural)
-    return Color_Component_Array
-with Pre =>
-        Data <= Get_Data_Count (This) and
-        Position <= Get_Data_Size (This) and
-        Count <= Get_Data_Size (This) - Position + 1;
-
-function All_Data
-       (This : in Image;
-        Data : in Positive)
-    return Color_Component_Array
-with Pre =>
-        Data <= Get_Data_Count (This);
-
-procedure Update_Data
-       (This     : in out Image;
-        Data     : in     Positive;
-        Position : in     Positive;
-        Values   : in     Color_Component_Array)
-with Pre =>
-        Data <= Get_Data_Count (This) and
-        Position <= Get_Data_Size (This) and
-        Values'Length <= Get_Data_Size (This) - Position + 1;
-</pre></td>
+<td>See Data_Size, Get_Datum, Set_Datum, Slice, Overwrite, All_Data subprograms
+in Fl_Bitmap and Fl_RGB_Image.</td>
   </tr>
 
   <tr>
@@ -289,9 +231,9 @@ virtual void draw(int X, int Y, int W, int H,
 </pre></td>
 <td><pre>
 procedure Draw
-       (This       : in Image;
-        X, Y, W, H : in Integer;
-        CX, CY     : in Integer := 0);
+       (This           : in Image;
+        X, Y, W, H     : in Integer;
+        Clip_X, Clip_Y : in Integer := 0);
 </pre></td>
   </tr>
 
@@ -357,7 +299,7 @@ virtual void label(Fl_Menu_Item *m);
 int ld() const;
 </pre></td>
 <td><pre>
-function Get_Line_Data
+function Get_Line_Size
        (This : in Image)
     return Natural;
 </pre></td>

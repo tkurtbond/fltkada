@@ -12,6 +12,10 @@ with
 package body FLTK.Images.Bitmaps.XBM is
 
 
+    ------------------------
+    --  Functions From C  --
+    ------------------------
+
     function new_fl_xbm_image
            (F : in Interfaces.C.char_array)
         return Storage.Integer_Address;
@@ -26,6 +30,10 @@ package body FLTK.Images.Bitmaps.XBM is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
     overriding procedure Finalize
            (This : in out XBM_Image) is
     begin
@@ -39,7 +47,7 @@ package body FLTK.Images.Bitmaps.XBM is
 
 
     --------------------
-    --  Construction  --
+    --  Constructors  --
     --------------------
 
     package body Forge is
@@ -51,17 +59,7 @@ package body FLTK.Images.Bitmaps.XBM is
             return This : XBM_Image do
                 This.Void_Ptr := new_fl_xbm_image
                        (Interfaces.C.To_C (Filename));
-                case fl_image_fail (This.Void_Ptr) is
-                    when 1 =>
-                        --  raise No_Image_Error;
-                        null;
-                        --  Since the image depth and line data are both zero here,
-                        --  the fail method will think there's no image even though
-                        --  nothing is wrong. This is a bug in FLTK.
-                    when 2 => raise File_Access_Error;
-                    when 3 => raise Format_Error;
-                    when others => null;
-                end case;
+                Raise_Fail_Errors (This);
             end return;
         end Create;
 
@@ -69,4 +67,5 @@ package body FLTK.Images.Bitmaps.XBM is
 
 
 end FLTK.Images.Bitmaps.XBM;
+
 

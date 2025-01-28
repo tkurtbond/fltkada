@@ -10,22 +10,34 @@
 
 
 
-class My_Image : public Fl_Image {
-    public:
-        using Fl_Image::Fl_Image;
-        friend void fl_image_draw_empty(IMAGE i, int x, int y);
+//  Enums, macros, and constants
+
+const int fl_image_err_no_image    = Fl_Image::ERR_NO_IMAGE;
+const int fl_image_err_file_access = Fl_Image::ERR_FILE_ACCESS;
+const int fl_image_err_format      = Fl_Image::ERR_FORMAT;
+
+
+
+
+//  Non-friend protected access
+
+class Friend_Image : Fl_Image {
+public:
+    using Fl_Image::draw_empty;
 };
 
 
 
 
+//  Flattened C API
+
 IMAGE new_fl_image(int w, int h, int d) {
-    My_Image *i = new My_Image(w, h, d);
+    Fl_Image *i = new Fl_Image(w, h, d);
     return i;
 }
 
 void free_fl_image(IMAGE i) {
-    delete static_cast<My_Image*>(i);
+    delete static_cast<Fl_Image*>(i);
 }
 
 
@@ -69,16 +81,7 @@ void fl_image_inactive(IMAGE i) {
 }
 
 int fl_image_fail(IMAGE i) {
-    switch (static_cast<Fl_Image*>(i)->fail()) {
-        case Fl_Image::ERR_NO_IMAGE:
-            return 1;
-        case Fl_Image::ERR_FILE_ACCESS:
-            return 2;
-        case Fl_Image::ERR_FORMAT:
-            return 3;
-        default:
-            return 0;
-    }
+    return static_cast<Fl_Image*>(i)->fail();
 }
 
 void fl_image_uncache(IMAGE i) {
@@ -105,10 +108,6 @@ int fl_image_ld(IMAGE i) {
     return static_cast<Fl_Image*>(i)->ld();
 }
 
-int fl_image_count(IMAGE i) {
-    return static_cast<Fl_Image*>(i)->count();
-}
-
 
 
 
@@ -116,12 +115,8 @@ const void * fl_image_data(IMAGE i) {
     return static_cast<Fl_Image*>(i)->data();
 }
 
-char fl_image_get_pixel(char *c, int off) {
-    return c[off];
-}
-
-void fl_image_set_pixel(char *c, int off, char val) {
-    c[off] = val;
+int fl_image_count(IMAGE i) {
+    return static_cast<Fl_Image*>(i)->count();
 }
 
 
@@ -137,6 +132,7 @@ void fl_image_draw2(IMAGE i, int x, int y, int w, int h, int cx, int cy) {
 }
 
 void fl_image_draw_empty(IMAGE i, int x, int y) {
-    static_cast<My_Image*>(i)->draw_empty(x, y);
+    (static_cast<Fl_Image*>(i)->*(&Friend_Image::draw_empty))(x, y);
 }
+
 

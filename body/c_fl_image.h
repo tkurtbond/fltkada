@@ -8,6 +8,11 @@
 #define FL_IMAGE_GUARD
 
 
+extern "C" const int fl_image_err_no_image;
+extern "C" const int fl_image_err_file_access;
+extern "C" const int fl_image_err_format;
+
+
 typedef void* IMAGE;
 
 
@@ -34,12 +39,10 @@ extern "C" int fl_image_w(IMAGE i);
 extern "C" int fl_image_h(IMAGE i);
 extern "C" int fl_image_d(IMAGE i);
 extern "C" int fl_image_ld(IMAGE i);
-extern "C" int fl_image_count(IMAGE i);
 
 
 extern "C" const void * fl_image_data(IMAGE i);
-extern "C" char fl_image_get_pixel(char *c, int off);
-extern "C" void fl_image_set_pixel(char *c, int off, char val);
+extern "C" int fl_image_count(IMAGE i);
 
 
 extern "C" void fl_image_draw(IMAGE i, int x, int y);

@@ -7,10 +7,6 @@
 package FLTK.Images.Pixmaps.GIF is
 
 
-    -------------
-    --  Types  --
-    -------------
-
     type GIF_Image is new Pixmap with private;
 
     type GIF_Image_Reference (Data : not null access GIF_Image'Class) is
@@ -18,10 +14,6 @@ package FLTK.Images.Pixmaps.GIF is
 
 
 
-
-    --------------------
-    --  Construction  --
-    --------------------
 
     package Forge is
 
@@ -42,4 +34,5 @@ private
 
 
 end FLTK.Images.Pixmaps.GIF;
+
 

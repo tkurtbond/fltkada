@@ -7,10 +7,6 @@
 package FLTK.Images.Pixmaps.XPM is
 
 
-    -------------
-    --  Types  --
-    -------------
-
     type XPM_Image is new Pixmap with private;
 
     type XPM_Image_Reference (Data : not null access XPM_Image'Class) is
@@ -18,10 +14,6 @@ package FLTK.Images.Pixmaps.XPM is
 
 
 
-
-    --------------------
-    --  Construction  --
-    --------------------
 
     package Forge is
 
@@ -42,4 +34,5 @@ private
 
 
 end FLTK.Images.Pixmaps.XPM;
+
 

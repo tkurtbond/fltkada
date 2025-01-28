@@ -20,6 +20,9 @@ extern "C" BITMAP fl_bitmap_copy2(BITMAP b);
 extern "C" void fl_bitmap_uncache(BITMAP b);
 
 
+extern "C" const void * fl_bitmap_data(BITMAP b);
+
+
 extern "C" void fl_bitmap_draw2(BITMAP b, int x, int y);
 extern "C" void fl_bitmap_draw(BITMAP b, int x, int y, int w, int h, int cx, int cy);
 

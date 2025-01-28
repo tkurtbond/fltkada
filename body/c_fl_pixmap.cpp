@@ -10,9 +10,17 @@
 
 
 
+PIXMAP new_fl_pixmap(void * d) {
+    Fl_Pixmap *p = new Fl_Pixmap(static_cast<char**>(d));
+    return p;
+}
+
 void free_fl_pixmap(PIXMAP b) {
     delete static_cast<Fl_Pixmap*>(b);
 }
+
+
+
 
 PIXMAP fl_pixmap_copy(PIXMAP b, int w, int h) {
     //  virtual so disable dispatch

@@ -52,14 +52,49 @@
 <td><pre>
 int alloc_array;
 </pre></td>
-<td>&nbsp;</td>
+<td>Intentionally left unbound.</td>
   </tr>
 
   <tr>
 <td><pre>
 const uchar * array;
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Data_Size
+       (This : in Bitmap)
+    return Natural;
+
+function Get_Datum
+       (This  : in Bitmap;
+        Place : in Positive)
+    return Color_Component
+with Pre => Place <= This.Data_Size;
+
+procedure Set_Datum
+       (This  : in out Bitmap;
+        Place : in     Positive;
+        Value : in     Color_Component)
+with Pre => Place <= This.Data_Size;
+
+function Slice
+       (This : in Bitmap;
+        Low  : in Positive;
+        High : in Natural)
+    return Color_Component_Array
+with Pre => High <= This.Data_Size,
+    Post => Slice'Result'Length = Integer'Max (0, High - Low + 1);
+
+procedure Overwrite
+       (This   : in out Bitmap;
+        Place  : in     Positive;
+        Values : in     Color_Component_Array)
+with Pre => Place + Values'Length - 1 <= This.Data_Size;
+
+function All_Data
+       (This : in Bitmap)
+    return Color_Component_Array
+with Post => All_Data'Result'Length = This.Data_Size;
+</pre></td>
   </tr>
 
 </table>
@@ -79,7 +114,8 @@ Fl_Bitmap(const char *bits, int W, int H);
 function Create
        (Data          : in Color_Component_Array;
         Width, Height : in Natural)
-    return Bitmap;
+    return Bitmap
+with Pre => Data'Length = To_Next_Byte (Width) * Height;
 </pre></td>
   </tr>
 
@@ -120,9 +156,9 @@ virtual void draw(int X, int Y, int W, int H,
 </pre></td>
 <td><pre>
 procedure Draw
-       (This       : in Bitmap;
-        X, Y, W, H : in Integer;
-        CX, CY     : in Integer := 0);
+       (This           : in Bitmap;
+        X, Y, W, H     : in Integer;
+        Clip_X, Clip_Y : in Integer := 0);
 </pre></td>
   </tr>
 
