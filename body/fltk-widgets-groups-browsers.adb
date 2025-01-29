@@ -794,7 +794,8 @@ package body FLTK.Widgets.Groups.Browsers is
         pragma Assert (Code in 0 .. 1);
         return Boolean'Val (Code);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Browser_::select returned unexpected int value of " & Interfaces.C.int'Image (Code);
     end Set_Select;
 
 
@@ -812,7 +813,8 @@ package body FLTK.Widgets.Groups.Browsers is
     begin
         pragma Assert (Code in 0 .. 1);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Browser_::select returned unexpected int value of " & Interfaces.C.int'Image (Code);
     end Set_Select;
 
 
@@ -830,7 +832,9 @@ package body FLTK.Widgets.Groups.Browsers is
         pragma Assert (Code in 0 .. 1);
         return Boolean'Val (Code);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Browser_::select_only returned unexpected int value of " &
+        Interfaces.C.int'Image (Code);
     end Select_Only;
 
 
@@ -846,7 +850,9 @@ package body FLTK.Widgets.Groups.Browsers is
     begin
         pragma Assert (Code in 0 .. 1);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Browser_::select_only returned unexpected int value of " &
+        Interfaces.C.int'Image (Code);
     end Select_Only;
 
 
@@ -870,7 +876,9 @@ package body FLTK.Widgets.Groups.Browsers is
         pragma Assert (Code in 0 .. 1);
         return Boolean'Val (Code);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Browser_::deselect returned unexpected int value of " &
+        Interfaces.C.int'Image (Code);
     end Deselect;
 
 
@@ -884,7 +892,9 @@ package body FLTK.Widgets.Groups.Browsers is
     begin
         pragma Assert (Code in 0 .. 1);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Browser_::deselect returned unexpected int value of " &
+        Interfaces.C.int'Image (Code);
     end Deselect;
 
 
@@ -907,7 +917,9 @@ package body FLTK.Widgets.Groups.Browsers is
         pragma Assert (Code in 0 .. 1);
         return Boolean'Val (Code);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Browser_::displayed returned unexpected int value of " &
+        Interfaces.C.int'Image (Code);
     end Is_Displayed;
 
 

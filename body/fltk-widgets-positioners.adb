@@ -284,7 +284,9 @@ package body FLTK.Widgets.Positioners is
     begin
         pragma Assert (Result in 0 .. 1);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Positioner::value returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Set_Coords;
 
 
@@ -300,7 +302,9 @@ package body FLTK.Widgets.Positioners is
     begin
         return Boolean'Val (Result);
     exception
-    when Constraint_Error => raise Internal_FLTK_Error;
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Positioner::value returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Set_Coords;
 
 
@@ -375,7 +379,9 @@ package body FLTK.Widgets.Positioners is
     begin
         pragma Assert (Result in 0 .. 1);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Positioner::xvalue returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Set_Ecks;
 
 
@@ -390,7 +396,9 @@ package body FLTK.Widgets.Positioners is
     begin
         return Boolean'Val (Result);
     exception
-    when Constraint_Error => raise Internal_FLTK_Error;
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Positioner::xvalue returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Set_Ecks;
 
 
@@ -465,7 +473,9 @@ package body FLTK.Widgets.Positioners is
     begin
         pragma Assert (Result in 0 .. 1);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Positioner::yvalue returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Set_Why;
 
 
@@ -480,7 +490,9 @@ package body FLTK.Widgets.Positioners is
     begin
         return Boolean'Val (Result);
     exception
-    when Constraint_Error => raise Internal_FLTK_Error;
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Positioner::yvalue returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Set_Why;
 
 
@@ -519,17 +531,21 @@ package body FLTK.Widgets.Positioners is
            (This       : in out Positioner;
             Event      : in     Event_Kind;
             X, Y, W, H : in     Integer)
-        return Event_Outcome is
-    begin
-        return Event_Outcome'Val (fl_positioner_handle2
+        return Event_Outcome
+    is
+        Result : Interfaces.C.int := fl_positioner_handle2
            (This.Void_Ptr,
             Event_Kind'Pos (Event),
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
             Interfaces.C.int (W),
-            Interfaces.C.int (H)));
+            Interfaces.C.int (H));
+    begin
+        return Event_Outcome'Val (Result);
     exception
-    when Constraint_Error => raise Internal_FLTK_Error;
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Positioner::handle returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Handle;
 
 

@@ -214,7 +214,8 @@ package body FLTK.Widgets.Groups.Tabbed is
         end if;
         return Actual_Widget;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Tabs::push returned Widget with no user_data reference back to Ada";
     end Get_Push;
 
 
@@ -240,7 +241,8 @@ package body FLTK.Widgets.Groups.Tabbed is
         end if;
         return Actual_Widget;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Tabs::value returned Widget with no user_data reference back to Ada";
     end Get_Visible;
 
 
@@ -268,7 +270,8 @@ package body FLTK.Widgets.Groups.Tabbed is
         end if;
         return Actual_Widget;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Tabs::which returned Widget with no user_data reference back to Ada";
     end Get_Which;
 
 

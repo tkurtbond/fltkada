@@ -414,7 +414,9 @@ package body FLTK.Widgets.Inputs is
     begin
         pragma Assert (Result in 0 .. 1);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Input_::copy returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Copy;
 
 
@@ -429,7 +431,9 @@ package body FLTK.Widgets.Inputs is
         pragma Assert (Result in 0 .. 1);
         return Boolean'Val (Result);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Input_::copy returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Copy;
 
 

@@ -193,7 +193,8 @@ package body FLTK.Widgets.Groups.Wizards is
         end if;
         return Actual_Widget;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Wizard::value returned Widget with no user_data reference back to Ada";
     end Get_Visible;
 
 

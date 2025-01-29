@@ -364,7 +364,8 @@ package body FLTK.Event is
         end if;
         return Actual_Grab;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Widget returned by Fl::grab did not have user_data reference back to Ada";
     end Get_Grab;
 
 
@@ -394,7 +395,8 @@ package body FLTK.Event is
         end if;
         return Actual_Pushed;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Widget returned by Fl::pushed did not have user_data reference back to Ada";
     end Get_Pushed;
 
 
@@ -418,7 +420,8 @@ package body FLTK.Event is
         end if;
         return Actual_Below;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Widget returned by Fl::belowmouse did not have user_data reference back to Ada";
     end Get_Below_Mouse;
 
 
@@ -442,7 +445,8 @@ package body FLTK.Event is
         end if;
         return Actual_Focus;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Widget returned by Fl::focus did not have user_data reference back to Ada";
     end Get_Focus;
 
 

@@ -245,7 +245,9 @@ package body FLTK.Widgets.Inputs.Text.File is
     begin
         pragma Assert (Result /= 0);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_File_Input::value returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Set_Value;
 
 

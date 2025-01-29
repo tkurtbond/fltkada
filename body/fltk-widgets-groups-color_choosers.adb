@@ -262,7 +262,9 @@ package body FLTK.Widgets.Groups.Color_Choosers is
     begin
         pragma Assert (Result in 0 .. 1);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Color_Chooser::rgb returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Set_RGB;
 
 
@@ -279,7 +281,9 @@ package body FLTK.Widgets.Groups.Color_Choosers is
     begin
         return Boolean'Val (Result);
     exception
-    when Constraint_Error => raise Internal_FLTK_Error;
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Color_Chooser::rgb returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Set_RGB;
 
 
@@ -321,7 +325,9 @@ package body FLTK.Widgets.Groups.Color_Choosers is
     begin
         pragma Assert (Result in 0 .. 1);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Color_Chooser:hsv returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Set_HSV;
 
 
@@ -338,7 +344,9 @@ package body FLTK.Widgets.Groups.Color_Choosers is
     begin
         return Boolean'Val (Result);
     exception
-    when Constraint_Error => raise Internal_FLTK_Error;
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Color_Chooser::hsv returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Set_HSV;
 
 

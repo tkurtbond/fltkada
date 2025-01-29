@@ -967,7 +967,8 @@ package body FLTK.File_Choosers is
         end if;
         return Ada_Obj;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_File_Chooser::add_extra returned Widget with no user_data reference back to Ada";
     end Eject_Extra;
 
 
@@ -1058,7 +1059,9 @@ package body FLTK.File_Choosers is
         pragma Assert (Ret in 0 .. 1);
         return Boolean'Val (Ret);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_File_Chooser::preview returned unexpected int value of " &
+        Interfaces.C.int'Image (Ret);
     end Has_Preview;
 
 

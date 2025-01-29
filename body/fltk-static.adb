@@ -915,7 +915,8 @@ package body FLTK.Static is
         end if;
         return Actual_First;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Widget returned by Fl::first_window did not have user_data reference back to Ada";
     end Get_First_Window;
 
 
@@ -940,7 +941,8 @@ package body FLTK.Static is
         end if;
         return Actual_Next;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Widget returned by Fl::next_window did not have user_data reference back to Ada";
     end Get_Next_Window;
 
 
@@ -957,7 +959,8 @@ package body FLTK.Static is
         end if;
         return Actual_Modal;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Widget returned by Fl::modal did not have user_data reference back to Ada";
     end Get_Top_Modal;
 
 
@@ -976,7 +979,8 @@ package body FLTK.Static is
         end if;
         return Actual_Queue;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Widget returned by Fl::readqueue did not have user_data reference back to Ada";
     end Read_Queue;
 
 

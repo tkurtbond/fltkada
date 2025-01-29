@@ -402,7 +402,9 @@ package body FLTK.Asks is
         pragma Assert (Result in -3 .. 2);
         return Extended_Choice_Result'Val (Result mod 6);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "fl_choice_n returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Extended_Choice;
 
 
@@ -420,7 +422,9 @@ package body FLTK.Asks is
         pragma Assert (Result in -3 .. 2);
         return Extended_Choice_Result'Val (Result mod 6);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "fl_choice_n returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Extended_Choice;
 
 
@@ -439,7 +443,9 @@ package body FLTK.Asks is
         pragma Assert (Result in -3 .. 2);
         return Extended_Choice_Result'Val (Result mod 6);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "fl_choice_n returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Extended_Choice;
 
 
@@ -512,7 +518,9 @@ package body FLTK.Asks is
             return Cancel;
         end if;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "fl_color_chooser returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Color_Chooser;
 
 
@@ -540,7 +548,9 @@ package body FLTK.Asks is
             return Cancel;
         end if;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "fl_color_chooser returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Color_Chooser;
 
 

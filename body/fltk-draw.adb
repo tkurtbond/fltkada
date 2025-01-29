@@ -685,7 +685,9 @@ package body FLTK.Draw is
             return False;
         end if;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "fl_can_do_alpha_blending returned unexpected value of " &
+        Interfaces.C.int'Image (Result);
     end Can_Do_Alpha_Blending;
 
 
@@ -1228,7 +1230,9 @@ package body FLTK.Draw is
         pragma Assert (Buffer = Storage.To_Integer (Result (Result'First)'Address));
         return Result;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "fl_read_image returned unexpected address value that did not " &
+        "correspond to supplied address value";
     end Read_Image;
 
 
@@ -1254,7 +1258,9 @@ package body FLTK.Draw is
             pragma Assert (Ret_Val = 1);
         end if;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "fl_add_symbol returned unexpected int value of " &
+        Interfaces.C.int'Image (Ret_Val);
     end Add_Symbol;
 
     procedure Draw_Text
@@ -1423,7 +1429,9 @@ package body FLTK.Draw is
             pragma Assert (Ret_Val = 1);
         end if;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "fl_draw_symbol returned unexpected int value of " &
+        Interfaces.C.int'Image (Ret_Val);
     end Draw_Symbol;
 
 

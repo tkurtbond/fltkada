@@ -80,7 +80,7 @@ extern "C" void fl_draw_draw_text3(const char *str, int x, int y, int w, int h,
 extern "C" void fl_draw_draw_text4(int angle, const char *str, int n, int x, int y);
 extern "C" void fl_draw_rtl_draw(const char *str, int n, int x, int y);
 extern "C" void fl_draw_draw_box(int bk, int x, int y, int w, int h, unsigned int c);
-extern "C" void fl_draw_draw_symbol(const char *label, int x, int y, int w, int h, unsigned int c);
+extern "C" int fl_draw_draw_symbol(const char *label, int x, int y, int w, int h, unsigned int c);
 extern "C" void fl_draw_measure(const char * str, int &w, int &h, int draw_symbols);
 extern "C" void fl_draw_scroll(int x, int y, int w, int h, int dx, int dy,
                                void * func, void * data);

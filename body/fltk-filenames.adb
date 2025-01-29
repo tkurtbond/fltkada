@@ -170,7 +170,9 @@ package body FLTK.Filenames is
             (Result in Comparison'Pos (Comparison'First) .. Comparison'Pos (Comparison'Last));
         return Comparison'Val (Result);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Wrapper of fl_alphasort returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Alpha_Sort;
 
 
@@ -185,7 +187,9 @@ package body FLTK.Filenames is
             (Result in Comparison'Pos (Comparison'First) .. Comparison'Pos (Comparison'Last));
         return Comparison'Val (Result);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Wrapper of fl_casealphasort returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Case_Alpha_Sort;
 
 
@@ -200,7 +204,9 @@ package body FLTK.Filenames is
             (Result in Comparison'Pos (Comparison'First) .. Comparison'Pos (Comparison'Last));
         return Comparison'Val (Result);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Wrapper of fl_numericsort returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Numeric_Sort;
 
 
@@ -215,7 +221,9 @@ package body FLTK.Filenames is
             (Result in Comparison'Pos (Comparison'First) .. Comparison'Pos (Comparison'Last));
         return Comparison'Val (Result);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Wrapper of fl_casenumericsort returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Case_Numeric_Sort;
 
 
@@ -286,7 +294,8 @@ package body FLTK.Filenames is
             pragma Assert (Result = 1);
         end if;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "fl_open_uri returned unexpected int value of " & Interfaces.C.int'Image (Result);
     end Open_URI;
 
 

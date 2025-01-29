@@ -406,7 +406,9 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
         pragma Assert (Code in File_Kind'Pos (File_Kind'First) .. File_Kind'Pos (File_Kind'Last));
         return File_Kind'Val (Code);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_File_Browser::filetype returned unexpected int value of " &
+        Interfaces.C.int'Image (Code);
     end Get_File_Kind;
 
 

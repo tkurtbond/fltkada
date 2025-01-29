@@ -211,7 +211,7 @@ package body FLTK.Devices.Surface.Paged is
             return Media;
         end if;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Constraint_Error;
     end To_Page_Format;
 
 
@@ -243,7 +243,7 @@ package body FLTK.Devices.Surface.Paged is
             return Orientation;
         end if;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Constraint_Error;
     end To_Page_Layout;
 
 
@@ -267,6 +267,10 @@ package body FLTK.Devices.Surface.Paged is
                 Data (Index).My_Height := Natural (C_Height);
             end loop;
         end return;
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Paged_Device::NO_PAGE_FORMATS has inconsistent value of " &
+        Interfaces.C.int'Image (fl_no_page_formats);
     end Get_Page_Formats;
 
 

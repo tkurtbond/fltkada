@@ -355,7 +355,9 @@ package body FLTK.Devices.Surface.Paged.Postscript is
     begin
         pragma Assert (Code = 0);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_PostScript_File_Device::start_job returned unexpected int value of " &
+        Interfaces.C.int'Image (Code);
     end Start_Job;
 
 
@@ -377,7 +379,9 @@ package body FLTK.Devices.Surface.Paged.Postscript is
         when others => pragma Assert (Code = 0);
         end case;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_PostScript_File_Device::start_job returned unexpected int value of " &
+        Interfaces.C.int'Image (Code);
     end Start_Job;
 
 

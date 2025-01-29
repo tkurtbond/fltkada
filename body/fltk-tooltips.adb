@@ -189,7 +189,8 @@ package body FLTK.Tooltips is
         end if;
         return Actual_Widget;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Widget returned by Fl_Tooltip::current did not have user_data reference back to Ada";
     end Get_Target;
 
 

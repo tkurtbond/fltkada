@@ -260,7 +260,9 @@ package body FLTK.Widgets.Groups.Help_Views is
             return Ada_Help_View.Hilda;
         end if;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Help_View::link callback hook received Widget with no user_data reference " &
+        "back to Ada";
     end Link_Callback_Hook;
 
 
@@ -451,7 +453,9 @@ package body FLTK.Widgets.Groups.Help_Views is
             pragma Assert (Code = 0);
         end if;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Help_View::load returned unexpected int value of " &
+        Interfaces.C.int'Image (Code);
     end Load;
 
 

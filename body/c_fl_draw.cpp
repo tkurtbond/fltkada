@@ -260,8 +260,8 @@ void fl_draw_draw_box(int bk, int x, int y, int w, int h, unsigned int c) {
     fl_draw_box((Fl_Boxtype)bk, x, y, w, h, (Fl_Color)c);
 }
 
-void fl_draw_draw_symbol(const char *label, int x, int y, int w, int h, unsigned int c) {
-    fl_draw_symbol(label, x, y, w, h, (Fl_Color)c);
+int fl_draw_draw_symbol(const char *label, int x, int y, int w, int h, unsigned int c) {
+    return fl_draw_symbol(label, x, y, w, h, (Fl_Color)c);
 }
 
 void fl_draw_measure(const char * str, int &w, int &h, int draw_symbols) {

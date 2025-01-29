@@ -625,7 +625,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
             pragma Assert (Code = 1);
         end if;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Browser::load returned unexpected int value of " & Interfaces.C.int'Image (Code);
     end Load;
 
 
@@ -797,7 +798,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
         pragma Assert (Code in 0 .. 1);
         return Boolean'Val (Code);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Browser::select returned unexpected int value of " & Interfaces.C.int'Image (Code);
     end Set_Select;
 
 
@@ -813,7 +815,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
     begin
         pragma Assert (Code in 0 .. 1);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Browser::select returned unexpected int value of " & Interfaces.C.int'Image (Code);
     end Set_Select;
 
 
@@ -829,7 +832,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
         pragma Assert (Code in 0 .. 1);
         return Boolean'Val (Code);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Browser::selected returned unexpected int value of " & Interfaces.C.int'Image (Code);
     end Is_Selected;
 
 
@@ -872,7 +876,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
         pragma Assert (Code in 0 .. 1);
         return Boolean'Val (Code);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Browser::displayed returned unexpected int value of " & Interfaces.C.int'Image (Code);
     end Is_Displayed;
 
 
@@ -1126,7 +1131,9 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
         pragma Assert (Code in 0 .. 1);
         return Boolean'Val (Code);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Dispatched item_selected function returned unexpected int value of " &
+        Interfaces.C.int'Image (Code);
     end Item_Selected;
 
 

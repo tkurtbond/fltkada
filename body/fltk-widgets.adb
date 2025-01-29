@@ -800,7 +800,8 @@ package body FLTK.Widgets is
         end if;
         return Actual_Parent;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Widget returned by Fl_Widget::parent has no user_data reference back to Ada";
     end Parent;
 
 
@@ -836,7 +837,8 @@ package body FLTK.Widgets is
         end if;
         return Actual_Window;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Widget returned by Fl_Widget::window has no user_data reference back to Ada";
     end Nearest_Window;
 
 
@@ -854,7 +856,8 @@ package body FLTK.Widgets is
         end if;
         return Actual_Window;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Widget returned by Fl_Widget::top_window has no user_data reference back to Ada";
     end Top_Window;
 
 
@@ -876,7 +879,8 @@ package body FLTK.Widgets is
         end if;
         return Actual_Window;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Widget returned by Fl_Widget::top_window_offset has no user_data reference back to Ada";
     end Top_Window_Offset;
 
 
@@ -1269,10 +1273,14 @@ package body FLTK.Widgets is
             return Interfaces.C.int;
         for my_handle'Address use This.Handle_Ptr;
         pragma Import (Ada, my_handle);
+
+        Result : Interfaces.C.int := my_handle (This.Void_Ptr, Event_Kind'Pos (Event));
     begin
-        return Event_Outcome'Val (my_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
+        return Event_Outcome'Val (Result);
     exception
-    when Constraint_Error => raise Internal_FLTK_Error;
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Dispatched handle function returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Handle;
 
 

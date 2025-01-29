@@ -392,7 +392,7 @@ package body FLTK.Environment is
             return User;
         end if;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Constraint_Error;
     end To_Scope;
 
 

@@ -374,7 +374,8 @@ package body FLTK.Widgets.Groups is
         Actual_Widget := Widget_Convert.To_Pointer (Storage.To_Address (Widget_Ptr));
         return (Data => Actual_Widget);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Group::child returned Widget with no user_data reference back to Ada";
     end Child;
 
 
@@ -471,11 +472,15 @@ package body FLTK.Widgets.Groups is
 
     function Get_Clip_Mode
            (This : in Group)
-        return Clip_Mode is
+        return Clip_Mode
+    is
+        Result : Interfaces.C.unsigned := fl_group_get_clip_children (This.Void_Ptr);
     begin
-        return Clip_Mode'Val (fl_group_get_clip_children (This.Void_Ptr));
+        return Clip_Mode'Val (Result);
     exception
-    when Constraint_Error => raise Internal_FLTK_Error;
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Group::clip_children returned unexpected unsigned int value of " &
+        Interfaces.C.unsigned'Image (Result);
     end Get_Clip_Mode;
 
 
@@ -511,7 +516,8 @@ package body FLTK.Widgets.Groups is
         end if;
         return Actual_Widget;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Group::resizable returned Widget with no user_data reference back to Ada";
     end Get_Resizable;
 
 
@@ -558,7 +564,8 @@ package body FLTK.Widgets.Groups is
         end if;
         return Actual_Group;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error;
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Group::current returned Widget with no user_data reference back to Ada";
     end Get_Current;
 
 
