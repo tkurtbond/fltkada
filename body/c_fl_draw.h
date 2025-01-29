@@ -68,6 +68,7 @@ extern "C" void fl_draw_draw_image(void * data, int x, int y, int w, int h, int 
 extern "C" void fl_draw_draw_image2(void * func, void * data, int x, int y, int w, int h, int d);
 extern "C" void fl_draw_draw_image_mono(void * data, int x, int y, int w, int h, int d, int l);
 extern "C" void fl_draw_draw_image_mono2(void * func, void * data, int x, int y, int w, int h, int d);
+extern "C" int fl_draw_draw_pixmap(void * data, int x, int y, unsigned int h);
 extern "C" void * fl_draw_read_image(void * data, int x, int y, int w, int h, int alpha);
 
 
@@ -85,6 +86,8 @@ extern "C" void fl_draw_measure(const char * str, int &w, int &h, int draw_symbo
 extern "C" void fl_draw_scroll(int x, int y, int w, int h, int dx, int dy,
                                void * func, void * data);
 extern "C" void fl_draw_text_extents(const char * t, int n, int &dx, int &dy, int &w, int &h);
+extern "C" const char * fl_draw_expand_text(const char * str, char * &buf, int maxbuf,
+    double maxw, int &n, double &width, int wrap, int symbol);
 extern "C" double fl_draw_width(const char *txt, int n);
 extern "C" double fl_draw_width2(unsigned long c);
 

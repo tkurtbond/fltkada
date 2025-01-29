@@ -32,52 +32,64 @@
   <tr><th colspan="2">Types</th></tr>
 
   <tr>
-    <td>Fl_Line</td>
+    <td>int</td>
     <td>Line_Kind</td>
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>int</td>
     <td>Cap_Kind</td>
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>int</td>
     <td>Join_Kind</td>
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>char</td>
     <td>Dash_Length</td>
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>char *</td>
     <td>Dash_Gap</td>
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>char *</td>
     <td>Dash_Gap_Array</td>
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
-    <td>Text_Draw_Function</td>
+    <td>Fl_Draw_Image_Cb</td>
+    <td>Image_Draw_Function</td>
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>void(*drawit)(Fl_Color)</td>
     <td>Symbol_Draw_Function</td>
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
-    <td>Area_Draw_Function</td>
+    <td>void(*callthis)(const char *, int, int, int)</td>
+    <td>Text_Draw_Function</td>
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>void(*draw_area)(void *, int, int, int, int)</td>
+    <td>Area_Draw_Function</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Errors</th></tr>
+
+  <tr>
+    <td>int</td>
     <td>Draw_Error</td>
   </tr>
 
@@ -96,7 +108,7 @@ int fl_add_symbol(const char *name, void(*drawit)(Fl_Color),
 <td><pre>
 procedure Add_Symbol
        (Text     : in String;
-        Func     : in Symbol_Drawing_Function;
+        Func     : in Symbol_Draw_Function;
         Scalable : in Boolean);
 </pre></td>
   </tr>
@@ -215,14 +227,14 @@ function Clip_Box
 <td><pre>
 Fl_Region fl_clip_region();
 </pre></td>
-<td>Left unbound due to being OS-specific</td>
+<td>Left unbound due to being OS-specific.</td>
   </tr>
 
   <tr>
 <td><pre>
 void fl_clip_region(Fl_Region r);
 </pre></td>
-<td>Left unbound due to being OS-specific</td>
+<td>Left unbound due to being OS-specific.</td>
   </tr>
 
   <tr>
@@ -354,14 +366,14 @@ procedure Draw_Text
        (X, Y, W, H : in Integer;
         Text       : in String;
         Align      : in Alignment;
-        Func       : in Text_Drawing_Function;
+        Func       : in Text_Draw_Function;
         Symbols    : in Boolean := True);
 
 procedure Draw_Text
        (X, Y, W, H : in Integer;
         Text       : in String;
         Align      : in Alignment;
-        Func       : in Text_Drawing_Function;
+        Func       : in Text_Draw_Function;
         Picture    : in FLTK.Images.Image'Class;
         Symbols    : in Boolean := True);
 </pre></td>
@@ -455,19 +467,23 @@ procedure Draw_Image_Mono
 <td><pre>
 int fl_draw_pixmap(char * const *data, int x, int y,
     Fl_Color=FL_GRAY);
-</pre></td>
-<td><pre>
 
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
 int fl_draw_pixmap(const char * const *cdata, int x, int y,
     Fl_Color=FL_GRAY);
 </pre></td>
 <td><pre>
-
+procedure Draw_Pixmap
+       (Values : in FLTK.Images.Pixmaps.Header;
+        Colors : in FLTK.Images.Pixmaps.Color_Definition_Array;
+        Pixels : in FLTK.Images.Pixmaps.Pixmap_Data;
+        X, Y   : in Integer;
+        Hue    : in Color := Grey0_Color)
+with Pre =>
+    Colors'Length = Values.Colors and
+    Pixels'Length (1) = Values.Height and
+    (for all Definition of Colors =>
+        Ada.Strings.Unbounded.Length (Definition.Name) = Values.Per_Pixel) and
+    Pixels'Length (2) = Values.Width * Values.Per_Pixel;
 </pre></td>
   </tr>
 
@@ -535,7 +551,14 @@ const char * fl_expand_text(const char *from, char *buf, int maxbuf,
     double maxw, int &n, double &width, int wrap, int draw_symbols=0);
 </pre></td>
 <td><pre>
-
+function Expand_Text
+       (Text      : in     String;
+        Max_Width : in     Long_Float;
+        Width     :    out Long_Float;
+        Last      :    out Natural;
+        Wrap      : in     Boolean;
+        Symbols   : in     Boolean := False)
+    return String;
 </pre></td>
   </tr>
 
@@ -727,19 +750,11 @@ procedure Measure
   <tr>
 <td><pre>
 int fl_measure_pixmap(char *const *data, int &w, int &h);
-</pre></td>
-<td><pre>
 
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
 int fl_measure_pixmap(const char *const *cdata, int &w, int &h);
 </pre></td>
-<td><pre>
-
-</pre></td>
+<td>If you have the Header as defined in FLTK.Images.Pixmaps
+then you should already have the width and height values.</td>
   </tr>
 
   <tr>

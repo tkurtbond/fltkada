@@ -6,9 +6,7 @@
 
 with
 
-    Ada.Strings.Fixed,
-    Ada.Strings.Unbounded,
-    Ada.Unchecked_Deallocation,
+    FLTK.Pixmap_Marshal,
     Interfaces.C.Strings;
 
 
@@ -88,21 +86,11 @@ package body FLTK.Images.Pixmaps is
     --  Destructors  --
     -------------------
 
-    type chars_ptr_array_access is access all Interfaces.C.Strings.chars_ptr_array;
-
-    procedure Free is new Ada.Unchecked_Deallocation
-        (Interfaces.C.Strings.chars_ptr_array, chars_ptr_array_access);
-
     overriding procedure Finalize
            (This : in out Pixmap) is
     begin
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
-            if This.Loose_Ptr /= null then
-                for Item of This.Loose_Ptr.all loop
-                    Interfaces.C.Strings.Free (Item);
-                end loop;
-                Free (This.Loose_Ptr);
-            end if;
+            Pixmap_Marshal.Free_Recursive (This.Loose_Ptr);
             free_fl_pixmap (This.Void_Ptr);
             This.Void_Ptr := Null_Pointer;
         end if;
@@ -117,58 +105,16 @@ package body FLTK.Images.Pixmaps is
 
     package body Forge is
 
-        function To_Coltype
-               (Value : in Color_Kind)
-            return Character is
-        begin
-            case Value is
-            when Colorful   => return 'c';
-            when Monochrome => return 'm';
-            when Greyscale  => return 'g';
-            when Symbolic   => return 's';
-            end case;
-        end To_Coltype;
-
-
         function Create
                (Values : in Header;
                 Colors : in Color_Definition_Array;
                 Pixels : in Pixmap_Data)
-            return Pixmap
-        is
-            use Interfaces.C.Strings;
-            C_Data : access chars_ptr_array := new chars_ptr_array
-                (1 .. Interfaces.C.size_t (1 + Colors'Length + Pixels'Length (1)));
+            return Pixmap is
         begin
-            --  Header values line
-            C_Data (1) := New_String (Ada.Strings.Fixed.Trim
-               ((Positive'Image (Values.Width)  & Positive'Image (Values.Height) &
-                 Positive'Image (Values.Colors) & Positive'Image (Values.Per_Pixel)),
-                Ada.Strings.Left));
-
-            --  Color definition lines
-            for Place in 1 .. Colors'Length loop
-                C_Data (Interfaces.C.size_t (Place + 1)) := New_String
-                   (Ada.Strings.Unbounded.To_String (Colors (Colors'First + Place - 1).Name) & " " &
-                    To_Coltype (Colors (Colors'First + Place - 1).Kind) & " " &
-                    Ada.Strings.Unbounded.To_String (Colors (Colors'First + Place - 1).Value));
-            end loop;
-
-            --  Pixel data lines
-            for Place in 1 .. Pixels'Length (1) loop
-                declare
-                    Line : String (1 .. Pixels'Length (2));
-                    for Line'Address use Pixels (Pixels'First (1) + Place - 1, 1)'Address;
-                    pragma Import (Ada, Line);
-                begin
-                    C_Data (Interfaces.C.size_t (Place + 1 + Colors'Length)) := New_String (Line);
-                end;
-            end loop;
-
-            --  Pass it all off to C++ to actually create the cursed thing
             return This : Pixmap do
-                This.Void_Ptr := new_fl_pixmap (Storage.To_Integer (C_Data (C_Data'First)'Address));
-                This.Loose_Ptr := C_Data;  --  Much easier to save this for later
+                This.Loose_Ptr := Pixmap_Marshal.Marshal_Data (Values, Colors, Pixels);
+                This.Void_Ptr := new_fl_pixmap
+                    (Storage.To_Integer (This.Loose_Ptr (This.Loose_Ptr'First)'Address));
             end return;
         end Create;
 

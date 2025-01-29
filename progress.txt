@@ -214,7 +214,6 @@ Non-widgets with incomplete APIs:
 
 FLTK
 FLTK.Devices.Graphics
-FLTK.Draw
 FLTK.Images.Pixmaps (unmarshall data access?)
 FLTK.Images.Shared (images(), compare)
 FLTK.Text_Buffers

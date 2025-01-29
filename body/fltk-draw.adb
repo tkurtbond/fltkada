@@ -8,6 +8,8 @@ with
 
     Ada.Assertions,
     Ada.Unchecked_Deallocation,
+    FLTK.Pixmap_Marshal,
+    Interfaces.C.Pointers,
     Interfaces.C.Strings;
 
 use type
@@ -20,6 +22,13 @@ package body FLTK.Draw is
 
 
     package Chk renames Ada.Assertions;
+
+    --  Oh no... Anyway, this is just used for Expand_Text.
+    package Char_Pointers is new Interfaces.C.Pointers
+       (Index              => Interfaces.C.size_t,
+        Element            => Interfaces.C.char,
+        Element_Array      => Interfaces.C.char_array,
+        Default_Terminator => Interfaces.C.nul);
 
 
 
@@ -302,6 +311,14 @@ package body FLTK.Draw is
     pragma Import (C, fl_draw_draw_image_mono2, "fl_draw_draw_image_mono2");
     pragma Inline (fl_draw_draw_image_mono2);
 
+    function fl_draw_draw_pixmap
+           (Data : in Storage.Integer_Address;
+            X, Y : in Interfaces.C.int;
+            H    : in Interfaces.C.unsigned)
+        return Interfaces.C.int;
+    pragma Import (C, fl_draw_draw_pixmap, "fl_draw_draw_pixmap");
+    pragma Inline (fl_draw_draw_pixmap);
+
     function fl_draw_read_image
            (Buf        : in Storage.Integer_Address;
             X, Y, W, H : in Interfaces.C.int;
@@ -394,6 +411,19 @@ package body FLTK.Draw is
             DX, DY, W, H :    out Interfaces.C.int);
     pragma Import (C, fl_draw_text_extents, "fl_draw_text_extents");
     pragma Inline (fl_draw_text_extents);
+
+    --  This function in particular is such bullshit.
+    function fl_draw_expand_text
+           (Str       : in     Interfaces.C.char_array;
+            Buf       :    out Interfaces.C.Strings.chars_ptr;
+            Max_Buf   : in     Interfaces.C.int;
+            Max_W     : in     Interfaces.C.double;
+            N         :    out Interfaces.C.int;
+            Width     :    out Interfaces.C.double;
+            Wrap, Sym : in     Interfaces.C.int)
+        return Char_Pointers.Pointer;
+    pragma Import (C, fl_draw_expand_text, "fl_draw_expand_text");
+    pragma Inline (fl_draw_expand_text);
 
     function fl_draw_width
            (Str : in Interfaces.C.char_array;
@@ -1122,6 +1152,13 @@ package body FLTK.Draw is
     procedure Draw_Image_Hook
            (User    : in Storage.Integer_Address;
             X, Y, W : in Interfaces.C.int;
+            Buf_Ptr : in Storage.Integer_Address);
+
+    pragma Convention (C, Draw_Image_Hook);
+
+    procedure Draw_Image_Hook
+           (User    : in Storage.Integer_Address;
+            X, Y, W : in Interfaces.C.int;
             Buf_Ptr : in Storage.Integer_Address)
     is
         Data_Buffer : Color_Component_Array (1 .. Integer (W));
@@ -1185,6 +1222,13 @@ package body FLTK.Draw is
     procedure Draw_Image_Mono_Hook
            (User    : in Storage.Integer_Address;
             X, Y, W : in Interfaces.C.int;
+            Buf_Ptr : in Storage.Integer_Address);
+
+    pragma Convention (C, Draw_Image_Mono_Hook);
+
+    procedure Draw_Image_Mono_Hook
+           (User    : in Storage.Integer_Address;
+            X, Y, W : in Interfaces.C.int;
             Buf_Ptr : in Storage.Integer_Address)
     is
         Data_Buffer : Color_Component_Array (1 .. Integer (W));
@@ -1209,6 +1253,30 @@ package body FLTK.Draw is
             Interfaces.C.int (H),
             Interfaces.C.int (Depth));
     end Draw_Image_Mono;
+
+
+    procedure Draw_Pixmap
+           (Values : in FLTK.Images.Pixmaps.Header;
+            Colors : in FLTK.Images.Pixmaps.Color_Definition_Array;
+            Pixels : in FLTK.Images.Pixmaps.Pixmap_Data;
+            X, Y   : in Integer;
+            Hue    : in Color := Grey0_Color)
+    is
+        C_Data : Pixmap_Marshal.chars_ptr_array_access :=
+            Pixmap_Marshal.Marshal_Data (Values, Colors, Pixels);
+        Result : Interfaces.C.int := fl_draw_draw_pixmap
+           (Storage.To_Integer (C_Data (C_Data'First)'Address),
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.unsigned (Hue));
+    begin
+        pragma Assert (Result /= 0);
+        Pixmap_Marshal.Free_Recursive (C_Data);
+    exception
+    when Chk.Assertion_Error =>
+        Pixmap_Marshal.Free_Recursive (C_Data);
+        raise Draw_Error with "fl_draw_pixmap could not decode supplied XPM pixmap data";
+    end Draw_Pixmap;
 
 
     function Read_Image
@@ -1316,6 +1384,12 @@ package body FLTK.Draw is
 
     procedure Draw_Text_Hook
            (Ptr       : in Storage.Integer_Address;
+            N, X0, Y0 : in Interfaces.C.int);
+
+    pragma Convention (C, Draw_Text_Hook);
+
+    procedure Draw_Text_Hook
+           (Ptr       : in Storage.Integer_Address;
             N, X0, Y0 : in Interfaces.C.int)
     is
         Data : String (1 .. Integer (N));
@@ -1324,7 +1398,6 @@ package body FLTK.Draw is
     begin
         Text_Func_Ptr (Integer (X0), Integer (Y0), Data);
     end Draw_Text_Hook;
-
 
     procedure Draw_Text
            (X, Y, W, H : in Integer;
@@ -1454,12 +1527,22 @@ package body FLTK.Draw is
 
 
     procedure Scroll_Hook
-           (Ptr        : in Area_Draw_Function;
-            X, Y, W, H : in Interfaces.C.int) is
-    begin
-        Ptr.all (Integer (X), Integer (Y), Integer (W), Integer (H));
-    end Scroll_Hook;
+           (Ptr        : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int);
 
+    pragma Convention (C, Scroll_Hook);
+
+    procedure Scroll_Hook
+           (Ptr        : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int)
+    is
+        procedure my_area_draw
+               (X, Y, W, H : in Integer);
+        for my_area_draw'Address use Storage.To_Address (Ptr);
+        pragma Import (Ada, my_area_draw);
+    begin
+        my_area_draw (Integer (X), Integer (Y), Integer (W), Integer (H));
+    end Scroll_Hook;
 
     procedure Scroll
            (X, Y, W, H : in Integer;
@@ -1496,6 +1579,32 @@ package body FLTK.Draw is
         W := Integer (Result_W);
         H := Integer (Result_H);
     end Text_Extents;
+
+
+    function Expand_Text
+           (Text      : in     String;
+            Max_Width : in     Long_Float;
+            Width     :    out Long_Float;
+            Last      :    out Natural;
+            Wrap      : in     Boolean;
+            Symbols   : in     Boolean := False)
+        return String
+    is
+        Buffer : Interfaces.C.Strings.chars_ptr;
+        Length : Interfaces.C.int;
+        Temp   : Interfaces.C.char_array := Interfaces.C.To_C (Text);
+        Result : Char_Pointers.Pointer := fl_draw_expand_text
+           (Temp, Buffer, 0,
+            Interfaces.C.double (Max_Width),
+            Length,
+            Interfaces.C.double (Width),
+            Boolean'Pos (Wrap),
+            Boolean'Pos (Symbols));
+        use type Char_Pointers.Pointer;
+    begin
+        Last := Natural (Result - Temp (Temp'First)'Unchecked_Access);
+        return Interfaces.C.Strings.Value (Buffer, Interfaces.C.size_t (Length));
+    end Expand_Text;
 
 
     function Width

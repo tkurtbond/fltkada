@@ -6,7 +6,8 @@
 
 with
 
-    FLTK.Images,
+    Ada.Strings.Unbounded,
+    FLTK.Images.Pixmaps,
     FLTK.Widgets.Groups.Windows;
 
 
@@ -293,6 +294,19 @@ package FLTK.Draw is
             Callback   : in Image_Draw_Function;
             Depth      : in Positive := 1);
 
+    procedure Draw_Pixmap
+           (Values : in FLTK.Images.Pixmaps.Header;
+            Colors : in FLTK.Images.Pixmaps.Color_Definition_Array;
+            Pixels : in FLTK.Images.Pixmaps.Pixmap_Data;
+            X, Y   : in Integer;
+            Hue    : in Color := Grey0_Color)
+    with Pre =>
+        Colors'Length = Values.Colors and
+        Pixels'Length (1) = Values.Height and
+        (for all Definition of Colors =>
+            Ada.Strings.Unbounded.Length (Definition.Name) = Values.Per_Pixel) and
+        Pixels'Length (2) = Values.Width * Values.Per_Pixel;
+
     function Read_Image
            (X, Y, W, H : in Integer;
             Alpha      : in Integer := 0)
@@ -380,6 +394,19 @@ package FLTK.Draw is
     procedure Text_Extents
            (Text         : in     String;
             DX, DY, W, H :    out Integer);
+
+    --  Last is the index of the last character processed in Text which
+    --  would normally be one before the index of the char pointed at by
+    --  the return value in the C++ version. Instead, the return value
+    --  here is the processed text buffer.
+    function Expand_Text
+           (Text      : in     String;
+            Max_Width : in     Long_Float;
+            Width     :    out Long_Float;
+            Last      :    out Natural;
+            Wrap      : in     Boolean;
+            Symbols   : in     Boolean := False)
+        return String;
 
     function Width
            (Text : in String)
@@ -528,16 +555,13 @@ private
     pragma Inline (Set_Spot);
     pragma Inline (Set_Status);
 
-
     pragma Inline (Can_Do_Alpha_Blending);
     pragma Inline (Shortcut_Label);
-
 
     pragma Inline (Latin1_To_Local);
     pragma Inline (Local_To_Latin1);
     pragma Inline (Mac_Roman_To_Local);
     pragma Inline (Local_To_Mac_Roman);
-
 
     pragma Inline (Clip_Intersects);
     pragma Inline (Pop_Clip);
@@ -545,10 +569,8 @@ private
     pragma Inline (Push_No_Clip);
     pragma Inline (Restore_Clip);
 
-
     pragma Inline (Overlay_Clear);
     pragma Inline (Overlay_Rect);
-
 
     pragma Inline (Get_Color);
     pragma Inline (Set_Color);
@@ -558,7 +580,6 @@ private
     pragma Inline (Font_Line_Spacing);
     pragma Inline (Font_Descent);
     pragma Inline (Font_Height);
-
 
     pragma Inline (Mult_Matrix);
     pragma Inline (Pop_Matrix);
@@ -573,7 +594,6 @@ private
     pragma Inline (Translate);
     pragma Inline (Vertex);
 
-
     pragma Inline (Add_Symbol);
     pragma Inline (Draw_Text);
     pragma Inline (Draw_Text_Right_Left);
@@ -584,13 +604,11 @@ private
     pragma Inline (Text_Extents);
     pragma Inline (Width);
 
-
     pragma Inline (Begin_Complex_Polygon);
     pragma Inline (Begin_Line);
     pragma Inline (Begin_Loop);
     pragma Inline (Begin_Points);
     pragma Inline (Begin_Polygon);
-
 
     pragma Inline (Arc);
     pragma Inline (Chord);
@@ -607,7 +625,6 @@ private
     pragma Inline (Rect_Fill);
     pragma Inline (Ecks_Why_Line);
     pragma Inline (Why_Ecks_Line);
-
 
     pragma Inline (End_Complex_Polygon);
     pragma Inline (End_Line);

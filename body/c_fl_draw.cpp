@@ -216,6 +216,10 @@ void fl_draw_draw_image_mono2(void * func, void * data, int x, int y, int w, int
     fl_draw_image_mono(reinterpret_cast<Fl_Draw_Image_Cb>(func), data, x, y, w, h, d);
 }
 
+int fl_draw_draw_pixmap(void * data, int x, int y, unsigned int h) {
+    return fl_draw_pixmap(static_cast<char * const *>(data), x, y, static_cast<Fl_Color>(h));
+}
+
 void * fl_draw_read_image(void * data, int x, int y, int w, int h, int alpha) {
     return fl_read_image(static_cast<uchar*>(data), x, y, w, h, alpha);
 }
@@ -278,6 +282,12 @@ void fl_draw_scroll(int x, int y, int w, int h, int dx, int dy,
 
 void fl_draw_text_extents(const char * t, int n, int &dx, int &dy, int &w, int &h) {
     fl_text_extents(t, n, dx, dy, w, h);
+}
+
+const char * fl_draw_expand_text(const char * str, char * &buf, int maxbuf,
+    double maxw, int &n, double &width, int wrap, int symbol)
+{
+    return fl_expand_text(str, buf, maxbuf, maxw, n, width, wrap, symbol);
 }
 
 double fl_draw_width(const char *txt, int n) {
