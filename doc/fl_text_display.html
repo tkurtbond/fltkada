@@ -48,7 +48,7 @@
 
   <tr>
     <td>enum { CURSOR_POS, CHARACTER_POS }</td>
-    <td>&nbsp;</td>
+    <td>Position_Kind</td>
   </tr>
 
   <tr>
@@ -72,13 +72,23 @@
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>uchar</td>
     <td>Style_Index</td>
   </tr>
 
   <tr>
-    <td>&nbsp;</td>
+    <td>Style_Table_Entry *</td>
     <td>Style_Array</td>
+  </tr>
+
+  <tr>
+    <td>int</td>
+    <td>Style_Mask</td>
+  </tr>
+
+  <tr>
+    <td>int</td>
+    <td>Style_Info</td>
   </tr>
 
 </table>
@@ -135,6 +145,7 @@ function Create
   <tr>
 <td><pre>
 void buffer(Fl_Text_Buffer *buf);
+
 void buffer(Fl_Text_Buffer &buf);
 </pre></td>
 <td><pre>
@@ -169,7 +180,8 @@ function Col_To_X
 
   <tr>
 <td><pre>
-int count_lines(int start, int end, bool start_pos_is_line_start) const;
+int count_lines(int start, int end,
+    bool start_pos_is_line_start) const;
 </pre></td>
 <td><pre>
 function Count_Lines
@@ -306,19 +318,9 @@ function Get_Insert_Position
   </tr>
 
   <tr>
-<td>&nbsp;</td>
 <td><pre>
-function Item
-       (Tint : in Color;
-        Font : in Font_Kind;
-        Size : in Font_Size)
-    return Style_Entry;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-int line_end(int startPos, bool startPosIsLineStart) const;
+int line_end(int startPos,
+    bool startPosIsLineStart) const;
 </pre></td>
 <td><pre>
 function Line_End
@@ -431,16 +433,24 @@ function Get_Linenumber_Font
 
   <tr>
 <td><pre>
-void linenumber_format(const char *val);
+const char * linenumber_format() const;
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Get_Linenumber_Format
+       (This : in Text_Display)
+    return String;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
-const char * linenumber_format() const;
+void linenumber_format(const char *val);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Set_Linenumber_Format
+       (This  : in out Text_Display;
+        Value : in     String);
+</pre></td>
   </tr>
 
   <tr>
@@ -494,6 +504,10 @@ int move_down();
 <td><pre>
 procedure Move_Down
        (This : in out Text_Display);
+
+function Move_Down
+       (This : in out Text_Display)
+    return Boolean;
 </pre></td>
   </tr>
 
@@ -504,6 +518,10 @@ int move_left();
 <td><pre>
 procedure Move_Left
        (This : in out Text_Display);
+
+function Move_Left
+       (This : in out Text_Display)
+    return Boolean;
 </pre></td>
   </tr>
 
@@ -514,6 +532,10 @@ int move_right();
 <td><pre>
 procedure Move_Right
        (This : in out Text_Display);
+
+function Move_Right
+       (This : in out Text_Display)
+    return Boolean;
 </pre></td>
   </tr>
 
@@ -524,6 +546,10 @@ int move_up();
 <td><pre>
 procedure Move_Up
        (This : in out Text_Display);
+
+function Move_Up
+       (This : in out Text_Display)
+    return Boolean;
 </pre></td>
   </tr>
 
@@ -550,9 +576,17 @@ procedure Overstrike
 
   <tr>
 <td><pre>
-int position_style(int lineStartPos, int lineLen, int lineIndex) const;
+int position_style(int lineStartPos, int lineLen,
+    int lineIndex) const;
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Position_Style
+       (This        : in Text_Display;
+        Line_Start  : in Natural;
+        Line_Length : in Natural;
+        Line_Index  : in Natural)
+    return Styles.Style_Info;
+</pre></td>
   </tr>
 
   <tr>
@@ -593,7 +627,11 @@ procedure Redisplay_Range
 <td><pre>
 virtual void resize(int X, int Y, int W, int H);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Resize
+       (This       : in out Text_Display;
+        X, Y, W, H : in     Integer);
+</pre></td>
   </tr>
 
   <tr>
@@ -614,8 +652,9 @@ void scroll(int topLineNum, int horizOffset);
 </pre></td>
 <td><pre>
 procedure Scroll_To
-       (This : in out Text_Display;
-        Line : in     Natural);
+       (This   : in out Text_Display;
+        Line   : in     Natural;
+        Column : in     Natural := 0);
 </pre></td>
   </tr>
 
@@ -667,14 +706,22 @@ procedure Set_Scrollbar_Width
 <td><pre>
 int shortcut() const;
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Get_Shortcut
+       (This : in Text_Display)
+    return Key_Combo;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 void shortcut(int s);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Set_Shortcut
+       (This  : in out Text_Display;
+        Value : in     Key_Combo);
+</pre></td>
   </tr>
 
   <tr>
@@ -699,7 +746,8 @@ procedure Show_Insert_Position
 
   <tr>
 <td><pre>
-int skip_lines(int startPos, int nLines, bool startPosIsLineStart);
+int skip_lines(int startPos, int nLines,
+    bool startPosIsLineStart);
 </pre></td>
 <td><pre>
 function Skip_Lines
@@ -816,14 +864,24 @@ procedure Set_Wrap_Mode
 <td><pre>
 int wrapped_column(int row, int column) const;
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Wrapped_Column
+       (This        : in Text_Display;
+        Row, Column : in Natural)
+    return Natural;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 int wrapped_row(int row) const;
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Wrapped_Row
+       (This : in Text_Display;
+        Row  : in Natural)
+    return Natural;
+</pre></td>
   </tr>
 
   <tr>
@@ -845,6 +903,54 @@ function X_To_Col
 <table class="function">
   <tr><th colspan="2">Static Protected Functions and Procedures</th></tr>
 
+  <tr>
+<td><pre>
+static void buffer_modified_cb(int pos, int nInserted, int nDeleted,
+    int nRestyled, const char *deletedText, void *cbArg);
+</pre></td>
+<td><pre>
+procedure Buffer_Modified_Callback
+       (This         : in out Text_Display;
+        Action       : in     FLTK.Text_Buffers.Modification;
+        Place        : in     FLTK.Text_Buffers.Position;
+        Length       : in     Natural;
+        Deleted_Text : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void buffer_predelete_cb(int pos, int nDeleted, void *cbArg);
+</pre></td>
+<td><pre>
+procedure Buffer_Predelete_Callback
+       (This   : in out Text_Display;
+        Place  : in     FLTK.Text_Buffers.Position;
+        Length : in     Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void h_scrollbar_cb(Fl_Scrollbar *w, Fl_Text_Display *d);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void scroll_timer_cb(void *);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void v_scrollbar_cb(Fl_Scrollbar *w, Fl_Text_Display *d);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
 </table>
 
 
@@ -854,11 +960,472 @@ function X_To_Col
 
   <tr>
 <td><pre>
+void absolute_top_line_number(int oldFirstChar);
+</pre></td>
+<td><pre>
+procedure Redo_Absolute_Top_Line
+       (This      : in out Text_Display;
+        Old_First : in     Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void calc_last_char();
+</pre></td>
+<td><pre>
+procedure Calculate_Last_Character
+       (This : in out Text_Display);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void calc_line_starts(int startLine, int endLine);
+</pre></td>
+<td><pre>
+procedure Calculate_Line_Starts
+       (This          : in out Text_Display;
+        Start, Finish : in     Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void clear_rect(int style, int x, int y, int width,
+    int height) const;
+</pre></td>
+<td><pre>
+procedure Clear_Rect
+       (This       : in out Text_Display;
+        Style      : in     Styles.Style_Info;
+        X, Y, W, H : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void display_insert();
+</pre></td>
+<td><pre>
+procedure Display_Insert
+       (This : in out Text_Display);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 virtual void draw();
 </pre></td>
 <td><pre>
 procedure Draw
        (This : in out Text_Display);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw_cursor(int, int);
+</pre></td>
+<td><pre>
+procedure Draw_Cursor
+       (This : in out Text_Display;
+        X, Y : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw_line_numbers(bool clearAll);
+</pre></td>
+<td><pre>
+procedure Draw_Line_Numbers
+       (This  : in out Text_Display;
+        Clear : in     Boolean :=  False);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw_range(int start, int end);
+</pre></td>
+<td><pre>
+procedure Draw_Range
+       (This          : in out Text_Display;
+        Start, Finish : in     Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw_string(int style, int x, int y, int toX,
+    const char *string, int nChars) const;
+</pre></td>
+<td><pre>
+procedure Draw_String
+       (This      : in out Text_Display;
+        Style     : in     Styles.Style_Info;
+        X, Y      : in     Integer;
+        Right     : in     Integer;
+        Text      : in     String;
+        Num_Chars : in     Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw_text(int x, int y, int w, int h);
+</pre></td>
+<td><pre>
+procedure Draw_Text
+       (This       : in out Text_Display;
+        X, Y, W, H : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw_vline(int visLineNum, int leftClip, int rightClip,
+    int leftCharIndex, int rightCharIndex);
+</pre></td>
+<td><pre>
+procedure Draw_Visible_Line
+       (This                  : in out Text_Display;
+        Line                  : in     Natural;
+        Left_Clip, Right_Clip : in     Integer;
+        Left_Char, Right_Char : in     Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int empty_vlines() const;
+</pre></td>
+<td><pre>
+function Has_Empty_Visible_Lines
+       (This : in Text_Display)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void extend_range_for_styles(int *start, int *end);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void find_line_end(int pos, bool start_pos_is_line_start,
+    int *lineEnd, int *nextLineStart) const;
+</pre></td>
+<td><pre>
+procedure Find_Line_End
+       (This                    : in     Text_Display;
+        Start                   : in     Natural;
+        Start_Pos_Is_Line_Start : in     Boolean;
+        Line_End                :    out Natural;
+        Next_Line_Start         :    out Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void find_wrap_range(const char *deletedText, int pos,
+    int nInserted, int nDeleted, int *modRangeStart,
+    int *modRangeEnd, int *linesInserted, int *linesDeleted);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int find_x(const char *s, int len, int style, int x) const;
+</pre></td>
+<td><pre>
+function Find_Character
+       (This  : in Text_Display;
+        Text  : in String;
+        Style : in Styles.Style_Index;
+        X     : in Integer)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int get_absolute_top_line_number() const;
+</pre></td>
+<td><pre>
+function Get_Absolute_Top_Line
+       (This : in Text_Display)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int handle_vline(int mode, int lineStart, int lineLen,
+    int leftChar, int rightChar, int topClip, int bottomClip,
+    int leftClip, int rightClip) const;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int longest_vline() const;
+</pre></td>
+<td><pre>
+function Get_Longest_Visible_Line
+       (This : in Text_Display)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void maintain_absolute_top_line_number(int state);
+</pre></td>
+<td><pre>
+procedure Maintain_Absolute_Top_Line
+       (This  : in out Text_Display;
+        State : in     Boolean := True);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int maintaining_absolute_top_line_number() const;
+</pre></td>
+<td><pre>
+function Maintaining_Absolute_Top_Line
+       (This : in Text_Display)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void measure_deleted_lines(int pos, int nDeleted);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+double measure_proportional_character(const char *s, int colNum,
+    int pos) const;
+</pre></td>
+<td><pre>
+function Measure_Character
+       (This  : in Text_Display;
+        Text  : in String;
+        X     : in Integer;
+        Index : in Positive)
+    return Long_Float;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int measure_vline(int visLineNum) const;
+</pre></td>
+<td><pre>
+function Measure_Visible_Line
+       (This : in Text_Display;
+        Line : in Natural)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void offset_line_starts(int newTopLineNum);
+</pre></td>
+<td><pre>
+procedure Offset_Line_Starts
+       (This    : in out Text_Display;
+        New_Top : in     Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int position_to_line(int pos, int *lineNum) const;
+</pre></td>
+<td><pre>
+function Position_To_Line
+       (This     : in Text_Display;
+        Position : in Natural)
+    return Natural;
+
+function Position_To_Line
+       (This      : in     Text_Display;
+        Position  : in     Natural;
+        Displayed :    out Boolean)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int position_to_linecol(int pos, int *lineNum, int *column) const;
+</pre></td>
+<td><pre>
+procedure Position_To_Line_Column
+       (This     : in     Text_Display;
+        Position : in     Natural;
+        Line     :    out Natural;
+        Column   :    out Natural);
+
+procedure Position_To_Line_Column
+       (This      : in     Text_Display;
+        Position  : in     Natural;
+        Line      :    out Natural;
+        Column    :    out Natural;
+        Displayed :    out Boolean);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void reset_absolute_top_line_number();
+</pre></td>
+<td><pre>
+procedure Reset_Absolute_Top_Line
+       (This : in out Text_Display);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int scroll_(int topLineNum, int horizOffset);
+</pre></td>
+<td><pre>
+function Scroll_To
+       (This  : in out Text_Display;
+        Line  : in     Natural;
+        Pixel : in     Natural := 0)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+double string_width(const char *string, int length,
+    int style) const;
+</pre></td>
+<td><pre>
+function Measure_String
+       (This  : in Text_Display;
+        Text  : in String;
+        Style : in Styles.Style_Index)
+    return Long_Float;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void update_h_scrollbar();
+</pre></td>
+<td><pre>
+procedure Update_Horizontal_Scrollbar
+       (This : in out Text_Display);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void update_line_starts(int pos, int charsInserted,
+    int charsDeleted, int linesInserted, int linesDeleted,
+    int *scrolled);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void update_v_scrollbar();
+</pre></td>
+<td><pre>
+procedure Update_Vertical_Scrollbar
+       (This : in out Text_Display);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int vline_length(int visLineNum) const;
+</pre></td>
+<td><pre>
+function Visible_Line_Length
+       (This : in Text_Display;
+        Line : in Natural)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int wrap_uses_character(int lineEndPos) const;
+</pre></td>
+<td><pre>
+function Wrap_Uses_Character
+       (This     : in Text_Display;
+        Line_End : in Natural)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void wrapped_line_counter(Fl_Text_Buffer *buf, int startPos,
+    int maxPos, int maxLines, bool startPosIsLineStart,
+    int styleBufOffset, int *retPos, int *retLines,
+    int *retLineStart, int *retLineEnd,
+    bool countLastLineMissingNewLine=true) const;
+</pre></td>
+<td><pre>
+procedure Count_Wrapped_Lines
+       (This                       : in     Text_Display;
+        Buffer                     : in     FLTK.Text_Buffers.Text_Buffer;
+        Start                      : in     Natural;
+        Max_Position, Max_Lines    : in     Natural;
+        Start_Pos_Is_Line_Start    : in     Boolean;
+        Style_Offset               : in     Natural;
+        Finish, Line_Count         :    out Natural;
+        End_Count_Line_Start       :    out Natural;
+        Last_Line_End              :    out Natural;
+        Count_Last_Missing_Newline : in     Boolean := True);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int xy_to_position(int x, int y, int PosType=CHARACTER_POS) const;
+</pre></td>
+<td><pre>
+function XY_To_Position
+       (This : in Text_Display;
+        X, Y : in Integer;
+        Kind : in Position_Kind := Character_Position)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void xy_to_rowcol(int x, int y, int *row, int *column,
+    int PosType=CHARACTER_POS) const;
+</pre></td>
+<td><pre>
+procedure XY_To_Row_Column
+       (This        : in     Text_Display;
+        X, Y        : in     Integer;
+        Row, Column :    out Natural;
+        Kind        : in     Position_Kind := Character_Position);
 </pre></td>
   </tr>
 

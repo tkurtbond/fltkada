@@ -392,9 +392,9 @@ procedure Resize
 int shortcut() const;
 </pre></td>
 <td><pre>
-function Get_Shortcut_Key
+function Get_Shortcut
        (This : in Input)
-    return Shortcut_Key;
+    return Key_Combo;
 </pre></td>
   </tr>
 
@@ -403,9 +403,9 @@ function Get_Shortcut_Key
 void shortcut(int s);
 </pre></td>
 <td><pre>
-procedure Set_Shortcut_Key
+procedure Set_Shortcut
        (This : in out Input;
-        To   : in     Shortcut_Key);
+        To   : in     Key_Combo);
 </pre></td>
   </tr>
 

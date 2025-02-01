@@ -26,8 +26,7 @@ package FLTK.Widgets.Groups.Text_Displays is
 
     type Cursor_Style is (Normal, Caret, Dim, Block, Heavy, Simple);
 
-
-    Bounds_Error : exception;
+    type Position_Kind is (Cursor_Position, Character_Position);
 
 
 
@@ -52,28 +51,61 @@ package FLTK.Widgets.Groups.Text_Displays is
 
     package Styles is
 
-        type Style_Entry is private;
+        type Style_Entry is record
+            Hue  : Color;
+            Font : Font_Kind;
+            Size : Font_Size;
+        end record;
+
         type Style_Index is new Character range 'A' .. '~';
+
         type Style_Array is array (Style_Index range <>) of Style_Entry;
 
         type Unfinished_Style_Callback is access procedure
                (Char    : in     Character;
                 Display : in out Text_Display);
 
-        function Item
-               (Tint : in Color;
-                Font : in Font_Kind;
-                Size : in Font_Size)
-            return Style_Entry;
+        type Style_Mask is record
+            Fill       : Boolean := False;
+            Secondary  : Boolean := False;
+            Primary    : Boolean := False;
+            Highlight  : Boolean := False;
+            Background : Boolean := False;
+            Text_Only  : Boolean := False;
+        end record;
+
+        Empty_Mask : constant Style_Mask;
+
+        type Style_Info is record
+            Mask  : Style_Mask;
+            Index : Style_Index;
+        end record;
 
     private
 
-        type Style_Entry is record
-            Attr : Interfaces.C.unsigned;
-            Col  : Interfaces.C.unsigned;
-            Font : Interfaces.C.int;
-            Size : Interfaces.C.int;
+        for Style_Entry use record
+            Hue  at 1 * Interfaces.C.unsigned'Size / System.Storage_Unit
+                range 0 .. Interfaces.C.unsigned'Size - 1;
+            Font at 2 * Interfaces.C.unsigned'Size / System.Storage_Unit
+                range 0 .. Interfaces.C.int'Size - 1;
+            Size at 3 * Interfaces.C.unsigned'Size / System.Storage_Unit
+                range 0 .. Interfaces.C.int'Size - 1;
         end record;
+
+        for Style_Entry'Size use Interfaces.C.unsigned'Size * 3 + Interfaces.C.int'Size;
+
+        for Style_Mask use record
+            Fill       at 0 range 0 .. 0;
+            Secondary  at 0 range 1 .. 1;
+            Primary    at 0 range 2 .. 2;
+            Highlight  at 0 range 3 .. 3;
+            Background at 0 range 4 .. 4;
+            Text_Only  at 0 range 5 .. 5;
+        end record;
+
+        for Style_Mask'Size use Interfaces.C.unsigned_char'Size;
+
+        Empty_Mask : constant Style_Mask := (others => False);
 
         pragma Convention (C, Style_Entry);
         pragma Convention (C, Style_Array);
@@ -91,6 +123,18 @@ package FLTK.Widgets.Groups.Text_Displays is
            (This : in out Text_Display;
             Buff : in out FLTK.Text_Buffers.Text_Buffer);
 
+    procedure Buffer_Modified_Callback
+           (This         : in out Text_Display;
+            Action       : in     FLTK.Text_Buffers.Modification;
+            Place        : in     FLTK.Text_Buffers.Position;
+            Length       : in     Natural;
+            Deleted_Text : in     String);
+
+    procedure Buffer_Predelete_Callback
+           (This   : in out Text_Display;
+            Place  : in     FLTK.Text_Buffers.Position;
+            Length : in     Natural);
+
 
 
 
@@ -103,8 +147,15 @@ package FLTK.Widgets.Groups.Text_Displays is
            (This       : in out Text_Display;
             Buff       : in out FLTK.Text_Buffers.Text_Buffer;
             Table      : in     Styles.Style_Array;
-            Unfinished : in     Styles.Style_Index;
+            Unfinished : in     Character;
             Callback   : in     Styles.Unfinished_Style_Callback);
+
+    function Position_Style
+           (This        : in Text_Display;
+            Line_Start  : in Natural;
+            Line_Length : in Natural;
+            Line_Index  : in Natural)
+        return Styles.Style_Info;
 
 
 
@@ -129,6 +180,56 @@ package FLTK.Widgets.Groups.Text_Displays is
             Pos      : in     Integer;
             X, Y     :    out Integer;
             Vert_Out :    out Boolean);
+
+    procedure Find_Line_End
+           (This                    : in     Text_Display;
+            Start                   : in     Natural;
+            Start_Pos_Is_Line_Start : in     Boolean;
+            Line_End                :    out Natural;
+            Next_Line_Start         :    out Natural);
+
+    function Find_Character
+           (This  : in Text_Display;
+            Text  : in String;
+            Style : in Styles.Style_Index;
+            X     : in Integer)
+        return Natural;
+
+    function Position_To_Line
+           (This     : in Text_Display;
+            Position : in Natural)
+        return Natural;
+
+    function Position_To_Line
+           (This      : in     Text_Display;
+            Position  : in     Natural;
+            Displayed :    out Boolean)
+        return Natural;
+
+    procedure Position_To_Line_Column
+           (This     : in     Text_Display;
+            Position : in     Natural;
+            Line     :    out Natural;
+            Column   :    out Natural);
+
+    procedure Position_To_Line_Column
+           (This      : in     Text_Display;
+            Position  : in     Natural;
+            Line      :    out Natural;
+            Column    :    out Natural;
+            Displayed :    out Boolean);
+
+    function XY_To_Position
+           (This : in Text_Display;
+            X, Y : in Integer;
+            Kind : in Position_Kind := Character_Position)
+        return Natural;
+
+    procedure XY_To_Row_Column
+           (This        : in     Text_Display;
+            X, Y        : in     Integer;
+            Row, Column :    out Natural;
+            Kind        : in     Position_Kind := Character_Position);
 
 
 
@@ -219,10 +320,40 @@ package FLTK.Widgets.Groups.Text_Displays is
     procedure Previous_Word
            (This : in out Text_Display);
 
+
+
+
     procedure Set_Wrap_Mode
            (This   : in out Text_Display;
             Mode   : in     Wrap_Mode;
             Margin : in     Natural := 0);
+
+    function Wrapped_Row
+           (This : in Text_Display;
+            Row  : in Natural)
+        return Natural;
+
+    function Wrapped_Column
+           (This        : in Text_Display;
+            Row, Column : in Natural)
+        return Natural;
+
+    function Wrap_Uses_Character
+           (This     : in Text_Display;
+            Line_End : in Natural)
+        return Boolean;
+
+    procedure Count_Wrapped_Lines
+           (This                       : in     Text_Display;
+            Buffer                     : in     FLTK.Text_Buffers.Text_Buffer;
+            Start                      : in     Natural;
+            Max_Position, Max_Lines    : in     Natural;
+            Start_Pos_Is_Line_Start    : in     Boolean;
+            Style_Offset               : in     Natural;
+            Finish, Line_Count         :    out Natural;
+            End_Count_Line_Start       :    out Natural;
+            Last_Line_End              :    out Natural;
+            Count_Last_Missing_Newline : in     Boolean := True);
 
 
 
@@ -257,6 +388,55 @@ package FLTK.Widgets.Groups.Text_Displays is
     function Rewind_Lines
            (This         : in Text_Display;
             Start, Lines : in Natural)
+        return Natural;
+
+    procedure Calculate_Last_Character
+           (This : in out Text_Display);
+
+    procedure Calculate_Line_Starts
+           (This          : in out Text_Display;
+            Start, Finish : in     Natural);
+
+    procedure Offset_Line_Starts
+           (This    : in out Text_Display;
+            New_Top : in     Natural);
+
+
+
+
+    procedure Redo_Absolute_Top_Line
+           (This      : in out Text_Display;
+            Old_First : in     Natural);
+
+    function Get_Absolute_Top_Line
+           (This : in Text_Display)
+        return Natural;
+
+    procedure Maintain_Absolute_Top_Line
+           (This  : in out Text_Display;
+            State : in     Boolean := True);
+
+    function Maintaining_Absolute_Top_Line
+           (This : in Text_Display)
+        return Boolean;
+
+    procedure Reset_Absolute_Top_Line
+           (This : in out Text_Display);
+
+
+
+
+    function Has_Empty_Visible_Lines
+           (This : in Text_Display)
+        return Boolean;
+
+    function Get_Longest_Visible_Line
+           (This : in Text_Display)
+        return Natural;
+
+    function Visible_Line_Length
+           (This : in Text_Display;
+            Line : in Natural)
         return Natural;
 
 
@@ -310,27 +490,79 @@ package FLTK.Widgets.Groups.Text_Displays is
            (This  : in out Text_Display;
             Width : in     Natural);
 
+    function Get_Linenumber_Format
+           (This : in Text_Display)
+        return String;
+
+    procedure Set_Linenumber_Format
+           (This  : in out Text_Display;
+            Value : in     String);
+
+
+
+
+    function Measure_Character
+           (This  : in Text_Display;
+            Text  : in String;
+            X     : in Integer;
+            Index : in Positive)
+        return Long_Float;
+
+    function Measure_Visible_Line
+           (This : in Text_Display;
+            Line : in Natural)
+        return Natural;
+
+    function Measure_String
+           (This  : in Text_Display;
+            Text  : in String;
+            Style : in Styles.Style_Index)
+        return Long_Float;
+
 
 
 
     procedure Move_Down
            (This : in out Text_Display);
 
+    function Move_Down
+           (This : in out Text_Display)
+        return Boolean;
+
     procedure Move_Left
            (This : in out Text_Display);
+
+    function Move_Left
+           (This : in out Text_Display)
+        return Boolean;
 
     procedure Move_Right
            (This : in out Text_Display);
 
+    function Move_Right
+           (This : in out Text_Display)
+        return Boolean;
+
     procedure Move_Up
            (This : in out Text_Display);
+
+    function Move_Up
+           (This : in out Text_Display)
+        return Boolean;
 
 
 
 
     procedure Scroll_To
-           (This : in out Text_Display;
-            Line : in     Natural);
+           (This   : in out Text_Display;
+            Line   : in     Natural;
+            Column : in     Natural := 0);
+
+    function Scroll_To
+           (This  : in out Text_Display;
+            Line  : in     Natural;
+            Pixel : in     Natural := 0)
+        return Boolean;
 
     function Get_Scrollbar_Alignment
            (This : in Text_Display)
@@ -348,8 +580,40 @@ package FLTK.Widgets.Groups.Text_Displays is
            (This  : in out Text_Display;
             Width : in     Natural);
 
+    procedure Update_Horizontal_Scrollbar
+           (This : in out Text_Display);
+
+    procedure Update_Vertical_Scrollbar
+           (This : in out Text_Display);
 
 
+
+
+    function Get_Shortcut
+           (This : in Text_Display)
+        return Key_Combo;
+
+    procedure Set_Shortcut
+           (This  : in out Text_Display;
+            Value : in     Key_Combo);
+
+
+
+
+    procedure Resize
+           (This       : in out Text_Display;
+            X, Y, W, H : in     Integer);
+
+
+
+
+    procedure Clear_Rect
+           (This       : in out Text_Display;
+            Style      : in     Styles.Style_Info;
+            X, Y, W, H : in     Integer);
+
+    procedure Display_Insert
+           (This : in out Text_Display);
 
     procedure Redisplay_Range
            (This          : in out Text_Display;
@@ -357,6 +621,36 @@ package FLTK.Widgets.Groups.Text_Displays is
 
     procedure Draw
            (This : in out Text_Display);
+
+    procedure Draw_Cursor
+           (This : in out Text_Display;
+            X, Y : in     Integer);
+
+    procedure Draw_Line_Numbers
+           (This  : in out Text_Display;
+            Clear : in     Boolean :=  False);
+
+    procedure Draw_Range
+           (This          : in out Text_Display;
+            Start, Finish : in     Natural);
+
+    procedure Draw_String
+           (This      : in out Text_Display;
+            Style     : in     Styles.Style_Info;
+            X, Y      : in     Integer;
+            Right     : in     Integer;
+            Text      : in     String;
+            Num_Chars : in     Natural);
+
+    procedure Draw_Text
+           (This       : in out Text_Display;
+            X, Y, W, H : in     Integer);
+
+    procedure Draw_Visible_Line
+           (This                  : in out Text_Display;
+            Line                  : in     Natural;
+            Left_Clip, Right_Clip : in     Integer;
+            Left_Char, Right_Char : in     Natural);
 
     function Handle
            (This  : in out Text_Display;
@@ -409,6 +703,7 @@ private
 
     pragma Inline (Get_Buffer);
     pragma Inline (Set_Buffer);
+    pragma Inline (Buffer_Predelete_Callback);
 
     pragma Inline (Highlight_Data);
 
@@ -416,6 +711,12 @@ private
     pragma Inline (X_To_Col);
     pragma Inline (In_Selection);
     pragma Inline (Position_To_XY);
+    pragma Inline (Find_Line_End);
+    pragma Inline (Find_Character);
+    pragma Inline (Position_To_Line);
+    pragma Inline (Position_To_Line_Column);
+    pragma Inline (XY_To_Position);
+    pragma Inline (XY_To_Row_Column);
 
     pragma Inline (Get_Cursor_Color);
     pragma Inline (Set_Cursor_Color);
@@ -440,13 +741,31 @@ private
     pragma Inline (Word_End);
     pragma Inline (Next_Word);
     pragma Inline (Previous_Word);
+
     pragma Inline (Set_Wrap_Mode);
+    pragma Inline (Wrapped_Row);
+    pragma Inline (Wrapped_Column);
+    pragma Inline (Wrap_Uses_Character);
+    pragma Inline (Count_Wrapped_Lines);
 
     pragma Inline (Line_Start);
     pragma Inline (Line_End);
     pragma Inline (Count_Lines);
     pragma Inline (Skip_Lines);
     pragma Inline (Rewind_Lines);
+    pragma Inline (Calculate_Last_Character);
+    pragma Inline (Calculate_Line_Starts);
+    pragma Inline (Offset_Line_Starts);
+
+    pragma Inline (Redo_Absolute_Top_Line);
+    pragma Inline (Get_Absolute_Top_Line);
+    pragma Inline (Maintain_Absolute_Top_Line);
+    pragma Inline (Maintaining_Absolute_Top_Line);
+    pragma Inline (Reset_Absolute_Top_Line);
+
+    pragma Inline (Has_Empty_Visible_Lines);
+    pragma Inline (Get_Longest_Visible_Line);
+    pragma Inline (Visible_Line_Length);
 
     pragma Inline (Get_Linenumber_Alignment);
     pragma Inline (Set_Linenumber_Alignment);
@@ -460,6 +779,12 @@ private
     pragma Inline (Set_Linenumber_Size);
     pragma Inline (Get_Linenumber_Width);
     pragma Inline (Set_Linenumber_Width);
+    pragma Inline (Get_Linenumber_Format);
+    pragma Inline (Set_Linenumber_Format);
+
+    pragma Inline (Measure_Character);
+    pragma Inline (Measure_Visible_Line);
+    pragma Inline (Measure_String);
 
     pragma Inline (Move_Down);
     pragma Inline (Move_Left);
@@ -471,9 +796,24 @@ private
     pragma Inline (Set_Scrollbar_Alignment);
     pragma Inline (Get_Scrollbar_Width);
     pragma Inline (Set_Scrollbar_Width);
+    pragma Inline (Update_Horizontal_Scrollbar);
+    pragma Inline (Update_Vertical_Scrollbar);
 
+    pragma Inline (Get_Shortcut);
+    pragma Inline (Set_Shortcut);
+
+    pragma Inline (Resize);
+
+    pragma Inline (Clear_Rect);
+    pragma Inline (Display_Insert);
     pragma Inline (Redisplay_Range);
     pragma Inline (Draw);
+    pragma Inline (Draw_Cursor);
+    pragma Inline (Draw_Line_Numbers);
+    pragma Inline (Draw_Range);
+    pragma Inline (Draw_String);
+    pragma Inline (Draw_Text);
+    pragma Inline (Draw_Visible_Line);
     pragma Inline (Handle);
 
 

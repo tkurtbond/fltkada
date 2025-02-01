@@ -6,15 +6,25 @@
 
 with
 
-    Interfaces.C,
+    Ada.Assertions,
+    Ada.Characters.Latin_1,
+    Ada.Unchecked_Conversion,
+    Interfaces.C.Strings,
     FLTK.Text_Buffers;
 
 use type
 
-    Interfaces.C.int;
+    Interfaces.C.int,
+    Interfaces.C.Strings.chars_ptr;
 
 
 package body FLTK.Widgets.Groups.Text_Displays is
+
+
+    package Chk   renames Ada.Assertions;
+    package Latin renames Ada.Characters.Latin_1;
+
+
 
 
     ------------------------
@@ -47,6 +57,19 @@ package body FLTK.Widgets.Groups.Text_Displays is
     pragma Import (C, fl_text_display_set_buffer, "fl_text_display_set_buffer");
     pragma Inline (fl_text_display_set_buffer);
 
+    procedure fl_text_display_buffer_modified_cb
+           (P, I, D, R : in Interfaces.C.int;
+            T          : in Interfaces.C.Strings.chars_ptr;
+            TD         : in Storage.Integer_Address);
+    pragma Import (C, fl_text_display_buffer_modified_cb, "fl_text_display_buffer_modified_cb");
+    pragma Inline (fl_text_display_buffer_modified_cb);
+
+    procedure fl_text_display_buffer_predelete_cb
+           (P, D : in Interfaces.C.int;
+            TD   : in Storage.Integer_Address);
+    pragma Import (C, fl_text_display_buffer_predelete_cb, "fl_text_display_buffer_predelete_cb");
+    pragma Inline (fl_text_display_buffer_predelete_cb);
+
 
 
 
@@ -59,10 +82,17 @@ package body FLTK.Widgets.Groups.Text_Displays is
     procedure fl_text_display_highlight_data2
            (TD, TB, ST : in Storage.Integer_Address;
             L          : in Interfaces.C.int;
-            C          : in Interfaces.C.unsigned;
+            C          : in Interfaces.C.char;
             B, A       : in Storage.Integer_Address);
     pragma Import (C, fl_text_display_highlight_data2, "fl_text_display_highlight_data2");
     pragma Inline (fl_text_display_highlight_data2);
+
+    function fl_text_display_position_style
+           (TD      : in Storage.Integer_Address;
+            S, L, I : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_display_position_style, "fl_text_display_position_style");
+    pragma Inline (fl_text_display_position_style);
 
 
 
@@ -95,6 +125,52 @@ package body FLTK.Widgets.Groups.Text_Displays is
         return Interfaces.C.int;
     pragma Import (C, fl_text_display_position_to_xy, "fl_text_display_position_to_xy");
     pragma Inline (fl_text_display_position_to_xy);
+
+    procedure fl_text_display_find_line_end
+           (TD        : in     Storage.Integer_Address;
+            SP, SPILS : in     Interfaces.C.int;
+            LE, NLS   :    out Interfaces.C.int);
+    pragma Import (C, fl_text_display_find_line_end, "fl_text_display_find_line_end");
+    pragma Inline (fl_text_display_find_line_end);
+
+    function fl_text_display_find_x
+           (TD      : in Storage.Integer_Address;
+            T       : in Interfaces.C.char_array;
+            L, S, X : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_display_find_x, "fl_text_display_find_x");
+    pragma Inline (fl_text_display_find_x);
+
+    function fl_text_display_position_to_line
+           (TD : in     Storage.Integer_Address;
+            P  : in     Interfaces.C.int;
+            LN :    out Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_display_position_to_line, "fl_text_display_position_to_line");
+    pragma Inline (fl_text_display_position_to_line);
+
+    function fl_text_display_position_to_linecol
+           (TD    : in     Storage.Integer_Address;
+            P     : in     Interfaces.C.int;
+            LN, C :    out Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_display_position_to_linecol, "fl_text_display_position_to_linecol");
+    pragma Inline (fl_text_display_position_to_linecol);
+
+    function fl_text_display_xy_to_position
+           (TD      : in Storage.Integer_Address;
+            X, Y, K : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_display_xy_to_position, "fl_text_display_xy_to_position");
+    pragma Inline (fl_text_display_xy_to_position);
+
+    procedure fl_text_display_xy_to_rowcol
+           (TD   : in     Storage.Integer_Address;
+            X, Y : in     Interfaces.C.int;
+            R, C :    out Interfaces.C.int;
+            K    : in     Interfaces.C.int);
+    pragma Import (C, fl_text_display_xy_to_rowcol, "fl_text_display_xy_to_rowcol");
+    pragma Inline (fl_text_display_xy_to_rowcol);
 
 
 
@@ -225,11 +301,43 @@ package body FLTK.Widgets.Groups.Text_Displays is
     pragma Import (C, fl_text_display_previous_word, "fl_text_display_previous_word");
     pragma Inline (fl_text_display_previous_word);
 
+
+
+
     procedure fl_text_display_wrap_mode
            (TD    : in Storage.Integer_Address;
             W, M  : in Interfaces.C.int);
     pragma Import (C, fl_text_display_wrap_mode, "fl_text_display_wrap_mode");
     pragma Inline (fl_text_display_wrap_mode);
+
+    function fl_text_display_wrapped_row
+           (TD : in Storage.Integer_Address;
+            R  : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_display_wrapped_row, "fl_text_display_wrapped_row");
+    pragma Inline (fl_text_display_wrapped_row);
+
+    function fl_text_display_wrapped_column
+           (TD   : in Storage.Integer_Address;
+            R, C : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_display_wrapped_column, "fl_text_display_wrapped_column");
+    pragma Inline (fl_text_display_wrapped_column);
+
+    function fl_text_display_wrap_uses_character
+           (TD : in Storage.Integer_Address;
+            L  : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_display_wrap_uses_character, "fl_text_display_wrap_uses_character");
+    pragma Inline (fl_text_display_wrap_uses_character);
+
+    procedure fl_text_display_wrapped_line_counter
+           (TD, Buf                : in     Storage.Integer_Address;
+            SP, MP, ML, SPILS, SBO : in     Interfaces.C.int;
+            RP, RL, RLS, RLE       :    out Interfaces.C.int;
+            CLLMNL                 : in     Interfaces.C.int);
+    pragma Import (C, fl_text_display_wrapped_line_counter, "fl_text_display_wrapped_line_counter");
+    pragma Inline (fl_text_display_wrapped_line_counter);
 
 
 
@@ -268,6 +376,82 @@ package body FLTK.Widgets.Groups.Text_Displays is
         return Interfaces.C.int;
     pragma Import (C, fl_text_display_rewind_lines, "fl_text_display_rewind_lines");
     pragma Inline (fl_text_display_rewind_lines);
+
+    procedure fl_text_display_calc_last_char
+           (TD : in Storage.Integer_Address);
+    pragma Import (C, fl_text_display_calc_last_char, "fl_text_display_calc_last_char");
+    pragma Inline (fl_text_display_calc_last_char);
+
+    procedure fl_text_display_calc_line_starts
+           (TD   : in Storage.Integer_Address;
+            S, F : in Interfaces.C.int);
+    pragma Import (C, fl_text_display_calc_line_starts, "fl_text_display_calc_line_starts");
+    pragma Inline (fl_text_display_calc_line_starts);
+
+    procedure fl_text_display_offset_line_starts
+           (TD : in Storage.Integer_Address;
+            T  : in Interfaces.C.int);
+    pragma Import (C, fl_text_display_offset_line_starts, "fl_text_display_offset_line_starts");
+    pragma Inline (fl_text_display_offset_line_starts);
+
+
+
+
+    procedure fl_text_display_absolute_top_line_number
+           (TD : in Storage.Integer_Address;
+            C  : in Interfaces.C.int);
+    pragma Import (C, fl_text_display_absolute_top_line_number,
+        "fl_text_display_absolute_top_line_number");
+    pragma Inline (fl_text_display_absolute_top_line_number);
+
+    function fl_text_display_get_absolute_top_line_number
+           (TD : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_display_get_absolute_top_line_number,
+        "fl_text_display_get_absolute_top_line_number");
+    pragma Inline (fl_text_display_get_absolute_top_line_number);
+
+    procedure fl_text_display_maintain_absolute_top_line_number
+           (TD : in Storage.Integer_Address;
+            S  : in Interfaces.C.int);
+    pragma Import (C, fl_text_display_maintain_absolute_top_line_number,
+        "fl_text_display_maintain_absolute_top_line_number");
+    pragma Inline (fl_text_display_maintain_absolute_top_line_number);
+
+    function fl_text_display_maintaining_absolute_top_line_number
+           (TD : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_display_maintaining_absolute_top_line_number,
+        "fl_text_display_maintaining_absolute_top_line_number");
+    pragma Inline (fl_text_display_maintaining_absolute_top_line_number);
+
+    procedure fl_text_display_reset_absolute_top_line_number
+           (TD : in Storage.Integer_Address);
+    pragma Import (C, fl_text_display_reset_absolute_top_line_number,
+        "fl_text_display_reset_absolute_top_line_number");
+    pragma Inline (fl_text_display_reset_absolute_top_line_number);
+
+
+
+
+    function fl_text_display_empty_vlines
+           (TD : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_display_empty_vlines, "fl_text_display_empty_vlines");
+    pragma Inline (fl_text_display_empty_vlines);
+
+    function fl_text_display_longest_vline
+           (TD : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_display_longest_vline, "fl_text_display_longest_vline");
+    pragma Inline (fl_text_display_longest_vline);
+
+    function fl_text_display_vline_length
+           (TD : in Storage.Integer_Address;
+            L  : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_display_vline_length, "fl_text_display_vline_length");
+    pragma Inline (fl_text_display_vline_length);
 
 
 
@@ -356,6 +540,47 @@ package body FLTK.Widgets.Groups.Text_Displays is
         "fl_text_display_set_linenumber_width");
     pragma Inline (fl_text_display_set_linenumber_width);
 
+    function fl_text_display_get_linenumber_format
+           (TD : in Storage.Integer_Address)
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_text_display_get_linenumber_format,
+        "fl_text_display_get_linenumber_format");
+    pragma Inline (fl_text_display_get_linenumber_format);
+
+    procedure fl_text_display_set_linenumber_format
+           (TD : in Storage.Integer_Address;
+            V  : in Interfaces.C.char_array);
+    pragma Import (C, fl_text_display_set_linenumber_format,
+        "fl_text_display_set_linenumber_format");
+    pragma Inline (fl_text_display_set_linenumber_format);
+
+
+
+
+    function fl_text_display_measure_proportional_character
+           (TD   : in Storage.Integer_Address;
+            T    : in Interfaces.C.char_array;
+            X, P : in Interfaces.C.int)
+        return Interfaces.C.double;
+    pragma Import (C, fl_text_display_measure_proportional_character,
+        "fl_text_display_measure_proportional_character");
+    pragma Inline (fl_text_display_measure_proportional_character);
+
+    function fl_text_display_measure_vline
+           (TD : in Storage.Integer_Address;
+            L  : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_display_measure_vline, "fl_text_display_measure_vline");
+    pragma Inline (fl_text_display_measure_vline);
+
+    function fl_text_display_string_width
+           (TD   : in Storage.Integer_Address;
+            T    : in Interfaces.C.char_array;
+            L, S : in Interfaces.C.int)
+        return Interfaces.C.double;
+    pragma Import (C, fl_text_display_string_width, "fl_text_display_string_width");
+    pragma Inline (fl_text_display_string_width);
+
 
 
 
@@ -387,10 +612,17 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
     procedure fl_text_display_scroll
-           (TD : in Storage.Integer_Address;
-            L  : in Interfaces.C.int);
+           (TD   : in Storage.Integer_Address;
+            L, C : in Interfaces.C.int);
     pragma Import (C, fl_text_display_scroll, "fl_text_display_scroll");
     pragma Inline (fl_text_display_scroll);
+
+    function fl_text_display_scroll2
+           (TD   : in Storage.Integer_Address;
+            L, P : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_display_scroll2, "fl_text_display_scroll2");
+    pragma Inline (fl_text_display_scroll2);
 
     function fl_text_display_get_scrollbar_align
            (TD : in Storage.Integer_Address)
@@ -416,8 +648,53 @@ package body FLTK.Widgets.Groups.Text_Displays is
     pragma Import (C, fl_text_display_set_scrollbar_width, "fl_text_display_set_scrollbar_width");
     pragma Inline (fl_text_display_set_scrollbar_width);
 
+    procedure fl_text_display_update_h_scrollbar
+           (TD : in Storage.Integer_Address);
+    pragma Import (C, fl_text_display_update_h_scrollbar, "fl_text_display_update_h_scrollbar");
+    pragma Inline (fl_text_display_update_h_scrollbar);
+
+    procedure fl_text_display_update_v_scrollbar
+           (TD : in Storage.Integer_Address);
+    pragma Import (C, fl_text_display_update_v_scrollbar, "fl_text_display_update_v_scrollbar");
+    pragma Inline (fl_text_display_update_v_scrollbar);
 
 
+
+
+    function fl_text_display_get_shortcut
+           (TD : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_display_get_shortcut, "fl_text_display_get_shortcut");
+    pragma Inline (fl_text_display_get_shortcut);
+
+    procedure fl_text_display_set_shortcut
+           (TD : in Storage.Integer_Address;
+            V  : in Interfaces.C.int);
+    pragma Import (C, fl_text_display_set_shortcut, "fl_text_display_set_shortcut");
+    pragma Inline (fl_text_display_set_shortcut);
+
+
+
+
+    procedure fl_text_display_resize
+           (TD         : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int);
+    pragma Import (C, fl_text_display_resize, "fl_text_display_resize");
+    pragma Inline (fl_text_display_resize);
+
+
+
+
+    procedure fl_text_display_clear_rect
+           (TD            : in Storage.Integer_Address;
+            S, X, Y, W, H : in Interfaces.C.int);
+    pragma Import (C, fl_text_display_clear_rect, "fl_text_display_clear_rect");
+    pragma Inline (fl_text_display_clear_rect);
+
+    procedure fl_text_display_display_insert
+           (TD : in Storage.Integer_Address);
+    pragma Import (C, fl_text_display_display_insert, "fl_text_display_display_insert");
+    pragma Inline (fl_text_display_display_insert);
 
     procedure fl_text_display_redisplay_range
            (TD   : in Storage.Integer_Address;
@@ -430,12 +707,81 @@ package body FLTK.Widgets.Groups.Text_Displays is
     pragma Import (C, fl_text_display_draw, "fl_text_display_draw");
     pragma Inline (fl_text_display_draw);
 
+    procedure fl_text_display_draw_cursor
+           (TD   : in Storage.Integer_Address;
+            X, Y : in Interfaces.C.int);
+    pragma Import (C, fl_text_display_draw_cursor, "fl_text_display_draw_cursor");
+    pragma Inline (fl_text_display_draw_cursor);
+
+    procedure fl_text_display_draw_line_numbers
+           (TD : in Storage.Integer_Address;
+            C  : in Interfaces.C.int);
+    pragma Import (C, fl_text_display_draw_line_numbers, "fl_text_display_draw_line_numbers");
+    pragma Inline (fl_text_display_draw_line_numbers);
+
+    procedure fl_text_display_draw_range
+           (TD   : in Storage.Integer_Address;
+            S, F : in Interfaces.C.int);
+    pragma Import (C, fl_text_display_draw_range, "fl_text_display_draw_range");
+    pragma Inline (fl_text_display_draw_range);
+
+    procedure fl_text_display_draw_string
+           (TD         : in Storage.Integer_Address;
+            S, X, Y, R : in Interfaces.C.int;
+            T          : in Interfaces.C.char_array;
+            N          : in Interfaces.C.int);
+    pragma Import (C, fl_text_display_draw_string, "fl_text_display_draw_string");
+    pragma Inline (fl_text_display_draw_string);
+
+    procedure fl_text_display_draw_text
+           (TD         : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int);
+    pragma Import (C, fl_text_display_draw_text, "fl_text_display_draw_text");
+    pragma Inline (fl_text_display_draw_text);
+
+    procedure fl_text_display_draw_vline
+           (TD                 : in Storage.Integer_Address;
+            N, L, R, LC, RC : in Interfaces.C.int);
+    pragma Import (C, fl_text_display_draw_vline, "fl_text_display_draw_vline");
+    pragma Inline (fl_text_display_draw_vline);
+
     function fl_text_display_handle
            (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_text_display_handle, "fl_text_display_handle");
     pragma Inline (fl_text_display_handle);
+
+
+
+
+    ------------------------
+    --  Internal Utility  --
+    ------------------------
+
+    function UChar_To_Mask is new Ada.Unchecked_Conversion
+        (Interfaces.C.unsigned_char, Styles.Style_Mask);
+
+    function Cint_To_Style_Info
+           (Value : in Interfaces.C.int)
+        return Styles.Style_Info is
+    begin
+        return
+           (Mask  => UChar_To_Mask (Interfaces.C.unsigned_char ((Value / 256) mod 256)),
+            Index => Styles.Style_Index (Character'Val (Value mod 256)));
+    end Cint_To_Style_Info;
+
+
+    function Mask_To_UChar is new Ada.Unchecked_Conversion
+        (Styles.Style_Mask, Interfaces.C.unsigned_char);
+
+    function Style_Info_To_Cint
+           (Value : in Styles.Style_Info)
+        return Interfaces.C.int is
+    begin
+        return Interfaces.C.int (Mask_To_UChar (Value.Mask)) * 256 +
+            Character'Pos (Character (Value.Index));
+    end Style_Info_To_Cint;
 
 
 
@@ -545,33 +891,6 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
-    ----------------------
-    --  Child Packages  --
-    ----------------------
-
-    package body Styles is
-
-        function Item
-               (Tint : in Color;
-                Font : in Font_Kind;
-                Size : in Font_Size)
-            return Style_Entry is
-        begin
-            return This : Style_Entry do
-                This.Attr := 0;
-                This.Col  := Interfaces.C.unsigned (Tint);
-                This.Font := Font_Kind'Pos (Font);
-                This.Size := Interfaces.C.int (Size);
-            end return;
-        end Item;
-
-        pragma Inline (Item);
-
-    end Styles;
-
-
-
-
     -----------------------
     --  API Subprograms  --
     -----------------------
@@ -598,6 +917,47 @@ package body FLTK.Widgets.Groups.Text_Displays is
     end Set_Buffer;
 
 
+    procedure Buffer_Modified_Callback
+           (This         : in out Text_Display;
+            Action       : in     FLTK.Text_Buffers.Modification;
+            Place        : in     FLTK.Text_Buffers.Position;
+            Length       : in     Natural;
+            Deleted_Text : in     String)
+    is
+        Bytes_Inserted, Bytes_Deleted, Bytes_Restyled : Interfaces.C.int := 0;
+        C_Text : aliased Interfaces.C.char_array := Interfaces.C.To_C (Deleted_Text);
+        use type FLTK.Text_Buffers.Modification;
+    begin
+        case Action is
+        when FLTK.Text_Buffers.Insert  => Bytes_Inserted := Interfaces.C.int (Length);
+        when FLTK.Text_Buffers.Restyle => Bytes_Restyled := Interfaces.C.int (Length);
+        when FLTK.Text_Buffers.Delete  => Bytes_Deleted  := Interfaces.C.int (Length);
+        when FLTK.Text_Buffers.None => null;
+        end case;
+        fl_text_display_buffer_modified_cb
+           (Interfaces.C.int (Place),
+            Bytes_Inserted,
+            Bytes_Deleted,
+            Bytes_Restyled,
+            (if Action = FLTK.Text_Buffers.Delete
+             then Interfaces.C.Strings.To_Chars_Ptr (C_Text'Unchecked_Access)
+             else Interfaces.C.Strings.Null_Ptr),
+            This.Void_Ptr);
+    end Buffer_Modified_Callback;
+
+
+    procedure Buffer_Predelete_Callback
+           (This   : in out Text_Display;
+            Place  : in     FLTK.Text_Buffers.Position;
+            Length : in     Natural) is
+    begin
+        fl_text_display_buffer_predelete_cb
+           (Interfaces.C.int (Place),
+            Interfaces.C.int (Length),
+            This.Void_Ptr);
+    end Buffer_Predelete_Callback;
+
+
 
 
     procedure Highlight_Data
@@ -608,7 +968,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
         fl_text_display_highlight_data
            (This.Void_Ptr,
             Wrapper (Buff).Void_Ptr,
-            Storage.To_Integer (Table'Address),
+            Storage.To_Integer (Table (Table'First)'Address),
             Table'Length);
     end Highlight_Data;
 
@@ -617,19 +977,40 @@ package body FLTK.Widgets.Groups.Text_Displays is
            (This       : in out Text_Display;
             Buff       : in out FLTK.Text_Buffers.Text_Buffer;
             Table      : in     Styles.Style_Array;
-            Unfinished : in     Styles.Style_Index;
+            Unfinished : in     Character;
             Callback   : in     Styles.Unfinished_Style_Callback) is
     begin
         This.Style_Callback := Callback;
         fl_text_display_highlight_data2
            (This.Void_Ptr,
             Wrapper (Buff).Void_Ptr,
-            Storage.To_Integer (Table'Address),
+            Storage.To_Integer (Table (Table'First)'Address),
             Table'Length,
-            Character'Pos (Character (Unfinished)),
+            Interfaces.C.To_C (Unfinished),
             Storage.To_Integer (Style_Hook'Address),
             Storage.To_Integer (This'Address));
     end Highlight_Data;
+
+
+    function Position_Style
+           (This        : in Text_Display;
+            Line_Start  : in Natural;
+            Line_Length : in Natural;
+            Line_Index  : in Natural)
+        return Styles.Style_Info
+    is
+        Result : Interfaces.C.int := fl_text_display_position_style
+           (This.Void_Ptr,
+            Interfaces.C.int (Line_Start),
+            Interfaces.C.int (Line_Length),
+            Interfaces.C.int (Line_Index));
+    begin
+        return Cint_To_Style_Info (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::position_style returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Position_Style;
 
 
 
@@ -676,6 +1057,198 @@ package body FLTK.Widgets.Groups.Text_Displays is
                 Interfaces.C.int (X),
                 Interfaces.C.int (Y)) /= 0;
     end Position_To_XY;
+
+
+    procedure Find_Line_End
+           (This                    : in     Text_Display;
+            Start                   : in     Natural;
+            Start_Pos_Is_Line_Start : in     Boolean;
+            Line_End                :    out Natural;
+            Next_Line_Start         :    out Natural)
+    is
+        C_Line_End, C_Next_Line_Start : Interfaces.C.int;
+    begin
+        fl_text_display_find_line_end
+           (This.Void_Ptr,
+            Interfaces.C.int (Start),
+            Boolean'Pos (Start_Pos_Is_Line_Start),
+            C_Line_End, C_Next_Line_Start);
+        Line_End := Natural (C_Line_End);
+        Next_Line_Start := Natural (C_Next_Line_Start);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::find_line_end returned unexpected int values of" & Latin.LF &
+        Latin.HT & "lineEnd = " & Interfaces.C.int'Image (C_Line_End) & Latin.LF &
+        Latin.HT & "nextLineStart = " & Interfaces.C.int'Image (C_Next_Line_Start);
+    end Find_Line_End;
+
+
+    function Find_Character
+           (This  : in Text_Display;
+            Text  : in String;
+            Style : in Styles.Style_Index;
+            X     : in Integer)
+        return Natural
+    is
+        Result : Interfaces.C.int := fl_text_display_find_x
+           (This.Void_Ptr,
+            Interfaces.C.To_C (Text),
+            Text'Length,
+            Character'Pos (Character (Style)),
+            Interfaces.C.int (X));
+    begin
+        return Natural (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::find_x returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Find_Character;
+
+
+    function Position_To_Line
+           (This     : in Text_Display;
+            Position : in Natural)
+        return Natural
+    is
+        C_Line_Num : Interfaces.C.int;
+        Result : Interfaces.C.int := fl_text_display_position_to_line
+           (This.Void_Ptr,
+            Interfaces.C.int (Position),
+            C_Line_Num);
+    begin
+        pragma Assert (Result >= 0);
+        return Natural (C_Line_Num);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::position_to_line returned unexpected int value of" & Latin.LF &
+        Latin.HT & "lineNum = " & Interfaces.C.int'Image (C_Line_Num);
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::position_to_line returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Position_To_Line;
+
+
+    function Position_To_Line
+           (This      : in     Text_Display;
+            Position  : in     Natural;
+            Displayed :    out Boolean)
+        return Natural
+    is
+        C_Line_Num : Interfaces.C.int;
+        Result : Interfaces.C.int := fl_text_display_position_to_line
+           (This.Void_Ptr,
+            Interfaces.C.int (Position),
+            C_Line_Num);
+    begin
+        pragma Assert (Result >= 0);
+        Displayed := Result /= 0;
+        return Natural (C_Line_Num);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::position_to_line returned unexpected int value of" & Latin.LF &
+        Latin.HT & "lineNum = " & Interfaces.C.int'Image (C_Line_Num);
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::position_to_line returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Position_To_Line;
+
+
+    procedure Position_To_Line_Column
+           (This     : in     Text_Display;
+            Position : in     Natural;
+            Line     :    out Natural;
+            Column   :    out Natural)
+    is
+        C_Line_Num, C_Column : Interfaces.C.int;
+        Result : Interfaces.C.int := fl_text_display_position_to_linecol
+           (This.Void_Ptr,
+            Interfaces.C.int (Position),
+            C_Line_Num, C_Column);
+    begin
+        Line := Natural (C_Line_Num);
+        Column := Natural (C_Column);
+        pragma Assert (Result >= 0);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::position_to_linecol returned unexpected int values of" & Latin.LF &
+        Latin.HT & "lineNum = " & Interfaces.C.int'Image (C_Line_Num) & Latin.LF &
+        Latin.HT & "column = " & Interfaces.C.int'Image (C_Column);
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::position_to_linecol returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Position_To_Line_Column;
+
+
+    procedure Position_To_Line_Column
+           (This      : in     Text_Display;
+            Position  : in     Natural;
+            Line      :    out Natural;
+            Column    :    out Natural;
+            Displayed :    out Boolean)
+    is
+        C_Line_Num, C_Column : Interfaces.C.int;
+        Result : Interfaces.C.int := fl_text_display_position_to_linecol
+           (This.Void_Ptr,
+            Interfaces.C.int (Position),
+            C_Line_Num, C_Column);
+    begin
+        Line := Natural (C_Line_Num);
+        Column := Natural (C_Column);
+        pragma Assert (Result >= 0);
+        Displayed := Result /= 0;
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::position_to_linecol returned unexpected int values of" & Latin.LF &
+        Latin.HT & "lineNum = " & Interfaces.C.int'Image (C_Line_Num) & Latin.LF &
+        Latin.HT & "column = " & Interfaces.C.int'Image (C_Column);
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::position_to_linecol returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Position_To_Line_Column;
+
+
+    function XY_To_Position
+           (This : in Text_Display;
+            X, Y : in Integer;
+            Kind : in Position_Kind := Character_Position)
+        return Natural
+    is
+        Result : Interfaces.C.int := fl_text_display_xy_to_position
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Position_Kind'Pos (Kind));
+    begin
+        return Natural (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::xy_to_position returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end XY_To_Position;
+
+
+    procedure XY_To_Row_Column
+           (This        : in     Text_Display;
+            X, Y        : in     Integer;
+            Row, Column :    out Natural;
+            Kind        : in     Position_Kind := Character_Position)
+    is
+        C_Row, C_Column : Interfaces.C.int;
+    begin
+        fl_text_display_xy_to_rowcol
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            C_Row, C_Column,
+            Position_Kind'Pos (Kind));
+        Row := Natural (C_Row);
+        Column := Natural (C_Column);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::xy_to_rowcol returned unexpected int values of" & Latin.LF &
+        Latin.HT & "row = " & Interfaces.C.int'Image (C_Row) & Latin.LF &
+        Latin.HT & "column = " & Interfaces.C.int'Image (C_Column);
+    end XY_To_Row_Column;
 
 
 
@@ -847,6 +1420,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
     end Previous_Word;
 
 
+
+
     procedure Set_Wrap_Mode
            (This   : in out Text_Display;
             Mode   : in     Wrap_Mode;
@@ -857,6 +1432,99 @@ package body FLTK.Widgets.Groups.Text_Displays is
                 Wrap_Mode'Pos (Mode),
                 Interfaces.C.int (Margin));
     end Set_Wrap_Mode;
+
+
+    function Wrapped_Row
+           (This : in Text_Display;
+            Row  : in Natural)
+        return Natural
+    is
+        Result : Interfaces.C.int := fl_text_display_wrapped_row
+           (This.Void_Ptr,
+            Interfaces.C.int (Row));
+    begin
+        return Natural (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::wrapped_row returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Wrapped_Row;
+
+
+    function Wrapped_Column
+           (This        : in Text_Display;
+            Row, Column : in Natural)
+        return Natural
+    is
+        Result : Interfaces.C.int := fl_text_display_wrapped_column
+           (This.Void_Ptr,
+            Interfaces.C.int (Row),
+            Interfaces.C.int (Column));
+    begin
+        return Natural (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::wrapped_column returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Wrapped_Column;
+
+
+    function Wrap_Uses_Character
+           (This     : in Text_Display;
+            Line_End : in Natural)
+        return Boolean
+    is
+        Result : Interfaces.C.int := fl_text_display_wrap_uses_character
+           (This.Void_Ptr,
+            Interfaces.C.int (Line_End));
+    begin
+        return Boolean'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::wrap_uses_character returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Wrap_Uses_Character;
+
+
+    procedure Count_Wrapped_Lines
+           (This                       : in     Text_Display;
+            Buffer                     : in     FLTK.Text_Buffers.Text_Buffer;
+            Start                      : in     Natural;
+            Max_Position, Max_Lines    : in     Natural;
+            Start_Pos_Is_Line_Start    : in     Boolean;
+            Style_Offset               : in     Natural;
+            Finish, Line_Count         :    out Natural;
+            End_Count_Line_Start       :    out Natural;
+            Last_Line_End              :    out Natural;
+            Count_Last_Missing_Newline : in     Boolean := True)
+    is
+        C_Finish, C_Line_Count, C_End_Count_Line_Start, C_Last_Line_End : Interfaces.C.int;
+    begin
+        fl_text_display_wrapped_line_counter
+           (This.Void_Ptr,
+            Wrapper (Buffer).Void_Ptr,
+            Interfaces.C.int (Start),
+            Interfaces.C.int (Max_Position),
+            Interfaces.C.int (Max_Lines),
+            Boolean'Pos (Start_Pos_Is_Line_Start),
+            Interfaces.C.int (Style_Offset),
+            C_Finish,
+            C_Line_Count,
+            C_End_Count_Line_Start,
+            C_Last_Line_End,
+            Boolean'Pos (Count_Last_Missing_Newline));
+        Finish               := Natural (C_Finish);
+        Line_Count           := Natural (C_Line_Count);
+        End_Count_Line_Start := Natural (C_End_Count_Line_Start);
+        Last_Line_End        := Natural (C_Last_Line_End);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::wrapped_line_counter returned unexpected int values of" & Latin.LF &
+        Latin.HT & "retPos = " & Interfaces.C.int'Image (C_Finish) & Latin.LF &
+        Latin.HT & "retLines = " & Interfaces.C.int'Image (C_Line_Count) & Latin.LF &
+        Latin.HT & "retLineStart = " & Interfaces.C.int'Image (C_End_Count_Line_Start) & Latin.LF &
+        Latin.HT & "retLineEnd = " & Interfaces.C.int'Image (C_Last_Line_End);
+    end Count_Wrapped_Lines;
 
 
 
@@ -923,6 +1591,135 @@ package body FLTK.Widgets.Groups.Text_Displays is
                 Interfaces.C.int (Start),
                 Interfaces.C.int (Lines)));
     end Rewind_Lines;
+
+
+    procedure Calculate_Last_Character
+           (This : in out Text_Display) is
+    begin
+        fl_text_display_calc_last_char (This.Void_Ptr);
+    end Calculate_Last_Character;
+
+
+    procedure Calculate_Line_Starts
+           (This          : in out Text_Display;
+            Start, Finish : in     Natural) is
+    begin
+        fl_text_display_calc_line_starts
+           (This.Void_Ptr,
+            Interfaces.C.int (Start),
+            Interfaces.C.int (Finish));
+    end Calculate_Line_Starts;
+
+
+    procedure Offset_Line_Starts
+           (This    : in out Text_Display;
+            New_Top : in     Natural) is
+    begin
+        fl_text_display_offset_line_starts
+           (This.Void_Ptr,
+            Interfaces.C.int (New_Top));
+    end Offset_Line_Starts;
+
+
+
+
+    procedure Redo_Absolute_Top_Line
+           (This      : in out Text_Display;
+            Old_First : in     Natural) is
+    begin
+        fl_text_display_absolute_top_line_number (This.Void_Ptr, Interfaces.C.int (Old_First));
+    end Redo_Absolute_Top_Line;
+
+
+    function Get_Absolute_Top_Line
+           (This : in Text_Display)
+        return Natural
+    is
+        Result : Interfaces.C.int := fl_text_display_get_absolute_top_line_number (This.Void_Ptr);
+    begin
+        return Natural (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::get_absolute_top_line_number returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Get_Absolute_Top_Line;
+
+
+    procedure Maintain_Absolute_Top_Line
+           (This  : in out Text_Display;
+            State : in     Boolean := True) is
+    begin
+        fl_text_display_maintain_absolute_top_line_number (This.Void_Ptr, Boolean'Pos (State));
+    end Maintain_Absolute_Top_Line;
+
+
+    function Maintaining_Absolute_Top_Line
+           (This : in Text_Display)
+        return Boolean
+    is
+        Result : Interfaces.C.int := fl_text_display_maintaining_absolute_top_line_number
+            (This.Void_Ptr);
+    begin
+        return Boolean'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::maintaining_absolute_top_line_number returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Maintaining_Absolute_Top_Line;
+
+
+    procedure Reset_Absolute_Top_Line
+           (This : in out Text_Display) is
+    begin
+        fl_text_display_reset_absolute_top_line_number (This.Void_Ptr);
+    end Reset_Absolute_Top_Line;
+
+
+
+
+    function Has_Empty_Visible_Lines
+           (This : in Text_Display)
+        return Boolean
+    is
+        Result : Interfaces.C.int := fl_text_display_empty_vlines (This.Void_Ptr);
+    begin
+        return Boolean'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::empty_vlines returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Has_Empty_Visible_Lines;
+
+
+    function Get_Longest_Visible_Line
+           (This : in Text_Display)
+        return Natural
+    is
+        Result : Interfaces.C.int := fl_text_display_longest_vline (This.Void_Ptr);
+    begin
+        return Natural (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::longest_vline returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Get_Longest_Visible_Line;
+
+
+    function Visible_Line_Length
+           (This : in Text_Display;
+            Line : in Natural)
+        return Natural
+    is
+        Result : Interfaces.C.int := fl_text_display_vline_length
+           (This.Void_Ptr,
+            Interfaces.C.int (Line));
+    begin
+        return Natural (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::vline_length returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Visible_Line_Length;
 
 
 
@@ -1035,51 +1832,217 @@ package body FLTK.Widgets.Groups.Text_Displays is
     end Set_Linenumber_Width;
 
 
+    function Get_Linenumber_Format
+           (This : in Text_Display)
+        return String
+    is
+        Result : Interfaces.C.Strings.chars_ptr :=
+            fl_text_display_get_linenumber_format (This.Void_Ptr);
+    begin
+        if Result = Interfaces.C.Strings.Null_Ptr then
+            return "";
+        else
+            return Interfaces.C.Strings.Value (Result);
+        end if;
+    end Get_Linenumber_Format;
+
+
+    procedure Set_Linenumber_Format
+           (This  : in out Text_Display;
+            Value : in     String) is
+    begin
+        fl_text_display_set_linenumber_format (This.Void_Ptr, Interfaces.C.To_C (Value));
+    end Set_Linenumber_Format;
+
+
+
+
+    function Measure_Character
+           (This  : in Text_Display;
+            Text  : in String;
+            X     : in Integer;
+            Index : in Positive)
+        return Long_Float is
+    begin
+        return Long_Float (fl_text_display_measure_proportional_character
+           (This.Void_Ptr,
+            Interfaces.C.To_C (Text),
+            Interfaces.C.int (X),
+            Interfaces.C.int (Index) - 1));
+    end Measure_Character;
+
+
+    function Measure_Visible_Line
+           (This : in Text_Display;
+            Line : in Natural)
+        return Natural
+    is
+        Result : Interfaces.C.int := fl_text_display_measure_vline
+           (This.Void_Ptr,
+            Interfaces.C.int (Line));
+    begin
+        return Natural (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::measure_vline returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Measure_Visible_Line;
+
+
+    function Measure_String
+           (This  : in Text_Display;
+            Text  : in String;
+            Style : in Styles.Style_Index)
+        return Long_Float is
+    begin
+        return Long_Float (fl_text_display_string_width
+           (This.Void_Ptr,
+            Interfaces.C.To_C (Text),
+            Text'Length,
+            Character'Pos (Character (Style))));
+    end Measure_String;
+
+
 
 
     procedure Move_Down
-           (This : in out Text_Display) is
+           (This : in out Text_Display)
+    is
+        Result : Interfaces.C.int := fl_text_display_move_down (This.Void_Ptr);
     begin
-        if fl_text_display_move_down (This.Void_Ptr) = 0 then
-            raise Bounds_Error;
-        end if;
+        pragma Assert (Result in 0 .. 1);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::move_down returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Move_Down;
+
+
+    function Move_Down
+           (This : in out Text_Display)
+        return Boolean
+    is
+        Result : Interfaces.C.int := fl_text_display_move_down (This.Void_Ptr);
+    begin
+        return Boolean'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::move_down returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Move_Down;
 
 
     procedure Move_Left
-           (This : in out Text_Display) is
+           (This : in out Text_Display)
+    is
+        Result : Interfaces.C.int := fl_text_display_move_left (This.Void_Ptr);
     begin
-        if fl_text_display_move_left (This.Void_Ptr) = 0 then
-            raise Bounds_Error;
-        end if;
+        pragma Assert (Result in 0 .. 1);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::move_left returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Move_Left;
+
+
+    function Move_Left
+           (This : in out Text_Display)
+        return Boolean
+    is
+        Result : Interfaces.C.int := fl_text_display_move_left (This.Void_Ptr);
+    begin
+        return Boolean'Val (Result);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::move_left returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Move_Left;
 
 
     procedure Move_Right
-           (This : in out Text_Display) is
+           (This : in out Text_Display)
+    is
+        Result : Interfaces.C.int := fl_text_display_move_right (This.Void_Ptr);
     begin
-        if fl_text_display_move_right (This.Void_Ptr) = 0 then
-            raise Bounds_Error;
-        end if;
+        pragma Assert (Result in 0 .. 1);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::move_right returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Move_Right;
+
+
+    function Move_Right
+           (This : in out Text_Display)
+        return Boolean
+    is
+        Result : Interfaces.C.int := fl_text_display_move_right (This.Void_Ptr);
+    begin
+        return Boolean'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::move_right returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Move_Right;
 
 
     procedure Move_Up
-           (This : in out Text_Display) is
+           (This : in out Text_Display)
+    is
+        Result : Interfaces.C.int := fl_text_display_move_up (This.Void_Ptr);
     begin
-        if fl_text_display_move_up (This.Void_Ptr) = 0 then
-            raise Bounds_Error;
-        end if;
+        pragma Assert (Result in 0 .. 1);
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::move_up returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Move_Up;
+
+
+    function Move_Up
+           (This : in out Text_Display)
+        return Boolean
+    is
+        Result : Interfaces.C.int := fl_text_display_move_up (This.Void_Ptr);
+    begin
+        return Boolean'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::move_up returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Move_Up;
 
 
 
 
     procedure Scroll_To
-           (This : in out Text_Display;
-            Line : in     Natural) is
+           (This   : in out Text_Display;
+            Line   : in     Natural;
+            Column : in     Natural := 0) is
     begin
-        fl_text_display_scroll (This.Void_Ptr, Interfaces.C.int (Line));
+        fl_text_display_scroll
+           (This.Void_Ptr,
+            Interfaces.C.int (Line),
+            Interfaces.C.int (Column));
+    end Scroll_To;
+
+
+    function Scroll_To
+           (This  : in out Text_Display;
+            Line  : in     Natural;
+            Pixel : in     Natural := 0)
+        return Boolean
+    is
+        Result : Interfaces.C.int := fl_text_display_scroll2
+           (This.Void_Ptr,
+            Interfaces.C.int (Line),
+            Interfaces.C.int (Pixel));
+    begin
+        return Boolean'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Text_Display::scroll_ returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Scroll_To;
 
 
@@ -1119,6 +2082,75 @@ package body FLTK.Widgets.Groups.Text_Displays is
     end Set_Scrollbar_Width;
 
 
+    procedure Update_Horizontal_Scrollbar
+           (This : in out Text_Display) is
+    begin
+        fl_text_display_update_h_scrollbar (This.Void_Ptr);
+    end Update_Horizontal_Scrollbar;
+
+
+    procedure Update_Vertical_Scrollbar
+           (This : in out Text_Display) is
+    begin
+        fl_text_display_update_v_scrollbar (This.Void_Ptr);
+    end Update_Vertical_Scrollbar;
+
+
+
+
+    function Get_Shortcut
+           (This : in Text_Display)
+        return Key_Combo is
+    begin
+        return To_Ada (fl_text_display_get_shortcut (This.Void_Ptr));
+    end Get_Shortcut;
+
+
+    procedure Set_Shortcut
+           (This  : in out Text_Display;
+            Value : in     Key_Combo) is
+    begin
+        fl_text_display_set_shortcut (This.Void_Ptr, To_C (Value));
+    end Set_Shortcut;
+
+
+
+
+    procedure Resize
+           (This       : in out Text_Display;
+            X, Y, W, H : in     Integer) is
+    begin
+        fl_text_display_resize
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H));
+    end Resize;
+
+
+
+
+    procedure Clear_Rect
+           (This       : in out Text_Display;
+            Style      : in     Styles.Style_Info;
+            X, Y, W, H : in     Integer) is
+    begin
+        fl_text_display_clear_rect
+           (This.Void_Ptr,
+            Style_Info_To_Cint (Style),
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H));
+    end Clear_Rect;
+
+
+    procedure Display_Insert
+           (This : in out Text_Display) is
+    begin
+        fl_text_display_display_insert (This.Void_Ptr);
+    end Display_Insert;
 
 
     procedure Redisplay_Range
@@ -1137,6 +2169,84 @@ package body FLTK.Widgets.Groups.Text_Displays is
     begin
         Group (This).Draw;
     end Draw;
+
+
+    procedure Draw_Cursor
+           (This : in out Text_Display;
+            X, Y : in     Integer) is
+    begin
+        fl_text_display_draw_cursor
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y));
+    end Draw_Cursor;
+
+
+    procedure Draw_Line_Numbers
+           (This  : in out Text_Display;
+            Clear : in     Boolean :=  False) is
+    begin
+        fl_text_display_draw_line_numbers (This.Void_Ptr, Boolean'Pos (Clear));
+    end Draw_Line_Numbers;
+
+
+    procedure Draw_Range
+           (This          : in out Text_Display;
+            Start, Finish : in     Natural) is
+    begin
+        fl_text_display_draw_range
+           (This.Void_Ptr,
+            Interfaces.C.int (Start),
+            Interfaces.C.int (Finish));
+    end Draw_Range;
+
+
+    procedure Draw_String
+           (This      : in out Text_Display;
+            Style     : in     Styles.Style_Info;
+            X, Y      : in     Integer;
+            Right     : in     Integer;
+            Text      : in     String;
+            Num_Chars : in     Natural) is
+    begin
+        fl_text_display_draw_string
+           (This.Void_Ptr,
+            Style_Info_To_Cint (Style),
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (Right),
+            Interfaces.C.To_C (Text),
+            Interfaces.C.int (Num_Chars));
+    end Draw_String;
+
+
+    procedure Draw_Text
+           (This       : in out Text_Display;
+            X, Y, W, H : in     Integer) is
+    begin
+        fl_text_display_draw_text
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H));
+    end Draw_Text;
+
+
+    procedure Draw_Visible_Line
+           (This                  : in out Text_Display;
+            Line                  : in     Natural;
+            Left_Clip, Right_Clip : in     Integer;
+            Left_Char, Right_Char : in     Natural) is
+    begin
+        fl_text_display_draw_vline
+           (This.Void_Ptr,
+            Interfaces.C.int (Line),
+            Interfaces.C.int (Left_Clip),
+            Interfaces.C.int (Right_Clip),
+            Interfaces.C.int (Left_Char),
+            Interfaces.C.int (Right_Char));
+    end Draw_Visible_Line;
 
 
     function Handle

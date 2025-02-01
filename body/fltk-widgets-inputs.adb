@@ -605,20 +605,20 @@ package body FLTK.Widgets.Inputs is
     end Get_Kind;
 
 
-    function Get_Shortcut_Key
+    function Get_Shortcut
            (This : in Input)
         return Key_Combo is
     begin
         return To_Ada (fl_input_get_shortcut (This.Void_Ptr));
-    end Get_Shortcut_Key;
+    end Get_Shortcut;
 
 
-    procedure Set_Shortcut_Key
+    procedure Set_Shortcut
            (This : in out Input;
             To   : in     Key_Combo) is
     begin
         fl_input_set_shortcut (This.Void_Ptr, To_C (To));
-    end Set_Shortcut_Key;
+    end Set_Shortcut;
 
 
     function Get_Mark

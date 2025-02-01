@@ -132,11 +132,11 @@ package FLTK.Widgets.Inputs is
            (This : in Input)
         return Input_Kind;
 
-    function Get_Shortcut_Key
+    function Get_Shortcut
            (This : in Input)
         return Key_Combo;
 
-    procedure Set_Shortcut_Key
+    procedure Set_Shortcut
            (This : in out Input;
             To   : in     Key_Combo);
 
@@ -326,8 +326,8 @@ private
     pragma Inline (Set_Wrap);
 
     pragma Inline (Get_Kind);
-    pragma Inline (Get_Shortcut_Key);
-    pragma Inline (Set_Shortcut_Key);
+    pragma Inline (Get_Shortcut);
+    pragma Inline (Set_Shortcut);
     pragma Inline (Get_Mark);
     pragma Inline (Set_Mark);
     pragma Inline (Get_Position);
