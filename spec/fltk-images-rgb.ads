@@ -17,6 +17,8 @@ package FLTK.Images.RGB is
     type RGB_Image_Reference (Data : not null access RGB_Image'Class) is limited null record
         with Implicit_Dereference => Data;
 
+    type RGB_Image_Array is array (Positive range <>) of RGB_Image;
+
 
 
 

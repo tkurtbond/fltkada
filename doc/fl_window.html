@@ -43,11 +43,6 @@
 
   <tr>
     <td>&nbsp;</td>
-    <td>Border_State</td>
-  </tr>
-
-  <tr>
-    <td>&nbsp;</td>
     <td>Modal_State</td>
   </tr>
 
@@ -155,7 +150,7 @@ function Last_Made_Current
 <td><pre>
 static void default_callback(Fl_Window *, void *v);
 </pre></td>
-<td>&nbsp;</td>
+<td>Back compatibility only, see default_atclose / Default_Window_Close in FLTK.</td>
   </tr>
 
   <tr>
@@ -164,7 +159,7 @@ static void default_icon(const Fl_RGB_Image *);
 </pre></td>
 <td><pre>
 procedure Set_Default_Icon
-       (Pic : in out FLTK.Images.RGB.RGB_Image'Class);
+       (Pic : in FLTK.Images.RGB.RGB_Image'Class);
 </pre></td>
   </tr>
 
@@ -172,21 +167,32 @@ procedure Set_Default_Icon
 <td><pre>
 static void default_icons(const Fl_RGB_Image *[], int);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Set_Default_Icons
+       (Pics : in FLTK.Images.RGB.RGB_Image_Array);
+
+procedure Reset_Default_Icons;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 static const char * default_xclass();
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Get_Default_X_Class
+    return String;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 static void default_xclass(const char *);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Set_Default_X_Class
+       (Value : in String);
+</pre></td>
   </tr>
 
 </table>
@@ -200,18 +206,7 @@ static void default_xclass(const char *);
 <td><pre>
 virtual Fl_Window * as_window();
 </pre></td>
-<td>Use view conversion and tag membership tests instead</td>
-  </tr>
-
-  <tr>
-<td><pre>
-void border(int b);
-</pre></td>
-<td><pre>
-procedure Set_Border_State
-       (This : in out Window;
-        To   : in     Border_State);
-</pre></td>
+<td>Use view conversion and tag membership tests instead.</td>
   </tr>
 
   <tr>
@@ -219,9 +214,20 @@ procedure Set_Border_State
 unsigned int border() const;
 </pre></td>
 <td><pre>
-function Get_Border_State
+function Has_Border
        (This : in Window)
-    return Border_State;
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void border(int b);
+</pre></td>
+<td><pre>
+procedure Set_Border
+       (This  : in out Window;
+        Value : in     Boolean := True);
 </pre></td>
   </tr>
 
@@ -229,7 +235,10 @@ function Get_Border_State
 <td><pre>
 void clear_border();
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Clear_Border
+       (This : in out Window);
+</pre></td>
   </tr>
 
   <tr>
@@ -237,9 +246,8 @@ void clear_border();
 void clear_modal_states();
 </pre></td>
 <td><pre>
-procedure Set_Modal_State
-       (This : in out Window;
-        To   : in     Modal_State);
+procedure Clear_Modal_State
+       (This : in out Window);
 </pre></td>
   </tr>
 
@@ -247,7 +255,11 @@ procedure Set_Modal_State
 <td><pre>
 void copy_label(const char *a);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Set_Label
+       (This : in out Window;
+        Text : in     String);
+</pre></td>
   </tr>
 
   <tr>
@@ -268,7 +280,7 @@ void cursor(const Fl_RGB_Image *, int, int);
 <td><pre>
 procedure Set_Cursor
        (This         : in out Window;
-        Pic          : in out FLTK.Images.RGB.RGB_Image'Class;
+        Pic          : in     FLTK.Images.RGB.RGB_Image'Class;
         Hot_X, Hot_Y : in     Integer);
 </pre></td>
   </tr>
@@ -277,7 +289,7 @@ procedure Set_Cursor
 <td><pre>
 void cursor(Fl_Cursor c, Fl_Color, Fl_Color=FL_WHITE);
 </pre></td>
-<td>&nbsp;</td>
+<td>Use cursor(Fl_Cursor) / Set_Cursor instead.</td>
   </tr>
 
   <tr>
@@ -317,17 +329,14 @@ procedure Set_Default_Cursor
 <td><pre>
 void default_cursor(Fl_Cursor c, Fl_Color, Fl_Color=FL_WHITE);
 </pre></td>
-<td>&nbsp;</td>
+<td>Use default_cursor(Fl_Cursor) / Set_Default_Cursor instead.</td>
   </tr>
 
   <tr>
 <td><pre>
 void free_position();
 </pre></td>
-<td><pre>
-procedure Free_Position
-       (This : in out Window);
-</pre></td>
+<td>Marked as deprecated.</td>
   </tr>
 
   <tr>
@@ -438,7 +447,7 @@ void icon(const Fl_RGB_Image *);
 <td><pre>
 procedure Set_Icon
        (This : in out Window;
-        Pic  : in out FLTK.Images.RGB.RGB_Image'Class);
+        Pic  : in     FLTK.Images.RGB.RGB_Image'Class);
 </pre></td>
   </tr>
 
@@ -446,14 +455,14 @@ procedure Set_Icon
 <td><pre>
 const void * icon() const;
 </pre></td>
-<td>&nbsp;</td>
+<td>Marked as deprecated.</td>
   </tr>
 
   <tr>
 <td><pre>
 void icon(const void *ic);
 </pre></td>
-<td>&nbsp;</td>
+<td>Marked as deprecated.</td>
   </tr>
 
   <tr>
@@ -492,7 +501,14 @@ procedure Set_Icon_Label
 <td><pre>
 void icons(const Fl_RGB_Image *[], int);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Set_Icons
+       (This : in out Window;
+        Pics : in     FLTK.Images.RGB.RGB_Image_Array);
+
+procedure Reset_Icons
+       (This : in out Window);
+</pre></td>
   </tr>
 
   <tr>
@@ -510,18 +526,20 @@ function Get_Label
 <td><pre>
 void label(const char *);
 </pre></td>
-<td><pre>
-procedure Set_Label
-       (This : in out Window;
-        Text : in     String);
-</pre></td>
+<td>Due to necessary marshalling between String and char*
+using this method would be pointless, so its functionality is
+subsumed by copy_label / Set_Label.</td>
   </tr>
 
   <tr>
 <td><pre>
 void label(const char *label, const char *iconlabel);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Set_Labels
+       (This            : in out Window;
+        Text, Icon_Text : in     String);
+</pre></td>
   </tr>
 
   <tr>
@@ -538,13 +556,26 @@ procedure Make_Current
 <td><pre>
 unsigned int menu_window() const;
 </pre></td>
-<td>Use tag membership tests instead</td>
+<td><pre>
+function Is_Menu_Window
+       (This : in Window)
+    return Boolean;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 unsigned int modal() const;
 </pre></td>
+<td><pre>
+function Is_Modal
+       (This : in Window)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Use modal, non_modal as appropriate.</td>
 <td><pre>
 function Get_Modal_State
        (This : in Window)
@@ -556,7 +587,11 @@ function Get_Modal_State
 <td><pre>
 unsigned int non_modal() const;
 </pre></td>
-<td>See unsigned int modal() const;</td>
+<td><pre>
+function Is_Non_Modal
+       (This : in Window)
+    return Boolean;
+</pre></td>
   </tr>
 
   <tr>
@@ -574,28 +609,47 @@ function Is_Override
 <td><pre>
 virtual void resize(int X, int Y, int W, int H);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Resize
+       (This       : in out Window;
+        X, Y, W, H : in     Integer);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 void set_menu_window();
 </pre></td>
-<td>&nbsp;</td>
+<td>Intended for internal use only.</td>
   </tr>
 
   <tr>
 <td><pre>
 void set_modal();
 </pre></td>
-<td>See void clear_modal_states();</td>
+<td><pre>
+procedure Set_Modal
+       (This : in out Window);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Use clear_modal_states, set_modal, set_non_modal as appropriate.</td>
+<td><pre>
+procedure Set_Modal_State
+       (This  : in out Window;
+        Value : in     Modal_State);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 void set_non_modal();
 </pre></td>
-<td>See void clear_modal_states();</td>
+<td><pre>
+procedure Set_Non_Modal
+       (This : in out Window);
+</pre></td>
   </tr>
 
   <tr>
@@ -612,7 +666,7 @@ procedure Set_Override
 <td><pre>
 void set_tooltip_window();
 </pre></td>
-<td>&nbsp;</td>
+<td>Intended for internal use only.</td>
   </tr>
 
   <tr>
@@ -624,7 +678,7 @@ void shape(const Fl_Image &b);
 <td><pre>
 procedure Shape
        (This : in out Window;
-        Pic  : in out FLTK.Images.Image'Class);
+        Pic  : in     FLTK.Images.Image'Class);
 </pre></td>
   </tr>
 
@@ -677,7 +731,11 @@ procedure Set_Size_Range
 <td><pre>
 unsigned int tooltip_window() const;
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Is_Tooltip_Window
+       (This : in Window)
+    return Boolean;
+</pre></td>
   </tr>
 
   <tr>
@@ -705,14 +763,22 @@ function Get_X_Root
 <td><pre>
 const char * xclass() const;
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Get_X_Class
+       (This : in Window)
+    return String;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 void xclass(const char *c);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Set_X_Class
+       (This  : in out Window;
+        Value : in     String);
+</pre></td>
   </tr>
 
   <tr>
@@ -747,28 +813,39 @@ procedure Draw
 <td><pre>
 virtual void flush();
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Flush
+       (This : in out Window);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 int force_position() const;
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Is_Position_Forced
+       (This : in Window)
+    return Boolean;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 void force_position(int force);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Force_Position
+       (This  : in out Window;
+        State : in     Boolean := True);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 void free_icons();
 </pre></td>
-<td>&nbsp;</td>
+<td>Intentionally left unbound.</td>
   </tr>
 
 </table>

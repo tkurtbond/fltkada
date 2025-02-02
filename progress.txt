@@ -216,7 +216,7 @@ FLTK
 FLTK.Devices.Graphics
 FLTK.Images.Pixmaps (unmarshall data access?)
 FLTK.Images.Shared (images(), compare)
-FLTK.Text_Buffers
+FLTK.Text_Buffers (a few functions, protected stuff, ensure buffer is 1-indexed)
 
 
 
@@ -224,7 +224,6 @@ Widgets with incomplete APIs:
 
 Widgets
 Widgets.Groups.Scrolls (attributes, resize, type, protected)
-Widgets.Groups.Text_Displays
-Widgets.Groups.Windows
+Widgets.Groups.Text_Displays (ensure text buffer is 1-indexed)
 
 

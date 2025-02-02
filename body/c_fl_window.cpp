@@ -19,6 +19,17 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 
 
+//  Non-friend protected access
+
+class Friend_Window : Fl_Window {
+public:
+    using Fl_Window::flush;
+    using Fl_Window::force_position;
+};
+
+
+
+
 //  Attaching all relevant hooks and friends
 
 class My_Window : public Fl_Window {
@@ -92,10 +103,6 @@ void fl_window_make_current(WINDOW n) {
     static_cast<Fl_Window*>(n)->make_current();
 }
 
-void fl_window_free_position(WINDOW n) {
-    static_cast<Fl_Window*>(n)->free_position();
-}
-
 
 
 
@@ -126,8 +133,16 @@ void fl_window_set_icon(WINDOW n, void * img) {
     static_cast<Fl_Window*>(n)->icon(static_cast<Fl_RGB_Image*>(img));
 }
 
+void fl_window_icons(WINDOW n, void * imgs, int count) {
+    static_cast<Fl_Window*>(n)->icons(static_cast<const Fl_RGB_Image**>(imgs), count);
+}
+
 void fl_window_default_icon(void * img) {
     Fl_Window::default_icon(static_cast<Fl_RGB_Image*>(img));
+}
+
+void fl_window_default_icons(void * imgs, int count) {
+    Fl_Window::default_icons(static_cast<const Fl_RGB_Image**>(imgs), count);
 }
 
 const char * fl_window_get_iconlabel(WINDOW n) {
@@ -159,6 +174,10 @@ unsigned int fl_window_get_border(WINDOW n) {
 
 void fl_window_set_border(WINDOW n, int b) {
     static_cast<Fl_Window*>(n)->border(b);
+}
+
+void fl_window_clear_border(WINDOW n) {
+    static_cast<Fl_Window*>(n)->clear_border();
 }
 
 unsigned int fl_window_get_override(WINDOW n) {
@@ -196,7 +215,7 @@ const char * fl_window_get_label(WINDOW n) {
     return static_cast<Fl_Window*>(n)->label();
 }
 
-void fl_window_set_label(WINDOW n, char* text) {
+void fl_window_copy_label(WINDOW n, char* text) {
     static_cast<Fl_Window*>(n)->copy_label(text);
 }
 
@@ -208,12 +227,29 @@ void fl_window_hotspot2(WINDOW n, void * i, int s) {
     static_cast<Fl_Window*>(n)->hotspot(static_cast<Fl_Widget*>(i),s);
 }
 
+void fl_window_shape(WINDOW n, void * p) {
+    static_cast<Fl_Window*>(n)->shape(static_cast<Fl_Image*>(p));
+}
+
+
+
+
 void fl_window_size_range(WINDOW n, int lw, int lh, int hw, int hh, int dw, int dh, int a) {
     static_cast<Fl_Window*>(n)->size_range(lw, lh, hw, hh, dw, dh, a);
 }
 
-void fl_window_shape(WINDOW n, void * p) {
-    static_cast<Fl_Window*>(n)->shape(static_cast<Fl_Image*>(p));
+void fl_window_resize(WINDOW n, int x, int y, int w, int h) {
+    static_cast<Fl_Window*>(n)->resize(x, y, w, h);
+}
+
+int fl_window_get_force_position(WINDOW n) {
+    int (Fl_Window::*myforce)() const = &Friend_Window::force_position;
+    return (static_cast<Fl_Window*>(n)->*myforce)();
+}
+
+void fl_window_set_force_position(WINDOW n, int s) {
+    void (Fl_Window::*myforce)(int) = &Friend_Window::force_position;
+    (static_cast<Fl_Window*>(n)->*myforce)(s);
 }
 
 
@@ -238,8 +274,39 @@ int fl_window_get_decorated_h(WINDOW n) {
 
 
 
+const char * fl_window_get_xclass(WINDOW n) {
+    return static_cast<Fl_Window*>(n)->xclass();
+}
+
+void fl_window_set_xclass(WINDOW n, const char * c) {
+    static_cast<Fl_Window*>(n)->xclass(c);
+}
+
+const char * fl_window_get_default_xclass() {
+    return Fl_Window::default_xclass();
+}
+
+void fl_window_set_default_xclass(const char * c) {
+    Fl_Window::default_xclass(c);
+}
+
+unsigned int fl_window_menu_window(WINDOW n) {
+    return static_cast<Fl_Window*>(n)->menu_window();
+}
+
+unsigned int fl_window_tooltip_window(WINDOW n) {
+    return static_cast<Fl_Window*>(n)->tooltip_window();
+}
+
+
+
+
 void fl_window_draw(WINDOW n) {
     static_cast<My_Window*>(n)->Fl_Window::draw();
+}
+
+void fl_window_flush(WINDOW n) {
+    (static_cast<Fl_Window*>(n)->*(&Friend_Window::flush))();
 }
 
 int fl_window_handle(WINDOW n, int e) {

@@ -85,11 +85,6 @@ package body FLTK.Widgets.Groups.Windows is
     pragma Import (C, fl_window_make_current, "fl_window_make_current");
     pragma Inline (fl_window_make_current);
 
-    procedure fl_window_free_position
-           (W : in Storage.Integer_Address);
-    pragma Import (C, fl_window_free_position, "fl_window_free_position");
-    pragma Inline (fl_window_free_position);
-
 
 
 
@@ -129,10 +124,22 @@ package body FLTK.Widgets.Groups.Windows is
     pragma Import (C, fl_window_set_icon, "fl_window_set_icon");
     pragma Inline (fl_window_set_icon);
 
+    procedure fl_window_icons
+           (W, P : in Storage.Integer_Address;
+            C    : in Interfaces.C.int);
+    pragma Import (C, fl_window_icons, "fl_window_icons");
+    pragma Inline (fl_window_icons);
+
     procedure fl_window_default_icon
            (P : in Storage.Integer_Address);
     pragma Import (C, fl_window_default_icon, "fl_window_default_icon");
     pragma Inline (fl_window_default_icon);
+
+    procedure fl_window_default_icons
+           (P : in Storage.Integer_Address;
+            C : in Interfaces.C.int);
+    pragma Import (C, fl_window_default_icons, "fl_window_default_icons");
+    pragma Inline (fl_window_default_icons);
 
     function fl_window_get_iconlabel
            (W : in Storage.Integer_Address)
@@ -179,6 +186,11 @@ package body FLTK.Widgets.Groups.Windows is
     pragma Import (C, fl_window_set_border, "fl_window_set_border");
     pragma Inline (fl_window_set_border);
 
+    procedure fl_window_clear_border
+           (W : in Storage.Integer_Address);
+    pragma Import (C, fl_window_clear_border, "fl_window_clear_border");
+    pragma Inline (fl_window_clear_border);
+
     function fl_window_get_override
            (W : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
@@ -202,11 +214,6 @@ package body FLTK.Widgets.Groups.Windows is
     pragma Import (C, fl_window_non_modal, "fl_window_non_modal");
     pragma Inline (fl_window_non_modal);
 
-    procedure fl_window_clear_modal_states
-           (W : in Storage.Integer_Address);
-    pragma Import (C, fl_window_clear_modal_states, "fl_window_clear_modal_states");
-    pragma Inline (fl_window_clear_modal_states);
-
     procedure fl_window_set_modal
            (W : in Storage.Integer_Address);
     pragma Import (C, fl_window_set_modal, "fl_window_set_modal");
@@ -217,6 +224,11 @@ package body FLTK.Widgets.Groups.Windows is
     pragma Import (C, fl_window_set_non_modal, "fl_window_set_non_modal");
     pragma Inline (fl_window_set_non_modal);
 
+    procedure fl_window_clear_modal_states
+           (W : in Storage.Integer_Address);
+    pragma Import (C, fl_window_clear_modal_states, "fl_window_clear_modal_states");
+    pragma Inline (fl_window_clear_modal_states);
+
 
 
 
@@ -226,11 +238,11 @@ package body FLTK.Widgets.Groups.Windows is
     pragma Import (C, fl_window_get_label, "fl_window_get_label");
     pragma Inline (fl_window_get_label);
 
-    procedure fl_window_set_label
+    procedure fl_window_copy_label
            (W : in Storage.Integer_Address;
             T : in Interfaces.C.char_array);
-    pragma Import (C, fl_window_set_label, "fl_window_set_label");
-    pragma Inline (fl_window_set_label);
+    pragma Import (C, fl_window_copy_label, "fl_window_copy_label");
+    pragma Inline (fl_window_copy_label);
 
     procedure fl_window_hotspot
            (W       : in Storage.Integer_Address;
@@ -244,16 +256,37 @@ package body FLTK.Widgets.Groups.Windows is
     pragma Import (C, fl_window_hotspot2, "fl_window_hotspot2");
     pragma Inline (fl_window_hotspot2);
 
+    procedure fl_window_shape
+           (W, P : in Storage.Integer_Address);
+    pragma Import (C, fl_window_shape, "fl_window_shape");
+    pragma Inline (fl_window_shape);
+
+
+
+
     procedure fl_window_size_range
            (W                         : in Storage.Integer_Address;
             LW, LH, HW, HH, DW, DH, A : in Interfaces.C.int);
     pragma Import (C, fl_window_size_range, "fl_window_size_range");
     pragma Inline (fl_window_size_range);
 
-    procedure fl_window_shape
-           (W, P : in Storage.Integer_Address);
-    pragma Import (C, fl_window_shape, "fl_window_shape");
-    pragma Inline (fl_window_shape);
+    procedure fl_window_resize
+           (N          : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int);
+    pragma Import (C, fl_window_resize, "fl_window_resize");
+    pragma Inline (fl_window_resize);
+
+    function fl_window_get_force_position
+           (N : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_window_get_force_position, "fl_window_get_force_position");
+    pragma Inline (fl_window_get_force_position);
+
+    procedure fl_window_set_force_position
+           (N : in Storage.Integer_Address;
+            S : in Interfaces.C.int);
+    pragma Import (C, fl_window_set_force_position, "fl_window_set_force_position");
+    pragma Inline (fl_window_set_force_position);
 
 
 
@@ -285,10 +318,52 @@ package body FLTK.Widgets.Groups.Windows is
 
 
 
+    function fl_window_get_xclass
+           (W : in Storage.Integer_Address)
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_window_get_xclass, "fl_window_get_xclass");
+    pragma Inline (fl_window_get_xclass);
+
+    procedure fl_window_set_xclass
+           (W : in Storage.Integer_Address;
+            C : in Interfaces.C.char_array);
+    pragma Import (C, fl_window_set_xclass, "fl_window_set_xclass");
+    pragma Inline (fl_window_set_xclass);
+
+    function fl_window_get_default_xclass
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_window_get_default_xclass, "fl_window_get_default_xclass");
+    pragma Inline (fl_window_get_default_xclass);
+
+    procedure fl_window_set_default_xclass
+           (C : in Interfaces.C.char_array);
+    pragma Import (C, fl_window_set_default_xclass, "fl_window_set_default_xclass");
+    pragma Inline (fl_window_set_default_xclass);
+
+    function fl_window_menu_window
+           (W : in Storage.Integer_Address)
+        return Interfaces.C.unsigned;
+    pragma Import (C, fl_window_menu_window, "fl_window_menu_window");
+    pragma Inline (fl_window_menu_window);
+
+    function fl_window_tooltip_window
+           (W : in Storage.Integer_Address)
+        return Interfaces.C.unsigned;
+    pragma Import (C, fl_window_tooltip_window, "fl_window_tooltip_window");
+    pragma Inline (fl_window_tooltip_window);
+
+
+
+
     procedure fl_window_draw
            (W : in Storage.Integer_Address);
     pragma Import (C, fl_window_draw, "fl_window_draw");
     pragma Inline (fl_window_draw);
+
+    procedure fl_window_flush
+           (W : in Storage.Integer_Address);
+    pragma Import (C, fl_window_flush, "fl_window_flush");
+    pragma Inline (fl_window_flush);
 
     function fl_window_handle
            (W : in Storage.Integer_Address;
@@ -469,13 +544,6 @@ package body FLTK.Widgets.Groups.Windows is
     end Last_Made_Current;
 
 
-    procedure Free_Position
-           (This : in out Window) is
-    begin
-        fl_window_free_position (This.Void_Ptr);
-    end Free_Position;
-
-
 
 
     function Is_Fullscreen
@@ -530,19 +598,62 @@ package body FLTK.Widgets.Groups.Windows is
 
     procedure Set_Icon
            (This : in out Window;
-            Pic  : in out FLTK.Images.RGB.RGB_Image'Class) is
+            Pic  : in     FLTK.Images.RGB.RGB_Image'Class) is
     begin
         fl_window_set_icon
-               (This.Void_Ptr,
-                Wrapper (Pic).Void_Ptr);
+           (This.Void_Ptr,
+            Wrapper (Pic).Void_Ptr);
     end Set_Icon;
 
 
+    procedure Set_Icons
+           (This : in out Window;
+            Pics : in     FLTK.Images.RGB.RGB_Image_Array)
+    is
+        Pointers : array (Pics'First .. Pics'Last) of aliased Storage.Integer_Address;
+    begin
+        for Index in Pointers'Range loop
+            Pointers (Index) := Wrapper (Pics (Index)).Void_Ptr;
+        end loop;
+        fl_window_icons
+           (This.Void_Ptr,
+            Storage.To_Integer (Pointers (Pointers'First)'Address),
+            Pointers'Length);
+    end Set_Icons;
+
+
+    procedure Reset_Icons
+           (This : in out Window) is
+    begin
+        fl_window_icons (This.Void_Ptr, Null_Pointer, 0);
+    end Reset_Icons;
+
+
     procedure Set_Default_Icon
-           (Pic : in out FLTK.Images.RGB.RGB_Image'Class) is
+           (Pic : in FLTK.Images.RGB.RGB_Image'Class) is
     begin
         fl_window_default_icon (Wrapper (Pic).Void_Ptr);
     end Set_Default_Icon;
+
+
+    procedure Set_Default_Icons
+           (Pics : in FLTK.Images.RGB.RGB_Image_Array)
+    is
+        Pointers : array (Pics'First .. Pics'Last) of aliased Storage.Integer_Address;
+    begin
+        for Index in Pointers'Range loop
+            Pointers (Index) := Wrapper (Pics (Index)).Void_Ptr;
+        end loop;
+        fl_window_default_icons
+           (Storage.To_Integer (Pointers (Pointers'First)'Address),
+            Pointers'Length);
+    end Set_Default_Icons;
+
+
+    procedure Reset_Default_Icons is
+    begin
+        fl_window_default_icons (Null_Pointer, 0);
+    end Reset_Default_Icons;
 
 
     function Get_Icon_Label
@@ -578,7 +689,7 @@ package body FLTK.Widgets.Groups.Windows is
 
     procedure Set_Cursor
            (This         : in out Window;
-            Pic          : in out FLTK.Images.RGB.RGB_Image'Class;
+            Pic          : in     FLTK.Images.RGB.RGB_Image'Class;
             Hot_X, Hot_Y : in     Integer) is
     begin
         fl_window_set_cursor2
@@ -599,20 +710,27 @@ package body FLTK.Widgets.Groups.Windows is
 
 
 
-    function Get_Border_State
+    function Has_Border
            (This : in Window)
-        return Border_State is
+        return Boolean is
     begin
-        return Border_State'Val (fl_window_get_border (This.Void_Ptr));
-    end Get_Border_State;
+        return fl_window_get_border (This.Void_Ptr) /= 0;
+    end Has_Border;
 
 
-    procedure Set_Border_State
-           (This : in out Window;
-            To   : in     Border_State) is
+    procedure Set_Border
+           (This  : in out Window;
+            Value : in     Boolean := True) is
     begin
-        fl_window_set_border (This.Void_Ptr, Border_State'Pos (To));
-    end Set_Border_State;
+        fl_window_set_border (This.Void_Ptr, Boolean'Pos (Value));
+    end Set_Border;
+
+
+    procedure Clear_Border
+           (This : in out Window) is
+    begin
+        fl_window_clear_border (This.Void_Ptr);
+    end Clear_Border;
 
 
     function Is_Override
@@ -630,6 +748,22 @@ package body FLTK.Widgets.Groups.Windows is
     end Set_Override;
 
 
+    function Is_Modal
+           (This : in Window)
+        return Boolean is
+    begin
+        return fl_window_modal (This.Void_Ptr) /= 0;
+    end Is_Modal;
+
+
+    function Is_Non_Modal
+           (This : in Window)
+        return Boolean is
+    begin
+        return fl_window_non_modal (This.Void_Ptr) /= 0;
+    end Is_Non_Modal;
+
+
     function Get_Modal_State
            (This : in Window)
         return Modal_State is
@@ -644,19 +778,37 @@ package body FLTK.Widgets.Groups.Windows is
     end Get_Modal_State;
 
 
-    procedure Set_Modal_State
-           (This : in out Window;
-            To   : in     Modal_State) is
+    procedure Set_Modal
+           (This : in out Window) is
     begin
-        case To is
-            when Normal =>
-                fl_window_clear_modal_states (This.Void_Ptr);
-            when Non_Modal =>
-                fl_window_set_non_modal (This.Void_Ptr);
-            when Modal =>
-                fl_window_set_modal (This.Void_Ptr);
+        fl_window_set_modal (This.Void_Ptr);
+    end Set_Modal;
+
+
+    procedure Set_Non_Modal
+           (This : in out Window) is
+    begin
+        fl_window_set_non_modal (This.Void_Ptr);
+    end Set_Non_Modal;
+
+
+    procedure Set_Modal_State
+           (This  : in out Window;
+            Value : in     Modal_State) is
+    begin
+        case Value is
+        when Normal    => fl_window_clear_modal_states (This.Void_Ptr);
+        when Non_Modal => fl_window_set_non_modal (This.Void_Ptr);
+        when Modal     => fl_window_set_modal (This.Void_Ptr);
         end case;
     end Set_Modal_State;
+
+
+    procedure Clear_Modal_State
+           (This : in out Window) is
+    begin
+        fl_window_clear_modal_states (This.Void_Ptr);
+    end Clear_Modal_State;
 
 
 
@@ -680,8 +832,17 @@ package body FLTK.Widgets.Groups.Windows is
            (This : in out Window;
             Text : in     String) is
     begin
-        fl_window_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
+        fl_window_copy_label (This.Void_Ptr, Interfaces.C.To_C (Text));
     end Set_Label;
+
+
+    procedure Set_Labels
+           (This            : in out Window;
+            Text, Icon_Text : in     String) is
+    begin
+        This.Set_Label (Text);
+        This.Set_Icon_Label (Icon_Text);
+    end Set_Labels;
 
 
     procedure Hotspot
@@ -709,6 +870,16 @@ package body FLTK.Widgets.Groups.Windows is
     end Hotspot;
 
 
+    procedure Shape
+           (This : in out Window;
+            Pic  : in     FLTK.Images.Image'Class) is
+    begin
+        fl_window_shape (This.Void_Ptr, Wrapper (Pic).Void_Ptr);
+    end Shape;
+
+
+
+
     procedure Set_Size_Range
            (This                           : in out Window;
             Min_W, Min_H                   : in     Integer;
@@ -727,12 +898,39 @@ package body FLTK.Widgets.Groups.Windows is
     end Set_Size_Range;
 
 
-    procedure Shape
-           (This : in out Window;
-            Pic  : in out FLTK.Images.Image'Class) is
+    procedure Resize
+           (This       : in out Window;
+            X, Y, W, H : in     Integer) is
     begin
-        fl_window_shape (This.Void_Ptr, Wrapper (Pic).Void_Ptr);
-    end Shape;
+        fl_window_resize
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H));
+    end Resize;
+
+
+    function Is_Position_Forced
+           (This : in Window)
+        return Boolean
+    is
+        Result : Interfaces.C.int := fl_window_get_force_position (This.Void_Ptr);
+    begin
+        return Boolean'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Window::force_position returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Is_Position_Forced;
+
+
+    procedure Force_Position
+           (This  : in out Window;
+            State : in     Boolean := True) is
+    begin
+        fl_window_set_force_position (This.Void_Ptr, Boolean'Pos (State));
+    end Force_Position;
 
 
 
@@ -771,11 +969,78 @@ package body FLTK.Widgets.Groups.Windows is
 
 
 
+    function Get_X_Class
+           (This : in Window)
+        return String
+    is
+        Result : Interfaces.C.Strings.chars_ptr := fl_window_get_xclass (This.Void_Ptr);
+    begin
+        if Result = Interfaces.C.Strings.Null_Ptr then
+            return "";
+        else
+            return Interfaces.C.Strings.Value (Result);
+        end if;
+    end Get_X_Class;
+
+
+    procedure Set_X_Class
+           (This  : in out Window;
+            Value : in     String) is
+    begin
+        fl_window_set_xclass (This.Void_Ptr, Interfaces.C.To_C (Value));
+    end Set_X_Class;
+
+
+    function Get_Default_X_Class
+        return String
+    is
+        Result : Interfaces.C.Strings.chars_ptr := fl_window_get_default_xclass;
+    begin
+        if Result = Interfaces.C.Strings.Null_Ptr then
+            return "";
+        else
+            return Interfaces.C.Strings.Value (Result);
+        end if;
+    end Get_Default_X_Class;
+
+
+    procedure Set_Default_X_Class
+           (Value : in String) is
+    begin
+        fl_window_set_default_xclass (Interfaces.C.To_C (Value));
+    end Set_Default_X_Class;
+
+
+    function Is_Menu_Window
+           (This : in Window)
+        return Boolean is
+    begin
+        return fl_window_menu_window (This.Void_Ptr) /= 0;
+    end Is_Menu_Window;
+
+
+    function Is_Tooltip_Window
+           (This : in Window)
+        return Boolean is
+    begin
+        return fl_window_tooltip_window (This.Void_Ptr) /= 0;
+    end Is_Tooltip_Window;
+
+
+
+
     procedure Draw
            (This : in out Window) is
     begin
         Group (This).Draw;
     end Draw;
+
+
+    procedure Flush
+           (This : in out Window) is
+    begin
+        fl_window_flush (This.Void_Ptr);
+    end Flush;
 
 
     function Handle

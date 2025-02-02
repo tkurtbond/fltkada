@@ -21,8 +21,6 @@ package FLTK.Widgets.Groups.Windows is
     type Window_Reference (Data : not null access Window'Class) is limited null record
         with Implicit_Dereference => Data;
 
-    type Border_State is (None, Visible);
-
     type Modal_State is (Normal, Non_Modal, Modal);
 
 
@@ -82,9 +80,6 @@ package FLTK.Widgets.Groups.Windows is
     function Last_Made_Current
         return access Window'Class;
 
-    procedure Free_Position
-           (This : in out Window);
-
 
 
 
@@ -111,10 +106,22 @@ package FLTK.Widgets.Groups.Windows is
 
     procedure Set_Icon
            (This : in out Window;
-            Pic  : in out FLTK.Images.RGB.RGB_Image'Class);
+            Pic  : in     FLTK.Images.RGB.RGB_Image'Class);
+
+    procedure Set_Icons
+           (This : in out Window;
+            Pics : in     FLTK.Images.RGB.RGB_Image_Array);
+
+    procedure Reset_Icons
+           (This : in out Window);
 
     procedure Set_Default_Icon
-           (Pic : in out FLTK.Images.RGB.RGB_Image'Class);
+           (Pic : in FLTK.Images.RGB.RGB_Image'Class);
+
+    procedure Set_Default_Icons
+           (Pics : in FLTK.Images.RGB.RGB_Image_Array);
+
+    procedure Reset_Default_Icons;
 
     function Get_Icon_Label
            (This : in Window)
@@ -130,7 +137,7 @@ package FLTK.Widgets.Groups.Windows is
 
     procedure Set_Cursor
            (This         : in out Window;
-            Pic          : in out FLTK.Images.RGB.RGB_Image'Class;
+            Pic          : in     FLTK.Images.RGB.RGB_Image'Class;
             Hot_X, Hot_Y : in     Integer);
 
     procedure Set_Default_Cursor
@@ -140,13 +147,16 @@ package FLTK.Widgets.Groups.Windows is
 
 
 
-    function Get_Border_State
+    function Has_Border
            (This : in Window)
-        return Border_State;
+        return Boolean;
 
-    procedure Set_Border_State
-           (This : in out Window;
-            To   : in     Border_State);
+    procedure Set_Border
+           (This  : in out Window;
+            Value : in     Boolean := True);
+
+    procedure Clear_Border
+           (This : in out Window);
 
     function Is_Override
            (This : in Window)
@@ -155,13 +165,30 @@ package FLTK.Widgets.Groups.Windows is
     procedure Set_Override
            (This : in out Window);
 
+    function Is_Modal
+           (This : in Window)
+        return Boolean;
+
+    function Is_Non_Modal
+           (This : in Window)
+        return Boolean;
+
     function Get_Modal_State
            (This : in Window)
         return Modal_State;
 
+    procedure Set_Modal
+           (This : in out Window);
+
+    procedure Set_Non_Modal
+           (This : in out Window);
+
     procedure Set_Modal_State
-           (This : in out Window;
-            To   : in     Modal_State);
+           (This  : in out Window;
+            Value : in     Modal_State);
+
+    procedure Clear_Modal_State
+           (This : in out Window);
 
 
 
@@ -174,6 +201,10 @@ package FLTK.Widgets.Groups.Windows is
            (This : in out Window;
             Text : in     String);
 
+    procedure Set_Labels
+           (This            : in out Window;
+            Text, Icon_Text : in     String);
+
     procedure Hotspot
            (This      : in out Window;
             X, Y      : in     Integer;
@@ -184,15 +215,30 @@ package FLTK.Widgets.Groups.Windows is
             Item      : in     Widget'Class;
             Offscreen : in     Boolean := False);
 
+    procedure Shape
+           (This : in out Window;
+            Pic  : in     FLTK.Images.Image'Class);
+
+
+
+
     procedure Set_Size_Range
            (This                           : in out Window;
             Min_W, Min_H                   : in     Integer;
             Max_W, Max_H, Incre_W, Incre_H : in     Integer := 0;
             Keep_Aspect                    : in     Boolean := False);
 
-    procedure Shape
-           (This : in out Window;
-            Pic  : in out FLTK.Images.Image'Class);
+    procedure Resize
+           (This       : in out Window;
+            X, Y, W, H : in     Integer);
+
+    function Is_Position_Forced
+           (This : in Window)
+        return Boolean;
+
+    procedure Force_Position
+           (This  : in out Window;
+            State : in     Boolean := True);
 
 
 
@@ -216,7 +262,35 @@ package FLTK.Widgets.Groups.Windows is
 
 
 
+    function Get_X_Class
+           (This : in Window)
+        return String;
+
+    procedure Set_X_Class
+           (This  : in out Window;
+            Value : in     String);
+
+    function Get_Default_X_Class
+        return String;
+
+    procedure Set_Default_X_Class
+           (Value : in String);
+
+    function Is_Menu_Window
+           (This : in Window)
+        return Boolean;
+
+    function Is_Tooltip_Window
+           (This : in Window)
+        return Boolean;
+
+
+
+
     procedure Draw
+           (This : in out Window);
+
+    procedure Flush
            (This : in out Window);
 
     function Handle
@@ -255,7 +329,6 @@ private
     pragma Inline (Iconify);
     pragma Inline (Make_Current);
     pragma Inline (Last_Made_Current);
-    pragma Inline (Free_Position);
 
     pragma Inline (Is_Fullscreen);
     pragma Inline (Fullscreen_On);
@@ -263,31 +336,54 @@ private
     pragma Inline (Fullscreen_Screens);
 
     pragma Inline (Set_Icon);
+    pragma Inline (Set_Icons);
+    pragma Inline (Reset_Icons);
     pragma Inline (Set_Default_Icon);
+    pragma Inline (Set_Default_Icons);
+    pragma Inline (Reset_Default_Icons);
     pragma Inline (Get_Icon_Label);
     pragma Inline (Set_Icon_Label);
     pragma Inline (Set_Cursor);
     pragma Inline (Set_Default_Cursor);
 
-    pragma Inline (Get_Border_State);
-    pragma Inline (Set_Border_State);
+    pragma Inline (Has_Border);
+    pragma Inline (Set_Border);
+    pragma Inline (Clear_Border);
     pragma Inline (Is_Override);
     pragma Inline (Set_Override);
+    pragma Inline (Is_Modal);
+    pragma Inline (Is_Non_Modal);
     pragma Inline (Get_Modal_State);
+    pragma Inline (Set_Modal);
+    pragma Inline (Set_Non_Modal);
     pragma Inline (Set_Modal_State);
+    pragma Inline (Clear_Modal_State);
 
     pragma Inline (Get_Label);
     pragma Inline (Set_Label);
+    pragma Inline (Set_Labels);
     pragma Inline (Hotspot);
-    pragma Inline (Set_Size_Range);
     pragma Inline (Shape);
+
+    pragma Inline (Set_Size_Range);
+    pragma Inline (Resize);
+    pragma Inline (Is_Position_Forced);
+    pragma Inline (Force_Position);
 
     pragma Inline (Get_X_Root);
     pragma Inline (Get_Y_Root);
     pragma Inline (Get_Decorated_W);
     pragma Inline (Get_Decorated_H);
 
+    pragma Inline (Get_X_Class);
+    pragma Inline (Set_X_Class);
+    pragma Inline (Get_Default_X_Class);
+    pragma Inline (Set_Default_X_Class);
+    pragma Inline (Is_Menu_Window);
+    pragma Inline (Is_Tooltip_Window);
+
     pragma Inline (Draw);
+    pragma Inline (Flush);
     pragma Inline (Handle);
 
 
