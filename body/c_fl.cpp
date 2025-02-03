@@ -55,6 +55,10 @@ unsigned int fl_enum_rgb_color(unsigned char r, unsigned char g, unsigned char b
     return fl_rgb_color(r, g, b);
 }
 
+unsigned int fl_enum_contrast(unsigned int f, unsigned int b) {
+    return fl_contrast(f, b);
+}
+
 
 
 

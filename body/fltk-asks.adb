@@ -140,6 +140,12 @@ package body FLTK.Asks is
     pragma Import (C, fl_ask_color_chooser2, "fl_ask_color_chooser2");
     pragma Inline (fl_ask_color_chooser2);
 
+    function fl_ask_show_colormap
+           (H : in Interfaces.C.unsigned)
+        return Interfaces.C.unsigned;
+    pragma Import (C, fl_ask_show_colormap, "fl_ask_show_colormap");
+    pragma Inline (fl_ask_show_colormap);
+
     function fl_ask_dir_chooser
            (M, D : in Interfaces.C.char_array;
             R    : in Interfaces.C.int)
@@ -552,6 +558,14 @@ package body FLTK.Asks is
         "fl_color_chooser returned unexpected int value of " &
         Interfaces.C.int'Image (Result);
     end Color_Chooser;
+
+
+    function Show_Colormap
+           (Old_Hue : in Color)
+        return Color is
+    begin
+        return Color (fl_ask_show_colormap (Interfaces.C.unsigned (Old_Hue)));
+    end Show_Colormap;
 
 
     function Dir_Chooser

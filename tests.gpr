@@ -19,19 +19,31 @@ project Tests is
        ("adjuster.adb",
         "ask.adb",
         "bitmap.adb",
+        "button.adb",
+        "buttons.adb",
         "compare.adb",
+        "clock.adb",
+        "color_chooser.adb",
+        "cursor.adb",
         "dirlist.adb",
+        "hello.adb",
         "page_formats.adb",
         "pixmap.adb");
 
     package Builder is
-        for Executable ("adjuster.adb")     use "adjuster";
-        for Executable ("ask.adb")          use "ask";
-        for Executable ("bitmap.adb")       use "bitmap";
-        for Executable ("compare.adb")      use "compare";
-        for Executable ("dirlist.adb")      use "dirlist";
-        for Executable ("page_formats.adb") use "page_formats";
-        for Executable ("pixmap.adb")       use "pixmap";
+        for Executable ("adjuster.adb")      use "adjuster";
+        for Executable ("ask.adb")           use "ask";
+        for Executable ("bitmap.adb")        use "bitmap";
+        for Executable ("button.adb")        use "button";
+        for Executable ("buttons.adb")       use "buttons";
+        for Executable ("compare.adb")       use "compare";
+        for Executable ("clock.adb")         use "clock";
+        for Executable ("color_chooser.adb") use "color_chooser";
+        for Executable ("cursor.adb")        use "cursor";
+        for Executable ("dirlist.adb")       use "dirlist";
+        for Executable ("hello.adb")         use "hello";
+        for Executable ("page_formats.adb")  use "page_formats";
+        for Executable ("pixmap.adb")        use "pixmap";
     end Builder;
 
     package Compiler renames Common.Compiler;

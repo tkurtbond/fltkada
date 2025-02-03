@@ -23,6 +23,12 @@ package body FLTK is
     pragma Import (C, fl_enum_rgb_color, "fl_enum_rgb_color");
     pragma Inline (fl_enum_rgb_color);
 
+    function fl_enum_contrast
+           (F, B : in Interfaces.C.unsigned)
+        return Interfaces.C.unsigned;
+    pragma Import (C, fl_enum_contrast, "fl_enum_contrast");
+    pragma Inline (fl_enum_contrast);
+
 
 
 
@@ -118,6 +124,16 @@ package body FLTK is
             Interfaces.C.unsigned_char (G),
             Interfaces.C.unsigned_char (B)));
     end RGB_Color;
+
+
+    function Contrast
+           (Fore, Back : in Color)
+        return Color is
+    begin
+        return Color (fl_enum_contrast
+           (Interfaces.C.unsigned (Fore),
+            Interfaces.C.unsigned (Back)));
+    end Contrast;
 
 
 

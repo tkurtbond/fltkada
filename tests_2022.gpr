@@ -17,11 +17,13 @@ project Tests_2022 is
 
     for Main use
        ("animated.adb",
-        "arc.adb");
+        "arc.adb",
+        "curve.adb");
 
     package Builder is
         for Executable ("animated.adb") use "animated";
-        for Executable ("arc.adb") use "arc";
+        for Executable ("arc.adb")      use "arc";
+        for Executable ("curve.adb")    use "curve";
     end Builder;
 
     package Compiler renames Common.Compiler;

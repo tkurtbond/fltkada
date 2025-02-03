@@ -30,7 +30,9 @@ extern "C" const char * fl_ask_password(const char * m, const char * d);
 
 
 extern "C" int fl_ask_color_chooser(const char * n, double & r, double & g, double & b, int m);
-extern "C" int fl_ask_color_chooser2(const char * n, uchar & r, uchar & g, uchar & b, int m);
+extern "C" int fl_ask_color_chooser2(const char * n,
+    unsigned char & r, unsigned char & g, unsigned char & b, int m);
+extern "C" unsigned int fl_ask_show_colormap(unsigned int h);
 extern "C" char * fl_ask_dir_chooser(const char * m, const char * d, int r);
 extern "C" char * fl_ask_file_chooser(const char * m, const char * p, const char * d, int r);
 extern "C" void fl_ask_file_chooser_callback(void(*cb)(const char *));

@@ -48,6 +48,10 @@ package FLTK is
            (R, G, B : in Color_Component)
         return Color;
 
+    function Contrast
+           (Fore, Back : in Color)
+        return Color;
+
     --  Examples of RGB colors without the above function
     --  The lowest byte has to be 00 for the color to be RGB
     RGB_Red_Color   : constant Color := 16#ff000000#;
@@ -60,6 +64,9 @@ package FLTK is
     Background2_Color : constant Color := 7;
     Inactive_Color    : constant Color := 8;
     Selection_Color   : constant Color := 15;
+
+    --  X allocation area
+    Free_Color : constant Color := 16;
 
     --  Standard boxtype colors
     Grey0_Color      : constant Color := 32;
@@ -145,7 +152,8 @@ package FLTK is
         SW_Mouse,
         W_Mouse,
         NW_Mouse,
-        None_Mouse);
+        None_Mouse)
+    with Default_Value => Default_Mouse;
 
 
 
@@ -620,22 +628,22 @@ private
 
 
 
+    pragma Inline (RGB_Color);
+    pragma Inline (Contrast);
+
     pragma Inline (ABI_Check);
     pragma Inline (ABI_Version);
     pragma Inline (API_Version);
     pragma Inline (Version);
 
-
     pragma Inline (Awake);
     pragma Inline (Lock);
     pragma Inline (Unlock);
-
 
     pragma Inline (Is_Damaged);
     pragma Inline (Set_Damaged);
     pragma Inline (Flush);
     pragma Inline (Redraw);
-
 
     pragma Inline (Check);
     pragma Inline (Ready);
@@ -644,4 +652,5 @@ private
 
 
 end FLTK;
+
 

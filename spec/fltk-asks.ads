@@ -30,7 +30,7 @@ package FLTK.Asks is
 
     type RGB_Float is new Long_Float range 0.0 .. 1.0;
 
-    type RGB_Int is mod 256;
+    subtype RGB_Int is Color_Component;
 
     type File_Chooser_Callback is access procedure
            (Item : in String);
@@ -131,6 +131,10 @@ package FLTK.Asks is
                 FLTK.Widgets.Groups.Color_Choosers.RGB)
         return Confirm_Result;
 
+    function Show_Colormap
+           (Old_Hue : in Color)
+        return Color;
+
     function Dir_Chooser
            (Message, Default : in String;
             Relative         : in Boolean := False)
@@ -195,6 +199,7 @@ private
     pragma Inline (Password);
 
     pragma Inline (Color_Chooser);
+    pragma Inline (Show_Colormap);
     pragma Inline (Dir_Chooser);
     pragma Inline (File_Chooser);
     pragma Inline (Set_File_Chooser_Callback);

@@ -5,6 +5,7 @@
 
 
 #include <FL/fl_ask.H>
+#include <FL/fl_show_colormap.H>
 #include <FL/Fl_File_Chooser.H>
 #include <FL/Fl_Color_Chooser.H>
 #include "c_fl_ask.h"
@@ -90,8 +91,14 @@ int fl_ask_color_chooser(const char * n, double & r, double & g, double & b, int
     return fl_color_chooser(n, r, g, b, m);
 }
 
-int fl_ask_color_chooser2(const char * n, uchar & r, uchar & g, uchar & b, int m) {
+int fl_ask_color_chooser2(const char * n,
+    unsigned char & r, unsigned char & g, unsigned char & b, int m)
+{
     return fl_color_chooser(n, r, g, b, m);
+}
+
+unsigned int fl_ask_show_colormap(unsigned int h) {
+    return static_cast<unsigned int>(fl_show_colormap(static_cast<Fl_Color>(h)));
 }
 
 char * fl_ask_dir_chooser(const char * m, const char * d, int r) {

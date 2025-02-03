@@ -24,6 +24,11 @@
     <td>FLTK.Asks</td>
   </tr>
 
+  <tr>
+    <td>fl_show_colormap</td>
+    <td>&nbsp;</td>
+  </tr>
+
 </table>
 
 
@@ -380,6 +385,17 @@ function Password
        (Message : in String;
         Default : in String := "")
     return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Color fl_show_colormap(Fl_Color oldcol);
+</pre></td>
+<td><pre>
+function Show_Colormap
+       (Old_Hue : in Color)
+    return Color;
 </pre></td>
   </tr>
 

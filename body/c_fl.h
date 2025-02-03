@@ -41,6 +41,7 @@ extern "C" size_t c_pointer_size();
 
 
 extern "C" unsigned int fl_enum_rgb_color(unsigned char r, unsigned char g, unsigned char b);
+extern "C" unsigned int fl_enum_contrast(unsigned int f, unsigned int b);
 
 
 extern "C" int fl_abi_check(int v);
