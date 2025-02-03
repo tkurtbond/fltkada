@@ -51,6 +51,11 @@
     <td>Callback_Flag</td>
   </tr>
 
+  <tr>
+    <td>uchar</td>
+    <td>Damage_Mask</td>
+  </tr>
+
 </table>
 
 
@@ -87,20 +92,51 @@ function Create
 
 
 <table class="function">
+  <tr><th colspan="2">Static Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+static void default_callback(Fl_Widget *cb, void *d);
+</pre></td>
+<td><pre>
+procedure Default_Callback
+       (This : in out Widget'Class);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static unsigned int label_shortcut(const char *t);
+</pre></td>
+<td>Marked as internal use only.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int test_shortcut(const char *, const bool require_alt=false);
+</pre></td>
+<td>Marked as internal use only.</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
   <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
 <td><pre>
 void _clear_fullscreen();
 </pre></td>
-<td>&nbsp;</td>
+<td>Marked as internal use only.</td>
   </tr>
 
   <tr>
 <td><pre>
 void _set_fullscreen();
 </pre></td>
-<td>&nbsp;</td>
+<td>Marked as internal use only.</td>
   </tr>
 
   <tr>
@@ -161,35 +197,35 @@ procedure Set_Alignment
 <td><pre>
 long argument() const;
 </pre></td>
-<td>&nbsp;</td>
+<td>Intentionally left unbound.</td>
   </tr>
 
   <tr>
 <td><pre>
 void argument(long v);
 </pre></td>
-<td>&nbsp;</td>
+<td>Intentionally left unbound.</td>
   </tr>
 
   <tr>
 <td><pre>
 virtual class Fl_Gl_Window * as_gl_window();
 </pre></td>
-<td>&nbsp;</td>
+<td>Use runtime tag checks and view conversions instead.</td>
   </tr>
 
   <tr>
 <td><pre>
 virtual Fl_Group * as_group();
 </pre></td>
-<td>Use runtime tag checks and view conversions instead</td>
+<td>Use runtime tag checks and view conversions instead.</td>
   </tr>
 
   <tr>
 <td><pre>
 virtual Fl_Window * as_window();
 </pre></td>
-<td>Use runtime tag checks and view conversions instead</td>
+<td>Use runtime tag checks and view conversions instead.</td>
   </tr>
 
   <tr>
@@ -229,12 +265,13 @@ function Get_Callback
 <td><pre>
 void callback(Fl_Callback *cb, void *p);
 </pre></td>
-<td>&nbsp;</td>
+<td>Use callback(Fl_Callback *cb) / Set_Callback instead.</td>
   </tr>
 
   <tr>
 <td><pre>
 void callback(Fl_Callback *cb);
+
 void callback(Fl_Callback0 *cb);
 </pre></td>
 <td><pre>
@@ -248,7 +285,7 @@ procedure Set_Callback
 <td><pre>
 void callback(Fl_Callback1 *cb, long p=0);
 </pre></td>
-<td>&nbsp;</td>
+<td>Use callback(Fl_Callback *cb) / Set_Callback instead.</td>
   </tr>
 
   <tr>
@@ -267,9 +304,8 @@ function Has_Changed
 void clear_active();
 </pre></td>
 <td><pre>
-procedure Set_Active
-       (This : in out Widget;
-        To   : in     Boolean);
+procedure Clear_Active
+       (This : in out Widget);
 </pre></td>
   </tr>
 
@@ -278,9 +314,8 @@ procedure Set_Active
 void clear_changed();
 </pre></td>
 <td><pre>
-procedure Set_Changed
-       (This : in out Widget;
-        To   : in     Boolean);
+procedure Clear_Changed
+       (This : in out Widget);
 </pre></td>
   </tr>
 
@@ -288,7 +323,11 @@ procedure Set_Changed
 <td><pre>
 void clear_damage(uchar c=0);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Clear_Damage
+       (This : in out Widget;
+        Mask : in     Damage_Mask := Damage_None);
+</pre></td>
   </tr>
 
   <tr>
@@ -296,9 +335,8 @@ void clear_damage(uchar c=0);
 void clear_output();
 </pre></td>
 <td><pre>
-procedure Set_Output_Only
-       (This : in out Widget;
-        To   : in     Boolean);
+procedure Clear_Output_Only
+       (This : in out Widget);
 </pre></td>
   </tr>
 
@@ -307,9 +345,8 @@ procedure Set_Output_Only
 void clear_visible();
 </pre></td>
 <td><pre>
-procedure Set_Visible
-       (This : in out Widget;
-        To   : in     Boolean);
+procedure Clear_Visible
+       (This : in out Widget);
 </pre></td>
   </tr>
 
@@ -318,9 +355,8 @@ procedure Set_Visible
 void clear_visible_focus();
 </pre></td>
 <td><pre>
-procedure Set_Visible_Focus
-       (This : in out Widget;
-        To   : in     Boolean);
+procedure Clear_Visible_Focus
+       (This : in out Widget);
 </pre></td>
   </tr>
 
@@ -350,21 +386,25 @@ procedure Set_Background_Color
 <td><pre>
 void color(Fl_Color bg, Fl_Color sel);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Set_Colors
+       (This      : in out Widget;
+        Back, Sel : in     Color);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 Fl_Color color2() const;
 </pre></td>
-<td>&nbsp;</td>
+<td>Deprecated, use selection_color / Get_Selection_Color instead.</td>
   </tr>
 
   <tr>
 <td><pre>
 void color2(unsigned a);
 </pre></td>
-<td>&nbsp;</td>
+<td>Deprecated, use selection_color / Set_Selection_Color instead.</td>
   </tr>
 
   <tr>
@@ -409,6 +449,10 @@ uchar damage() const;
 function Is_Damaged
        (This : in Widget)
     return Boolean;
+
+function Get_Damage
+       (This : in Widget)
+    return Damage_Mask;
 </pre></td>
   </tr>
 
@@ -417,9 +461,9 @@ function Is_Damaged
 void damage(uchar c);
 </pre></td>
 <td><pre>
-procedure Set_Damaged
+procedure Set_Damage
        (This : in out Widget;
-        To   : in     Boolean);
+        Mask : in     Damage_Mask);
 </pre></td>
   </tr>
 
@@ -428,9 +472,9 @@ procedure Set_Damaged
 void damage(uchar c, int x, int y, int w, int h);
 </pre></td>
 <td><pre>
-procedure Set_Damaged
+procedure Set_Damage
        (This       : in out Widget;
-        To         : in     Boolean;
+        Mask       : in     Damage_Mask;
         X, Y, W, H : in     Integer);
 </pre></td>
   </tr>
@@ -439,7 +483,7 @@ procedure Set_Damaged
 <td><pre>
 int damage_resize(int, int, int, int);
 </pre></td>
-<td>&nbsp;</td>
+<td>Marked as internal use only.</td>
   </tr>
 
   <tr>
@@ -455,6 +499,7 @@ procedure Deactivate
   <tr>
 <td><pre>
 Fl_Image * deimage();
+
 const Fl_Image * deimage() const;
 </pre></td>
 <td><pre>
@@ -467,6 +512,7 @@ function Get_Inactive_Image
   <tr>
 <td><pre>
 void deimage(Fl_Image *img);
+
 void deimage(Fl_Image &img);
 </pre></td>
 <td><pre>
@@ -489,15 +535,14 @@ procedure Do_Callback
   <tr>
 <td><pre>
 void do_callback(Fl_Widget *o, long arg);
-</pre></td>
-<td>&nbsp;</td>
-  </tr>
 
-  <tr>
-<td><pre>
 void do_callback(Fl_Widget *o, void *arg=0);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Do_Callback
+       (This  : in     Widget;
+        Using : in out Widget);
+</pre></td>
   </tr>
 
   <tr>
@@ -516,9 +561,9 @@ void draw_label(int, int, int, int, Fl_Align) const;
 </pre></td>
 <td><pre>
 procedure Draw_Label
-       (This       : in Widget;
-        X, Y, W, H : in Integer;
-        Align      : in Alignment);
+       (This       : in out Widget;
+        X, Y, W, H : in     Integer;
+        Align      : in     Alignment);
 </pre></td>
   </tr>
 
@@ -549,12 +594,16 @@ function Handle
 <td><pre>
 virtual void hide();
 </pre></td>
-<td>See void clear_visible();</td>
+<td><pre>
+procedure Hide
+       (This : in out Widget);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 Fl_Image * image();
+
 const Fl_Image * image() const;
 </pre></td>
 <td><pre>
@@ -567,6 +616,7 @@ function Get_Image
   <tr>
 <td><pre>
 void image(Fl_Image *img);
+
 void image(Fl_Image &img);
 </pre></td>
 <td><pre>
@@ -592,7 +642,8 @@ function Inside
 <td><pre>
 int is_label_copied() const;
 </pre></td>
-<td>&nbsp;</td>
+<td>Due to the marshalling between String and char * this
+would always return true, so left unbound.</td>
   </tr>
 
   <tr>
@@ -610,14 +661,21 @@ function Get_Label
 <td><pre>
 void label(const char *text);
 </pre></td>
-<td>See void copy_label(const char *new_label);</td>
+<td>Due to the marshalling between String and char * using
+this method would be pointless, so its functionality is
+subsumed by copy_label / Set_Label.</td>
   </tr>
 
   <tr>
 <td><pre>
 void label(Fl_Labeltype a, const char *b);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Set_Label
+       (This : in out Widget;
+        Kind : in     Label_Kind;
+        Text : in     String);
+</pre></td>
   </tr>
 
   <tr>
@@ -745,7 +803,7 @@ function Parent
 <td><pre>
 void parent(Fl_Group *p);
 </pre></td>
-<td>&nbsp;</td>
+<td>Marked as internal use only.</td>
   </tr>
 
   <tr>
@@ -783,7 +841,11 @@ procedure Redraw_Label
 <td><pre>
 virtual void resize(int x, int y, int w, int h);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Resize
+       (This       : in out Widget;
+        X, Y, W, H : in     Integer);
+</pre></td>
   </tr>
 
   <tr>
@@ -812,42 +874,60 @@ procedure Set_Selection_Color
 <td><pre>
 void set_active();
 </pre></td>
-<td>See void clear_active();</td>
+<td><pre>
+procedure Set_Active
+       (This : in out Widget);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 void set_changed();
 </pre></td>
-<td>See void clear_changed();</td>
+<td><pre>
+procedure Set_Changed
+       (This : in out Widget);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 void set_output();
 </pre></td>
-<td>See void clear_output();</td>
+<td><pre>
+procedure Set_Output_Only
+       (This : in out Widget);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 void set_visible();
 </pre></td>
-<td>See void clear_visible();</td>
+<td><pre>
+procedure Set_Visible
+       (This : in out Widget);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 void set_visible_focus();
 </pre></td>
-<td>See void clear_visible_focus();</td>
+<td><pre>
+procedure Set_Visible_Focus
+       (This : in out Widget);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 virtual void show();
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Show
+       (This : in out Widget);
+</pre></td>
   </tr>
 
   <tr>
@@ -887,7 +967,7 @@ function Takes_Events
 <td><pre>
 int test_shortcut();
 </pre></td>
-<td>&nbsp;</td>
+<td>Marked as internal use only.</td>
   </tr>
 
   <tr>
@@ -905,7 +985,9 @@ function Get_Tooltip
 <td><pre>
 void tooltip(const char *text);
 </pre></td>
-<td>See void copy_tooltip(const char *text);</td>
+<td>Due to the marshalling between String and char * using
+this method would be pointless, so its functionality is
+subsumed by copy_tooltip / Set_Tooltip.</td>
   </tr>
 
   <tr>
@@ -925,8 +1007,8 @@ Fl_Window * top_window_offset(int &xoff, int &yoff) const;
 </pre></td>
 <td><pre>
 function Top_Window_Offset
-       (This : in Widget;
-        Offset_X, Offset_Y : out Integer)
+       (This               : in     Widget;
+        Offset_X, Offset_Y :    out Integer)
     return access FLTK.Widgets.Groups.Windows.Window'Class;
 </pre></td>
   </tr>
@@ -935,35 +1017,41 @@ function Top_Window_Offset
 <td><pre>
 uchar type() const;
 </pre></td>
-<td>&nbsp;</td>
+<td>See Get_Kind subprograms in Fl_Counter, Fl_Dial, Fl_Input_,
+Fl_Pack, Fl_Scroll, Fl_Slider, Fl_Spinner.</td>
   </tr>
 
   <tr>
 <td><pre>
 void type(uchar t);
 </pre></td>
-<td>&nbsp;</td>
+<td>See Set_Kind subprograms in Fl_Counter, Fl_Dial, Fl_Input_,
+Fl_Pack, Fl_Scroll, Fl_Slider, Fl_Spinner.</td>
   </tr>
 
   <tr>
 <td><pre>
 int use_accents_menu();
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Uses_Accents_Menu
+       (This : in Widget)
+    return Boolean;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 void * user_data() const;
 </pre></td>
-<td>&nbsp;</td>
+<td>Used internally by the binding.</td>
   </tr>
 
   <tr>
 <td><pre>
 void user_data(void *v);
 </pre></td>
-<td>&nbsp;</td>
+<td>Used internally by the binding.</td>
   </tr>
 
   <tr>
@@ -981,7 +1069,11 @@ function Is_Visible
 <td><pre>
 void visible_focus(int v);
 </pre></td>
-<td>See void clear_visible_focus();</td>
+<td><pre>
+procedure Set_Visible_Focus
+       (This : in out Widget;
+        To   : in     Boolean);
+</pre></td>
   </tr>
 
   <tr>
@@ -1070,6 +1162,151 @@ function Get_Y
        (This : in Widget)
     return Integer;
 </pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void clear_flag(unsigned int c);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw_backdrop() const;
+</pre></td>
+<td><pre>
+procedure Draw_Backdrop
+       (This : in out Widget);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw_box() const;
+</pre></td>
+<td><pre>
+procedure Draw_Box
+       (This : in out Widget);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw_box(Fl_Boxtype t, Fl_Color c) const;
+</pre></td>
+<td><pre>
+procedure Draw_Box
+       (This : in out Widget;
+        Kind : in     Box_Kind;
+        Hue  : in     Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw_box(Fl_Boxtype t, int x, int y, int w, int h,
+    Fl_Color c) const;
+</pre></td>
+<td><pre>
+procedure Draw_Box
+       (This       : in out Widget;
+        Kind       : in     Box_Kind;
+        X, Y, W, H : in     Integer;
+        Hue        : in     Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw_focus();
+</pre></td>
+<td><pre>
+procedure Draw_Focus
+       (This : in out Widget);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw_focus(Fl_Boxtype t, int x, int y, int w, int h) const;
+</pre></td>
+<td><pre>
+procedure Draw_Focus
+       (This       : in out Widget;
+        Kind       : in     Box_Kind;
+        X, Y, W, H : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw_label() const;
+</pre></td>
+<td><pre>
+procedure Draw_Label
+       (This : in out Widget);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw_label(int, int, int, int) const;
+</pre></td>
+<td><pre>
+procedure Draw_Label
+       (This       : in out Widget;
+        X, Y, W, H : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+unsigned int flags() const;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void h(int v);
+</pre></td>
+<td>Marked as internal use only.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void set_flag(unsigned int c);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void w(int v);
+</pre></td>
+<td>Marked as internal use only.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void x(int v);
+</pre></td>
+<td>Marked as internal use only.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void y(int v);
+</pre></td>
+<td>Marked as internal use only.</td>
   </tr>
 
 </table>

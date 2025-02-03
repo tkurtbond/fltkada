@@ -23,8 +23,10 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 class Friend_Widget : Fl_Widget {
 public:
-    //  probably expand this later when doing a pass for protected methods
+    using Fl_Widget::draw_backdrop;
     using Fl_Widget::draw_box;
+    using Fl_Widget::draw_focus;
+    using Fl_Widget::draw_label;
 };
 
 
@@ -131,6 +133,9 @@ void fl_widget_clear_output(WIDGET w) {
     static_cast<Fl_Widget*>(w)->clear_output();
 }
 
+
+
+
 int fl_widget_visible(WIDGET w) {
     return static_cast<Fl_Widget*>(w)->visible();
 }
@@ -147,6 +152,14 @@ void fl_widget_clear_visible(WIDGET w) {
     static_cast<Fl_Widget*>(w)->clear_visible();
 }
 
+void fl_widget_show(WIDGET w) {
+    static_cast<Fl_Widget*>(w)->show();
+}
+
+void fl_widget_hide(WIDGET w) {
+    static_cast<Fl_Widget*>(w)->hide();
+}
+
 
 
 
@@ -154,8 +167,16 @@ int fl_widget_get_visible_focus(WIDGET w) {
     return static_cast<Fl_Widget*>(w)->visible_focus();
 }
 
+void fl_widget_set_visible_focus2(WIDGET w) {
+    static_cast<Fl_Widget*>(w)->set_visible_focus();
+}
+
 void fl_widget_set_visible_focus(WIDGET w, int f) {
     static_cast<Fl_Widget*>(w)->visible_focus(f);
+}
+
+void fl_widget_clear_visible_focus(WIDGET w) {
+    static_cast<Fl_Widget*>(w)->clear_visible_focus();
 }
 
 int fl_widget_take_focus(WIDGET w) {
@@ -183,6 +204,10 @@ unsigned int fl_widget_get_selection_color(WIDGET w) {
 
 void fl_widget_set_selection_color(WIDGET w, unsigned int c) {
     static_cast<Fl_Widget*>(w)->selection_color(c);
+}
+
+void fl_widget_set_colors(WIDGET w, unsigned int b, unsigned int s) {
+    static_cast<Fl_Widget*>(w)->color(b, s);
 }
 
 
@@ -293,11 +318,15 @@ void fl_widget_set_callback(WIDGET w, void * cb) {
     static_cast<Fl_Widget*>(w)->callback(reinterpret_cast<Fl_Callback_p>(cb));
 }
 
-unsigned int fl_widget_get_when(WIDGET w) {
+void fl_widget_default_callback(WIDGET w, void * ud) {
+    Fl_Widget::default_callback(static_cast<Fl_Widget*>(w), ud);
+}
+
+unsigned char fl_widget_get_when(WIDGET w) {
     return static_cast<Fl_Widget*>(w)->when();
 }
 
-void fl_widget_set_when(WIDGET w, unsigned int c) {
+void fl_widget_set_when(WIDGET w, unsigned char c) {
     static_cast<Fl_Widget*>(w)->when(c);
 }
 
@@ -322,6 +351,10 @@ int fl_widget_get_h(WIDGET w) {
 
 void fl_widget_size(WIDGET w, int d, int h) {
     static_cast<Fl_Widget*>(w)->size(d, h);
+}
+
+void fl_widget_resize(WIDGET o, int x, int y, int w, int h) {
+    static_cast<Fl_Widget*>(o)->resize(x, y, w, h);
 }
 
 void fl_widget_position(WIDGET w, int x, int y) {
@@ -353,24 +386,20 @@ void fl_widget_set_type(WIDGET w, unsigned char t) {
 
 
 
-int fl_widget_damage(WIDGET w) {
+unsigned char fl_widget_damage(WIDGET w) {
     return static_cast<Fl_Widget*>(w)->damage();
 }
 
-void fl_widget_set_damage(WIDGET w, int t) {
-    if (t != 0) {
-        static_cast<Fl_Widget*>(w)->damage(0xff);
-    } else {
-        static_cast<Fl_Widget*>(w)->damage(0x00);
-    }
+void fl_widget_set_damage(WIDGET w, unsigned char m) {
+    static_cast<Fl_Widget*>(w)->damage(m);
 }
 
-void fl_widget_set_damage2(WIDGET w, int t, int x, int y, int d, int h) {
-    if (t != 0) {
-        static_cast<Fl_Widget*>(w)->damage(0xff,x,y,d,h);
-    } else {
-        static_cast<Fl_Widget*>(w)->damage(0x00,x,y,d,h);
-    }
+void fl_widget_set_damage2(WIDGET w, unsigned char m, int x, int y, int d, int h) {
+    static_cast<Fl_Widget*>(w)->damage(m, x, y, d, h);
+}
+
+void fl_widget_clear_damage(WIDGET w, unsigned char m) {
+    static_cast<Fl_Widget*>(w)->clear_damage(m);
 }
 
 void fl_widget_draw(WIDGET w) {
@@ -381,8 +410,48 @@ void fl_widget_draw(WIDGET w) {
     //  and makes uniform the implementation of the Ada Widget Draw subprogram.
 }
 
-void fl_widget_draw_label(WIDGET w, int x, int y, int d, int h, unsigned int a) {
-    static_cast<Fl_Widget*>(w)->draw_label(x,y,d,h,a);
+void fl_widget_draw_label(WIDGET w) {
+    void (Fl_Widget::*mydraw)(void) const = &Friend_Widget::draw_label;
+    (static_cast<Fl_Widget*>(w)->*mydraw)();
+}
+
+void fl_widget_draw_label2(WIDGET o, int x, int y, int w, int h) {
+    void (Fl_Widget::*mydraw)(int,int,int,int) const = &Friend_Widget::draw_label;
+    (static_cast<Fl_Widget*>(o)->*mydraw)(x, y, w, h);
+}
+
+void fl_widget_draw_label3(WIDGET w, int x, int y, int d, int h, unsigned int a) {
+    static_cast<Fl_Widget*>(w)->draw_label(x, y, d, h, a);
+}
+
+void fl_widget_draw_backdrop(WIDGET w) {
+    (static_cast<Fl_Widget*>(w)->*(&Friend_Widget::draw_backdrop))();
+}
+
+void fl_widget_draw_box(WIDGET w) {
+    void (Fl_Widget::*mydraw)(void) const = &Friend_Widget::draw_box;
+    (static_cast<Fl_Widget*>(w)->*mydraw)();
+}
+
+void fl_widget_draw_box2(WIDGET w, int k, unsigned int h) {
+    void (Fl_Widget::*mydraw)(Fl_Boxtype,Fl_Color) const = &Friend_Widget::draw_box;
+    (static_cast<Fl_Widget*>(w)->*mydraw)(static_cast<Fl_Boxtype>(k), static_cast<Fl_Color>(h));
+}
+
+void fl_widget_draw_box3(WIDGET o, int k, int x, int y, int w, int h, unsigned int c) {
+    void (Fl_Widget::*mydraw)(Fl_Boxtype,int,int,int,int,Fl_Color) const = &Friend_Widget::draw_box;
+    (static_cast<Fl_Widget*>(o)->*mydraw)
+        (static_cast<Fl_Boxtype>(k), x, y, w, h, static_cast<Fl_Color>(c));
+}
+
+void fl_widget_draw_focus(WIDGET w) {
+    void (Fl_Widget::*mydraw)(void) = &Friend_Widget::draw_focus;
+    (static_cast<Fl_Widget*>(w)->*mydraw)();
+}
+
+void fl_widget_draw_focus2(WIDGET o, int k, int x, int y, int w, int h) {
+    void (Fl_Widget::*mydraw)(Fl_Boxtype,int,int,int,int) const = &Friend_Widget::draw_focus;
+    (static_cast<Fl_Widget*>(o)->*mydraw)(static_cast<Fl_Boxtype>(k), x, y, w, h);
 }
 
 void fl_widget_redraw(WIDGET w) {
@@ -395,6 +464,13 @@ void fl_widget_redraw_label(WIDGET w) {
 
 int fl_widget_handle(WIDGET w, int e) {
     return static_cast<My_Widget*>(w)->Fl_Widget::handle(e);
+}
+
+
+
+
+int fl_widget_use_accents_menu(WIDGET w) {
+    return static_cast<Fl_Widget*>(w)->use_accents_menu();
 }
 
 

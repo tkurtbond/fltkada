@@ -199,7 +199,7 @@ void fl_table_do_callback(TABLE t, int x, int r, int c) {
     static_cast<Fl_Table*>(t)->do_callback(static_cast<Fl_Table::TableContext>(x), r, c);
 }
 
-void fl_table_when(TABLE t, unsigned int w) {
+void fl_table_when(TABLE t, unsigned char w) {
     static_cast<Fl_Table*>(t)->when(static_cast<Fl_When>(w));
 }
 

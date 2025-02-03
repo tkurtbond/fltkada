@@ -192,7 +192,7 @@ package body FLTK.Widgets.Groups.Tables is
 
     procedure fl_table_when
            (T : in Storage.Integer_Address;
-            W : in Interfaces.C.unsigned);
+            W : in Interfaces.C.unsigned_char);
     pragma Import (C, fl_table_when, "fl_table_when");
     pragma Inline (fl_table_when);
 
@@ -1109,7 +1109,7 @@ package body FLTK.Widgets.Groups.Tables is
            (This  : in out Table;
             Value : in     Callback_Flag) is
     begin
-        fl_table_when (This.Void_Ptr, Interfaces.C.unsigned (Value));
+        fl_table_when (This.Void_Ptr, Flag_To_UChar (Value));
     end Set_When;
 
 

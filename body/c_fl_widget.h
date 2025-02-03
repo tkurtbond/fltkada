@@ -33,14 +33,20 @@ extern "C" void fl_widget_clear_changed(WIDGET w);
 extern "C" int fl_widget_output(WIDGET w);
 extern "C" void fl_widget_set_output(WIDGET w);
 extern "C" void fl_widget_clear_output(WIDGET w);
+
+
 extern "C" int fl_widget_visible(WIDGET w);
 extern "C" int fl_widget_visible_r(WIDGET w);
 extern "C" void fl_widget_set_visible(WIDGET w);
 extern "C" void fl_widget_clear_visible(WIDGET w);
+extern "C" void fl_widget_show(WIDGET w);
+extern "C" void fl_widget_hide(WIDGET w);
 
 
 extern "C" int fl_widget_get_visible_focus(WIDGET w);
+extern "C" void fl_widget_set_visible_focus2(WIDGET w);
 extern "C" void fl_widget_set_visible_focus(WIDGET w, int f);
+extern "C" void fl_widget_clear_visible_focus(WIDGET w);
 extern "C" int fl_widget_take_focus(WIDGET w);
 extern "C" int fl_widget_takesevents(WIDGET w);
 
@@ -49,6 +55,7 @@ extern "C" unsigned int fl_widget_get_color(WIDGET w);
 extern "C" void fl_widget_set_color(WIDGET w, unsigned int b);
 extern "C" unsigned int fl_widget_get_selection_color(WIDGET w);
 extern "C" void fl_widget_set_selection_color(WIDGET w, unsigned int c);
+extern "C" void fl_widget_set_colors(WIDGET w, unsigned int b, unsigned int s);
 
 
 extern "C" void * fl_widget_get_parent(WIDGET w);
@@ -81,8 +88,9 @@ extern "C" void fl_widget_measure_label(WIDGET w, int &d, int &h);
 
 
 extern "C" void fl_widget_set_callback(WIDGET w, void * cb);
-extern "C" unsigned int fl_widget_get_when(WIDGET w);
-extern "C" void fl_widget_set_when(WIDGET w, unsigned int c);
+extern "C" void fl_widget_default_callback(WIDGET w, void * ud);
+extern "C" unsigned char fl_widget_get_when(WIDGET w);
+extern "C" void fl_widget_set_when(WIDGET w, unsigned char c);
 
 
 extern "C" int fl_widget_get_x(WIDGET w);
@@ -90,6 +98,7 @@ extern "C" int fl_widget_get_y(WIDGET w);
 extern "C" int fl_widget_get_w(WIDGET w);
 extern "C" int fl_widget_get_h(WIDGET w);
 extern "C" void fl_widget_size(WIDGET w, int d, int h);
+extern "C" void fl_widget_resize(WIDGET o, int x, int y, int w, int h);
 extern "C" void fl_widget_position(WIDGET w, int x, int y);
 
 
@@ -101,14 +110,26 @@ extern "C" unsigned char fl_widget_get_type(WIDGET w);
 extern "C" void fl_widget_set_type(WIDGET w, unsigned char t);
 
 
-extern "C" int fl_widget_damage(WIDGET w);
-extern "C" void fl_widget_set_damage(WIDGET w, int t);
-extern "C" void fl_widget_set_damage2(WIDGET w, int t, int x, int y, int d, int h);
+extern "C" unsigned char fl_widget_damage(WIDGET w);
+extern "C" void fl_widget_set_damage(WIDGET w, unsigned char m);
+extern "C" void fl_widget_set_damage2(WIDGET w, unsigned char m, int x, int y, int d, int h);
+extern "C" void fl_widget_clear_damage(WIDGET w, unsigned char m);
 extern "C" void fl_widget_draw(WIDGET w);
-extern "C" void fl_widget_draw_label(WIDGET w, int x, int y, int d, int h, unsigned int a);
+extern "C" void fl_widget_draw_label(WIDGET w);
+extern "C" void fl_widget_draw_label2(WIDGET o, int x, int y, int w, int h);
+extern "C" void fl_widget_draw_label3(WIDGET w, int x, int y, int d, int h, unsigned int a);
+extern "C" void fl_widget_draw_backdrop(WIDGET w);
+extern "C" void fl_widget_draw_box(WIDGET w);
+extern "C" void fl_widget_draw_box2(WIDGET w, int k, unsigned int h);
+extern "C" void fl_widget_draw_box3(WIDGET o, int k, int x, int y, int w, int h, unsigned int c);
+extern "C" void fl_widget_draw_focus(WIDGET w);
+extern "C" void fl_widget_draw_focus2(WIDGET o, int k, int x, int y, int w, int h);
 extern "C" void fl_widget_redraw(WIDGET w);
 extern "C" void fl_widget_redraw_label(WIDGET w);
 extern "C" int fl_widget_handle(WIDGET w, int e);
+
+
+extern "C" int fl_widget_use_accents_menu(WIDGET w);
 
 
 #endif

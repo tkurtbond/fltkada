@@ -14,6 +14,7 @@ limited with
 
 private with
 
+    Ada.Unchecked_Conversion,
     System.Address_To_Access_Conversions,
     Interfaces.C,
     FLTK.Widget_Callback_Conversions;
@@ -30,13 +31,45 @@ package FLTK.Widgets is
     type Widget_Callback is access procedure
            (Item : in out Widget'Class);
 
-    type Callback_Flag is private;
+
+    type Callback_Flag is record
+        Changed   : Boolean := False;
+        Interact  : Boolean := False;
+        Release   : Boolean := False;
+        Enter_Key : Boolean := False;
+    end record;
+
     function "+" (Left, Right : in Callback_Flag) return Callback_Flag;
-    Call_Never     : constant Callback_Flag;
-    When_Changed   : constant Callback_Flag;
-    When_Interact  : constant Callback_Flag;
-    When_Release   : constant Callback_Flag;
-    When_Enter_Key : constant Callback_Flag;
+
+    Call_Never            : constant Callback_Flag;
+    When_Changed          : constant Callback_Flag;
+    When_Interact         : constant Callback_Flag;
+    When_Release          : constant Callback_Flag;
+    When_Release_Always   : constant Callback_Flag;
+    When_Enter_Key        : constant Callback_Flag;
+    When_Enter_Key_Always : constant Callback_Flag;
+
+
+    type Damage_Mask is record
+        Child   : Boolean := False;
+        Expose  : Boolean := False;
+        Scroll  : Boolean := False;
+        Overlay : Boolean := False;
+        User_1  : Boolean := False;
+        User_2  : Boolean := False;
+        Full    : Boolean := False;
+    end record;
+
+    function "+" (Left, Right : in Damage_Mask) return Damage_Mask;
+
+    Damage_None    : constant Damage_Mask;
+    Damage_Child   : constant Damage_Mask;
+    Damage_Expose  : constant Damage_Mask;
+    Damage_Scroll  : constant Damage_Mask;
+    Damage_Overlay : constant Damage_Mask;
+    Damage_User_1  : constant Damage_Mask;
+    Damage_User_2  : constant Damage_Mask;
+    Damage_Full    : constant Damage_Mask;
 
 
 
@@ -74,8 +107,14 @@ package FLTK.Widgets is
         return Boolean;
 
     procedure Set_Active
+           (This : in out Widget);
+
+    procedure Set_Active
            (This : in out Widget;
             To   : in     Boolean);
+
+    procedure Clear_Active
+           (This : in out Widget);
 
 
 
@@ -85,16 +124,31 @@ package FLTK.Widgets is
         return Boolean;
 
     procedure Set_Changed
+           (This : in out Widget);
+
+    procedure Set_Changed
            (This : in out Widget;
             To   : in     Boolean);
+
+    procedure Clear_Changed
+           (This : in out Widget);
 
     function Is_Output_Only
            (This : in Widget)
         return Boolean;
 
     procedure Set_Output_Only
+           (This : in out Widget);
+
+    procedure Set_Output_Only
            (This : in out Widget;
             To   : in     Boolean);
+
+    procedure Clear_Output_Only
+           (This : in out Widget);
+
+
+
 
     function Is_Visible
            (This : in Widget)
@@ -105,8 +159,20 @@ package FLTK.Widgets is
         return Boolean;
 
     procedure Set_Visible
+           (This : in out Widget);
+
+    procedure Set_Visible
            (This : in out Widget;
             To   : in     Boolean);
+
+    procedure Clear_Visible
+           (This : in out Widget);
+
+    procedure Show
+           (This : in out Widget);
+
+    procedure Hide
+           (This : in out Widget);
 
 
 
@@ -116,8 +182,14 @@ package FLTK.Widgets is
         return Boolean;
 
     procedure Set_Visible_Focus
+           (This : in out Widget);
+
+    procedure Set_Visible_Focus
            (This : in out Widget;
             To   : in     Boolean);
+
+    procedure Clear_Visible_Focus
+           (This : in out Widget);
 
     function Take_Focus
            (This : in out Widget)
@@ -146,6 +218,10 @@ package FLTK.Widgets is
            (This : in out Widget;
             To   : in     Color);
 
+    procedure Set_Colors
+           (This      : in out Widget;
+            Back, Sel : in     Color);
+
 
 
 
@@ -172,8 +248,8 @@ package FLTK.Widgets is
         return access FLTK.Widgets.Groups.Windows.Window'Class;
 
     function Top_Window_Offset
-           (This : in Widget;
-            Offset_X, Offset_Y : out Integer)
+           (This               : in     Widget;
+            Offset_X, Offset_Y :    out Integer)
         return access FLTK.Widgets.Groups.Windows.Window'Class;
 
 
@@ -212,6 +288,11 @@ package FLTK.Widgets is
 
     procedure Set_Label
            (This : in out Widget;
+            Text : in     String);
+
+    procedure Set_Label
+           (This : in out Widget;
+            Kind : in     Label_Kind;
             Text : in     String);
 
     function Get_Label_Color
@@ -264,6 +345,13 @@ package FLTK.Widgets is
     procedure Do_Callback
            (This : in out Widget);
 
+    procedure Do_Callback
+           (This  : in     Widget;
+            Using : in out Widget);
+
+    procedure Default_Callback
+           (This : in out Widget'Class);
+
     function Get_When
            (This : in Widget)
         return Callback_Flag;
@@ -295,6 +383,10 @@ package FLTK.Widgets is
            (This : in out Widget;
             W, H : in     Integer);
 
+    procedure Resize
+           (This       : in out Widget;
+            X, Y, W, H : in     Integer);
+
     procedure Reposition
            (This : in out Widget;
             X, Y : in     Integer);
@@ -325,22 +417,62 @@ package FLTK.Widgets is
            (This : in Widget)
         return Boolean;
 
-    procedure Set_Damaged
-           (This : in out Widget;
-            To   : in     Boolean);
+    function Get_Damage
+           (This : in Widget)
+        return Damage_Mask;
 
-    procedure Set_Damaged
+    procedure Set_Damage
+           (This : in out Widget;
+            Mask : in     Damage_Mask);
+
+    procedure Set_Damage
            (This       : in out Widget;
-            To         : in     Boolean;
+            Mask       : in     Damage_Mask;
             X, Y, W, H : in     Integer);
+
+    procedure Clear_Damage
+           (This : in out Widget;
+            Mask : in     Damage_Mask := Damage_None);
 
     procedure Draw
            (This : in out Widget);
 
     procedure Draw_Label
-           (This       : in Widget;
-            X, Y, W, H : in Integer;
-            Align      : in Alignment);
+           (This : in out Widget);
+
+    procedure Draw_Label
+           (This       : in out Widget;
+            X, Y, W, H : in     Integer);
+
+    procedure Draw_Label
+           (This       : in out Widget;
+            X, Y, W, H : in     Integer;
+            Align      : in     Alignment);
+
+    procedure Draw_Backdrop
+           (This : in out Widget);
+
+    procedure Draw_Box
+           (This : in out Widget);
+
+    procedure Draw_Box
+           (This : in out Widget;
+            Kind : in     Box_Kind;
+            Hue  : in     Color);
+
+    procedure Draw_Box
+           (This       : in out Widget;
+            Kind       : in     Box_Kind;
+            X, Y, W, H : in     Integer;
+            Hue        : in     Color);
+
+    procedure Draw_Focus
+           (This : in out Widget);
+
+    procedure Draw_Focus
+           (This       : in out Widget;
+            Kind       : in     Box_Kind;
+            X, Y, W, H : in     Integer);
 
     procedure Redraw
            (This : in out Widget);
@@ -352,6 +484,14 @@ package FLTK.Widgets is
            (This  : in out Widget;
             Event : in     Event_Kind)
         return Event_Outcome;
+
+
+
+
+    --  Only relevant to MacOS
+    function Uses_Accents_Menu
+           (This : in Widget)
+        return Boolean;
 
 
 private
@@ -391,13 +531,62 @@ private
            (This : in out Widget);
 
 
-    type Callback_Flag is new Interfaces.C.unsigned;
+    for Callback_Flag use record
+        Changed   at 0 range 0 .. 0;
+        Interact  at 0 range 1 .. 1;
+        Release   at 0 range 2 .. 2;
+        Enter_Key at 0 range 3 .. 3;
+    end record;
 
-    Call_Never     : constant Callback_Flag := 0;
-    When_Changed   : constant Callback_Flag := 1;
-    When_Interact  : constant Callback_Flag := 2;
-    When_Release   : constant Callback_Flag := 4;
-    When_Enter_Key : constant Callback_Flag := 8;
+    for Callback_Flag'Size use Interfaces.C.unsigned_char'Size;
+
+    Call_Never     : constant Callback_Flag := (others => False);
+    When_Changed   : constant Callback_Flag := (Changed   => True, others => False);
+    When_Interact  : constant Callback_Flag := (Interact  => True, others => False);
+    When_Release   : constant Callback_Flag := (Release   => True, others => False);
+    When_Enter_Key : constant Callback_Flag := (Enter_Key => True, others => False);
+
+    When_Release_Always   : constant Callback_Flag :=
+        (Release   => True, Interact => True, others => False);
+    When_Enter_Key_Always : constant Callback_Flag :=
+        (Enter_Key => True, Interact => True, others => False);
+
+
+    for Damage_Mask use record
+        Child   at 0 range 0 .. 0;
+        Expose  at 0 range 1 .. 1;
+        Scroll  at 0 range 2 .. 2;
+        Overlay at 0 range 3 .. 3;
+        User_1  at 0 range 4 .. 4;
+        User_2  at 0 range 5 .. 5;
+        --  bit 6 missing
+        Full    at 0 range 7 .. 7;
+    end record;
+
+    for Damage_Mask'Size use Interfaces.C.unsigned_char'Size;
+
+    Damage_None    : constant Damage_Mask := (others  => False);
+    Damage_Child   : constant Damage_Mask := (Child   => True, others => False);
+    Damage_Expose  : constant Damage_Mask := (Expose  => True, others => False);
+    Damage_Scroll  : constant Damage_Mask := (Scroll  => True, others => False);
+    Damage_Overlay : constant Damage_Mask := (Overlay => True, others => False);
+    Damage_User_1  : constant Damage_Mask := (User_1  => True, others => False);
+    Damage_User_2  : constant Damage_Mask := (User_2  => True, others => False);
+    Damage_Full    : constant Damage_Mask := (Full    => True, others => False);
+
+
+    function Flag_To_UChar is new
+        Ada.Unchecked_Conversion (Callback_Flag, Interfaces.C.unsigned_char);
+
+    function UChar_To_Flag is new
+        Ada.Unchecked_Conversion (Interfaces.C.unsigned_char, Callback_Flag);
+
+
+    function Mask_To_UChar is new
+        Ada.Unchecked_Conversion (Damage_Mask, Interfaces.C.unsigned_char);
+
+    function UChar_To_Mask is new
+        Ada.Unchecked_Conversion (Interfaces.C.unsigned_char, Damage_Mask);
 
 
     --  the user data portion should always be a reference back to the Ada binding
@@ -457,16 +646,24 @@ private
     pragma Inline (Is_Active);
     pragma Inline (Is_Tree_Active);
     pragma Inline (Set_Active);
+    pragma Inline (Clear_Active);
 
     pragma Inline (Has_Changed);
     pragma Inline (Set_Changed);
+    pragma Inline (Clear_Changed);
     pragma Inline (Is_Output_Only);
     pragma Inline (Set_Output_Only);
+    pragma Inline (Clear_Output_Only);
+
     pragma Inline (Is_Visible);
     pragma Inline (Set_Visible);
+    pragma Inline (Clear_Visible);
+    pragma Inline (Show);
+    pragma Inline (Hide);
 
     pragma Inline (Has_Visible_Focus);
     pragma Inline (Set_Visible_Focus);
+    pragma Inline (Clear_Visible_Focus);
     pragma Inline (Take_Focus);
     pragma Inline (Takes_Events);
 
@@ -474,6 +671,7 @@ private
     pragma Inline (Set_Background_Color);
     pragma Inline (Get_Selection_Color);
     pragma Inline (Set_Selection_Color);
+    pragma Inline (Set_Colors);
 
     pragma Inline (Parent);
     pragma Inline (Contains);
@@ -504,6 +702,7 @@ private
     pragma Inline (Get_Callback);
     pragma Inline (Set_Callback);
     pragma Inline (Do_Callback);
+    pragma Inline (Default_Callback);
     pragma Inline (Get_When);
     pragma Inline (Set_When);
 
@@ -520,13 +719,20 @@ private
     pragma Inline (Set_Inactive_Image);
 
     pragma Inline (Is_Damaged);
-    pragma Inline (Set_Damaged);
+    pragma Inline (Get_Damage);
+    pragma Inline (Set_Damage);
     pragma Inline (Draw);
     pragma Inline (Draw_Label);
+    pragma Inline (Draw_Backdrop);
+    pragma Inline (Draw_Box);
+    pragma Inline (Draw_Focus);
     pragma Inline (Redraw);
     pragma Inline (Redraw_Label);
     pragma Inline (Handle);
 
+    pragma Inline (Uses_Accents_Menu);
+
 
 end FLTK.Widgets;
+
 

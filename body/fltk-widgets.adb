@@ -16,6 +16,7 @@ use type
 
     Interfaces.C.int,
     Interfaces.C.unsigned,
+    Interfaces.C.unsigned_char,
     Interfaces.C.Strings.chars_ptr;
 
 
@@ -29,7 +30,26 @@ package body FLTK.Widgets is
            (Left, Right : in Callback_Flag)
         return Callback_Flag is
     begin
-        return Left or Right;
+        return
+           (Changed   => Left.Changed   or Right.Changed,
+            Interact  => Left.Interact  or Right.Interact,
+            Release   => Left.Release   or Right.Release,
+            Enter_Key => Left.Enter_Key or Right.Enter_Key);
+    end "+";
+
+
+    function "+"
+           (Left, Right : in Damage_Mask)
+        return Damage_Mask is
+    begin
+        return
+           (Child   => Left.Child   or Right.Child,
+            Expose  => Left.Expose  or Right.Expose,
+            Scroll  => Left.Scroll  or Right.Scroll,
+            Overlay => Left.Overlay or Right.Overlay,
+            User_1  => Left.User_1  or Right.User_1,
+            User_2  => Left.User_2  or Right.User_2,
+            Full    => Left.Full    or Right.Full);
     end "+";
 
 
@@ -128,6 +148,9 @@ package body FLTK.Widgets is
     pragma Import (C, fl_widget_clear_output, "fl_widget_clear_output");
     pragma Inline (fl_widget_clear_output);
 
+
+
+
     function fl_widget_visible
            (W : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -150,6 +173,16 @@ package body FLTK.Widgets is
     pragma Import (C, fl_widget_clear_visible, "fl_widget_clear_visible");
     pragma Inline (fl_widget_clear_visible);
 
+    procedure fl_widget_show
+           (W : in Storage.Integer_Address);
+    pragma Import (C, fl_widget_show, "fl_widget_show");
+    pragma Inline (fl_widget_show);
+
+    procedure fl_widget_hide
+           (W : in Storage.Integer_Address);
+    pragma Import (C, fl_widget_hide, "fl_widget_hide");
+    pragma Inline (fl_widget_hide);
+
 
 
 
@@ -159,11 +192,21 @@ package body FLTK.Widgets is
     pragma Import (C, fl_widget_get_visible_focus, "fl_widget_get_visible_focus");
     pragma Inline (fl_widget_get_visible_focus);
 
+    procedure fl_widget_set_visible_focus2
+           (W : in Storage.Integer_Address);
+    pragma Import (C, fl_widget_set_visible_focus2, "fl_widget_set_visible_focus2");
+    pragma Inline (fl_widget_set_visible_focus2);
+
     procedure fl_widget_set_visible_focus
            (W : in Storage.Integer_Address;
             T : in Interfaces.C.int);
     pragma Import (C, fl_widget_set_visible_focus, "fl_widget_set_visible_focus");
     pragma Inline (fl_widget_set_visible_focus);
+
+    procedure fl_widget_clear_visible_focus
+           (W : in Storage.Integer_Address);
+    pragma Import (C, fl_widget_clear_visible_focus, "fl_widget_clear_visible_focus");
+    pragma Inline (fl_widget_clear_visible_focus);
 
     function fl_widget_take_focus
            (W : in Storage.Integer_Address)
@@ -203,6 +246,12 @@ package body FLTK.Widgets is
             T : in Interfaces.C.unsigned);
     pragma Import (C, fl_widget_set_selection_color, "fl_widget_set_selection_color");
     pragma Inline (fl_widget_set_selection_color);
+
+    procedure fl_widget_set_colors
+           (W    : in Storage.Integer_Address;
+            B, S : in Interfaces.C.unsigned);
+    pragma Import (C, fl_widget_set_colors, "fl_widget_set_colors");
+    pragma Inline (fl_widget_set_colors);
 
 
 
@@ -354,15 +403,20 @@ package body FLTK.Widgets is
     pragma Import (C, fl_widget_set_callback, "fl_widget_set_callback");
     pragma Inline (fl_widget_set_callback);
 
+    procedure fl_widget_default_callback
+           (W, U : in Storage.Integer_Address);
+    pragma Import (C, fl_widget_default_callback, "fl_widget_default_callback");
+    pragma Inline (fl_widget_default_callback);
+
     function fl_widget_get_when
            (W : in Storage.Integer_Address)
-        return Interfaces.C.unsigned;
+        return Interfaces.C.unsigned_char;
     pragma Import (C, fl_widget_get_when, "fl_widget_get_when");
     pragma Inline (fl_widget_get_when);
 
     procedure fl_widget_set_when
            (W : in Storage.Integer_Address;
-            T : in Interfaces.C.unsigned);
+            T : in Interfaces.C.unsigned_char);
     pragma Import (C, fl_widget_set_when, "fl_widget_set_when");
     pragma Inline (fl_widget_set_when);
 
@@ -399,6 +453,12 @@ package body FLTK.Widgets is
     pragma Import (C, fl_widget_size, "fl_widget_size");
     pragma Inline (fl_widget_size);
 
+    procedure fl_widget_resize
+           (O          : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int);
+    pragma Import (C, fl_widget_resize, "fl_widget_resize");
+    pragma Inline (fl_widget_resize);
+
     procedure fl_widget_position
            (W    : in Storage.Integer_Address;
             X, Y : in Interfaces.C.int);
@@ -423,29 +483,86 @@ package body FLTK.Widgets is
 
     function fl_widget_damage
            (W : in Storage.Integer_Address)
-        return Interfaces.C.int;
+        return Interfaces.C.unsigned_char;
     pragma Import (C, fl_widget_damage, "fl_widget_damage");
     pragma Inline (fl_widget_damage);
 
     procedure fl_widget_set_damage
            (W : in Storage.Integer_Address;
-            T : in Interfaces.C.int);
+            M : in Interfaces.C.unsigned_char);
     pragma Import (C, fl_widget_set_damage, "fl_widget_set_damage");
     pragma Inline (fl_widget_set_damage);
 
     procedure fl_widget_set_damage2
-           (W : in Storage.Integer_Address;
-            T : in Interfaces.C.int;
+           (W          : in Storage.Integer_Address;
+            M          : in Interfaces.C.unsigned_char;
             X, Y, D, H : in Interfaces.C.int);
     pragma Import (C, fl_widget_set_damage2, "fl_widget_set_damage2");
     pragma Inline (fl_widget_set_damage2);
 
+    procedure fl_widget_clear_damage
+           (W : in Storage.Integer_Address;
+            M : in Interfaces.C.unsigned_char);
+    pragma Import (C, fl_widget_clear_damage, "fl_widget_clear_damage");
+    pragma Inline (fl_widget_clear_damage);
+
+    procedure fl_widget_draw
+           (W : in Storage.Integer_Address);
+    pragma Import (C, fl_widget_draw, "fl_widget_draw");
+    pragma Inline (fl_widget_draw);
+
     procedure fl_widget_draw_label
+           (W : in Storage.Integer_Address);
+    pragma Import (C, fl_widget_draw_label, "fl_widget_draw_label");
+    pragma Inline (fl_widget_draw_label);
+
+    procedure fl_widget_draw_label2
+           (O          : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int);
+    pragma Import (C, fl_widget_draw_label2, "fl_widget_draw_label2");
+    pragma Inline (fl_widget_draw_label2);
+
+    procedure fl_widget_draw_label3
            (W          : in Storage.Integer_Address;
             X, Y, D, H : in Interfaces.C.int;
             A          : in Interfaces.C.unsigned);
-    pragma Import (C, fl_widget_draw_label, "fl_widget_draw_label");
-    pragma Inline (fl_widget_draw_label);
+    pragma Import (C, fl_widget_draw_label3, "fl_widget_draw_label3");
+    pragma Inline (fl_widget_draw_label3);
+
+    procedure fl_widget_draw_backdrop
+           (W : in Storage.Integer_Address);
+    pragma Import (C, fl_widget_draw_backdrop, "fl_widget_draw_backdrop");
+    pragma Inline (fl_widget_draw_backdrop);
+
+    procedure fl_widget_draw_box
+           (W : in Storage.Integer_Address);
+    pragma Import (C, fl_widget_draw_box, "fl_widget_draw_box");
+    pragma Inline (fl_widget_draw_box);
+
+    procedure fl_widget_draw_box2
+           (W : in Storage.Integer_Address;
+            K : in Interfaces.C.int;
+            H : in Interfaces.C.unsigned);
+    pragma Import (C, fl_widget_draw_box2, "fl_widget_draw_box2");
+    pragma Inline (fl_widget_draw_box2);
+
+    procedure fl_widget_draw_box3
+           (O             : in Storage.Integer_Address;
+            K, X, Y, W, H : in Interfaces.C.int;
+            C             : in Interfaces.C.unsigned);
+    pragma Import (C, fl_widget_draw_box3, "fl_widget_draw_box3");
+    pragma Inline (fl_widget_draw_box3);
+
+    procedure fl_widget_draw_focus
+           (W : in Storage.Integer_Address);
+    pragma Import (C, fl_widget_draw_focus, "fl_widget_draw_focus");
+    pragma Inline (fl_widget_draw_focus);
+
+    procedure fl_widget_draw_focus2
+           (O             : in Storage.Integer_Address;
+            K, X, Y, W, H : in Interfaces.C.int);
+    pragma Import (C, fl_widget_draw_focus2, "fl_widget_draw_focus2");
+    pragma Inline (fl_widget_draw_focus2);
 
     procedure fl_widget_redraw
            (W : in Storage.Integer_Address);
@@ -457,20 +574,21 @@ package body FLTK.Widgets is
     pragma Import (C, fl_widget_redraw_label, "fl_widget_redraw_label");
     pragma Inline (fl_widget_redraw_label);
 
-
-
-
-    procedure fl_widget_draw
-           (W : in Storage.Integer_Address);
-    pragma Import (C, fl_widget_draw, "fl_widget_draw");
-    pragma Inline (fl_widget_draw);
-
     function fl_widget_handle
            (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_widget_handle, "fl_widget_handle");
     pragma Inline (fl_widget_handle);
+
+
+
+
+    function fl_widget_use_accents_menu
+           (W : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_widget_use_accents_menu, "fl_widget_use_accents_menu");
+    pragma Inline (fl_widget_use_accents_menu);
 
 
 
@@ -635,6 +753,13 @@ package body FLTK.Widgets is
 
 
     procedure Set_Active
+           (This : in out Widget) is
+    begin
+        fl_widget_set_active (This.Void_Ptr);
+    end Set_Active;
+
+
+    procedure Set_Active
            (This : in out Widget;
             To   : in     Boolean) is
     begin
@@ -646,6 +771,13 @@ package body FLTK.Widgets is
     end Set_Active;
 
 
+    procedure Clear_Active
+           (This : in out Widget) is
+    begin
+        fl_widget_clear_active (This.Void_Ptr);
+    end Clear_Active;
+
+
 
 
     function Has_Changed
@@ -654,6 +786,13 @@ package body FLTK.Widgets is
     begin
         return fl_widget_changed (This.Void_Ptr) /= 0;
     end Has_Changed;
+
+
+    procedure Set_Changed
+           (This : in out Widget) is
+    begin
+        fl_widget_set_changed (This.Void_Ptr);
+    end Set_Changed;
 
 
     procedure Set_Changed
@@ -668,12 +807,26 @@ package body FLTK.Widgets is
     end Set_Changed;
 
 
+    procedure Clear_Changed
+           (This : in out Widget) is
+    begin
+        fl_widget_clear_changed (This.Void_Ptr);
+    end Clear_Changed;
+
+
     function Is_Output_Only
            (This : in Widget)
         return Boolean is
     begin
         return fl_widget_output (This.Void_Ptr) /= 0;
     end Is_Output_Only;
+
+
+    procedure Set_Output_Only
+           (This : in out Widget) is
+    begin
+        fl_widget_set_output (This.Void_Ptr);
+    end Set_Output_Only;
 
 
     procedure Set_Output_Only
@@ -686,6 +839,15 @@ package body FLTK.Widgets is
             fl_widget_clear_output (This.Void_Ptr);
         end if;
     end Set_Output_Only;
+
+
+    procedure Clear_Output_Only
+           (This : in out Widget) is
+    begin
+        fl_widget_clear_output (This.Void_Ptr);
+    end Clear_Output_Only;
+
+
 
 
     function Is_Visible
@@ -705,6 +867,13 @@ package body FLTK.Widgets is
 
 
     procedure Set_Visible
+           (This : in out Widget) is
+    begin
+        fl_widget_set_visible (This.Void_Ptr);
+    end Set_Visible;
+
+
+    procedure Set_Visible
            (This : in out Widget;
             To   : in     Boolean) is
     begin
@@ -714,6 +883,27 @@ package body FLTK.Widgets is
             fl_widget_clear_visible (This.Void_Ptr);
         end if;
     end Set_Visible;
+
+
+    procedure Clear_Visible
+           (This : in out Widget) is
+    begin
+        fl_widget_clear_visible (This.Void_Ptr);
+    end Clear_Visible;
+
+
+    procedure Show
+           (This : in out Widget) is
+    begin
+        fl_widget_show (This.Void_Ptr);
+    end Show;
+
+
+    procedure Hide
+           (This : in out Widget) is
+    begin
+        fl_widget_hide (This.Void_Ptr);
+    end Hide;
 
 
 
@@ -727,11 +917,25 @@ package body FLTK.Widgets is
 
 
     procedure Set_Visible_Focus
+           (This : in out Widget) is
+    begin
+        fl_widget_set_visible_focus2 (This.Void_Ptr);
+    end Set_Visible_Focus;
+
+
+    procedure Set_Visible_Focus
            (This : in out Widget;
             To   : in     Boolean) is
     begin
         fl_widget_set_visible_focus (This.Void_Ptr, Boolean'Pos (To));
     end Set_Visible_Focus;
+
+
+    procedure Clear_Visible_Focus
+           (This : in out Widget) is
+    begin
+        fl_widget_clear_visible_focus (This.Void_Ptr);
+    end Clear_Visible_Focus;
 
 
     function Take_Focus
@@ -782,6 +986,17 @@ package body FLTK.Widgets is
     begin
         fl_widget_set_selection_color (This.Void_Ptr, Interfaces.C.unsigned (To));
     end Set_Selection_Color;
+
+
+    procedure Set_Colors
+           (This      : in out Widget;
+            Back, Sel : in     Color) is
+    begin
+        fl_widget_set_colors
+           (This.Void_Ptr,
+            Interfaces.C.unsigned (Back),
+            Interfaces.C.unsigned (Sel));
+    end Set_Colors;
 
 
 
@@ -862,8 +1077,8 @@ package body FLTK.Widgets is
 
 
     function Top_Window_Offset
-           (This : in Widget;
-            Offset_X, Offset_Y : out Integer)
+           (This               : in     Widget;
+            Offset_X, Offset_Y :    out Integer)
         return access FLTK.Widgets.Groups.Windows.Window'Class
     is
         Window_Ptr : Storage.Integer_Address := fl_widget_top_window_offset
@@ -904,9 +1119,15 @@ package body FLTK.Widgets is
 
     function Get_Box
            (This : in Widget)
-        return Box_Kind is
+        return Box_Kind
+    is
+        Result : Interfaces.C.int := fl_widget_get_box (This.Void_Ptr);
     begin
-        return Box_Kind'Val (fl_widget_get_box (This.Void_Ptr));
+        return Box_Kind'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Widget::box returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Get_Box;
 
 
@@ -962,6 +1183,16 @@ package body FLTK.Widgets is
             Text : in     String) is
     begin
         fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
+    end Set_Label;
+
+
+    procedure Set_Label
+           (This : in out Widget;
+            Kind : in     Label_Kind;
+            Text : in     String) is
+    begin
+        This.Set_Label_Kind (Kind);
+        This.Set_Label (Text);
     end Set_Label;
 
 
@@ -1076,11 +1307,30 @@ package body FLTK.Widgets is
     end Do_Callback;
 
 
+    procedure Do_Callback
+           (This  : in     Widget;
+            Using : in out Widget) is
+    begin
+        if This.Callback /= null then
+            This.Callback.all (Using);
+        end if;
+    end Do_Callback;
+
+
+    procedure Default_Callback
+           (This : in out Widget'Class) is
+    begin
+        fl_widget_default_callback
+           (This.Void_Ptr,
+            fl_widget_get_user_data (This.Void_Ptr));
+    end Default_Callback;
+
+
     function Get_When
            (This : in Widget)
         return Callback_Flag is
     begin
-        return Callback_Flag (fl_widget_get_when (This.Void_Ptr));
+        return UChar_To_Flag (fl_widget_get_when (This.Void_Ptr));
     end Get_When;
 
 
@@ -1088,7 +1338,7 @@ package body FLTK.Widgets is
            (This : in out Widget;
             To   : in     Callback_Flag) is
     begin
-        fl_widget_set_when (This.Void_Ptr, Interfaces.C.unsigned (To));
+        fl_widget_set_when (This.Void_Ptr, Flag_To_UChar (To));
     end Set_When;
 
 
@@ -1131,9 +1381,22 @@ package body FLTK.Widgets is
             W, H : in     Integer) is
     begin
         fl_widget_size
-               (This.Void_Ptr,
-                Interfaces.C.int (W),
-                Interfaces.C.int (H));
+           (This.Void_Ptr,
+            Interfaces.C.int (W),
+            Interfaces.C.int (H));
+    end Resize;
+
+
+    procedure Resize
+           (This       : in out Widget;
+            X, Y, W, H : in     Integer) is
+    begin
+        fl_widget_resize
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H));
     end Resize;
 
 
@@ -1142,9 +1405,9 @@ package body FLTK.Widgets is
             X, Y : in     Integer) is
     begin
         fl_widget_position
-               (This.Void_Ptr,
-                Interfaces.C.int (X),
-                Interfaces.C.int (Y));
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y));
     end Reposition;
 
 
@@ -1198,27 +1461,43 @@ package body FLTK.Widgets is
     end Is_Damaged;
 
 
-    procedure Set_Damaged
-           (This : in out Widget;
-            To   : in     Boolean) is
+    function Get_Damage
+           (This : in Widget)
+        return Damage_Mask is
     begin
-        fl_widget_set_damage (This.Void_Ptr, Boolean'Pos (To));
-    end Set_Damaged;
+        return UChar_To_Mask (fl_widget_damage (This.Void_Ptr));
+    end Get_Damage;
 
 
-    procedure Set_Damaged
+    procedure Set_Damage
+           (This : in out Widget;
+            Mask : in     Damage_Mask) is
+    begin
+        fl_widget_set_damage (This.Void_Ptr, Mask_To_UChar (Mask));
+    end Set_Damage;
+
+
+    procedure Set_Damage
            (This       : in out Widget;
-            To         : in     Boolean;
+            Mask       : in     Damage_Mask;
             X, Y, W, H : in     Integer) is
     begin
         fl_widget_set_damage2
            (This.Void_Ptr,
-            Boolean'Pos (To),
+            Mask_To_UChar (Mask),
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
             Interfaces.C.int (W),
             Interfaces.C.int (H));
-    end Set_Damaged;
+    end Set_Damage;
+
+
+    procedure Clear_Damage
+           (This : in out Widget;
+            Mask : in     Damage_Mask := Damage_None) is
+    begin
+        fl_widget_clear_damage (This.Void_Ptr, Mask_To_UChar (Mask));
+    end Clear_Damage;
 
 
     procedure Draw
@@ -1234,11 +1513,31 @@ package body FLTK.Widgets is
 
 
     procedure Draw_Label
-           (This       : in Widget;
-            X, Y, W, H : in Integer;
-            Align      : in Alignment) is
+           (This : in out Widget) is
     begin
-        fl_widget_draw_label
+        fl_widget_draw_label (This.Void_Ptr);
+    end Draw_Label;
+
+
+    procedure Draw_Label
+           (This       : in out Widget;
+            X, Y, W, H : in     Integer) is
+    begin
+        fl_widget_draw_label2
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H));
+    end Draw_Label;
+
+
+    procedure Draw_Label
+           (This       : in out Widget;
+            X, Y, W, H : in     Integer;
+            Align      : in     Alignment) is
+    begin
+        fl_widget_draw_label3
            (This.Void_Ptr,
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
@@ -1246,6 +1545,71 @@ package body FLTK.Widgets is
             Interfaces.C.int (H),
             Interfaces.C.unsigned (Align));
     end Draw_Label;
+
+
+    procedure Draw_Backdrop
+           (This : in out Widget) is
+    begin
+        fl_widget_draw_backdrop (This.Void_Ptr);
+    end Draw_Backdrop;
+
+
+    procedure Draw_Box
+           (This : in out Widget) is
+    begin
+        fl_widget_draw_box (This.Void_Ptr);
+    end Draw_Box;
+
+
+    procedure Draw_Box
+           (This : in out Widget;
+            Kind : in     Box_Kind;
+            Hue  : in     Color) is
+    begin
+        fl_widget_draw_box2
+           (This.Void_Ptr,
+            Box_Kind'Pos (Kind),
+            Interfaces.C.unsigned (Hue));
+    end Draw_Box;
+
+
+    procedure Draw_Box
+           (This       : in out Widget;
+            Kind       : in     Box_Kind;
+            X, Y, W, H : in     Integer;
+            Hue        : in     Color) is
+    begin
+        fl_widget_draw_box3
+           (This.Void_Ptr,
+            Box_Kind'Pos (Kind),
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H),
+            Interfaces.C.unsigned (Hue));
+    end Draw_Box;
+
+
+    procedure Draw_Focus
+           (This : in out Widget) is
+    begin
+        fl_widget_draw_focus (This.Void_Ptr);
+    end Draw_Focus;
+
+
+    procedure Draw_Focus
+           (This       : in out Widget;
+            Kind       : in     Box_Kind;
+            X, Y, W, H : in     Integer) is
+    begin
+        fl_widget_draw_focus2
+           (This.Void_Ptr,
+            Box_Kind'Pos (Kind),
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H));
+    end Draw_Focus;
 
 
     procedure Redraw
@@ -1282,6 +1646,16 @@ package body FLTK.Widgets is
         "Dispatched handle function returned unexpected int value of " &
         Interfaces.C.int'Image (Result);
     end Handle;
+
+
+
+
+    function Uses_Accents_Menu
+           (This : in Widget)
+        return Boolean is
+    begin
+        return fl_widget_use_accents_menu (This.Void_Ptr) /= 0;
+    end Uses_Accents_Menu;
 
 
 end FLTK.Widgets;

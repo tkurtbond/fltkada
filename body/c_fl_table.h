@@ -51,7 +51,7 @@ extern "C" int fl_table_callback_col(TABLE t);
 extern "C" int fl_table_callback_row(TABLE t);
 extern "C" int fl_table_callback_context(TABLE t);
 extern "C" void fl_table_do_callback(TABLE t, int x, int r, int c);
-extern "C" void fl_table_when(TABLE t, unsigned int w);
+extern "C" void fl_table_when(TABLE t, unsigned char w);
 extern "C" void fl_table_scroll_cb(void * s, TABLE t);
 
 
