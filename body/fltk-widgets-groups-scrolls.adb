@@ -6,14 +6,21 @@
 
 with
 
+    Ada.Characters.Latin_1,
     Interfaces.C.Strings;
 
 use type
 
+    Interfaces.C.int,
     Interfaces.C.unsigned_char;
 
 
 package body FLTK.Widgets.Groups.Scrolls is
+
+
+    package Latin renames Ada.Characters.Latin_1;
+
+
 
 
     ------------------------
@@ -85,6 +92,35 @@ package body FLTK.Widgets.Groups.Scrolls is
 
 
 
+
+    procedure fl_scroll_resize
+           (S          : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int);
+    pragma Import (C, fl_scroll_resize, "fl_scroll_resize");
+    pragma Inline (fl_scroll_resize);
+
+    procedure fl_scroll_recalc_scrollbars
+           (Addr                                : in     Storage.Integer_Address;
+            CB_X, CB_Y, CB_W, CB_H              :    out Interfaces.C.int;
+            IB_X, IB_Y, IB_W, IB_H              :    out Interfaces.C.int;
+            IC_X, IC_Y, IC_W, IC_H              :    out Interfaces.C.int;
+            CH_Need, CV_Need                    :    out Interfaces.C.int;
+            HS_X,    HS_Y,     HS_W,     HS_H   :    out Interfaces.C.int;
+            HS_Size, HS_Total, HS_First, HS_Pos :    out Interfaces.C.int;
+            VS_X,    VS_Y,     VS_W,     VS_H   :    out Interfaces.C.int;
+            VS_Size, VS_Total, VS_First, VS_Pos :    out Interfaces.C.int;
+            SSize                               :    out Interfaces.C.int);
+    pragma Import (C, fl_scroll_recalc_scrollbars, "fl_scroll_recalc_scrollbars");
+    pragma Inline (fl_scroll_recalc_scrollbars);
+
+
+
+
+    procedure fl_scroll_bbox
+           (S          : in     Storage.Integer_Address;
+            X, Y, W, H :    out Interfaces.C.int);
+    pragma Import (C, fl_scroll_bbox, "fl_scroll_bbox");
+    pragma Inline (fl_scroll_bbox);
 
     procedure fl_scroll_draw
            (S : in Storage.Integer_Address);
@@ -363,6 +399,94 @@ package body FLTK.Widgets.Groups.Scrolls is
     end Set_Kind;
 
 
+
+
+    procedure Resize
+           (This       : in out Scroll;
+            X, Y, W, H : in     Integer) is
+    begin
+        fl_scroll_resize
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H));
+    end Resize;
+
+
+    procedure Recalculate_Scrollbars
+           (This : in     Scroll;
+            Data :    out Scroll_Info)
+    is
+        C_Scroll_Size,
+        C_H_Need,       C_V_Need,
+        C_H_Data_Size,  C_V_Data_Size,
+        C_H_Data_Total, C_V_Data_Total : Interfaces.C.int;
+    begin
+        fl_scroll_recalc_scrollbars
+           (This.Void_Ptr,
+
+            --  child LRTB region that will be reworked into XYWH in C++
+            Interfaces.C.int (Data.Child_Box.X), Interfaces.C.int (Data.Child_Box.Y),
+            Interfaces.C.int (Data.Child_Box.W), Interfaces.C.int (Data.Child_Box.H),
+
+            --  innerbox XYWH region
+            Interfaces.C.int (Data.Inner_Ex.X), Interfaces.C.int (Data.Inner_Ex.Y),
+            Interfaces.C.int (Data.Inner_Ex.W), Interfaces.C.int (Data.Inner_Ex.H),
+
+            --  innerchild XYWH region
+            Interfaces.C.int (Data.Inner_Inc.X), Interfaces.C.int (Data.Inner_Inc.Y),
+            Interfaces.C.int (Data.Inner_Inc.W), Interfaces.C.int (Data.Inner_Inc.H),
+
+            --  raw hneeded/vneeded values to be converted into Booleans
+            C_H_Need, C_V_Need,
+
+            --  hscroll data
+            Interfaces.C.int (Data.H_Data.X), Interfaces.C.int (Data.H_Data.Y),
+            Interfaces.C.int (Data.H_Data.W), Interfaces.C.int (Data.H_Data.H),
+            C_H_Data_Size, C_H_Data_Total,
+            Interfaces.C.int (Data.H_Data.First), Interfaces.C.int (Data.H_Data.Position),
+
+            --  vscroll data
+            Interfaces.C.int (Data.V_Data.X), Interfaces.C.int (Data.V_Data.Y),
+            Interfaces.C.int (Data.V_Data.W), Interfaces.C.int (Data.V_Data.H),
+            C_V_Data_Size, C_V_Data_Total,
+            Interfaces.C.int (Data.V_Data.First), Interfaces.C.int (Data.V_Data.Position),
+
+            --  scrollsize
+            C_Scroll_Size);
+
+        Data.H_Needed := C_H_Need /= 0;
+        Data.V_Needed := C_V_Need /= 0;
+        Data.H_Data.Size  := Natural (C_H_Data_Size);
+        Data.H_Data.Total := Natural (C_H_Data_Total);
+        Data.V_Data.Size  := Natural (C_V_Data_Size);
+        Data.V_Data.Total := Natural (C_V_Data_Total);
+        Data.Scroll_Size  := Natural (C_Scroll_Size);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Scroll::recalc_scrollbars returned unexpected int values of " & Latin.LF &
+        Latin.HT & "hscroll.size = "  & Interfaces.C.int'Image (C_H_Data_Size)  & Latin.LF &
+        Latin.HT & "hscroll.total = " & Interfaces.C.int'Image (C_H_Data_Total) & Latin.LF &
+        Latin.HT & "vscroll.size = "  & Interfaces.C.int'Image (C_V_Data_Size)  & Latin.LF &
+        Latin.HT & "vscroll.total = " & Interfaces.C.int'Image (C_V_Data_Total) & Latin.LF &
+        Latin.HT & "scrollsize = "    & Interfaces.C.int'Image (C_Scroll_Size);
+    end Recalculate_Scrollbars;
+
+
+
+
+    procedure Bounding_Box
+           (This       : in     Scroll;
+            X, Y, W, H :    out Integer) is
+    begin
+        fl_scroll_bbox
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H));
+    end Bounding_Box;
 
 
     procedure Draw

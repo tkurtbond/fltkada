@@ -210,19 +210,13 @@ possibly this hasn't been noticed because it's only visible to doxygen
 
 
 
-Non-widgets with incomplete APIs:
+Incomplete APIs:
 
 FLTK
 FLTK.Devices.Graphics
 FLTK.Images.Pixmaps (unmarshall data access?)
 FLTK.Images.Shared (images(), compare)
 FLTK.Text_Buffers (a few functions, protected stuff, ensure buffer is 1-indexed)
-
-
-
-Widgets with incomplete APIs:
-
-Widgets.Groups.Scrolls (attributes, resize, type, protected)
-Widgets.Groups.Text_Displays (ensure text buffer is 1-indexed)
+FLTK.Widgets.Groups.Text_Displays (ensure text buffer is 1-indexed)
 
 

@@ -46,6 +46,26 @@
     <td>Scroll_Kind</td>
   </tr>
 
+  <tr>
+    <td>Fl_Region_LRTB</td>
+    <td>Region</td>
+  </tr>
+
+  <tr>
+    <td>Fl_Region_XYWH</td>
+    <td>Region</td>
+  </tr>
+
+  <tr>
+    <td>Fl_Scrollbar_Data</td>
+    <td>Scrollbar_Data</td>
+  </tr>
+
+  <tr>
+    <td>ScrollInfo</td>
+    <td>Scroll_Info</td>
+  </tr>
+
 </table>
 
 
@@ -139,7 +159,11 @@ function Handle
 <td><pre>
 void resize(int X, int Y, int W, int H);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Resize
+       (This       : in out Scroll;
+        X, Y, W, H : in     Integer);
+</pre></td>
   </tr>
 
   <tr>
@@ -226,7 +250,11 @@ procedure Set_Kind
 <td><pre>
 void bbox(int &, int &, int &, int &);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Bounding_Box
+       (This       : in     Scroll;
+        X, Y, W, H :    out Integer);
+</pre></td>
   </tr>
 
   <tr>
@@ -243,7 +271,11 @@ procedure Draw
 <td><pre>
 void recalc_scrollbars(Scrollinfo &si);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Recalculate_Scrollbars
+       (This : in     Scroll;
+        Data :    out Scroll_Info);
+</pre></td>
   </tr>
 
 </table>

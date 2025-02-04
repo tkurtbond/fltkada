@@ -27,6 +27,25 @@ package FLTK.Widgets.Groups.Scrolls is
         Both_Always);
 
 
+    type Region is record
+        X, Y, W, H : Integer;
+    end record;
+
+    type Scrollbar_Data is record
+        X, Y, W, H      : Integer;
+        Size, Total     : Natural;
+        First, Position : Integer;
+    end record;
+
+    type Scroll_Info is record
+        Child_Box           : Region;
+        Inner_Inc, Inner_Ex : Region;
+        H_Needed, V_Needed  : Boolean;
+        H_Data, V_Data      : Scrollbar_Data;
+        Scroll_Size         : Natural;
+    end record;
+
+
 
 
     package Forge is
@@ -100,6 +119,21 @@ package FLTK.Widgets.Groups.Scrolls is
 
 
 
+    procedure Resize
+           (This       : in out Scroll;
+            X, Y, W, H : in     Integer);
+
+    procedure Recalculate_Scrollbars
+           (This : in     Scroll;
+            Data :    out Scroll_Info);
+
+
+
+
+    procedure Bounding_Box
+           (This       : in     Scroll;
+            X, Y, W, H :    out Integer);
+
     procedure Draw
            (This : in out Scroll);
 
@@ -142,6 +176,9 @@ private
     pragma Inline (Get_Kind);
     pragma Inline (Set_Kind);
 
+    pragma Inline (Resize);
+
+    pragma Inline (Bounding_Box);
     pragma Inline (Draw);
     pragma Inline (Handle);
 

@@ -32,6 +32,20 @@ extern "C" int fl_scroll_get_size(SCROLL s);
 extern "C" void fl_scroll_set_size(SCROLL s, int t);
 
 
+extern "C" void fl_scroll_resize(SCROLL s, int x, int y, int w, int h);
+extern "C" void fl_scroll_recalc_scrollbars(SCROLL s,
+    int &cb_x, int &cb_y, int &cb_w, int &cb_h,
+    int &ib_x, int &ib_y, int &ib_w, int &ib_h,
+    int &ic_x, int &ic_y, int &ic_w, int &ic_h,
+    int &chneed, int &cvneed,
+    int &hs_x,    int &hs_y,     int &hs_w,     int &hs_h,
+    int &hs_size, int &hs_total, int &hs_first, int &hs_pos,
+    int &vs_x,    int &vs_y,     int &vs_w,     int &vs_h,
+    int &vs_size, int &vs_total, int &vs_first, int &vs_pos,
+    int &ssize);
+
+
+extern "C" void fl_scroll_bbox(SCROLL s, int &x, int &y, int &w, int &h);
 extern "C" void fl_scroll_draw(SCROLL s);
 extern "C" int fl_scroll_handle(SCROLL s, int e);
 
