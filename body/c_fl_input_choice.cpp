@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Input_Choice.H>
 #include "c_fl_input_choice.h"
+#include "c_fl.h"
 
 
 
@@ -50,7 +51,11 @@ INPUTCHOICE new_fl_input_choice(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_input_choice(INPUTCHOICE n) {
-    delete static_cast<My_Input_Choice*>(n);
+    if (fl_inside_callback) {
+        fl_delete_widget(n);
+    } else {
+        delete static_cast<My_Input_Choice*>(n);
+    }
 }
 
 

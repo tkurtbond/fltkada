@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Clock.H>
 #include "c_fl_clock.h"
+#include "c_fl.h"
 
 
 
@@ -55,7 +56,11 @@ CLOCK new_fl_clock2(unsigned char k, int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_clock(CLOCK c) {
-    delete static_cast<My_Clock*>(c);
+    if (fl_inside_callback) {
+        fl_delete_widget(c);
+    } else {
+        delete static_cast<My_Clock*>(c);
+    }
 }
 
 

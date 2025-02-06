@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Select_Browser.H>
 #include "c_fl_select_browser.h"
+#include "c_fl.h"
 
 
 
@@ -172,7 +173,11 @@ SELECTBROWSER new_fl_select_browser(int x, int y, int w, int h, char * label) {
 }
 
 void free_fl_select_browser(SELECTBROWSER b) {
-    delete static_cast<My_Select_Browser*>(b);
+    if (fl_inside_callback) {
+        fl_delete_widget(b);
+    } else {
+        delete static_cast<My_Select_Browser*>(b);
+    }
 }
 
 

@@ -8,6 +8,7 @@
 #include <FL/Fl_Browser.H>
 #include <FL/filename.H>
 #include "c_fl_file_browser.h"
+#include "c_fl.h"
 
 
 
@@ -191,7 +192,11 @@ FILEBROWSER new_fl_file_browser(int x, int y, int w, int h, char * label) {
 }
 
 void free_fl_file_browser(FILEBROWSER b) {
-    delete static_cast<My_File_Browser*>(b);
+    if (fl_inside_callback) {
+        fl_delete_widget(b);
+    } else {
+        delete static_cast<My_File_Browser*>(b);
+    }
 }
 
 

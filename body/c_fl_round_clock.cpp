@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Round_Clock.H>
 #include "c_fl_round_clock.h"
+#include "c_fl.h"
 
 
 
@@ -50,7 +51,11 @@ ROUNDCLOCK new_fl_round_clock(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_round_clock(ROUNDCLOCK c) {
-    delete static_cast<My_Round_Clock*>(c);
+    if (fl_inside_callback) {
+        fl_delete_widget(c);
+    } else {
+        delete static_cast<My_Round_Clock*>(c);
+    }
 }
 
 

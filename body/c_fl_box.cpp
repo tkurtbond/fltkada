@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Box.H>
 #include "c_fl_box.h"
+#include "c_fl.h"
 
 
 
@@ -55,7 +56,11 @@ BOX new_fl_box2(int k, int x, int y, int w, int h, char * label) {
 }
 
 void free_fl_box(BOX b) {
-    delete static_cast<My_Box*>(b);
+    if (fl_inside_callback) {
+        fl_delete_widget(b);
+    } else {
+        delete static_cast<My_Box*>(b);
+    }
 }
 
 

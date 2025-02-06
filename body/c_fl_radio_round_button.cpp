@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Radio_Round_Button.H>
 #include "c_fl_radio_round_button.h"
+#include "c_fl.h"
 
 
 
@@ -50,7 +51,11 @@ RADIOROUNDBUTTON new_fl_radio_round_button(int x, int y, int w, int h, char* lab
 }
 
 void free_fl_radio_round_button(RADIOROUNDBUTTON b) {
-    delete static_cast<My_Radio_Round_Button*>(b);
+    if (fl_inside_callback) {
+        fl_delete_widget(b);
+    } else {
+        delete static_cast<My_Radio_Round_Button*>(b);
+    }
 }
 
 

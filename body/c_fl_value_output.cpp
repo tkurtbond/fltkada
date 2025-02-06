@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Value_Output.H>
 #include "c_fl_value_output.h"
+#include "c_fl.h"
 
 
 
@@ -57,7 +58,11 @@ VALUEOUTPUT new_fl_value_output(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_value_output(VALUEOUTPUT a) {
-    delete static_cast<My_Value_Output*>(a);
+    if (fl_inside_callback) {
+        fl_delete_widget(a);
+    } else {
+        delete static_cast<My_Value_Output*>(a);
+    }
 }
 
 

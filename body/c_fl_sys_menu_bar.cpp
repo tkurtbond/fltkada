@@ -7,6 +7,7 @@
 #include <FL/Fl_Sys_Menu_Bar.H>
 #include <FL/Fl_Menu_Item.H>
 #include "c_fl_sys_menu_bar.h"
+#include "c_fl.h"
 
 
 
@@ -53,7 +54,11 @@ SYSMENUBAR new_fl_sys_menu_bar(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_sys_menu_bar(SYSMENUBAR m) {
-    delete static_cast<My_Sys_Menu_Bar*>(m);
+    if (fl_inside_callback) {
+        fl_delete_widget(m);
+    } else {
+        delete static_cast<My_Sys_Menu_Bar*>(m);
+    }
 }
 
 

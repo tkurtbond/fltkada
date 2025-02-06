@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Tabs.H>
 #include "c_fl_tabs.h"
+#include "c_fl.h"
 
 
 
@@ -60,7 +61,11 @@ TABS new_fl_tabs(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_tabs(TABS t) {
-    delete static_cast<My_Tabs*>(t);
+    if (fl_inside_callback) {
+        fl_delete_widget(t);
+    } else {
+        delete static_cast<My_Tabs*>(t);
+    }
 }
 
 

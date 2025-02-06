@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Repeat_Button.H>
 #include "c_fl_repeat_button.h"
+#include "c_fl.h"
 
 
 
@@ -50,7 +51,11 @@ REPEATBUTTON new_fl_repeat_button(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_repeat_button(REPEATBUTTON b) {
-    delete static_cast<My_Repeat_Button*>(b);
+    if (fl_inside_callback) {
+        fl_delete_widget(b);
+    } else {
+        delete static_cast<My_Repeat_Button*>(b);
+    }
 }
 
 

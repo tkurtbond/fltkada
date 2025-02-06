@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Gl_Window.H>
 #include "c_fl_gl_window.h"
+#include "c_fl.h"
 
 
 
@@ -55,7 +56,11 @@ GLWINDOW new_fl_gl_window2(int w, int h, char* label) {
 }
 
 void free_fl_gl_window(GLWINDOW w) {
-    delete static_cast<My_Gl_Window*>(w);
+    if (fl_inside_callback) {
+        fl_delete_widget(w);
+    } else {
+        delete static_cast<My_Gl_Window*>(w);
+    }
 }
 
 

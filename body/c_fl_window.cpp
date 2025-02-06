@@ -7,6 +7,7 @@
 #include <FL/Fl_Window.H>
 #include <FL/Fl_RGB_Image.H>
 #include "c_fl_window.h"
+#include "c_fl.h"
 
 
 
@@ -67,7 +68,11 @@ WINDOW new_fl_window2(int w, int h, char* label) {
 }
 
 void free_fl_window(WINDOW n) {
-    delete static_cast<My_Window*>(n);
+    if (fl_inside_callback) {
+        fl_delete_widget(n);
+    } else {
+        delete static_cast<My_Window*>(n);
+    }
 }
 
 

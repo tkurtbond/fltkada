@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Round_Button.H>
 #include "c_fl_round_button.h"
+#include "c_fl.h"
 
 
 
@@ -50,7 +51,11 @@ ROUNDBUTTON new_fl_round_button(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_round_button(ROUNDBUTTON b) {
-    delete static_cast<My_Round_Button*>(b);
+    if (fl_inside_callback) {
+        fl_delete_widget(b);
+    } else {
+        delete static_cast<My_Round_Button*>(b);
+    }
 }
 
 

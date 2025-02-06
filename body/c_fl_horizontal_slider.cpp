@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Hor_Slider.H>
 #include "c_fl_horizontal_slider.h"
+#include "c_fl.h"
 
 
 
@@ -57,7 +58,11 @@ HORIZONTALSLIDER new_fl_horizontal_slider(int x, int y, int w, int h, char* labe
 }
 
 void free_fl_horizontal_slider(HORIZONTALSLIDER s) {
-    delete static_cast<My_Horizontal_Slider*>(s);
+    if (fl_inside_callback) {
+        fl_delete_widget(s);
+    } else {
+        delete static_cast<My_Horizontal_Slider*>(s);
+    }
 }
 
 

@@ -443,7 +443,7 @@ package FLTK is
 
     function Wait
            (Seconds : in Long_Float)
-        return Integer;
+        return Long_Float;
 
     function Run
         return Integer;

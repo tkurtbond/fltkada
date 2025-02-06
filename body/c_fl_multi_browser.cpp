@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Multi_Browser.H>
 #include "c_fl_multi_browser.h"
+#include "c_fl.h"
 
 
 
@@ -172,7 +173,11 @@ MULTIBROWSER new_fl_multi_browser(int x, int y, int w, int h, char * label) {
 }
 
 void free_fl_multi_browser(MULTIBROWSER b) {
-    delete static_cast<My_Multi_Browser*>(b);
+    if (fl_inside_callback) {
+        fl_delete_widget(b);
+    } else {
+        delete static_cast<My_Multi_Browser*>(b);
+    }
 }
 
 

@@ -7,6 +7,7 @@
 #include <FL/Fl_Menu_.H>
 #include <FL/Fl_Menu_Item.H>
 #include "c_fl_menu.h"
+#include "c_fl.h"
 
 
 
@@ -53,7 +54,11 @@ MENU new_fl_menu(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_menu(MENU m) {
-    delete static_cast<My_Menu*>(m);
+    if (fl_inside_callback) {
+        fl_delete_widget(m);
+    } else {
+        delete static_cast<My_Menu*>(m);
+    }
 }
 
 

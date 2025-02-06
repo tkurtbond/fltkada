@@ -7,6 +7,7 @@
 #include <FL/Fl_Check_Browser.H>
 #include <FL/Fl_Browser_.H>
 #include "c_fl_check_browser.h"
+#include "c_fl.h"
 
 
 
@@ -197,7 +198,11 @@ CHECKBROWSER new_fl_check_browser(int x, int y, int w, int h, char * label) {
 }
 
 void free_fl_check_browser(CHECKBROWSER c) {
-    delete static_cast<My_Check_Browser*>(c);
+    if (fl_inside_callback) {
+        fl_delete_widget(c);
+    } else {
+        delete static_cast<My_Check_Browser*>(c);
+    }
 }
 
 

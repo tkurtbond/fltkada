@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Menu_Button.H>
 #include "c_fl_menu_button.h"
+#include "c_fl.h"
 
 
 
@@ -66,7 +67,11 @@ MENUBUTTON new_fl_menu_button(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_menu_button(MENUBUTTON m) {
-    delete static_cast<My_Menu_Button*>(m);
+    if (fl_inside_callback) {
+        fl_delete_widget(m);
+    } else {
+        delete static_cast<My_Menu_Button*>(m);
+    }
 }
 
 

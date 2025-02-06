@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Color_Chooser.H>
 #include "c_fl_color_chooser.h"
+#include "c_fl.h"
 
 
 
@@ -50,7 +51,11 @@ COLORCHOOSER new_fl_color_chooser(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_color_chooser(COLORCHOOSER n) {
-    delete static_cast<My_Color_Chooser*>(n);
+    if (fl_inside_callback) {
+        fl_delete_widget(n);
+    } else {
+        delete static_cast<My_Color_Chooser*>(n);
+    }
 }
 
 

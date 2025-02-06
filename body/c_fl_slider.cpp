@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Slider.H>
 #include "c_fl_slider.h"
+#include "c_fl.h"
 
 
 
@@ -74,7 +75,11 @@ SLIDER new_fl_slider2(unsigned char k, int x, int y, int w, int h, char * label)
 }
 
 void free_fl_slider(SLIDER s) {
-    delete static_cast<My_Slider*>(s);
+    if (fl_inside_callback) {
+        fl_delete_widget(s);
+    } else {
+        delete static_cast<My_Slider*>(s);
+    }
 }
 
 

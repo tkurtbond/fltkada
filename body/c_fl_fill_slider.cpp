@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Fill_Slider.H>
 #include "c_fl_fill_slider.h"
+#include "c_fl.h"
 
 
 
@@ -57,7 +58,11 @@ FILLSLIDER new_fl_fill_slider(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_fill_slider(FILLSLIDER s) {
-    delete static_cast<My_Fill_Slider*>(s);
+    if (fl_inside_callback) {
+        fl_delete_widget(s);
+    } else {
+        delete static_cast<My_Fill_Slider*>(s);
+    }
 }
 
 

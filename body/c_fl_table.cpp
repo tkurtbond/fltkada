@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Table.H>
 #include "c_fl_table.h"
+#include "c_fl.h"
 
 
 
@@ -105,7 +106,11 @@ TABLE new_fl_table(int x, int y, int w, int h, char * label) {
 }
 
 void free_fl_table(TABLE t) {
-    delete static_cast<My_Table*>(t);
+    if (fl_inside_callback) {
+        fl_delete_widget(t);
+    } else {
+        delete static_cast<My_Table*>(t);
+    }
 }
 
 

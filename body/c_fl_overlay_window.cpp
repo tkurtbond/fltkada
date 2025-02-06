@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Overlay_Window.H>
 #include "c_fl_overlay_window.h"
+#include "c_fl.h"
 
 
 
@@ -65,7 +66,11 @@ OVERLAYWINDOW new_fl_overlay_window2(int w, int h, char *label) {
 }
 
 void free_fl_overlay_window(OVERLAYWINDOW w) {
-    delete static_cast<My_Overlay_Window*>(w);
+    if (fl_inside_callback) {
+        fl_delete_widget(w);
+    } else {
+        delete static_cast<My_Overlay_Window*>(w);
+    }
 }
 
 

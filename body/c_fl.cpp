@@ -6,6 +6,7 @@
 
 #include <FL/Enumerations.H>
 #include <FL/Fl.H>
+#include <FL/Fl_Widget.H>
 #include "c_fl.h"
 
 
@@ -115,24 +116,53 @@ void fl_redraw() {
 
 
 
+short fl_inside_callback = 0;
+
+void fl_delete_widget(void * w) {
+    Fl::delete_widget(static_cast<Fl_Widget*>(w));
+}
+
+
+
+
 int fl_check() {
-    return Fl::check();
+    short temp = fl_inside_callback;
+    fl_inside_callback = 1;
+    int ret = Fl::check();
+    fl_inside_callback = temp;
+    return ret;
 }
 
 int fl_ready() {
-    return Fl::ready();
+    short temp = fl_inside_callback;
+    fl_inside_callback = 1;
+    int ret = Fl::ready();
+    fl_inside_callback = temp;
+    return ret;
 }
 
 int fl_wait() {
-    return Fl::wait();
+    short temp = fl_inside_callback;
+    fl_inside_callback = 1;
+    int ret = Fl::wait();
+    fl_inside_callback = temp;
+    return ret;
 }
 
-int fl_wait2(double s) {
-    return Fl::wait(s);
+double fl_wait2(double s) {
+    short temp = fl_inside_callback;
+    fl_inside_callback = 1;
+    double ret = Fl::wait(s);
+    fl_inside_callback = temp;
+    return ret;
 }
 
 int fl_run() {
-    return Fl::run();
+    short temp = fl_inside_callback;
+    fl_inside_callback = 1;
+    int ret = Fl::run();
+    fl_inside_callback = temp;
+    return ret;
 }
 
 

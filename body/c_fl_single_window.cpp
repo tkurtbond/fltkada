@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Single_Window.H>
 #include "c_fl_single_window.h"
+#include "c_fl.h"
 
 
 
@@ -55,7 +56,11 @@ SINGLEWINDOW new_fl_single_window2(int x, int y, char* label) {
 }
 
 void free_fl_single_window(SINGLEWINDOW w) {
-    delete static_cast<My_Single_Window*>(w);
+    if (fl_inside_callback) {
+        fl_delete_widget(w);
+    } else {
+        delete static_cast<My_Single_Window*>(w);
+    }
 }
 
 

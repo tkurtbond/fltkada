@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Button.H>
 #include "c_fl_button.h"
+#include "c_fl.h"
 
 
 
@@ -75,7 +76,11 @@ BUTTON new_fl_button(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_button(BUTTON b) {
-    delete static_cast<My_Button*>(b);
+    if (fl_inside_callback) {
+        fl_delete_widget(b);
+    } else {
+        delete static_cast<My_Button*>(b);
+    }
 }
 
 

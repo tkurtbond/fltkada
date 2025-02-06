@@ -8,6 +8,7 @@
 #include <FL/Fl_Widget.H>
 #include "c_fl_group.h"
 #include "c_fl_widget.h"
+#include "c_fl.h"
 
 
 
@@ -65,7 +66,11 @@ GROUP new_fl_group(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_group(GROUP g) {
-    delete static_cast<My_Group*>(g);
+    if (fl_inside_callback) {
+        fl_delete_widget(g);
+    } else {
+        delete static_cast<My_Group*>(g);
+    }
 }
 
 

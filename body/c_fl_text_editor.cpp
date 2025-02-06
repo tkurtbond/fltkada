@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Text_Editor.H>
 #include "c_fl_text_editor.h"
+#include "c_fl.h"
 
 
 
@@ -61,7 +62,11 @@ TEXTEDITOR new_fl_text_editor(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_text_editor(TEXTEDITOR te) {
-    delete static_cast<My_Text_Editor*>(te);
+    if (fl_inside_callback) {
+        fl_delete_widget(te);
+    } else {
+        delete static_cast<My_Text_Editor*>(te);
+    }
 }
 
 

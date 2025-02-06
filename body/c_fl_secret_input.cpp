@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Secret_Input.H>
 #include "c_fl_secret_input.h"
+#include "c_fl.h"
 
 
 
@@ -50,7 +51,11 @@ SECRETINPUT new_fl_secret_input(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_secret_input(SECRETINPUT i) {
-    delete static_cast<My_Secret_Input*>(i);
+    if (fl_inside_callback) {
+        fl_delete_widget(i);
+    } else {
+        delete static_cast<My_Secret_Input*>(i);
+    }
 }
 
 

@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Table_Row.H>
 #include "c_fl_table_row.h"
+#include "c_fl.h"
 
 
 
@@ -68,7 +69,11 @@ ROWTABLE new_fl_table_row(int x, int y, int w, int h, char * label) {
 }
 
 void free_fl_table_row(ROWTABLE t) {
-    delete static_cast<My_Table_Row*>(t);
+    if (fl_inside_callback) {
+        fl_delete_widget(t);
+    } else {
+        delete static_cast<My_Table_Row*>(t);
+    }
 }
 
 

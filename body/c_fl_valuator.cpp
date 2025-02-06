@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Valuator.H>
 #include "c_fl_valuator.h"
+#include "c_fl.h"
 
 
 
@@ -68,7 +69,11 @@ VALUATOR new_fl_valuator(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_valuator(VALUATOR v) {
-    delete static_cast<My_Valuator*>(v);
+    if (fl_inside_callback) {
+        fl_delete_widget(v);
+    } else {
+        delete static_cast<My_Valuator*>(v);
+    }
 }
 
 

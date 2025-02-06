@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Dial.H>
 #include "c_fl_dial.h"
+#include "c_fl.h"
 
 
 
@@ -69,7 +70,11 @@ DIAL new_fl_dial(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_dial(DIAL v) {
-    delete static_cast<My_Dial*>(v);
+    if (fl_inside_callback) {
+        fl_delete_widget(v);
+    } else {
+        delete static_cast<My_Dial*>(v);
+    }
 }
 
 

@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Input.H>
 #include "c_fl_input.h"
+#include "c_fl.h"
 
 
 
@@ -65,7 +66,11 @@ TEXTINPUT new_fl_text_input(int x, int y, int w, int h, char * label) {
 }
 
 void free_fl_text_input(TEXTINPUT t) {
-    delete static_cast<My_Text_Input*>(t);
+    if (fl_inside_callback) {
+        fl_delete_widget(t);
+    } else {
+        delete static_cast<My_Text_Input*>(t);
+    }
 }
 
 

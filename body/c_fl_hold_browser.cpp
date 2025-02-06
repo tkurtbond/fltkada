@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Hold_Browser.H>
 #include "c_fl_hold_browser.h"
+#include "c_fl.h"
 
 
 
@@ -172,7 +173,11 @@ HOLDBROWSER new_fl_hold_browser(int x, int y, int w, int h, char * label) {
 }
 
 void free_fl_hold_browser(HOLDBROWSER b) {
-    delete static_cast<My_Hold_Browser*>(b);
+    if (fl_inside_callback) {
+        fl_delete_widget(b);
+    } else {
+        delete static_cast<My_Hold_Browser*>(b);
+    }
 }
 
 

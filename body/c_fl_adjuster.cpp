@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Adjuster.H>
 #include "c_fl_adjuster.h"
+#include "c_fl.h"
 
 
 
@@ -67,7 +68,11 @@ ADJUSTER new_fl_adjuster(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_adjuster(ADJUSTER a) {
-    delete static_cast<My_Adjuster*>(a);
+    if (fl_inside_callback) {
+        fl_delete_widget(a);
+    } else {
+        delete static_cast<My_Adjuster*>(a);
+    }
 }
 
 

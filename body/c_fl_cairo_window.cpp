@@ -7,6 +7,7 @@
 #include <FL/Fl_Cairo_Window.H>
 #include <FL/Fl_Double_Window.H>
 #include "c_fl_cairo_window.h"
+#include "c_fl.h"
 
 
 
@@ -61,7 +62,11 @@ CAIROWINDOW new_fl_cairo_window(int w, int h) {
 }
 
 void free_fl_cairo_window(CAIROWINDOW w) {
-    delete static_cast<My_Cairo_Window*>(w);
+    if (fl_inside_callback) {
+        fl_delete_widget(w);
+    } else {
+        delete static_cast<My_Cairo_Window*>(w);
+    }
 }
 
 

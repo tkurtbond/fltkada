@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Wizard.H>
 #include "c_fl_wizard.h"
+#include "c_fl.h"
 
 
 
@@ -67,7 +68,11 @@ WIZARD new_fl_wizard(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_wizard(WIZARD w) {
-    delete static_cast<My_Wizard*>(w);
+    if (fl_inside_callback) {
+        fl_delete_widget(w);
+    } else {
+        delete static_cast<My_Wizard*>(w);
+    }
 }
 
 

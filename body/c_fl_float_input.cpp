@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Float_Input.H>
 #include "c_fl_float_input.h"
+#include "c_fl.h"
 
 
 
@@ -50,7 +51,11 @@ FLOATINPUT new_fl_float_input(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_float_input(FLOATINPUT i) {
-    delete static_cast<My_Float_Input*>(i);
+    if (fl_inside_callback) {
+        fl_delete_widget(i);
+    } else {
+        delete static_cast<My_Float_Input*>(i);
+    }
 }
 
 

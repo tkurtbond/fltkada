@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Pack.H>
 #include "c_fl_pack.h"
+#include "c_fl.h"
 
 
 
@@ -50,7 +51,11 @@ PACK new_fl_pack(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_pack(PACK p) {
-    delete static_cast<My_Pack*>(p);
+    if (fl_inside_callback) {
+        fl_delete_widget(p);
+    } else {
+        delete static_cast<My_Pack*>(p);
+    }
 }
 
 

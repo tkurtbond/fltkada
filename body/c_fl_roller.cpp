@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Roller.H>
 #include "c_fl_roller.h"
+#include "c_fl.h"
 
 
 
@@ -57,7 +58,11 @@ ROLLER new_fl_roller(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_roller(ROLLER r) {
-    delete static_cast<My_Roller*>(r);
+    if (fl_inside_callback) {
+        fl_delete_widget(r);
+    } else {
+        delete static_cast<My_Roller*>(r);
+    }
 }
 
 

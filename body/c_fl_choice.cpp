@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Choice.H>
 #include "c_fl_choice.h"
+#include "c_fl.h"
 
 
 
@@ -50,7 +51,11 @@ CHOICE new_fl_choice(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_choice(CHOICE b) {
-    delete static_cast<My_Choice*>(b);
+    if (fl_inside_callback) {
+        fl_delete_widget(b);
+    } else {
+        delete static_cast<My_Choice*>(b);
+    }
 }
 
 

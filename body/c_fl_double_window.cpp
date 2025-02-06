@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Double_Window.H>
 #include "c_fl_double_window.h"
+#include "c_fl.h"
 
 
 
@@ -66,7 +67,11 @@ DOUBLEWINDOW new_fl_double_window2(int w, int h, char* label) {
 }
 
 void free_fl_double_window(DOUBLEWINDOW d) {
-    delete static_cast<My_Double_Window*>(d);
+    if (fl_inside_callback) {
+        fl_delete_widget(d);
+    } else {
+        delete static_cast<My_Double_Window*>(d);
+    }
 }
 
 

@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Light_Button.H>
 #include "c_fl_light_button.h"
+#include "c_fl.h"
 
 
 
@@ -50,7 +51,11 @@ LIGHTBUTTON new_fl_light_button(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_light_button(LIGHTBUTTON b) {
-    delete static_cast<My_Light_Button*>(b);
+    if (fl_inside_callback) {
+        fl_delete_widget(b);
+    } else {
+        delete static_cast<My_Light_Button*>(b);
+    }
 }
 
 

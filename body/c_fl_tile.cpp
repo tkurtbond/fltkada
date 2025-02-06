@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Tile.H>
 #include "c_fl_tile.h"
+#include "c_fl.h"
 
 
 
@@ -50,7 +51,11 @@ TILE new_fl_tile(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_tile(TILE t) {
-    delete static_cast<My_Tile*>(t);
+    if (fl_inside_callback) {
+        fl_delete_widget(t);
+    } else {
+        delete static_cast<My_Tile*>(t);
+    }
 }
 
 

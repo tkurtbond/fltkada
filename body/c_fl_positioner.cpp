@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Positioner.H>
 #include "c_fl_positioner.h"
+#include "c_fl.h"
 
 
 
@@ -62,7 +63,11 @@ POSITIONER new_fl_positioner(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_positioner(POSITIONER p) {
-    delete static_cast<My_Positioner*>(p);
+    if (fl_inside_callback) {
+        fl_delete_widget(p);
+    } else {
+        delete static_cast<My_Positioner*>(p);
+    }
 }
 
 

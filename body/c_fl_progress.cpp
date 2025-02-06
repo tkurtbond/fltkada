@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Progress.H>
 #include "c_fl_progress.h"
+#include "c_fl.h"
 
 
 
@@ -50,7 +51,11 @@ PROGRESS new_fl_progress(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_progress(PROGRESS p) {
-    delete static_cast<My_Progress*>(p);
+    if (fl_inside_callback) {
+        fl_delete_widget(p);
+    } else {
+        delete static_cast<My_Progress*>(p);
+    }
 }
 
 

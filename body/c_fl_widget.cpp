@@ -7,6 +7,7 @@
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Image.H>
 #include "c_fl_widget.h"
+#include "c_fl.h"
 
 
 
@@ -65,7 +66,11 @@ WIDGET new_fl_widget(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_widget(WIDGET w) {
-    delete static_cast<My_Widget*>(w);
+    if (fl_inside_callback) {
+        fl_delete_widget(w);
+    } else {
+        delete static_cast<My_Widget*>(w);
+    }
 }
 
 

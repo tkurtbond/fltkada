@@ -8,6 +8,7 @@
 #include <FL/Fl_Text_Buffer.H>
 #include "c_fl_text_display.h"
 #include "c_fl_text_buffer.h"
+#include "c_fl.h"
 
 
 
@@ -104,7 +105,11 @@ TEXTDISPLAY new_fl_text_display(int x, int y, int w, int h, char*  label) {
 }
 
 void free_fl_text_display(TEXTDISPLAY td) {
-    delete static_cast<My_Text_Display*>(td);
+    if (fl_inside_callback) {
+        fl_delete_widget(td);
+    } else {
+        delete static_cast<My_Text_Display*>(td);
+    }
 }
 
 

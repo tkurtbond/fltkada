@@ -8,6 +8,9 @@
 #define FL_GUARD
 
 
+#include <cstddef>
+
+
 extern "C" const short fl_align_center;
 extern "C" const short fl_align_top;
 extern "C" const short fl_align_bottom;
@@ -61,10 +64,14 @@ extern "C" void fl_flush();
 extern "C" void fl_redraw();
 
 
+extern "C" short fl_inside_callback;
+extern "C" void fl_delete_widget(void * w);
+
+
 extern "C" int fl_check();
 extern "C" int fl_ready();
 extern "C" int fl_wait();
-extern "C" int fl_wait2(double s);
+extern "C" double fl_wait2(double s);
 extern "C" int fl_run();
 
 

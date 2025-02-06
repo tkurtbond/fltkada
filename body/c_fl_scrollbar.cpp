@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Scrollbar.H>
 #include "c_fl_scrollbar.h"
+#include "c_fl.h"
 
 
 
@@ -72,7 +73,11 @@ SCROLLBAR new_fl_scrollbar(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_scrollbar(SCROLLBAR s) {
-    delete static_cast<My_Scrollbar*>(s);
+    if (fl_inside_callback) {
+        fl_delete_widget(s);
+    } else {
+        delete static_cast<My_Scrollbar*>(s);
+    }
 }
 
 

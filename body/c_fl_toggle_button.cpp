@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Toggle_Button.H>
 #include "c_fl_toggle_button.h"
+#include "c_fl.h"
 
 
 
@@ -50,7 +51,11 @@ TOGGLEBUTTON new_fl_toggle_button(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_toggle_button(TOGGLEBUTTON b) {
-    delete static_cast<My_Toggle_Button*>(b);
+    if (fl_inside_callback) {
+        fl_delete_widget(b);
+    } else {
+        delete static_cast<My_Toggle_Button*>(b);
+    }
 }
 
 

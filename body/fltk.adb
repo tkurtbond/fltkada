@@ -98,7 +98,7 @@ package body FLTK is
 
     function fl_wait2
            (S : in Interfaces.C.double)
-        return Interfaces.C.int;
+        return Interfaces.C.double;
     pragma Import (C, fl_wait2, "fl_wait2");
     pragma Inline (fl_wait2);
 
@@ -449,9 +449,9 @@ package body FLTK is
 
     function Wait
            (Seconds : in Long_Float)
-        return Integer is
+        return Long_Float is
     begin
-        return Integer (fl_wait2 (Interfaces.C.double (Seconds)));
+        return Long_Float (fl_wait2 (Interfaces.C.double (Seconds)));
     end Wait;
 
 

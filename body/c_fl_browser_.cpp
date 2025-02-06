@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Browser_.H>
 #include "c_fl_browser_.h"
+#include "c_fl.h"
 
 
 
@@ -190,7 +191,11 @@ ABSTRACTBROWSER new_fl_abstract_browser(int x, int y, int w, int h, char * label
 }
 
 void free_fl_abstract_browser(ABSTRACTBROWSER b) {
-    delete static_cast<My_Browser_*>(b);
+    if (fl_inside_callback) {
+        fl_delete_widget(b);
+    } else {
+        delete static_cast<My_Browser_*>(b);
+    }
 }
 
 

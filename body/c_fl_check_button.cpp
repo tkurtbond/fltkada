@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Check_Button.H>
 #include "c_fl_check_button.h"
+#include "c_fl.h"
 
 
 
@@ -66,7 +67,11 @@ CHECKBUTTON new_fl_check_button(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_check_button(CHECKBUTTON b) {
-    delete static_cast<My_Check_Button*>(b);
+    if (fl_inside_callback) {
+        fl_delete_widget(b);
+    } else {
+        delete static_cast<My_Check_Button*>(b);
+    }
 }
 
 

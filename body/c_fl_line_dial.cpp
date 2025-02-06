@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Line_Dial.H>
 #include "c_fl_line_dial.h"
+#include "c_fl.h"
 
 
 
@@ -57,7 +58,11 @@ LINEDIAL new_fl_line_dial(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_line_dial(LINEDIAL v) {
-    delete static_cast<My_Line_Dial*>(v);
+    if (fl_inside_callback) {
+        fl_delete_widget(v);
+    } else {
+        delete static_cast<My_Line_Dial*>(v);
+    }
 }
 
 

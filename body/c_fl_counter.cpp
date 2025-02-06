@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Counter.H>
 #include "c_fl_counter.h"
+#include "c_fl.h"
 
 
 
@@ -57,7 +58,11 @@ COUNTER new_fl_counter(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_counter(COUNTER c) {
-    delete static_cast<My_Counter*>(c);
+    if (fl_inside_callback) {
+        fl_delete_widget(c);
+    } else {
+        delete static_cast<My_Counter*>(c);
+    }
 }
 
 

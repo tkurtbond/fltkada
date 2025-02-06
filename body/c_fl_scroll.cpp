@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Scroll.H>
 #include "c_fl_scroll.h"
+#include "c_fl.h"
 
 
 
@@ -75,7 +76,11 @@ SCROLL new_fl_scroll(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_scroll(SCROLL s) {
-    delete static_cast<My_Scroll*>(s);
+    if (fl_inside_callback) {
+        fl_delete_widget(s);
+    } else {
+        delete static_cast<My_Scroll*>(s);
+    }
 }
 
 

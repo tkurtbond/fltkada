@@ -8,6 +8,7 @@
 #include <FL/Fl_Help_View.H>
 #include <FL/Enumerations.H>
 #include "c_fl_help_view.h"
+#include "c_fl.h"
 
 
 
@@ -52,7 +53,11 @@ HELPVIEW new_fl_help_view(int x, int y, int w, int h, char * label) {
 }
 
 void free_fl_help_view(HELPVIEW v) {
-    delete static_cast<My_Help_View*>(v);
+    if (fl_inside_callback) {
+        fl_delete_widget(v);
+    } else {
+        delete static_cast<My_Help_View*>(v);
+    }
 }
 
 

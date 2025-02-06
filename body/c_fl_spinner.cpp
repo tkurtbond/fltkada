@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Spinner.H>
 #include "c_fl_spinner.h"
+#include "c_fl.h"
 
 
 
@@ -50,7 +51,11 @@ SPINNER new_fl_spinner(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_spinner(SPINNER n) {
-    delete static_cast<My_Spinner*>(n);
+    if (fl_inside_callback) {
+        fl_delete_widget(n);
+    } else {
+        delete static_cast<My_Spinner*>(n);
+    }
 }
 
 
