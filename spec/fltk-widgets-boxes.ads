@@ -51,6 +51,8 @@ package FLTK.Widgets.Boxes is
 
 
 
+    --  Drawing, Events  --
+
     procedure Draw
            (This : in out Box);
 

@@ -38,6 +38,8 @@ package FLTK.Devices.Surface.Copy is
 
 
 
+    --  Dimensions  --
+
     function Get_W
            (This : in Copy_Surface)
         return Integer;
@@ -48,6 +50,8 @@ package FLTK.Devices.Surface.Copy is
 
 
 
+
+    --  Drawing  --
 
     procedure Draw_Widget
            (This               : in out Copy_Surface;
@@ -61,6 +65,8 @@ package FLTK.Devices.Surface.Copy is
 
 
 
+
+    --  Surfaces  --
 
     procedure Set_Current
            (This : in out Copy_Surface);

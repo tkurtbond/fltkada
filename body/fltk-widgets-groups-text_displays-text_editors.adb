@@ -25,6 +25,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_text_editor
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -40,6 +42,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+    --  Default Key Function  --
+
     procedure fl_text_editor_default
            (TE : in Storage.Integer_Address;
             K  : in Interfaces.C.int);
@@ -48,6 +52,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+
+    --  Operation Key Functions  --
 
     procedure fl_text_editor_undo
            (TE : in Storage.Integer_Address);
@@ -82,6 +88,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+    --  Special Key Functions  --
+
     procedure fl_text_editor_backspace
            (TE : in Storage.Integer_Address);
     pragma Import (C, fl_text_editor_backspace, "fl_text_editor_backspace");
@@ -104,6 +112,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+
+    --  Movement Key Functions  --
 
     procedure fl_text_editor_home
            (TE : in Storage.Integer_Address);
@@ -148,6 +158,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+    --  Shift Key Functions  --
+
     procedure fl_text_editor_shift_home
            (TE : in Storage.Integer_Address);
     pragma Import (C, fl_text_editor_shift_home, "fl_text_editor_shift_home");
@@ -190,6 +202,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+
+    --  Control Key Functions  --
 
     procedure fl_text_editor_ctrl_home
            (TE : in Storage.Integer_Address);
@@ -234,6 +248,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+    --  Control Shift Key Functions  --
+
     procedure fl_text_editor_ctrl_shift_home
            (TE : in Storage.Integer_Address);
     pragma Import (C, fl_text_editor_ctrl_shift_home, "fl_text_editor_ctrl_shift_home");
@@ -276,6 +292,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+
+    --  Meta Key Functions  --
 
     procedure fl_text_editor_meta_home
            (TE : in Storage.Integer_Address);
@@ -320,6 +338,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+    --  Meta Shift Key Functions  --
+
     procedure fl_text_editor_meta_shift_home
            (TE : in Storage.Integer_Address);
     pragma Import (C, fl_text_editor_meta_shift_home, "fl_text_editor_meta_shift_home");
@@ -363,6 +383,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+    --  Key Binding Modification  --
+
     procedure fl_text_editor_add_key_binding
            (TE   : in Storage.Integer_Address;
             K, S : in Interfaces.C.int;
@@ -385,6 +407,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+    --  Settings  --
+
     function fl_text_editor_get_insert_mode
            (TE : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -396,9 +420,6 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
             I  : in Interfaces.C.int);
     pragma Import (C, fl_text_editor_set_insert_mode, "fl_text_editor_set_insert_mode");
     pragma Inline (fl_text_editor_set_insert_mode);
-
-
-
 
     function fl_text_editor_get_tab_nav
            (TE : in Storage.Integer_Address)
@@ -414,6 +435,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_text_editor_draw
            (W : in Storage.Integer_Address);
@@ -590,6 +613,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
     --  API Subprograms  --
     -----------------------
 
+    --  Default Key Function  --
+
     procedure KF_Default
            (This : in out Text_Editor'Class;
             Key  : in     Key_Combo) is
@@ -601,6 +626,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+
+    --  Operation Key Functions  --
 
     procedure KF_Undo
            (This : in out Text_Editor'Class) is
@@ -646,6 +673,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+    --  Special Key Functions  --
+
     procedure KF_Backspace
            (This : in out Text_Editor'Class) is
     begin
@@ -682,6 +711,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+
+    --  Movement Key Functions  --
 
     procedure KF_Home
            (This : in out Text_Editor'Class) is
@@ -741,6 +772,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+    --  Shift Key Functions  --
+
     procedure KF_Shift_Home
            (This : in out Text_Editor'Class) is
     begin
@@ -798,6 +831,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+
+    --  Control Key Functions  --
 
     procedure KF_Ctrl_Home
            (This : in out Text_Editor'Class) is
@@ -857,6 +892,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+    --  Control Shift Key Functions  --
+
     procedure KF_Ctrl_Shift_Home
            (This : in out Text_Editor'Class) is
     begin
@@ -914,6 +951,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+
+    --  Meta Key Functions  --
 
     procedure KF_Meta_Home
            (This : in out Text_Editor'Class) is
@@ -973,6 +1012,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+    --  Meta Shift Key Functions  --
+
     procedure KF_Meta_Shift_Home
            (This : in out Text_Editor'Class) is
     begin
@@ -1030,6 +1071,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+
+    --  Key Binding Modification  --
 
     procedure Add_Key_Binding
            (This : in out Text_Editor;
@@ -1149,6 +1192,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+    --  Settings  --
+
     function Get_Insert_Mode
            (This : in Text_Editor)
         return Insert_Mode
@@ -1169,8 +1214,6 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
     begin
         fl_text_editor_set_insert_mode (This.Void_Ptr, Insert_Mode'Pos (To));
     end Set_Insert_Mode;
-
-
 
 
     function Get_Tab_Mode
@@ -1196,6 +1239,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
 
+
+    --  Events  --
 
     function Handle
            (This  : in out Text_Editor;

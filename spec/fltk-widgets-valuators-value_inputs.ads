@@ -42,12 +42,16 @@ package FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
+    --  Attributes  --
+
     function Text_Field
            (This : in out Value_Input)
         return FLTK.Widgets.Inputs.Text.Text_Input_Reference;
 
 
 
+
+    --  Cursors  --
 
     function Get_Cursor_Color
            (This : in Value_Input)
@@ -60,6 +64,8 @@ package FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
+    --  Shortcut  --
+
     function Get_Shortcut
            (This : in Value_Input)
         return Key_Combo;
@@ -71,6 +77,8 @@ package FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
+    --  Allow Outside Range  --
+
     function Is_Soft
            (This : in Value_Input)
         return Boolean;
@@ -81,6 +89,8 @@ package FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
+
+    --  Text Settings  --
 
     function Get_Text_Color
            (This : in Value_Input)
@@ -109,12 +119,16 @@ package FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
+    --  Dimensions  --
+
     procedure Resize
            (This       : in out Value_Input;
             X, Y, W, H : in     Integer);
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Value_Input);

@@ -26,6 +26,8 @@ package body FLTK.Widgets.Groups.Tables.Row is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_table_row
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -41,6 +43,8 @@ package body FLTK.Widgets.Groups.Tables.Row is
 
 
 
+    --  Rows  --
+
     function fl_table_row_get_rows
            (T : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -55,6 +59,8 @@ package body FLTK.Widgets.Groups.Tables.Row is
 
 
 
+
+    --  Selection  --
 
     function fl_table_row_row_selected
            (T : in Storage.Integer_Address;
@@ -90,6 +96,8 @@ package body FLTK.Widgets.Groups.Tables.Row is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_table_row_draw
            (T : in Storage.Integer_Address);
@@ -201,6 +209,12 @@ package body FLTK.Widgets.Groups.Tables.Row is
 
 
 
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
+    --  Contents Modification  --
+
     procedure Clear
            (This : in out Row_Table) is
     begin
@@ -211,6 +225,8 @@ package body FLTK.Widgets.Groups.Tables.Row is
 
 
 
+
+    --  Rows  --
 
     function Get_Rows
            (This : in Row_Table)
@@ -235,6 +251,8 @@ package body FLTK.Widgets.Groups.Tables.Row is
 
 
 
+
+    --  Selection  --
 
     function Is_Row_Selected
            (This : in Row_Table;
@@ -328,6 +346,8 @@ package body FLTK.Widgets.Groups.Tables.Row is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Cell_Dimensions
            (This        : in     Row_Table;

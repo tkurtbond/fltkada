@@ -16,6 +16,12 @@ use type
 package body FLTK.Screen is
 
 
+    ------------------------
+    --  Functions From C  --
+    ------------------------
+
+    --  Basic Dimensions  --
+
     function fl_screen_x
         return Interfaces.C.int;
     pragma Import (C, fl_screen_x, "fl_screen_x");
@@ -39,6 +45,8 @@ package body FLTK.Screen is
 
 
 
+    --  Pixel Density  --
+
     function fl_screen_count
         return Interfaces.C.int;
     pragma Import (C, fl_screen_count, "fl_screen_count");
@@ -52,6 +60,8 @@ package body FLTK.Screen is
 
 
 
+
+    --  Position Lookup  --
 
     function fl_screen_num
            (X, Y : in Interfaces.C.int)
@@ -67,6 +77,8 @@ package body FLTK.Screen is
 
 
 
+
+    --  Bounding Boxes  --
 
     procedure fl_screen_work_area
            (X, Y, W, H :    out Interfaces.C.int;
@@ -84,9 +96,6 @@ package body FLTK.Screen is
            (X, Y, W, H : out Interfaces.C.int);
     pragma Import (C, fl_screen_work_area3, "fl_screen_work_area3");
     pragma Inline (fl_screen_work_area3);
-
-
-
 
     procedure fl_screen_xywh
            (X, Y, W, H :    out Interfaces.C.int;
@@ -114,6 +123,12 @@ package body FLTK.Screen is
 
 
 
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
+    --  Basic Dimensions  --
+
     function Get_X return Integer is
     begin
         return Integer (fl_screen_x);
@@ -140,6 +155,8 @@ package body FLTK.Screen is
 
 
 
+    --  Pixel Density  --
+
     function Count return Integer is
     begin
         return Integer (fl_screen_count);
@@ -159,6 +176,8 @@ package body FLTK.Screen is
 
 
 
+
+    --  Position Lookup  --
 
     function Containing
            (X, Y : in Integer)
@@ -183,6 +202,8 @@ package body FLTK.Screen is
 
 
 
+
+    --  Bounding Boxes  --
 
     procedure Work_Area
            (X, Y, W, H   :    out Integer;
@@ -220,8 +241,6 @@ package body FLTK.Screen is
             Interfaces.C.int (W),
             Interfaces.C.int (H));
     end Work_Area;
-
-
 
 
     procedure Bounding_Rect
@@ -279,4 +298,5 @@ package body FLTK.Screen is
 
 
 end FLTK.Screen;
+
 

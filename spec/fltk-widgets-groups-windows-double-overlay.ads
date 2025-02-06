@@ -44,6 +44,8 @@ package FLTK.Widgets.Groups.Windows.Double.Overlay is
 
 
 
+    --  Visibility  --
+
     procedure Show
            (This : in out Overlay_Window);
 
@@ -59,6 +61,8 @@ package FLTK.Widgets.Groups.Windows.Double.Overlay is
 
 
 
+    --  Settings  --
+
     function Can_Do_Overlay
            (This : in Overlay_Window)
         return Boolean;
@@ -69,6 +73,8 @@ package FLTK.Widgets.Groups.Windows.Double.Overlay is
 
 
 
+
+    --  Drawing  --
 
     --  You must override this subprogram
     procedure Draw_Overlay

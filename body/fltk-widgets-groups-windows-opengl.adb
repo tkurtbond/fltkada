@@ -24,6 +24,8 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_gl_window
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -45,6 +47,8 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
 
 
 
+
+    --  Visibility  --
 
     procedure fl_gl_window_show
            (S : in Storage.Integer_Address);
@@ -76,6 +80,8 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
 
 
 
+    --  Dimensions  --
+
     function fl_gl_window_pixel_h
            (S : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -102,6 +108,8 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
 
 
 
+
+    --  OpenGL Modes  --
 
     function fl_gl_window_get_mode
            (S : in Storage.Integer_Address)
@@ -135,6 +143,8 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
 
 
 
+
+    --  OpenGL Contexts  --
 
     function fl_gl_window_get_context
            (S : in Storage.Integer_Address)
@@ -189,6 +199,8 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_gl_window_ortho
            (W : in Storage.Integer_Address);
@@ -327,9 +339,11 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
 
 
 
-    ---------------
-    --  Display  --
-    ---------------
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
+    --  Visibility  --
 
     procedure Show
            (This : in out GL_Window) is
@@ -368,9 +382,7 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
 
 
 
-    ------------------
     --  Dimensions  --
-    ------------------
 
     function Pixel_H
            (This : in GL_Window)
@@ -411,9 +423,7 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
 
 
 
-    --------------------
     --  OpenGL Modes  --
-    --------------------
 
     function Get_Mode
            (This : in GL_Window)
@@ -457,9 +467,7 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
 
 
 
-    -----------------------
     --  OpenGL Contexts  --
-    -----------------------
 
     function Get_Context
            (This : in GL_Window)
@@ -534,9 +542,7 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
 
 
 
-    ----------------------------------
-    --  Drawing and Event Handling  --
-    ----------------------------------
+    --  Drawing, Events  --
 
     procedure Ortho
            (This : in out GL_Window) is

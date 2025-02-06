@@ -4,6 +4,9 @@
 --  Released into the public domain
 
 
+--  Select_Browsers except select is a reserved word
+
+
 package FLTK.Widgets.Groups.Browsers.Textline.Choice is
 
 
@@ -11,6 +14,8 @@ package FLTK.Widgets.Groups.Browsers.Textline.Choice is
 
     type Choice_Browser_Reference (Data : not null access Choice_Browser'Class) is
         limited null record with Implicit_Dereference => Data;
+
+
 
 
     package Forge is

@@ -16,6 +16,8 @@ package body FLTK.Widgets.Groups.Tiled is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_tile
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -31,6 +33,8 @@ package body FLTK.Widgets.Groups.Tiled is
 
 
 
+    --  Dimensions  --
+
     procedure fl_tile_position
            (T              : in Storage.Integer_Address;
             OX, OY, NX, NY : in Interfaces.C.int);
@@ -45,6 +49,8 @@ package body FLTK.Widgets.Groups.Tiled is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_tile_draw
            (W : in Storage.Integer_Address);
@@ -115,11 +121,11 @@ package body FLTK.Widgets.Groups.Tiled is
         begin
             return This : Tiled_Group do
                 This.Void_Ptr := new_fl_tile
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -144,6 +150,8 @@ package body FLTK.Widgets.Groups.Tiled is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Dimensions  --
 
     procedure Position
            (This         : in out Tiled_Group;
@@ -171,6 +179,8 @@ package body FLTK.Widgets.Groups.Tiled is
 
 
 
+
+    --  Events  --
 
     function Handle
            (This  : in out Tiled_Group;

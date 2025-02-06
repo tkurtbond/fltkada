@@ -21,6 +21,8 @@ package body FLTK.Widgets.Charts is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_chart
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -35,6 +37,8 @@ package body FLTK.Widgets.Charts is
 
 
 
+
+    --  Data  --
 
     procedure fl_chart_add
            (C : in Storage.Integer_Address;
@@ -69,6 +73,8 @@ package body FLTK.Widgets.Charts is
 
 
 
+
+    --  Settings  --
 
     function fl_chart_get_autosize
            (C : in Storage.Integer_Address)
@@ -115,6 +121,8 @@ package body FLTK.Widgets.Charts is
 
 
 
+    --  Text Settings  --
+
     function fl_chart_get_textcolor
            (C : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
@@ -154,6 +162,8 @@ package body FLTK.Widgets.Charts is
 
 
 
+    --  Dimensions  --
+
     procedure fl_chart_size2
            (C    : in Storage.Integer_Address;
             W, H : in Interfaces.C.int);
@@ -162,6 +172,8 @@ package body FLTK.Widgets.Charts is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_chart_draw
            (W : in Storage.Integer_Address);
@@ -232,11 +244,11 @@ package body FLTK.Widgets.Charts is
         begin
             return This : Chart do
                 This.Void_Ptr := new_fl_chart
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -261,6 +273,8 @@ package body FLTK.Widgets.Charts is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Data  --
 
     procedure Add
            (This       : in out Chart;
@@ -316,6 +330,8 @@ package body FLTK.Widgets.Charts is
 
 
 
+
+    --  Settings  --
 
     function Will_Autosize
            (This : in Chart)
@@ -381,6 +397,8 @@ package body FLTK.Widgets.Charts is
 
 
 
+    --  Text Settings  --
+
     function Get_Text_Color
            (This : in Chart)
         return Color is
@@ -431,6 +449,8 @@ package body FLTK.Widgets.Charts is
 
 
 
+    --  Dimensions  --
+
     procedure Resize
            (This : in out Chart;
             W, H : in     Integer) is
@@ -440,6 +460,8 @@ package body FLTK.Widgets.Charts is
 
 
 
+
+    --  Drawing  --
 
     procedure Draw
            (This : in out Chart) is

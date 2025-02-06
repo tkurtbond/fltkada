@@ -4,6 +4,9 @@
 --  Released into the public domain
 
 
+--  Naming this package Float would have caused ambiguity with the Float type
+
+
 limited with
 
     FLTK.Widgets.Groups;
@@ -37,6 +40,8 @@ package FLTK.Widgets.Inputs.Text.Floating_Point is
 
 
 
+
+    --  Text Field  --
 
     function Get_Value
            (This : in Float_Input)

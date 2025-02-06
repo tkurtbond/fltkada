@@ -53,6 +53,8 @@ package FLTK.Widgets.Groups.Help_Views is
 
 
 
+    --  Selection  --
+
     procedure Clear_Selection
            (This : in out Help_View);
 
@@ -61,6 +63,8 @@ package FLTK.Widgets.Groups.Help_Views is
 
 
 
+
+    --  Position  --
 
     function Find
            (This : in Help_View;
@@ -90,6 +94,8 @@ package FLTK.Widgets.Groups.Help_Views is
 
 
 
+
+    --  Content  --
 
     function Current_Directory
            (This : in Help_View)
@@ -122,6 +128,8 @@ package FLTK.Widgets.Groups.Help_Views is
 
 
 
+
+    --  Settings  --
 
     function Get_Scrollbar_Size
            (This : in Help_View)
@@ -169,6 +177,8 @@ package FLTK.Widgets.Groups.Help_Views is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Help_View);

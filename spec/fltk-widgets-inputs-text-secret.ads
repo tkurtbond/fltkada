@@ -38,6 +38,8 @@ package FLTK.Widgets.Inputs.Text.Secret is
 
 
 
+    --  Events  --
+
     function Handle
            (This  : in out Secret_Input;
             Event : in     Event_Kind)

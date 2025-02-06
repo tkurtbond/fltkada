@@ -38,6 +38,8 @@ package FLTK.Widgets.Inputs.Text.File is
 
 
 
+    --  Settings  --
+
     function Get_Down_Box
            (This : in File_Input)
         return Box_Kind;
@@ -57,6 +59,8 @@ package FLTK.Widgets.Inputs.Text.File is
 
 
 
+    --  Text Field  --
+
     function Get_Value
            (This : in File_Input)
         return String;
@@ -67,6 +71,8 @@ package FLTK.Widgets.Inputs.Text.File is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out File_Input);

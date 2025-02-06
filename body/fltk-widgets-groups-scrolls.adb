@@ -27,6 +27,8 @@ package body FLTK.Widgets.Groups.Scrolls is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_scroll
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -42,6 +44,8 @@ package body FLTK.Widgets.Groups.Scrolls is
 
 
 
+    --  Attributes  --
+
     function fl_scroll_hscrollbar
            (S : in Storage.Integer_Address)
         return Storage.Integer_Address;
@@ -56,6 +60,8 @@ package body FLTK.Widgets.Groups.Scrolls is
 
 
 
+
+    --  Scrolling  --
 
     procedure fl_scroll_to
            (S    : in Storage.Integer_Address;
@@ -78,6 +84,8 @@ package body FLTK.Widgets.Groups.Scrolls is
 
 
 
+    --  Scrollbar Settings  --
+
     function fl_scroll_get_size
            (S : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -92,6 +100,8 @@ package body FLTK.Widgets.Groups.Scrolls is
 
 
 
+
+    --  Dimensions  --
 
     procedure fl_scroll_resize
            (S          : in Storage.Integer_Address;
@@ -115,6 +125,8 @@ package body FLTK.Widgets.Groups.Scrolls is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_scroll_bbox
            (S          : in     Storage.Integer_Address;
@@ -267,11 +279,11 @@ package body FLTK.Widgets.Groups.Scrolls is
         begin
             return This : Scroll do
                 This.Void_Ptr := new_fl_scroll
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -293,9 +305,11 @@ package body FLTK.Widgets.Groups.Scrolls is
 
 
 
-    ------------------
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
     --  Attributes  --
-    ------------------
 
     function H_Bar
            (This : in out Scroll)
@@ -315,9 +329,7 @@ package body FLTK.Widgets.Groups.Scrolls is
 
 
 
-    -----------------------
-    --  API Subprograms  --
-    -----------------------
+    --  Contents  --
 
     procedure Clear
            (This : in out Scroll) is
@@ -334,6 +346,8 @@ package body FLTK.Widgets.Groups.Scrolls is
 
 
 
+
+    --  Scrolling  --
 
     procedure Scroll_To
            (This : in out Scroll;
@@ -360,6 +374,8 @@ package body FLTK.Widgets.Groups.Scrolls is
 
 
 
+
+    --  Scrollbar Settings  --
 
     function Get_Scrollbar_Size
            (This : in Scroll)
@@ -400,6 +416,8 @@ package body FLTK.Widgets.Groups.Scrolls is
 
 
 
+
+    --  Dimensions  --
 
     procedure Resize
            (This       : in out Scroll;
@@ -475,6 +493,8 @@ package body FLTK.Widgets.Groups.Scrolls is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Bounding_Box
            (This       : in     Scroll;

@@ -17,6 +17,8 @@ package body FLTK.Widgets.Valuators.Dials.Line is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_line_dial
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -31,6 +33,8 @@ package body FLTK.Widgets.Valuators.Dials.Line is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_line_dial_draw
            (W : in Storage.Integer_Address);
@@ -101,11 +105,11 @@ package body FLTK.Widgets.Valuators.Dials.Line is
         begin
             return This : Line_Dial do
                 This.Void_Ptr := new_fl_line_dial
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;

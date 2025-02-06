@@ -36,6 +36,8 @@ package body FLTK.Widgets.Groups.Browsers is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_abstract_browser
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -51,6 +53,8 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
 
+    --  Attributes  --
+
     function fl_abstract_browser_hscrollbar
            (B : in Storage.Integer_Address)
         return Storage.Integer_Address;
@@ -65,6 +69,8 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
 
+
+    --  Items  --
 
     function fl_abstract_browser_select
            (B, I : in Storage.Integer_Address;
@@ -125,6 +131,8 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
 
+
+    --  Scrollbar Settings  --
 
     function fl_abstract_browser_get_has_scrollbar
            (B : in Storage.Integer_Address)
@@ -191,6 +199,8 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
 
+    --  Text Settings  --
+
     function fl_abstract_browser_get_textcolor
            (B : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
@@ -230,6 +240,8 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
 
+    --  Dimensions, Redrawing  --
+
     procedure fl_abstract_browser_resize
            (B          : in Storage.Integer_Address;
             X, Y, W, H : in Interfaces.C.int);
@@ -261,6 +273,8 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
 
+    --  Optional Overrides  --
+
     function fl_abstract_browser_full_width
            (B : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -289,6 +303,8 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
 
+    --  Cache Invalidation  --
+
     procedure fl_abstract_browser_new_list
            (B : in Storage.Integer_Address);
     pragma Import (C, fl_abstract_browser_new_list, "fl_abstract_browser_new_list");
@@ -316,6 +332,8 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
 
+
+    -- Drawing, Events  --
 
     procedure fl_abstract_browser_draw
            (B : in Storage.Integer_Address);
@@ -756,7 +774,7 @@ package body FLTK.Widgets.Groups.Browsers is
     --  API Subprograms  --
     -----------------------
 
-    --  Access to the Browser's self contained scrollbars
+    --  Attributes  --
 
     function H_Bar
            (This : in out Browser)
@@ -776,7 +794,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
 
-    --  Item related settings
+    --  Items  --
 
     function Set_Select
            (This         : in out Browser;
@@ -957,7 +975,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
 
-    --  Scrollbar related settings
+    --  Scrollbar Settings  --
 
     function Get_Scrollbar_Mode
            (This : in Browser)
@@ -1045,7 +1063,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
 
-    --  Text related settings
+    --  Text Settings  --
 
     function Get_Text_Color
            (This : in Browser)
@@ -1097,7 +1115,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
 
-    --  Graphical dimensions and redrawing
+    --  Dimensions, Redrawing  --
 
     procedure Resize
            (This       : in out Browser;
@@ -1150,7 +1168,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
 
-    --  Optional Override API
+    --  Optional Overrides  --
 
     function Full_List_Width
            (This : in Browser)
@@ -1213,7 +1231,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
 
-    --  Mandatory Override API
+    --  Mandatory Overrides  --
 
     function Item_Width
            (This : in Browser;
@@ -1311,7 +1329,7 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
 
-    --  Cache invalidation
+    --  Cache Invalidation  --
 
     procedure New_List
            (This : in out Browser) is
@@ -1361,38 +1379,6 @@ package body FLTK.Widgets.Groups.Browsers is
             Cursor_To_Address (A),
             Cursor_To_Address (B));
     end Swapping;
-
-
-
-
-    --  Standard Override API
-
-    procedure Draw
-           (This : in out Browser)
-    is
-        procedure my_draw
-               (V : in Storage.Integer_Address);
-        for my_draw'Address use This.Draw_Ptr;
-        pragma Import (Ada, my_draw);
-    begin
-        my_draw (This.Void_Ptr);
-    end Draw;
-
-
-    function Handle
-           (This  : in out Browser;
-            Event : in     Event_Kind)
-        return Event_Outcome
-    is
-        function my_handle
-               (V : in Storage.Integer_Address;
-                E : in Interfaces.C.int)
-            return Interfaces.C.int;
-        for my_handle'Address use This.Handle_Ptr;
-        pragma Import (Ada, my_handle);
-    begin
-        return Event_Outcome'Val (my_handle (This.Void_Ptr, Event_Kind'Pos (Event)));
-    end Handle;
 
 
 end FLTK.Widgets.Groups.Browsers;

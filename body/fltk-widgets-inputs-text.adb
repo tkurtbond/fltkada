@@ -17,6 +17,8 @@ package body FLTK.Widgets.Inputs.Text is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_text_input
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -31,6 +33,8 @@ package body FLTK.Widgets.Inputs.Text is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_text_input_draw
            (T : in Storage.Integer_Address);
@@ -170,6 +174,8 @@ package body FLTK.Widgets.Inputs.Text is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Text_Input) is

@@ -17,6 +17,8 @@ package body FLTK.Widgets.Menus.Menu_Buttons is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_menu_button
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -31,6 +33,8 @@ package body FLTK.Widgets.Menus.Menu_Buttons is
 
 
 
+
+    --  Popup  --
 
     function fl_menu_button_popup
            (M : in Storage.Integer_Address)
@@ -47,6 +51,8 @@ package body FLTK.Widgets.Menus.Menu_Buttons is
 
 
 
+    --  Drawing, Events  --
+
     procedure fl_menu_button_draw
            (W : in Storage.Integer_Address);
     pragma Import (C, fl_menu_button_draw, "fl_menu_button_draw");
@@ -61,6 +67,8 @@ package body FLTK.Widgets.Menus.Menu_Buttons is
 
 
 
+
+    --  Initialize  --
 
     function fl_menu_get_item
            (M : in Storage.Integer_Address;
@@ -174,11 +182,11 @@ package body FLTK.Widgets.Menus.Menu_Buttons is
         begin
             return This : Menu_Button do
                 This.Void_Ptr := new_fl_menu_button
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -203,6 +211,8 @@ package body FLTK.Widgets.Menus.Menu_Buttons is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Popup  --
 
     function Get_Popup_Kind
            (This : in Menu_Button)
@@ -238,6 +248,8 @@ package body FLTK.Widgets.Menus.Menu_Buttons is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Menu_Button) is

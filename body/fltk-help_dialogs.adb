@@ -21,6 +21,8 @@ package body FLTK.Help_Dialogs is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_help_dialog
         return Storage.Integer_Address;
     pragma Import (C, new_fl_help_dialog, "new_fl_help_dialog");
@@ -33,6 +35,8 @@ package body FLTK.Help_Dialogs is
 
 
 
+
+    --  Visibility  --
 
     procedure fl_help_dialog_show
            (D : in Storage.Integer_Address);
@@ -60,6 +64,8 @@ package body FLTK.Help_Dialogs is
 
 
 
+    --  Topline  --
+
     procedure fl_help_dialog_set_topline_number
            (D : in Storage.Integer_Address;
             N : in Interfaces.C.int);
@@ -74,6 +80,8 @@ package body FLTK.Help_Dialogs is
 
 
 
+
+    --  Content  --
 
     procedure fl_help_dialog_load
            (D : in Storage.Integer_Address;
@@ -96,6 +104,8 @@ package body FLTK.Help_Dialogs is
 
 
 
+    --  Settings  --
+
     function fl_help_dialog_get_textsize
            (D : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -110,6 +120,8 @@ package body FLTK.Help_Dialogs is
 
 
 
+
+    --  Dimensions  --
 
     function fl_help_dialog_get_x
            (D : in Storage.Integer_Address)
@@ -191,6 +203,9 @@ package body FLTK.Help_Dialogs is
             end return;
         end Create;
 
+
+        pragma Inline (Create);
+
     end Forge;
 
 
@@ -199,6 +214,8 @@ package body FLTK.Help_Dialogs is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Visibility  --
 
     procedure Show
            (This : in out Help_Dialog) is
@@ -231,6 +248,8 @@ package body FLTK.Help_Dialogs is
 
 
 
+    --  Topline  --
+
     procedure Set_Topline_Number
            (This : in out Help_Dialog;
             Line : in     Positive) is
@@ -248,6 +267,8 @@ package body FLTK.Help_Dialogs is
 
 
 
+
+    --  Content  --
 
     procedure Load
            (This : in out Help_Dialog;
@@ -282,6 +303,8 @@ package body FLTK.Help_Dialogs is
 
 
 
+    --  Settings  --
+
     function Get_Text_Size
            (This : in Help_Dialog)
         return Font_Size is
@@ -299,6 +322,8 @@ package body FLTK.Help_Dialogs is
 
 
 
+
+    --  Dimensions  --
 
     function Get_X
            (This : in Help_Dialog)

@@ -17,6 +17,8 @@ package body FLTK.Widgets.Buttons.Enter is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_return_button
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -31,6 +33,8 @@ package body FLTK.Widgets.Buttons.Enter is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_return_button_draw
            (W : in Storage.Integer_Address);
@@ -101,11 +105,11 @@ package body FLTK.Widgets.Buttons.Enter is
         begin
             return This : Enter_Button do
                 This.Void_Ptr := new_fl_return_button
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -130,6 +134,8 @@ package body FLTK.Widgets.Buttons.Enter is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Enter_Button) is

@@ -16,6 +16,8 @@ package body FLTK.Images.Tiled is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_tiled_image
            (T    : in Storage.Integer_Address;
             W, H : in Interfaces.C.int)
@@ -27,6 +29,11 @@ package body FLTK.Images.Tiled is
            (T : in Storage.Integer_Address);
     pragma Import (C, free_fl_tiled_image, "free_fl_tiled_image");
     pragma Inline (free_fl_tiled_image);
+
+
+
+
+    --  Copying  --
 
     function fl_tiled_image_copy
            (T    : in Storage.Integer_Address;
@@ -44,6 +51,8 @@ package body FLTK.Images.Tiled is
 
 
 
+    --  Miscellaneous  --
+
     function fl_tiled_image_get_image
            (T : in Storage.Integer_Address)
         return Storage.Integer_Address;
@@ -52,6 +61,8 @@ package body FLTK.Images.Tiled is
 
 
 
+
+    --  Colors  --
 
     procedure fl_tiled_image_color_average
            (T : in Storage.Integer_Address;
@@ -67,6 +78,8 @@ package body FLTK.Images.Tiled is
 
 
 
+
+    --  Drawing  --
 
     procedure fl_tiled_image_draw
            (T    : in Storage.Integer_Address;
@@ -125,6 +138,10 @@ package body FLTK.Images.Tiled is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     --  Copying  --
 

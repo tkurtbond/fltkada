@@ -38,6 +38,8 @@ package FLTK.Widgets.Progress_Bars is
 
 
 
+    --  Values  --
+
     function Get_Minimum
            (This : in Progress_Bar)
         return Float;
@@ -64,6 +66,8 @@ package FLTK.Widgets.Progress_Bars is
 
 
 
+
+    --  Drawing  --
 
     procedure Draw
            (This : in out Progress_Bar);

@@ -11,6 +11,8 @@ package body FLTK.Devices.Surface is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_surface_device
            (G : in Storage.Integer_Address)
         return Storage.Integer_Address;
@@ -25,6 +27,8 @@ package body FLTK.Devices.Surface is
 
 
 
+    --  Surfaces  --
+
     procedure fl_surface_device_set_current
            (S : in Storage.Integer_Address);
     pragma Import (C, fl_surface_device_set_current, "fl_surface_device_set_current");
@@ -37,6 +41,8 @@ package body FLTK.Devices.Surface is
 
 
 
+
+    --  Drivers  --
 
     function fl_surface_device_get_driver
            (S : in Storage.Integer_Address)
@@ -112,6 +118,8 @@ package body FLTK.Devices.Surface is
     --  API Subprograms  --
     -----------------------
 
+    --  Surfaces  --
+
     function Get_Current
         return Surface_Device_Reference is
     begin
@@ -135,6 +143,8 @@ package body FLTK.Devices.Surface is
 
 
 
+
+    --  Drivers  --
 
     function Has_Driver
            (This : in Surface_Device)

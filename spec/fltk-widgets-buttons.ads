@@ -40,6 +40,8 @@ package FLTK.Widgets.Buttons is
 
 
 
+    --  State  --
+
     function Is_On
            (This : in Button)
         return Boolean;
@@ -57,6 +59,8 @@ package FLTK.Widgets.Buttons is
 
 
 
+
+    --  Settings  --
 
     function Get_Down_Box
            (This : in Button)
@@ -77,6 +81,8 @@ package FLTK.Widgets.Buttons is
 
 
 
+    --  Drawing, Events  --
+
     procedure Draw
            (This : in out Button);
 
@@ -87,6 +93,8 @@ package FLTK.Widgets.Buttons is
 
 
 
+
+    --  Miscellaneous  --
 
     procedure Simulate_Key_Action
            (This : in out Button);

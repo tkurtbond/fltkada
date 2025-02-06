@@ -34,12 +34,16 @@ package FLTK.Devices.Surface.Image is
 
 
 
+    --  Resolution  --
+
     function Is_Highres
            (This : in Image_Surface)
         return Boolean;
 
 
 
+
+    --  Drawing  --
 
     procedure Draw_Widget
            (This               : in out Image_Surface;
@@ -54,6 +58,8 @@ package FLTK.Devices.Surface.Image is
 
 
 
+    --  Images  --
+
     function Get_Image
            (This : in Image_Surface)
         return FLTK.Images.RGB.RGB_Image;
@@ -64,6 +70,8 @@ package FLTK.Devices.Surface.Image is
 
 
 
+
+    --  Surfaces  --
 
     procedure Set_Current
            (This : in out Image_Surface);

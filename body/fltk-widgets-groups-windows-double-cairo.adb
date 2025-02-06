@@ -23,6 +23,8 @@ package body FLTK.Widgets.Groups.Windows.Double.Cairo is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_cairo_window
            (W, H : in Interfaces.C.int)
         return Storage.Integer_Address;
@@ -37,6 +39,8 @@ package body FLTK.Widgets.Groups.Windows.Double.Cairo is
 
 
 
+    --  Cairo Callback  --
+
     procedure fl_cairo_window_set_draw_cb
            (W, F : in Storage.Integer_Address);
     pragma Import (C, fl_cairo_window_set_draw_cb, "fl_cairo_window_set_draw_cb");
@@ -44,6 +48,8 @@ package body FLTK.Widgets.Groups.Windows.Double.Cairo is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_cairo_window_draw
            (W : in Storage.Integer_Address);
@@ -223,9 +229,11 @@ package body FLTK.Widgets.Groups.Windows.Double.Cairo is
 
 
 
-    ------------------------
-    --  Cairo Window API  --
-    ------------------------
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
+    --  Cairo Callback  --
 
     procedure Set_Cairo_Draw
            (This : in out Cairo_Window;
@@ -236,6 +244,8 @@ package body FLTK.Widgets.Groups.Windows.Double.Cairo is
 
 
 
+
+    --  Drawing  --
 
     procedure Draw
            (This : in out Cairo_Window) is

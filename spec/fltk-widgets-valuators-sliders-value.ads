@@ -38,6 +38,8 @@ package FLTK.Widgets.Valuators.Sliders.Value is
 
 
 
+    --  Text Settings  --
+
     function Get_Text_Color
            (This : in Value_Slider)
         return Color;
@@ -64,6 +66,8 @@ package FLTK.Widgets.Valuators.Sliders.Value is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Value_Slider);

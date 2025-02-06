@@ -115,6 +115,8 @@ package FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Buffers  --
+
     function Get_Buffer
            (This : in Text_Display)
         return FLTK.Text_Buffers.Text_Buffer_Reference;
@@ -138,6 +140,8 @@ package FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Highlighting  --
+
     procedure Highlight_Data
            (This  : in out Text_Display;
             Buff  : in out FLTK.Text_Buffers.Text_Buffer;
@@ -159,6 +163,8 @@ package FLTK.Widgets.Groups.Text_Displays is
 
 
 
+
+    --  Measurement Conversion  --
 
     function Col_To_X
            (This    : in Text_Display;
@@ -234,6 +240,8 @@ package FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Cursors  --
+
     function Get_Cursor_Color
            (This : in Text_Display)
         return Color;
@@ -254,6 +262,8 @@ package FLTK.Widgets.Groups.Text_Displays is
 
 
 
+
+    --  Text Settings  --
 
     function Get_Text_Color
            (This : in Text_Display)
@@ -282,6 +292,8 @@ package FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Text Insert  --
+
     procedure Insert_Text
            (This : in out Text_Display;
             Item : in     String);
@@ -304,6 +316,8 @@ package FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Words  --
+
     function Word_Start
            (This : in out Text_Display;
             Pos  : in     Natural)
@@ -322,6 +336,8 @@ package FLTK.Widgets.Groups.Text_Displays is
 
 
 
+
+    --  Wrapping  --
 
     procedure Set_Wrap_Mode
            (This   : in out Text_Display;
@@ -357,6 +373,8 @@ package FLTK.Widgets.Groups.Text_Displays is
 
 
 
+
+    --  Lines  --
 
     --  Takes into account word wrap
     function Line_Start
@@ -404,6 +422,8 @@ package FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Absolute Lines  --
+
     procedure Redo_Absolute_Top_Line
            (This      : in out Text_Display;
             Old_First : in     Natural);
@@ -426,6 +446,8 @@ package FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Visible Lines  --
+
     function Has_Empty_Visible_Lines
            (This : in Text_Display)
         return Boolean;
@@ -441,6 +463,8 @@ package FLTK.Widgets.Groups.Text_Displays is
 
 
 
+
+    --  Line Numbers  --
 
     function Get_Linenumber_Alignment
            (This : in Text_Display)
@@ -501,6 +525,8 @@ package FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Text Measurement  --
+
     function Measure_Character
            (This  : in Text_Display;
             Text  : in String;
@@ -521,6 +547,8 @@ package FLTK.Widgets.Groups.Text_Displays is
 
 
 
+
+    --  Movement  --
 
     procedure Move_Down
            (This : in out Text_Display);
@@ -552,6 +580,8 @@ package FLTK.Widgets.Groups.Text_Displays is
 
 
 
+
+    --  Scrolling  --
 
     procedure Scroll_To
            (This   : in out Text_Display;
@@ -589,6 +619,8 @@ package FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Shortcuts  --
+
     function Get_Shortcut
            (This : in Text_Display)
         return Key_Combo;
@@ -600,12 +632,16 @@ package FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Dimensions  --
+
     procedure Resize
            (This       : in out Text_Display;
             X, Y, W, H : in     Integer);
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Clear_Rect
            (This       : in out Text_Display;

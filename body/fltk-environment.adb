@@ -43,6 +43,8 @@ package body FLTK.Environment is
     --  Functions From C  --
     ------------------------
 
+    --  Static  --
+
     function fl_preferences_new_uuid
         return Interfaces.C.Strings.chars_ptr;
     pragma Import (C, fl_preferences_new_uuid, "fl_preferences_new_uuid");
@@ -50,6 +52,8 @@ package body FLTK.Environment is
 
 
 
+
+    --  Allocation  --
 
     function new_fl_pref_database_path
            (P, V, A : in Interfaces.C.char_array)
@@ -76,6 +80,8 @@ package body FLTK.Environment is
 
 
 
+
+    --  More Allocation  --
 
     function new_fl_pref_group_copy
            (D : in Storage.Integer_Address)
@@ -111,6 +117,8 @@ package body FLTK.Environment is
 
 
 
+    --  Disk Activity  --
+
     procedure fl_preferences_flush
            (E : in Storage.Integer_Address);
     pragma Import (C, fl_preferences_flush, "fl_preferences_flush");
@@ -126,6 +134,8 @@ package body FLTK.Environment is
 
 
 
+
+    --  Deletion  --
 
     function fl_preferences_deleteentry
            (E : in Storage.Integer_Address;
@@ -162,6 +172,8 @@ package body FLTK.Environment is
 
 
 
+    --  Key Values  --
+
     function fl_preferences_entries
            (E : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -192,6 +204,8 @@ package body FLTK.Environment is
 
 
 
+    --  Groups  --
+
     function fl_preferences_groups
            (P : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -215,6 +229,8 @@ package body FLTK.Environment is
 
 
 
+    --  Names  --
+
     function fl_preferences_name
            (P : in Storage.Integer_Address)
         return Interfaces.C.Strings.chars_ptr;
@@ -229,6 +245,8 @@ package body FLTK.Environment is
 
 
 
+
+    --  Retrieval  --
 
     function fl_preferences_get_int
            (E : in     Storage.Integer_Address;
@@ -302,6 +320,8 @@ package body FLTK.Environment is
 
 
 
+
+    --  Storage  --
 
     function fl_preferences_set_int
            (E : in Storage.Integer_Address;
@@ -398,9 +418,9 @@ package body FLTK.Environment is
 
 
 
-    -----------------------------------
-    --  Controlled Type Subprograms  --
-    -----------------------------------
+    -------------------
+    --  Destructors  --
+    -------------------
 
     procedure Finalize
            (This : in out Database) is
@@ -427,20 +447,9 @@ package body FLTK.Environment is
 
 
 
-    -----------------------
-    --  Preferences API  --
-    -----------------------
-
-    function New_UUID
-        return String
-    is
-        Text : Interfaces.C.Strings.chars_ptr := fl_preferences_new_uuid;
-    begin
-        return Interfaces.C.Strings.Value (Text);
-    end New_UUID;
-
-
-
+    --------------------
+    --  Constructors  --
+    --------------------
 
     package body Forge is
 
@@ -534,6 +543,25 @@ package body FLTK.Environment is
 
 
 
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
+    --  Static  --
+
+    function New_UUID
+        return String
+    is
+        Text : Interfaces.C.Strings.chars_ptr := fl_preferences_new_uuid;
+    begin
+        return Interfaces.C.Strings.Value (Text);
+    end New_UUID;
+
+
+
+
+    --  Disk Activity  --
+
     procedure Flush
            (This : in Database) is
     begin
@@ -560,6 +588,8 @@ package body FLTK.Environment is
 
 
 
+
+    --  Deletion  --
 
     procedure Delete_Entry
            (This : in out Pref_Group;
@@ -610,6 +640,8 @@ package body FLTK.Environment is
 
 
 
+    --  Key Values  --
+
     function Number_Of_Entries
            (This : in Pref_Group)
         return Natural is
@@ -655,6 +687,8 @@ package body FLTK.Environment is
 
 
 
+    --  Groups  --
+
     function Number_Of_Groups
            (This : in Pref_Group)
         return Natural is
@@ -691,6 +725,8 @@ package body FLTK.Environment is
 
 
 
+    --  Names  --
+
     function At_Name
            (This : in Pref_Group)
         return String
@@ -720,6 +756,8 @@ package body FLTK.Environment is
 
 
 
+
+    --  Retrieval  --
 
     function Get
            (This : in Pref_Group;
@@ -975,6 +1013,8 @@ package body FLTK.Environment is
 
 
 
+    --  Storage  --
+
     procedure Set
            (This  : in out Pref_Group;
             Key   : in     String;
@@ -1086,4 +1126,5 @@ package body FLTK.Environment is
 
 
 end FLTK.Environment;
+
 

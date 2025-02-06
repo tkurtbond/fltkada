@@ -38,6 +38,8 @@ package FLTK.Widgets.Menus.Menu_Bars is
 
 
 
+    --  Drawing, Events  --
+
     procedure Draw
            (This : in out Menu_Bar);
 

@@ -51,7 +51,7 @@ package FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
-    --  Directly manipulating lines
+    --  Lines  --
 
     procedure Add
            (This : in out Textline_Browser;
@@ -86,7 +86,7 @@ package FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
-    --  Loading text and text size
+    --  Text Loading  --
 
     procedure Load
            (This : in out Textline_Browser;
@@ -113,7 +113,7 @@ package FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
-    --  Columns and formatting
+    --  Columns, Formatting  --
 
     function Get_Column_Character
            (This : in Textline_Browser)
@@ -143,7 +143,7 @@ package FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
-    --  Line positioning
+    --  Line Positions  --
 
     function Get_Top_Line
            (This : in Textline_Browser)
@@ -169,7 +169,7 @@ package FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
-    --  Line selection
+    --  Selection  --
 
     function Set_Select
            (This  : in out Textline_Browser;
@@ -194,7 +194,7 @@ package FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
-    --  Visibility, showing, hiding
+    --  Visibility  --
 
     function Is_Visible
            (This : in Textline_Browser;
@@ -227,7 +227,7 @@ package FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
-    --  Resizing
+    --  Dimensions  --
 
     procedure Resize
            (This : in out Textline_Browser;
@@ -236,7 +236,7 @@ package FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
-    --  Icons for specific lines
+    --  Icons  --
 
     function Has_Icon
            (This : in Textline_Browser;
@@ -260,7 +260,7 @@ package FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
-    --  List dimensions
+    --  List Implementation  --
 
     function Full_List_Height
            (This : in Textline_Browser)
@@ -273,7 +273,7 @@ package FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
-    --  Item implementation
+    --  Item Implementation  --
 
     function Item_Width
            (This : in Textline_Browser;
@@ -334,6 +334,8 @@ package FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+
+    --  Line Numbers  --
 
     function Line_Number
            (This : in Textline_Browser;

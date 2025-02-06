@@ -27,6 +27,8 @@ package body FLTK.Widgets.Groups.Help_Views is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_help_view
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -42,6 +44,8 @@ package body FLTK.Widgets.Groups.Help_Views is
 
 
 
+    --  Selection  --
+
     procedure fl_help_view_clear_selection
            (V : in Storage.Integer_Address);
     pragma Import (C, fl_help_view_clear_selection, "fl_help_view_clear_selection");
@@ -54,6 +58,8 @@ package body FLTK.Widgets.Groups.Help_Views is
 
 
 
+
+    --  Position  --
 
     function fl_help_view_find
            (V : in Storage.Integer_Address;
@@ -95,6 +101,8 @@ package body FLTK.Widgets.Groups.Help_Views is
 
 
 
+
+    --  Content  --
 
     function fl_help_view_directory
            (V : in Storage.Integer_Address)
@@ -140,6 +148,8 @@ package body FLTK.Widgets.Groups.Help_Views is
 
 
 
+
+    --  Settings  --
 
     function fl_help_view_get_scrollbar_size
            (V : in Storage.Integer_Address)
@@ -209,6 +219,8 @@ package body FLTK.Widgets.Groups.Help_Views is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_help_view_draw
            (V : in Storage.Integer_Address);
@@ -354,6 +366,8 @@ package body FLTK.Widgets.Groups.Help_Views is
     --  API Subprograms  --
     -----------------------
 
+    --  Selection  --
+
     procedure Clear_Selection
            (This : in out Help_View) is
     begin
@@ -369,6 +383,8 @@ package body FLTK.Widgets.Groups.Help_Views is
 
 
 
+
+    --  Position  --
 
     function Find
            (This : in Help_View;
@@ -424,6 +440,8 @@ package body FLTK.Widgets.Groups.Help_Views is
 
 
 
+
+    --  Content  --
 
     function Current_Directory
            (This : in Help_View)
@@ -506,6 +524,8 @@ package body FLTK.Widgets.Groups.Help_Views is
 
 
 
+
+    --  Settings  --
 
     function Get_Scrollbar_Size
            (This : in Help_View)
@@ -604,6 +624,8 @@ package body FLTK.Widgets.Groups.Help_Views is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Help_View) is

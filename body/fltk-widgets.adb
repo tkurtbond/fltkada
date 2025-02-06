@@ -66,6 +66,8 @@ package body FLTK.Widgets is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_widget
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -80,6 +82,8 @@ package body FLTK.Widgets is
 
 
 
+
+    --  Activity  --
 
     procedure fl_widget_activate
            (W : in Storage.Integer_Address);
@@ -116,6 +120,8 @@ package body FLTK.Widgets is
 
 
 
+    --  Changed and Output  --
+
     function fl_widget_changed
            (W : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
@@ -151,6 +157,8 @@ package body FLTK.Widgets is
 
 
 
+    --  Visibility  --
+
     function fl_widget_visible
            (W : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -185,6 +193,8 @@ package body FLTK.Widgets is
 
 
 
+
+    --  Focus  --
 
     function fl_widget_get_visible_focus
            (W : in Storage.Integer_Address)
@@ -223,6 +233,8 @@ package body FLTK.Widgets is
 
 
 
+    --  Colors  --
+
     function fl_widget_get_color
            (W : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
@@ -255,6 +267,8 @@ package body FLTK.Widgets is
 
 
 
+
+    --  Relatives  --
 
     function fl_widget_get_parent
            (W : in Storage.Integer_Address)
@@ -296,6 +310,8 @@ package body FLTK.Widgets is
 
 
 
+    --  Alignment, Box, Tooltip  --
+
     function fl_widget_get_align
            (W : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
@@ -334,6 +350,8 @@ package body FLTK.Widgets is
 
 
 
+
+    --  Labels  --
 
     function fl_widget_get_label
            (W : in Storage.Integer_Address)
@@ -398,6 +416,8 @@ package body FLTK.Widgets is
 
 
 
+    --  Callbacks  --
+
     procedure fl_widget_set_callback
            (W, C : in Storage.Integer_Address);
     pragma Import (C, fl_widget_set_callback, "fl_widget_set_callback");
@@ -422,6 +442,8 @@ package body FLTK.Widgets is
 
 
 
+
+    --  Dimensions  --
 
     function fl_widget_get_x
            (W : in Storage.Integer_Address)
@@ -468,6 +490,8 @@ package body FLTK.Widgets is
 
 
 
+    --  Images  --
+
     procedure fl_widget_set_image
            (W, I : in Storage.Integer_Address);
     pragma Import (C, fl_widget_set_image, "fl_widget_set_image");
@@ -480,6 +504,8 @@ package body FLTK.Widgets is
 
 
 
+
+    --  Damage, Drawing, Events  --
 
     function fl_widget_damage
            (W : in Storage.Integer_Address)
@@ -583,6 +609,8 @@ package body FLTK.Widgets is
 
 
 
+
+    --  Miscellaneous  --
 
     function fl_widget_use_accents_menu
            (W : in Storage.Integer_Address)
@@ -692,11 +720,11 @@ package body FLTK.Widgets is
         begin
             return This : Widget do
                 This.Void_Ptr := new_fl_widget
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -721,6 +749,8 @@ package body FLTK.Widgets is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Activity  --
 
     procedure Activate
            (This : in out Widget) is
@@ -779,6 +809,8 @@ package body FLTK.Widgets is
 
 
 
+
+    --  Changed and Output  --
 
     function Has_Changed
            (This : in Widget)
@@ -850,6 +882,8 @@ package body FLTK.Widgets is
 
 
 
+    --  Visibility  --
+
     function Is_Visible
            (This : in Widget)
         return Boolean is
@@ -908,6 +942,8 @@ package body FLTK.Widgets is
 
 
 
+    --  Focus  --
+
     function Has_Visible_Focus
            (This : in Widget)
         return Boolean is
@@ -956,6 +992,8 @@ package body FLTK.Widgets is
 
 
 
+    --  Colors  --
+
     function Get_Background_Color
            (This : in Widget)
         return Color is
@@ -1000,6 +1038,8 @@ package body FLTK.Widgets is
 
 
 
+
+    --  Relatives  --
 
     function Parent
            (This : in Widget)
@@ -1101,6 +1141,8 @@ package body FLTK.Widgets is
 
 
 
+    --  Alignment, Box, Tooltip  --
+
     function Get_Alignment
            (This : in Widget)
         return Alignment is
@@ -1163,6 +1205,8 @@ package body FLTK.Widgets is
 
 
 
+
+    --  Labels  --
 
     function Get_Label
            (This : in Widget)
@@ -1279,6 +1323,8 @@ package body FLTK.Widgets is
 
 
 
+    --  Callbacks  --
+
     function Get_Callback
            (This : in Widget)
         return Widget_Callback is
@@ -1343,6 +1389,8 @@ package body FLTK.Widgets is
 
 
 
+
+    --  Dimensions  --
 
     function Get_X
            (This : in Widget)
@@ -1413,6 +1461,8 @@ package body FLTK.Widgets is
 
 
 
+    --  Images  --
+
     function Get_Image
            (This : in Widget)
         return access FLTK.Images.Image'Class is
@@ -1452,6 +1502,8 @@ package body FLTK.Widgets is
 
 
 
+
+    --  Damage, Drawing, Events  --
 
     function Is_Damaged
            (This : in Widget)
@@ -1650,6 +1702,8 @@ package body FLTK.Widgets is
 
 
 
+    --  Miscellaneous  --
+
     function Uses_Accents_Menu
            (This : in Widget)
         return Boolean is
@@ -1659,4 +1713,5 @@ package body FLTK.Widgets is
 
 
 end FLTK.Widgets;
+
 

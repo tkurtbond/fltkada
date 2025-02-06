@@ -12,6 +12,12 @@ with
 package body FLTK.Devices.Graphics is
 
 
+    ------------------------
+    --  Functions From C  --
+    ------------------------
+
+    --  Color  --
+
     function fl_graphics_driver_color
            (G : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
@@ -20,6 +26,8 @@ package body FLTK.Devices.Graphics is
 
 
 
+
+    --  Text  --
 
     function fl_graphics_driver_descent
            (G : in Storage.Integer_Address)
@@ -69,6 +77,8 @@ package body FLTK.Devices.Graphics is
 
 
 
+    --  Images  --
+
     procedure fl_graphics_driver_draw_scaled
            (G, I       : in Storage.Integer_Address;
             X, Y, W, H : in Interfaces.C.int);
@@ -77,6 +87,12 @@ package body FLTK.Devices.Graphics is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
+    --  Color  --
 
     function Get_Color
            (This : in Graphics_Driver)
@@ -87,6 +103,8 @@ package body FLTK.Devices.Graphics is
 
 
 
+
+    --  Text  --
 
     function Get_Text_Descent
            (This : in Graphics_Driver)
@@ -152,6 +170,8 @@ package body FLTK.Devices.Graphics is
 
 
 
+    --  Images  --
+
     procedure Draw_Scaled_Image
            (This       : in Graphics_Driver;
             Img        : in FLTK.Images.Image'Class;
@@ -168,4 +188,5 @@ package body FLTK.Devices.Graphics is
 
 
 end FLTK.Devices.Graphics;
+
 

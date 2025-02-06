@@ -17,6 +17,8 @@ package body FLTK.Images.Pixmaps is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_pixmap
            (D : in Storage.Integer_Address)
         return Storage.Integer_Address;
@@ -27,6 +29,11 @@ package body FLTK.Images.Pixmaps is
            (I : in Storage.Integer_Address);
     pragma Import (C, free_fl_pixmap, "free_fl_pixmap");
     pragma Inline (free_fl_pixmap);
+
+
+
+
+    --  Copying  --
 
     function fl_pixmap_copy
            (I    : in Storage.Integer_Address;
@@ -44,6 +51,8 @@ package body FLTK.Images.Pixmaps is
 
 
 
+    --  Colors  --
+
     procedure fl_pixmap_color_average
            (I : in Storage.Integer_Address;
             C : in Interfaces.C.int;
@@ -59,6 +68,8 @@ package body FLTK.Images.Pixmaps is
 
 
 
+    --  Activity  --
+
     procedure fl_pixmap_uncache
            (I : in Storage.Integer_Address);
     pragma Import (C, fl_pixmap_uncache, "fl_pixmap_uncache");
@@ -66,6 +77,8 @@ package body FLTK.Images.Pixmaps is
 
 
 
+
+    --  Drawing  --
 
     procedure fl_pixmap_draw2
            (I    : in Storage.Integer_Address;
@@ -219,4 +232,5 @@ package body FLTK.Images.Pixmaps is
 
 
 end FLTK.Images.Pixmaps;
+
 

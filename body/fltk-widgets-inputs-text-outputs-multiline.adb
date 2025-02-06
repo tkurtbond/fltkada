@@ -17,6 +17,8 @@ package body FLTK.Widgets.Inputs.Text.Outputs.Multiline is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_multiline_output
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -31,6 +33,8 @@ package body FLTK.Widgets.Inputs.Text.Outputs.Multiline is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_multiline_output_draw
            (W : in Storage.Integer_Address);
@@ -101,11 +105,11 @@ package body FLTK.Widgets.Inputs.Text.Outputs.Multiline is
         begin
             return This : Multiline_Output do
                 This.Void_Ptr := new_fl_multiline_output
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;

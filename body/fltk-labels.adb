@@ -16,6 +16,8 @@ package body FLTK.Labels is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_label
            (V : in Interfaces.C.Strings.chars_ptr;
             F : in Interfaces.C.int;
@@ -34,6 +36,8 @@ package body FLTK.Labels is
 
 
 
+
+    --  Attributes  --
 
     procedure fl_label_set_value
            (L : in Storage.Integer_Address;
@@ -114,6 +118,8 @@ package body FLTK.Labels is
 
 
 
+    --  Drawing  --
+
     procedure fl_label_draw
            (L          : in Storage.Integer_Address;
             X, Y, W, H : in Interfaces.C.int;
@@ -130,9 +136,9 @@ package body FLTK.Labels is
 
 
 
-    -----------------------------------
-    --  Controlled Type Subprograms  --
-    -----------------------------------
+    -------------------
+    --  Destructors  --
+    -------------------
 
     procedure Finalize
            (This : in out Label) is
@@ -147,9 +153,9 @@ package body FLTK.Labels is
 
 
 
-    -----------------
-    --  Label API  --
-    -----------------
+    --------------------
+    --  Constructors  --
+    --------------------
 
     package body Forge is
 
@@ -182,6 +188,12 @@ package body FLTK.Labels is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
+    --  Attributes  --
 
     function Get_Value
            (This : in Label)
@@ -325,6 +337,8 @@ package body FLTK.Labels is
 
 
 
+    --  Drawing  --
+
     procedure Draw
            (This       : in out Label;
             X, Y, W, H : in     Integer;
@@ -338,6 +352,7 @@ package body FLTK.Labels is
             Interfaces.C.int (H),
             Interfaces.C.unsigned (Place));
     end Draw;
+
 
     procedure Measure
            (This : in     Label;

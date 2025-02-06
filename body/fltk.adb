@@ -17,6 +17,12 @@ use type
 package body FLTK is
 
 
+    ------------------------
+    --  Functions From C  --
+    ------------------------
+
+    --  Enumerations.H  --
+
     function fl_enum_rgb_color
            (R, G, B : in Interfaces.C.unsigned_char)
         return Interfaces.C.unsigned;
@@ -31,6 +37,8 @@ package body FLTK is
 
 
 
+
+    --  Versioning  --
 
     function fl_abi_check
            (V : in Interfaces.C.int)
@@ -56,6 +64,8 @@ package body FLTK is
 
 
 
+    --  Drawing  --
+
     function fl_get_damage
         return Interfaces.C.int;
     pragma Import (C, fl_get_damage, "fl_get_damage");
@@ -68,6 +78,8 @@ package body FLTK is
 
 
 
+
+    --  Event Loop  --
 
     function fl_check
         return Interfaces.C.int;
@@ -98,6 +110,12 @@ package body FLTK is
 
 
 
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
+    --  Implementation Details  --
+
     function Is_Valid
            (Object : in Wrapper)
         return Boolean is
@@ -106,14 +124,9 @@ package body FLTK is
     end Is_Valid;
 
 
-    procedure Initialize
-           (This : in out Wrapper) is
-    begin
-        This.Void_Ptr := Null_Pointer;
-    end Initialize;
 
 
-
+    --  Color  --
 
     function RGB_Color
            (R, G, B : in Color_Component)
@@ -138,6 +151,8 @@ package body FLTK is
 
 
 
+    --  Alignment  --
+
     function "+"
            (Left, Right : in Alignment)
         return Alignment is
@@ -155,6 +170,8 @@ package body FLTK is
 
 
 
+
+    --  Keyboard and Mouse Input  --
 
     function Press
            (Key : in Pressable_Key)
@@ -321,10 +338,10 @@ package body FLTK is
         return Interfaces.C.int is
     begin
         case Button is
-            when Left_Button => return 1 * (256 ** 3);
-            when Middle_Button => return 2 * (256 ** 3);
-            when Right_Button => return 4 * (256 ** 3);
-            when others => return 0;
+        when Left_Button => return 1 * (256 ** 3);
+        when Middle_Button => return 2 * (256 ** 3);
+        when Right_Button => return 4 * (256 ** 3);
+        when others => return 0;
         end case;
     end To_C;
 
@@ -334,15 +351,17 @@ package body FLTK is
         return Mouse_Button is
     begin
         case (Button / (256 ** 3)) is
-            when 1 => return Left_Button;
-            when 2 => return Middle_Button;
-            when 4 => return Right_Button;
-            when others => return No_Button;
+        when 1 => return Left_Button;
+        when 2 => return Middle_Button;
+        when 4 => return Right_Button;
+        when others => return No_Button;
         end case;
     end To_Ada;
 
 
 
+
+    --  Menu Flags  --
 
     function "+"
            (Left, Right : in Menu_Flag)
@@ -353,6 +372,8 @@ package body FLTK is
 
 
 
+
+    --  Versioning  --
 
     function ABI_Check
            (ABI_Ver : in Version_Number)
@@ -385,6 +406,8 @@ package body FLTK is
 
 
 
+    --  Drawing  --
+
     function Is_Damaged
         return Boolean is
     begin
@@ -400,6 +423,8 @@ package body FLTK is
 
 
 
+
+    --  Event Loop  --
 
     function Check
         return Boolean is
@@ -438,4 +463,5 @@ package body FLTK is
 
 
 end FLTK;
+
 

@@ -40,6 +40,8 @@ package FLTK.Menu_Items is
 
 
 
+    --  Callback  --
+
     function Get_Callback
            (This : in Menu_Item)
         return FLTK.Widgets.Widget_Callback;
@@ -54,6 +56,8 @@ package FLTK.Menu_Items is
 
 
 
+
+    --  Settings  --
 
     function Has_Checkbox
            (This : in Menu_Item)
@@ -86,6 +90,8 @@ package FLTK.Menu_Items is
 
 
 
+
+    --  Label  --
 
     function Get_Label
            (This : in Menu_Item)
@@ -135,6 +141,8 @@ package FLTK.Menu_Items is
 
 
 
+    --  Shortcut and Flags  --
+
     function Get_Shortcut
            (This : in Menu_Item)
         return Key_Combo;
@@ -154,6 +162,8 @@ package FLTK.Menu_Items is
 
 
 
+    --  Image  --
+
     function Get_Image
            (This : in Menu_Item)
         return access FLTK.Images.Image'Class;
@@ -164,6 +174,8 @@ package FLTK.Menu_Items is
 
 
 
+
+    --  Activity and Visibility  --
 
     procedure Activate
            (This : in out Menu_Item);

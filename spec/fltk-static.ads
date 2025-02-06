@@ -23,14 +23,10 @@ package FLTK.Static is
     type Idle_Handler is access procedure;
 
 
-
-
     type Buffer_Kind is (Selection, Clipboard);
 
     type Clipboard_Notify_Handler is access procedure
            (Kind : in Buffer_Kind);
-
-
 
 
     type File_Descriptor is new Integer;
@@ -41,25 +37,23 @@ package FLTK.Static is
            (FD : in File_Descriptor);
 
 
-
-
     type Box_Draw_Function is access procedure
            (X, Y, W, H : in Integer;
             My_Color   : in Color);
 
 
-
-
     type Option is
-           (Arrow_Focus,
-            Visible_Focus,
-            DND_Text,
-            Show_Tooltips,
-            FNFC_Uses_GTK,
-            Last);
+       (Arrow_Focus,
+        Visible_Focus,
+        DND_Text,
+        Show_Tooltips,
+        FNFC_Uses_GTK,
+        Last);
 
 
 
+
+    --  Interthread Notify  --
 
     procedure Add_Awake_Handler
            (Func : in Awake_Handler);
@@ -69,6 +63,8 @@ package FLTK.Static is
 
 
 
+
+    --  Pre-Eventloop Callbacks  --
 
     procedure Add_Check
            (Func : in Timeout_Handler);
@@ -82,6 +78,8 @@ package FLTK.Static is
 
 
 
+
+    --  Timer Callbacks  --
 
     procedure Add_Timeout
            (Seconds : in Long_Float;
@@ -101,6 +99,8 @@ package FLTK.Static is
 
 
 
+    --  Clipboard Callbacks  --
+
     procedure Add_Clipboard_Notify
            (Func : in Clipboard_Notify_Handler);
 
@@ -109,6 +109,8 @@ package FLTK.Static is
 
 
 
+
+    --  File Descriptor Waiting Callbacks  --
 
     procedure Add_File_Descriptor
            (FD   : in File_Descriptor;
@@ -129,6 +131,8 @@ package FLTK.Static is
 
 
 
+    --  Idle Callbacks  --
+
     procedure Add_Idle
            (Func : in Idle_Handler);
 
@@ -141,6 +145,8 @@ package FLTK.Static is
 
 
 
+
+    --  Custom Colors  --
 
     procedure Get_Color
            (From    : in     Color;
@@ -170,6 +176,8 @@ package FLTK.Static is
 
 
 
+    --  Custom Fonts  --
+
     function Font_Image
            (Kind : in Font_Kind)
         return String;
@@ -190,6 +198,8 @@ package FLTK.Static is
 
 
 
+
+    --  Box_Kind Attributes  --
 
     function Get_Box_Height_Offset
            (Kind : in Box_Kind)
@@ -226,6 +236,8 @@ package FLTK.Static is
 
 
 
+    --  Clipboard / Selection  --
+
     procedure Copy
            (Text : in String;
             Dest : in Buffer_Kind);
@@ -241,6 +253,8 @@ package FLTK.Static is
 
 
 
+    --  Dragon Drop  --
+
     procedure Drag_Drop_Start;
 
     function Get_Drag_Drop_Text_Support
@@ -251,6 +265,8 @@ package FLTK.Static is
 
 
 
+
+    --  Input Focus  --
 
     procedure Enable_System_Input;
 
@@ -264,6 +280,8 @@ package FLTK.Static is
 
 
 
+
+    --  Windows  --
 
     procedure Default_Window_Close
            (Item : in out FLTK.Widgets.Widget'Class);
@@ -284,6 +302,8 @@ package FLTK.Static is
 
 
 
+    --  Queue  --
+
     function Read_Queue
         return access FLTK.Widgets.Widget'Class;
 
@@ -291,6 +311,8 @@ package FLTK.Static is
 
 
 
+
+    --  Schemes  --
 
     function Get_Scheme
         return String;
@@ -307,6 +329,8 @@ package FLTK.Static is
 
 
 
+    --  Library Options  --
+
     function Get_Option
            (Opt : in Option)
         return Boolean;
@@ -317,6 +341,8 @@ package FLTK.Static is
 
 
 
+
+    --  Scrollbars  --
 
     function Get_Default_Scrollbar_Size
         return Natural;
@@ -332,54 +358,40 @@ private
         (Read => 1, Write => 4, Except => 8);
 
 
-
-
     pragma Import (C, Own_Colormap, "fl_static_own_colormap");
     pragma Import (C, System_Colors, "fl_static_get_system_colors");
 
-
     pragma Import (C, Drag_Drop_Start, "fl_static_dnd");
-
 
     pragma Import (C, Enable_System_Input, "fl_static_enable_im");
     pragma Import (C, Disable_System_Input, "fl_static_disable_im");
 
-
     pragma Import (C, Do_Widget_Deletion, "fl_static_do_widget_deletion");
 
-
     pragma Import (C, Reload_Scheme, "fl_static_reload_scheme");
-
-
 
 
     pragma Inline (Add_Awake_Handler);
     pragma Inline (Get_Awake_Handler);
 
-
     pragma Inline (Add_Check);
     pragma Inline (Has_Check);
     pragma Inline (Remove_Check);
-
 
     pragma Inline (Add_Timeout);
     pragma Inline (Has_Timeout);
     pragma Inline (Remove_Timeout);
     pragma Inline (Repeat_Timeout);
 
-
     pragma Inline (Add_Clipboard_Notify);
     pragma Inline (Remove_Clipboard_Notify);
-
 
     pragma Inline (Add_File_Descriptor);
     pragma Inline (Remove_File_Descriptor);
 
-
     pragma Inline (Add_Idle);
     pragma Inline (Has_Idle);
     pragma Inline (Remove_Idle);
-
 
     pragma Inline (Get_Color);
     pragma Inline (Set_Color);
@@ -390,13 +402,11 @@ private
     pragma Inline (Set_Alt_Background);
     pragma Inline (System_Colors);
 
-
     pragma Inline (Font_Image);
     pragma Inline (Font_Family_Image);
     pragma Inline (Set_Font_Kind);
     pragma Inline (Font_Sizes);
     pragma Inline (Setup_Fonts);
-
 
     pragma Inline (Get_Box_Height_Offset);
     pragma Inline (Get_Box_Width_Offset);
@@ -407,22 +417,18 @@ private
     --  pragma Inline (Get_Box_Draw_Function);
     --  pragma Inline (Set_Box_Draw_Function);
 
-
     pragma Inline (Copy);
     pragma Inline (Paste);
     pragma Inline (Selection);
-
 
     pragma Inline (Drag_Drop_Start);
     pragma Inline (Get_Drag_Drop_Text_Support);
     pragma Inline (Set_Drag_Drop_Text_Support);
 
-
     pragma Inline (Enable_System_Input);
     pragma Inline (Disable_System_Input);
     pragma Inline (Has_Visible_Focus);
     pragma Inline (Set_Visible_Focus);
-
 
     pragma Inline (Default_Window_Close);
     pragma Inline (Get_First_Window);
@@ -430,24 +436,21 @@ private
     pragma Inline (Get_Next_Window);
     pragma Inline (Get_Top_Modal);
 
-
     pragma Inline (Read_Queue);
     pragma Inline (Do_Widget_Deletion);
-
 
     pragma Inline (Get_Scheme);
     pragma Inline (Set_Scheme);
     pragma Inline (Is_Scheme);
     pragma Inline (Reload_Scheme);
 
-
     pragma Inline (Get_Option);
     pragma Inline (Set_Option);
-
 
     pragma Inline (Get_Default_Scrollbar_Size);
     pragma Inline (Set_Default_Scrollbar_Size);
 
 
 end FLTK.Static;
+
 

@@ -38,6 +38,8 @@ package FLTK.Widgets.Valuators.Value_Outputs is
 
 
 
+    --  Allow Outside Range  --
+
     function Is_Soft
            (This : in Value_Output)
         return Boolean;
@@ -48,6 +50,8 @@ package FLTK.Widgets.Valuators.Value_Outputs is
 
 
 
+
+    --  Text Settings  --
 
     function Get_Text_Color
            (This : in Value_Output)
@@ -75,6 +79,8 @@ package FLTK.Widgets.Valuators.Value_Outputs is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Value_Output);

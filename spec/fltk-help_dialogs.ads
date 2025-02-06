@@ -24,14 +24,12 @@ package FLTK.Help_Dialogs is
                (X, Y, W, H : in Integer)
             return Help_Dialog;
 
-    private
-
-        pragma Inline (Create);
-
     end Forge;
 
 
 
+
+    --  Visibility  --
 
     procedure Show
            (This : in out Help_Dialog);
@@ -49,6 +47,8 @@ package FLTK.Help_Dialogs is
 
 
 
+    --  Topline  --
+
     procedure Set_Topline_Number
            (This : in out Help_Dialog;
             Line : in     Positive);
@@ -60,7 +60,9 @@ package FLTK.Help_Dialogs is
 
 
 
-    --  Name here can be either a ftp/http/https/ipp/mailto/news URL or a filename
+    --  Content  --
+
+    --  Name here can be either a ftp/http/https/ipp/mailto/news URL or a filename.
     --  See Load procedure in FLTK.Widgets.Groups.Help_Views
     procedure Load
            (This : in out Help_Dialog;
@@ -77,6 +79,8 @@ package FLTK.Help_Dialogs is
 
 
 
+    --  Settings  --
+
     function Get_Text_Size
            (This : in Help_Dialog)
         return Font_Size;
@@ -87,6 +91,8 @@ package FLTK.Help_Dialogs is
 
 
 
+
+    --  Dimensions  --
 
     function Get_X
            (This : in Help_Dialog)

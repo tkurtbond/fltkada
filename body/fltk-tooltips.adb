@@ -27,6 +27,8 @@ package body FLTK.Tooltips is
     --  Functions From C  --
     ------------------------
 
+    --  Activity  --
+
     function fl_tooltip_get_current
         return Storage.Integer_Address;
     pragma Import (C, fl_tooltip_get_current, "fl_tooltip_get_current");
@@ -61,6 +63,8 @@ package body FLTK.Tooltips is
 
 
 
+    --  Delay  --
+
     function fl_tooltip_get_delay
         return Interfaces.C.C_float;
     pragma Import (C, fl_tooltip_get_delay, "fl_tooltip_get_delay");
@@ -83,6 +87,8 @@ package body FLTK.Tooltips is
 
 
 
+
+    --  Color, Margins, Wrap  --
 
     function fl_tooltip_get_color
         return Interfaces.C.unsigned;
@@ -127,6 +133,8 @@ package body FLTK.Tooltips is
 
 
 
+    --  Text Settings  --
+
     function fl_tooltip_get_textcolor
         return Interfaces.C.unsigned;
     pragma Import (C, fl_tooltip_get_textcolor, "fl_tooltip_get_textcolor");
@@ -160,6 +168,8 @@ package body FLTK.Tooltips is
 
 
 
+    --  User Data  --
+
     function fl_widget_get_user_data
            (W : in Storage.Integer_Address)
         return Storage.Integer_Address;
@@ -175,6 +185,8 @@ package body FLTK.Tooltips is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Activity  --
 
     function Get_Target
         return access FLTK.Widgets.Widget'Class
@@ -238,6 +250,8 @@ package body FLTK.Tooltips is
 
 
 
+    --  Delay  --
+
     function Get_Delay
         return Float is
     begin
@@ -267,6 +281,8 @@ package body FLTK.Tooltips is
 
 
 
+
+    --  Color, Margins, Wrap  --
 
     function Get_Background_Color
         return Color is
@@ -325,6 +341,8 @@ package body FLTK.Tooltips is
 
 
 
+
+    --  Text Settings  --
 
     function Get_Text_Color
         return Color is

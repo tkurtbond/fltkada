@@ -16,6 +16,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline.Multi is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_multi_browser
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -30,6 +32,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline.Multi is
 
 
 
+
+    --  Item Implementation  --
 
     function fl_multi_browser_item_width
            (B, I : in Storage.Integer_Address)
@@ -106,6 +110,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline.Multi is
 
 
 
+    --  List Implementation  --
+
     function fl_multi_browser_full_width
            (B : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -132,6 +138,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline.Multi is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_multi_browser_draw
            (B : in Storage.Integer_Address);

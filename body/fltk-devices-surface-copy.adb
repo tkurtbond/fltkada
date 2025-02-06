@@ -12,6 +12,12 @@ with
 package body FLTK.Devices.Surface.Copy is
 
 
+    ------------------------
+    --  Functions From C  --
+    ------------------------
+
+    --  Allocation  --
+
     function new_fl_copy_surface
            (W, H : in Interfaces.C.int)
         return Storage.Integer_Address;
@@ -25,6 +31,8 @@ package body FLTK.Devices.Surface.Copy is
 
 
 
+
+    --  Dimensions  --
 
     function fl_copy_surface_get_w
            (S : in Storage.Integer_Address)
@@ -40,6 +48,8 @@ package body FLTK.Devices.Surface.Copy is
 
 
 
+
+    --  Drawing  --
 
     procedure fl_copy_surface_draw
            (S, W   : in Storage.Integer_Address;
@@ -57,6 +67,8 @@ package body FLTK.Devices.Surface.Copy is
 
 
 
+    --  Surfaces  --
+
     procedure fl_copy_surface_set_current
            (S : in Storage.Integer_Address);
     pragma Import (C, fl_copy_surface_set_current, "fl_copy_surface_set_current");
@@ -64,6 +76,10 @@ package body FLTK.Devices.Surface.Copy is
 
 
 
+
+    -------------------
+    --  Destructors  --
+    -------------------
 
     procedure Finalize
            (This : in out Copy_Surface) is
@@ -76,6 +92,10 @@ package body FLTK.Devices.Surface.Copy is
 
 
 
+
+    --------------------
+    --  Constructors  --
+    --------------------
 
     package body Forge is
 
@@ -97,6 +117,12 @@ package body FLTK.Devices.Surface.Copy is
 
 
 
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
+    --  Dimensions  --
+
     function Get_W
            (This : in Copy_Surface)
         return Integer is
@@ -114,6 +140,8 @@ package body FLTK.Devices.Surface.Copy is
 
 
 
+
+    --  Drawing  --
 
     procedure Draw_Widget
            (This               : in out Copy_Surface;
@@ -142,6 +170,8 @@ package body FLTK.Devices.Surface.Copy is
 
 
 
+
+    --  Surfaces  --
 
     procedure Set_Current
            (This : in out Copy_Surface) is

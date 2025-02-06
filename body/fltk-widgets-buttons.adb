@@ -17,6 +17,8 @@ package body FLTK.Widgets.Buttons is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_button
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -31,6 +33,8 @@ package body FLTK.Widgets.Buttons is
 
 
 
+
+    --  State  --
 
     function fl_button_get_state
            (B : in Storage.Integer_Address)
@@ -51,6 +55,8 @@ package body FLTK.Widgets.Buttons is
 
 
 
+
+    --  Settings  --
 
     function fl_button_get_down_box
            (B : in Storage.Integer_Address)
@@ -79,6 +85,8 @@ package body FLTK.Widgets.Buttons is
 
 
 
+    --  Drawing, Events  --
+
     procedure fl_button_draw
            (W : in Storage.Integer_Address);
     pragma Import (C, fl_button_draw, "fl_button_draw");
@@ -93,6 +101,8 @@ package body FLTK.Widgets.Buttons is
 
 
 
+
+    --  Miscellaneous  --
 
     procedure fl_button_simulate_key_action
            (B : in Storage.Integer_Address);
@@ -196,11 +206,11 @@ package body FLTK.Widgets.Buttons is
         begin
             return This : Button do
                 This.Void_Ptr := new_fl_button
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -225,6 +235,8 @@ package body FLTK.Widgets.Buttons is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  State  --
 
     function Is_On
            (This : in Button)
@@ -258,6 +270,8 @@ package body FLTK.Widgets.Buttons is
 
 
 
+
+    --  Settings  --
 
     function Get_Down_Box
            (This : in Button)
@@ -293,6 +307,8 @@ package body FLTK.Widgets.Buttons is
 
 
 
+    --  Drawing, Events  --
+
     procedure Draw
            (This : in out Button) is
     begin
@@ -310,6 +326,8 @@ package body FLTK.Widgets.Buttons is
 
 
 
+
+    --  Miscellaneous  --
 
     procedure Simulate_Key_Action
            (This : in out Button) is

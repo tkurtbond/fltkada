@@ -38,6 +38,8 @@ package FLTK.Widgets.Positioners is
 
 
 
+    --  Targeting  --
+
     procedure Get_Coords
            (This : in     Positioner;
             X, Y :    out Long_Float);
@@ -53,6 +55,8 @@ package FLTK.Widgets.Positioners is
 
 
 
+
+    --  X Axis  --
 
     procedure Set_Ecks_Bounds
            (This      : in out Positioner;
@@ -94,6 +98,8 @@ package FLTK.Widgets.Positioners is
 
 
 
+    --  Y Axis  --
+
     procedure Set_Why_Bounds
            (This      : in out Positioner;
             Low, High : in     Long_Float);
@@ -133,6 +139,8 @@ package FLTK.Widgets.Positioners is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Positioner);

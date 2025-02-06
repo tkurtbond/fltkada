@@ -38,6 +38,8 @@ package FLTK.Widgets.Valuators.Adjusters is
 
 
 
+    --  Allow Outside Range  --
+
     function Is_Soft
            (This : in Adjuster)
         return Boolean;
@@ -48,6 +50,8 @@ package FLTK.Widgets.Valuators.Adjusters is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Value_Damage
            (This : in out Adjuster);

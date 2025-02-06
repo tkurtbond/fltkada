@@ -99,8 +99,6 @@ extern "C" void fl_text_editor_set_default_key_function(TEXTEDITOR te, void * f)
 
 extern "C" int fl_text_editor_get_insert_mode(TEXTEDITOR te);
 extern "C" void fl_text_editor_set_insert_mode(TEXTEDITOR te, int i);
-
-
 extern "C" int fl_text_editor_get_tab_nav(TEXTEDITOR te);
 extern "C" void fl_text_editor_set_tab_nav(TEXTEDITOR te, int t);
 

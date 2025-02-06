@@ -26,6 +26,8 @@ package body FLTK.Devices.Surface.Paged.Postscript is
     --  Functions From C  --
     ------------------------
 
+    --  Files  --
+
     function fopen
            (Name, Mode : in Interfaces.C.char_array)
         return Storage.Integer_Address;
@@ -39,6 +41,8 @@ package body FLTK.Devices.Surface.Paged.Postscript is
 
 
 
+    --  Allocation  --
+
     function new_fl_postscript_file_device
         return Storage.Integer_Address;
     pragma Import (C, new_fl_postscript_file_device, "new_fl_postscript_file_device");
@@ -51,6 +55,8 @@ package body FLTK.Devices.Surface.Paged.Postscript is
 
 
 
+
+    --  Static Attributes  --
 
     function fl_postscript_file_device_get_file_chooser_title
         return Interfaces.C.Strings.chars_ptr;
@@ -67,6 +73,8 @@ package body FLTK.Devices.Surface.Paged.Postscript is
 
 
 
+    --  Driver  --
+
     function fl_postscript_file_device_get_driver
            (D : in Storage.Integer_Address)
         return Storage.Integer_Address;
@@ -75,6 +83,8 @@ package body FLTK.Devices.Surface.Paged.Postscript is
 
 
 
+
+    --  Job Control  --
 
     function fl_postscript_file_device_start_job
            (D : in Storage.Integer_Address;
@@ -124,6 +134,8 @@ package body FLTK.Devices.Surface.Paged.Postscript is
 
 
 
+
+    --  Spacing and Orientation  --
 
     procedure fl_postscript_file_device_margins
            (D          : in     Storage.Integer_Address;
@@ -301,6 +313,8 @@ package body FLTK.Devices.Surface.Paged.Postscript is
     --  API Subprograms  --
     -----------------------
 
+    --  Driver  --
+
     function Get_Postscript_Driver
            (This : in out Postscript_File_Device)
         return FLTK.Devices.Graphics.Graphics_Driver_Reference is
@@ -310,6 +324,8 @@ package body FLTK.Devices.Surface.Paged.Postscript is
 
 
 
+
+    --  Job Control  --
 
     procedure Start_Job
            (This  : in out Postscript_File_Device;
@@ -411,6 +427,8 @@ package body FLTK.Devices.Surface.Paged.Postscript is
 
 
 
+
+    --  Spacing and Orientation  --
 
     procedure Get_Margins
            (This                     : in     Postscript_File_Device;

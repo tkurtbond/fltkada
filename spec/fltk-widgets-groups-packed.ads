@@ -35,6 +35,8 @@ package FLTK.Widgets.Groups.Packed is
 
 
 
+    --  Settings  --
+
     function Get_Spacing
            (This : in Packed_Group)
         return Integer;
@@ -53,6 +55,8 @@ package FLTK.Widgets.Groups.Packed is
 
 
 
+
+    --  Drawing  --
 
     procedure Draw
            (This : in out Packed_Group);

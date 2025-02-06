@@ -11,6 +11,8 @@ package body FLTK.Devices.Surface.Display is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_display_device
            (G : in Storage.Integer_Address)
         return Storage.Integer_Address;
@@ -25,6 +27,8 @@ package body FLTK.Devices.Surface.Display is
 
 
 
+    --  Displays  --
+
     function fl_display_device_display_device
         return Storage.Integer_Address;
     pragma Import (C, fl_display_device_display_device, "fl_display_device_display_device");
@@ -32,6 +36,8 @@ package body FLTK.Devices.Surface.Display is
 
 
 
+
+    --  Drivers  --
 
     function fl_surface_device_get_driver
            (S : in Storage.Integer_Address)
@@ -92,6 +98,8 @@ package body FLTK.Devices.Surface.Display is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Displays  --
 
     function Get_Platform_Display
         return Display_Device_Reference is

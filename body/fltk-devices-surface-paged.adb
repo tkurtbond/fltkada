@@ -54,6 +54,8 @@ package body FLTK.Devices.Surface.Paged is
     --  Functions From C  --
     ------------------------
 
+    --  Static Attributes  --
+
     procedure fl_paged_device_get_page_format
            (Index  : in     Interfaces.C.int;
             Name   :    out Interfaces.C.Strings.chars_ptr;
@@ -64,6 +66,8 @@ package body FLTK.Devices.Surface.Paged is
 
 
 
+
+    --  Allocation  --
 
     function new_fl_paged_device
         return Storage.Integer_Address;
@@ -77,6 +81,8 @@ package body FLTK.Devices.Surface.Paged is
 
 
 
+
+    --  Job Control  --
 
     function fl_paged_device_start_job
            (D : in Storage.Integer_Address;
@@ -112,6 +118,8 @@ package body FLTK.Devices.Surface.Paged is
 
 
 
+
+    --  Spacing and Orientation  --
 
     procedure fl_paged_device_margins
            (D          : in     Storage.Integer_Address;
@@ -163,6 +171,8 @@ package body FLTK.Devices.Surface.Paged is
 
 
 
+
+    --  Printing  --
 
     procedure fl_paged_device_print_widget
            (D, I   : in Storage.Integer_Address;
@@ -347,6 +357,8 @@ package body FLTK.Devices.Surface.Paged is
     --  API Subprograms  --
     -----------------------
 
+    --  Job Control  --
+
     procedure Start_Job
            (This  : in out Paged_Device;
             Count : in     Natural := 0) is
@@ -401,6 +413,8 @@ package body FLTK.Devices.Surface.Paged is
 
 
 
+
+    --  Spacing and Orientation  --
 
     procedure Get_Margins
            (This                     : in     Paged_Device;
@@ -492,6 +506,8 @@ package body FLTK.Devices.Surface.Paged is
 
 
 
+
+    --  Printing  --
 
     procedure Print_Widget
            (This               : in out Paged_Device;

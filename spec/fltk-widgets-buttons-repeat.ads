@@ -38,11 +38,15 @@ package FLTK.Widgets.Buttons.Repeat is
 
 
 
+    --  Activity  --
+
     procedure Deactivate
            (This : in out Repeat_Button);
 
 
 
+
+    --  Events  --
 
     function Handle
            (This  : in out Repeat_Button;

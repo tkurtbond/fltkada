@@ -44,6 +44,8 @@ package FLTK.Widgets.Groups.Windows.Double is
 
 
 
+    --  Visibility  --
+
     procedure Show
            (This : in out Double_Window);
 
@@ -61,6 +63,8 @@ package FLTK.Widgets.Groups.Windows.Double is
 
 
 
+
+    --  Dimensions  --
 
     procedure Resize
            (This       : in out Double_Window;

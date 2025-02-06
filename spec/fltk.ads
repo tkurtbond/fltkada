@@ -36,6 +36,8 @@ package FLTK is
 
 
 
+    --  Color  --
+
     --  Values scale from A/Black to X/White
     type Greyscale is new Character range 'A' .. 'X';
 
@@ -97,6 +99,8 @@ package FLTK is
 
 
 
+    --  Alignment  --
+
     --  This should be a bitmask, except there are magic values...
     type Alignment is private;
 
@@ -131,6 +135,8 @@ package FLTK is
 
 
 
+    --  Mouse Cursors  --
+
     type Mouse_Cursor_Kind is
        (Default_Mouse,
         Arrow_Mouse,
@@ -158,9 +164,13 @@ package FLTK is
 
 
 
+    --  Keyboard and Mouse Input  --
+
     type Keypress is private;
     subtype Pressable_Key is Character range Character'Val (32) .. Character'Val (126);
+
     function Press (Key : in Pressable_Key) return Keypress;
+
     Enter_Key        : constant Keypress;
     Keypad_Enter_Key : constant Keypress;
     Backspace_Key    : constant Keypress;
@@ -177,20 +187,27 @@ package FLTK is
     Escape_Key       : constant Keypress;
     Tab_Key          : constant Keypress;
 
+
     type Mouse_Button is (No_Button, Left_Button, Middle_Button, Right_Button);
 
+
     type Key_Combo is private;
+
     function Press (Key : in Pressable_Key) return Key_Combo;
     function Press (Key : in Keypress) return Key_Combo;
     function Press (Key : in Mouse_Button) return Key_Combo;
+
     No_Key : constant Key_Combo;
 
+
     type Modifier is private;
+
     function "+" (Left, Right : in Modifier) return Modifier;
     function "+" (Left : in Modifier; Right : in Pressable_Key) return Key_Combo;
     function "+" (Left : in Modifier; Right : in Keypress) return Key_Combo;
     function "+" (Left : in Modifier; Right : in Mouse_Button) return Key_Combo;
     function "+" (Left : in Modifier; Right : in Key_Combo) return Key_Combo;
+
     Mod_None        : constant Modifier;
     Mod_Shift       : constant Modifier;
     Mod_Caps_Lock   : constant Modifier;
@@ -204,86 +221,90 @@ package FLTK is
 
 
 
+    --  Box Types  --
+
     type Box_Kind is
-           (No_Box,
-            Flat_Box,
-            Up_Box,
-            Down_Box,
-            Up_Frame,
-            Down_Frame,
-            Thin_Up_Box,
-            Thin_Down_Box,
-            Thin_Up_Frame,
-            Thin_Down_Frame,
-            Engraved_Box,
-            Embossed_Box,
-            Engraved_Frame,
-            Embossed_Frame,
-            Border_Box,
-            Shadow_Box,
-            Border_Frame,
-            Shadow_Frame,
-            Rounded_Box,
-            RShadow_Box,
-            Rounded_Frame,
-            RFlat_Box,
-            Round_Up_Box,
-            Round_Down_Box,
-            Diamond_Up_Box,
-            Diamond_Down_Box,
-            Oval_Box,
-            OShadow_Box,
-            Oval_Frame,
-            OFlat_Box,
-            Plastic_Up_Box,
-            Plastic_Down_Box,
-            Plastic_Up_Frame,
-            Plastic_Down_Frame,
-            Plastic_Thin_Up_Box,
-            Plastic_Thin_Down_Box,
-            Plastic_Round_Up_Box,
-            Plastic_Round_Down_Box,
-            Gtk_Up_Box,
-            Gtk_Down_Box,
-            Gtk_Up_Frame,
-            Gtk_Down_Frame,
-            Gtk_Thin_Up_Box,
-            Gtk_Thin_Down_Box,
-            Gtk_Thin_Up_Frame,
-            Gtk_Thin_Down_Frame,
-            Gtk_Round_Up_Box,
-            Gtk_Round_Down_Box,
-            Gleam_Up_Box,
-            Gleam_Down_Box,
-            Gleam_Up_Frame,
-            Gleam_Down_Frame,
-            Gleam_Thin_Up_Box,
-            Gleam_Thin_Down_Box,
-            Gleam_Round_Up_Box,
-            Gleam_Round_Down_Box,
-            Free_Box);
+       (No_Box,
+        Flat_Box,
+        Up_Box,
+        Down_Box,
+        Up_Frame,
+        Down_Frame,
+        Thin_Up_Box,
+        Thin_Down_Box,
+        Thin_Up_Frame,
+        Thin_Down_Frame,
+        Engraved_Box,
+        Embossed_Box,
+        Engraved_Frame,
+        Embossed_Frame,
+        Border_Box,
+        Shadow_Box,
+        Border_Frame,
+        Shadow_Frame,
+        Rounded_Box,
+        RShadow_Box,
+        Rounded_Frame,
+        RFlat_Box,
+        Round_Up_Box,
+        Round_Down_Box,
+        Diamond_Up_Box,
+        Diamond_Down_Box,
+        Oval_Box,
+        OShadow_Box,
+        Oval_Frame,
+        OFlat_Box,
+        Plastic_Up_Box,
+        Plastic_Down_Box,
+        Plastic_Up_Frame,
+        Plastic_Down_Frame,
+        Plastic_Thin_Up_Box,
+        Plastic_Thin_Down_Box,
+        Plastic_Round_Up_Box,
+        Plastic_Round_Down_Box,
+        Gtk_Up_Box,
+        Gtk_Down_Box,
+        Gtk_Up_Frame,
+        Gtk_Down_Frame,
+        Gtk_Thin_Up_Box,
+        Gtk_Thin_Down_Box,
+        Gtk_Thin_Up_Frame,
+        Gtk_Thin_Down_Frame,
+        Gtk_Round_Up_Box,
+        Gtk_Round_Down_Box,
+        Gleam_Up_Box,
+        Gleam_Down_Box,
+        Gleam_Up_Frame,
+        Gleam_Down_Frame,
+        Gleam_Thin_Up_Box,
+        Gleam_Thin_Down_Box,
+        Gleam_Round_Up_Box,
+        Gleam_Round_Down_Box,
+        Free_Box);
 
 
 
+
+    --  Fonts  --
 
     type Font_Kind is
-           (Helvetica,
-            Helvetica_Bold,
-            Helvetica_Italic,
-            Helvetica_Bold_Italic,
-            Courier,
-            Courier_Bold,
-            Courier_Italic,
-            Courier_Bold_Italic,
-            Times,
-            Times_Bold,
-            Times_Italic,
-            Times_Bold_Italic,
-            Symbol,
-            Monospace,
-            Monospace_Bold,
-            Zapf_Dingbats,
-            Free_Font);
+       (Helvetica,
+        Helvetica_Bold,
+        Helvetica_Italic,
+        Helvetica_Bold_Italic,
+        Courier,
+        Courier_Bold,
+        Courier_Italic,
+        Courier_Bold_Italic,
+        Times,
+        Times_Bold,
+        Times_Italic,
+        Times_Bold_Italic,
+        Symbol,
+        Monospace,
+        Monospace_Bold,
+        Zapf_Dingbats,
+        Free_Font);
 
     type Font_Size is new Natural;
     Normal_Size : constant Font_Size := 14;
@@ -293,55 +314,63 @@ package FLTK is
 
 
 
+    --  Label Types  --
+
     type Label_Kind is
-           (Normal_Label,
-            No_Label,
-            Shadow_Label,
-            Engraved_Label,
-            Embossed_Label,
-            Multi_Label,
-            Icon_Label,
-            Image_Label,
-            Free_Label);
+       (Normal_Label,
+        No_Label,
+        Shadow_Label,
+        Engraved_Label,
+        Embossed_Label,
+        Multi_Label,
+        Icon_Label,
+        Image_Label,
+        Free_Label);
 
 
 
+
+    --  Events  --
 
     type Event_Kind is
-           (No_Event,
-            Push,
-            Release,
-            Enter,
-            Leave,
-            Drag,
-            Focus,
-            Unfocus,
-            Keydown,
-            Keyup,
-            Close,
-            Move,
-            Shortcut,
-            Deactivate,
-            Activate,
-            Hide,
-            Show,
-            Paste,
-            Selection_Clear,
-            Mouse_Wheel,
-            DnD_Enter,
-            DnD_Drag,
-            DnD_Leave,
-            DnD_Release,
-            Screen_Config_Changed,
-            Fullscreen);
+       (No_Event,
+        Push,
+        Release,
+        Enter,
+        Leave,
+        Drag,
+        Focus,
+        Unfocus,
+        Keydown,
+        Keyup,
+        Close,
+        Move,
+        Shortcut,
+        Deactivate,
+        Activate,
+        Hide,
+        Show,
+        Paste,
+        Selection_Clear,
+        Mouse_Wheel,
+        DnD_Enter,
+        DnD_Drag,
+        DnD_Leave,
+        DnD_Release,
+        Screen_Config_Changed,
+        Fullscreen);
 
     type Event_Outcome is (Not_Handled, Handled);
 
 
 
 
+    --  Menu Flags  --
+
     type Menu_Flag is private;
+
     function "+" (Left, Right : in Menu_Flag) return Menu_Flag;
+
     Flag_Normal    : constant Menu_Flag;
     Flag_Inactive  : constant Menu_Flag;
     Flag_Toggle    : constant Menu_Flag;
@@ -354,10 +383,9 @@ package FLTK is
 
 
 
+    --  Versioning  --
+
     type Version_Number is new Natural;
-
-
-
 
     function ABI_Check
            (ABI_Ver : in Version_Number)
@@ -375,6 +403,8 @@ package FLTK is
 
 
 
+    --  Threads  --
+
     procedure Awake;
 
     procedure Lock;
@@ -384,6 +414,9 @@ package FLTK is
 
 
 
+    --  Drawing  --
+
+    --  Need to check/revise these damage bits...
     function Is_Damaged
         return Boolean;
 
@@ -396,6 +429,8 @@ package FLTK is
 
 
 
+
+    --  Event Loop  --
 
     function Check
         return Boolean;
@@ -451,9 +486,6 @@ private
             Needs_Dealloc : Boolean                 := True;
         end record;
 
-    overriding procedure Initialize
-           (This : in out Wrapper);
-
 
 
 
@@ -501,39 +533,39 @@ private
     --  What delightful magic numbers FLTK cursors are!
     --  (These correspond to the enum found in Enumerations.H)
     Cursor_Values : array (Mouse_Cursor_Kind) of Interfaces.C.int :=
-           (Default_Mouse   => 0,
-            Arrow_Mouse     => 35,
-            Crosshair_Mouse => 66,
-            Wait_Mouse      => 76,
-            Insert_Mouse    => 77,
-            Hand_Mouse      => 31,
-            Help_Mouse      => 47,
-            Move_Mouse      => 27,
-            NS_Mouse        => 78,
-            WE_Mouse        => 79,
-            NWSE_Mouse      => 80,
-            NESW_Mouse      => 81,
-            N_Mouse         => 70,
-            NE_Mouse        => 69,
-            E_Mouse         => 49,
-            SE_Mouse        => 8,
-            S_Mouse         => 9,
-            SW_Mouse        => 7,
-            W_Mouse         => 36,
-            NW_Mouse        => 68,
-            None_Mouse      => 255);
+       (Default_Mouse   => 0,
+        Arrow_Mouse     => 35,
+        Crosshair_Mouse => 66,
+        Wait_Mouse      => 76,
+        Insert_Mouse    => 77,
+        Hand_Mouse      => 31,
+        Help_Mouse      => 47,
+        Move_Mouse      => 27,
+        NS_Mouse        => 78,
+        WE_Mouse        => 79,
+        NWSE_Mouse      => 80,
+        NESW_Mouse      => 81,
+        N_Mouse         => 70,
+        NE_Mouse        => 69,
+        E_Mouse         => 49,
+        SE_Mouse        => 8,
+        S_Mouse         => 9,
+        SW_Mouse        => 7,
+        W_Mouse         => 36,
+        NW_Mouse        => 68,
+        None_Mouse      => 255);
 
 
 
 
     type Keypress is new Interfaces.Unsigned_16;
     type Modifier is new Interfaces.Unsigned_16;
-    type Key_Combo is
-        record
-            Modcode   : Modifier;
-            Keycode   : Keypress;
-            Mousecode : Mouse_Button;
-        end record;
+
+    type Key_Combo is record
+        Modcode   : Modifier;
+        Keycode   : Keypress;
+        Mousecode : Mouse_Button;
+    end record;
 
     function To_C
            (Key : in Key_Combo)
@@ -604,6 +636,7 @@ private
 
 
     type Menu_Flag is new Interfaces.Unsigned_8;
+
     Flag_Normal    : constant Menu_Flag := 2#00000000#;
     Flag_Inactive  : constant Menu_Flag := 2#00000001#;
     Flag_Toggle    : constant Menu_Flag := 2#00000010#;
@@ -620,7 +653,6 @@ private
     pragma Import (C, Awake, "fl_awake");
     pragma Import (C, Lock, "fl_lock");
     pragma Import (C, Unlock, "fl_unlock");
-
 
     pragma Import (C, Flush, "fl_flush");
     pragma Import (C, Redraw, "fl_redraw");

@@ -24,6 +24,12 @@ use type
 package body FLTK.Text_Buffers is
 
 
+    ------------------------
+    --  Functions From C  --
+    ------------------------
+
+    --  Errors  --
+
     function strerror
            (Errnum : in Interfaces.C.int)
         return Interfaces.C.Strings.chars_ptr;
@@ -31,6 +37,8 @@ package body FLTK.Text_Buffers is
 
 
 
+
+    --  Allocation  --
 
     function new_fl_text_buffer
            (RS, PGS : in Interfaces.C.int)
@@ -45,6 +53,8 @@ package body FLTK.Text_Buffers is
 
 
 
+
+    --  Callbacks  --
 
     procedure fl_text_buffer_add_modify_callback
            (TB, CB, UD : in Storage.Integer_Address);
@@ -72,6 +82,8 @@ package body FLTK.Text_Buffers is
 
 
 
+
+    --  Files  --
 
     function fl_text_buffer_loadfile
            (TB : in Storage.Integer_Address;
@@ -116,6 +128,8 @@ package body FLTK.Text_Buffers is
 
 
 
+
+    --  Modification  --
 
     procedure fl_text_buffer_insert
            (TB : in Storage.Integer_Address;
@@ -193,6 +207,8 @@ package body FLTK.Text_Buffers is
 
 
 
+    --  Measurement  --
+
     function fl_text_buffer_count_displayed_characters
            (TB   : in Storage.Integer_Address;
             S, F : in Interfaces.C.int)
@@ -228,6 +244,8 @@ package body FLTK.Text_Buffers is
 
 
 
+
+    --  Selection  --
 
     function fl_text_buffer_selection_position
            (TB   : in     Storage.Integer_Address;
@@ -318,6 +336,8 @@ package body FLTK.Text_Buffers is
 
 
 
+    --  Highlighting  --
+
     procedure fl_text_buffer_highlight
            (TB   : in Storage.Integer_Address;
             F, T : in Interfaces.C.int);
@@ -337,6 +357,8 @@ package body FLTK.Text_Buffers is
 
 
 
+
+    --  Search  --
 
     function fl_text_buffer_findchar_forward
            (TB : in     Storage.Integer_Address;
@@ -378,6 +400,8 @@ package body FLTK.Text_Buffers is
 
 
 
+
+    --  Navigation  --
 
     function fl_text_buffer_word_start
            (TB : in Storage.Integer_Address;
@@ -439,6 +463,8 @@ package body FLTK.Text_Buffers is
 
 
 
+    --  Miscellaneous  --
+
     procedure fl_text_buffer_canundo
            (TB : in Storage.Integer_Address;
             F  : in Interfaces.C.char);
@@ -460,6 +486,10 @@ package body FLTK.Text_Buffers is
 
 
 
+
+    ----------------------
+    --  Callback Hooks  --
+    ----------------------
 
     procedure Modify_Callback_Hook
            (Pos                         : in Interfaces.C.int;
@@ -520,6 +550,10 @@ package body FLTK.Text_Buffers is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
     procedure Finalize
            (This : in out Text_Buffer) is
     begin
@@ -531,6 +565,10 @@ package body FLTK.Text_Buffers is
 
 
 
+
+    --------------------
+    --  Constructors  --
+    --------------------
 
     package body Forge is
 
@@ -558,6 +596,12 @@ package body FLTK.Text_Buffers is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
+    --  Callbacks  --
 
     procedure Add_Modify_Callback
            (This : in out Text_Buffer;
@@ -630,6 +674,8 @@ package body FLTK.Text_Buffers is
 
 
 
+
+    --  Files  --
 
     procedure Load_File
            (This   : in out Text_Buffer;
@@ -717,6 +763,8 @@ package body FLTK.Text_Buffers is
 
 
 
+
+    --  Modification  --
 
     procedure Insert_Text
            (This  : in out Text_Buffer;
@@ -860,6 +908,8 @@ package body FLTK.Text_Buffers is
 
 
 
+    --  Measurement  --
+
     function Count_Displayed_Characters
            (This          : in Text_Buffer;
             Start, Finish : in Position)
@@ -909,6 +959,8 @@ package body FLTK.Text_Buffers is
 
 
 
+
+    --  Selection  --
 
     function Get_Selection
            (This          : in     Text_Buffer;
@@ -1068,6 +1120,8 @@ package body FLTK.Text_Buffers is
 
 
 
+    --  Highlighting  --
+
     procedure Get_Highlight
            (This          : in     Text_Buffer;
             Start, Finish :    out Position) is
@@ -1118,6 +1172,8 @@ package body FLTK.Text_Buffers is
 
 
 
+
+    --  Search  --
 
     function Findchar_Forward
            (This     : in     Text_Buffer;
@@ -1217,6 +1273,8 @@ package body FLTK.Text_Buffers is
 
 
 
+    --  Navigation  --
+
     function Word_Start
            (This  : in Text_Buffer;
             Place : in Position)
@@ -1282,9 +1340,9 @@ package body FLTK.Text_Buffers is
         return Position is
     begin
         return Natural (fl_text_buffer_skip_lines
-               (This.Void_Ptr,
-                Interfaces.C.int (Start),
-                Interfaces.C.int (Lines)));
+           (This.Void_Ptr,
+            Interfaces.C.int (Start),
+            Interfaces.C.int (Lines)));
     end Skip_Lines;
 
 
@@ -1295,9 +1353,9 @@ package body FLTK.Text_Buffers is
         return Position is
     begin
         return Natural (fl_text_buffer_rewind_lines
-               (This.Void_Ptr,
-                Interfaces.C.int (Start),
-                Interfaces.C.int (Lines)));
+           (This.Void_Ptr,
+            Interfaces.C.int (Start),
+            Interfaces.C.int (Lines)));
     end Rewind_Lines;
 
 
@@ -1315,6 +1373,8 @@ package body FLTK.Text_Buffers is
 
 
 
+
+    --  Miscellaneous  --
 
     procedure Can_Undo
            (This : in out Text_Buffer;
@@ -1349,4 +1409,5 @@ package body FLTK.Text_Buffers is
 
 
 end FLTK.Text_Buffers;
+
 

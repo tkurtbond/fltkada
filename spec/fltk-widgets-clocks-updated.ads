@@ -51,6 +51,8 @@ package FLTK.Widgets.Clocks.Updated is
 
 
 
+    --  Events  --
+
     function Handle
            (This  : in out Updated_Clock;
             Event : in     Event_Kind)

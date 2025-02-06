@@ -31,6 +31,8 @@ package FLTK.Devices.Surface is
 
 
 
+    --  Surfaces  --
+
     function Get_Current
         return Surface_Device_Reference;
 
@@ -42,6 +44,8 @@ package FLTK.Devices.Surface is
 
 
 
+
+    --  Drivers  --
 
     function Has_Driver
            (This : in Surface_Device)

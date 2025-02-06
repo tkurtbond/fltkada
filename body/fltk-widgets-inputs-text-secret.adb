@@ -17,6 +17,8 @@ package body FLTK.Widgets.Inputs.Text.Secret is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_secret_input
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -31,6 +33,8 @@ package body FLTK.Widgets.Inputs.Text.Secret is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_secret_input_draw
            (W : in Storage.Integer_Address);
@@ -101,11 +105,11 @@ package body FLTK.Widgets.Inputs.Text.Secret is
         begin
             return This : Secret_Input do
                 This.Void_Ptr := new_fl_secret_input
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -130,6 +134,8 @@ package body FLTK.Widgets.Inputs.Text.Secret is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Events  --
 
     function Handle
            (This  : in out Secret_Input;

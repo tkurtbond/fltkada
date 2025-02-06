@@ -21,6 +21,8 @@ package body FLTK.Widgets.Groups.Spinners is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_spinner
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -35,6 +37,8 @@ package body FLTK.Widgets.Groups.Spinners is
 
 
 
+
+    --  Settings  --
 
     function fl_spinner_get_color
            (S : in Storage.Integer_Address)
@@ -99,6 +103,8 @@ package body FLTK.Widgets.Groups.Spinners is
 
 
 
+    --  Values  --
+
     function fl_spinner_get_minimum
            (S : in Storage.Integer_Address)
         return Interfaces.C.double;
@@ -156,6 +162,8 @@ package body FLTK.Widgets.Groups.Spinners is
 
 
 
+    --  Formatting  --
+
     function fl_spinner_get_format
            (S : in Storage.Integer_Address)
         return Interfaces.C.Strings.chars_ptr;
@@ -183,6 +191,8 @@ package body FLTK.Widgets.Groups.Spinners is
 
 
 
+    --  Dimensions  --
+
     procedure fl_spinner_resize
            (S          : in Storage.Integer_Address;
             X, Y, W, H : in Interfaces.C.int);
@@ -191,6 +201,8 @@ package body FLTK.Widgets.Groups.Spinners is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_spinner_draw
            (W : in Storage.Integer_Address);
@@ -261,11 +273,11 @@ package body FLTK.Widgets.Groups.Spinners is
         begin
             return This : Spinner do
                 This.Void_Ptr := new_fl_spinner
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -290,6 +302,8 @@ package body FLTK.Widgets.Groups.Spinners is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Settings  --
 
     function Get_Background_Color
            (This : in Spinner)
@@ -372,6 +386,8 @@ package body FLTK.Widgets.Groups.Spinners is
 
 
 
+
+    --  Values  --
 
     function Get_Minimum
            (This : in Spinner)
@@ -459,6 +475,8 @@ package body FLTK.Widgets.Groups.Spinners is
 
 
 
+    --  Formatting  --
+
     function Get_Format
            (This : in Spinner)
         return String
@@ -507,6 +525,8 @@ package body FLTK.Widgets.Groups.Spinners is
 
 
 
+    --  Dimensions  --
+
     procedure Resize
            (This       : in out Spinner;
             X, Y, W, H : in     Integer) is
@@ -521,6 +541,8 @@ package body FLTK.Widgets.Groups.Spinners is
 
 
 
+
+    --  Events  --
 
     function Handle
            (This  : in out Spinner;

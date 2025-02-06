@@ -66,8 +66,6 @@ extern "C" void fl_window_size_range(WINDOW n, int lw, int lh, int hw, int hh, i
 extern "C" void fl_window_resize(WINDOW n, int x, int y, int w, int h);
 extern "C" int fl_window_get_force_position(WINDOW n);
 extern "C" void fl_window_set_force_position(WINDOW n, int s);
-
-
 extern "C" int fl_window_get_x_root(WINDOW n);
 extern "C" int fl_window_get_y_root(WINDOW n);
 extern "C" int fl_window_get_decorated_w(WINDOW n);

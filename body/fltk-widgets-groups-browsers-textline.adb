@@ -29,6 +29,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
     --  Functions From C  --
     ------------------------
 
+    --  Errors  --
+
     function get_error_message
         return Interfaces.C.Strings.chars_ptr;
     pragma Import (C, get_error_message, "get_error_message");
@@ -36,6 +38,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+
+    --  Allocation  --
 
     function new_fl_browser
            (X, Y, W, H : in Interfaces.C.int;
@@ -51,6 +55,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+
+    --  Lines  --
 
     procedure fl_browser_add
            (B : in Storage.Integer_Address;
@@ -99,6 +105,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+    --  Text Loading  --
+
     function fl_browser_load
            (B : in Storage.Integer_Address;
             F : in Interfaces.C.char_array)
@@ -135,6 +143,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+    --  Columns, Formatting  --
+
     function fl_browser_get_column_char
            (B : in Storage.Integer_Address)
         return Interfaces.C.char;
@@ -166,6 +176,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+
+    --  Line Positions  --
 
     function fl_browser_get_topline
            (B : in Storage.Integer_Address)
@@ -200,6 +212,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+    --  Selection  --
+
     function fl_browser_select
            (B    : in Storage.Integer_Address;
             L, V : in Interfaces.C.int)
@@ -222,6 +236,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+
+    --  Visibility  --
 
     function fl_browser_visible
            (B : in Storage.Integer_Address;
@@ -268,6 +284,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+    --  Dimensions  --
+
     procedure fl_browser_set_size
            (B    : in Storage.Integer_Address;
             W, H : in Interfaces.C.int);
@@ -276,6 +294,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+
+    --  Icons  --
 
     procedure fl_browser_set_icon
            (B : in Storage.Integer_Address;
@@ -292,6 +312,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+
+    --  Item Implementation  --
 
     function fl_browser_item_width
            (B, I : in Storage.Integer_Address)
@@ -368,6 +390,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+    --  List Implementation  --
+
     function fl_browser_full_width
            (B : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -395,6 +419,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+    --  Line Numbers  --
+
     function fl_browser_lineno
            (B, I : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -403,6 +429,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_browser_draw
            (B : in Storage.Integer_Address);
@@ -534,6 +562,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
     --  API Subprograms  --
     -----------------------
 
+    --  Lines  --
+
     procedure Add
            (This : in out Textline_Browser;
             Text : in     String) is
@@ -607,6 +637,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+    --  Text Loading  --
+
     procedure Load
            (This : in out Textline_Browser;
             File : in     String)
@@ -677,6 +709,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+    --  Columns, Formatting  --
+
     function Get_Column_Character
            (This : in Textline_Browser)
         return Character is
@@ -741,6 +775,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+    --  Line Positions  --
+
     function Get_Top_Line
            (This : in Textline_Browser)
         return Positive is
@@ -783,6 +819,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+
+    --  Selection  --
 
     function Set_Select
            (This  : in out Textline_Browser;
@@ -846,6 +884,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+
+    --  Visibility  --
 
     function Is_Visible
            (This : in Textline_Browser;
@@ -913,6 +953,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+    --  Dimensions  --
+
     procedure Resize
            (This : in out Textline_Browser;
             W, H : in     Integer) is
@@ -925,6 +967,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+
+    --  Icons  --
 
     function Has_Icon
            (This : in Textline_Browser;
@@ -979,6 +1023,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+    --  List Implementation  --
+
     function Full_List_Height
            (This : in Textline_Browser)
         return Integer is
@@ -996,6 +1042,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+
+    --  Item Implementation  --
 
     function Item_Width
            (This : in Textline_Browser;
@@ -1187,6 +1235,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
 
 
+
+    --  Line Numbers  --
 
     function Line_Number
            (This : in Textline_Browser;

@@ -26,6 +26,8 @@ package body FLTK.Widgets.Valuators is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_valuator
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -41,6 +43,8 @@ package body FLTK.Widgets.Valuators is
 
 
 
+    --  Formatting  --
+
     function fl_valuator_format
            (V : in     Storage.Integer_Address;
             B :    out Interfaces.C.char_array)
@@ -50,6 +54,8 @@ package body FLTK.Widgets.Valuators is
 
 
 
+
+    --  Calculation  --
 
     function fl_valuator_clamp
            (V : in Storage.Integer_Address;
@@ -75,6 +81,8 @@ package body FLTK.Widgets.Valuators is
 
 
 
+
+    --  Settings, Value  --
 
     function fl_valuator_get_minimum
            (V : in Storage.Integer_Address)
@@ -157,6 +165,8 @@ package body FLTK.Widgets.Valuators is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_valuator_value_damage
            (V : in Storage.Integer_Address);
@@ -273,11 +283,11 @@ package body FLTK.Widgets.Valuators is
         begin
             return This : Valuator do
                 This.Void_Ptr := new_fl_valuator
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -303,6 +313,8 @@ package body FLTK.Widgets.Valuators is
     --  API Subprograms  --
     -----------------------
 
+    --  Formatting  --
+
     function Format
            (This : in Valuator)
         return String
@@ -316,6 +328,8 @@ package body FLTK.Widgets.Valuators is
 
 
 
+
+    --  Calculation  --
 
     function Clamp
            (This  : in Valuator;
@@ -349,6 +363,8 @@ package body FLTK.Widgets.Valuators is
 
 
 
+
+    --  Settings, Value  --
 
     function Get_Minimum
            (This : in Valuator)
@@ -469,6 +485,8 @@ package body FLTK.Widgets.Valuators is
 
 
 
+
+    --  Drawing  --
 
     procedure Value_Damage
            (This : in out Valuator) is

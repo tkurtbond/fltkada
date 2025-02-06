@@ -27,6 +27,8 @@ package body FLTK.Event is
     --  Functions From C  --
     ------------------------
 
+    --  Handlers  --
+
     procedure fl_event_add_handler
            (F : in Storage.Integer_Address);
     pragma Import (C, fl_event_add_handler, "fl_event_add_handler");
@@ -47,6 +49,8 @@ package body FLTK.Event is
 
 
 
+
+    --  Receiving  --
 
     function fl_event_get_grab
         return Storage.Integer_Address;
@@ -91,15 +95,13 @@ package body FLTK.Event is
 
 
 
+    --  Multikey  --
+
     function fl_event_compose
            (D : out Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_event_compose, "fl_event_compose");
     pragma Inline (fl_event_compose);
-
-    procedure fl_event_compose_reset;
-    pragma Import (C, fl_event_compose_reset, "fl_event_compose_reset");
-    pragma Inline (fl_event_compose_reset);
 
     function fl_event_text
         return Interfaces.C.Strings.chars_ptr;
@@ -113,6 +115,8 @@ package body FLTK.Event is
 
 
 
+
+    --  Modifiers  --
 
     function fl_event_get
         return Interfaces.C.int;
@@ -132,6 +136,8 @@ package body FLTK.Event is
 
 
 
+
+    --  Mouse  --
 
     function fl_event_x
         return Interfaces.C.int;
@@ -212,6 +218,8 @@ package body FLTK.Event is
 
 
 
+    --  Keyboard  --
+
     function fl_event_key
         return Interfaces.C.int;
     pragma Import (C, fl_event_key, "fl_event_key");
@@ -257,6 +265,10 @@ package body FLTK.Event is
 
 
 
+    -------------
+    --  Hooks  --
+    -------------
+
     function Event_Handler_Hook
            (Num : in Interfaces.C.int)
         return Interfaces.C.int
@@ -295,6 +307,12 @@ package body FLTK.Event is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
+    --  Handlers  --
 
     procedure Add_Handler
            (Func : in Event_Handler) is
@@ -350,6 +368,8 @@ package body FLTK.Event is
 
 
 
+
+    --  Receiving  --
 
     function Get_Grab
         return access FLTK.Widgets.Groups.Windows.Window'Class
@@ -459,17 +479,14 @@ package body FLTK.Event is
 
 
 
+    --  Multikey  --
+
     function Compose
            (Del : out Natural)
         return Boolean is
     begin
         return fl_event_compose (Interfaces.C.int (Del)) /= 0;
     end Compose;
-
-    procedure Compose_Reset is
-    begin
-        fl_event_compose_reset;
-    end Compose_Reset;
 
 
     function Text
@@ -494,6 +511,8 @@ package body FLTK.Event is
 
 
 
+    --  Modifiers  --
+
     function Last
         return Event_Kind is
     begin
@@ -517,6 +536,8 @@ package body FLTK.Event is
 
 
 
+
+    --  Mouse  --
 
     function Mouse_X
         return Integer is
@@ -631,6 +652,8 @@ package body FLTK.Event is
 
 
 
+    --  Keyboard  --
+
     function Last_Key
         return Keypress is
     begin
@@ -697,4 +720,5 @@ begin
 
 
 end FLTK.Event;
+
 

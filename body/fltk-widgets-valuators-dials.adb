@@ -17,6 +17,8 @@ package body FLTK.Widgets.Valuators.Dials is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_dial
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -31,6 +33,8 @@ package body FLTK.Widgets.Valuators.Dials is
 
 
 
+
+    --  Limit Angles  --
 
     function fl_dial_get_angle1
            (D : in Storage.Integer_Address)
@@ -65,6 +69,8 @@ package body FLTK.Widgets.Valuators.Dials is
 
 
 
+    --  Drawing, Events  --
+
     procedure fl_dial_draw
            (W : in Storage.Integer_Address);
     pragma Import (C, fl_dial_draw, "fl_dial_draw");
@@ -92,6 +98,8 @@ package body FLTK.Widgets.Valuators.Dials is
 
 
 
+
+    --  Dial Type  --
 
     function fl_widget_get_type
            (D : in Storage.Integer_Address)
@@ -162,11 +170,11 @@ package body FLTK.Widgets.Valuators.Dials is
         begin
             return This : Dial do
                 This.Void_Ptr := new_fl_dial
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -191,6 +199,8 @@ package body FLTK.Widgets.Valuators.Dials is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Limit Angles  --
 
     function Get_First_Angle
            (This : in Dial)
@@ -236,6 +246,8 @@ package body FLTK.Widgets.Valuators.Dials is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Dial) is
@@ -289,6 +301,8 @@ package body FLTK.Widgets.Valuators.Dials is
 
 
 
+
+    --  Dial Type  --
 
     function Get_Kind
            (This : in Dial)

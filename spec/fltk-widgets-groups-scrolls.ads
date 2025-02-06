@@ -66,6 +66,8 @@ package FLTK.Widgets.Groups.Scrolls is
 
 
 
+    --  Attributes  --
+
     function H_Bar
            (This : in out Scroll)
         return Valuators.Sliders.Scrollbars.Scrollbar_Reference;
@@ -77,11 +79,15 @@ package FLTK.Widgets.Groups.Scrolls is
 
 
 
+    --  Contents  --
+
     procedure Clear
            (This : in out Scroll);
 
 
 
+
+    --  Scrolling  --
 
     procedure Scroll_To
            (This : in out Scroll;
@@ -99,6 +105,8 @@ package FLTK.Widgets.Groups.Scrolls is
 
 
 
+
+    --  Scrollbar Settings  --
 
     function Get_Scrollbar_Size
            (This : in Scroll)
@@ -119,6 +127,8 @@ package FLTK.Widgets.Groups.Scrolls is
 
 
 
+    --  Dimensions  --
+
     procedure Resize
            (This       : in out Scroll;
             X, Y, W, H : in     Integer);
@@ -129,6 +139,8 @@ package FLTK.Widgets.Groups.Scrolls is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Bounding_Box
            (This       : in     Scroll;

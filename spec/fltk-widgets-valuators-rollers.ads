@@ -38,6 +38,8 @@ package FLTK.Widgets.Valuators.Rollers is
 
 
 
+    --  Drawing, Events  --
+
     procedure Draw
            (This : in out Roller);
 

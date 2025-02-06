@@ -17,6 +17,8 @@ package body FLTK.Widgets.Groups.Windows.Single is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_single_window
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -39,6 +41,8 @@ package body FLTK.Widgets.Groups.Windows.Single is
 
 
 
+    --  Visibility  --
+
     procedure fl_single_window_show
            (S : in Storage.Integer_Address);
     pragma Import (C, fl_single_window_show, "fl_single_window_show");
@@ -59,6 +63,8 @@ package body FLTK.Widgets.Groups.Windows.Single is
 
 
 
+    --  Current  --
+
     procedure fl_single_window_make_current
            (S : in Storage.Integer_Address);
     pragma Import (C, fl_single_window_make_current, "fl_single_window_make_current");
@@ -66,6 +72,8 @@ package body FLTK.Widgets.Groups.Windows.Single is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_single_window_draw
            (W : in Storage.Integer_Address);
@@ -136,11 +144,11 @@ package body FLTK.Widgets.Groups.Windows.Single is
         begin
             return This : Single_Window do
                 This.Void_Ptr := new_fl_single_window
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -165,9 +173,9 @@ package body FLTK.Widgets.Groups.Windows.Single is
         begin
             return This : Single_Window do
                 This.Void_Ptr := new_fl_single_window2
-                       (Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, This.Get_X, This.Get_Y, W, H, Text);
             end return;
         end Create;
@@ -193,6 +201,8 @@ package body FLTK.Widgets.Groups.Windows.Single is
     --  API Subprograms  --
     -----------------------
 
+    --  Visibility  --
+
     procedure Show
            (This : in out Single_Window) is
     begin
@@ -215,6 +225,8 @@ package body FLTK.Widgets.Groups.Windows.Single is
 
 
 
+
+    --  Current  --
 
     procedure Make_Current
            (This : in out Single_Window) is

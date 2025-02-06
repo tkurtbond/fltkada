@@ -32,6 +32,8 @@ package body FLTK.Widgets.Menus is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function null_fl_menu_item
         return Storage.Integer_Address;
     pragma Import (C, null_fl_menu_item, "null_fl_menu_item");
@@ -56,6 +58,8 @@ package body FLTK.Widgets.Menus is
 
 
 
+
+    --  Menu Items  --
 
     function fl_menu_add
            (M : in Storage.Integer_Address;
@@ -135,6 +139,8 @@ package body FLTK.Widgets.Menus is
 
 
 
+    --  Item Query  --
+
     function fl_menu_get_item
            (M : in Storage.Integer_Address;
             I : in Interfaces.C.int)
@@ -179,6 +185,8 @@ package body FLTK.Widgets.Menus is
 
 
 
+    --  Selection  --
+
     function fl_menu_text
            (M : in Storage.Integer_Address)
         return Interfaces.C.Strings.chars_ptr;
@@ -206,6 +214,8 @@ package body FLTK.Widgets.Menus is
 
 
 
+
+    --  Label, Shortcut, Flags  --
 
     procedure fl_menu_setonly
            (M, I : in Storage.Integer_Address);
@@ -250,6 +260,8 @@ package body FLTK.Widgets.Menus is
 
 
 
+    --  Text Settings  --
+
     function fl_menu_get_textcolor
            (M : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
@@ -289,6 +301,8 @@ package body FLTK.Widgets.Menus is
 
 
 
+    --  Miscellaneous  --
+
     function fl_menu_get_down_box
            (M : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -316,6 +330,8 @@ package body FLTK.Widgets.Menus is
 
 
 
+
+    --  Menu Item Methods  --
 
     function fl_menu_popup
            (M    : in Storage.Integer_Address;
@@ -356,6 +372,8 @@ package body FLTK.Widgets.Menus is
 
 
 
+    --  Dimensions  --
+
     procedure fl_menu_size2
            (M    : in Storage.Integer_Address;
             W, H : in Interfaces.C.int);
@@ -364,6 +382,8 @@ package body FLTK.Widgets.Menus is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_menu_draw_item
            (M          : in Storage.Integer_Address;
@@ -541,6 +561,8 @@ package body FLTK.Widgets.Menus is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Menu Items  --
 
     procedure Add
            (This : in out Menu;
@@ -793,6 +815,8 @@ package body FLTK.Widgets.Menus is
 
 
 
+    --  Item Query  --
+
     function Has_Item
            (This  : in Menu;
             Place : in Index)
@@ -969,6 +993,8 @@ package body FLTK.Widgets.Menus is
 
 
 
+    --  Iteration  --
+
     function Iterate
            (This : in Menu)
         return Menu_Iterators.Reversible_Iterator'Class is
@@ -1020,6 +1046,8 @@ package body FLTK.Widgets.Menus is
 
 
 
+
+    --  Selection  --
 
     function Chosen
            (This : in Menu)
@@ -1102,6 +1130,8 @@ package body FLTK.Widgets.Menus is
 
 
 
+    --  Label, Shortcut, Flags  --
+
     procedure Set_Only
            (This : in out Menu;
             Item : in out FLTK.Menu_Items.Menu_Item) is
@@ -1174,6 +1204,8 @@ package body FLTK.Widgets.Menus is
 
 
 
+    --  Text Settings  --
+
     function Get_Text_Color
            (This : in Menu)
         return Color is
@@ -1236,6 +1268,8 @@ package body FLTK.Widgets.Menus is
 
 
 
+    --  Miscellaneous  --
+
     function Get_Down_Box
            (This : in Menu)
         return Box_Kind
@@ -1278,6 +1312,8 @@ package body FLTK.Widgets.Menus is
 
 
 
+
+    --  Menu Item Methods  --
 
     function Popup
            (This    : in Menu;
@@ -1389,6 +1425,8 @@ package body FLTK.Widgets.Menus is
 
 
 
+    --  Dimensions  --
+
     procedure Resize
            (This : in out Menu;
             W, H : in     Integer) is
@@ -1401,6 +1439,8 @@ package body FLTK.Widgets.Menus is
 
 
 
+
+    --  Drawing  --
 
     procedure Draw_Item
            (This       : in out Menu;

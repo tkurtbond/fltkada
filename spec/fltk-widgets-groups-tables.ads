@@ -55,6 +55,8 @@ package FLTK.Widgets.Groups.Tables is
 
 
 
+    --  Attributes  --
+
     function H_Bar
            (This : in out Table)
         return Valuators.Sliders.Scrollbars.Scrollbar_Reference;
@@ -69,6 +71,8 @@ package FLTK.Widgets.Groups.Tables is
 
 
 
+
+    --  Contents Modification  --
 
     procedure Add
            (This : in out Table;
@@ -93,6 +97,8 @@ package FLTK.Widgets.Groups.Tables is
 
 
 
+
+    --  Contents Query  --
 
     function Has_Child
            (This  : in Table;
@@ -130,6 +136,8 @@ package FLTK.Widgets.Groups.Tables is
 
 
 
+    --  Current  --
+
     procedure Begin_Current
            (This : in out Table);
 
@@ -138,6 +146,8 @@ package FLTK.Widgets.Groups.Tables is
 
 
 
+
+    --  Callbacks  --
 
     procedure Set_Callback
            (This : in out Table;
@@ -171,6 +181,8 @@ package FLTK.Widgets.Groups.Tables is
 
 
 
+
+    --  Columns  --
 
     function Column_Headers_Enabled
            (This : in Table)
@@ -249,6 +261,8 @@ package FLTK.Widgets.Groups.Tables is
 
 
 
+
+    --  Rows  --
 
     function Row_Headers_Enabled
            (This : in Table)
@@ -336,6 +350,8 @@ package FLTK.Widgets.Groups.Tables is
 
 
 
+    --  Selection  --
+
     procedure Set_Cursor_Kind
            (This : in out Table;
             Kind : in     Mouse_Cursor_Kind);
@@ -403,6 +419,8 @@ package FLTK.Widgets.Groups.Tables is
 
 
 
+    --  Dimensions  --
+
     function Get_Scrollbar_Size
            (This : in Table)
         return Integer;
@@ -433,6 +451,8 @@ package FLTK.Widgets.Groups.Tables is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Table);

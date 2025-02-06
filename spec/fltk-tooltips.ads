@@ -12,6 +12,8 @@ with
 package FLTK.Tooltips is
 
 
+    --  Activity  --
+
     function Get_Target
         return access FLTK.Widgets.Widget'Class;
 
@@ -34,6 +36,8 @@ package FLTK.Tooltips is
 
 
 
+    --  Delay  --
+
     function Get_Delay
         return Float;
 
@@ -48,6 +52,8 @@ package FLTK.Tooltips is
 
 
 
+
+    --  Color, Margins, Wrap  --
 
     function Get_Background_Color
         return Color;
@@ -75,6 +81,8 @@ package FLTK.Tooltips is
 
 
 
+
+    --  Text Settings  --
 
     function Get_Text_Color
         return Color;

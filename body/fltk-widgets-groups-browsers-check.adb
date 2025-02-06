@@ -20,6 +20,8 @@ package body FLTK.Widgets.Groups.Browsers.Check is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_check_browser
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -34,6 +36,8 @@ package body FLTK.Widgets.Groups.Browsers.Check is
 
 
 
+
+    --  Items  --
 
     function fl_check_browser_add
            (C : in Storage.Integer_Address;
@@ -63,6 +67,8 @@ package body FLTK.Widgets.Groups.Browsers.Check is
 
 
 
+
+    --  Checkmarking  --
 
     procedure fl_check_browser_check_all
            (C : in Storage.Integer_Address);
@@ -96,6 +102,8 @@ package body FLTK.Widgets.Groups.Browsers.Check is
 
 
 
+    --  Text Selection  --
+
     function fl_check_browser_text
            (C : in Storage.Integer_Address;
             I : in Interfaces.C.int)
@@ -111,6 +119,8 @@ package body FLTK.Widgets.Groups.Browsers.Check is
 
 
 
+
+    --  Optional Overrides  --
 
     function fl_check_browser_full_width
            (B : in Storage.Integer_Address)
@@ -138,6 +148,8 @@ package body FLTK.Widgets.Groups.Browsers.Check is
 
 
 
+
+    --  Item Implementation  --
 
     function fl_check_browser_item_width
            (C, I : in Storage.Integer_Address)
@@ -195,6 +207,8 @@ package body FLTK.Widgets.Groups.Browsers.Check is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_check_browser_draw
            (B : in Storage.Integer_Address);
@@ -296,9 +310,11 @@ package body FLTK.Widgets.Groups.Browsers.Check is
 
 
 
-    -------------------------
-    --  Check_Browser API  --
-    -------------------------
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
+    --  Items  --
 
     procedure Add
            (This    : in out Check_Browser;
@@ -342,6 +358,8 @@ package body FLTK.Widgets.Groups.Browsers.Check is
 
 
 
+
+    --  Checkmarking  --
 
     procedure Check_All
            (This : in out Check_Browser) is
@@ -388,6 +406,8 @@ package body FLTK.Widgets.Groups.Browsers.Check is
 
 
 
+    --  Text Selection  --
+
     function Item_Text
            (This  : in Check_Browser;
             Index : in Positive)
@@ -407,6 +427,8 @@ package body FLTK.Widgets.Groups.Browsers.Check is
 
 
 
+
+    --  Item Implementation  --
 
     function Item_Width
            (This : in Check_Browser;

@@ -16,6 +16,8 @@ package body FLTK.Images.RGB.PNM is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_pnm_image
            (F : in Interfaces.C.char_array)
         return Storage.Integer_Address;

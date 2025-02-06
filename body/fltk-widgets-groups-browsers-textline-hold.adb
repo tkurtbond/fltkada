@@ -16,6 +16,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline.Hold is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_hold_browser
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -31,6 +33,7 @@ package body FLTK.Widgets.Groups.Browsers.Textline.Hold is
 
 
 
+    --  Item Implementation  --
 
     function fl_hold_browser_item_width
            (B, I : in Storage.Integer_Address)
@@ -107,6 +110,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline.Hold is
 
 
 
+    --  List Implementation  --
+
     function fl_hold_browser_full_width
            (B : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -133,6 +138,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline.Hold is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_hold_browser_draw
            (B : in Storage.Integer_Address);

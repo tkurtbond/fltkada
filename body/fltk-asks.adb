@@ -27,6 +27,8 @@ package body FLTK.Asks is
     --  Functions From C  --
     ------------------------
 
+    --  Static Attributes  --
+
     function fl_ask_get_cancel
         return Interfaces.C.Strings.chars_ptr;
     pragma Import (C, fl_ask_get_cancel, "fl_ask_get_cancel");
@@ -80,6 +82,8 @@ package body FLTK.Asks is
 
 
 
+    --  Simple Messages  --
+
     procedure fl_ask_alert
            (M : in Interfaces.C.char_array);
     pragma Import (C, fl_ask_alert, "fl_ask_alert");
@@ -123,6 +127,8 @@ package body FLTK.Asks is
 
 
 
+
+    --  Choosers  --
 
     function fl_ask_color_chooser
            (N       : in     Interfaces.C.char_array;
@@ -172,6 +178,8 @@ package body FLTK.Asks is
 
 
 
+
+    --  Settings  --
 
     function fl_ask_get_message_hotspot
         return Interfaces.C.int;
@@ -246,9 +254,11 @@ package body FLTK.Asks is
 
 
 
-    ------------------
-    --  Attributes  --
-    ------------------
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
+    --  Static Attributes  --
 
     function Get_Cancel_String
         return String is
@@ -332,9 +342,7 @@ package body FLTK.Asks is
 
 
 
-    ----------------------
-    --  Common Dialogs  --
-    ----------------------
+    --  Simple Messages  --
 
     procedure Alert
            (Message : String) is
@@ -500,6 +508,8 @@ package body FLTK.Asks is
 
 
 
+    --  Choosers  --
+
     function Color_Chooser
            (Title   : in     String;
             R, G, B : in out RGB_Float;
@@ -625,6 +635,8 @@ package body FLTK.Asks is
 
 
 
+    --  Settings  --
+
     function Get_Message_Hotspot
         return Boolean is
     begin
@@ -668,8 +680,6 @@ package body FLTK.Asks is
     end Set_Message_Title_Default;
 
 
-
-
 begin
 
 
@@ -680,4 +690,5 @@ begin
 
 
 end FLTK.Asks;
+
 

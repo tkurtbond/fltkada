@@ -28,6 +28,8 @@ package body FLTK.Widgets.Inputs.Text.File is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_file_input
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -42,6 +44,8 @@ package body FLTK.Widgets.Inputs.Text.File is
 
 
 
+
+    --  Settings  --
 
     function fl_file_input_get_down_box
            (F : in Storage.Integer_Address)
@@ -70,6 +74,8 @@ package body FLTK.Widgets.Inputs.Text.File is
 
 
 
+    --  Text Field  --
+
     function fl_file_input_get_value
            (F : in Storage.Integer_Address)
         return Interfaces.C.Strings.chars_ptr;
@@ -86,6 +92,8 @@ package body FLTK.Widgets.Inputs.Text.File is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_file_input_draw
            (W : in Storage.Integer_Address);
@@ -156,11 +164,11 @@ package body FLTK.Widgets.Inputs.Text.File is
         begin
             return This : File_Input do
                 This.Void_Ptr := new_fl_file_input
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -185,6 +193,8 @@ package body FLTK.Widgets.Inputs.Text.File is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Settings  --
 
     function Get_Down_Box
            (This : in File_Input)
@@ -220,6 +230,8 @@ package body FLTK.Widgets.Inputs.Text.File is
 
 
 
+    --  Text Field  --
+
     function Get_Value
            (This : in File_Input)
         return String
@@ -252,6 +264,8 @@ package body FLTK.Widgets.Inputs.Text.File is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out File_Input) is

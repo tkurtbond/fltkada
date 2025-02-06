@@ -17,6 +17,8 @@ package body FLTK.Widgets.Buttons.Repeat is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_repeat_button
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -32,6 +34,8 @@ package body FLTK.Widgets.Buttons.Repeat is
 
 
 
+    --  Activity  --
+
     procedure fl_repeat_button_deactivate
            (B : in Storage.Integer_Address);
     pragma Import (C, fl_repeat_button_deactivate, "fl_repeat_button_deactivate");
@@ -39,6 +43,8 @@ package body FLTK.Widgets.Buttons.Repeat is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_repeat_button_draw
            (W : in Storage.Integer_Address);
@@ -109,11 +115,11 @@ package body FLTK.Widgets.Buttons.Repeat is
         begin
             return This : Repeat_Button do
                 This.Void_Ptr := new_fl_repeat_button
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -139,6 +145,8 @@ package body FLTK.Widgets.Buttons.Repeat is
     --  API Subprograms  --
     -----------------------
 
+    --  Activity  --
+
     procedure Deactivate
            (This : in out Repeat_Button) is
     begin
@@ -147,6 +155,8 @@ package body FLTK.Widgets.Buttons.Repeat is
 
 
 
+
+    --  Events  --
 
     function Handle
            (This  : in out Repeat_Button;

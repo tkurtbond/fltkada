@@ -22,6 +22,8 @@ package body FLTK.Widgets.Groups.Tabbed is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_tabs
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -37,6 +39,8 @@ package body FLTK.Widgets.Groups.Tabbed is
 
 
 
+    --  Child Area  --
+
     procedure fl_tabs_client_area
            (T          : in     Storage.Integer_Address;
             X, Y, W, H :    out Interfaces.C.int;
@@ -46,6 +50,8 @@ package body FLTK.Widgets.Groups.Tabbed is
 
 
 
+
+    --  Operation  --
 
     function fl_tabs_get_push
            (T : in Storage.Integer_Address)
@@ -78,6 +84,8 @@ package body FLTK.Widgets.Groups.Tabbed is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_tabs_draw
            (W : in Storage.Integer_Address);
@@ -153,11 +161,11 @@ package body FLTK.Widgets.Groups.Tabbed is
         begin
             return This : Tabbed_Group do
                 This.Void_Ptr := new_fl_tabs
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -183,6 +191,8 @@ package body FLTK.Widgets.Groups.Tabbed is
     --  API Subprograms  --
     -----------------------
 
+    --  Child Area  --
+
     procedure Get_Client_Area
            (This       : in     Tabbed_Group;
             Tab_Height : in     Natural;
@@ -199,6 +209,8 @@ package body FLTK.Widgets.Groups.Tabbed is
 
 
 
+
+    --  Operation  --
 
     function Get_Push
            (This : in Tabbed_Group)
@@ -276,6 +288,8 @@ package body FLTK.Widgets.Groups.Tabbed is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Tabbed_Group) is

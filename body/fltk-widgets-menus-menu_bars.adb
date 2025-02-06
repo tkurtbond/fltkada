@@ -17,6 +17,8 @@ package body FLTK.Widgets.Menus.Menu_Bars is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_menu_bar
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -32,6 +34,8 @@ package body FLTK.Widgets.Menus.Menu_Bars is
 
 
 
+    --  Drawing, Events  --
+
     procedure fl_menu_bar_draw
            (W : in Storage.Integer_Address);
     pragma Import (C, fl_menu_bar_draw, "fl_menu_bar_draw");
@@ -46,6 +50,8 @@ package body FLTK.Widgets.Menus.Menu_Bars is
 
 
 
+
+    --  Initialize  --
 
     function fl_menu_get_item
            (M : in Storage.Integer_Address;
@@ -119,11 +125,11 @@ package body FLTK.Widgets.Menus.Menu_Bars is
         begin
             return This : Menu_Bar do
                 This.Void_Ptr := new_fl_menu_bar
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -148,6 +154,8 @@ package body FLTK.Widgets.Menus.Menu_Bars is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Menu_Bar) is

@@ -38,6 +38,8 @@ package FLTK.Widgets.Buttons.Light is
 
 
 
+    --  Drawing, Events  --
+
     procedure Draw
            (This : in out Light_Button);
 

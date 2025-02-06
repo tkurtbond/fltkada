@@ -35,6 +35,8 @@ package FLTK.Widgets.Groups.Color_Choosers is
 
 
 
+    --  RGB Color  --
+
     function Get_Red
            (This : in Color_Chooser)
         return Long_Float;
@@ -58,6 +60,8 @@ package FLTK.Widgets.Groups.Color_Choosers is
 
 
 
+
+    --  HSV Color  --
 
     function Get_Hue
            (This : in Color_Chooser)
@@ -83,6 +87,8 @@ package FLTK.Widgets.Groups.Color_Choosers is
 
 
 
+    --  RGB / HSV Conversion  --
+
     procedure HSV_To_RGB
            (H, S, V : in     Long_Float;
             R, G, B :    out Long_Float);
@@ -93,6 +99,8 @@ package FLTK.Widgets.Groups.Color_Choosers is
 
 
 
+
+    --  Settings  --
 
     function Get_Mode
            (This : in Color_Chooser)

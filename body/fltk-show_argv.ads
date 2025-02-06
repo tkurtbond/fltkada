@@ -14,6 +14,8 @@ private package FLTK.Show_Argv is
 
     --  Used for implementing show(argc,argv)
 
+    --  Dispatch marshalls the data, calls the function, then does cleanup
+
     type Show_With_Args_Func is access procedure
            (CObj : in Storage.Integer_Address;
             Argc : in Interfaces.C.int;

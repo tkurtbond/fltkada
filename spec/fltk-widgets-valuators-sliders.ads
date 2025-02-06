@@ -56,6 +56,8 @@ package FLTK.Widgets.Valuators.Sliders is
 
 
 
+    --  Settings  --
+
     procedure Set_Bounds
            (This     : in out Slider;
             Min, Max : in     Long_Float);
@@ -86,6 +88,8 @@ package FLTK.Widgets.Valuators.Sliders is
 
 
 
+    --  Drawing, Events  --
+
     procedure Draw
            (This : in out Slider);
 
@@ -106,6 +110,8 @@ package FLTK.Widgets.Valuators.Sliders is
 
 
 
+
+    --  Slider Type  --
 
     function Get_Kind
            (This : in Slider)

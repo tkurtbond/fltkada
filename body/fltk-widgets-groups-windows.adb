@@ -25,6 +25,8 @@ package body FLTK.Widgets.Groups.Windows is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_window
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -46,6 +48,8 @@ package body FLTK.Widgets.Groups.Windows is
 
 
 
+
+    --  Visibility  --
 
     procedure fl_window_show
            (W : in Storage.Integer_Address);
@@ -88,6 +92,8 @@ package body FLTK.Widgets.Groups.Windows is
 
 
 
+    --  Fullscreen  --
+
     function fl_window_fullscreen_active
            (W : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
@@ -118,6 +124,8 @@ package body FLTK.Widgets.Groups.Windows is
 
 
 
+
+    --  Icons, Cursors  --
 
     procedure fl_window_set_icon
            (W, P : in Storage.Integer_Address);
@@ -173,6 +181,8 @@ package body FLTK.Widgets.Groups.Windows is
 
 
 
+
+    --  Settings  --
 
     function fl_window_get_border
            (W : in Storage.Integer_Address)
@@ -232,6 +242,8 @@ package body FLTK.Widgets.Groups.Windows is
 
 
 
+    --  Labels, Hotspot, Shape  --
+
     function fl_window_get_label
            (W : in Storage.Integer_Address)
         return Interfaces.C.Strings.chars_ptr;
@@ -264,6 +276,8 @@ package body FLTK.Widgets.Groups.Windows is
 
 
 
+    --  Dimensions  --
+
     procedure fl_window_size_range
            (W                         : in Storage.Integer_Address;
             LW, LH, HW, HH, DW, DH, A : in Interfaces.C.int);
@@ -287,9 +301,6 @@ package body FLTK.Widgets.Groups.Windows is
             S : in Interfaces.C.int);
     pragma Import (C, fl_window_set_force_position, "fl_window_set_force_position");
     pragma Inline (fl_window_set_force_position);
-
-
-
 
     function fl_window_get_x_root
            (W : in Storage.Integer_Address)
@@ -317,6 +328,8 @@ package body FLTK.Widgets.Groups.Windows is
 
 
 
+
+    --  Class Info  --
 
     function fl_window_get_xclass
            (W : in Storage.Integer_Address)
@@ -354,6 +367,8 @@ package body FLTK.Widgets.Groups.Windows is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_window_draw
            (W : in Storage.Integer_Address);
@@ -429,11 +444,11 @@ package body FLTK.Widgets.Groups.Windows is
         begin
             return This : Window do
                 This.Void_Ptr := new_fl_window
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -458,9 +473,9 @@ package body FLTK.Widgets.Groups.Windows is
         begin
             return This : Window do
                 This.Void_Ptr := new_fl_window2
-                       (Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, This.Get_X, This.Get_Y, W, H, Text);
             end return;
         end Create;
@@ -485,6 +500,8 @@ package body FLTK.Widgets.Groups.Windows is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Visibility  --
 
     procedure Show
            (This : in out Window) is
@@ -546,6 +563,8 @@ package body FLTK.Widgets.Groups.Windows is
 
 
 
+    --  Fullscreen  --
+
     function Is_Fullscreen
            (This : in Window)
         return Boolean is
@@ -595,6 +614,8 @@ package body FLTK.Widgets.Groups.Windows is
 
 
 
+
+    --  Icons, Cursors  --
 
     procedure Set_Icon
            (This : in out Window;
@@ -710,6 +731,8 @@ package body FLTK.Widgets.Groups.Windows is
 
 
 
+    --  Settings  --
+
     function Has_Border
            (This : in Window)
         return Boolean is
@@ -813,6 +836,8 @@ package body FLTK.Widgets.Groups.Windows is
 
 
 
+    --  Labels, Hotspot, Shape  --
+
     function Get_Label
            (This : in Window)
         return String
@@ -880,6 +905,8 @@ package body FLTK.Widgets.Groups.Windows is
 
 
 
+    --  Dimensions  --
+
     procedure Set_Size_Range
            (This                           : in out Window;
             Min_W, Min_H                   : in     Integer;
@@ -887,14 +914,14 @@ package body FLTK.Widgets.Groups.Windows is
             Keep_Aspect                    : in     Boolean := False) is
     begin
         fl_window_size_range
-               (This.Void_Ptr,
-                Interfaces.C.int (Min_W),
-                Interfaces.C.int (Min_H),
-                Interfaces.C.int (Max_W),
-                Interfaces.C.int (Max_H),
-                Interfaces.C.int (Incre_W),
-                Interfaces.C.int (Incre_H),
-                Boolean'Pos (Keep_Aspect));
+           (This.Void_Ptr,
+            Interfaces.C.int (Min_W),
+            Interfaces.C.int (Min_H),
+            Interfaces.C.int (Max_W),
+            Interfaces.C.int (Max_H),
+            Interfaces.C.int (Incre_W),
+            Interfaces.C.int (Incre_H),
+            Boolean'Pos (Keep_Aspect));
     end Set_Size_Range;
 
 
@@ -933,8 +960,6 @@ package body FLTK.Widgets.Groups.Windows is
     end Force_Position;
 
 
-
-
     function Get_X_Root
            (This : in Window)
         return Integer is
@@ -968,6 +993,8 @@ package body FLTK.Widgets.Groups.Windows is
 
 
 
+
+    --  Class Info  --
 
     function Get_X_Class
            (This : in Window)
@@ -1028,6 +1055,8 @@ package body FLTK.Widgets.Groups.Windows is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Window) is

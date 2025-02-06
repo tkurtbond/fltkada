@@ -20,12 +20,16 @@ package FLTK.Devices.Graphics is
 
 
 
+    --  Color  --
+
     function Get_Color
            (This : in Graphics_Driver)
         return Color;
 
 
 
+
+    --  Text  --
 
     function Get_Text_Descent
            (This : in Graphics_Driver)
@@ -61,6 +65,8 @@ package FLTK.Devices.Graphics is
 
 
 
+    --  Images  --
+
     procedure Draw_Scaled_Image
            (This       : in Graphics_Driver;
             Img        : in FLTK.Images.Image'Class;
@@ -73,10 +79,7 @@ private
     type Graphics_Driver is new Device with null record;
 
 
-
-
     pragma Inline (Get_Color);
-
 
     pragma Inline (Get_Text_Descent);
     pragma Inline (Get_Line_Height);
@@ -85,9 +88,9 @@ private
     pragma Inline (Get_Font_Size);
     pragma Inline (Set_Font);
 
-
     pragma Inline (Draw_Scaled_Image);
 
 
 end FLTK.Devices.Graphics;
+
 

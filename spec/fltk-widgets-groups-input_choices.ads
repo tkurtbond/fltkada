@@ -40,6 +40,8 @@ package FLTK.Widgets.Groups.Input_Choices is
 
 
 
+    --  Attributes  --
+
     function Text_Field
            (This : in out Input_Choice)
         return FLTK.Widgets.Inputs.Text.Text_Input_Reference;
@@ -50,6 +52,8 @@ package FLTK.Widgets.Groups.Input_Choices is
 
 
 
+
+    --  Menu Items  --
 
     function Has_Item
            (This  : in Input_Choice;
@@ -70,6 +74,8 @@ package FLTK.Widgets.Groups.Input_Choices is
 
 
 
+
+    --  Settings  --
 
     function Has_Changed
            (This : in Input_Choice)
@@ -128,6 +134,8 @@ package FLTK.Widgets.Groups.Input_Choices is
 
 
 
+
+    --  Dimensions  --
 
     procedure Resize
            (This       : in out Input_Choice;

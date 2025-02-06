@@ -17,6 +17,8 @@ package body FLTK.Widgets.Groups.Windows.Double is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_double_window
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -38,6 +40,8 @@ package body FLTK.Widgets.Groups.Windows.Double is
 
 
 
+
+    --  Visibility  --
 
     procedure fl_double_window_show
            (W : in Storage.Integer_Address);
@@ -70,6 +74,8 @@ package body FLTK.Widgets.Groups.Windows.Double is
 
 
 
+    --  Dimensions  --
+
     procedure fl_double_window_resize
            (DW         : in Storage.Integer_Address;
             X, Y, W, H : in Interfaces.C.int);
@@ -78,6 +84,8 @@ package body FLTK.Widgets.Groups.Windows.Double is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_double_window_draw
            (W : in Storage.Integer_Address);
@@ -148,11 +156,11 @@ package body FLTK.Widgets.Groups.Windows.Double is
         begin
             return This : Double_Window do
                 This.Void_Ptr := new_fl_double_window
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -177,9 +185,9 @@ package body FLTK.Widgets.Groups.Windows.Double is
         begin
             return This : Double_Window do
                 This.Void_Ptr := new_fl_double_window2
-                       (Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, This.Get_X, This.Get_Y, W, H, Text);
             end return;
         end Create;
@@ -204,6 +212,8 @@ package body FLTK.Widgets.Groups.Windows.Double is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Visibility  --
 
     procedure Show
            (This : in out Double_Window) is
@@ -241,6 +251,8 @@ package body FLTK.Widgets.Groups.Windows.Double is
 
 
 
+
+    --  Dimensions  --
 
     procedure Resize
            (This       : in out Double_Window;

@@ -15,6 +15,8 @@ package FLTK.Images.Bitmaps is
 
 
 
+    --  Rounds a number of bits up to the next byte boundary.
+
     function To_Next_Byte
            (Bits : in Natural)
         return Natural;

@@ -45,6 +45,8 @@ package FLTK.Widgets.Menus.Menu_Buttons is
 
 
 
+    --  Popup  --
+
     function Get_Popup_Kind
            (This : in Menu_Button)
         return Popup_Buttons;
@@ -59,6 +61,8 @@ package FLTK.Widgets.Menus.Menu_Buttons is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Menu_Button);

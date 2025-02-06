@@ -17,6 +17,8 @@ package body FLTK.Widgets.Valuators.Sliders is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_slider
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -39,6 +41,8 @@ package body FLTK.Widgets.Valuators.Sliders is
 
 
 
+
+    --  Settings  --
 
     procedure fl_slider_set_bounds
            (S    : in Storage.Integer_Address;
@@ -80,6 +84,8 @@ package body FLTK.Widgets.Valuators.Sliders is
 
 
 
+    --  Drawing, Events  --
+
     procedure fl_slider_draw
            (W : in Storage.Integer_Address);
     pragma Import (C, fl_slider_draw, "fl_slider_draw");
@@ -107,6 +113,8 @@ package body FLTK.Widgets.Valuators.Sliders is
 
 
 
+
+    --  Slider Type  --
 
     function fl_widget_get_type
            (S : in Storage.Integer_Address)
@@ -177,11 +185,11 @@ package body FLTK.Widgets.Valuators.Sliders is
         begin
             return This : Slider do
                 This.Void_Ptr := new_fl_slider
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -238,6 +246,8 @@ package body FLTK.Widgets.Valuators.Sliders is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Settings  --
 
     procedure Set_Bounds
            (This     : in out Slider;
@@ -302,6 +312,8 @@ package body FLTK.Widgets.Valuators.Sliders is
 
 
 
+    --  Drawing, Events  --
+
     procedure Draw
            (This : in out Slider) is
     begin
@@ -348,6 +360,8 @@ package body FLTK.Widgets.Valuators.Sliders is
 
 
 
+
+    --  Slider Type  --
 
     function Get_Kind
            (This : in Slider)

@@ -23,6 +23,12 @@ package body FLTK.Menu_Items is
 
 
 
+    ------------------------
+    --  Functions From C  --
+    ------------------------
+
+    --  Allocation  --
+
     function new_fl_menu_item
            (T    : in Interfaces.C.char_array;
             C    : in Storage.Integer_Address;
@@ -38,6 +44,8 @@ package body FLTK.Menu_Items is
 
 
 
+
+    --  Callback  --
 
     function fl_menu_item_get_user_data
            (MI : in Storage.Integer_Address)
@@ -57,6 +65,8 @@ package body FLTK.Menu_Items is
 
 
 
+
+    --  Settings  --
 
     function fl_menu_item_checkbox
            (MI : in Storage.Integer_Address)
@@ -99,6 +109,8 @@ package body FLTK.Menu_Items is
 
 
 
+
+    --  Label  --
 
     function fl_menu_item_get_label
            (MI : in Storage.Integer_Address)
@@ -170,6 +182,8 @@ package body FLTK.Menu_Items is
 
 
 
+    --  Shortcut and Flags  --
+
     function fl_menu_item_get_shortcut
            (MI : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -197,6 +211,8 @@ package body FLTK.Menu_Items is
 
 
 
+    --  Image  --
+
     procedure fl_menu_item_image
            (MI, I : in Storage.Integer_Address);
     pragma Import (C, fl_menu_item_image, "fl_menu_item_image");
@@ -204,6 +220,8 @@ package body FLTK.Menu_Items is
 
 
 
+
+    --  Activity and Visibility  --
 
     procedure fl_menu_item_activate
            (MI : in Storage.Integer_Address);
@@ -246,6 +264,10 @@ package body FLTK.Menu_Items is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
     procedure Finalize
            (This : in out Menu_Item) is
     begin
@@ -257,6 +279,10 @@ package body FLTK.Menu_Items is
 
 
 
+
+    --------------------
+    --  Constructors  --
+    --------------------
 
     package body Forge is
 
@@ -282,6 +308,12 @@ package body FLTK.Menu_Items is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
+    --  Callback  --
 
     function Get_Callback
            (This : in Menu_Item)
@@ -311,6 +343,8 @@ package body FLTK.Menu_Items is
 
 
 
+
+    --  Settings  --
 
     function Has_Checkbox
            (This : in Menu_Item)
@@ -378,6 +412,8 @@ package body FLTK.Menu_Items is
 
 
 
+
+    --  Label  --
 
     function Get_Label
            (This : in Menu_Item)
@@ -494,6 +530,8 @@ package body FLTK.Menu_Items is
 
 
 
+    --  Shortcut and Flags  --
+
     function Get_Shortcut
            (This : in Menu_Item)
         return Key_Combo is
@@ -528,6 +566,8 @@ package body FLTK.Menu_Items is
 
 
 
+    --  Image  --
+
     function Get_Image
            (This : in Menu_Item)
         return access FLTK.Images.Image'Class is
@@ -546,6 +586,8 @@ package body FLTK.Menu_Items is
 
 
 
+
+    --  Activity and Visibility  --
 
     procedure Activate
            (This : in out Menu_Item) is

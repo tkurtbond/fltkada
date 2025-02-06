@@ -16,6 +16,8 @@ package body FLTK.Images.RGB is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_rgb_image
            (Data       : in Storage.Integer_Address;
             W, H, D, L : in Interfaces.C.int)
@@ -35,6 +37,11 @@ package body FLTK.Images.RGB is
     pragma Import (C, free_fl_rgb_image, "free_fl_rgb_image");
     pragma Inline (free_fl_rgb_image);
 
+
+
+
+    --  Static Settings  --
+
     function fl_rgb_image_get_max_size
         return Interfaces.C.size_t;
     pragma Import (C, fl_rgb_image_get_max_size, "fl_rgb_image_get_max_size");
@@ -44,6 +51,11 @@ package body FLTK.Images.RGB is
            (V : in Interfaces.C.size_t);
     pragma Import (C, fl_rgb_image_set_max_size, "fl_rgb_image_set_max_size");
     pragma Inline (fl_rgb_image_set_max_size);
+
+
+
+
+    --  Copying  --
 
     function fl_rgb_image_copy
            (I    : in Storage.Integer_Address;
@@ -61,6 +73,8 @@ package body FLTK.Images.RGB is
 
 
 
+    --  Colors  --
+
     procedure fl_rgb_image_color_average
            (I : in Storage.Integer_Address;
             C : in Interfaces.C.int;
@@ -76,6 +90,8 @@ package body FLTK.Images.RGB is
 
 
 
+    --  Activity  --
+
     procedure fl_rgb_image_uncache
            (I : in Storage.Integer_Address);
     pragma Import (C, fl_rgb_image_uncache, "fl_rgb_image_uncache");
@@ -83,6 +99,8 @@ package body FLTK.Images.RGB is
 
 
 
+
+    --  Pixel Data  --
 
     function fl_rgb_image_data
            (I : in Storage.Integer_Address)
@@ -92,6 +110,8 @@ package body FLTK.Images.RGB is
 
 
 
+
+    --  Drawing  --
 
     procedure fl_rgb_image_draw2
            (I    : in Storage.Integer_Address;
@@ -165,7 +185,11 @@ package body FLTK.Images.RGB is
 
 
 
-    --  Copying  --
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
+    --  Static Settings  --
 
     function Get_Max_Size
         return Natural is
@@ -180,6 +204,10 @@ package body FLTK.Images.RGB is
         fl_rgb_image_set_max_size (Interfaces.C.size_t (Value));
     end Set_Max_Size;
 
+
+
+
+    --  Copying  --
 
     function Copy
            (This          : in RGB_Image;

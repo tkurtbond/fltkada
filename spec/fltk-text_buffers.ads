@@ -48,6 +48,8 @@ package FLTK.Text_Buffers is
 
 
 
+    --  Callbacks  --
+
     procedure Add_Modify_Callback
            (This : in out Text_Buffer;
             Func : in     Modify_Callback);
@@ -79,6 +81,8 @@ package FLTK.Text_Buffers is
 
 
 
+    --  Files  --
+
     procedure Load_File
            (This   : in out Text_Buffer;
             Name   : in     String;
@@ -108,6 +112,8 @@ package FLTK.Text_Buffers is
 
 
 
+
+    --  Modification  --
 
     procedure Insert_Text
            (This  : in out Text_Buffer;
@@ -163,6 +169,8 @@ package FLTK.Text_Buffers is
 
 
 
+    --  Measurement  --
+
     function Count_Displayed_Characters
            (This          : in Text_Buffer;
             Start, Finish : in Position)
@@ -187,6 +195,8 @@ package FLTK.Text_Buffers is
 
 
 
+
+    --  Selection  --
 
     function Get_Selection
            (This          : in     Text_Buffer;
@@ -245,6 +255,8 @@ package FLTK.Text_Buffers is
 
 
 
+    --  Highlighting  --
+
     procedure Get_Highlight
            (This          : in     Text_Buffer;
             Start, Finish :    out Position);
@@ -262,6 +274,8 @@ package FLTK.Text_Buffers is
 
 
 
+
+    --  Search  --
 
     function Findchar_Forward
            (This     : in     Text_Buffer;
@@ -295,6 +309,8 @@ package FLTK.Text_Buffers is
 
 
 
+
+    --  Navigation  --
 
     function Word_Start
            (This  : in Text_Buffer;
@@ -344,6 +360,8 @@ package FLTK.Text_Buffers is
 
 
 
+    --  Miscellaneous  --
+
     procedure Can_Undo
            (This : in out Text_Buffer;
             Flag : in     Boolean);
@@ -371,8 +389,6 @@ private
             Element_Type => Predelete_Callback);
 
 
-
-
     type Text_Buffer is new Wrapper with
         record
             CB_Active          : Boolean := True;
@@ -383,8 +399,6 @@ private
 
     overriding procedure Finalize
            (This : in out Text_Buffer);
-
-
 
 
     procedure Modify_Callback_Hook
@@ -399,11 +413,7 @@ private
     pragma Convention (C, Predelete_Callback_Hook);
 
 
-
-
     package Text_Buffer_Convert is new System.Address_To_Access_Conversions (Text_Buffer);
-
-
 
 
     pragma Inline (Add_Modify_Callback);
@@ -415,13 +425,11 @@ private
     pragma Inline (Enable_Callbacks);
     pragma Inline (Disable_Callbacks);
 
-
     pragma Inline (Load_File);
     pragma Inline (Append_File);
     pragma Inline (Insert_File);
     pragma Inline (Output_File);
     pragma Inline (Save_File);
-
 
     pragma Inline (Insert_Text);
     pragma Inline (Append_Text);
@@ -435,13 +443,11 @@ private
     pragma Inline (Next_Char);
     pragma Inline (Prev_Char);
 
-
     pragma Inline (Count_Displayed_Characters);
     pragma Inline (Count_Lines);
     pragma Inline (Length);
     pragma Inline (Get_Tab_Width);
     pragma Inline (Set_Tab_Width);
-
 
     pragma Inline (Get_Selection);
     pragma Inline (Get_Secondary_Selection);
@@ -458,18 +464,15 @@ private
     pragma Inline (Unselect);
     pragma Inline (Secondary_Unselect);
 
-
     pragma Inline (Get_Highlight);
     pragma Inline (Set_Highlight);
     pragma Inline (Get_Highlighted_Text);
     pragma Inline (Unhighlight);
 
-
     pragma Inline (Findchar_Forward);
     pragma Inline (Findchar_Backward);
     pragma Inline (Search_Forward);
     pragma Inline (Search_Backward);
-
 
     pragma Inline (Word_Start);
     pragma Inline (Word_End);
@@ -480,11 +483,11 @@ private
     pragma Inline (Rewind_Lines);
     pragma Inline (Skip_Displayed_Characters);
 
-
     pragma Inline (Can_Undo);
     pragma Inline (Copy);
     pragma Inline (UTF8_Align);
 
 
 end FLTK.Text_Buffers;
+
 

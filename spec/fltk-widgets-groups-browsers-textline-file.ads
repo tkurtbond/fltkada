@@ -55,6 +55,8 @@ package FLTK.Widgets.Groups.Browsers.Textline.File is
 
 
 
+    --  Directory  --
+
     function Load
            (This : in out File_Browser;
             Dir  : in     String;
@@ -70,6 +72,8 @@ package FLTK.Widgets.Groups.Browsers.Textline.File is
 
 
 
+
+    --  Settings  --
 
     function Get_File_Kind
            (This : in File_Browser)
@@ -106,6 +110,8 @@ package FLTK.Widgets.Groups.Browsers.Textline.File is
 
 
 
+    --  List Implementation  --
+
     function Full_List_Height
            (This : in File_Browser)
         return Integer;
@@ -116,6 +122,8 @@ package FLTK.Widgets.Groups.Browsers.Textline.File is
 
 
 
+
+    --  Item Implementation  --
 
     function Item_Width
            (This : in File_Browser;

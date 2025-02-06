@@ -23,6 +23,8 @@ package body FLTK.Widgets.Positioners is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_positioner
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -38,6 +40,8 @@ package body FLTK.Widgets.Positioners is
 
 
 
+    --  Targeting  --
+
     function fl_positioner_set_value
            (P    : in Storage.Integer_Address;
             X, Y : in Interfaces.C.double)
@@ -47,6 +51,8 @@ package body FLTK.Widgets.Positioners is
 
 
 
+
+    --  X Axis  --
 
     procedure fl_positioner_xbounds
            (P    : in Storage.Integer_Address;
@@ -100,6 +106,8 @@ package body FLTK.Widgets.Positioners is
 
 
 
+    --  Y Axis  --
+
     procedure fl_positioner_ybounds
            (P    : in Storage.Integer_Address;
             L, H : in Interfaces.C.double);
@@ -151,6 +159,8 @@ package body FLTK.Widgets.Positioners is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_positioner_draw
            (P : in Storage.Integer_Address);
@@ -264,6 +274,8 @@ package body FLTK.Widgets.Positioners is
     --  API Subprograms  --
     -----------------------
 
+    --  Targeting  --
+
     procedure Get_Coords
            (This : in     Positioner;
             X, Y :    out Long_Float) is
@@ -309,6 +321,8 @@ package body FLTK.Widgets.Positioners is
 
 
 
+
+    --  X Axis  --
 
     procedure Set_Ecks_Bounds
            (This      : in out Positioner;
@@ -404,6 +418,8 @@ package body FLTK.Widgets.Positioners is
 
 
 
+    --  Y Axis  --
+
     procedure Set_Why_Bounds
            (This      : in out Positioner;
             Low, High : in     Long_Float) is
@@ -497,6 +513,8 @@ package body FLTK.Widgets.Positioners is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Positioner) is

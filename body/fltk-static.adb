@@ -27,6 +27,12 @@ package body FLTK.Static is
 
 
 
+    ------------------------
+    --  Functions From C  --
+    ------------------------
+
+    --  Interthread Notify  --
+
     procedure fl_static_add_awake_handler
            (H, F : in Storage.Integer_Address);
     pragma Import (C, fl_static_add_awake_handler, "fl_static_add_awake_handler");
@@ -39,6 +45,8 @@ package body FLTK.Static is
 
 
 
+
+    --  Pre-Eventloop Callbacks  --
 
     procedure fl_static_add_check
            (H, F : in Storage.Integer_Address);
@@ -58,6 +66,8 @@ package body FLTK.Static is
 
 
 
+
+    --  Timer Callbacks  --
 
     procedure fl_static_add_timeout
            (S    : in Interfaces.C.double;
@@ -85,6 +95,8 @@ package body FLTK.Static is
 
 
 
+    --  Clipboard Callbacks  --
+
     procedure fl_static_add_clipboard_notify
            (H, F : in Storage.Integer_Address);
     pragma Import (C, fl_static_add_clipboard_notify, "fl_static_add_clipboard_notify");
@@ -92,6 +104,8 @@ package body FLTK.Static is
 
 
 
+
+    --  File Descriptor Waiting Callbacks  --
 
     procedure fl_static_add_fd
            (D    : in Interfaces.C.int;
@@ -118,6 +132,8 @@ package body FLTK.Static is
 
 
 
+    --  Idle Callbacks  --
+
     procedure fl_static_add_idle
            (H, F : in Storage.Integer_Address);
     pragma Import (C, fl_static_add_idle, "fl_static_add_idle");
@@ -136,6 +152,8 @@ package body FLTK.Static is
 
 
 
+
+    --  Custom Colors  --
 
     procedure fl_static_get_color
            (C       : in     Interfaces.C.unsigned;
@@ -172,6 +190,8 @@ package body FLTK.Static is
 
 
 
+
+    --  Custom Fonts  --
 
     function fl_static_get_font
            (K : in Interfaces.C.int)
@@ -212,6 +232,8 @@ package body FLTK.Static is
 
 
 
+    --  Box_Kind Attributes  --
+
     function fl_static_box_dh
            (B : in Interfaces.C.int)
         return Interfaces.C.int;
@@ -249,6 +271,8 @@ package body FLTK.Static is
 
 
 
+    --  Clipboard / Selection  --
+
     procedure fl_static_copy
            (T    : in Interfaces.C.char_array;
             L, K : in Interfaces.C.int);
@@ -271,6 +295,8 @@ package body FLTK.Static is
 
 
 
+    --  Dragon Drop  --
+
     function fl_static_get_dnd_text_ops
         return Interfaces.C.int;
     pragma Import (C, fl_static_get_dnd_text_ops, "fl_static_get_dnd_text_ops");
@@ -284,6 +310,8 @@ package body FLTK.Static is
 
 
 
+    --  Input Focus  --
+
     function fl_static_get_visible_focus
         return Interfaces.C.int;
     pragma Import (C, fl_static_get_visible_focus, "fl_static_get_visible_focus");
@@ -296,6 +324,8 @@ package body FLTK.Static is
 
 
 
+
+    --  Windows  --
 
     procedure fl_static_default_atclose
            (W : in Storage.Integer_Address);
@@ -326,6 +356,8 @@ package body FLTK.Static is
 
 
 
+    --  Queue  --
+
     function fl_static_readqueue
         return Storage.Integer_Address;
     pragma Import (C, fl_static_readqueue, "fl_static_readqueue");
@@ -333,6 +365,8 @@ package body FLTK.Static is
 
 
 
+
+    --  Schemes  --
 
     function fl_static_get_scheme
         return Interfaces.C.Strings.chars_ptr;
@@ -353,6 +387,8 @@ package body FLTK.Static is
 
 
 
+    --  Library Options  --
+
     function fl_static_get_option
            (O : in Interfaces.C.int)
         return Interfaces.C.int;
@@ -367,6 +403,8 @@ package body FLTK.Static is
 
 
 
+    --  Scrollbars  --
+
     function fl_static_get_scrollbar_size
         return Interfaces.C.int;
     pragma Import (C, fl_static_get_scrollbar_size, "fl_static_get_scrollbar_size");
@@ -379,6 +417,8 @@ package body FLTK.Static is
 
 
 
+
+    --  User Data  --
 
     package Widget_Convert is new System.Address_To_Access_Conversions
         (FLTK.Widgets.Widget'Class);
@@ -393,6 +433,10 @@ package body FLTK.Static is
 
 
 
+    ----------------------
+    --  Callback Hooks  --
+    ----------------------
+
     procedure Awake_Hook
            (U : in Storage.Integer_Address);
     pragma Convention (C, Awake_Hook);
@@ -403,6 +447,73 @@ package body FLTK.Static is
         Conv.To_Awake_Access (U).all;
     end Awake_Hook;
 
+
+    procedure Timeout_Hook
+           (U : in Storage.Integer_Address);
+    pragma Convention (C, Timeout_Hook);
+
+    procedure Timeout_Hook
+           (U : in Storage.Integer_Address) is
+    begin
+        Conv.To_Timeout_Access (U).all;
+    end Timeout_Hook;
+
+
+    --  This is handled on the Ada side because otherwise there would be
+    --  no way to specify which callback to remove in FLTK once one was
+    --  added. The hook is passed during package init.
+    package Clipboard_Notify_Vectors is new Ada.Containers.Vectors
+       (Index_Type   => Positive,
+        Element_Type => Clipboard_Notify_Handler);
+
+    Current_Clip_Notes : Clipboard_Notify_Vectors.Vector;
+
+    procedure Clipboard_Notify_Hook
+           (S : in Interfaces.C.int;
+            U : in Storage.Integer_Address);
+    pragma Convention (C, Clipboard_Notify_Hook);
+
+    procedure Clipboard_Notify_Hook
+           (S : in Interfaces.C.int;
+            U : in Storage.Integer_Address) is
+    begin
+        for Call of Current_Clip_Notes loop
+            Call.all (Buffer_Kind'Val (S));
+        end loop;
+    end Clipboard_Notify_Hook;
+
+
+    procedure FD_Hook
+           (FD : in Interfaces.C.int;
+            U  : in Storage.Integer_Address);
+    pragma Convention (C, FD_Hook);
+
+    procedure FD_Hook
+           (FD : in Interfaces.C.int;
+            U  : in Storage.Integer_Address) is
+    begin
+        Conv.To_File_Access (U).all (File_Descriptor (FD));
+    end FD_Hook;
+
+
+    procedure Idle_Hook
+           (U : in Storage.Integer_Address);
+    pragma Convention (C, Idle_Hook);
+
+    procedure Idle_Hook
+           (U : in Storage.Integer_Address) is
+    begin
+        Conv.To_Idle_Access (U).all;
+    end Idle_Hook;
+
+
+
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
+    --  Interthread Notify  --
 
     procedure Add_Awake_Handler
            (Func : in Awake_Handler) is
@@ -424,16 +535,7 @@ package body FLTK.Static is
 
 
 
-    procedure Timeout_Hook
-           (U : in Storage.Integer_Address);
-    pragma Convention (C, Timeout_Hook);
-
-    procedure Timeout_Hook
-           (U : in Storage.Integer_Address) is
-    begin
-        Conv.To_Timeout_Access (U).all;
-    end Timeout_Hook;
-
+    --  Pre-Eventloop Callbacks  --
 
     procedure Add_Check
            (Func : in Timeout_Handler) is
@@ -463,6 +565,8 @@ package body FLTK.Static is
 
 
 
+
+    --  Timer Callbacks  --
 
     procedure Add_Timeout
            (Seconds : in Long_Float;
@@ -507,29 +611,7 @@ package body FLTK.Static is
 
 
 
-    --  This is handled on the Ada side because otherwise there would be
-    --  no way to specify which callback to remove in FLTK once one was
-    --  added. The hook is passed during package init.
-    package Clipboard_Notify_Vectors is new Ada.Containers.Vectors
-       (Index_Type   => Positive,
-        Element_Type => Clipboard_Notify_Handler);
-
-    Current_Clip_Notes : Clipboard_Notify_Vectors.Vector;
-
-    procedure Clipboard_Notify_Hook
-           (S : in Interfaces.C.int;
-            U : in Storage.Integer_Address);
-    pragma Convention (C, Clipboard_Notify_Hook);
-
-    procedure Clipboard_Notify_Hook
-           (S : in Interfaces.C.int;
-            U : in Storage.Integer_Address) is
-    begin
-        for Call of Current_Clip_Notes loop
-            Call.all (Buffer_Kind'Val (S));
-        end loop;
-    end Clipboard_Notify_Hook;
-
+    --  Clipboard Callbacks  --
 
     procedure Add_Clipboard_Notify
            (Func : in Clipboard_Notify_Handler) is
@@ -552,18 +634,7 @@ package body FLTK.Static is
 
 
 
-    procedure FD_Hook
-           (FD : in Interfaces.C.int;
-            U  : in Storage.Integer_Address);
-    pragma Convention (C, FD_Hook);
-
-    procedure FD_Hook
-           (FD : in Interfaces.C.int;
-            U  : in Storage.Integer_Address) is
-    begin
-        Conv.To_File_Access (U).all (File_Descriptor (FD));
-    end FD_Hook;
-
+    --  File Descriptor Waiting Callbacks  --
 
     procedure Add_File_Descriptor
            (FD   : in File_Descriptor;
@@ -606,16 +677,7 @@ package body FLTK.Static is
 
 
 
-    procedure Idle_Hook
-           (U : in Storage.Integer_Address);
-    pragma Convention (C, Idle_Hook);
-
-    procedure Idle_Hook
-           (U : in Storage.Integer_Address) is
-    begin
-        Conv.To_Idle_Access (U).all;
-    end Idle_Hook;
-
+    --  Idle Callbacks  --
 
     procedure Add_Idle
            (Func : in Idle_Handler) is
@@ -646,6 +708,8 @@ package body FLTK.Static is
 
 
 
+
+    --  Custom Colors  --
 
     procedure Get_Color
            (From    : in     Color;
@@ -713,6 +777,8 @@ package body FLTK.Static is
 
 
 
+    --  Custom Fonts  --
+
     function Font_Image
            (Kind : in Font_Kind)
         return String is
@@ -762,6 +828,8 @@ package body FLTK.Static is
 
 
 
+
+    --  Box_Kind Attributes  --
 
     function Get_Box_Height_Offset
            (Kind : in Box_Kind)
@@ -829,6 +897,8 @@ package body FLTK.Static is
 
 
 
+    --  Clipboard / Selection  --
+
     procedure Copy
            (Text : in String;
             Dest : in Buffer_Kind) is
@@ -863,6 +933,8 @@ package body FLTK.Static is
 
 
 
+    --  Dragon Drop  --
+
     function Get_Drag_Drop_Text_Support
         return Boolean is
     begin
@@ -879,6 +951,8 @@ package body FLTK.Static is
 
 
 
+    --  Input Focus  --
+
     function Has_Visible_Focus
         return Boolean is
     begin
@@ -894,6 +968,8 @@ package body FLTK.Static is
 
 
 
+
+    --  Windows  --
 
     procedure Default_Window_Close
            (Item : in out FLTK.Widgets.Widget'Class) is
@@ -966,6 +1042,8 @@ package body FLTK.Static is
 
 
 
+    --  Queue  --
+
     function Read_Queue
         return access FLTK.Widgets.Widget'Class
     is
@@ -985,6 +1063,8 @@ package body FLTK.Static is
 
 
 
+
+    --  Schemes  --
 
     function Get_Scheme
         return String
@@ -1016,6 +1096,8 @@ package body FLTK.Static is
 
 
 
+    --  Library Options  --
+
     function Get_Option
            (Opt : in Option)
         return Boolean is
@@ -1033,6 +1115,8 @@ package body FLTK.Static is
 
 
 
+
+    --  Scrollbars  --
 
     function Get_Default_Scrollbar_Size
         return Natural is
@@ -1056,4 +1140,5 @@ begin
 
 
 end FLTK.Static;
+
 

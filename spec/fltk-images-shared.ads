@@ -12,10 +12,6 @@ with
 package FLTK.Images.Shared is
 
 
-    -------------
-    --  Types  --
-    -------------
-
     type Shared_Image is new Image with private;
 
     type Shared_Image_Reference (Data : not null access Shared_Image'Class) is
@@ -23,10 +19,6 @@ package FLTK.Images.Shared is
 
 
 
-
-    --------------------
-    --  Construction  --
-    --------------------
 
     package Forge is
 
@@ -46,6 +38,11 @@ package FLTK.Images.Shared is
 
     end Forge;
 
+
+
+
+    --  Copying  --
+
     function Copy
            (This          : in Shared_Image;
             Width, Height : in Natural)
@@ -58,9 +55,7 @@ package FLTK.Images.Shared is
 
 
 
-    --------------
     --  Colors  --
-    --------------
 
     procedure Color_Average
            (This   : in out Shared_Image;
@@ -73,9 +68,7 @@ package FLTK.Images.Shared is
 
 
 
-    ----------------
     --  Activity  --
-    ----------------
 
     function Number_Of_Images
         return Natural;
@@ -101,9 +94,7 @@ package FLTK.Images.Shared is
 
 
 
-    ---------------
     --  Drawing  --
-    ---------------
 
     procedure Set_Scaling_Algorithm
            (To : in Scaling_Kind);
@@ -135,10 +126,8 @@ private
 
     pragma Inline (Copy);
 
-
     pragma Inline (Color_Average);
     pragma Inline (Desaturate);
-
 
     pragma Inline (Number_Of_Images);
     pragma Inline (Name);
@@ -147,11 +136,11 @@ private
     pragma Inline (Reload);
     pragma Inline (Uncache);
 
-
     pragma Inline (Set_Scaling_Algorithm);
     pragma Inline (Scale);
     pragma Inline (Draw);
 
 
 end FLTK.Images.Shared;
+
 

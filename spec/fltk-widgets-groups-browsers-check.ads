@@ -47,7 +47,7 @@ package FLTK.Widgets.Groups.Browsers.Check is
 
 
 
-    --  Adding and removing
+    --  Items  --
 
     procedure Add
            (This    : in out Check_Browser;
@@ -68,7 +68,7 @@ package FLTK.Widgets.Groups.Browsers.Check is
 
 
 
-    --  Checking and unchecking
+    --  Checkmarking  --
 
     procedure Check_All
            (This : in out Check_Browser);
@@ -93,7 +93,7 @@ package FLTK.Widgets.Groups.Browsers.Check is
 
 
 
-    --  Text and selection
+    --  Text Selection  --
 
     --  Don't confuse this with the missing Item_Cursor version
     function Item_Text
@@ -107,6 +107,8 @@ package FLTK.Widgets.Groups.Browsers.Check is
 
 
 
+
+    --  Item Implementation  --
 
     --  As mentioned at the start, due to issues with FLTK 1.3 if you override
     --  these subprograms the behaviour in FLTK will not change. Should be able

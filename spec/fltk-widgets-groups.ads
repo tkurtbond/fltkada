@@ -53,6 +53,8 @@ package FLTK.Widgets.Groups is
 
 
 
+    --  Contents Modification  --
+
     procedure Add
            (This : in out Group;
             Item : in out Widget'Class);
@@ -80,6 +82,8 @@ package FLTK.Widgets.Groups is
 
 
 
+
+    --  Contents Query  --
 
     function Has_Child
            (This  : in Group;
@@ -113,6 +117,8 @@ package FLTK.Widgets.Groups is
 
 
 
+    --  Iteration  --
+
     package Group_Iterators is
         new Ada.Iterator_Interfaces (Cursor, Has_Child);
 
@@ -122,6 +128,8 @@ package FLTK.Widgets.Groups is
 
 
 
+
+    --  Clipping  --
 
     function Get_Clip_Mode
            (This : in Group)
@@ -133,6 +141,8 @@ package FLTK.Widgets.Groups is
 
 
 
+
+    --  Dimensions  --
 
     procedure Add_Resizable
            (This : in out Group;
@@ -156,6 +166,8 @@ package FLTK.Widgets.Groups is
 
 
 
+    --  Current  --
+
     function Get_Current
         return access Group'Class;
 
@@ -170,6 +182,8 @@ package FLTK.Widgets.Groups is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Group);

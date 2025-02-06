@@ -92,6 +92,8 @@ package FLTK.Widgets is
 
 
 
+    --  Activity  --
+
     procedure Activate
            (This : in out Widget);
 
@@ -118,6 +120,8 @@ package FLTK.Widgets is
 
 
 
+
+    --  Changed and Output  --
 
     function Has_Changed
            (This : in Widget)
@@ -150,6 +154,8 @@ package FLTK.Widgets is
 
 
 
+    --  Visibility  --
+
     function Is_Visible
            (This : in Widget)
         return Boolean;
@@ -177,6 +183,8 @@ package FLTK.Widgets is
 
 
 
+    --  Focus  --
+
     function Has_Visible_Focus
            (This : in Widget)
         return Boolean;
@@ -202,6 +210,8 @@ package FLTK.Widgets is
 
 
 
+    --  Colors  --
+
     function Get_Background_Color
            (This : in Widget)
         return Color;
@@ -224,6 +234,8 @@ package FLTK.Widgets is
 
 
 
+
+    --  Relatives  --
 
     function Parent
            (This : in Widget)
@@ -255,6 +267,8 @@ package FLTK.Widgets is
 
 
 
+    --  Alignment, Box, Tooltip  --
+
     function Get_Alignment
            (This : in Widget)
         return Alignment;
@@ -281,6 +295,8 @@ package FLTK.Widgets is
 
 
 
+
+    --  Labels  --
 
     function Get_Label
            (This : in Widget)
@@ -334,6 +350,8 @@ package FLTK.Widgets is
 
 
 
+    --  Callbacks  --
+
     function Get_Callback
            (This : in Widget)
         return Widget_Callback;
@@ -362,6 +380,8 @@ package FLTK.Widgets is
 
 
 
+
+    --  Dimensions  --
 
     function Get_X
            (This : in Widget)
@@ -394,6 +414,8 @@ package FLTK.Widgets is
 
 
 
+    --  Images  --
+
     function Get_Image
            (This : in Widget)
         return access FLTK.Images.Image'Class;
@@ -412,6 +434,8 @@ package FLTK.Widgets is
 
 
 
+
+    --  Damage, Drawing, Events  --
 
     function Is_Damaged
            (This : in Widget)
@@ -487,6 +511,8 @@ package FLTK.Widgets is
 
 
 
+
+    --  Miscellaneous  --
 
     --  Only relevant to MacOS
     function Uses_Accents_Menu

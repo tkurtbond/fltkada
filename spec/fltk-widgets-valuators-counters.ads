@@ -40,6 +40,8 @@ package FLTK.Widgets.Valuators.Counters is
 
 
 
+    --  Button Steps  --
+
     function Get_Step
            (This : in Counter)
         return Long_Float;
@@ -62,6 +64,8 @@ package FLTK.Widgets.Valuators.Counters is
 
 
 
+
+    --  Text Settings  --
 
     function Get_Text_Color
            (This : in Counter)
@@ -90,6 +94,8 @@ package FLTK.Widgets.Valuators.Counters is
 
 
 
+    --  Drawing, Events  --
+
     procedure Draw
            (This : in out Counter);
 
@@ -100,6 +106,8 @@ package FLTK.Widgets.Valuators.Counters is
 
 
 
+
+    --  Counter Type  --
 
     function Get_Kind
            (This : in out Counter)

@@ -16,6 +16,8 @@ package body FLTK.Images.Bitmaps is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_bitmap
            (D    : in Storage.Integer_Address;
             W, H : in Interfaces.C.int)
@@ -27,6 +29,11 @@ package body FLTK.Images.Bitmaps is
            (I : in Storage.Integer_Address);
     pragma Import (C, free_fl_bitmap, "free_fl_bitmap");
     pragma Inline (free_fl_bitmap);
+
+
+
+
+    --  Copying  --
 
     function fl_bitmap_copy
            (I    : in Storage.Integer_Address;
@@ -44,6 +51,8 @@ package body FLTK.Images.Bitmaps is
 
 
 
+    --  Activity  --
+
     procedure fl_bitmap_uncache
            (I : in Storage.Integer_Address);
     pragma Import (C, fl_bitmap_uncache, "fl_bitmap_uncache");
@@ -51,6 +60,8 @@ package body FLTK.Images.Bitmaps is
 
 
 
+
+    --  Pixel Data  --
 
     function fl_bitmap_data
            (B : in Storage.Integer_Address)
@@ -60,6 +71,8 @@ package body FLTK.Images.Bitmaps is
 
 
 
+
+    --  Drawing  --
 
     procedure fl_bitmap_draw2
            (I    : in Storage.Integer_Address;
@@ -119,6 +132,8 @@ package body FLTK.Images.Bitmaps is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Contracts  --
 
     function To_Next_Byte
            (Bits : in Natural)

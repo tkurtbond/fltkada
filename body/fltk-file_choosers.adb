@@ -31,6 +31,8 @@ package body FLTK.File_Choosers is
     --  Functions From C  --
     ------------------------
 
+    --  User Data  --
+
     function fl_widget_get_user_data
            (W : in Storage.Integer_Address)
         return Storage.Integer_Address;
@@ -56,12 +58,16 @@ package body FLTK.File_Choosers is
 
 
 
+    --  Sorting  --
+
     procedure file_chooser_setup_sort_hook;
     pragma Import (C, file_chooser_setup_sort_hook, "file_chooser_setup_sort_hook");
     pragma Inline (file_chooser_setup_sort_hook);
 
 
 
+
+    --  Allocation  --
 
     function new_fl_file_chooser
            (N, P : in Interfaces.C.char_array;
@@ -78,6 +84,8 @@ package body FLTK.File_Choosers is
 
 
 
+
+    --  Buttons  --
 
     function fl_file_chooser_newbutton
            (F : in Storage.Integer_Address)
@@ -99,6 +107,8 @@ package body FLTK.File_Choosers is
 
 
 
+
+    --  Static Labels  --
 
     function fl_file_chooser_get_add_favorites_label
         return Interfaces.C.Strings.chars_ptr;
@@ -257,6 +267,8 @@ package body FLTK.File_Choosers is
 
 
 
+    --  Callback and Extra  --
+
     function fl_file_chooser_add_extra
            (F, W : in Storage.Integer_Address)
         return Storage.Integer_Address;
@@ -270,6 +282,8 @@ package body FLTK.File_Choosers is
 
 
 
+
+    --  Settings  --
 
     function fl_file_chooser_get_color
            (F : in Storage.Integer_Address)
@@ -382,6 +396,8 @@ package body FLTK.File_Choosers is
 
 
 
+    --  File Selection  --
+
     function fl_file_chooser_count
            (F : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -449,6 +465,8 @@ package body FLTK.File_Choosers is
 
 
 
+
+    --  Visibility  --
 
     procedure fl_file_chooser_show
            (F : in Storage.Integer_Address);
@@ -673,6 +691,8 @@ package body FLTK.File_Choosers is
     --  Attributes  --
     ------------------
 
+    --  Buttons  --
+
     function New_Button
            (This : in out File_Chooser)
         return FLTK.Widgets.Buttons.Button_Reference is
@@ -702,6 +722,8 @@ package body FLTK.File_Choosers is
     -------------------------
     --  Static Attributes  --
     -------------------------
+
+    --  Static Labels  --
 
     function Get_Add_Favorites_Label
         return String is
@@ -932,6 +954,8 @@ package body FLTK.File_Choosers is
     --  API Subprograms  --
     -----------------------
 
+    --  Callback and Extra  --
+
     procedure Add_Extra
            (This : in out File_Chooser;
             Item : in out Widgets.Widget'Class)
@@ -981,6 +1005,8 @@ package body FLTK.File_Choosers is
 
 
 
+
+    --  Settings  --
 
     function Get_Background_Color
            (This : in File_Chooser)
@@ -1146,6 +1172,8 @@ package body FLTK.File_Choosers is
 
 
 
+    --  File Selection  --
+
     function Number_Selected
            (This : in File_Chooser)
         return Natural is
@@ -1271,6 +1299,8 @@ package body FLTK.File_Choosers is
 
 
 
+
+    --  Visibility  --
 
     procedure Show
            (This : in out File_Chooser) is

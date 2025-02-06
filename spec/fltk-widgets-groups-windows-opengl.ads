@@ -69,9 +69,7 @@ package FLTK.Widgets.Groups.Windows.OpenGL is
 
 
 
-    ---------------
-    --  Display  --
-    ---------------
+    --  Visibility  --
 
     procedure Show
            (This : in out GL_Window);
@@ -91,9 +89,7 @@ package FLTK.Widgets.Groups.Windows.OpenGL is
 
 
 
-    ------------------
     --  Dimensions  --
-    ------------------
 
     function Pixel_H
            (This : in GL_Window)
@@ -114,9 +110,7 @@ package FLTK.Widgets.Groups.Windows.OpenGL is
 
 
 
-    --------------------
     --  OpenGL Modes  --
-    --------------------
 
     function Get_Mode
            (This : in GL_Window)
@@ -141,9 +135,7 @@ package FLTK.Widgets.Groups.Windows.OpenGL is
 
 
 
-    -----------------------
     --  OpenGL Contexts  --
-    -----------------------
 
     function Get_Context
            (This : in GL_Window)
@@ -182,9 +174,7 @@ package FLTK.Widgets.Groups.Windows.OpenGL is
 
 
 
-    ----------------------------------
-    --  Drawing and Event Handling  --
-    ----------------------------------
+    --  Drawing, Events  --
 
     procedure Ortho
            (This : in out GL_Window);

@@ -17,6 +17,8 @@ package body FLTK.Widgets.Clocks is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_clock_output
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -31,6 +33,8 @@ package body FLTK.Widgets.Clocks is
 
 
 
+
+    --  Individual Values  --
 
     function fl_clock_output_get_hour
            (C : in Storage.Integer_Address)
@@ -53,6 +57,8 @@ package body FLTK.Widgets.Clocks is
 
 
 
+    --  Full Value  --
+
     function fl_clock_output_get_value
            (C : in Storage.Integer_Address)
         return Interfaces.C.unsigned_long;
@@ -73,6 +79,8 @@ package body FLTK.Widgets.Clocks is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_clock_output_draw
            (W : in Storage.Integer_Address);
@@ -149,11 +157,11 @@ package body FLTK.Widgets.Clocks is
         begin
             return This : Clock do
                 This.Void_Ptr := new_fl_clock_output
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -178,6 +186,8 @@ package body FLTK.Widgets.Clocks is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Individual Values  --
 
     function Get_Hour
            (This : in Clock)
@@ -204,6 +214,8 @@ package body FLTK.Widgets.Clocks is
 
 
 
+
+    --  Full Value  --
 
     function Get_Time
            (This : in Clock)
@@ -236,6 +248,8 @@ package body FLTK.Widgets.Clocks is
 
 
 
+
+    --  Drawing  --
 
     procedure Draw
            (This : in out Clock) is

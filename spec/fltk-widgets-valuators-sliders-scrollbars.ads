@@ -38,6 +38,8 @@ package FLTK.Widgets.Valuators.Sliders.Scrollbars is
 
 
 
+    --  Line Position  --
+
     function Get_Line_Size
            (This : in Scrollbar)
         return Natural;
@@ -63,6 +65,8 @@ package FLTK.Widgets.Valuators.Sliders.Scrollbars is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Scrollbar);

@@ -33,6 +33,8 @@ package FLTK.Widgets.Groups.Tiled is
 
 
 
+    --  Dimensions  --
+
     procedure Position
            (This         : in out Tiled_Group;
             Old_X, Old_Y : in     Integer;
@@ -44,6 +46,8 @@ package FLTK.Widgets.Groups.Tiled is
 
 
 
+
+    --  Events  --
 
     function Handle
            (This  : in out Tiled_Group;

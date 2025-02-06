@@ -38,6 +38,8 @@ package FLTK.Asks is
 
 
 
+    --  Static Attributes  --
+
     function Get_Cancel_String
         return String;
 
@@ -70,6 +72,8 @@ package FLTK.Asks is
 
 
 
+
+    --  Simple Messages  --
 
     procedure Alert
            (Message : String);
@@ -117,6 +121,8 @@ package FLTK.Asks is
 
 
 
+    --  Choosers  --
+
     function Color_Chooser
            (Title   : in     String;
             R, G, B : in out RGB_Float;
@@ -153,6 +159,8 @@ package FLTK.Asks is
 
 
 
+
+    --  Settings  --
 
     function Get_Message_Hotspot
         return Boolean;
@@ -222,4 +230,5 @@ private
 
 
 end FLTK.Asks;
+
 

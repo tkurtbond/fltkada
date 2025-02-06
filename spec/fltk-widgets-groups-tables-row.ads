@@ -37,11 +37,15 @@ package FLTK.Widgets.Groups.Tables.Row is
 
 
 
+    --  Contents Modification  --
+
     procedure Clear
            (This : in out Row_Table);
 
 
 
+
+    --  Rows  --
 
     function Get_Rows
            (This : in Row_Table)
@@ -53,6 +57,8 @@ package FLTK.Widgets.Groups.Tables.Row is
 
 
 
+
+    --  Selection  --
 
     function Is_Row_Selected
            (This : in Row_Table;
@@ -84,6 +90,8 @@ package FLTK.Widgets.Groups.Tables.Row is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Cell_Dimensions
            (This        : in     Row_Table;

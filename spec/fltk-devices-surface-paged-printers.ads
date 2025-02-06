@@ -42,6 +42,8 @@ package FLTK.Devices.Surface.Paged.Printers is
 
 
 
+    --  Static Attributes  --
+
     function Get_Dialog_Title
         return String;
 
@@ -159,6 +161,8 @@ package FLTK.Devices.Surface.Paged.Printers is
 
 
 
+    --  Driver  --
+
     --  Not currently implemented
     function Get_Original_Driver
            (This : in out Printer)
@@ -166,6 +170,8 @@ package FLTK.Devices.Surface.Paged.Printers is
 
 
 
+
+    --  Job Control  --
 
     procedure Start_Job
            (This  : in out Printer;
@@ -187,6 +193,8 @@ package FLTK.Devices.Surface.Paged.Printers is
 
 
 
+
+    --  Spacing and Orientation  --
 
     procedure Get_Margins
            (This                     : in     Printer;
@@ -226,6 +234,8 @@ package FLTK.Devices.Surface.Paged.Printers is
 
 
 
+    --  Printing  --
+
     procedure Print_Widget
            (This               : in out Printer;
             Item               : in     FLTK.Widgets.Widget'Class;
@@ -239,6 +249,8 @@ package FLTK.Devices.Surface.Paged.Printers is
 
 
 
+
+    --  Printer  --
 
     procedure Set_Current
            (This : in out Printer);

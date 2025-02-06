@@ -17,6 +17,8 @@ package body FLTK.Widgets.Valuators.Counters is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_counter
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -31,6 +33,8 @@ package body FLTK.Widgets.Valuators.Counters is
 
 
 
+
+    --  Button Steps  --
 
     function fl_counter_get_step
            (C : in Storage.Integer_Address)
@@ -58,6 +62,8 @@ package body FLTK.Widgets.Valuators.Counters is
 
 
 
+
+    --  Text Settings  --
 
     function fl_counter_get_textcolor
            (C : in Storage.Integer_Address)
@@ -97,6 +103,8 @@ package body FLTK.Widgets.Valuators.Counters is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_counter_draw
            (W : in Storage.Integer_Address);
@@ -167,11 +175,11 @@ package body FLTK.Widgets.Valuators.Counters is
         begin
             return This : Counter do
                 This.Void_Ptr := new_fl_counter
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -196,6 +204,8 @@ package body FLTK.Widgets.Valuators.Counters is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Button Steps  --
 
     function Get_Step
            (This : in Counter)
@@ -242,6 +252,8 @@ package body FLTK.Widgets.Valuators.Counters is
 
 
 
+
+    --  Text Settings  --
 
     function Get_Text_Color
            (This : in Counter)
@@ -293,6 +305,8 @@ package body FLTK.Widgets.Valuators.Counters is
 
 
 
+    --  Drawing, Events  --
+
     procedure Draw
            (This : in out Counter) is
     begin
@@ -310,6 +324,8 @@ package body FLTK.Widgets.Valuators.Counters is
 
 
 
+
+    --  Counter Type  --
 
     function Get_Kind
            (This : in out Counter)

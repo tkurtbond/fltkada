@@ -47,11 +47,15 @@ package FLTK.File_Choosers is
 
 
 
+    --  Sorting  --
+
     Sort_Method : not null FLTK.Filenames.Compare_Function :=
         FLTK.Filenames.Numeric_Sort'Access;
 
 
 
+
+    --  Buttons  --
 
     function New_Button
            (This : in out File_Chooser)
@@ -67,6 +71,8 @@ package FLTK.File_Choosers is
 
 
 
+
+    --  Static Labels  --
 
     function Get_Add_Favorites_Label
         return String;
@@ -155,6 +161,8 @@ package FLTK.File_Choosers is
 
 
 
+    --  Callback and Extra  --
+
     procedure Add_Extra
            (This : in out File_Chooser;
             Item : in out Widgets.Widget'Class);
@@ -173,6 +181,8 @@ package FLTK.File_Choosers is
 
 
 
+
+    --  Settings  --
 
     function Get_Background_Color
            (This : in File_Chooser)
@@ -249,6 +259,8 @@ package FLTK.File_Choosers is
 
 
 
+    --  File Selection  --
+
     function Number_Selected
            (This : in File_Chooser)
         return Natural;
@@ -295,6 +307,8 @@ package FLTK.File_Choosers is
 
 
 
+
+    --  Visibility  --
 
     procedure Show
            (This : in out File_Chooser);

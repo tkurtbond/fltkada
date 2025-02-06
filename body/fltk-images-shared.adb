@@ -17,6 +17,12 @@ use type
 package body FLTK.Images.Shared is
 
 
+    ------------------------
+    --  Functions From C  --
+    ------------------------
+
+    --  Allocation  --
+
     function fl_shared_image_get
            (F    : in Interfaces.C.char_array;
             W, H : in Interfaces.C.int)
@@ -42,6 +48,11 @@ package body FLTK.Images.Shared is
     pragma Import (C, fl_shared_image_release, "fl_shared_image_release");
     pragma Inline (fl_shared_image_release);
 
+
+
+
+    --  Copying  --
+
     function fl_shared_image_copy
            (I    : in Storage.Integer_Address;
             W, H : in Interfaces.C.int)
@@ -58,6 +69,8 @@ package body FLTK.Images.Shared is
 
 
 
+    --  Colors  --
+
     procedure fl_shared_image_color_average
            (I : in Storage.Integer_Address;
             C : in Interfaces.C.int;
@@ -72,6 +85,8 @@ package body FLTK.Images.Shared is
 
 
 
+
+    --  Activity  --
 
     function fl_shared_image_num_images
         return Interfaces.C.int;
@@ -109,6 +124,8 @@ package body FLTK.Images.Shared is
 
 
 
+    --  Drawing  --
+
     procedure fl_shared_image_scaling_algorithm
            (A : in Interfaces.C.int);
     pragma Import (C, fl_shared_image_scaling_algorithm, "fl_shared_image_scaling_algorithm");
@@ -135,6 +152,10 @@ package body FLTK.Images.Shared is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
     overriding procedure Finalize
            (This : in out Shared_Image) is
     begin
@@ -148,7 +169,7 @@ package body FLTK.Images.Shared is
 
 
     --------------------
-    --  Construction  --
+    --  Constructors  --
     --------------------
 
     package body Forge is
@@ -196,6 +217,14 @@ package body FLTK.Images.Shared is
     end Forge;
 
 
+
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
+    --  Copying  --
+
     function Copy
            (This          : in Shared_Image;
             Width, Height : in Natural)
@@ -222,9 +251,7 @@ package body FLTK.Images.Shared is
 
 
 
-    --------------
     --  Colors  --
-    --------------
 
     procedure Color_Average
            (This   : in out Shared_Image;
@@ -247,9 +274,7 @@ package body FLTK.Images.Shared is
 
 
 
-    ----------------
     --  Activity  --
-    ----------------
 
     function Number_Of_Images
         return Natural is
@@ -304,9 +329,7 @@ package body FLTK.Images.Shared is
 
 
 
-    ---------------
     --  Drawing  --
-    ---------------
 
     procedure Set_Scaling_Algorithm
            (To : in Scaling_Kind) is
@@ -358,4 +381,5 @@ package body FLTK.Images.Shared is
 
 
 end FLTK.Images.Shared;
+
 

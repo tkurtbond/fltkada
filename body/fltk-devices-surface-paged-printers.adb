@@ -20,6 +20,8 @@ package body FLTK.Devices.Surface.Paged.Printers is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_printer
         return Storage.Integer_Address;
     pragma Import (C, new_fl_printer, "new_fl_printer");
@@ -32,6 +34,8 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
 
+
+    --  Static Attributes  --
 
     function fl_printer_get_dialog_title
         return Interfaces.C.Strings.chars_ptr;
@@ -226,6 +230,8 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
 
+    --  Job Control  --
+
     function fl_printer_start_job
            (D : in Storage.Integer_Address;
             C : in Interfaces.C.int)
@@ -260,6 +266,8 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
 
+
+    --  Spacing and Orientation  --
 
     procedure fl_printer_margins
            (D          : in     Storage.Integer_Address;
@@ -312,6 +320,8 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
 
+    --  Printing  --
+
     procedure fl_printer_print_widget
            (D, I   : in Storage.Integer_Address;
             DX, DY : in Interfaces.C.int);
@@ -326,6 +336,8 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
 
+
+    --  Printer  --
 
     procedure fl_printer_set_current
            (D : in Storage.Integer_Address);
@@ -713,6 +725,8 @@ package body FLTK.Devices.Surface.Paged.Printers is
     --  API Subprograms  --
     -----------------------
 
+    --  Driver  --
+
     function Get_Original_Driver
            (This : in out Printer)
         return FLTK.Devices.Graphics.Graphics_Driver_Reference is
@@ -722,6 +736,8 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
 
+
+    --  Job Control  --
 
     procedure Start_Job
            (This  : in out Printer;
@@ -777,6 +793,8 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
 
+
+    --  Spacing and Orientation  --
 
     procedure Get_Margins
            (This                     : in     Printer;
@@ -869,6 +887,8 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
 
+    --  Printing  --
+
     procedure Print_Widget
            (This               : in out Printer;
             Item               : in     FLTK.Widgets.Widget'Class;
@@ -901,6 +921,8 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
 
+
+    --  Printer  --
 
     procedure Set_Current
            (This : in out Printer) is

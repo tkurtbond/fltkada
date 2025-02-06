@@ -252,9 +252,6 @@ void fl_window_set_force_position(WINDOW n, int s) {
     (static_cast<Fl_Window*>(n)->*myforce)(s);
 }
 
-
-
-
 int fl_window_get_x_root(WINDOW n) {
     return static_cast<Fl_Window*>(n)->x_root();
 }

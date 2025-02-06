@@ -20,6 +20,8 @@ package body FLTK.Widgets.Groups.Windows.Single.Menu is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_menu_window
            (X, Y, W, H : in Interfaces.C.int;
             Label      : in Interfaces.C.char_array)
@@ -41,6 +43,8 @@ package body FLTK.Widgets.Groups.Windows.Single.Menu is
 
 
 
+
+    --  Visibility  --
 
     procedure fl_menu_window_show
            (M : in Storage.Integer_Address);
@@ -65,6 +69,8 @@ package body FLTK.Widgets.Groups.Windows.Single.Menu is
 
 
 
+    --  Overlay  --
+
     procedure fl_menu_window_set_overlay
            (M : in Storage.Integer_Address);
     pragma Import (C, fl_menu_window_set_overlay, "fl_menu_window_set_overlay");
@@ -83,6 +89,8 @@ package body FLTK.Widgets.Groups.Windows.Single.Menu is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_menu_window_draw
            (W : in Storage.Integer_Address);
@@ -153,11 +161,11 @@ package body FLTK.Widgets.Groups.Windows.Single.Menu is
         begin
             return This : Menu_Window do
                 This.Void_Ptr := new_fl_menu_window
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -182,9 +190,9 @@ package body FLTK.Widgets.Groups.Windows.Single.Menu is
         begin
             return This : Menu_Window do
                 This.Void_Ptr := new_fl_menu_window2
-                       (Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, This.Get_X, This.Get_Y, W, H, Text);
             end return;
         end Create;
@@ -209,6 +217,8 @@ package body FLTK.Widgets.Groups.Windows.Single.Menu is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Visibility  --
 
     procedure Show
            (This : in out Menu_Window) is
@@ -239,6 +249,8 @@ package body FLTK.Widgets.Groups.Windows.Single.Menu is
 
 
 
+
+    --  Overlay  --
 
     function Is_Overlay
            (This : in Menu_Window)

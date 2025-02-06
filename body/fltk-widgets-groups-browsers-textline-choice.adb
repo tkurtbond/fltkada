@@ -16,6 +16,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline.Choice is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_select_browser
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -30,6 +32,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline.Choice is
 
 
 
+
+    --  Item Implementation  --
 
     function fl_select_browser_item_width
            (B, I : in Storage.Integer_Address)
@@ -106,6 +110,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline.Choice is
 
 
 
+    --  List Implementation  --
+
     function fl_select_browser_full_width
            (B : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -132,6 +138,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline.Choice is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_select_browser_draw
            (B : in Storage.Integer_Address);

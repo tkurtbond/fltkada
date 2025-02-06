@@ -22,6 +22,8 @@ package body FLTK.Widgets.Groups.Windows.Double.Overlay is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_overlay_window
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -43,6 +45,8 @@ package body FLTK.Widgets.Groups.Windows.Double.Overlay is
 
 
 
+
+    --  Visibility  --
 
     procedure fl_overlay_window_show
            (W : in Storage.Integer_Address);
@@ -69,6 +73,8 @@ package body FLTK.Widgets.Groups.Windows.Double.Overlay is
 
 
 
+    --  Settings  --
+
     function fl_overlay_window_can_do_overlay
            (W : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -83,6 +89,8 @@ package body FLTK.Widgets.Groups.Windows.Double.Overlay is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_overlay_window_draw
            (W : in Storage.Integer_Address);
@@ -233,9 +241,11 @@ package body FLTK.Widgets.Groups.Windows.Double.Overlay is
 
 
 
-    ---------------
-    --  Display  --
-    ---------------
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
+    --  Visibility  --
 
     procedure Show
            (This : in out Overlay_Window) is
@@ -267,9 +277,7 @@ package body FLTK.Widgets.Groups.Windows.Double.Overlay is
 
 
 
-    -------------
-    --  Other  --
-    -------------
+    --  Settings  --
 
     function Can_Do_Overlay
            (This : in Overlay_Window)
@@ -294,9 +302,7 @@ package body FLTK.Widgets.Groups.Windows.Double.Overlay is
 
 
 
-    ----------------------------------
-    --  Drawing and Event Handling  --
-    ----------------------------------
+    --  Drawing, Events  --
 
     procedure Draw_Overlay
            (This : in out Overlay_Window) is

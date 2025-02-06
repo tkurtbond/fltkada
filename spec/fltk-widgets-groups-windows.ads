@@ -55,6 +55,8 @@ package FLTK.Widgets.Groups.Windows is
 
 
 
+    --  Visibility  --
+
     procedure Show
            (This : in out Window);
 
@@ -83,6 +85,8 @@ package FLTK.Widgets.Groups.Windows is
 
 
 
+    --  Fullscreen  --
+
     function Is_Fullscreen
            (This : in Window)
         return Boolean;
@@ -103,6 +107,8 @@ package FLTK.Widgets.Groups.Windows is
 
 
 
+
+    --  Icons, Cursors  --
 
     procedure Set_Icon
            (This : in out Window;
@@ -146,6 +152,8 @@ package FLTK.Widgets.Groups.Windows is
 
 
 
+
+    --  Settings  --
 
     function Has_Border
            (This : in Window)
@@ -193,6 +201,8 @@ package FLTK.Widgets.Groups.Windows is
 
 
 
+    --  Labels, Hotspot, Shape  --
+
     function Get_Label
            (This : in Window)
         return String;
@@ -222,6 +232,8 @@ package FLTK.Widgets.Groups.Windows is
 
 
 
+    --  Dimensions  --
+
     procedure Set_Size_Range
            (This                           : in out Window;
             Min_W, Min_H                   : in     Integer;
@@ -239,9 +251,6 @@ package FLTK.Widgets.Groups.Windows is
     procedure Force_Position
            (This  : in out Window;
             State : in     Boolean := True);
-
-
-
 
     function Get_X_Root
            (This : in Window)
@@ -261,6 +270,8 @@ package FLTK.Widgets.Groups.Windows is
 
 
 
+
+    -- Class Info  --
 
     function Get_X_Class
            (This : in Window)
@@ -286,6 +297,8 @@ package FLTK.Widgets.Groups.Windows is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Window);
@@ -369,7 +382,6 @@ private
     pragma Inline (Resize);
     pragma Inline (Is_Position_Forced);
     pragma Inline (Force_Position);
-
     pragma Inline (Get_X_Root);
     pragma Inline (Get_Y_Root);
     pragma Inline (Get_Decorated_W);

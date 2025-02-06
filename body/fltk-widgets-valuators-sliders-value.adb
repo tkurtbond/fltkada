@@ -17,6 +17,8 @@ package body FLTK.Widgets.Valuators.Sliders.Value is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_value_slider
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -31,6 +33,8 @@ package body FLTK.Widgets.Valuators.Sliders.Value is
 
 
 
+
+    --  Text Settings  --
 
     function fl_value_slider_get_textcolor
            (S : in Storage.Integer_Address)
@@ -70,6 +74,8 @@ package body FLTK.Widgets.Valuators.Sliders.Value is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_value_slider_draw
            (W : in Storage.Integer_Address);
@@ -140,11 +146,11 @@ package body FLTK.Widgets.Valuators.Sliders.Value is
         begin
             return This : Value_Slider do
                 This.Void_Ptr := new_fl_value_slider
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -169,6 +175,8 @@ package body FLTK.Widgets.Valuators.Sliders.Value is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Text Settings  --
 
     function Get_Text_Color
            (This : in Value_Slider)
@@ -219,6 +227,8 @@ package body FLTK.Widgets.Valuators.Sliders.Value is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Value_Slider) is

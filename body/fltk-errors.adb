@@ -12,6 +12,10 @@ with
 package body FLTK.Errors is
 
 
+    ------------------------
+    --  Functions From C  --
+    ------------------------
+
     procedure fl_error_default_warning
            (M : in Interfaces.C.char_array);
     pragma Import (C, fl_error_default_warning, "fl_error_default_warning");
@@ -33,6 +37,10 @@ package body FLTK.Errors is
 
 
 
+
+    -------------
+    --  Hooks  --
+    -------------
 
     procedure Warning_Hook
            (C_Mess : in Interfaces.C.Strings.chars_ptr);
@@ -68,6 +76,10 @@ package body FLTK.Errors is
 
 
 
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
     procedure Default_Warning
            (Message : in String) is

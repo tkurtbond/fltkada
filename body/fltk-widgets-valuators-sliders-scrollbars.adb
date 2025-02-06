@@ -17,6 +17,8 @@ package body FLTK.Widgets.Valuators.Sliders.Scrollbars is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_scrollbar
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -31,6 +33,8 @@ package body FLTK.Widgets.Valuators.Sliders.Scrollbars is
 
 
 
+
+    --  Line Position  --
 
     function fl_scrollbar_get_linesize
            (S : in Storage.Integer_Address)
@@ -64,6 +68,8 @@ package body FLTK.Widgets.Valuators.Sliders.Scrollbars is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_scrollbar_draw
            (W : in Storage.Integer_Address);
@@ -174,11 +180,11 @@ package body FLTK.Widgets.Valuators.Sliders.Scrollbars is
         begin
             return This : Scrollbar do
                 This.Void_Ptr := new_fl_scrollbar
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -203,6 +209,8 @@ package body FLTK.Widgets.Valuators.Sliders.Scrollbars is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Line Position  --
 
     function Get_Line_Size
            (This : in Scrollbar)
@@ -253,6 +261,8 @@ package body FLTK.Widgets.Valuators.Sliders.Scrollbars is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Scrollbar) is

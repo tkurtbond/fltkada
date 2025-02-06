@@ -66,6 +66,8 @@ package FLTK.Devices.Surface.Paged.Postscript is
 
 
 
+    --  Static Attributes  --
+
     function Get_File_Chooser_Title
         return String;
 
@@ -75,6 +77,8 @@ package FLTK.Devices.Surface.Paged.Postscript is
 
 
 
+    --  Driver  --
+
     --  Not currently implemented,
     --  will return a Postscript_Graphics_Driver when done.
     function Get_Postscript_Driver
@@ -83,6 +87,8 @@ package FLTK.Devices.Surface.Paged.Postscript is
 
 
 
+
+    --  Job Control  --
 
     --  Docs say don't use this version.
     procedure Start_Job
@@ -120,6 +126,8 @@ package FLTK.Devices.Surface.Paged.Postscript is
 
 
 
+
+    --  Spacing and Orientation  --
 
     procedure Get_Margins
            (This                     : in     Postscript_File_Device;

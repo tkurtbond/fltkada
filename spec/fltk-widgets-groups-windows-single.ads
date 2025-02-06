@@ -44,6 +44,8 @@ package FLTK.Widgets.Groups.Windows.Single is
 
 
 
+    --  Visibility  --
+
     procedure Show
            (This : in out Single_Window);
 
@@ -55,6 +57,8 @@ package FLTK.Widgets.Groups.Windows.Single is
 
 
 
+
+    --  Current  --
 
     procedure Make_Current
            (This : in out Single_Window);

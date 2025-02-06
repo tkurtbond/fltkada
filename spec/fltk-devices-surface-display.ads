@@ -32,6 +32,8 @@ package FLTK.Devices.Surface.Display is
 
 
 
+    --  Displays  --
+
     function Get_Platform_Display
         return Display_Device_Reference;
 

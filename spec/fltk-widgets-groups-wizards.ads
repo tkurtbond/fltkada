@@ -33,6 +33,8 @@ package FLTK.Widgets.Groups.Wizards is
 
 
 
+    --  Navigation  --
+
     procedure Next
            (This : in out Wizard);
 
@@ -41,6 +43,8 @@ package FLTK.Widgets.Groups.Wizards is
 
 
 
+
+    --  Visibility  --
 
     function Get_Visible
            (This : in Wizard)
@@ -52,6 +56,8 @@ package FLTK.Widgets.Groups.Wizards is
 
 
 
+
+    --  Drawing  --
 
     procedure Draw
            (This : in out Wizard);

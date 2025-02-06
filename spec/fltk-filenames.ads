@@ -54,6 +54,8 @@ package FLTK.Filenames is
 
 
 
+    --  Uniform Resource Identifiers  --
+
     function Decode_URI
            (URI : in Path_String)
         return Path_String;
@@ -64,6 +66,8 @@ package FLTK.Filenames is
 
 
 
+    --  Pathnames  --
+
     function Absolute
            (Name : in Path_String)
         return Path_String;
@@ -93,6 +97,8 @@ package FLTK.Filenames is
 
 
 
+
+    --  Filenames  --
 
     function Base_Name
            (Name : in Path_String)
@@ -110,6 +116,8 @@ package FLTK.Filenames is
 
 
 
+    --  Directories  --
+
     function Is_Directory
            (Name : in Path_String)
         return Boolean;
@@ -121,6 +129,8 @@ package FLTK.Filenames is
 
 
 
+
+    --  Patterns  --
 
     function Match
            (Input, Pattern : in String)

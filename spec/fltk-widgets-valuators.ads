@@ -38,6 +38,8 @@ package FLTK.Widgets.Valuators is
 
 
 
+    --  Formatting  --
+
     --  You may override this to change the formatting of the Valuator
     function Format
            (This : in Valuator)
@@ -45,6 +47,8 @@ package FLTK.Widgets.Valuators is
 
 
 
+
+    --  Calculation  --
 
     function Clamp
            (This  : in Valuator;
@@ -64,6 +68,8 @@ package FLTK.Widgets.Valuators is
 
 
 
+
+    --  Settings, Value  --
 
     function Get_Minimum
            (This : in Valuator)
@@ -120,6 +126,8 @@ package FLTK.Widgets.Valuators is
 
 
 
+
+    --  Drawing  --
 
     procedure Value_Damage
            (This : in out Valuator);

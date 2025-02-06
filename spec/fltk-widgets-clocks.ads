@@ -44,6 +44,8 @@ package FLTK.Widgets.Clocks is
 
 
 
+    --  Individual Values  --
+
     function Get_Hour
            (This : in Clock)
         return Hour;
@@ -58,6 +60,8 @@ package FLTK.Widgets.Clocks is
 
 
 
+
+    --  Full Value  --
 
     function Get_Time
            (This : in Clock)
@@ -75,6 +79,8 @@ package FLTK.Widgets.Clocks is
 
 
 
+
+    --  Drawing  --
 
     procedure Draw
            (This : in out Clock);

@@ -37,6 +37,8 @@ package body FLTK.Filenames is
     --  Functions From C  --
     ------------------------
 
+    --  Data Structures  --
+
     procedure free_filename_file_list
            (L : in Storage.Integer_Address;
             N : in Interfaces.C.int);
@@ -52,6 +54,8 @@ package body FLTK.Filenames is
 
 
 
+
+    --  C API  --
 
     procedure filename_decode_uri
            (URI : in Interfaces.C.char_array);
@@ -132,6 +136,8 @@ package body FLTK.Filenames is
 
 
 
+    --  Sorting  --
+
     function filename_alphasort
            (A, B : in Interfaces.C.char_array)
         return Interfaces.C.int;
@@ -155,9 +161,11 @@ package body FLTK.Filenames is
 
 
 
-    ------------------------------
-    --  Comparison Subprograms  --
-    ------------------------------
+    -----------------------------
+    --  Auxiliary Subprograms  --
+    -----------------------------
+
+    --  Sorting  --
 
     function Alpha_Sort
            (A, B : in String)
@@ -229,9 +237,7 @@ package body FLTK.Filenames is
 
 
 
-    ---------------------------
-    --  Listing Subprograms  --
-    ---------------------------
+    --  Datatypes  --
 
     procedure Finalize
            (This : in out File_List) is
@@ -263,9 +269,11 @@ package body FLTK.Filenames is
 
 
 
-    --------------------
-    --  Filename API  --
-    --------------------
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
+    --  Uniform Resource Identifiers  --
 
     function Decode_URI
            (URI : in Path_String)
@@ -301,6 +309,8 @@ package body FLTK.Filenames is
 
 
 
+    --  Pathnames  --
+
     function Absolute
            (Name : in Path_String)
         return Path_String
@@ -398,6 +408,8 @@ package body FLTK.Filenames is
 
 
 
+
+    --  Filenames  --
 
     function Base_Name
            (Name : in Path_String)
@@ -444,6 +456,8 @@ package body FLTK.Filenames is
 
 
 
+    --  Directories  --
+
     function Is_Directory
            (Name : in Path_String)
         return Boolean is
@@ -487,6 +501,8 @@ package body FLTK.Filenames is
 
 
 
+
+    --  Patterns  --
 
     function Match
            (Input, Pattern : in String)

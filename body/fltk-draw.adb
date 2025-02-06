@@ -37,9 +37,7 @@ package body FLTK.Draw is
     --  Functions From C  --
     ------------------------
 
-    procedure fl_draw_reset_spot;
-    pragma Import (C, fl_draw_reset_spot, "fl_draw_reset_spot");
-    pragma Inline (fl_draw_reset_spot);
+    --  No Documentation  --
 
     procedure fl_draw_set_spot
            (F, S       : in Interfaces.C.int;
@@ -56,6 +54,8 @@ package body FLTK.Draw is
 
 
 
+    --  Utility  --
+
     function fl_draw_can_do_alpha_blending
         return Interfaces.C.int;
     pragma Import (C, fl_draw_can_do_alpha_blending, "fl_draw_can_do_alpha_blending");
@@ -69,6 +69,8 @@ package body FLTK.Draw is
 
 
 
+
+    --  Charset Conversion  --
 
     function fl_draw_latin1_to_local
            (T : in Interfaces.C.char_array;
@@ -101,6 +103,8 @@ package body FLTK.Draw is
 
 
 
+    --  Clipping  --
+
     function fl_draw_clip_box
            (X, Y, W, H     : in     Interfaces.C.int;
             BX, BY, BW, BH :    out Interfaces.C.int)
@@ -114,29 +118,15 @@ package body FLTK.Draw is
     pragma Import (C, fl_draw_not_clipped, "fl_draw_not_clipped");
     pragma Inline (fl_draw_not_clipped);
 
-    procedure fl_draw_pop_clip;
-    pragma Import (C, fl_draw_pop_clip, "fl_draw_pop_clip");
-    pragma Inline (fl_draw_pop_clip);
-
     procedure fl_draw_push_clip
            (X, Y, W, H : in Interfaces.C.int);
     pragma Import (C, fl_draw_push_clip, "fl_draw_push_clip");
     pragma Inline (fl_draw_push_clip);
 
-    procedure fl_draw_push_no_clip;
-    pragma Import (C, fl_draw_push_no_clip, "fl_draw_push_no_clip");
-    pragma Inline (fl_draw_push_no_clip);
-
-    procedure fl_draw_restore_clip;
-    pragma Import (C, fl_draw_restore_clip, "fl_draw_restore_clip");
-    pragma Inline (fl_draw_restore_clip);
 
 
 
-
-    procedure fl_draw_overlay_clear;
-    pragma Import (C, fl_draw_overlay_clear, "fl_draw_overlay_clear");
-    pragma Inline (fl_draw_overlay_clear);
+    --  Overlay  --
 
     procedure fl_draw_overlay_rect
            (X, Y, W, H : in Interfaces.C.int);
@@ -145,6 +135,8 @@ package body FLTK.Draw is
 
 
 
+
+    --  Settings  --
 
     function fl_draw_get_color
         return Interfaces.C.unsigned;
@@ -215,18 +207,12 @@ package body FLTK.Draw is
 
 
 
+    --  Matrix Operations  --
+
     procedure fl_draw_mult_matrix
            (A, B, C, D, X, Y : in Interfaces.C.double);
     pragma Import (C, fl_draw_mult_matrix, "fl_draw_mult_matrix");
     pragma Inline (fl_draw_mult_matrix);
-
-    procedure fl_draw_pop_matrix;
-    pragma Import (C, fl_draw_pop_matrix, "fl_draw_pop_matrix");
-    pragma Inline (fl_draw_pop_matrix);
-
-    procedure fl_draw_push_matrix;
-    pragma Import (C, fl_draw_push_matrix, "fl_draw_push_matrix");
-    pragma Inline (fl_draw_push_matrix);
 
     procedure fl_draw_rotate
            (D : in Interfaces.C.double);
@@ -285,6 +271,8 @@ package body FLTK.Draw is
 
 
 
+    --  Image Drawing  --
+
     procedure fl_draw_draw_image
            (Buf        : in Storage.Integer_Address;
             X, Y, W, H : in Interfaces.C.int;
@@ -329,6 +317,8 @@ package body FLTK.Draw is
 
 
 
+
+    --  Special Drawing  --
 
     function fl_draw_add_symbol
            (Name     : in Interfaces.C.char_array;
@@ -441,28 +431,7 @@ package body FLTK.Draw is
 
 
 
-    procedure fl_draw_begin_complex_polygon;
-    pragma Import (C, fl_draw_begin_complex_polygon, "fl_draw_begin_complex_polygon");
-    pragma Inline (fl_draw_begin_complex_polygon);
-
-    procedure fl_draw_begin_line;
-    pragma Import (C, fl_draw_begin_line, "fl_draw_begin_line");
-    pragma Inline (fl_draw_begin_line);
-
-    procedure fl_draw_begin_loop;
-    pragma Import (C, fl_draw_begin_loop, "fl_draw_begin_loop");
-    pragma Inline (fl_draw_begin_loop);
-
-    procedure fl_draw_begin_points;
-    pragma Import (C, fl_draw_begin_points, "fl_draw_begin_points");
-    pragma Inline (fl_draw_begin_points);
-
-    procedure fl_draw_begin_polygon;
-    pragma Import (C, fl_draw_begin_polygon, "fl_draw_begin_polygon");
-    pragma Inline (fl_draw_begin_polygon);
-
-
-
+    --  Manual Drawing  --
 
     procedure fl_draw_arc
            (X, Y, R, Start, Finish : in Interfaces.C.double);
@@ -500,10 +469,6 @@ package body FLTK.Draw is
             X, Y, W, H : in Interfaces.C.int);
     pragma Import (C, fl_draw_frame, "fl_draw_frame");
     pragma Inline (fl_draw_frame);
-
-    procedure fl_draw_gap;
-    pragma Import (C, fl_draw_gap, "fl_draw_gap");
-    pragma Inline (fl_draw_gap);
 
     procedure fl_draw_line
            (X0, Y0 : in Interfaces.C.int;
@@ -620,38 +585,11 @@ package body FLTK.Draw is
 
 
 
-    procedure fl_draw_end_complex_polygon;
-    pragma Import (C, fl_draw_end_complex_polygon, "fl_draw_end_complex_polygon");
-    pragma Inline (fl_draw_end_complex_polygon);
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
 
-    procedure fl_draw_end_line;
-    pragma Import (C, fl_draw_end_line, "fl_draw_end_line");
-    pragma Inline (fl_draw_end_line);
-
-    procedure fl_draw_end_loop;
-    pragma Import (C, fl_draw_end_loop, "fl_draw_end_loop");
-    pragma Inline (fl_draw_end_loop);
-
-    procedure fl_draw_end_points;
-    pragma Import (C, fl_draw_end_points, "fl_draw_end_points");
-    pragma Inline (fl_draw_end_points);
-
-    procedure fl_draw_end_polygon;
-    pragma Import (C, fl_draw_end_polygon, "fl_draw_end_polygon");
-    pragma Inline (fl_draw_end_polygon);
-
-
-
-
-    ------------------------
     --  No Documentation  --
-    ------------------------
-
-    procedure Reset_Spot is
-    begin
-        fl_draw_reset_spot;
-    end Reset_Spot;
-
 
     procedure Set_Spot
            (X, Y, W, H : in Integer;
@@ -699,9 +637,7 @@ package body FLTK.Draw is
 
 
 
-    ---------------
     --  Utility  --
-    ---------------
 
     function Can_Do_Alpha_Blending
         return Boolean
@@ -732,9 +668,7 @@ package body FLTK.Draw is
 
 
 
-    --------------------------
     --  Charset Conversion  --
-    --------------------------
 
     function Latin1_To_Local
            (From : in String)
@@ -774,9 +708,7 @@ package body FLTK.Draw is
 
 
 
-    ----------------
     --  Clipping  --
-    ----------------
 
     function Clip_Box
            (X, Y, W, H     : in     Integer;
@@ -811,12 +743,6 @@ package body FLTK.Draw is
     end Clip_Intersects;
 
 
-    procedure Pop_Clip is
-    begin
-        fl_draw_pop_clip;
-    end Pop_Clip;
-
-
     procedure Push_Clip
            (X, Y, W, H : in Integer) is
     begin
@@ -828,29 +754,9 @@ package body FLTK.Draw is
     end Push_Clip;
 
 
-    procedure Push_No_Clip is
-    begin
-        fl_draw_push_no_clip;
-    end Push_No_Clip;
 
 
-    procedure Restore_Clip is
-    begin
-        fl_draw_restore_clip;
-    end Restore_Clip;
-
-
-
-
-    ---------------
     --  Overlay  --
-    ---------------
-
-    procedure Overlay_Clear is
-    begin
-        fl_draw_overlay_clear;
-    end Overlay_Clear;
-
 
     procedure Overlay_Rect
            (X, Y, W, H : in Integer) is
@@ -865,9 +771,7 @@ package body FLTK.Draw is
 
 
 
-    ----------------
     --  Settings  --
-    ----------------
 
     function Get_Color
         return Color is
@@ -990,9 +894,7 @@ package body FLTK.Draw is
 
 
 
-    -------------------------
     --  Matrix Operations  --
-    -------------------------
 
     procedure Mult_Matrix
            (A, B, C, D, X, Y : in Long_Float) is
@@ -1005,18 +907,6 @@ package body FLTK.Draw is
             Interfaces.C.double (X),
             Interfaces.C.double (Y));
     end Mult_Matrix;
-
-
-    procedure Pop_Matrix is
-    begin
-        fl_draw_pop_matrix;
-    end Pop_Matrix;
-
-
-    procedure Push_Matrix is
-    begin
-        fl_draw_push_matrix;
-    end Push_Matrix;
 
 
     procedure Rotate
@@ -1111,9 +1001,7 @@ package body FLTK.Draw is
 
 
 
-    ---------------------
     --  Image Drawing  --
-    ---------------------
 
     procedure Draw_Image
            (X, Y, W, H      : in Integer;
@@ -1306,9 +1194,7 @@ package body FLTK.Draw is
 
 
 
-    -----------------------
     --  Special Drawing  --
-    -----------------------
 
     procedure Add_Symbol
            (Text     : in String;
@@ -1641,35 +1527,7 @@ package body FLTK.Draw is
 
 
 
-    ----------------------
     --  Manual Drawing  --
-    ----------------------
-
-    procedure Begin_Complex_Polygon is
-    begin
-        fl_draw_begin_complex_polygon;
-    end Begin_Complex_Polygon;
-
-    procedure Begin_Line is
-    begin
-        fl_draw_begin_line;
-    end Begin_Line;
-
-    procedure Begin_Loop is
-    begin
-        fl_draw_begin_loop;
-    end Begin_Loop;
-
-    procedure Begin_Points is
-    begin
-        fl_draw_begin_points;
-    end Begin_Points;
-
-    procedure Begin_Polygon is
-    begin
-        fl_draw_begin_polygon;
-    end Begin_Polygon;
-
 
     procedure Arc
            (X, Y, R, Start, Finish : in Long_Float) is
@@ -1749,12 +1607,6 @@ package body FLTK.Draw is
             Interfaces.C.int (W),
             Interfaces.C.int (H));
     end Frame;
-
-
-    procedure Gap is
-    begin
-        fl_draw_gap;
-    end Gap;
 
 
     procedure Line
@@ -1981,32 +1833,6 @@ package body FLTK.Draw is
             Interfaces.C.int (X2),
             Interfaces.C.int (Y3));
     end Why_Ecks_Line;
-
-
-    procedure End_Complex_Polygon is
-    begin
-        fl_draw_end_complex_polygon;
-    end End_Complex_Polygon;
-
-    procedure End_Line is
-    begin
-        fl_draw_end_line;
-    end End_Line;
-
-    procedure End_Loop is
-    begin
-        fl_draw_end_loop;
-    end End_Loop;
-
-    procedure End_Points is
-    begin
-        fl_draw_end_points;
-    end End_Points;
-
-    procedure End_Polygon is
-    begin
-        fl_draw_end_polygon;
-    end End_Polygon;
 
 
 end FLTK.Draw;

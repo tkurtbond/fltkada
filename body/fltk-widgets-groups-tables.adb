@@ -60,6 +60,8 @@ package body FLTK.Widgets.Groups.Tables is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_table
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -74,6 +76,8 @@ package body FLTK.Widgets.Groups.Tables is
 
 
 
+
+    --  Attributes  --
 
     function fl_table_hscrollbar
            (T : in Storage.Integer_Address)
@@ -95,6 +99,8 @@ package body FLTK.Widgets.Groups.Tables is
 
 
 
+
+    --  Contents Modification  --
 
     procedure fl_table_add
            (T, W : in Storage.Integer_Address);
@@ -119,6 +125,8 @@ package body FLTK.Widgets.Groups.Tables is
 
 
 
+
+    --  Contents Query  --
 
     function fl_table_child
            (T : in Storage.Integer_Address;
@@ -148,6 +156,8 @@ package body FLTK.Widgets.Groups.Tables is
 
 
 
+    --  Current  --
+
     procedure fl_table_begin
            (T : in Storage.Integer_Address);
     pragma Import (C, fl_table_begin, "fl_table_begin");
@@ -160,6 +170,8 @@ package body FLTK.Widgets.Groups.Tables is
 
 
 
+
+    --  Callbacks  --
 
     procedure fl_table_set_callback
            (T, F : in Storage.Integer_Address);
@@ -203,6 +215,8 @@ package body FLTK.Widgets.Groups.Tables is
 
 
 
+
+    --  Columns  --
 
     function fl_table_get_col_header
            (T : in Storage.Integer_Address)
@@ -316,6 +330,8 @@ package body FLTK.Widgets.Groups.Tables is
 
 
 
+
+    --  Rows  --
 
     function fl_table_get_row_header
            (T : in Storage.Integer_Address)
@@ -442,6 +458,8 @@ package body FLTK.Widgets.Groups.Tables is
 
 
 
+    --  Selection  --
+
     procedure fl_table_change_cursor
            (T : in Storage.Integer_Address;
             C : in Interfaces.C.int);
@@ -514,6 +532,8 @@ package body FLTK.Widgets.Groups.Tables is
 
 
 
+    --  Dimensions  --
+
     function fl_table_get_scrollbar_size
            (T : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -560,6 +580,8 @@ package body FLTK.Widgets.Groups.Tables is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_table_draw
            (T : in Storage.Integer_Address);
@@ -869,6 +891,8 @@ package body FLTK.Widgets.Groups.Tables is
     --  API Subprograms  --
     -----------------------
 
+    --  Attributes  --
+
     function H_Bar
            (This : in out Table)
         return Valuators.Sliders.Scrollbars.Scrollbar_Reference is
@@ -894,6 +918,8 @@ package body FLTK.Widgets.Groups.Tables is
 
 
 
+
+    --  Contents Modification  --
 
     procedure Add
            (This : in out Table;
@@ -945,6 +971,8 @@ package body FLTK.Widgets.Groups.Tables is
 
 
 
+
+    --  Contents Query  --
 
     function Has_Child
            (This  : in Table;
@@ -1023,6 +1051,8 @@ package body FLTK.Widgets.Groups.Tables is
 
 
 
+    --  Current  --
+
     procedure Begin_Current
            (This : in out Table) is
     begin
@@ -1038,6 +1068,8 @@ package body FLTK.Widgets.Groups.Tables is
 
 
 
+
+    --  Callbacks  --
 
     procedure Set_Callback
            (This : in out Table;
@@ -1121,6 +1153,8 @@ package body FLTK.Widgets.Groups.Tables is
 
 
 
+
+    --  Columns  --
 
     function Column_Headers_Enabled
            (This : in Table)
@@ -1306,6 +1340,8 @@ package body FLTK.Widgets.Groups.Tables is
 
 
 
+
+    --  Rows  --
 
     function Row_Headers_Enabled
            (This : in Table)
@@ -1514,6 +1550,8 @@ package body FLTK.Widgets.Groups.Tables is
 
 
 
+    --  Selection  --
+
     procedure Set_Cursor_Kind
            (This : in out Table;
             Kind : in     Mouse_Cursor_Kind) is
@@ -1719,6 +1757,8 @@ package body FLTK.Widgets.Groups.Tables is
 
 
 
+    --  Dimensions  --
+
     function Get_Scrollbar_Size
            (This : in Table)
         return Integer is
@@ -1791,6 +1831,8 @@ package body FLTK.Widgets.Groups.Tables is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Table) is

@@ -36,12 +36,6 @@ package FLTK.Environment is
 
 
 
-    function New_UUID
-        return String;
-
-
-
-
     package Forge is
 
         function From_Filesystem
@@ -76,6 +70,16 @@ package FLTK.Environment is
 
 
 
+    --  Static  --
+
+    function New_UUID
+        return String;
+
+
+
+
+    --  Disk Activity  --
+
     procedure Flush
            (This : in Database);
 
@@ -85,6 +89,8 @@ package FLTK.Environment is
 
 
 
+
+    --  Deletion  --
 
     procedure Delete_Entry
            (This : in out Pref_Group;
@@ -112,6 +118,8 @@ package FLTK.Environment is
 
 
 
+    --  Key Values  --
+
     function Number_Of_Entries
            (This : in Pref_Group)
         return Natural;
@@ -135,6 +143,8 @@ package FLTK.Environment is
 
 
 
+    --  Groups  --
+
     function Number_Of_Groups
            (This : in Pref_Group)
         return Natural;
@@ -153,6 +163,8 @@ package FLTK.Environment is
 
 
 
+    --  Names  --
+
     function At_Name
            (This : in Pref_Group)
         return String;
@@ -163,6 +175,8 @@ package FLTK.Environment is
 
 
 
+
+    --  Retrieval  --
 
     function Get
            (This : in Pref_Group;
@@ -237,6 +251,8 @@ package FLTK.Environment is
 
 
 
+
+    --  Storage  --
 
     procedure Set
            (This  : in out Pref_Group;

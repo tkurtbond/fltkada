@@ -56,7 +56,7 @@ package FLTK.Widgets.Groups.Browsers is
 
 
 
-    --  Access to the Browser's self contained scrollbars
+    --  Attributes  --
 
     function H_Bar
            (This : in out Browser)
@@ -69,7 +69,7 @@ package FLTK.Widgets.Groups.Browsers is
 
 
 
-    --  Item related settings
+    --  Items  --
 
     function Set_Select
            (This         : in out Browser;
@@ -135,7 +135,7 @@ package FLTK.Widgets.Groups.Browsers is
 
 
 
-    --  Scrollbar related settings
+    --  Scrollbar Settings  --
 
     function Get_Scrollbar_Mode
            (This : in Browser)
@@ -178,7 +178,7 @@ package FLTK.Widgets.Groups.Browsers is
 
 
 
-    --  Text related settings
+    --  Text Settings  --
 
     function Get_Text_Color
            (This : in Browser)
@@ -207,7 +207,7 @@ package FLTK.Widgets.Groups.Browsers is
 
 
 
-    --  Graphical dimensions and redrawing
+    --  Dimensions, Redrawing  --
 
     procedure Resize
            (This       : in out Browser;
@@ -231,6 +231,8 @@ package FLTK.Widgets.Groups.Browsers is
 
 
 
+    --  Optional Overrides  --
+
     --  You may override these subprograms to change the behaviour of the widget
     --  even though these are called from within FLTK.
 
@@ -253,6 +255,8 @@ package FLTK.Widgets.Groups.Browsers is
 
 
 
+
+    --  Mandatory Overrides  --
 
     --  You MUST override these subprograms if deriving a type from Browser or your
     --  program will crash, since they are called from within FLTK and do not have
@@ -318,7 +322,7 @@ package FLTK.Widgets.Groups.Browsers is
 
 
 
-    --  Cache invalidation
+    --  Cache Invalidation  --
 
     procedure New_List
            (This : in out Browser);
@@ -338,20 +342,6 @@ package FLTK.Widgets.Groups.Browsers is
     procedure Swapping
            (This : in out Browser;
             A, B : in     Item_Cursor);
-
-
-
-
-    --  You may override these subprograms to change the behaviour of the widget
-    --  even though these are called from within FLTK.
-
-    procedure Draw
-           (This : in out Browser);
-
-    function Handle
-           (This  : in out Browser;
-            Event : in     Event_Kind)
-        return Event_Outcome;
 
 
 private
@@ -455,9 +445,6 @@ private
     pragma Inline (Deleting);
     pragma Inline (Replacing);
     pragma Inline (Swapping);
-
-    pragma Inline (Draw);
-    pragma Inline (Handle);
 
 
 end FLTK.Widgets.Groups.Browsers;

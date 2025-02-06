@@ -16,6 +16,8 @@ package body FLTK.Images.Pixmaps.XPM is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_xpm_image
            (F : in Interfaces.C.char_array)
         return Storage.Integer_Address;

@@ -22,6 +22,8 @@ package body FLTK.Widgets.Groups.Wizards is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_wizard
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -37,6 +39,8 @@ package body FLTK.Widgets.Groups.Wizards is
 
 
 
+    --  Navigation  --
+
     procedure fl_wizard_next
            (W : in Storage.Integer_Address);
     pragma Import (C, fl_wizard_next, "fl_wizard_next");
@@ -49,6 +53,8 @@ package body FLTK.Widgets.Groups.Wizards is
 
 
 
+
+    --  Visibility  --
 
     function fl_wizard_get_visible
            (W : in Storage.Integer_Address)
@@ -63,6 +69,8 @@ package body FLTK.Widgets.Groups.Wizards is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_wizard_draw
            (W : in Storage.Integer_Address);
@@ -133,11 +141,11 @@ package body FLTK.Widgets.Groups.Wizards is
         begin
             return This : Wizard do
                 This.Void_Ptr := new_fl_wizard
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -163,6 +171,8 @@ package body FLTK.Widgets.Groups.Wizards is
     --  API Subprograms  --
     -----------------------
 
+    --  Navigation  --
+
     procedure Next
            (This : in out Wizard) is
     begin
@@ -178,6 +188,8 @@ package body FLTK.Widgets.Groups.Wizards is
 
 
 
+
+    --  Visibility  --
 
     function Get_Visible
            (This : in Wizard)
@@ -207,6 +219,8 @@ package body FLTK.Widgets.Groups.Wizards is
 
 
 
+
+    --  Drawing  --
 
     procedure Draw
            (This : in out Wizard) is

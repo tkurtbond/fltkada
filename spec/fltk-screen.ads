@@ -7,6 +7,8 @@
 package FLTK.Screen is
 
 
+    --  Basic Dimensions  --
+
     function Get_X
         return Integer;
 
@@ -22,6 +24,8 @@ package FLTK.Screen is
 
 
 
+    --  Pixel Density  --
+
     function Count
         return Integer;
 
@@ -32,6 +36,8 @@ package FLTK.Screen is
 
 
 
+
+    --  Position Lookup  --
 
     function Containing
            (X, Y : in Integer)
@@ -44,6 +50,8 @@ package FLTK.Screen is
 
 
 
+    --  Bounding Boxes  --
+
     procedure Work_Area
            (X, Y, W, H   :    out Integer;
             Pos_X, Pos_Y : in     Integer);
@@ -54,9 +62,6 @@ package FLTK.Screen is
 
     procedure Work_Area
            (X, Y, W, H : out Integer);
-
-
-
 
     procedure Bounding_Rect
            (X, Y, W, H   :    out Integer;
@@ -82,10 +87,8 @@ private
     pragma Inline (Get_W);
     pragma Inline (Get_H);
 
-
     pragma Inline (Count);
     pragma Inline (DPI);
-
 
     pragma Inline (Containing);
     pragma Inline (Work_Area);
@@ -93,4 +96,5 @@ private
 
 
 end FLTK.Screen;
+
 

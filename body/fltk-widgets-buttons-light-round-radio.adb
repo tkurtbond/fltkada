@@ -17,6 +17,8 @@ package body FLTK.Widgets.Buttons.Light.Round.Radio is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_radio_round_button
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -31,6 +33,8 @@ package body FLTK.Widgets.Buttons.Light.Round.Radio is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_radio_round_button_draw
            (W : in Storage.Integer_Address);
@@ -101,11 +105,11 @@ package body FLTK.Widgets.Buttons.Light.Round.Radio is
         begin
             return This : Radio_Round_Button do
                 This.Void_Ptr := new_fl_radio_round_button
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;

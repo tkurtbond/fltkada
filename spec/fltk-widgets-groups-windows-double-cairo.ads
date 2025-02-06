@@ -72,12 +72,16 @@ package FLTK.Widgets.Groups.Windows.Double.Cairo is
 
 
 
+    --  Cairo Callback  --
+
     procedure Set_Cairo_Draw
            (This : in out Cairo_Window;
             Func : in     Cairo_Callback);
 
 
 
+
+    --  Drawing  --
 
     procedure Draw
            (This : in out Cairo_Window);

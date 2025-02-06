@@ -22,6 +22,8 @@ package FLTK.Images.RGB is
 
 
 
+    --  Static Settings  --
+
     function Get_Max_Size
         return Natural;
 

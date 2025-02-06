@@ -38,6 +38,8 @@ package FLTK.Widgets.Menus.Choices is
 
 
 
+    --  Selection  --
+
     function Chosen_Index
            (This : in Choice)
         return Extended_Index;
@@ -62,6 +64,8 @@ package FLTK.Widgets.Menus.Choices is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Choice);

@@ -4,6 +4,9 @@
 --  Released into the public domain
 
 
+--  Naming this package Integer would have caused ambiguity with the Integer type
+
+
 limited with
 
     FLTK.Widgets.Groups;
@@ -37,6 +40,8 @@ package FLTK.Widgets.Inputs.Text.Whole_Number is
 
 
 
+
+    --  Text Field  --
 
     function Get_Value
            (This : in Integer_Input)

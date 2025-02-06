@@ -36,6 +36,8 @@ package body FLTK.Images is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_image
            (W, H, D : in Interfaces.C.int)
         return Storage.Integer_Address;
@@ -50,6 +52,8 @@ package body FLTK.Images is
 
 
 
+    --  Errors  --
+
     function fl_image_fail
            (I : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -57,6 +61,8 @@ package body FLTK.Images is
 
 
 
+
+    --  Copying  --
 
     function fl_image_get_rgb_scaling
         return Interfaces.C.int;
@@ -84,6 +90,8 @@ package body FLTK.Images is
 
 
 
+    --  Colors  --
+
     procedure fl_image_color_average
            (I : in Storage.Integer_Address;
             C : in Interfaces.C.int;
@@ -99,6 +107,8 @@ package body FLTK.Images is
 
 
 
+    --  Activity  --
+
     procedure fl_image_inactive
            (I : in Storage.Integer_Address);
     pragma Import (C, fl_image_inactive, "fl_image_inactive");
@@ -111,6 +121,8 @@ package body FLTK.Images is
 
 
 
+
+    --  Dimensions  --
 
     function fl_image_w
            (I : in Storage.Integer_Address)
@@ -138,6 +150,8 @@ package body FLTK.Images is
 
 
 
+
+    --  Drawing  --
 
     procedure fl_image_draw
            (I    : in Storage.Integer_Address;

@@ -21,6 +21,8 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_value_input
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -36,6 +38,8 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
+    --  Attributes  --
+
     function fl_value_input_get_input
            (V : in Storage.Integer_Address)
         return Storage.Integer_Address;
@@ -44,6 +48,8 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
+
+    --  Cursors  --
 
     function fl_value_input_get_cursor_color
            (TD : in Storage.Integer_Address)
@@ -60,6 +66,8 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
+    --  Shortcut  --
+
     function fl_value_input_get_shortcut
            (B : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -75,6 +83,8 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
+    --  Allow Outside Range  --
+
     function fl_value_input_is_soft
            (A : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -89,6 +99,8 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
+
+    --  Text Settings  --
 
     function fl_value_input_get_text_color
            (TD : in Storage.Integer_Address)
@@ -129,6 +141,8 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
+    --  Dimensions  --
+
     procedure fl_value_input_resize
            (TD         : in Storage.Integer_Address;
             X, Y, W, H : in Interfaces.C.int);
@@ -137,6 +151,8 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_value_input_draw
            (W : in Storage.Integer_Address);
@@ -233,11 +249,11 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
         begin
             return This : Value_Input do
                 This.Void_Ptr := new_fl_value_input
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -259,9 +275,11 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
-    ------------------
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
     --  Attributes  --
-    ------------------
 
     function Text_Field
            (This : in out Value_Input)
@@ -273,9 +291,7 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
-    -----------------------
-    --  API Subprograms  --
-    -----------------------
+    --  Cursors  --
 
     function Get_Cursor_Color
            (This : in Value_Input)
@@ -295,6 +311,8 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
+    --  Shortcut  --
+
     function Get_Shortcut
            (This : in Value_Input)
         return Key_Combo is
@@ -313,6 +331,8 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
+    --  Allow Outside Range  --
+
     function Is_Soft
            (This : in Value_Input)
         return Boolean is
@@ -330,6 +350,8 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
+
+    --  Text Settings  --
 
     function Get_Text_Color
            (This : in Value_Input)
@@ -381,6 +403,8 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
+    --  Dimensions  --
+
     procedure Resize
            (This       : in out Value_Input;
             X, Y, W, H : in     Integer) is
@@ -395,6 +419,8 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Value_Input) is

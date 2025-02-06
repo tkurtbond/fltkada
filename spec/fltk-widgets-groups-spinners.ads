@@ -40,6 +40,8 @@ package FLTK.Widgets.Groups.Spinners is
 
 
 
+    --  Settings  --
+
     function Get_Background_Color
            (This : in Spinner)
         return Color;
@@ -82,6 +84,8 @@ package FLTK.Widgets.Groups.Spinners is
 
 
 
+
+    --  Values  --
 
     function Get_Minimum
            (This : in Spinner)
@@ -126,6 +130,8 @@ package FLTK.Widgets.Groups.Spinners is
 
 
 
+    --  Formatting  --
+
     function Get_Format
            (This : in Spinner)
         return String;
@@ -145,12 +151,16 @@ package FLTK.Widgets.Groups.Spinners is
 
 
 
+    --  Dimensions  --
+
     procedure Resize
            (This       : in out Spinner;
             X, Y, W, H : in     Integer);
 
 
 
+
+    --  Events  --
 
     function Handle
            (This  : in out Spinner;

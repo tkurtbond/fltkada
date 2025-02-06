@@ -31,6 +31,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_text_display
            (X, Y, W, H : in Interfaces.C.int;
             Label      : in Interfaces.C.char_array)
@@ -45,6 +47,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+
+    --  Buffers  --
 
     function fl_text_display_get_buffer
            (TD : in Storage.Integer_Address)
@@ -73,6 +77,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Highlighting  --
+
     procedure fl_text_display_highlight_data
            (TD, TB, ST : in Storage.Integer_Address;
             L          : in Interfaces.C.int);
@@ -96,6 +102,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+
+    --  Measurement Conversion  --
 
     function fl_text_display_col_to_x
            (TD : in Storage.Integer_Address;
@@ -175,6 +183,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Cursors  --
+
     function fl_text_display_get_cursor_color
            (TD : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
@@ -205,6 +215,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+
+    --  Text Settings  --
 
     function fl_text_display_get_text_color
            (TD : in Storage.Integer_Address)
@@ -245,6 +257,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Text Insert  --
+
     procedure fl_text_display_insert
            (TD : in Storage.Integer_Address;
             I  : in Interfaces.C.char_array);
@@ -277,6 +291,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Words  --
+
     function fl_text_display_word_start
            (TD : in Storage.Integer_Address;
             P  : in Interfaces.C.int)
@@ -303,6 +319,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+
+    --  Wrapping  --
 
     procedure fl_text_display_wrap_mode
            (TD    : in Storage.Integer_Address;
@@ -341,6 +359,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+
+    --  Lines  --
 
     function fl_text_display_line_start
            (TD : in Storage.Integer_Address;
@@ -397,6 +417,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Absolute Lines  --
+
     procedure fl_text_display_absolute_top_line_number
            (TD : in Storage.Integer_Address;
             C  : in Interfaces.C.int);
@@ -434,6 +456,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Visible Lines  --
+
     function fl_text_display_empty_vlines
            (TD : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -455,6 +479,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+
+    --  Line Numbers  --
 
     function fl_text_display_get_linenumber_align
            (TD : in Storage.Integer_Address)
@@ -557,6 +583,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Text Measurement  --
+
     function fl_text_display_measure_proportional_character
            (TD   : in Storage.Integer_Address;
             T    : in Interfaces.C.char_array;
@@ -584,6 +612,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Movement  --
+
     function fl_text_display_move_down
            (TD : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -610,6 +640,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+
+    --  Scrolling  --
 
     procedure fl_text_display_scroll
            (TD   : in Storage.Integer_Address;
@@ -661,6 +693,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Shortcuts  --
+
     function fl_text_display_get_shortcut
            (TD : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -676,6 +710,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Dimensions  --
+
     procedure fl_text_display_resize
            (TD         : in Storage.Integer_Address;
             X, Y, W, H : in Interfaces.C.int);
@@ -684,6 +720,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_text_display_clear_rect
            (TD            : in Storage.Integer_Address;
@@ -865,11 +903,11 @@ package body FLTK.Widgets.Groups.Text_Displays is
         begin
             return This : Text_Display do
                 This.Void_Ptr := new_fl_text_display
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -894,6 +932,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Buffers  --
 
     function Get_Buffer
            (This : in Text_Display)
@@ -960,6 +1000,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Highlighting  --
+
     procedure Highlight_Data
            (This  : in out Text_Display;
             Buff  : in out FLTK.Text_Buffers.Text_Buffer;
@@ -1015,13 +1057,15 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Measurement Conversion  --
+
     function Col_To_X
            (This    : in Text_Display;
             Col_Num : in Integer)
         return Integer is
     begin
         return Integer (Interfaces.C.double'Rounding
-               (fl_text_display_col_to_x (This.Void_Ptr, Interfaces.C.double (Col_Num))));
+            (fl_text_display_col_to_x (This.Void_Ptr, Interfaces.C.double (Col_Num))));
     end Col_To_X;
 
 
@@ -1031,7 +1075,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
         return Integer is
     begin
         return Integer (Interfaces.C.double'Rounding
-               (fl_text_display_x_to_col (This.Void_Ptr, Interfaces.C.double (X_Pos))));
+            (fl_text_display_x_to_col (This.Void_Ptr, Interfaces.C.double (X_Pos))));
     end X_To_Col;
 
 
@@ -1041,7 +1085,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
         return Boolean is
     begin
         return fl_text_display_in_selection
-               (This.Void_Ptr, Interfaces.C.int (X), Interfaces.C.int (Y)) /= 0;
+            (This.Void_Ptr, Interfaces.C.int (X), Interfaces.C.int (Y)) /= 0;
     end In_Selection;
 
 
@@ -1052,10 +1096,10 @@ package body FLTK.Widgets.Groups.Text_Displays is
             Vert_Out :    out Boolean) is
     begin
         Vert_Out := fl_text_display_position_to_xy
-               (This.Void_Ptr,
-                Interfaces.C.int (Pos),
-                Interfaces.C.int (X),
-                Interfaces.C.int (Y)) /= 0;
+           (This.Void_Ptr,
+            Interfaces.C.int (Pos),
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y)) /= 0;
     end Position_To_XY;
 
 
@@ -1253,6 +1297,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Cursors  --
+
     function Get_Cursor_Color
            (This : in Text_Display)
         return Color is
@@ -1292,6 +1338,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+
+    --  Text Settings  --
 
     function Get_Text_Color
            (This : in Text_Display)
@@ -1343,6 +1391,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Text Insert  --
+
     procedure Insert_Text
            (This : in out Text_Display;
             Item : in     String) is
@@ -1384,14 +1434,16 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Words  --
+
     function Word_Start
            (This : in out Text_Display;
             Pos  : in     Natural)
         return Natural is
     begin
         return Natural (fl_text_display_word_start
-               (This.Void_Ptr,
-                Interfaces.C.int (Pos)));
+           (This.Void_Ptr,
+            Interfaces.C.int (Pos)));
     end Word_Start;
 
 
@@ -1401,8 +1453,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
         return Natural is
     begin
         return Natural (fl_text_display_word_end
-               (This.Void_Ptr,
-                Interfaces.C.int (Pos)));
+           (This.Void_Ptr,
+            Interfaces.C.int (Pos)));
     end Word_End;
 
 
@@ -1422,15 +1474,17 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Wrapping  --
+
     procedure Set_Wrap_Mode
            (This   : in out Text_Display;
             Mode   : in     Wrap_Mode;
             Margin : in     Natural := 0) is
     begin
         fl_text_display_wrap_mode
-               (This.Void_Ptr,
-                Wrap_Mode'Pos (Mode),
-                Interfaces.C.int (Margin));
+           (This.Void_Ptr,
+            Wrap_Mode'Pos (Mode),
+            Interfaces.C.int (Margin));
     end Set_Wrap_Mode;
 
 
@@ -1529,14 +1583,16 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Lines  --
+
     function Line_Start
            (This : in Text_Display;
             Pos  : in Natural)
         return Natural is
     begin
         return Natural (fl_text_display_line_start
-               (This.Void_Ptr,
-                Interfaces.C.int (Pos)));
+           (This.Void_Ptr,
+            Interfaces.C.int (Pos)));
     end Line_Start;
 
 
@@ -1547,9 +1603,9 @@ package body FLTK.Widgets.Groups.Text_Displays is
         return Natural is
     begin
         return Natural (fl_text_display_line_end
-               (This.Void_Ptr,
-                Interfaces.C.int (Pos),
-                Boolean'Pos (Start_Pos_Is_Line_Start)));
+           (This.Void_Ptr,
+            Interfaces.C.int (Pos),
+            Boolean'Pos (Start_Pos_Is_Line_Start)));
     end Line_End;
 
 
@@ -1560,10 +1616,10 @@ package body FLTK.Widgets.Groups.Text_Displays is
         return Natural is
     begin
         return Natural (fl_text_display_count_lines
-               (This.Void_Ptr,
-                Interfaces.C.int (Start),
-                Interfaces.C.int (Finish),
-                Boolean'Pos (Start_Pos_Is_Line_Start)));
+           (This.Void_Ptr,
+            Interfaces.C.int (Start),
+            Interfaces.C.int (Finish),
+            Boolean'Pos (Start_Pos_Is_Line_Start)));
     end Count_Lines;
 
 
@@ -1574,10 +1630,10 @@ package body FLTK.Widgets.Groups.Text_Displays is
         return Natural is
     begin
         return Natural (fl_text_display_skip_lines
-               (This.Void_Ptr,
-                Interfaces.C.int (Start),
-                Interfaces.C.int (Lines),
-                Boolean'Pos (Start_Pos_Is_Line_Start)));
+           (This.Void_Ptr,
+            Interfaces.C.int (Start),
+            Interfaces.C.int (Lines),
+            Boolean'Pos (Start_Pos_Is_Line_Start)));
     end Skip_Lines;
 
 
@@ -1587,9 +1643,9 @@ package body FLTK.Widgets.Groups.Text_Displays is
         return Natural is
     begin
         return Natural (fl_text_display_rewind_lines
-               (This.Void_Ptr,
-                Interfaces.C.int (Start),
-                Interfaces.C.int (Lines)));
+           (This.Void_Ptr,
+            Interfaces.C.int (Start),
+            Interfaces.C.int (Lines)));
     end Rewind_Lines;
 
 
@@ -1622,6 +1678,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+
+    --  Absolute Lines  --
 
     procedure Redo_Absolute_Top_Line
            (This      : in out Text_Display;
@@ -1677,6 +1735,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Visible Lines  --
+
     function Has_Empty_Visible_Lines
            (This : in Text_Display)
         return Boolean
@@ -1724,6 +1784,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Line Numbers  --
+
     function Get_Linenumber_Alignment
            (This : in Text_Display)
         return Alignment is
@@ -1737,8 +1799,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
             To   : in     Alignment) is
     begin
         fl_text_display_set_linenumber_align
-               (This.Void_Ptr,
-                Interfaces.C.unsigned (To));
+           (This.Void_Ptr,
+            Interfaces.C.unsigned (To));
     end Set_Linenumber_Alignment;
 
 
@@ -1755,8 +1817,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
             To   : in     Color) is
     begin
         fl_text_display_set_linenumber_bgcolor
-               (This.Void_Ptr,
-                Interfaces.C.unsigned (To));
+           (This.Void_Ptr,
+            Interfaces.C.unsigned (To));
     end Set_Linenumber_Back_Color;
 
 
@@ -1773,8 +1835,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
             To   : in     Color) is
     begin
         fl_text_display_set_linenumber_fgcolor
-               (This.Void_Ptr,
-                Interfaces.C.unsigned (To));
+           (This.Void_Ptr,
+            Interfaces.C.unsigned (To));
     end Set_Linenumber_Fore_Color;
 
 
@@ -1791,8 +1853,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
             To   : in     Font_Kind) is
     begin
         fl_text_display_set_linenumber_font
-               (This.Void_Ptr,
-                Font_Kind'Pos (To));
+           (This.Void_Ptr,
+            Font_Kind'Pos (To));
     end Set_Linenumber_Font;
 
 
@@ -1809,8 +1871,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
             To   : in     Font_Size) is
     begin
         fl_text_display_set_linenumber_size
-               (This.Void_Ptr,
-                Interfaces.C.int (To));
+           (This.Void_Ptr,
+            Interfaces.C.int (To));
     end Set_Linenumber_Size;
 
 
@@ -1827,8 +1889,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
             Width : in     Natural) is
     begin
         fl_text_display_set_linenumber_width
-               (This.Void_Ptr,
-                Interfaces.C.int (Width));
+           (This.Void_Ptr,
+            Interfaces.C.int (Width));
     end Set_Linenumber_Width;
 
 
@@ -1856,6 +1918,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+
+    --  Text Measurement  --
 
     function Measure_Character
            (This  : in Text_Display;
@@ -1904,6 +1968,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+
+    --  Movement  --
 
     procedure Move_Down
            (This : in out Text_Display)
@@ -2015,6 +2081,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Scrolling  --
+
     procedure Scroll_To
            (This   : in out Text_Display;
             Line   : in     Natural;
@@ -2059,8 +2127,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
             Align : in     Alignment) is
     begin
         fl_text_display_set_scrollbar_align
-               (This.Void_Ptr,
-                Interfaces.C.unsigned (Align));
+           (This.Void_Ptr,
+            Interfaces.C.unsigned (Align));
     end Set_Scrollbar_Alignment;
 
 
@@ -2077,8 +2145,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
             Width : in     Natural) is
     begin
         fl_text_display_set_scrollbar_width
-               (This.Void_Ptr,
-                Interfaces.C.int (Width));
+           (This.Void_Ptr,
+            Interfaces.C.int (Width));
     end Set_Scrollbar_Width;
 
 
@@ -2098,6 +2166,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Shortcuts  --
+
     function Get_Shortcut
            (This : in Text_Display)
         return Key_Combo is
@@ -2116,6 +2186,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+    --  Dimensions  --
+
     procedure Resize
            (This       : in out Text_Display;
             X, Y, W, H : in     Integer) is
@@ -2130,6 +2202,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Clear_Rect
            (This       : in out Text_Display;

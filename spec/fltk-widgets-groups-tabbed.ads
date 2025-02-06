@@ -33,6 +33,8 @@ package FLTK.Widgets.Groups.Tabbed is
 
 
 
+    --  Child Area  --
+
     procedure Get_Client_Area
            (This       : in     Tabbed_Group;
             Tab_Height : in     Natural;
@@ -40,6 +42,8 @@ package FLTK.Widgets.Groups.Tabbed is
 
 
 
+
+    --  Operation  --
 
     function Get_Push
            (This : in Tabbed_Group)
@@ -64,6 +68,8 @@ package FLTK.Widgets.Groups.Tabbed is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Tabbed_Group);

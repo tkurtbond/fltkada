@@ -38,6 +38,8 @@ package FLTK.Widgets.Inputs.Text is
 
 
 
+    --  Drawing, Events  --
+
     procedure Draw
            (This : in out Text_Input);
 

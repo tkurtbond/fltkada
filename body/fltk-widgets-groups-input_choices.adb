@@ -21,6 +21,8 @@ package body FLTK.Widgets.Groups.Input_Choices is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_input_choice
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -35,6 +37,8 @@ package body FLTK.Widgets.Groups.Input_Choices is
 
 
 
+
+    --  Attributes  --
 
     function fl_input_choice_input
            (N : in Storage.Integer_Address)
@@ -51,6 +55,8 @@ package body FLTK.Widgets.Groups.Input_Choices is
 
 
 
+    --  Menu Items  --
+
     procedure fl_input_choice_clear
            (N : in Storage.Integer_Address);
     pragma Import (C, fl_input_choice_clear, "fl_input_choice_clear");
@@ -58,6 +64,8 @@ package body FLTK.Widgets.Groups.Input_Choices is
 
 
 
+
+    --  Settings  --
 
     function fl_input_choice_changed
            (N : in Storage.Integer_Address)
@@ -144,6 +152,8 @@ package body FLTK.Widgets.Groups.Input_Choices is
 
 
 
+    --  Dimensions  --
+
     procedure fl_input_choice_resize
            (N          : in Storage.Integer_Address;
             X, Y, W, H : in Interfaces.C.int);
@@ -152,6 +162,8 @@ package body FLTK.Widgets.Groups.Input_Choices is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_input_choice_draw
            (W : in Storage.Integer_Address);
@@ -274,11 +286,11 @@ package body FLTK.Widgets.Groups.Input_Choices is
         begin
             return This : Input_Choice do
                 This.Void_Ptr := new_fl_input_choice
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -300,9 +312,11 @@ package body FLTK.Widgets.Groups.Input_Choices is
 
 
 
-    ------------------
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
     --  Attributes  --
-    ------------------
 
     function Text_Field
            (This : in out Input_Choice)
@@ -322,9 +336,7 @@ package body FLTK.Widgets.Groups.Input_Choices is
 
 
 
-    -----------------------
-    --  API Subprograms  --
-    -----------------------
+    --  Menu Items  --
 
     function Has_Item
            (This  : in Input_Choice;
@@ -360,6 +372,8 @@ package body FLTK.Widgets.Groups.Input_Choices is
 
 
 
+
+    --  Settings  --
 
     function Has_Changed
            (This : in Input_Choice)
@@ -482,6 +496,8 @@ package body FLTK.Widgets.Groups.Input_Choices is
 
 
 
+
+    --  Dimensions  --
 
     procedure Resize
            (This       : in out Input_Choice;

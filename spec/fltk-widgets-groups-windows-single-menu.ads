@@ -44,6 +44,8 @@ package FLTK.Widgets.Groups.Windows.Single.Menu is
 
 
 
+    --  Visibility  --
+
     procedure Show
            (This : in out Menu_Window);
 
@@ -58,6 +60,8 @@ package FLTK.Widgets.Groups.Windows.Single.Menu is
 
 
 
+
+    --  Overlay  --
 
     function Is_Overlay
            (This : in Menu_Window)

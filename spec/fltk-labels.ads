@@ -42,6 +42,8 @@ package FLTK.Labels is
 
 
 
+    --  Attributes  --
+
     function Get_Value
            (This : in Label)
         return String;
@@ -108,6 +110,8 @@ package FLTK.Labels is
 
 
 
+
+    --  Drawing  --
 
     procedure Draw
            (This       : in out Label;

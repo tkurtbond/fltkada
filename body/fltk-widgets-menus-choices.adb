@@ -22,6 +22,8 @@ package body FLTK.Widgets.Menus.Choices is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_choice
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -36,6 +38,8 @@ package body FLTK.Widgets.Menus.Choices is
 
 
 
+
+    --  Selection  --
 
     function fl_choice_value
            (M : in Storage.Integer_Address)
@@ -59,6 +63,8 @@ package body FLTK.Widgets.Menus.Choices is
 
 
 
+    --  Drawing, Events  --
+
     procedure fl_choice_draw
            (W : in Storage.Integer_Address);
     pragma Import (C, fl_choice_draw, "fl_choice_draw");
@@ -73,6 +79,8 @@ package body FLTK.Widgets.Menus.Choices is
 
 
 
+
+    --  Initialize  --
 
     function fl_menu_get_item
            (M : in Storage.Integer_Address;
@@ -140,11 +148,11 @@ package body FLTK.Widgets.Menus.Choices is
         begin
             return This : Choice do
                 This.Void_Ptr := new_fl_choice
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -169,6 +177,8 @@ package body FLTK.Widgets.Menus.Choices is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Selection  --
 
     function Chosen_Index
            (This : in Choice)
@@ -217,6 +227,8 @@ package body FLTK.Widgets.Menus.Choices is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Choice) is

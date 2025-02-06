@@ -17,6 +17,8 @@ package body FLTK.Widgets.Inputs.Text.Outputs is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_output
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -31,6 +33,8 @@ package body FLTK.Widgets.Inputs.Text.Outputs is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_output_draw
            (W : in Storage.Integer_Address);
@@ -101,11 +105,11 @@ package body FLTK.Widgets.Inputs.Text.Outputs is
         begin
             return This : Output do
                 This.Void_Ptr := new_fl_output
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;

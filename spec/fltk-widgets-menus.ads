@@ -68,6 +68,8 @@ package FLTK.Widgets.Menus is
 
 
 
+    --  Menu Items  --
+
     procedure Add
            (This : in out Menu;
             Text : in     String);
@@ -163,6 +165,8 @@ package FLTK.Widgets.Menus is
 
 
 
+    --  Item Query  --
+
     function Has_Item
            (This  : in Menu;
             Place : in Index)
@@ -224,6 +228,8 @@ package FLTK.Widgets.Menus is
 
 
 
+    --  Iteration  --
+
     package Menu_Iterators is
         new Ada.Iterator_Interfaces (Cursor, Has_Item);
 
@@ -233,6 +239,8 @@ package FLTK.Widgets.Menus is
 
 
 
+
+    --  Selection  --
 
     function Chosen
            (This : in Menu)
@@ -267,6 +275,8 @@ package FLTK.Widgets.Menus is
 
 
 
+    --  Label, Shortcut, Flags  --
+
     procedure Set_Only
            (This : in out Menu;
             Item : in out FLTK.Menu_Items.Menu_Item);
@@ -299,6 +309,8 @@ package FLTK.Widgets.Menus is
 
 
 
+    --  Text Settings  --
+
     function Get_Text_Color
            (This : in Menu)
         return Color;
@@ -326,6 +338,8 @@ package FLTK.Widgets.Menus is
 
 
 
+    --  Miscellaneous  --
+
     function Get_Down_Box
            (This : in Menu)
         return Box_Kind;
@@ -344,6 +358,8 @@ package FLTK.Widgets.Menus is
 
 
 
+
+    --  Menu Item Methods  --
 
     function Popup
            (This    : in Menu;
@@ -380,12 +396,16 @@ package FLTK.Widgets.Menus is
 
 
 
+    --  Dimensions  --
+
     procedure Resize
            (This : in out Menu;
             W, H : in     Integer);
 
 
 
+
+    --  Drawing  --
 
     procedure Draw_Item
            (This       : in out Menu;

@@ -17,6 +17,8 @@ package body FLTK.Widgets.Progress_Bars is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_progress
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -31,6 +33,8 @@ package body FLTK.Widgets.Progress_Bars is
 
 
 
+
+    --  Values  --
 
     function fl_progress_get_minimum
            (P : in Storage.Integer_Address)
@@ -70,6 +74,8 @@ package body FLTK.Widgets.Progress_Bars is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_progress_draw
            (P : in Storage.Integer_Address);
@@ -140,11 +146,11 @@ package body FLTK.Widgets.Progress_Bars is
         begin
             return This : Progress_Bar do
                 This.Void_Ptr := new_fl_progress
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -169,6 +175,8 @@ package body FLTK.Widgets.Progress_Bars is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Values  --
 
     function Get_Minimum
            (This : in Progress_Bar)
@@ -219,6 +227,8 @@ package body FLTK.Widgets.Progress_Bars is
 
 
 
+
+    --  Drawing  --
 
     procedure Draw
            (This : in out Progress_Bar) is

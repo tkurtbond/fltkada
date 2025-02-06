@@ -27,6 +27,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
     --  Functions From C  --
     ------------------------
 
+    --  Errors, File Data  --
+
     function get_error_message
            return Interfaces.C.Strings.chars_ptr;
     pragma Import (C, get_error_message, "get_error_message");
@@ -41,6 +43,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
 
 
 
+
+    --  Allocation  --
 
     function new_fl_file_browser
            (X, Y, W, H : in Interfaces.C.int;
@@ -57,6 +61,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
 
 
 
+    --  Directory  --
+
     function fl_file_browser_load
            (B : in Storage.Integer_Address;
             D : in Interfaces.C.char_array;
@@ -67,6 +73,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
 
 
 
+
+    --  Settings  --
 
     function fl_file_browser_get_filetype
            (B : in Storage.Integer_Address)
@@ -118,6 +126,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
 
 
 
+
+    --  Item Implementation  --
 
     function fl_file_browser_item_width
            (B, I : in Storage.Integer_Address)
@@ -194,6 +204,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
 
 
 
+    --  List Implementation  --
+
     function fl_file_browser_full_width
            (B : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -221,6 +233,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
 
 
 
+    --  Drawing, Events  --
+
     procedure fl_file_browser_draw
            (B : in Storage.Integer_Address);
     pragma Import (C, fl_file_browser_draw, "fl_file_browser_draw");
@@ -232,6 +246,32 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
         return Interfaces.C.int;
     pragma Import (C, fl_file_browser_handle, "fl_file_browser_handle");
     pragma Inline (fl_file_browser_handle);
+
+
+
+
+    -------------
+    --  Hooks  --
+    -------------
+
+    Current_Sort : FLTK.Filenames.Compare_Function;
+
+    function Compare_Hook
+           (DA, DB : in Storage.Integer_Address)
+        return Interfaces.C.int;
+
+    pragma Convention (C, Compare_Hook);
+
+    function Compare_Hook
+           (DA, DB : in Storage.Integer_Address)
+        return Interfaces.C.int
+    is
+        Result : FLTK.Filenames.Comparison := Current_Sort
+           (Interfaces.C.Strings.Value (filename_dname (DA, 0)),
+            Interfaces.C.Strings.Value (filename_dname (DB, 0)));
+    begin
+        return FLTK.Filenames.Comparison'Pos (Result) - 1;
+    end Compare_Hook;
 
 
 
@@ -338,25 +378,7 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
     --  API Subprograms  --
     -----------------------
 
-    Current_Sort : FLTK.Filenames.Compare_Function;
-
-    function Compare_Hook
-           (DA, DB : in Storage.Integer_Address)
-        return Interfaces.C.int;
-
-    pragma Convention (C, Compare_Hook);
-
-    function Compare_Hook
-           (DA, DB : in Storage.Integer_Address)
-        return Interfaces.C.int
-    is
-        Result : FLTK.Filenames.Comparison := Current_Sort
-           (Interfaces.C.Strings.Value (filename_dname (DA, 0)),
-            Interfaces.C.Strings.Value (filename_dname (DB, 0)));
-    begin
-        return FLTK.Filenames.Comparison'Pos (Result) - 1;
-    end Compare_Hook;
-
+    --  Directory  --
 
     function Load
            (This : in out File_Browser;
@@ -396,6 +418,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
 
 
 
+
+    --  Settings  --
 
     function Get_File_Kind
            (This : in File_Browser)
@@ -476,6 +500,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
 
 
 
+    --  List Implementation  --
+
     function Full_List_Height
            (This : in File_Browser)
         return Integer is
@@ -493,6 +519,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
 
 
 
+
+    --  Item Implementation  --
 
     function Item_Width
            (This : in File_Browser;

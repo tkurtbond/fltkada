@@ -21,6 +21,8 @@ package body FLTK.Widgets.Valuators.Value_Outputs is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_value_output
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -36,6 +38,8 @@ package body FLTK.Widgets.Valuators.Value_Outputs is
 
 
 
+    --  Allow Outside Range  --
+
     function fl_value_output_is_soft
            (A : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -50,6 +54,8 @@ package body FLTK.Widgets.Valuators.Value_Outputs is
 
 
 
+
+    --  Text Settings  --
 
     function fl_value_output_get_text_color
            (TD : in Storage.Integer_Address)
@@ -89,6 +95,8 @@ package body FLTK.Widgets.Valuators.Value_Outputs is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_value_output_draw
            (W : in Storage.Integer_Address);
@@ -159,11 +167,11 @@ package body FLTK.Widgets.Valuators.Value_Outputs is
         begin
             return This : Value_Output do
                 This.Void_Ptr := new_fl_value_output
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -189,6 +197,8 @@ package body FLTK.Widgets.Valuators.Value_Outputs is
     --  API Subprograms  --
     -----------------------
 
+    --  Allow Outside Range  --
+
     function Is_Soft
            (This : in Value_Output)
         return Boolean is
@@ -206,6 +216,8 @@ package body FLTK.Widgets.Valuators.Value_Outputs is
 
 
 
+
+    --  Text Settings  --
 
     function Get_Text_Color
            (This : in Value_Output)
@@ -256,6 +268,8 @@ package body FLTK.Widgets.Valuators.Value_Outputs is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Value_Output) is

@@ -26,6 +26,8 @@ package body FLTK.Widgets.Groups is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_group
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -40,6 +42,8 @@ package body FLTK.Widgets.Groups is
 
 
 
+
+    --  Contents Modification  --
 
     procedure fl_group_add
            (G, W : in Storage.Integer_Address);
@@ -71,6 +75,8 @@ package body FLTK.Widgets.Groups is
 
 
 
+    --  Contents Query  --
+
     function fl_group_child
            (G : in Storage.Integer_Address;
             I : in Interfaces.C.int)
@@ -93,6 +99,8 @@ package body FLTK.Widgets.Groups is
 
 
 
+    --  Clipping  --
+
     function fl_group_get_clip_children
            (G : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
@@ -107,6 +115,8 @@ package body FLTK.Widgets.Groups is
 
 
 
+
+    --  Dimensions  --
 
     procedure fl_group_add_resizable
            (G, W : in Storage.Integer_Address);
@@ -138,6 +148,8 @@ package body FLTK.Widgets.Groups is
 
 
 
+    --  Current  --
+
     function fl_group_get_current
         return Storage.Integer_Address;
     pragma Import (C, fl_group_get_current, "fl_group_get_current");
@@ -160,6 +172,8 @@ package body FLTK.Widgets.Groups is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_group_draw
            (W : in Storage.Integer_Address);
@@ -252,11 +266,11 @@ package body FLTK.Widgets.Groups is
         begin
             return This : Group do
                 This.Void_Ptr := new_fl_group
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -282,6 +296,8 @@ package body FLTK.Widgets.Groups is
     --  API Subprograms  --
     -----------------------
 
+    --  Contents Modification  --
+
     procedure Add
            (This : in out Group;
             Item : in out Widget'Class) is
@@ -296,9 +312,9 @@ package body FLTK.Widgets.Groups is
             Place : in     Index) is
     begin
         fl_group_insert
-               (This.Void_Ptr,
-                Item.Void_Ptr,
-                Interfaces.C.int (Place) - 1);
+           (This.Void_Ptr,
+            Item.Void_Ptr,
+            Interfaces.C.int (Place) - 1);
     end Insert;
 
 
@@ -308,9 +324,9 @@ package body FLTK.Widgets.Groups is
             Before : in     Widget'Class) is
     begin
         fl_group_insert2
-               (This.Void_Ptr,
-                Item.Void_Ptr,
-                Before.Void_Ptr);
+           (This.Void_Ptr,
+            Item.Void_Ptr,
+            Before.Void_Ptr);
     end Insert;
 
 
@@ -342,6 +358,8 @@ package body FLTK.Widgets.Groups is
 
 
 
+
+    --  Contents Query  --
 
     function Has_Child
            (This  : in Group;
@@ -412,6 +430,8 @@ package body FLTK.Widgets.Groups is
 
 
 
+    --  Iteration  --
+
     function Iterate
            (This : in Group)
         return Group_Iterators.Reversible_Iterator'Class is
@@ -470,6 +490,8 @@ package body FLTK.Widgets.Groups is
 
 
 
+    --  Clipping  --
+
     function Get_Clip_Mode
            (This : in Group)
         return Clip_Mode
@@ -493,6 +515,8 @@ package body FLTK.Widgets.Groups is
 
 
 
+
+    --  Dimensions  --
 
     procedure Add_Resizable
            (This : in out Group;
@@ -551,6 +575,8 @@ package body FLTK.Widgets.Groups is
 
 
 
+    --  Current  --
+
     function Get_Current
         return access Group'Class
     is
@@ -591,6 +617,8 @@ package body FLTK.Widgets.Groups is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Group) is

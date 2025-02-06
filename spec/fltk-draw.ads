@@ -14,10 +14,6 @@ with
 package FLTK.Draw is
 
 
-    --------------------------
-    --  Types and Constants --
-    --------------------------
-
     type Line_Kind is
        (Solid_Line,
         Dash_Line,
@@ -67,9 +63,7 @@ package FLTK.Draw is
 
 
 
-    ------------------------
     --  No Documentation  --
-    ------------------------
 
     procedure Reset_Spot;
 
@@ -90,9 +84,7 @@ package FLTK.Draw is
 
 
 
-    ---------------
     --  Utility  --
-    ---------------
 
     function Can_Do_Alpha_Blending
         return Boolean;
@@ -104,9 +96,7 @@ package FLTK.Draw is
 
 
 
-    --------------------------
     --  Charset Conversion  --
-    --------------------------
 
     function Latin1_To_Local
            (From : in String)
@@ -127,9 +117,7 @@ package FLTK.Draw is
 
 
 
-    ----------------
     --  Clipping  --
-    ----------------
 
     function Clip_Box
            (X, Y, W, H     : in     Integer;
@@ -152,9 +140,7 @@ package FLTK.Draw is
 
 
 
-    ---------------
     --  Overlay  --
-    ---------------
 
     procedure Overlay_Clear;
 
@@ -164,9 +150,7 @@ package FLTK.Draw is
 
 
 
-    ----------------
     --  Settings  --
-    ----------------
 
     function Get_Color
         return Color;
@@ -216,9 +200,7 @@ package FLTK.Draw is
 
 
 
-    -------------------------
     --  Matrix Operations  --
-    -------------------------
 
     procedure Mult_Matrix
            (A, B, C, D, X, Y : in Long_Float);
@@ -264,9 +246,7 @@ package FLTK.Draw is
 
 
 
-    ---------------------
     --  Image Drawing  --
-    ---------------------
 
     procedure Draw_Image
            (X, Y, W, H      : in Integer;
@@ -319,9 +299,7 @@ package FLTK.Draw is
 
 
 
-    -----------------------
     --  Special Drawing  --
-    -----------------------
 
     procedure Add_Symbol
            (Text     : in String;
@@ -427,9 +405,7 @@ package FLTK.Draw is
 
 
 
-    ----------------------
     --  Manual Drawing  --
-    ----------------------
 
     procedure Begin_Complex_Polygon;
     procedure Begin_Line;
@@ -549,6 +525,32 @@ private
 
 
     pragma Convention (C, Symbol_Draw_Function);
+
+
+    pragma Import (C, Reset_Spot,    "fl_draw_reset_spot");
+
+    pragma Import (C, Pop_Clip,      "fl_draw_pop_clip");
+    pragma Import (C, Push_No_Clip,  "fl_draw_push_no_clip");
+    pragma Import (C, Restore_Clip,  "fl_draw_restore_clip");
+
+    pragma Import (C, Overlay_Clear, "fl_draw_overlay_clear");
+
+    pragma Import (C, Pop_Matrix,    "fl_draw_pop_matrix");
+    pragma Import (C, Push_Matrix,   "fl_draw_push_matrix");
+
+    pragma Import (C, Begin_Complex_Polygon, "fl_draw_begin_complex_polygon");
+    pragma Import (C, Begin_Line,    "fl_draw_begin_line");
+    pragma Import (C, Begin_Loop,    "fl_draw_begin_loop");
+    pragma Import (C, Begin_Points,  "fl_draw_begin_points");
+    pragma Import (C, Begin_Polygon, "fl_draw_begin_polygon");
+
+    pragma Import (C, Gap,           "fl_draw_gap");
+
+    pragma Import (C, End_Complex_Polygon, "fl_draw_end_complex_polygon");
+    pragma Import (C, End_Line,      "fl_draw_end_line");
+    pragma Import (C, End_Loop,      "fl_draw_end_loop");
+    pragma Import (C, End_Points,    "fl_draw_end_points");
+    pragma Import (C, End_Polygon,   "fl_draw_end_polygon");
 
 
     pragma Inline (Reset_Spot);

@@ -17,6 +17,8 @@ package body FLTK.Widgets.Valuators.Rollers is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_roller
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -31,6 +33,8 @@ package body FLTK.Widgets.Valuators.Rollers is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_roller_draw
            (W : in Storage.Integer_Address);
@@ -101,11 +105,11 @@ package body FLTK.Widgets.Valuators.Rollers is
         begin
             return This : Roller do
                 This.Void_Ptr := new_fl_roller
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -130,6 +134,8 @@ package body FLTK.Widgets.Valuators.Rollers is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Roller) is

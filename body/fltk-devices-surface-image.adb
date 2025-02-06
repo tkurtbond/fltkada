@@ -12,6 +12,12 @@ with
 package body FLTK.Devices.Surface.Image is
 
 
+    ------------------------
+    --  Functions From C  --
+    ------------------------
+
+    --  Allocation  --
+
     function new_fl_image_surface
            (W, H, R : in Interfaces.C.int)
         return Storage.Integer_Address;
@@ -25,6 +31,8 @@ package body FLTK.Devices.Surface.Image is
 
 
 
+
+    --  Drawing  --
 
     procedure fl_image_surface_draw
            (S, I   : in Storage.Integer_Address;
@@ -42,6 +50,8 @@ package body FLTK.Devices.Surface.Image is
 
 
 
+    --  Images  --
+
     function fl_image_surface_image
            (S : in Storage.Integer_Address)
         return Storage.Integer_Address;
@@ -57,6 +67,8 @@ package body FLTK.Devices.Surface.Image is
 
 
 
+    --  Surfaces  --
+
     procedure fl_image_surface_set_current
            (S : in Storage.Integer_Address);
     pragma Import (C, fl_image_surface_set_current, "fl_image_surface_set_current");
@@ -64,6 +76,10 @@ package body FLTK.Devices.Surface.Image is
 
 
 
+
+    -------------------
+    --  Destructors  --
+    -------------------
 
     procedure Finalize
            (This : in out Image_Surface) is
@@ -76,6 +92,10 @@ package body FLTK.Devices.Surface.Image is
 
 
 
+
+    --------------------
+    --  Constructors  --
+    --------------------
 
     package body Forge is
 
@@ -98,6 +118,12 @@ package body FLTK.Devices.Surface.Image is
 
 
 
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
+    --  Resolution  --
+
     function Is_Highres
            (This : in Image_Surface)
         return Boolean is
@@ -107,6 +133,8 @@ package body FLTK.Devices.Surface.Image is
 
 
 
+
+    --  Drawing  --
 
     procedure Draw_Widget
            (This               : in out Image_Surface;
@@ -136,6 +164,8 @@ package body FLTK.Devices.Surface.Image is
 
 
 
+    --  Images  --
+
     function Get_Image
            (This : in Image_Surface)
         return FLTK.Images.RGB.RGB_Image is
@@ -157,6 +187,8 @@ package body FLTK.Devices.Surface.Image is
 
 
 
+
+    --  Surfaces  --
 
     procedure Set_Current
            (This : in out Image_Surface) is

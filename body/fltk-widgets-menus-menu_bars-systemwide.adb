@@ -31,6 +31,8 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_sys_menu_bar
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -45,6 +47,8 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
 
 
 
+
+    --  Menu Items  --
 
     function fl_sys_menu_bar_add
            (M : in Storage.Integer_Address;
@@ -119,6 +123,8 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
 
 
 
+    --  Item Query  --
+
     function fl_sys_menu_bar_get_item
            (M : in Storage.Integer_Address;
             I : in Interfaces.C.int)
@@ -128,6 +134,8 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
 
 
 
+
+    --  Label, Shortcut, Flags  --
 
     procedure fl_sys_menu_bar_setonly
            (M, I : in Storage.Integer_Address);
@@ -165,6 +173,8 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
 
 
 
+    --  Global  --
+
     procedure fl_sys_menu_bar_global
            (M : in Storage.Integer_Address);
     pragma Import (C, fl_sys_menu_bar_global, "fl_sys_menu_bar_global");
@@ -177,6 +187,8 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_sys_menu_bar_draw
            (M : in Storage.Integer_Address);
@@ -192,6 +204,8 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
 
 
 
+
+    --  Initialize  --
 
     function fl_menu_value
            (M : in Storage.Integer_Address)
@@ -287,6 +301,8 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Menu Items  --
 
     procedure Add
            (This : in out System_Menu_Bar;
@@ -525,6 +541,8 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
 
 
 
+    --  Item Query  --
+
     function Item
            (This  : in System_Menu_Bar;
             Place : in Index)
@@ -535,6 +553,8 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
 
 
 
+
+    --  Label, Shortcut, Flags  --
 
     procedure Set_Only
            (This : in out System_Menu_Bar;
@@ -591,6 +611,8 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
 
 
 
+    --  Global  --
+
     procedure Make_Global
            (This : in out System_Menu_Bar) is
     begin
@@ -606,6 +628,8 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
 
 
 
+
+    --  Drawing  --
 
     procedure Draw
            (This : in out System_Menu_Bar) is

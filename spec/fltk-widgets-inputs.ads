@@ -50,6 +50,8 @@ package FLTK.Widgets.Inputs is
 
 
 
+    --  Clipboard  --
+
     procedure Copy
            (This        : in out Input;
             Destination : in     Clipboard_Kind := Cut_Paste_Board);
@@ -101,6 +103,8 @@ package FLTK.Widgets.Inputs is
 
 
 
+    --  Readonly, Tabs, Wrap  --
+
     function Is_Readonly
            (This : in Input)
         return Boolean;
@@ -127,6 +131,8 @@ package FLTK.Widgets.Inputs is
 
 
 
+
+    --  Shortcut, Input Position  --
 
     function Get_Kind
            (This : in Input)
@@ -180,6 +186,8 @@ package FLTK.Widgets.Inputs is
 
 
 
+    --  Text Field  --
+
     function Index
            (This  : in Input;
             Place : in Integer)
@@ -221,6 +229,8 @@ package FLTK.Widgets.Inputs is
 
 
 
+    --  Input Size  --
+
     function Get_Maximum_Size
            (This : in Input)
         return Natural;
@@ -235,6 +245,8 @@ package FLTK.Widgets.Inputs is
 
 
 
+
+    --  Cursors, Text Settings  --
 
     function Get_Cursor_Color
            (This : in Input)
@@ -271,6 +283,8 @@ package FLTK.Widgets.Inputs is
 
 
 
+    --  Dimensions  --
+
     procedure Resize
            (This : in out Input;
             W, H : in     Integer);
@@ -281,6 +295,8 @@ package FLTK.Widgets.Inputs is
 
 
 
+
+    --  Changing Input Type  --
 
     package Extra is
 

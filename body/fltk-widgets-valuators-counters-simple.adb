@@ -17,6 +17,8 @@ package body FLTK.Widgets.Valuators.Counters.Simple is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_simple_counter
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -31,6 +33,8 @@ package body FLTK.Widgets.Valuators.Counters.Simple is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_simple_counter_draw
            (W : in Storage.Integer_Address);
@@ -101,11 +105,11 @@ package body FLTK.Widgets.Valuators.Counters.Simple is
         begin
             return This : Simple_Counter do
                 This.Void_Ptr := new_fl_simple_counter
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;

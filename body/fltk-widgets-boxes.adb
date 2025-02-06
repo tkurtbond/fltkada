@@ -17,6 +17,8 @@ package body FLTK.Widgets.Boxes is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_box
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -38,6 +40,8 @@ package body FLTK.Widgets.Boxes is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_box_draw
            (W : in Storage.Integer_Address);
@@ -169,6 +173,8 @@ package body FLTK.Widgets.Boxes is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Drawing, Events  --
 
     procedure Draw
            (This : in out Box) is

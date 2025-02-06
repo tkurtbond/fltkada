@@ -38,6 +38,8 @@ package FLTK.Widgets.Charts is
 
 
 
+    --  Data  --
+
     procedure Add
            (This       : in out Chart;
             Data_Value : in     Long_Float;
@@ -63,6 +65,8 @@ package FLTK.Widgets.Charts is
 
 
 
+
+    --  Settings  --
 
     function Will_Autosize
            (This : in Chart)
@@ -95,6 +99,8 @@ package FLTK.Widgets.Charts is
 
 
 
+    --  Text Settings  --
+
     function Get_Text_Color
            (This : in Chart)
         return Color;
@@ -122,12 +128,16 @@ package FLTK.Widgets.Charts is
 
 
 
+    --  Dimensions  --
+
     procedure Resize
            (This : in out Chart;
             W, H : in     Integer);
 
 
 
+
+    --  Drawing  --
 
     procedure Draw
            (This : in out Chart);

@@ -19,6 +19,12 @@ private package FLTK.Pixmap_Marshal is
     type chars_ptr_array_access is access all Interfaces.C.Strings.chars_ptr_array;
 
 
+
+
+    --  From Ada to C char *  --
+
+    --  Note the resulting chars_ptr_array_access must be deallocated manually.
+
     function To_Coltype
            (Value : in FLTK.Images.Pixmaps.Color_Kind)
         return Character;

@@ -75,6 +75,8 @@ package FLTK.Devices.Surface.Paged is
 
 
 
+    --  Job Control  --
+
     procedure Start_Job
            (This  : in out Paged_Device;
             Count : in     Natural := 0);
@@ -95,6 +97,8 @@ package FLTK.Devices.Surface.Paged is
 
 
 
+
+    --  Spacing and Orientation  --
 
     procedure Get_Margins
            (This                     : in     Paged_Device;
@@ -133,6 +137,8 @@ package FLTK.Devices.Surface.Paged is
 
 
 
+
+    --  Printing  --
 
     procedure Print_Widget
            (This               : in out Paged_Device;

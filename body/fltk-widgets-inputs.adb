@@ -28,6 +28,8 @@ package body FLTK.Widgets.Inputs is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_input
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -42,6 +44,8 @@ package body FLTK.Widgets.Inputs is
 
 
 
+
+    --  Clipboard  --
 
     function fl_input_copy
            (I : in Storage.Integer_Address;
@@ -85,6 +89,8 @@ package body FLTK.Widgets.Inputs is
 
 
 
+    --  Readonly, Tabs, Wrap  --
+
     function fl_input_get_readonly
            (I : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -123,6 +129,8 @@ package body FLTK.Widgets.Inputs is
 
 
 
+
+    --  Shortcut, Input Position  --
 
     function fl_input_get_input_type
            (I : in Storage.Integer_Address)
@@ -184,6 +192,8 @@ package body FLTK.Widgets.Inputs is
 
 
 
+    --  Text Field  --
+
     function fl_input_index
            (I : in Storage.Integer_Address;
             P : in Interfaces.C.int)
@@ -219,6 +229,8 @@ package body FLTK.Widgets.Inputs is
 
 
 
+    --  Input Size  --
+
     function fl_input_get_maximum_size
            (I : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -239,6 +251,8 @@ package body FLTK.Widgets.Inputs is
 
 
 
+
+    --  Cursors, Text Settings  --
 
     function fl_input_get_cursor_color
            (I : in Storage.Integer_Address)
@@ -291,6 +305,8 @@ package body FLTK.Widgets.Inputs is
 
 
 
+    --  Dimensions  --
+
     procedure fl_input_set_size
            (I    : in Storage.Integer_Address;
             W, H : in Interfaces.C.int);
@@ -305,6 +321,8 @@ package body FLTK.Widgets.Inputs is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_input_draw
            (W : in Storage.Integer_Address);
@@ -375,11 +393,11 @@ package body FLTK.Widgets.Inputs is
         begin
             return This : Input do
                 This.Void_Ptr := new_fl_input
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -404,6 +422,8 @@ package body FLTK.Widgets.Inputs is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Clipboard  --
 
     procedure Copy
            (This        : in out Input;
@@ -540,6 +560,8 @@ package body FLTK.Widgets.Inputs is
 
 
 
+    --  Readonly, Tabs, Wrap  --
+
     function Is_Readonly
            (This : in Input)
         return Boolean is
@@ -589,6 +611,8 @@ package body FLTK.Widgets.Inputs is
 
 
 
+
+    --  Shortcut, Input Position  --
 
     function Get_Kind
            (This : in Input)
@@ -712,6 +736,8 @@ package body FLTK.Widgets.Inputs is
 
 
 
+    --  Text Field  --
+
     function Index
            (This  : in Input;
             Place : in Integer)
@@ -817,6 +843,8 @@ package body FLTK.Widgets.Inputs is
 
 
 
+    --  Input Size  --
+
     function Get_Maximum_Size
            (This : in Input)
         return Natural is
@@ -842,6 +870,8 @@ package body FLTK.Widgets.Inputs is
 
 
 
+
+    --  Cursors, Text Settings  --
 
     function Get_Cursor_Color
            (This : in Input)
@@ -909,6 +939,8 @@ package body FLTK.Widgets.Inputs is
 
 
 
+    --  Dimensions  --
+
     procedure Resize
            (This : in out Input;
             W, H : in     Integer) is
@@ -931,6 +963,8 @@ package body FLTK.Widgets.Inputs is
 
 
 
+
+    --  Changing Input Type  --
 
     package body Extra is
 

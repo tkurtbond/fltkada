@@ -40,6 +40,8 @@ package FLTK.Widgets.Valuators.Dials is
 
 
 
+    --  Limit Angles  --
+
     function Get_First_Angle
            (This : in Dial)
         return Short_Integer;
@@ -63,6 +65,8 @@ package FLTK.Widgets.Valuators.Dials is
 
 
 
+    --  Drawing, Events  --
+
     procedure Draw
            (This : in out Dial);
 
@@ -83,6 +87,8 @@ package FLTK.Widgets.Valuators.Dials is
 
 
 
+
+    --  Dial Type  --
 
     function Get_Kind
            (This : in Dial)

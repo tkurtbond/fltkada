@@ -29,6 +29,8 @@ package FLTK.Event is
 
 
 
+    --  Handlers  --
+
     procedure Add_Handler
            (Func : in Event_Handler);
 
@@ -48,6 +50,8 @@ package FLTK.Event is
 
 
 
+
+    --  Receiving  --
 
     function Get_Grab
         return access FLTK.Widgets.Groups.Windows.Window'Class;
@@ -78,6 +82,8 @@ package FLTK.Event is
 
 
 
+    --  Multikey  --
+
     function Compose
            (Del : out Natural)
         return Boolean;
@@ -93,6 +99,8 @@ package FLTK.Event is
 
 
 
+    --  Modifiers  --
+
     function Last
         return Event_Kind;
 
@@ -105,6 +113,8 @@ package FLTK.Event is
 
 
 
+
+    --  Mouse  --
 
     function Mouse_X
         return Integer;
@@ -154,6 +164,8 @@ package FLTK.Event is
 
 
 
+
+    --  Keyboard  --
 
     function Last_Key
         return Keypress;
@@ -206,6 +218,7 @@ private
     pragma Inline (fl_widget_get_user_data);
 
 
+    pragma Import (C, Compose_Reset, "fl_event_compose_reset");
 
 
     pragma Inline (Add_Handler);
@@ -213,7 +226,6 @@ private
     --  pragma Inline (Get_Dispatch);
     --  pragma Inline (Set_Dispatch);
     --  pragma Inline (Default_Dispatch);
-
 
     pragma Inline (Get_Grab);
     pragma Inline (Set_Grab);
@@ -225,16 +237,13 @@ private
     pragma Inline (Get_Focus);
     pragma Inline (Set_Focus);
 
-
     pragma Inline (Compose);
     pragma Inline (Compose_Reset);
     pragma Inline (Text);
     pragma Inline (Text_Length);
 
-
     pragma Inline (Last);
     pragma Inline (Last_Modifier);
-
 
     pragma Inline (Mouse_X);
     pragma Inline (Mouse_X_Root);
@@ -252,7 +261,6 @@ private
     pragma Inline (Mouse_Right);
     pragma Inline (Is_Inside);
 
-
     pragma Inline (Last_Key);
     pragma Inline (Original_Last_Key);
     pragma Inline (Pressed_During);
@@ -264,4 +272,5 @@ private
 
 
 end FLTK.Event;
+
 

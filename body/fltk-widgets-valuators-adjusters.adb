@@ -21,6 +21,8 @@ package body FLTK.Widgets.Valuators.Adjusters is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_adjuster
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -36,6 +38,8 @@ package body FLTK.Widgets.Valuators.Adjusters is
 
 
 
+    --  Allow Outside Range  --
+
     function fl_adjuster_is_soft
            (A : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -50,6 +54,8 @@ package body FLTK.Widgets.Valuators.Adjusters is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_adjuster_value_damage
            (A : in Storage.Integer_Address);
@@ -125,11 +131,11 @@ package body FLTK.Widgets.Valuators.Adjusters is
         begin
             return This : Adjuster do
                 This.Void_Ptr := new_fl_adjuster
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -155,6 +161,8 @@ package body FLTK.Widgets.Valuators.Adjusters is
     --  API Subprograms  --
     -----------------------
 
+    --  Allow Outside Range  --
+
     function Is_Soft
            (This : in Adjuster)
         return Boolean is
@@ -172,6 +180,8 @@ package body FLTK.Widgets.Valuators.Adjusters is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure Value_Damage
            (This : in out Adjuster) is

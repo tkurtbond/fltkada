@@ -17,6 +17,8 @@ package body FLTK.Widgets.Clocks.Updated is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_clock
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -39,6 +41,8 @@ package body FLTK.Widgets.Clocks.Updated is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_clock_draw
            (W : in Storage.Integer_Address);
@@ -109,11 +113,11 @@ package body FLTK.Widgets.Clocks.Updated is
         begin
             return This : Updated_Clock do
                 This.Void_Ptr := new_fl_clock
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -139,12 +143,12 @@ package body FLTK.Widgets.Clocks.Updated is
         begin
             return This : Updated_Clock do
                 This.Void_Ptr := new_fl_clock2
-                       (Box_Kind'Pos (Kind),
-                        Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Box_Kind'Pos (Kind),
+                    Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -170,6 +174,8 @@ package body FLTK.Widgets.Clocks.Updated is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Events  --
 
     function Handle
            (This  : in out Updated_Clock;

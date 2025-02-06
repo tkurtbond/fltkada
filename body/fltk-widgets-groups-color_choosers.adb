@@ -26,6 +26,8 @@ package body FLTK.Widgets.Groups.Color_Choosers is
     --  Functions From C  --
     ------------------------
 
+    --  Allocation  --
+
     function new_fl_color_chooser
            (X, Y, W, H : in Interfaces.C.int;
             Text       : in Interfaces.C.char_array)
@@ -40,6 +42,8 @@ package body FLTK.Widgets.Groups.Color_Choosers is
 
 
 
+
+    --  RGB Color  --
 
     function fl_color_chooser_r
            (N : in Storage.Integer_Address)
@@ -69,6 +73,8 @@ package body FLTK.Widgets.Groups.Color_Choosers is
 
 
 
+    --  HSV Color  --
+
     function fl_color_chooser_hue
            (N : in Storage.Integer_Address)
         return Interfaces.C.double;
@@ -97,6 +103,8 @@ package body FLTK.Widgets.Groups.Color_Choosers is
 
 
 
+    --  RGB / HSV Conversion  --
+
     procedure fl_color_chooser_hsv2rgb
            (H, S, V : in     Interfaces.C.double;
             R, G, B :    out Interfaces.C.double);
@@ -112,6 +120,8 @@ package body FLTK.Widgets.Groups.Color_Choosers is
 
 
 
+    --  Settings  --
+
     function fl_color_chooser_get_mode
            (N : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -126,6 +136,8 @@ package body FLTK.Widgets.Groups.Color_Choosers is
 
 
 
+
+    --  Drawing, Events  --
 
     procedure fl_color_chooser_draw
            (W : in Storage.Integer_Address);
@@ -196,11 +208,11 @@ package body FLTK.Widgets.Groups.Color_Choosers is
         begin
             return This : Color_Chooser do
                 This.Void_Ptr := new_fl_color_chooser
-                       (Interfaces.C.int (X),
-                        Interfaces.C.int (Y),
-                        Interfaces.C.int (W),
-                        Interfaces.C.int (H),
-                        Interfaces.C.To_C (Text));
+                   (Interfaces.C.int (X),
+                    Interfaces.C.int (Y),
+                    Interfaces.C.int (W),
+                    Interfaces.C.int (H),
+                    Interfaces.C.To_C (Text));
                 Extra_Init (This, X, Y, W, H, Text);
             end return;
         end Create;
@@ -225,6 +237,8 @@ package body FLTK.Widgets.Groups.Color_Choosers is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  RGB Color  --
 
     function Get_Red
            (This : in Color_Chooser)
@@ -289,6 +303,8 @@ package body FLTK.Widgets.Groups.Color_Choosers is
 
 
 
+    --  HSV Color  --
+
     function Get_Hue
            (This : in Color_Chooser)
         return Long_Float is
@@ -352,6 +368,8 @@ package body FLTK.Widgets.Groups.Color_Choosers is
 
 
 
+    --  RGB / HSV Conversion  --
+
     procedure HSV_To_RGB
            (H, S, V : in     Long_Float;
             R, G, B :    out Long_Float) is
@@ -381,6 +399,8 @@ package body FLTK.Widgets.Groups.Color_Choosers is
 
 
 
+
+    --  Settings  --
 
     function Get_Mode
            (This : in Color_Chooser)

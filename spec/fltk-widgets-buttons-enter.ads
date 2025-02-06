@@ -41,6 +41,8 @@ package FLTK.Widgets.Buttons.Enter is
 
 
 
+    --  Drawing, Events  --
+
     procedure Draw
            (This : in out Enter_Button);
 
