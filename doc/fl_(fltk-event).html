@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl (FLTK.Event) Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl (FLTK.Event) Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl</td>
+    <td>FLTK.Event</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Event_Handler</td>
+    <td>Event_Handler</td>
+  </tr>
+
+  <tr>
+    <td>Fl_Event_Dispatch</td>
+    <td>&nbsp;</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+static void add_handler(Fl_Event_Handler h);
+</pre></td>
+<td><pre>
+procedure Add_Handler
+       (Func : in Event_Handler);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static Fl_Widget * belowmouse();
+</pre></td>
+<td><pre>
+function Get_Below_Mouse
+    return access FLTK.Widgets.Widget'Class;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void belowmouse(Fl_Widget *);
+</pre></td>
+<td><pre>
+procedure Set_Below_Mouse
+       (To : in FLTK.Widgets.Widget'Class);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int compose(int &del);
+</pre></td>
+<td><pre>
+function Compose
+       (Del : out Natural)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void compose_reset();
+</pre></td>
+<td><pre>
+procedure Compose_Reset;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event();
+</pre></td>
+<td><pre>
+function Last
+    return Event_Kind;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_alt();
+</pre></td>
+<td><pre>
+function Key_Alt
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_button();
+</pre></td>
+<td><pre>
+function Last_Button
+    return Mouse_Button;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_button1();
+</pre></td>
+<td><pre>
+function Mouse_Left
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_button2();
+</pre></td>
+<td><pre>
+function Mouse_Middle
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_button3();
+</pre></td>
+<td><pre>
+function Mouse_Right
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_buttons();
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_clicks();
+</pre></td>
+<td><pre>
+function Is_Multi_Click
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void event_clicks(int i);
+</pre></td>
+<td><pre>
+procedure Set_Clicks
+       (To : in Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void * event_clipboard();
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * event_clipboard_type();
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_command();
+</pre></td>
+<td><pre>
+function Key_Command
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_ctrl();
+</pre></td>
+<td><pre>
+function Key_Ctrl
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static Fl_Event_Dispatch event_dispatch();
+</pre></td>
+<td>TBA</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void event_dispatch(Fl_Event_Dispatch d);
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_dx();
+</pre></td>
+<td><pre>
+function Mouse_DX
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_dy();
+</pre></td>
+<td><pre>
+function Mouse_DY
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_inside(const Fl_Widget *);
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_inside(int, int, int, int);
+</pre></td>
+<td><pre>
+function Is_Inside
+       (X, Y, W, H : in Integer)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_is_click();
+</pre></td>
+<td><pre>
+function Is_Click
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void event_is_click(int i);
+</pre></td>
+<td>See static void event_clicks(int i);</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_key();
+</pre></td>
+<td><pre>
+function Last_Key
+    return Keypress;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_key(int key);
+</pre></td>
+<td><pre>
+function Pressed_During
+       (Key : in Keypress)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_length();
+</pre></td>
+<td><pre>
+function Text_Length
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_original_key();
+</pre></td>
+<td><pre>
+function Original_Last_Key
+    return Keypress;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_shift();
+</pre></td>
+<td><pre>
+function Key_Shift
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_state();
+</pre></td>
+<td><pre>
+function Last_Modifier
+    return Modifier;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_state(int mask);
+</pre></td>
+<td><pre>
+function Last_Modifier
+       (Had : in Modifier)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * event_text();
+</pre></td>
+<td><pre>
+function Text
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_x();
+</pre></td>
+<td><pre>
+function Mouse_X
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_x_root();
+</pre></td>
+<td><pre>
+function Mouse_X_Root
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_y();
+</pre></td>
+<td><pre>
+function Mouse_Y
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_y_root();
+</pre></td>
+<td><pre>
+function Mouse_Y_Root
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static Fl_Widget * focus();
+</pre></td>
+<td><pre>
+function Get_Focus
+    return access FLTK.Widgets.Widget'Class;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void focus(Fl_Widget *);
+</pre></td>
+<td><pre>
+procedure Set_Focus
+       (To : in FLTK.Widgets.Widget'Class);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int get_key(int key);
+</pre></td>
+<td><pre>
+function Key_Now
+       (Key : in Keypress)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void get_mouse(int &, int &);
+</pre></td>
+<td><pre>
+procedure Get_Mouse
+       (X, Y : out Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static Fl_Window * grab();
+</pre></td>
+<td><pre>
+function Get_Grab
+    return access FLTK.Widgets.Groups.Windows.Window'Class;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void grab(Fl_Window *);
+
+static void grab(Fl_Window &win);
+</pre></td>
+<td><pre>
+procedure Set_Grab
+       (To : in FLTK.Widgets.Groups.Windows.Window'Class);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static Fl_Widget * pushed();
+</pre></td>
+<td><pre>
+function Get_Pushed
+    return access FLTK.Widgets.Widget'Class;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void pushed(Fl_Widget *);
+</pre></td>
+<td><pre>
+procedure Set_Pushed
+       (To : in FLTK.Widgets.Widget'Class);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void release();
+</pre></td>
+<td><pre>
+procedure Release_Grab;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void remove_handler(Fl_Event_Handler h);
+</pre></td>
+<td><pre>
+procedure Remove_Handler
+       (Func : in Event_Handler);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int test_shortcut(Fl_Shortcut);
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
+

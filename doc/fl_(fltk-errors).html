@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl (FLTK.Errors) Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl (FLTK.Errors) Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl</td>
+    <td>FLTK.Errors</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>void (*)(const char *, ...)</td>
+    <td>Error_Function</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Attributes</th></tr>
+
+  <tr>
+<td><pre>
+static void (*error)(const char *, ...) = ::error;
+</pre></td>
+<td><pre>
+Current_Error : Error_Function := Default_Error'Access;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void (*fatal)(const char *, ...) = ::fatal;
+</pre></td>
+<td><pre>
+Current_Fatal : Error_Function := Default_Fatal'Access;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void (*warning)(const char *, ...) = ::warning;
+</pre></td>
+<td><pre>
+Current_Warning : Error_Function := Default_Warning'Access;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+static void error(const char *format, ...);
+</pre></td>
+<td><pre>
+procedure Default_Error
+       (Message : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void fatal(const char *format, ...);
+</pre></td>
+<td><pre>
+procedure Default_Fatal
+       (Message : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void warning(const char *, ...);
+</pre></td>
+<td><pre>
+procedure Default_Warning
+       (Message : in String);
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
+

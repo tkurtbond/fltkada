@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl (FLTK.Screen) Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl (FLTK.Screen) Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl</td>
+    <td>FLTK.Screen</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+static void display(const char *);
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int h();
+</pre></td>
+<td><pre>
+function Get_H
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int screen_count();
+</pre></td>
+<td><pre>
+function Count
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void screen_dpi(float &h, float &v, int n=0);
+</pre></td>
+<td><pre>
+procedure DPI
+       (Horizontal, Vertical :    out Float;
+        Screen_Number        : in     Integer := 1);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int screen_num(int x, int y);
+</pre></td>
+<td><pre>
+function Containing
+       (X, Y : in Integer)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int screen_num(int x, int y, int w, int h);
+</pre></td>
+<td><pre>
+function Containing
+       (X, Y, W, H : in Integer)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void screen_work_area(int &X, int &Y,
+    int &W, int &H, int mx, int my);
+</pre></td>
+<td><pre>
+procedure Work_Area
+       (X, Y, W, H   :    out Integer;
+        Pos_X, Pos_Y : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void screen_work_area(int &X, int &Y,
+    int &W, int &H, int n);
+</pre></td>
+<td><pre>
+procedure Work_Area
+       (X, Y, W, H :    out Integer;
+        Screen_Num : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void screen_xywh(int &X, int &Y,
+    int &W, int &H);
+</pre></td>
+<td><pre>
+procedure Bounding_Rect
+       (X, Y, W, H : out Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void screen_xywh(int &X, int &Y,
+    int &W, int &H, int mx, int my);
+</pre></td>
+<td><pre>
+procedure Bounding_Rect
+       (X, Y, W, H   :    out Integer;
+        Pos_X, Pos_Y : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void screen_xywh(int &X, int &Y,
+    int &W, int &H, int n);
+</pre></td>
+<td><pre>
+procedure Bounding_Rect
+       (X, Y, W, H :    out Integer;
+        Screen_Num : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void screen_xywh(int &X, int &Y,
+    int &W, int &H, int mx, int my, int mw, int mh);
+</pre></td>
+<td><pre>
+procedure Bounding_Rect
+       (X, Y, W, H     :    out Integer;
+        PX, PY, PW, PH : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void screen_work_area(int &X, int &Y,
+    int &W, int &H);
+</pre></td>
+<td><pre>
+procedure Work_Area
+       (X, Y, W, H : out Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int w();
+</pre></td>
+<td><pre>
+function Get_W
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int x();
+</pre></td>
+<td><pre>
+function Get_X
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int y();
+</pre></td>
+<td><pre>
+function Get_Y
+    return Integer;
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
+
