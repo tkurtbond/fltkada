@@ -46,12 +46,51 @@ package FLTK is
     type Color_Component is mod 256;
     type Color_Component_Array is array (Positive range <>) of aliased Color_Component;
 
+    subtype Blend is Float range 0.0 .. 1.0;
+
+    function RGB_Color
+           (Light : in Greyscale)
+        return Color;
+
+    function RGB_Color
+           (Light : in Color_Component)
+        return Color;
+
     function RGB_Color
            (R, G, B : in Color_Component)
         return Color;
 
+    function Color_Cube
+           (R, G, B : in Color_Component)
+        return Color;
+
+    function Grey_Ramp
+           (Light : in Greyscale)
+        return Color;
+
+    function Grey_Ramp
+           (Light : in Color_Component)
+        return Color;
+
+    function Darker
+           (Tone : in Color)
+        return Color;
+
+    function Lighter
+           (Tone : in Color)
+        return Color;
+
     function Contrast
            (Fore, Back : in Color)
+        return Color;
+
+    function Inactive
+           (Tone : in Color)
+        return Color;
+
+    function Color_Average
+           (Tone1, Tone2 : in Color;
+            Weight       : in Blend := 0.5)
         return Color;
 
     --  Examples of RGB colors without the above function
@@ -281,6 +320,18 @@ package FLTK is
         Gleam_Round_Up_Box,
         Gleam_Round_Down_Box,
         Free_Box);
+
+    function Filled
+           (Box : in Box_Kind)
+        return Box_Kind;
+
+    function Frame
+           (Box : in Box_Kind)
+        return Box_Kind;
+
+    function Down
+           (Box : in Box_Kind)
+        return Box_Kind;
 
 
 
@@ -662,7 +713,14 @@ private
 
 
     pragma Inline (RGB_Color);
+    pragma Inline (Color_Cube);
     pragma Inline (Contrast);
+    pragma Inline (Grey_Ramp);
+    pragma Inline (Darker);
+    pragma Inline (Lighter);
+    pragma Inline (Contrast);
+    pragma Inline (Inactive);
+    pragma Inline (Color_Average);
 
     pragma Inline (ABI_Check);
     pragma Inline (ABI_Version);

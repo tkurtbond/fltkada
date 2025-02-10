@@ -8,6 +8,9 @@
 #define FL_SCREEN_GUARD
 
 
+extern "C" void fl_screen_display(const char * v);
+
+
 extern "C" int fl_screen_x();
 extern "C" int fl_screen_y();
 extern "C" int fl_screen_w();

@@ -43,8 +43,26 @@ extern "C" const short fl_mod_command;
 extern "C" size_t c_pointer_size();
 
 
+extern "C" const int fl_enum_num_red;
+extern "C" const int fl_enum_num_green;
+extern "C" const int fl_enum_num_blue;
+extern "C" const int fl_enum_num_gray;
+
+
+extern "C" unsigned int fl_enum_rgb_color2(unsigned char l);
 extern "C" unsigned int fl_enum_rgb_color(unsigned char r, unsigned char g, unsigned char b);
+extern "C" unsigned int fl_enum_color_cube(int r, int g, int b);
+extern "C" unsigned int fl_enum_gray_ramp(int l);
+extern "C" unsigned int fl_enum_darker(unsigned int c);
+extern "C" unsigned int fl_enum_lighter(unsigned int c);
 extern "C" unsigned int fl_enum_contrast(unsigned int f, unsigned int b);
+extern "C" unsigned int fl_enum_inactive(unsigned int c);
+extern "C" unsigned int fl_enum_color_average(unsigned int c1, unsigned int c2, float w);
+
+
+extern "C" int fl_enum_box(int b);
+extern "C" int fl_enum_frame(int b);
+extern "C" int fl_enum_down(int b);
 
 
 extern "C" int fl_abi_check(int v);

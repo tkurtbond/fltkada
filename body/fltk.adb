@@ -11,10 +11,30 @@ with
 use type
 
     Interfaces.C.int,
+    Interfaces.C.unsigned_char,
     Interfaces.C.unsigned_long;
 
 
 package body FLTK is
+
+
+    ------------------------
+    --  Constants From C  --
+    ------------------------
+
+    fl_enum_num_red : constant Interfaces.C.int;
+    pragma Import (C, fl_enum_num_red);
+
+    fl_enum_num_green : constant Interfaces.C.int;
+    pragma Import (C, fl_enum_num_green);
+
+    fl_enum_num_blue : constant Interfaces.C.int;
+    pragma Import (C, fl_enum_num_blue);
+
+    fl_enum_num_gray : constant Interfaces.C.int;
+    pragma Import (C, fl_enum_num_gray);
+
+
 
 
     ------------------------
@@ -23,11 +43,43 @@ package body FLTK is
 
     --  Enumerations.H  --
 
+    --  Color  --
+
+    function fl_enum_rgb_color2
+           (L : in Interfaces.C.unsigned_char)
+        return Interfaces.C.unsigned;
+    pragma Import (C, fl_enum_rgb_color2, "fl_enum_rgb_color2");
+    pragma Inline (fl_enum_rgb_color2);
+
     function fl_enum_rgb_color
            (R, G, B : in Interfaces.C.unsigned_char)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_enum_rgb_color, "fl_enum_rgb_color");
     pragma Inline (fl_enum_rgb_color);
+
+    function fl_enum_color_cube
+           (R, G, B : in Interfaces.C.int)
+        return Interfaces.C.unsigned;
+    pragma Import (C, fl_enum_color_cube, "fl_enum_color_cube");
+    pragma Inline (fl_enum_color_cube);
+
+    function fl_enum_gray_ramp
+           (L : in Interfaces.C.int)
+        return Interfaces.C.unsigned;
+    pragma Import (C, fl_enum_gray_ramp, "fl_enum_gray_ramp");
+    pragma Inline (fl_enum_gray_ramp);
+
+    function fl_enum_darker
+           (T : in Interfaces.C.unsigned)
+        return Interfaces.C.unsigned;
+    pragma Import (C, fl_enum_darker, "fl_enum_darker");
+    pragma Inline (fl_enum_darker);
+
+    function fl_enum_lighter
+           (T : in Interfaces.C.unsigned)
+        return Interfaces.C.unsigned;
+    pragma Import (C, fl_enum_lighter, "fl_enum_lighter");
+    pragma Inline (fl_enum_lighter);
 
     function fl_enum_contrast
            (F, B : in Interfaces.C.unsigned)
@@ -35,8 +87,46 @@ package body FLTK is
     pragma Import (C, fl_enum_contrast, "fl_enum_contrast");
     pragma Inline (fl_enum_contrast);
 
+    function fl_enum_inactive
+           (T : in Interfaces.C.unsigned)
+        return Interfaces.C.unsigned;
+    pragma Import (C, fl_enum_inactive, "fl_enum_inactive");
+    pragma Inline (fl_enum_inactive);
+
+    function fl_enum_color_average
+           (T1, T2 : in Interfaces.C.unsigned;
+            W      : in Interfaces.C.C_float)
+        return Interfaces.C.unsigned;
+    pragma Import (C, fl_enum_color_average, "fl_enum_color_average");
+    pragma Inline (fl_enum_color_average);
 
 
+
+
+    --  Box Types  --
+
+    function fl_enum_box
+           (B : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_enum_box, "fl_enum_box");
+    pragma Inline (fl_enum_box);
+
+    function fl_enum_frame
+           (B : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_enum_frame, "fl_enum_frame");
+    pragma Inline (fl_enum_frame);
+
+    function fl_enum_down
+           (B : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_enum_down, "fl_enum_down");
+    pragma Inline (fl_enum_down);
+
+
+
+
+    --  Fl.H  --
 
     --  Versioning  --
 
@@ -129,6 +219,26 @@ package body FLTK is
     --  Color  --
 
     function RGB_Color
+           (Light : in Greyscale)
+        return Color is
+    begin
+        case Light is
+        when 'A' .. 'W' => return Color (fl_enum_rgb_color2
+            ((Greyscale'Pos (Light) - Greyscale'Pos (Greyscale'First)) * 11));
+        when 'X' => return Color (fl_enum_rgb_color2 (255));
+        end case;
+    end RGB_Color;
+
+
+    function RGB_Color
+           (Light : in Color_Component)
+        return Color is
+    begin
+        return Color (fl_enum_rgb_color2 (Interfaces.C.unsigned_char (Light)));
+    end RGB_Color;
+
+
+    function RGB_Color
            (R, G, B : in Color_Component)
         return Color is
     begin
@@ -139,6 +249,50 @@ package body FLTK is
     end RGB_Color;
 
 
+    function Color_Cube
+           (R, G, B : in Color_Component)
+        return Color is
+    begin
+        return Color (fl_enum_color_cube
+           (Interfaces.C.int (Float'Rounding (Float (R) * Float (fl_enum_num_red   - 1) / 255.0)),
+            Interfaces.C.int (Float'Rounding (Float (G) * Float (fl_enum_num_green - 1) / 255.0)),
+            Interfaces.C.int (Float'Rounding (Float (B) * Float (fl_enum_num_blue  - 1) / 255.0))));
+    end Color_Cube;
+
+
+    function Grey_Ramp
+           (Light : in Greyscale)
+        return Color is
+    begin
+        return Color (fl_enum_gray_ramp (Greyscale'Pos (Light) - Greyscale'Pos (Greyscale'First)));
+    end Grey_Ramp;
+
+
+    function Grey_Ramp
+           (Light : in Color_Component)
+        return Color is
+    begin
+        return Color (fl_enum_gray_ramp (Interfaces.C.int
+            (Float'Rounding (Float (Light) * Float (fl_enum_num_gray - 1) / 255.0))));
+    end Grey_Ramp;
+
+
+    function Darker
+           (Tone : in Color)
+        return Color is
+    begin
+        return Color (fl_enum_darker (Interfaces.C.unsigned (Tone)));
+    end Darker;
+
+
+    function Lighter
+           (Tone : in Color)
+        return Color is
+    begin
+        return Color (fl_enum_lighter (Interfaces.C.unsigned (Tone)));
+    end Lighter;
+
+
     function Contrast
            (Fore, Back : in Color)
         return Color is
@@ -147,6 +301,26 @@ package body FLTK is
            (Interfaces.C.unsigned (Fore),
             Interfaces.C.unsigned (Back)));
     end Contrast;
+
+
+    function Inactive
+           (Tone : in Color)
+        return Color is
+    begin
+        return Color (fl_enum_inactive (Interfaces.C.unsigned (Tone)));
+    end Inactive;
+
+
+    function Color_Average
+           (Tone1, Tone2 : in Color;
+            Weight       : in Blend := 0.5)
+        return Color is
+    begin
+        return Color (fl_enum_color_average
+           (Interfaces.C.unsigned (Tone1),
+            Interfaces.C.unsigned (Tone2),
+            Interfaces.C.C_float (Weight)));
+    end Color_Average;
 
 
 
@@ -357,6 +531,52 @@ package body FLTK is
         when others => return No_Button;
         end case;
     end To_Ada;
+
+
+
+
+    --  Box Types  --
+
+    function Filled
+           (Box : in Box_Kind)
+        return Box_Kind
+    is
+        Result : Interfaces.C.int := fl_enum_box (Box_Kind'Pos (Box));
+    begin
+        return Box_Kind'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "fl_box in Enumerations.H returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Filled;
+
+
+    function Frame
+           (Box : in Box_Kind)
+        return Box_Kind
+    is
+        Result : Interfaces.C.int := fl_enum_frame (Box_Kind'Pos (Box));
+    begin
+        return Box_Kind'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "fl_frame in Enumerations.H returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Frame;
+
+
+    function Down
+           (Box : in Box_Kind)
+        return Box_Kind
+    is
+        Result : Interfaces.C.int := fl_enum_down (Box_Kind'Pos (Box));
+    begin
+        return Box_Kind'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "fl_down in Enumerations.H returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Down;
 
 
 

@@ -8,6 +8,15 @@
 #include "c_fl_screen.h"
 
 
+
+
+void fl_screen_display(const char * v) {
+    Fl::display(v);
+}
+
+
+
+
 int fl_screen_x() {
     return Fl::x();
 }

@@ -14,8 +14,6 @@ package FLTK.Images is
 
     type Scaling_Kind is (Nearest, Bilinear);
 
-    type Blend is new Float range 0.0 .. 1.0;
-
 
     No_Image_Error, File_Access_Error, Format_Error : exception;
 

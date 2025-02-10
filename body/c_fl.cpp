@@ -52,12 +52,65 @@ size_t c_pointer_size() {
 
 
 
+const int fl_enum_num_red   = FL_NUM_RED;
+const int fl_enum_num_green = FL_NUM_GREEN;
+const int fl_enum_num_blue  = FL_NUM_BLUE;
+const int fl_enum_num_gray  = FL_NUM_GRAY;
+
+
+
+
+unsigned int fl_enum_rgb_color2(unsigned char l) {
+    return static_cast<unsigned int>(fl_rgb_color(l));
+}
+
 unsigned int fl_enum_rgb_color(unsigned char r, unsigned char g, unsigned char b) {
-    return fl_rgb_color(r, g, b);
+    return static_cast<unsigned int>(fl_rgb_color(r, g, b));
+}
+
+unsigned int fl_enum_color_cube(int r, int g, int b) {
+    return static_cast<unsigned int>(fl_color_cube(r, g, b));
+}
+
+unsigned int fl_enum_gray_ramp(int l) {
+    return static_cast<unsigned int>(fl_gray_ramp(l));
+}
+
+unsigned int fl_enum_darker(unsigned int c) {
+    return static_cast<unsigned int>(fl_darker(static_cast<Fl_Color>(c)));
+}
+
+unsigned int fl_enum_lighter(unsigned int c) {
+    return static_cast<unsigned int>(fl_lighter(static_cast<Fl_Color>(c)));
 }
 
 unsigned int fl_enum_contrast(unsigned int f, unsigned int b) {
-    return fl_contrast(f, b);
+    return static_cast<unsigned int>(fl_contrast
+        (static_cast<Fl_Color>(f), static_cast<Fl_Color>(b)));
+}
+
+unsigned int fl_enum_inactive(unsigned int c) {
+    return static_cast<unsigned int>(fl_inactive(static_cast<Fl_Color>(c)));
+}
+
+unsigned int fl_enum_color_average(unsigned int c1, unsigned int c2, float w) {
+    return static_cast<unsigned int>(fl_color_average
+        (static_cast<Fl_Color>(c1), static_cast<Fl_Color>(c2), w));
+}
+
+
+
+
+int fl_enum_box(int b) {
+    return static_cast<int>(fl_box(static_cast<Fl_Boxtype>(b)));
+}
+
+int fl_enum_frame(int b) {
+    return static_cast<int>(fl_frame(static_cast<Fl_Boxtype>(b)));
+}
+
+int fl_enum_down(int b) {
+    return static_cast<int>(fl_down(static_cast<Fl_Boxtype>(b)));
 }
 
 

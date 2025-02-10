@@ -57,6 +57,11 @@
   </tr>
 
   <tr>
+    <td>float</td>
+    <td>Blend</td>
+  </tr>
+
+  <tr>
     <td>Fl_Align</td>
     <td>Alignment</td>
   </tr>
@@ -72,7 +77,11 @@
   </tr>
 
   <tr>
-    <td>#define</td>
+    <td>
+      #define FL_LEFT_MOUSE 1<br />
+      #define FL_MIDDLE_MOUSE 2<br />
+      #define FL_RIGHT_MOUSE 3
+    </td>
     <td>Mouse_Button</td>
   </tr>
 
@@ -142,21 +151,34 @@
 <td><pre>
 inline Fl_Boxtype fl_box(Fl_Boxtype b);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Filled
+       (Box : in Box_Kind)
+    return Box_Kind;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 Fl_Color fl_color_average(Fl_Color c1, Fl_Color c2, float weight);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Color_Average
+       (Tone1, Tone2 : in Color;
+        Weight       : in Blend := 0.5)
+    return Color;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 inline Fl_Color fl_color_cube(int r, int g, int b);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Color_Cube
+       (R, G, B : in Color_Component)
+    return Color;
+</pre></td>
   </tr>
 
   <tr>
@@ -174,49 +196,85 @@ function Contrast
 <td><pre>
 inline Fl_Color fl_darker(Fl_Color c);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Darker
+       (Tone : in Color)
+    return Color;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 inline Fl_Boxtype fl_down(Fl_Boxtype b);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Down
+       (Box : in Box_Kind)
+    return Box_Kind;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 inline Fl_Boxtype fl_frame(Fl_Boxtype b);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Frame
+       (Box : in Box_Kind)
+    return Box_Kind;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 inline Fl_Color fl_gray_ramp(int i);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Grey_Ramp
+       (Light : in Greyscale)
+    return Color;
+
+function Grey_Ramp
+       (Light : in Color_Component)
+    return Color;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 Fl_Color fl_inactive(Fl_Color c);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Inactive
+       (Tone : in Color)
+    return Color;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 inline Fl_Color fl_lighter(Fl_Color c);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Lighter
+       (Tone : in Color)
+    return Color;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 inline Fl_Color fl_rgb_color(uchar g);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function RGB_Color
+       (Light : in Greyscale)
+    return Color;
+
+function RGB_Color
+       (Light : in Color_Component)
+    return Color;
+</pre></td>
   </tr>
 
   <tr>

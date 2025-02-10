@@ -7,6 +7,14 @@
 package FLTK.Screen is
 
 
+    --  Environment  --
+
+    procedure Set_Display_Var
+           (Value : in String);
+
+
+
+
     --  Basic Dimensions  --
 
     function Get_X
@@ -81,6 +89,8 @@ package FLTK.Screen is
 
 private
 
+
+    pragma Inline (Set_Display_Var);
 
     pragma Inline (Get_X);
     pragma Inline (Get_Y);

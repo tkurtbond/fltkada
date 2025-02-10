@@ -20,6 +20,16 @@ package body FLTK.Screen is
     --  Functions From C  --
     ------------------------
 
+    --  Environment  --
+
+    procedure fl_screen_display
+           (V : in Interfaces.C.char_array);
+    pragma Import (C, fl_screen_display, "fl_screen_display");
+    pragma Inline (fl_screen_display);
+
+
+
+
     --  Basic Dimensions  --
 
     function fl_screen_x
@@ -126,6 +136,17 @@ package body FLTK.Screen is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Environment  --
+
+    procedure Set_Display_Var
+           (Value : in String) is
+    begin
+        fl_screen_display (Interfaces.C.To_C (Value));
+    end Set_Display_Var;
+
+
+
 
     --  Basic Dimensions  --
 
