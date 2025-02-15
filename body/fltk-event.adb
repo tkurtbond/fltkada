@@ -92,6 +92,16 @@ package body FLTK.Event is
     pragma Import (C, fl_event_set_focus, "fl_event_set_focus");
     pragma Inline (fl_event_set_focus);
 
+    function fl_event_get_visible_focus
+        return Interfaces.C.int;
+    pragma Import (C, fl_event_get_visible_focus, "fl_event_get_visible_focus");
+    pragma Inline (fl_event_get_visible_focus);
+
+    procedure fl_event_set_visible_focus
+           (T : in Interfaces.C.int);
+    pragma Import (C, fl_event_set_visible_focus, "fl_event_set_visible_focus");
+    pragma Inline (fl_event_set_visible_focus);
+
 
 
 
@@ -475,6 +485,20 @@ package body FLTK.Event is
     begin
         fl_event_set_focus (Wrapper (To).Void_Ptr);
     end Set_Focus;
+
+
+    function Has_Visible_Focus
+        return Boolean is
+    begin
+        return fl_event_get_visible_focus /= 0;
+    end Has_Visible_Focus;
+
+
+    procedure Set_Visible_Focus
+           (To : in Boolean) is
+    begin
+        fl_event_set_visible_focus (Boolean'Pos (To));
+    end Set_Visible_Focus;
 
 
 

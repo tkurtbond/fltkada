@@ -9,7 +9,7 @@ package FLTK.Screen is
 
     --  Environment  --
 
-    procedure Set_Display_Var
+    procedure Set_Display_String
            (Value : in String);
 
 
@@ -90,7 +90,7 @@ package FLTK.Screen is
 private
 
 
-    pragma Inline (Set_Display_Var);
+    pragma Inline (Set_Display_String);
 
     pragma Inline (Get_X);
     pragma Inline (Get_Y);

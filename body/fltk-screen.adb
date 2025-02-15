@@ -139,11 +139,11 @@ package body FLTK.Screen is
 
     --  Environment  --
 
-    procedure Set_Display_Var
+    procedure Set_Display_String
            (Value : in String) is
     begin
         fl_screen_display (Interfaces.C.To_C (Value));
-    end Set_Display_Var;
+    end Set_Display_String;
 
 
 

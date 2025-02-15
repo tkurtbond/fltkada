@@ -18,9 +18,9 @@ package FLTK.Static is
 
     type Awake_Handler is access procedure;
 
-    type Timeout_Handler is access procedure;
-
     type Idle_Handler is access procedure;
+
+    type Timeout_Handler is access procedure;
 
 
     type Buffer_Kind is (Selection, Clipboard);
@@ -266,17 +266,11 @@ package FLTK.Static is
 
 
 
-    --  Input Focus  --
+    --  Input Methods  --
 
     procedure Enable_System_Input;
 
     procedure Disable_System_Input;
-
-    function Has_Visible_Focus
-        return Boolean;
-
-    procedure Set_Visible_Focus
-           (To : in Boolean);
 
 
 
@@ -306,8 +300,6 @@ package FLTK.Static is
 
     function Read_Queue
         return access FLTK.Widgets.Widget'Class;
-
-    procedure Do_Widget_Deletion;
 
 
 
@@ -365,8 +357,6 @@ private
 
     pragma Import (C, Enable_System_Input, "fl_static_enable_im");
     pragma Import (C, Disable_System_Input, "fl_static_disable_im");
-
-    pragma Import (C, Do_Widget_Deletion, "fl_static_do_widget_deletion");
 
     pragma Import (C, Reload_Scheme, "fl_static_reload_scheme");
 
@@ -427,8 +417,6 @@ private
 
     pragma Inline (Enable_System_Input);
     pragma Inline (Disable_System_Input);
-    pragma Inline (Has_Visible_Focus);
-    pragma Inline (Set_Visible_Focus);
 
     pragma Inline (Default_Window_Close);
     pragma Inline (Get_First_Window);
@@ -437,7 +425,6 @@ private
     pragma Inline (Get_Top_Modal);
 
     pragma Inline (Read_Queue);
-    pragma Inline (Do_Widget_Deletion);
 
     pragma Inline (Get_Scheme);
     pragma Inline (Set_Scheme);

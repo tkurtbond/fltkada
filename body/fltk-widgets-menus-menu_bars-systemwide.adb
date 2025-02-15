@@ -340,7 +340,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Interfaces.C.To_C (Text),
             To_C (Shortcut),
             Callback_Convert.To_Address (Action),
-            Interfaces.C.int (Flags));
+            MFlag_To_Cint (Flags));
     begin
         This.Adjust_Item_Store;
     end Add;
@@ -359,7 +359,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Interfaces.C.To_C (Text),
             To_C (Shortcut),
             Callback_Convert.To_Address (Action),
-            Interfaces.C.int (Flags));
+            MFlag_To_Cint (Flags));
     begin
         This.Adjust_Item_Store;
         return Index (Added_Spot + 1);
@@ -378,7 +378,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Interfaces.C.To_C (Text),
             Interfaces.C.To_C (Shortcut),
             Callback_Convert.To_Address (Action),
-            Interfaces.C.int (Flags));
+            MFlag_To_Cint (Flags));
     begin
         This.Adjust_Item_Store;
     end Add;
@@ -397,7 +397,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Interfaces.C.To_C (Text),
             Interfaces.C.To_C (Shortcut),
             Callback_Convert.To_Address (Action),
-            Interfaces.C.int (Flags));
+            MFlag_To_Cint (Flags));
     begin
         This.Adjust_Item_Store;
         return Index (Added_Spot + 1);
@@ -418,7 +418,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Interfaces.C.To_C (Text),
             To_C (Shortcut),
             Callback_Convert.To_Address (Action),
-            Interfaces.C.int (Flags));
+            MFlag_To_Cint (Flags));
     begin
         This.Adjust_Item_Store;
     end Insert;
@@ -439,7 +439,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Interfaces.C.To_C (Text),
             To_C (Shortcut),
             Callback_Convert.To_Address (Action),
-            Interfaces.C.int (Flags));
+            MFlag_To_Cint (Flags));
     begin
         This.Adjust_Item_Store;
         return Index (Added_Spot + 1);
@@ -460,7 +460,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Interfaces.C.To_C (Text),
             Interfaces.C.To_C (Shortcut),
             Callback_Convert.To_Address (Action),
-            Interfaces.C.int (Flags));
+            MFlag_To_Cint (Flags));
     begin
         This.Adjust_Item_Store;
     end Insert;
@@ -481,7 +481,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Interfaces.C.To_C (Text),
             Interfaces.C.To_C (Shortcut),
             Callback_Convert.To_Address (Action),
-            Interfaces.C.int (Flags));
+            MFlag_To_Cint (Flags));
     begin
         This.Adjust_Item_Store;
         return Index (Added_Spot + 1);
@@ -593,7 +593,8 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Place : in Index)
         return Menu_Flag is
     begin
-        return Menu_Flag (fl_sys_menu_bar_get_mode (This.Void_Ptr, Interfaces.C.int (Place) - 1));
+        return Cint_To_MFlag
+            (fl_sys_menu_bar_get_mode (This.Void_Ptr, Interfaces.C.int (Place) - 1));
     end Get_Flags;
 
 
@@ -605,7 +606,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
         fl_sys_menu_bar_set_mode
            (This.Void_Ptr,
             Interfaces.C.int (Place) - 1,
-            Interfaces.C.int (Flags));
+            MFlag_To_Cint (Flags));
     end Set_Flags;
 
 

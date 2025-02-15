@@ -26,33 +26,6 @@ package body FLTK.Widgets is
     package Chk renames Ada.Assertions;
 
 
-    function "+"
-           (Left, Right : in Callback_Flag)
-        return Callback_Flag is
-    begin
-        return
-           (Changed   => Left.Changed   or Right.Changed,
-            Interact  => Left.Interact  or Right.Interact,
-            Release   => Left.Release   or Right.Release,
-            Enter_Key => Left.Enter_Key or Right.Enter_Key);
-    end "+";
-
-
-    function "+"
-           (Left, Right : in Damage_Mask)
-        return Damage_Mask is
-    begin
-        return
-           (Child   => Left.Child   or Right.Child,
-            Expose  => Left.Expose  or Right.Expose,
-            Scroll  => Left.Scroll  or Right.Scroll,
-            Overlay => Left.Overlay or Right.Overlay,
-            User_1  => Left.User_1  or Right.User_1,
-            User_2  => Left.User_2  or Right.User_2,
-            Full    => Left.Full    or Right.Full);
-    end "+";
-
-
     package Group_Convert is new
         System.Address_To_Access_Conversions (FLTK.Widgets.Groups.Group'Class);
 

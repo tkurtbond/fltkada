@@ -32,18 +32,43 @@
   <tr><th colspan="2">Types</th></tr>
 
   <tr>
+    <td>Fl_Abort_Handler</td>
+    <td>&nbsp;</td>
+  </tr>
+
+  <tr>
+    <td>Fl_Args_Handler</td>
+    <td>&nbsp;</td>
+  </tr>
+
+  <tr>
+    <td>Fl_Atclose_Handler</td>
+    <td>&nbsp;</td>
+  </tr>
+
+  <tr>
     <td>Fl_Awake_Handler</td>
     <td>Awake_Handler</td>
   </tr>
 
   <tr>
-    <td>Fl_Timeout_Handler</td>
-    <td>Timeout_Handler</td>
+    <td>Fl_Idle_Handler</td>
+    <td>Idle_Handler</td>
   </tr>
 
   <tr>
-    <td>Fl_Idle_Handler</td>
-    <td>Idle_Handler</td>
+    <td>Fl_Old_Idle_Handler</td>
+    <td>&nbsp;</td>
+  </tr>
+
+  <tr>
+    <td>Fl_System_Handler</td>
+    <td>&nbsp;</td>
+  </tr>
+
+  <tr>
+    <td>Fl_Timeout_Handler</td>
+    <td>Timeout_Handler</td>
   </tr>
 
   <tr>
@@ -91,17 +116,19 @@
     <td>Option</td>
   </tr>
 
-  <tr>
-    <td>Fl_System_Handler</td>
-    <td>&nbsp;</td>
-  </tr>
-
 </table>
 
 
 
 <table class="function">
   <tr><th colspan="2">Static Attributes</th></tr>
+
+  <tr>
+<td><pre>
+static void (*atclose)(Fl_Window *, void *);
+</pre></td>
+<td>Deprecated, set the callback for the Window instead.</td>
+  </tr>
 
   <tr>
 <td><pre>
@@ -115,6 +142,20 @@ static char const * const clipboard_image = "image";
 static char const * const clipboard_plain_text = "text/plain";
 </pre></td>
 <td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char * const help = helpmsg + 13;
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void (*idle)();
+</pre></td>
+<td>Should not be used directly.</td>
   </tr>
 
 </table>
@@ -191,7 +232,8 @@ procedure Add_Idle
 
   <tr>
 <td><pre>
-static void add_system_handler(Fl_System_Handler h, void *data);
+static void add_system_handler(Fl_System_Handler h,
+    void *data);
 </pre></td>
 <td>&nbsp;</td>
   </tr>
@@ -206,6 +248,35 @@ procedure Add_Timeout
        (Seconds : in Long_Float;
         Func    : in Timeout_Handler);
 </pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int arg(int argc, char **argv, int &i);
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int args(int argc, char **argv, int &i,
+    Fl_Args_Handler cb=0);
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void args(int argc, char **argv);
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int awake(Fl_Awake_Handler cb, void *message=0);
+</pre></td>
+<td>&nbsp;</td>
   </tr>
 
   <tr>
@@ -344,15 +415,6 @@ static void dnd_text_ops(int v);
 <td><pre>
 procedure Set_Drag_Drop_Text_Support
        (To : in Boolean);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-static void do_widget_deletion();
-</pre></td>
-<td><pre>
-procedure Do_Widget_Deletion;
 </pre></td>
   </tr>
 
@@ -781,6 +843,20 @@ static void selection_owner(Fl_Widget *);
 
   <tr>
 <td><pre>
+static void set_abort(Fl_Abort_Handler f);
+</pre></td>
+<td>Marked as backwards compatibility only.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void set_atclose(Fl_Atclose_Handler f);
+</pre></td>
+<td>Marked as backwards compatibility only.</td>
+  </tr>
+
+  <tr>
+<td><pre>
 static void set_box_color(Fl_Color);
 </pre></td>
 <td>&nbsp;</td>
@@ -788,7 +864,8 @@ static void set_box_color(Fl_Color);
 
   <tr>
 <td><pre>
-static void set_boxtype(Fl_Boxtype, Fl_Box_Draw_F *, uchar, uchar, uchar, uchar);
+static void set_boxtype(Fl_Boxtype, Fl_Box_Draw_F *,
+    uchar, uchar, uchar, uchar);
 </pre></td>
 <td>&nbsp;</td>
   </tr>
@@ -851,7 +928,15 @@ procedure Setup_Fonts
 
   <tr>
 <td><pre>
-static void set_labeltype(Fl_Labeltype, Fl_Label_Draw_F *, FL_Label_Measure_F *);
+static void set_idle(Fl_Old_Idle_Handler cb);
+</pre></td>
+<td>Deprecated, use add_idle / Add_Idle instead.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void set_labeltype(Fl_Labeltype, Fl_Label_Draw_F *,
+    FL_Label_Measure_F *);
 </pre></td>
 <td>&nbsp;</td>
   </tr>
@@ -861,26 +946,6 @@ static void set_labeltype(Fl_Labeltype, Fl_Label_Draw_F *, FL_Label_Measure_F *)
 static void set_labeltype(Fl_Labeltype, Fl_Labeltype from);
 </pre></td>
 <td>&nbsp;</td>
-  </tr>
-
-  <tr>
-<td><pre>
-static int visible_focus();
-</pre></td>
-<td><pre>
-function Has_Visible_Focus
-    return Boolean;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-static void visible_focus(int v);
-</pre></td>
-<td><pre>
-procedure Set_Visible_Focus
-       (To : in Boolean);
-</pre></td>
   </tr>
 
 </table>

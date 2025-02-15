@@ -59,6 +59,14 @@ void fl_event_set_focus(void * w) {
     Fl::focus(static_cast<Fl_Widget*>(w));
 }
 
+int fl_event_get_visible_focus() {
+    return Fl::visible_focus();
+}
+
+void fl_event_set_visible_focus(int f) {
+    Fl::visible_focus(f);
+}
+
 
 
 

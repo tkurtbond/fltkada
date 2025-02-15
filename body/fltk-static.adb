@@ -310,21 +310,6 @@ package body FLTK.Static is
 
 
 
-    --  Input Focus  --
-
-    function fl_static_get_visible_focus
-        return Interfaces.C.int;
-    pragma Import (C, fl_static_get_visible_focus, "fl_static_get_visible_focus");
-    pragma Inline (fl_static_get_visible_focus);
-
-    procedure fl_static_set_visible_focus
-           (T : in Interfaces.C.int);
-    pragma Import (C, fl_static_set_visible_focus, "fl_static_set_visible_focus");
-    pragma Inline (fl_static_set_visible_focus);
-
-
-
-
     --  Windows  --
 
     procedure fl_static_default_atclose
@@ -947,24 +932,6 @@ package body FLTK.Static is
     begin
         fl_static_set_dnd_text_ops (Boolean'Pos (To));
     end Set_Drag_Drop_Text_Support;
-
-
-
-
-    --  Input Focus  --
-
-    function Has_Visible_Focus
-        return Boolean is
-    begin
-        return fl_static_get_visible_focus /= 0;
-    end Has_Visible_Focus;
-
-
-    procedure Set_Visible_Focus
-           (To : in Boolean) is
-    begin
-        fl_static_set_visible_focus (Boolean'Pos (To));
-    end Set_Visible_Focus;
 
 
 

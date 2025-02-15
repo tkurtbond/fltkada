@@ -79,6 +79,12 @@ package FLTK.Event is
     procedure Set_Focus
            (To : in FLTK.Widgets.Widget'Class);
 
+    function Has_Visible_Focus
+        return Boolean;
+
+    procedure Set_Visible_Focus
+           (To : in Boolean);
+
 
 
 
@@ -236,6 +242,8 @@ private
     pragma Inline (Set_Below_Mouse);
     pragma Inline (Get_Focus);
     pragma Inline (Set_Focus);
+    pragma Inline (Has_Visible_Focus);
+    pragma Inline (Set_Visible_Focus);
 
     pragma Inline (Compose);
     pragma Inline (Compose_Reset);

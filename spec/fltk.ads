@@ -10,6 +10,7 @@ with
 
 private with
 
+    Ada.Unchecked_Conversion,
     Interfaces.C,
     System.Storage_Elements;
 
@@ -416,13 +417,45 @@ package FLTK is
 
 
 
+    --  Callback Flags  --
+
+    type Callback_Flag is record
+        Changed   : Boolean := False;
+        Interact  : Boolean := False;
+        Release   : Boolean := False;
+        Enter_Key : Boolean := False;
+    end record;
+
+    function "+" (Left, Right : in Callback_Flag) return Callback_Flag;
+    function "-" (Left, Right : in Callback_Flag) return Callback_Flag;
+
+    Call_Never            : constant Callback_Flag;
+    When_Changed          : constant Callback_Flag;
+    When_Interact         : constant Callback_Flag;
+    When_Release          : constant Callback_Flag;
+    When_Release_Always   : constant Callback_Flag;
+    When_Enter_Key        : constant Callback_Flag;
+    When_Enter_Key_Always : constant Callback_Flag;
+
+
+
+
     --  Menu Flags  --
 
-    --  Should these be moved to FLTK.Menu_Items?
+    --  It's easier to have this here rather than in Menu_Items for visibility reasons.
 
-    type Menu_Flag is private;
+    type Menu_Flag is record
+        Inactive  : Boolean := False;
+        Toggle    : Boolean := False;
+        Value     : Boolean := False;
+        Radio     : Boolean := False;
+        Invisible : Boolean := False;
+        Submenu   : Boolean := False;
+        Divider   : Boolean := False;
+    end record;
 
     function "+" (Left, Right : in Menu_Flag) return Menu_Flag;
+    function "-" (Left, Right : in Menu_Flag) return Menu_Flag;
 
     Flag_Normal    : constant Menu_Flag;
     Flag_Inactive  : constant Menu_Flag;
@@ -432,6 +465,33 @@ package FLTK is
     Flag_Invisible : constant Menu_Flag;
     Flag_Submenu   : constant Menu_Flag;
     Flag_Divider   : constant Menu_Flag;
+
+
+
+
+    --  Damage Bits  --
+
+    type Damage_Mask is record
+        Child   : Boolean := False;
+        Expose  : Boolean := False;
+        Scroll  : Boolean := False;
+        Overlay : Boolean := False;
+        User_1  : Boolean := False;
+        User_2  : Boolean := False;
+        Full    : Boolean := False;
+    end record;
+
+    function "+" (Left, Right : in Damage_Mask) return Damage_Mask;
+    function "-" (Left, Right : in Damage_Mask) return Damage_Mask;
+
+    Damage_None    : constant Damage_Mask;
+    Damage_Child   : constant Damage_Mask;
+    Damage_Expose  : constant Damage_Mask;
+    Damage_Scroll  : constant Damage_Mask;
+    Damage_Overlay : constant Damage_Mask;
+    Damage_User_1  : constant Damage_Mask;
+    Damage_User_2  : constant Damage_Mask;
+    Damage_Full    : constant Damage_Mask;
 
 
 
@@ -687,17 +747,94 @@ private
 
 
 
-    type Menu_Flag is new Interfaces.Unsigned_8;
+    for Callback_Flag use record
+        Changed   at 0 range 0 .. 0;
+        Interact  at 0 range 1 .. 1;
+        Release   at 0 range 2 .. 2;
+        Enter_Key at 0 range 3 .. 3;
+    end record;
 
-    Flag_Normal    : constant Menu_Flag := 2#00000000#;
-    Flag_Inactive  : constant Menu_Flag := 2#00000001#;
-    Flag_Toggle    : constant Menu_Flag := 2#00000010#;
-    Flag_Value     : constant Menu_Flag := 2#00000100#;
-    Flag_Radio     : constant Menu_Flag := 2#00001000#;
-    Flag_Invisible : constant Menu_Flag := 2#00010000#;
-    --  Flag_Submenu_Pointer unlikely to be used
-    Flag_Submenu   : constant Menu_Flag := 2#01000000#;
-    Flag_Divider   : constant Menu_Flag := 2#10000000#;
+    for Callback_Flag'Size use Interfaces.C.unsigned_char'Size;
+
+    Call_Never     : constant Callback_Flag := (others => False);
+    When_Changed   : constant Callback_Flag := (Changed   => True, others => False);
+    When_Interact  : constant Callback_Flag := (Interact  => True, others => False);
+    When_Release   : constant Callback_Flag := (Release   => True, others => False);
+    When_Enter_Key : constant Callback_Flag := (Enter_Key => True, others => False);
+
+    When_Release_Always   : constant Callback_Flag :=
+        (Release   => True, Interact => True, others => False);
+    When_Enter_Key_Always : constant Callback_Flag :=
+        (Enter_Key => True, Interact => True, others => False);
+
+    function Flag_To_UChar is new
+        Ada.Unchecked_Conversion (Callback_Flag, Interfaces.C.unsigned_char);
+
+    function UChar_To_Flag is new
+        Ada.Unchecked_Conversion (Interfaces.C.unsigned_char, Callback_Flag);
+
+
+
+
+    for Menu_Flag use record
+        Inactive  at 0 range 0 .. 0;
+        Toggle    at 0 range 1 .. 1;
+        Value     at 0 range 2 .. 2;
+        Radio     at 0 range 3 .. 3;
+        Invisible at 0 range 4 .. 4;
+        --  Submenu_Pointer unused
+        Submenu   at 0 range 6 .. 6;
+        Divider   at 0 range 7 .. 7;
+    end record;
+
+    for Menu_Flag'Size use Interfaces.C.int'Size;
+
+    Flag_Normal    : constant Menu_Flag := (others => False);
+    Flag_Inactive  : constant Menu_Flag := (Inactive  => True, others => False);
+    Flag_Toggle    : constant Menu_Flag := (Toggle    => True, others => False);
+    Flag_Value     : constant Menu_Flag := (Value     => True, others => False);
+    Flag_Radio     : constant Menu_Flag := (Radio     => True, others => False);
+    Flag_Invisible : constant Menu_Flag := (Invisible => True, others => False);
+    --  Flag_Submenu_Pointer unused
+    Flag_Submenu   : constant Menu_Flag := (Submenu   => True, others => False);
+    Flag_Divider   : constant Menu_Flag := (Divider   => True, others => False);
+
+    function MFlag_To_Cint is new
+        Ada.Unchecked_Conversion (Menu_Flag, Interfaces.C.int);
+
+    function Cint_To_MFlag is new
+        Ada.Unchecked_Conversion (Interfaces.C.int, Menu_Flag);
+
+
+
+
+    for Damage_Mask use record
+        Child   at 0 range 0 .. 0;
+        Expose  at 0 range 1 .. 1;
+        Scroll  at 0 range 2 .. 2;
+        Overlay at 0 range 3 .. 3;
+        User_1  at 0 range 4 .. 4;
+        User_2  at 0 range 5 .. 5;
+        --  bit 6 missing
+        Full    at 0 range 7 .. 7;
+    end record;
+
+    for Damage_Mask'Size use Interfaces.C.unsigned_char'Size;
+
+    Damage_None    : constant Damage_Mask := (others  => False);
+    Damage_Child   : constant Damage_Mask := (Child   => True, others => False);
+    Damage_Expose  : constant Damage_Mask := (Expose  => True, others => False);
+    Damage_Scroll  : constant Damage_Mask := (Scroll  => True, others => False);
+    Damage_Overlay : constant Damage_Mask := (Overlay => True, others => False);
+    Damage_User_1  : constant Damage_Mask := (User_1  => True, others => False);
+    Damage_User_2  : constant Damage_Mask := (User_2  => True, others => False);
+    Damage_Full    : constant Damage_Mask := (Full    => True, others => False);
+
+    function Mask_To_UChar is new
+        Ada.Unchecked_Conversion (Damage_Mask, Interfaces.C.unsigned_char);
+
+    function UChar_To_Mask is new
+        Ada.Unchecked_Conversion (Interfaces.C.unsigned_char, Damage_Mask);
 
 
 

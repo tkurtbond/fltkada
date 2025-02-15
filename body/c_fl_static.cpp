@@ -219,14 +219,6 @@ void fl_static_disable_im() {
     Fl::disable_im();
 }
 
-int fl_static_get_visible_focus() {
-    return Fl::visible_focus();
-}
-
-void fl_static_set_visible_focus(int f) {
-    Fl::visible_focus(f);
-}
-
 
 
 
@@ -255,10 +247,6 @@ void * fl_static_modal() {
 
 void * fl_static_readqueue() {
     return Fl::readqueue();
-}
-
-void fl_static_do_widget_deletion() {
-    Fl::do_widget_deletion();
 }
 
 

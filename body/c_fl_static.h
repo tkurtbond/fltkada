@@ -75,8 +75,6 @@ extern "C" void fl_static_set_dnd_text_ops(int t);
 
 extern "C" void fl_static_enable_im();
 extern "C" void fl_static_disable_im();
-extern "C" int fl_static_get_visible_focus();
-extern "C" void fl_static_set_visible_focus(int f);
 
 
 extern "C" void fl_static_default_atclose(void * w);
@@ -87,7 +85,6 @@ extern "C" void * fl_static_modal();
 
 
 extern "C" void * fl_static_readqueue();
-extern "C" void fl_static_do_widget_deletion();
 
 
 extern "C" const char * fl_static_get_scheme();

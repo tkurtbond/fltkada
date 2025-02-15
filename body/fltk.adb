@@ -339,7 +339,7 @@ package body FLTK is
            (Left, Right : in Alignment)
         return Alignment is
     begin
-        return Left and (not Right);
+        return Left and not Right;
     end "-";
 
 
@@ -581,14 +581,89 @@ package body FLTK is
 
 
 
+    --  Callback Flags  --
+
+    type Callback_Bitmask is mod 2 ** Interfaces.C.unsigned_char'Size;
+
+    function CFlag_To_Bits is new
+        Ada.Unchecked_Conversion (Callback_Flag, Callback_Bitmask);
+
+    function Bits_To_CFlag is new
+        Ada.Unchecked_Conversion (Callback_Bitmask, Callback_Flag);
+
+
+    function "+"
+           (Left, Right : in Callback_Flag)
+        return Callback_Flag is
+    begin
+        return Bits_To_CFlag (CFlag_To_Bits (Left) or CFlag_To_Bits (Right));
+    end "+";
+
+
+    function "-"
+           (Left, Right : in Callback_Flag)
+        return Callback_Flag is
+    begin
+        return Bits_To_CFlag (CFlag_To_Bits (Left) and not CFlag_To_Bits (Right));
+    end "-";
+
+
+
+
     --  Menu Flags  --
+
+    type Menu_Bitmask is mod 2 ** Interfaces.C.int'Size;
+
+    function MFlag_To_Bits is new
+        Ada.Unchecked_Conversion (Menu_Flag, Menu_Bitmask);
+
+    function Bits_To_MFlag is new
+        Ada.Unchecked_Conversion (Menu_Bitmask, Menu_Flag);
+
 
     function "+"
            (Left, Right : in Menu_Flag)
         return Menu_Flag is
     begin
-        return Left or Right;
+        return Bits_To_MFlag (MFlag_To_Bits (Left) or MFlag_To_Bits (Right));
     end "+";
+
+
+    function "-"
+           (Left, Right : in Menu_Flag)
+        return Menu_Flag is
+    begin
+        return Bits_To_MFlag (MFlag_To_Bits (Left) and not MFlag_To_Bits (Right));
+    end "-";
+
+
+
+
+    --  Damage Bits  --
+
+    type Damage_Bitmask is mod 2 ** Interfaces.C.unsigned_char'Size;
+
+    function Damage_To_Bits is new
+        Ada.Unchecked_Conversion (Damage_Mask, Damage_Bitmask);
+
+    function Bits_To_Damage is new
+        Ada.Unchecked_Conversion (Damage_Bitmask, Damage_Mask);
+
+
+    function "+"
+           (Left, Right : in Damage_Mask)
+        return Damage_Mask is
+    begin
+        return Bits_To_Damage (Damage_To_Bits (Left) or Damage_To_Bits (Right));
+    end "+";
+
+
+    function "-"
+           (Left, Right : in Damage_Mask)
+        return Damage_Mask is
+    begin
+        return Bits_To_Damage (Damage_To_Bits (Left) and not Damage_To_Bits (Right));
+    end "-";
 
 
 

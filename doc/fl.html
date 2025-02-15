@@ -37,28 +37,18 @@
   </tr>
 
   <tr>
-    <td>enum</td>
+    <td>enum {<br />
+    FL_MENU_INACTIVE = 1,<br />
+    FL_MENU_TOGGLE = 2,<br />
+    FL_MENU_VALUE = 4,<br />
+    FL_MENU_RADIO = 8,<br />
+    FL_MENU_INVISIBLE = 0x10,<br />
+    FL_SUBMENU_POINTER = 0x20,<br />
+    FL_SUBMENU = 0x40,<br />
+    FL_MENU_DIVIDER = 0x80,<br />
+    FL_MENU_HORIZONTAL = 0x100 }<br />
+    </td>
     <td>Menu_Flag</td>
-  </tr>
-
-  <tr>
-    <td>Fl_Abort_Handler</td>
-    <td>&nbsp;</td>
-  </tr>
-
-  <tr>
-    <td>Fl_Args_Handler</td>
-    <td>&nbsp;</td>
-  </tr>
-
-  <tr>
-    <td>Fl_Atclose_Handler</td>
-    <td>&nbsp;</td>
-  </tr>
-
-  <tr>
-    <td>Fl_Old_Idle_Handler</td>
-    <td>&nbsp;</td>
   </tr>
 
 </table>
@@ -71,34 +61,6 @@
   <tr>
     <td>&nbsp;</td>
     <td>Internal_FLTK_Error</td>
-  </tr>
-
-</table>
-
-
-
-<table class="function">
-  <tr><th colspan="2">Static Attributes</th></tr>
-
-  <tr>
-<td><pre>
-static void (*atclose)(Fl_Window *, void *);
-</pre></td>
-<td>Deprecated, set the callback for the Window instead.</td>
-  </tr>
-
-  <tr>
-<td><pre>
-static const char * const help = helpmsg + 13;
-</pre></td>
-<td>&nbsp;</td>
-  </tr>
-
-  <tr>
-<td><pre>
-static void (*idle)();
-</pre></td>
-<td>Should not be used directly.</td>
   </tr>
 
 </table>
@@ -141,39 +103,11 @@ function API_Version
 
   <tr>
 <td><pre>
-static int arg(int argc, char **argv, int &i);
-</pre></td>
-<td>&nbsp;</td>
-  </tr>
-
-  <tr>
-<td><pre>
-static int args(int argc, char **argv, int &i, Fl_Args_Handler cb=0);
-</pre></td>
-<td>&nbsp;</td>
-  </tr>
-
-  <tr>
-<td><pre>
-static void args(int argc, char **argv);
-</pre></td>
-<td>&nbsp;</td>
-  </tr>
-
-  <tr>
-<td><pre>
 static void awake(void *message=0);
 </pre></td>
 <td><pre>
 procedure Awake;
 </pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-static int awake(Fl_Awake_Handler cb, void *message=0);
-</pre></td>
-<td>&nbsp;</td>
   </tr>
 
   <tr>
@@ -257,6 +191,13 @@ static void delete_widget(Fl_Widget *w);
 
   <tr>
 <td><pre>
+static void do_widget_deletion();
+</pre></td>
+<td>Marked as internal use only.</td>
+  </tr>
+
+  <tr>
+<td><pre>
 static void flush();
 </pre></td>
 <td><pre>
@@ -327,27 +268,6 @@ function Run
 
   <tr>
 <td><pre>
-static void set_abort(Fl_Abort_Handler f);
-</pre></td>
-<td>Marked as backwards compatibility only.</td>
-  </tr>
-
-  <tr>
-<td><pre>
-static void set_atclose(Fl_Atclose_Handler f);
-</pre></td>
-<td>Marked as backwards compatibility only.</td>
-  </tr>
-
-  <tr>
-<td><pre>
-static void set_idle(Fl_Old_Idle_Handler cb);
-</pre></td>
-<td>Deprecated, use add_idle / Add_Idle instead.</td>
-  </tr>
-
-  <tr>
-<td><pre>
 static void * thread_message();
 </pre></td>
 <td>&nbsp;</td>
@@ -393,13 +313,6 @@ static double version();
 function Version
     return Version_Number;
 </pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-static int visual(int);
-</pre></td>
-<td>&nbsp;</td>
   </tr>
 
   <tr>

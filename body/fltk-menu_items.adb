@@ -298,7 +298,7 @@ package body FLTK.Menu_Items is
                    (Interfaces.C.To_C (Text),
                     Callback_Convert.To_Address (Action),
                     To_C (Shortcut),
-                    Interfaces.C.int (Flags));
+                    MFlag_To_Cint (Flags));
             end return;
         end Create;
 
@@ -552,7 +552,7 @@ package body FLTK.Menu_Items is
            (This : in Menu_Item)
         return Menu_Flag is
     begin
-        return Menu_Flag (fl_menu_item_get_flags (This.Void_Ptr));
+        return Cint_To_MFlag (fl_menu_item_get_flags (This.Void_Ptr));
     end Get_Flags;
 
 
@@ -560,7 +560,7 @@ package body FLTK.Menu_Items is
            (This : in out Menu_Item;
             To   : in     Menu_Flag) is
     begin
-        fl_menu_item_set_flags (This.Void_Ptr, Interfaces.C.int (To));
+        fl_menu_item_set_flags (This.Void_Ptr, MFlag_To_Cint (To));
     end Set_Flags;
 
 

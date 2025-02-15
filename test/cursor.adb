@@ -16,7 +16,7 @@ with
 
 use type
 
-    FLTK.Widgets.Callback_Flag;
+    FLTK.Callback_Flag;
 
 
 function Cursor
@@ -95,7 +95,7 @@ begin
     The_Choices.Add ("FL_CURSOR_NONE",    Choice_Callback'Unrestricted_Access);
 
     The_Choices.Set_Callback (Choice_Callback'Unrestricted_Access);
-    The_Choices.Set_When (FLTK.Widgets.When_Release + FLTK.Widgets.When_Interact);
+    The_Choices.Set_When (FLTK.When_Release + FLTK.When_Interact);
     The_Choices.Set_Chosen (1);
 
     The_Slider.Set_Alignment (FLTK.Align_Left);

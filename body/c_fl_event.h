@@ -21,6 +21,8 @@ extern "C" void * fl_event_get_belowmouse();
 extern "C" void fl_event_set_belowmouse(void * w);
 extern "C" void * fl_event_get_focus();
 extern "C" void fl_event_set_focus(void * w);
+extern "C" int fl_event_get_visible_focus();
+extern "C" void fl_event_set_visible_focus(int f);
 
 
 extern "C" int fl_event_compose(int &d);
