@@ -9,7 +9,8 @@
 
 
 extern "C" void fl_event_add_handler(void * f);
-extern "C" void fl_event_set_event_dispatch(void * f);
+extern "C" void fl_event_set_dispatch(void * f);
+extern "C" int fl_event_handle_dispatch(int e, void * w);
 extern "C" int fl_event_handle(int e, void * w);
 
 
@@ -25,10 +26,15 @@ extern "C" int fl_event_get_visible_focus();
 extern "C" void fl_event_set_visible_focus(int f);
 
 
+extern "C" const char * fl_event_clipboard_text();
+extern "C" const char * fl_event_clipboard_type();
+
+
 extern "C" int fl_event_compose(int &d);
 extern "C" void fl_event_compose_reset();
 extern "C" const char * fl_event_text();
 extern "C" int fl_event_length();
+extern "C" int fl_event_test_shortcut(unsigned int s);
 
 
 extern "C" int fl_event_get();
@@ -44,12 +50,17 @@ extern "C" int fl_event_dx();
 extern "C" int fl_event_dy();
 extern "C" void fl_event_get_mouse(int &x, int &y);
 extern "C" int fl_event_is_click();
-extern "C" int fl_event_is_clicks();
+extern "C" void fl_event_set_click(int c);
+extern "C" int fl_event_get_clicks();
 extern "C" void fl_event_set_clicks(int c);
 extern "C" int fl_event_button();
 extern "C" int fl_event_button1();
 extern "C" int fl_event_button2();
 extern "C" int fl_event_button3();
+extern "C" int fl_event_button4();
+extern "C" int fl_event_button5();
+extern "C" int fl_event_buttons();
+extern "C" int fl_event_inside2(void * c);
 extern "C" int fl_event_inside(int x, int y, int w, int h);
 
 

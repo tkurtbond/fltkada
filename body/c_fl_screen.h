@@ -8,7 +8,14 @@
 #define FL_SCREEN_GUARD
 
 
+extern "C" const int fl_enum_mode_rgb;
+extern "C" const int fl_enum_mode_rgb8;
+extern "C" const int fl_enum_mode_double;
+extern "C" const int fl_enum_mode_index;
+
+
 extern "C" void fl_screen_display(const char * v);
+extern "C" int fl_screen_visual(int mode);
 
 
 extern "C" int fl_screen_x();
@@ -34,6 +41,12 @@ extern "C" void fl_screen_xywh(int &x, int &y, int &w, int &h, int px, int py);
 extern "C" void fl_screen_xywh2(int &x, int &y, int &w, int &h, int n);
 extern "C" void fl_screen_xywh3(int &x, int &y, int &w, int &h);
 extern "C" void fl_screen_xywh4(int &x, int &y, int &w, int &h, int px, int py, int pw, int ph);
+
+
+extern "C" int fl_screen_get_damage();
+extern "C" void fl_screen_set_damage(int v);
+extern "C" void fl_screen_flush();
+extern "C" void fl_screen_redraw();
 
 
 #endif

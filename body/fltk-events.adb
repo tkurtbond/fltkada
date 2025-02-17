@@ -15,10 +15,47 @@ use type
     Interfaces.C.Strings.chars_ptr;
 
 
-package body FLTK.Event is
+package body FLTK.Events is
 
 
     package Chk renames Ada.Assertions;
+
+
+
+
+    ------------------------
+    --  Constants From C  --
+    ------------------------
+
+    fl_enum_button1 : constant Interfaces.C.int;
+    pragma Import (C, fl_enum_button1, "fl_enum_button1");
+
+    fl_enum_button2 : constant Interfaces.C.int;
+    pragma Import (C, fl_enum_button2, "fl_enum_button2");
+
+    fl_enum_button3 : constant Interfaces.C.int;
+    pragma Import (C, fl_enum_button3, "fl_enum_button3");
+
+    fl_enum_button4 : constant Interfaces.C.int;
+    pragma Import (C, fl_enum_button4, "fl_enum_button4");
+
+    fl_enum_button5 : constant Interfaces.C.int;
+    pragma Import (C, fl_enum_button5, "fl_enum_button5");
+
+    fl_enum_left_mouse : constant Interfaces.C.int;
+    pragma Import (C, fl_enum_left_mouse, "fl_enum_left_mouse");
+
+    fl_enum_middle_mouse : constant Interfaces.C.int;
+    pragma Import (C, fl_enum_middle_mouse, "fl_enum_middle_mouse");
+
+    fl_enum_right_mouse : constant Interfaces.C.int;
+    pragma Import (C, fl_enum_right_mouse, "fl_enum_right_mouse");
+
+    fl_enum_back_mouse : constant Interfaces.C.int;
+    pragma Import (C, fl_enum_back_mouse, "fl_enum_back_mouse");
+
+    fl_enum_forward_mouse : constant Interfaces.C.int;
+    pragma Import (C, fl_enum_forward_mouse, "fl_enum_forward_mouse");
 
 
 
@@ -34,12 +71,18 @@ package body FLTK.Event is
     pragma Import (C, fl_event_add_handler, "fl_event_add_handler");
     pragma Inline (fl_event_add_handler);
 
-    procedure fl_event_set_event_dispatch
+    procedure fl_event_set_dispatch
            (F : in Storage.Integer_Address);
-    pragma Import (C, fl_event_set_event_dispatch, "fl_event_set_event_dispatch");
-    pragma Inline (fl_event_set_event_dispatch);
+    pragma Import (C, fl_event_set_dispatch, "fl_event_set_dispatch");
+    pragma Inline (fl_event_set_dispatch);
 
-    --  actually handle_ but can't have an underscore on the end of an identifier
+    function fl_event_handle_dispatch
+           (E : in Interfaces.C.int;
+            W : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_event_handle_dispatch, "fl_event_handle_dispatch");
+    pragma Inline (fl_event_handle_dispatch);
+
     function fl_event_handle
            (E : in Interfaces.C.int;
             W : in Storage.Integer_Address)
@@ -105,6 +148,21 @@ package body FLTK.Event is
 
 
 
+    --  Clipboard  --
+
+    function fl_event_clipboard_text
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_event_clipboard_text, "fl_event_clipboard_text");
+    pragma Inline (fl_event_clipboard_text);
+
+    function fl_event_clipboard_type
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_event_clipboard_type, "fl_event_clipboard_type");
+    pragma Inline (fl_event_clipboard_type);
+
+
+
+
     --  Multikey  --
 
     function fl_event_compose
@@ -122,6 +180,12 @@ package body FLTK.Event is
         return Interfaces.C.int;
     pragma Import (C, fl_event_length, "fl_event_length");
     pragma Inline (fl_event_length);
+
+    function fl_event_test_shortcut
+           (S : in Interfaces.C.unsigned)
+        return Interfaces.C.int;
+    pragma Import (C, fl_event_test_shortcut, "fl_event_test_shortcut");
+    pragma Inline (fl_event_test_shortcut);
 
 
 
@@ -189,10 +253,15 @@ package body FLTK.Event is
     pragma Import (C, fl_event_is_click, "fl_event_is_click");
     pragma Inline (fl_event_is_click);
 
-    function fl_event_is_clicks
+    procedure fl_event_set_click
+           (C : in Interfaces.C.int);
+    pragma Import (C, fl_event_set_click, "fl_event_set_click");
+    pragma Inline (fl_event_set_click);
+
+    function fl_event_get_clicks
         return Interfaces.C.int;
-    pragma Import (C, fl_event_is_clicks, "fl_event_is_clicks");
-    pragma Inline (fl_event_is_clicks);
+    pragma Import (C, fl_event_get_clicks, "fl_event_get_clicks");
+    pragma Inline (fl_event_get_clicks);
 
     procedure fl_event_set_clicks
            (C : in Interfaces.C.int);
@@ -218,6 +287,27 @@ package body FLTK.Event is
         return Interfaces.C.int;
     pragma Import (C, fl_event_button3, "fl_event_button3");
     pragma Inline (fl_event_button3);
+
+    function fl_event_button4
+        return Interfaces.C.int;
+    pragma Import (C, fl_event_button4, "fl_event_button4");
+    pragma Inline (fl_event_button4);
+
+    function fl_event_button5
+        return Interfaces.C.int;
+    pragma Import (C, fl_event_button5, "fl_event_button5");
+    pragma Inline (fl_event_button5);
+
+    function fl_event_buttons
+        return Interfaces.C.int;
+    pragma Import (C, fl_event_buttons, "fl_event_buttons");
+    pragma Inline (fl_event_buttons);
+
+    function fl_event_inside2
+           (C : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_event_inside2, "fl_event_inside2");
+    pragma Inline (fl_event_inside2);
 
     function fl_event_inside
            (X, Y, W, H : in Interfaces.C.int)
@@ -295,25 +385,27 @@ package body FLTK.Event is
     end Event_Handler_Hook;
 
 
-    --  function Dispatch_Hook
-    --         (Num : in Interfaces.C.int;
-    --          Ptr : in Storage.Integer_Address)
-    --      return Interfaces.C.int
-    --  is
-    --      Ret_Val : Event_Outcome;
-    --      Actual_Window : access FLTK.Widgets.Groups.Windows.Window'Class;
-    --  begin
-    --      if Ptr /= Null_Pointer then
-    --          Actual_Window := Window_Convert.To_Pointer
-    --              (Storage.To_Address (fl_widget_get_user_data (Ptr)));
-    --      end if;
-    --      if Current_Dispatch = null then
-    --          Ret_Val := Default_Dispatch (Event_Kind'Val (Num), Actual_Window);
-    --      else
-    --          Ret_Val := Current_Dispatch (Event_Kind'Val (Num), Actual_Window);
-    --      end if;
-    --      return Event_Outcome'Pos (Ret_Val);
-    --  end Dispatch_Hook;
+    function Dispatch_Hook
+           (Num : in Interfaces.C.int;
+            Ptr : in Storage.Integer_Address)
+        return Interfaces.C.int
+    is
+        Ada_Ptr : Storage.Integer_Address;
+        Actual_Window : access FLTK.Widgets.Groups.Windows.Window'Class;
+    begin
+        if Ptr /= Null_Pointer then
+            Ada_Ptr := fl_widget_get_user_data (Ptr);
+            pragma Assert (Ada_Ptr /= Null_Pointer);
+            Actual_Window := Window_Convert.To_Pointer (Storage.To_Address (Ada_Ptr));
+        end if;
+        return Event_Outcome'Pos (Current_Dispatch (Event_Kind'Val (Num), Actual_Window));
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Window passed to Event_Dispatch hook did not have user_data pointer back to Ada";
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Event_Dispatch hook passed unexpected event int value of " &
+        Interfaces.C.int'Image (Num);
+    end Dispatch_Hook;
 
 
 
@@ -343,38 +435,55 @@ package body FLTK.Event is
     end Remove_Handler;
 
 
-    --  function Get_Dispatch
-    --      return Event_Dispatch is
-    --  begin
-    --      if Current_Dispatch = null then
-    --          return Default_Dispatch'Access;
-    --      else
-    --          return Current_Dispatch;
-    --      end if;
-    --  end Get_Dispatch;
+    function Get_Dispatch
+        return Event_Dispatch is
+    begin
+        return Current_Dispatch;
+    end Get_Dispatch;
 
 
-    --  procedure Set_Dispatch
-    --         (Func : in Event_Dispatch) is
-    --  begin
-    --      Current_Dispatch := Func;
-    --  end Set_Dispatch;
+    procedure Set_Dispatch
+           (Func : in Event_Dispatch) is
+    begin
+        Current_Dispatch := Func;
+        if Current_Dispatch /= null then
+            fl_event_set_dispatch (Storage.To_Integer (Dispatch_Hook'Address));
+        else
+            fl_event_set_dispatch (Null_Pointer);
+        end if;
+    end Set_Dispatch;
 
 
-    --  function Default_Dispatch
-    --         (Event : in     Event_Kind;
-    --          Win   : access FLTK.Widgets.Groups.Windows.Window'Class)
-    --      return Event_Outcome is
-    --  begin
-    --      if Win = null then
-    --          return Event_Outcome'Val (fl_event_handle
-    --             (Event_Kind'Pos (Event), Null_Pointer));
-    --      else
-    --          return Event_Outcome'Val (fl_event_handle
-    --             (Event_Kind'Pos (Event),
-    --              Wrapper (Win.all).Void_Ptr));
-    --      end if;
-    --  end Default_Dispatch;
+    function Handle_Dispatch
+           (Event  : in     Event_Kind;
+            Origin : in out FLTK.Widgets.Groups.Windows.Window'Class)
+        return Event_Outcome
+    is
+        Result : Interfaces.C.int := fl_event_handle_dispatch
+           (Event_Kind'Pos (Event),
+            Wrapper (Origin).Void_Ptr);
+    begin
+        return Event_Outcome'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl::handle returned unexpected int value of " & Interfaces.C.int'Image (Result);
+    end Handle_Dispatch;
+
+
+    function Handle
+           (Event  : in     Event_Kind;
+            Origin : in out FLTK.Widgets.Groups.Windows.Window'Class)
+        return Event_Outcome
+    is
+        Result : Interfaces.C.int := fl_event_handle
+           (Event_Kind'Pos (Event),
+            Wrapper (Origin).Void_Ptr);
+    begin
+        return Event_Outcome'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl::handle_ returned unexpected int value of " & Interfaces.C.int'Image (Result);
+    end Handle;
 
 
 
@@ -503,6 +612,36 @@ package body FLTK.Event is
 
 
 
+    --  Clipboard  --
+
+    function Clipboard_Text
+        return String
+    is
+        Text_Ptr : Interfaces.C.Strings.chars_ptr := fl_event_clipboard_text;
+    begin
+        if Text_Ptr = Interfaces.C.Strings.Null_Ptr then
+            return "";
+        else
+            return Interfaces.C.Strings.Value (Text_Ptr);
+        end if;
+    end Clipboard_Text;
+
+
+    function Clipboard_Kind
+        return String
+    is
+        Text_Ptr : Interfaces.C.Strings.chars_ptr := fl_event_clipboard_type;
+    begin
+        if Text_Ptr = Interfaces.C.Strings.Null_Ptr then
+            return "";
+        else
+            return Interfaces.C.Strings.Value (Text_Ptr);
+        end if;
+    end Clipboard_Kind;
+
+
+
+
     --  Multikey  --
 
     function Compose
@@ -533,21 +672,34 @@ package body FLTK.Event is
     end Text_Length;
 
 
+    function Test_Shortcut
+           (Shortcut : in Key_Combo)
+        return Boolean is
+    begin
+        return fl_event_test_shortcut (To_C (Shortcut)) /= 0;
+    end Test_Shortcut;
+
+
 
 
     --  Modifiers  --
 
     function Last
-        return Event_Kind is
+        return Event_Kind
+    is
+        Value : Interfaces.C.int := fl_event_get;
     begin
-        return Event_Kind'Val (fl_event_get);
+        return Event_Kind'Val (Value);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl::event returned unexpected int value of " & Interfaces.C.int'Image (Value);
     end Last;
 
 
     function Last_Modifier
         return Modifier is
     begin
-        return To_Ada (fl_event_state);
+        return To_Ada (Interfaces.C.unsigned (fl_event_state));
     end Last_Modifier;
 
 
@@ -555,7 +707,7 @@ package body FLTK.Event is
            (Had : in Modifier)
         return Boolean is
     begin
-        return fl_event_check_state (To_C (Had)) /= 0;
+        return fl_event_check_state (Interfaces.C.int (To_C (Had))) /= 0;
     end Last_Modifier;
 
 
@@ -620,24 +772,73 @@ package body FLTK.Event is
     end Is_Click;
 
 
+    procedure Clear_Click is
+    begin
+        fl_event_set_click (0);
+    end Clear_Click;
+
+
     function Is_Multi_Click
         return Boolean is
     begin
-        return fl_event_is_clicks /= 0;
+        return fl_event_get_clicks /= 0;
     end Is_Multi_Click;
+
+
+    function Get_Clicks
+        return Natural
+    is
+        Raw : Interfaces.C.int := fl_event_get_clicks;
+    begin
+        if Is_Click then
+            return Positive (Raw + 1);
+        else
+            return 0;
+        end if;
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl::event_clicks returned unexpected int value of " &
+        Interfaces.C.int'Image (Raw);
+    end Get_Clicks;
 
 
     procedure Set_Clicks
            (To : in Natural) is
     begin
-        fl_event_set_clicks (Interfaces.C.int (To));
+        if To = 0 then
+            fl_event_set_clicks (0);
+            Clear_Click;
+        elsif To = 1 then
+            fl_event_set_clicks (0);
+        else
+            fl_event_set_clicks (Interfaces.C.int (To) - 1);
+        end if;
     end Set_Clicks;
 
 
     function Last_Button
-        return Mouse_Button is
+        return Mouse_Button
+    is
+        Code : Interfaces.C.int := fl_event_button;
     begin
-        return Mouse_Button'Val (fl_event_button);
+        pragma Assert (Last = Push or Last = Release);
+        if Code = fl_enum_left_mouse then
+            return Left_Button;
+        elsif Code = fl_enum_middle_mouse then
+            return Middle_Button;
+        elsif Code = fl_enum_right_mouse then
+            return Right_Button;
+        elsif Code = fl_enum_back_mouse then
+            return Back_Button;
+        elsif Code = fl_enum_forward_mouse then
+            return Forward_Button;
+        else
+            raise Internal_FLTK_Error with "Fl::event_button returned unexpected int value of " &
+                Interfaces.C.int'Image (Code);
+        end if;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl::event_button was called when the most recent event was not Push or Release";
     end Last_Button;
 
 
@@ -662,6 +863,46 @@ package body FLTK.Event is
     end Mouse_Right;
 
 
+    function Mouse_Back
+        return Boolean is
+    begin
+        return fl_event_button4 /= 0;
+    end Mouse_Back;
+
+
+    function Mouse_Forward
+        return Boolean is
+    begin
+        return fl_event_button5 /= 0;
+    end Mouse_Forward;
+
+
+    procedure Mouse_Buttons
+           (Left, Middle, Right, Back, Forward : out Boolean)
+    is
+        type Cint_Mod is mod 2 ** Interfaces.C.int'Size;
+        Mask : Interfaces.C.int := fl_event_buttons;
+    begin
+        Left    := (Cint_Mod (Mask) and Cint_Mod (fl_enum_button1)) /= 0;
+        Middle  := (Cint_Mod (Mask) and Cint_Mod (fl_enum_button2)) /= 0;
+        Right   := (Cint_Mod (Mask) and Cint_Mod (fl_enum_button3)) /= 0;
+        Back    := (Cint_Mod (Mask) and Cint_Mod (fl_enum_button4)) /= 0;
+        Forward := (Cint_Mod (Mask) and Cint_Mod (fl_enum_button5)) /= 0;
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl::event_buttons returned unexpected int value of " &
+        Interfaces.C.int'Image (Mask);
+    end Mouse_Buttons;
+
+
+    function Is_Inside
+           (Child : in FLTK.Widgets.Widget'Class)
+        return Boolean is
+    begin
+        return fl_event_inside2 (Wrapper (Child).Void_Ptr) /= 0;
+    end Is_Inside;
+
+
     function Is_Inside
            (X, Y, W, H : in Integer)
         return Boolean is
@@ -681,14 +922,14 @@ package body FLTK.Event is
     function Last_Key
         return Keypress is
     begin
-        return To_Ada (fl_event_key);
+        return To_Ada (Interfaces.C.unsigned (fl_event_key));
     end Last_Key;
 
 
     function Original_Last_Key
         return Keypress is
     begin
-        return To_Ada (fl_event_original_key);
+        return To_Ada (Interfaces.C.unsigned (fl_event_original_key));
     end Original_Last_Key;
 
 
@@ -696,7 +937,7 @@ package body FLTK.Event is
            (Key : in Keypress)
         return Boolean is
     begin
-        return fl_event_key_during (To_C (Key)) /= 0;
+        return fl_event_key_during (Interfaces.C.int (To_C (Key))) /= 0;
     end Pressed_During;
 
 
@@ -704,7 +945,7 @@ package body FLTK.Event is
            (Key : in Keypress)
         return Boolean is
     begin
-        return fl_event_get_key (To_C (Key)) /= 0;
+        return fl_event_get_key (Interfaces.C.int (To_C (Key))) /= 0;
     end Key_Now;
 
 
@@ -740,9 +981,8 @@ begin
 
 
     fl_event_add_handler (Storage.To_Integer (Event_Handler_Hook'Address));
-    --  fl_event_set_event_dispatch (Storage.To_Integer (Dispatch_Hook'Address));
 
 
-end FLTK.Event;
+end FLTK.Events;
 
 

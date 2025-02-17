@@ -11,7 +11,7 @@ with
 private with
 
     Ada.Unchecked_Conversion,
-    Interfaces.C,
+    Interfaces.C.Strings,
     System.Storage_Elements;
 
 
@@ -228,7 +228,14 @@ package FLTK is
     Tab_Key          : constant Keypress;
 
 
-    type Mouse_Button is (No_Button, Left_Button, Middle_Button, Right_Button);
+    type Mouse_Button is
+       (No_Button,
+        Left_Button,
+        Middle_Button,
+        Right_Button,
+        Back_Button,
+        Forward_Button,
+        Any_Button);
 
 
     type Key_Combo is private;
@@ -496,6 +503,14 @@ package FLTK is
 
 
 
+    --  Clipboard Attributes  --
+
+    Clipboard_Image      : constant String;
+    Clipboard_Plain_Text : constant String;
+
+
+
+
     --  Versioning  --
 
     type Version_Number is new Natural;
@@ -516,34 +531,9 @@ package FLTK is
 
 
 
-    --  Threads  --
-
-    procedure Awake;
-
-    procedure Lock;
-
-    procedure Unlock;
-
-
-
-
-    --  Drawing  --
-
-    --  Need to check/revise these damage bits...
-    function Is_Damaged
-        return Boolean;
-
-    procedure Set_Damaged
-           (To : in Boolean);
-
-    procedure Flush;
-
-    procedure Redraw;
-
-
-
-
     --  Event Loop  --
+
+    procedure Check;
 
     function Check
         return Boolean;
@@ -681,34 +671,34 @@ private
 
     function To_C
            (Key : in Key_Combo)
-        return Interfaces.C.int;
+        return Interfaces.C.unsigned;
 
     function To_Ada
-           (Key : in Interfaces.C.int)
+           (Key : in Interfaces.C.unsigned)
         return Key_Combo;
 
     function To_C
            (Key : in Keypress)
-        return Interfaces.C.int;
+        return Interfaces.C.unsigned;
 
     function To_Ada
-           (Key : in Interfaces.C.int)
+           (Key : in Interfaces.C.unsigned)
         return Keypress;
 
     function To_C
            (Modi : in Modifier)
-        return Interfaces.C.int;
+        return Interfaces.C.unsigned;
 
     function To_Ada
-           (Modi : in Interfaces.C.int)
+           (Modi : in Interfaces.C.unsigned)
         return Modifier;
 
     function To_C
            (Button : in Mouse_Button)
-        return Interfaces.C.int;
+        return Interfaces.C.unsigned;
 
     function To_Ada
-           (Button : in Interfaces.C.int)
+           (Button : in Interfaces.C.unsigned)
         return Mouse_Button;
 
     --  these values designed to align with FLTK enumeration types
@@ -839,19 +829,20 @@ private
 
 
 
-    pragma Import (C, Awake, "fl_awake");
-    pragma Import (C, Lock, "fl_lock");
-    pragma Import (C, Unlock, "fl_unlock");
+    clip_image_char_ptr : Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, clip_image_char_ptr, "fl_clip_image_char_ptr");
 
-    pragma Import (C, Flush, "fl_flush");
-    pragma Import (C, Redraw, "fl_redraw");
+    clip_plain_text_char_ptr : Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, clip_plain_text_char_ptr, "fl_clip_plain_text_char_ptr");
+
+    Clipboard_Image      : constant String := Interfaces.C.Strings.Value (clip_image_char_ptr);
+    Clipboard_Plain_Text : constant String := Interfaces.C.Strings.Value (clip_plain_text_char_ptr);
 
 
 
 
     pragma Inline (RGB_Color);
     pragma Inline (Color_Cube);
-    pragma Inline (Contrast);
     pragma Inline (Grey_Ramp);
     pragma Inline (Darker);
     pragma Inline (Lighter);
@@ -859,19 +850,14 @@ private
     pragma Inline (Inactive);
     pragma Inline (Color_Average);
 
+    pragma Inline (Filled);
+    pragma Inline (Frame);
+    pragma Inline (Down);
+
     pragma Inline (ABI_Check);
     pragma Inline (ABI_Version);
     pragma Inline (API_Version);
     pragma Inline (Version);
-
-    pragma Inline (Awake);
-    pragma Inline (Lock);
-    pragma Inline (Unlock);
-
-    pragma Inline (Is_Damaged);
-    pragma Inline (Set_Damaged);
-    pragma Inline (Flush);
-    pragma Inline (Redraw);
 
     pragma Inline (Check);
     pragma Inline (Ready);

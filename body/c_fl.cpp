@@ -60,6 +60,37 @@ const int fl_enum_num_gray  = FL_NUM_GRAY;
 
 
 
+const unsigned int fl_enum_button1 = FL_BUTTON1;
+const unsigned int fl_enum_button2 = FL_BUTTON2;
+const unsigned int fl_enum_button3 = FL_BUTTON3;
+#if FL_API_VERSION >= 10310
+const unsigned int fl_enum_button4 = FL_BUTTON4;
+const unsigned int fl_enum_button5 = FL_BUTTON5;
+#else
+//  woo, limited backwards compatibility
+const unsigned int fl_enum_button4 = 8;
+const unsigned int fl_enum_button5 = 16;
+#endif
+const unsigned int fl_enum_buttons = FL_BUTTONS;
+
+
+
+
+const int fl_enum_left_mouse   = FL_LEFT_MOUSE;
+const int fl_enum_middle_mouse = FL_MIDDLE_MOUSE;
+const int fl_enum_right_mouse  = FL_RIGHT_MOUSE;
+#if FL_API_VERSION >= 10310
+const int fl_enum_back_mouse    = FL_BACK_MOUSE;
+const int fl_enum_forward_mouse = FL_FORWARD_MOUSE;
+#else
+//  woo, limited backwards compatibility
+const int fl_enum_back_mouse    = 4;
+const int fl_enum_forward_mouse = 5;
+#endif
+
+
+
+
 unsigned int fl_enum_rgb_color2(unsigned char l) {
     return static_cast<unsigned int>(fl_rgb_color(l));
 }
@@ -116,6 +147,13 @@ int fl_enum_down(int b) {
 
 
 
+const char * fl_clip_image_char_ptr = Fl::clipboard_image;
+
+const char * fl_clip_plain_text_char_ptr = Fl::clipboard_plain_text;
+
+
+
+
 int fl_abi_check(int v) {
     return Fl::abi_check(v);
 }
@@ -130,40 +168,6 @@ int fl_api_version() {
 
 double fl_version() {
     return Fl::version();
-}
-
-
-
-
-void fl_awake() {
-    Fl::awake();
-}
-
-void fl_lock() {
-    Fl::lock();
-}
-
-void fl_unlock() {
-    Fl::unlock();
-}
-
-
-
-
-int fl_get_damage() {
-    return Fl::damage();
-}
-
-void fl_set_damage(int v) {
-    Fl::damage(v);
-}
-
-void fl_flush() {
-    Fl::flush();
-}
-
-void fl_redraw() {
-    Fl::redraw();
 }
 
 

@@ -16,8 +16,12 @@ void fl_event_add_handler(void * f) {
     Fl::add_handler(reinterpret_cast<Fl_Event_Handler>(f));
 }
 
-void fl_event_set_event_dispatch(void * f) {
+void fl_event_set_dispatch(void * f) {
     Fl::event_dispatch(reinterpret_cast<Fl_Event_Dispatch>(f));
+}
+
+int fl_event_handle_dispatch(int e, void * w) {
+    return Fl::handle(e, static_cast<Fl_Window*>(w));
 }
 
 int fl_event_handle(int e, void * w) {
@@ -70,6 +74,17 @@ void fl_event_set_visible_focus(int f) {
 
 
 
+const char * fl_event_clipboard_text() {
+    return static_cast<const char*>(Fl::event_clipboard());
+}
+
+const char * fl_event_clipboard_type() {
+    return Fl::event_clipboard_type();
+}
+
+
+
+
 int fl_event_compose(int &d) {
     return Fl::compose(d);
 }
@@ -84,6 +99,10 @@ const char * fl_event_text() {
 
 int fl_event_length() {
     return Fl::event_length();
+}
+
+int fl_event_test_shortcut(unsigned int s) {
+    return Fl::test_shortcut(static_cast<Fl_Shortcut>(s));
 }
 
 
@@ -136,7 +155,11 @@ int fl_event_is_click() {
     return Fl::event_is_click();
 }
 
-int fl_event_is_clicks() {
+void fl_event_set_click(int c) {
+    Fl::event_is_click(c);
+}
+
+int fl_event_get_clicks() {
     return Fl::event_clicks();
 }
 
@@ -158,6 +181,30 @@ int fl_event_button2() {
 
 int fl_event_button3() {
     return Fl::event_button3();
+}
+
+int fl_event_button4() {
+#if FL_API_VERSION >= 10310
+    return Fl::event_button4();
+#else
+    return 0;
+#endif
+}
+
+int fl_event_button5() {
+#if FL_API_VERSION >= 10310
+    return Fl::event_button5();
+#else
+    return 0;
+#endif
+}
+
+int fl_event_buttons() {
+    return Fl::event_buttons();
+}
+
+int fl_event_inside2(void * c) {
+    return Fl::event_inside(static_cast<Fl_Widget*>(c));
 }
 
 int fl_event_inside(int x, int y, int w, int h) {

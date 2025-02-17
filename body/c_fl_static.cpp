@@ -20,6 +20,18 @@ void fl_static_get_awake_handler(void * &h, void * &f) {
     Fl::get_awake_handler_(reinterpret_cast<Fl_Awake_Handler&>(h),f);
 }
 
+void fl_static_awake() {
+    Fl::awake();
+}
+
+void fl_static_lock() {
+    Fl::lock();
+}
+
+void fl_static_unlock() {
+    Fl::unlock();
+}
+
 
 
 

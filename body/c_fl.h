@@ -49,6 +49,21 @@ extern "C" const int fl_enum_num_blue;
 extern "C" const int fl_enum_num_gray;
 
 
+extern "C" const unsigned int fl_enum_button1;
+extern "C" const unsigned int fl_enum_button2;
+extern "C" const unsigned int fl_enum_button3;
+extern "C" const unsigned int fl_enum_button4;
+extern "C" const unsigned int fl_enum_button5;
+extern "C" const unsigned int fl_enum_buttons;
+
+
+extern "C" const int fl_enum_left_mouse;
+extern "C" const int fl_enum_middle_mouse;
+extern "C" const int fl_enum_right_mouse;
+extern "C" const int fl_enum_back_mouse;
+extern "C" const int fl_enum_forward_mouse;
+
+
 extern "C" unsigned int fl_enum_rgb_color2(unsigned char l);
 extern "C" unsigned int fl_enum_rgb_color(unsigned char r, unsigned char g, unsigned char b);
 extern "C" unsigned int fl_enum_color_cube(int r, int g, int b);
@@ -65,21 +80,14 @@ extern "C" int fl_enum_frame(int b);
 extern "C" int fl_enum_down(int b);
 
 
+extern "C" const char * fl_clip_image_char_ptr;
+extern "C" const char * fl_clip_plain_text_char_ptr;
+
+
 extern "C" int fl_abi_check(int v);
 extern "C" int fl_abi_version();
 extern "C" int fl_api_version();
 extern "C" double fl_version();
-
-
-extern "C" void fl_awake();
-extern "C" void fl_lock();
-extern "C" void fl_unlock();
-
-
-extern "C" int fl_get_damage();
-extern "C" void fl_set_damage(int v);
-extern "C" void fl_flush();
-extern "C" void fl_redraw();
 
 
 extern "C" short fl_inside_callback;

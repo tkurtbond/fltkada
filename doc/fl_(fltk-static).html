@@ -132,20 +132,6 @@ static void (*atclose)(Fl_Window *, void *);
 
   <tr>
 <td><pre>
-static char const * const clipboard_image = "image";
-</pre></td>
-<td>&nbsp;</td>
-  </tr>
-
-  <tr>
-<td><pre>
-static char const * const clipboard_plain_text = "text/plain";
-</pre></td>
-<td>&nbsp;</td>
-  </tr>
-
-  <tr>
-<td><pre>
 static const char * const help = helpmsg + 13;
 </pre></td>
 <td>&nbsp;</td>
@@ -277,6 +263,15 @@ static void args(int argc, char **argv);
 static int awake(Fl_Awake_Handler cb, void *message=0);
 </pre></td>
 <td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void awake(void *message=0);
+</pre></td>
+<td><pre>
+procedure Awake;
+</pre></td>
   </tr>
 
   <tr>
@@ -598,6 +593,15 @@ static int is_scheme(const char *name);
 function Is_Scheme
        (Scheme : in String)
     return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int lock();
+</pre></td>
+<td><pre>
+procedure Lock;
 </pre></td>
   </tr>
 
@@ -946,6 +950,22 @@ static void set_labeltype(Fl_Labeltype, Fl_Label_Draw_F *,
 static void set_labeltype(Fl_Labeltype, Fl_Labeltype from);
 </pre></td>
 <td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void * thread_message();
+</pre></td>
+<td>&nbsp;</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void unlock();
+</pre></td>
+<td><pre>
+procedure Unlock;
+</pre></td>
   </tr>
 
 </table>

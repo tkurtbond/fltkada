@@ -53,13 +53,19 @@ package FLTK.Static is
 
 
 
-    --  Interthread Notify  --
+    --  Thread Notify  --
 
     procedure Add_Awake_Handler
            (Func : in Awake_Handler);
 
     function Get_Awake_Handler
         return Awake_Handler;
+
+    procedure Awake;
+
+    procedure Lock;
+
+    procedure Unlock;
 
 
 
@@ -350,6 +356,10 @@ private
         (Read => 1, Write => 4, Except => 8);
 
 
+    pragma Import (C, Awake, "fl_static_awake");
+    pragma Import (C, Lock, "fl_static_lock");
+    pragma Import (C, Unlock, "fl_static_unlock");
+
     pragma Import (C, Own_Colormap, "fl_static_own_colormap");
     pragma Import (C, System_Colors, "fl_static_get_system_colors");
 
@@ -363,6 +373,9 @@ private
 
     pragma Inline (Add_Awake_Handler);
     pragma Inline (Get_Awake_Handler);
+    pragma Inline (Awake);
+    pragma Inline (Lock);
+    pragma Inline (Unlock);
 
     pragma Inline (Add_Check);
     pragma Inline (Has_Check);

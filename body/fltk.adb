@@ -11,6 +11,7 @@ with
 use type
 
     Interfaces.C.int,
+    Interfaces.C.unsigned,
     Interfaces.C.unsigned_char,
     Interfaces.C.unsigned_long;
 
@@ -22,17 +23,42 @@ package body FLTK is
     --  Constants From C  --
     ------------------------
 
+    --  Color  --
+
     fl_enum_num_red : constant Interfaces.C.int;
-    pragma Import (C, fl_enum_num_red);
+    pragma Import (C, fl_enum_num_red, "fl_enum_num_red");
 
     fl_enum_num_green : constant Interfaces.C.int;
-    pragma Import (C, fl_enum_num_green);
+    pragma Import (C, fl_enum_num_green, "fl_enum_num_green");
 
     fl_enum_num_blue : constant Interfaces.C.int;
-    pragma Import (C, fl_enum_num_blue);
+    pragma Import (C, fl_enum_num_blue, "fl_enum_num_blue");
 
     fl_enum_num_gray : constant Interfaces.C.int;
-    pragma Import (C, fl_enum_num_gray);
+    pragma Import (C, fl_enum_num_gray, "fl_enum_num_gray");
+
+
+
+
+    --  Keyboard and Mouse Input  --
+
+    fl_enum_button1 : constant Interfaces.C.unsigned;
+    pragma Import (C, fl_enum_button1, "fl_enum_button1");
+
+    fl_enum_button2 : constant Interfaces.C.unsigned;
+    pragma Import (C, fl_enum_button2, "fl_enum_button2");
+
+    fl_enum_button3 : constant Interfaces.C.unsigned;
+    pragma Import (C, fl_enum_button3, "fl_enum_button3");
+
+    fl_enum_button4 : constant Interfaces.C.unsigned;
+    pragma Import (C, fl_enum_button4, "fl_enum_button4");
+
+    fl_enum_button5 : constant Interfaces.C.unsigned;
+    pragma Import (C, fl_enum_button5, "fl_enum_button5");
+
+    fl_enum_buttons : constant Interfaces.C.unsigned;
+    pragma Import (C, fl_enum_buttons, "fl_enum_buttons");
 
 
 
@@ -150,21 +176,6 @@ package body FLTK is
         return Interfaces.C.double;
     pragma Import (C, fl_version, "fl_version");
     pragma Inline (fl_version);
-
-
-
-
-    --  Drawing  --
-
-    function fl_get_damage
-        return Interfaces.C.int;
-    pragma Import (C, fl_get_damage, "fl_get_damage");
-    pragma Inline (fl_get_damage);
-
-    procedure fl_set_damage
-           (V : in Interfaces.C.int);
-    pragma Import (C, fl_set_damage, "fl_set_damage");
-    pragma Inline (fl_set_damage);
 
 
 
@@ -457,14 +468,14 @@ package body FLTK is
 
     function To_C
            (Key : in Key_Combo)
-        return Interfaces.C.int is
+        return Interfaces.C.unsigned is
     begin
         return To_C (Key.Modcode) + To_C (Key.Keycode) + To_C (Key.Mousecode);
     end To_C;
 
 
     function To_Ada
-           (Key : in Interfaces.C.int)
+           (Key : in Interfaces.C.unsigned)
         return Key_Combo is
     begin
         return Result : Key_Combo do
@@ -477,14 +488,14 @@ package body FLTK is
 
     function To_C
            (Key : in Keypress)
-        return Interfaces.C.int is
+        return Interfaces.C.unsigned is
     begin
-        return Interfaces.C.int (Key);
+        return Interfaces.C.unsigned (Key);
     end To_C;
 
 
     function To_Ada
-           (Key : in Interfaces.C.int)
+           (Key : in Interfaces.C.unsigned)
         return Keypress is
     begin
         return Keypress (Key mod 65536);
@@ -493,14 +504,14 @@ package body FLTK is
 
     function To_C
            (Modi : in Modifier)
-        return Interfaces.C.int is
+        return Interfaces.C.unsigned is
     begin
-        return Interfaces.C.int (Modi) * 65536;
+        return Interfaces.C.unsigned (Modi) * 65536;
     end To_C;
 
 
     function To_Ada
-           (Modi : in Interfaces.C.int)
+           (Modi : in Interfaces.C.unsigned)
         return Modifier is
     begin
         return Modifier ((Modi / 65536) mod 256);
@@ -509,27 +520,41 @@ package body FLTK is
 
     function To_C
            (Button : in Mouse_Button)
-        return Interfaces.C.int is
+        return Interfaces.C.unsigned is
     begin
         case Button is
-        when Left_Button => return 1 * (256 ** 3);
-        when Middle_Button => return 2 * (256 ** 3);
-        when Right_Button => return 4 * (256 ** 3);
-        when others => return 0;
+        when No_Button      => return 0;
+        when Left_Button    => return fl_enum_button1;
+        when Middle_Button  => return fl_enum_button2;
+        when Right_Button   => return fl_enum_button3;
+        when Back_Button    => return fl_enum_button4;
+        when Forward_Button => return fl_enum_button5;
+        when Any_Button     => return fl_enum_buttons;
         end case;
     end To_C;
 
 
     function To_Ada
-           (Button : in Interfaces.C.int)
+           (Button : in Interfaces.C.unsigned)
         return Mouse_Button is
     begin
-        case (Button / (256 ** 3)) is
-        when 1 => return Left_Button;
-        when 2 => return Middle_Button;
-        when 4 => return Right_Button;
-        when others => return No_Button;
-        end case;
+        if Button = 0 then
+            return No_Button;
+        elsif Button = fl_enum_button1 then
+            return Left_Button;
+        elsif Button = fl_enum_button2 then
+            return Middle_Button;
+        elsif Button = fl_enum_button3 then
+            return Right_Button;
+        elsif Button = fl_enum_button4 then
+            return Back_Button;
+        elsif Button = fl_enum_button5 then
+            return Forward_Button;
+        elsif Button = fl_enum_buttons then
+            return Any_Button;
+        else
+            raise Constraint_Error;
+        end if;
     end To_Ada;
 
 
@@ -701,25 +726,15 @@ package body FLTK is
 
 
 
-    --  Drawing  --
-
-    function Is_Damaged
-        return Boolean is
-    begin
-        return fl_get_damage /= 0;
-    end Is_Damaged;
-
-
-    procedure Set_Damaged
-           (To : in Boolean) is
-    begin
-        fl_set_damage (Boolean'Pos (To));
-    end Set_Damaged;
-
-
-
-
     --  Event Loop  --
+
+    procedure Check
+    is
+        Ignore : Interfaces.C.int := fl_check;
+    begin
+        null;
+    end Check;
+
 
     function Check
         return Boolean is

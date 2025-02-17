@@ -338,7 +338,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
         Added_Spot : Interfaces.C.int := fl_sys_menu_bar_add2
            (This.Void_Ptr,
             Interfaces.C.To_C (Text),
-            To_C (Shortcut),
+            Interfaces.C.int (To_C (Shortcut)),
             Callback_Convert.To_Address (Action),
             MFlag_To_Cint (Flags));
     begin
@@ -357,7 +357,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
         Added_Spot : Interfaces.C.int := fl_sys_menu_bar_add2
            (This.Void_Ptr,
             Interfaces.C.To_C (Text),
-            To_C (Shortcut),
+            Interfaces.C.int (To_C (Shortcut)),
             Callback_Convert.To_Address (Action),
             MFlag_To_Cint (Flags));
     begin
@@ -416,7 +416,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
            (This.Void_Ptr,
             Interfaces.C.int (Place) - 1,
             Interfaces.C.To_C (Text),
-            To_C (Shortcut),
+            Interfaces.C.int (To_C (Shortcut)),
             Callback_Convert.To_Address (Action),
             MFlag_To_Cint (Flags));
     begin
@@ -437,7 +437,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
            (This.Void_Ptr,
             Interfaces.C.int (Place) - 1,
             Interfaces.C.To_C (Text),
-            To_C (Shortcut),
+            Interfaces.C.int (To_C (Shortcut)),
             Callback_Convert.To_Address (Action),
             MFlag_To_Cint (Flags));
     begin
@@ -584,7 +584,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
         fl_sys_menu_bar_shortcut
            (This.Void_Ptr,
             Interfaces.C.int (Place) - 1,
-            To_C (Press));
+            Interfaces.C.int (To_C (Press)));
     end Set_Shortcut;
 
 

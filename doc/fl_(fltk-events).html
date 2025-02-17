@@ -3,14 +3,14 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Fl (FLTK.Event) Binding Map</title>
+    <title>Fl (FLTK.Events) Binding Map</title>
     <link href="map.css" rel="stylesheet">
   </head>
 
   <body>
 
 
-<h2>Fl (FLTK.Event) Binding Map</h2>
+<h2>Fl (FLTK.Events) Binding Map</h2>
 
 
 <a href="index.html">Back to Index</a>
@@ -21,7 +21,7 @@
 
   <tr>
     <td>Fl</td>
-    <td>FLTK.Event</td>
+    <td>FLTK.Events</td>
   </tr>
 
 </table>
@@ -38,7 +38,7 @@
 
   <tr>
     <td>Fl_Event_Dispatch</td>
-    <td>&nbsp;</td>
+    <td>Event_Dispatch</td>
   </tr>
 
 </table>
@@ -160,9 +160,32 @@ function Mouse_Right
 
   <tr>
 <td><pre>
+static int event_button4();
+</pre></td>
+<td><pre>
+function Mouse_Back
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int event_button5();
+</pre></td>
+<td><pre>
+function Mouse_Forward
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 static int event_buttons();
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Mouse_Buttons
+       (Left, Middle, Right, Back, Forward : out Boolean);
+</pre></td>
   </tr>
 
   <tr>
@@ -172,6 +195,9 @@ static int event_clicks();
 <td><pre>
 function Is_Multi_Click
     return Boolean;
+
+function Get_Clicks
+    return Natural;
 </pre></td>
   </tr>
 
@@ -189,14 +215,20 @@ procedure Set_Clicks
 <td><pre>
 static void * event_clipboard();
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Clipboard_Text
+    return String;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 static const char * event_clipboard_type();
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Clipboard_Kind
+    return String;
+</pre></td>
   </tr>
 
   <tr>
@@ -223,14 +255,20 @@ function Key_Ctrl
 <td><pre>
 static Fl_Event_Dispatch event_dispatch();
 </pre></td>
-<td>TBA</td>
+<td><pre>
+function Get_Dispatch
+    return Event_Dispatch;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 static void event_dispatch(Fl_Event_Dispatch d);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Set_Dispatch
+       (Func : in Event_Dispatch);
+</pre></td>
   </tr>
 
   <tr>
@@ -257,7 +295,11 @@ function Mouse_DY
 <td><pre>
 static int event_inside(const Fl_Widget *);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Is_Inside
+       (Child : in FLTK.Widgets.Widget'Class)
+    return Boolean;
+</pre></td>
   </tr>
 
   <tr>
@@ -285,7 +327,9 @@ function Is_Click
 <td><pre>
 static void event_is_click(int i);
 </pre></td>
-<td>See static void event_clicks(int i);</td>
+<td><pre>
+procedure Clear_Click;
+</pre></td>
   </tr>
 
   <tr>
@@ -475,6 +519,30 @@ procedure Set_Grab
 
   <tr>
 <td><pre>
+static int handle(int, Fl_Window *);
+</pre></td>
+<td><pre>
+function Handle_Dispatch
+       (Event  : in     Event_Kind;
+        Origin : in out FLTK.Widgets.Groups.Windows.Window'Class)
+    return Event_Outcome;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int handle_(int, Fl_Window *);
+</pre></td>
+<td><pre>
+function Handle
+       (Event  : in     Event_Kind;
+        Origin : in out FLTK.Widgets.Groups.Windows.Window'Class)
+    return Event_Outcome;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 static Fl_Widget * pushed();
 </pre></td>
 <td><pre>
@@ -516,7 +584,11 @@ procedure Remove_Handler
 <td><pre>
 static int test_shortcut(Fl_Shortcut);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Test_Shortcut
+       (Shortcut : in Key_Combo)
+    return Boolean;
+</pre></td>
   </tr>
 
   <tr>

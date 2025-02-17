@@ -297,7 +297,7 @@ package body FLTK.Menu_Items is
                 This.Void_Ptr := new_fl_menu_item
                    (Interfaces.C.To_C (Text),
                     Callback_Convert.To_Address (Action),
-                    To_C (Shortcut),
+                    Interfaces.C.int (To_C (Shortcut)),
                     MFlag_To_Cint (Flags));
             end return;
         end Create;
@@ -536,7 +536,7 @@ package body FLTK.Menu_Items is
            (This : in Menu_Item)
         return Key_Combo is
     begin
-        return To_Ada (fl_menu_item_get_shortcut (This.Void_Ptr));
+        return To_Ada (Interfaces.C.unsigned (fl_menu_item_get_shortcut (This.Void_Ptr)));
     end Get_Shortcut;
 
 

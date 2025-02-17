@@ -10,8 +10,20 @@
 
 
 
+const int fl_enum_mode_rgb    = FL_RGB;
+const int fl_enum_mode_rgb8   = FL_RGB8;
+const int fl_enum_mode_double = FL_DOUBLE;
+const int fl_enum_mode_index  = FL_INDEX;
+
+
+
+
 void fl_screen_display(const char * v) {
     Fl::display(v);
+}
+
+int fl_screen_visual(int mode) {
+    return Fl::visual(mode);
 }
 
 
@@ -88,6 +100,25 @@ void fl_screen_xywh3(int &x, int &y, int &w, int &h) {
 
 void fl_screen_xywh4(int &x, int &y, int &w, int &h, int px, int py, int pw, int ph) {
     Fl::screen_xywh(x, y, w, h, px, py, pw, ph);
+}
+
+
+
+
+int fl_screen_get_damage() {
+    return Fl::damage();
+}
+
+void fl_screen_set_damage(int v) {
+    Fl::damage(v);
+}
+
+void fl_screen_flush() {
+    Fl::flush();
+}
+
+void fl_screen_redraw() {
+    Fl::redraw();
 }
 
 

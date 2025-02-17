@@ -10,6 +10,9 @@
 
 extern "C" void fl_static_add_awake_handler(void * h, void * f);
 extern "C" void fl_static_get_awake_handler(void * &h, void * &f);
+extern "C" void fl_static_awake();
+extern "C" void fl_static_lock();
+extern "C" void fl_static_unlock();
 
 
 extern "C" void fl_static_add_check(void * h, void * f);

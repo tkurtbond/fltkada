@@ -28,8 +28,40 @@
 
 
 
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Mode</td>
+    <td>Visual_Mode</td>
+  </tr>
+
+</table>
+
+
+
 <table class="function">
   <tr><th colspan="2">Static Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+static int damage();
+</pre></td>
+<td><pre>
+function Is_Damaged
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void damage(int d);
+</pre></td>
+<td><pre>
+procedure Set_Damaged
+       (To : in Boolean);
+</pre></td>
+  </tr>
 
   <tr>
 <td><pre>
@@ -43,11 +75,29 @@ procedure Set_Display_String
 
   <tr>
 <td><pre>
+static void flush();
+</pre></td>
+<td><pre>
+procedure Flush;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 static int h();
 </pre></td>
 <td><pre>
 function Get_H
     return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void redraw();
+</pre></td>
+<td><pre>
+procedure Redraw;
 </pre></td>
   </tr>
 
@@ -180,7 +230,14 @@ procedure Work_Area
 <td><pre>
 static int visual(int);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Set_Visual_Mode
+       (Value : in Visual_Mode);
+
+function Set_Visual_Mode
+       (Value : in Visual_Mode)
+    return Boolean;
+</pre></td>
   </tr>
 
   <tr>

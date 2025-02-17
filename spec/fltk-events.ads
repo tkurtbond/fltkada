@@ -14,17 +14,17 @@ private with
     System.Address_To_Access_Conversions;
 
 
-package FLTK.Event is
+package FLTK.Events is
 
 
     type Event_Handler is access function
            (Event : in Event_Kind)
         return Event_Outcome;
 
-    --  type Event_Dispatch is access function
-    --         (Event : in     Event_Kind;
-    --          Win   : access FLTK.Widgets.Groups.Windows.Window'Class)
-    --      return Event_Outcome;
+    type Event_Dispatch is access function
+           (Event : in     Event_Kind;
+            Win   : access FLTK.Widgets.Groups.Windows.Window'Class)
+        return Event_Outcome;
 
 
 
@@ -37,16 +37,23 @@ package FLTK.Event is
     procedure Remove_Handler
            (Func : in Event_Handler);
 
-    --  function Get_Dispatch
-    --      return Event_Dispatch;
+    function Get_Dispatch
+        return Event_Dispatch;
 
-    --  procedure Set_Dispatch
-    --         (Func : in Event_Dispatch);
+    --  Any Event_Dispatch function set must call Handle
+    --  if you want the Event to actually be acknowledged.
+    procedure Set_Dispatch
+           (Func : in Event_Dispatch);
 
-    --  function Default_Dispatch
-    --         (Event : in     Event_Kind;
-    --          Win   : access FLTK.Widgets.Groups.Windows.Window'Class)
-    --      return Event_Outcome;
+    function Handle_Dispatch
+           (Event  : in     Event_Kind;
+            Origin : in out FLTK.Widgets.Groups.Windows.Window'Class)
+        return Event_Outcome;
+
+    function Handle
+           (Event  : in     Event_Kind;
+            Origin : in out FLTK.Widgets.Groups.Windows.Window'Class)
+        return Event_Outcome;
 
 
 
@@ -88,6 +95,17 @@ package FLTK.Event is
 
 
 
+    --  Clipboard  --
+
+    function Clipboard_Text
+        return String;
+
+    function Clipboard_Kind
+        return String;
+
+
+
+
     --  Multikey  --
 
     function Compose
@@ -102,6 +120,10 @@ package FLTK.Event is
     function Text_Length
         return Natural;
 
+    function Test_Shortcut
+           (Shortcut : in Key_Combo)
+        return Boolean;
+
 
 
 
@@ -110,9 +132,11 @@ package FLTK.Event is
     function Last
         return Event_Kind;
 
+    --  Focuses on keyboard modifiers only, not mouse buttons
     function Last_Modifier
         return Modifier;
 
+    --  Focuses on keyboard modifiers only, not mouse buttons
     function Last_Modifier
            (Had : in Modifier)
         return Boolean;
@@ -146,9 +170,18 @@ package FLTK.Event is
     function Is_Click
         return Boolean;
 
+    procedure Clear_Click;
+
     function Is_Multi_Click
         return Boolean;
 
+    --  Returns the actual number of clicks.
+    --  So no clicks is 0, a single click is 1, a double click is 2, etc.
+    function Get_Clicks
+        return Natural;
+
+    --  Will set the actual number of clicks.
+    --  This means setting it to 0 will make Is_Click return False.
     procedure Set_Clicks
            (To : in Natural);
 
@@ -162,6 +195,19 @@ package FLTK.Event is
         return Boolean;
 
     function Mouse_Right
+        return Boolean;
+
+    function Mouse_Back
+        return Boolean;
+
+    function Mouse_Forward
+        return Boolean;
+
+    procedure Mouse_Buttons
+           (Left, Middle, Right, Back, Forward : out Boolean);
+
+    function Is_Inside
+           (Child : in FLTK.Widgets.Widget'Class)
         return Boolean;
 
     function Is_Inside
@@ -214,7 +260,7 @@ private
 
 
     Handlers : Handler_Vectors.Vector := Handler_Vectors.Empty_Vector;
-    --  Current_Dispatch : Event_Dispatch := null;
+    Current_Dispatch : Event_Dispatch := null;
 
 
     function fl_widget_get_user_data
@@ -229,9 +275,10 @@ private
 
     pragma Inline (Add_Handler);
     pragma Inline (Remove_Handler);
-    --  pragma Inline (Get_Dispatch);
-    --  pragma Inline (Set_Dispatch);
-    --  pragma Inline (Default_Dispatch);
+    pragma Inline (Get_Dispatch);
+    pragma Inline (Set_Dispatch);
+    pragma Inline (Handle_Dispatch);
+    pragma Inline (Handle);
 
     pragma Inline (Get_Grab);
     pragma Inline (Set_Grab);
@@ -245,10 +292,14 @@ private
     pragma Inline (Has_Visible_Focus);
     pragma Inline (Set_Visible_Focus);
 
+    pragma Inline (Clipboard_Text);
+    pragma Inline (Clipboard_Kind);
+
     pragma Inline (Compose);
     pragma Inline (Compose_Reset);
     pragma Inline (Text);
     pragma Inline (Text_Length);
+    pragma Inline (Test_Shortcut);
 
     pragma Inline (Last);
     pragma Inline (Last_Modifier);
@@ -261,12 +312,15 @@ private
     pragma Inline (Mouse_DY);
     pragma Inline (Get_Mouse);
     pragma Inline (Is_Click);
+    pragma Inline (Clear_Click);
     pragma Inline (Is_Multi_Click);
+    pragma Inline (Get_Clicks);
     pragma Inline (Set_Clicks);
-    pragma Inline (Last_Button);
     pragma Inline (Mouse_Left);
     pragma Inline (Mouse_Middle);
     pragma Inline (Mouse_Right);
+    pragma Inline (Mouse_Back);
+    pragma Inline (Mouse_Forward);
     pragma Inline (Is_Inside);
 
     pragma Inline (Last_Key);
@@ -279,6 +333,6 @@ private
     pragma Inline (Key_Shift);
 
 
-end FLTK.Event;
+end FLTK.Events;
 
 

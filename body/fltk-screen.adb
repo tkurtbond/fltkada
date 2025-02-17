@@ -17,6 +17,25 @@ package body FLTK.Screen is
 
 
     ------------------------
+    --  Constants From C  --
+    ------------------------
+
+    fl_enum_mode_rgb : constant Interfaces.C.int;
+    pragma Import (C, fl_enum_mode_rgb, "fl_enum_mode_rgb");
+
+    fl_enum_mode_rgb8 : constant Interfaces.C.int;
+    pragma Import (C, fl_enum_mode_rgb8, "fl_enum_mode_rgb8");
+
+    fl_enum_mode_double : constant Interfaces.C.int;
+    pragma Import (C, fl_enum_mode_double, "fl_enum_mode_double");
+
+    fl_enum_mode_index : constant Interfaces.C.int;
+    pragma Import (C, fl_enum_mode_index, "fl_enum_mode_index");
+
+
+
+
+    ------------------------
     --  Functions From C  --
     ------------------------
 
@@ -26,6 +45,12 @@ package body FLTK.Screen is
            (V : in Interfaces.C.char_array);
     pragma Import (C, fl_screen_display, "fl_screen_display");
     pragma Inline (fl_screen_display);
+
+    function fl_screen_visual
+           (F : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_screen_visual, "fl_screen_visual");
+    pragma Inline (fl_screen_visual);
 
 
 
@@ -133,6 +158,21 @@ package body FLTK.Screen is
 
 
 
+    --  Drawing  --
+
+    function fl_screen_get_damage
+        return Interfaces.C.int;
+    pragma Import (C, fl_screen_get_damage, "fl_screen_get_damage");
+    pragma Inline (fl_screen_get_damage);
+
+    procedure fl_screen_set_damage
+           (V : in Interfaces.C.int);
+    pragma Import (C, fl_screen_set_damage, "fl_screen_set_damage");
+    pragma Inline (fl_screen_set_damage);
+
+
+
+
     -----------------------
     --  API Subprograms  --
     -----------------------
@@ -144,6 +184,29 @@ package body FLTK.Screen is
     begin
         fl_screen_display (Interfaces.C.To_C (Value));
     end Set_Display_String;
+
+
+    procedure Set_Visual_Mode
+           (Value : in Visual_Mode)
+    is
+        Ignore : Boolean := Set_Visual_Mode (Value);
+    begin
+        null;
+    end Set_Visual_Mode;
+
+
+    function Set_Visual_Mode
+           (Value : in Visual_Mode)
+        return Boolean is
+    begin
+        return fl_screen_visual
+           ((case Value is
+            when RGB              => fl_enum_mode_rgb,
+            when RGB_24bit        => fl_enum_mode_rgb8,
+            when Double_Buffer    => fl_enum_mode_double + fl_enum_mode_index,
+            when Double_RGB       => fl_enum_mode_double + fl_enum_mode_rgb,
+            when Double_RGB_24bit => fl_enum_mode_double + fl_enum_mode_rgb8)) /= 0;
+    end Set_Visual_Mode;
 
 
 
@@ -316,6 +379,24 @@ package body FLTK.Screen is
             Interfaces.C.int (PW),
             Interfaces.C.int (PH));
     end Bounding_Rect;
+
+
+
+
+    --  Drawing  --
+
+    function Is_Damaged
+        return Boolean is
+    begin
+        return fl_screen_get_damage /= 0;
+    end Is_Damaged;
+
+
+    procedure Set_Damaged
+           (To : in Boolean) is
+    begin
+        fl_screen_set_damage (Boolean'Pos (To));
+    end Set_Damaged;
 
 
 end FLTK.Screen;

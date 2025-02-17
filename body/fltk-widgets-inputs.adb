@@ -633,7 +633,7 @@ package body FLTK.Widgets.Inputs is
            (This : in Input)
         return Key_Combo is
     begin
-        return To_Ada (fl_input_get_shortcut (This.Void_Ptr));
+        return To_Ada (Interfaces.C.unsigned (fl_input_get_shortcut (This.Void_Ptr)));
     end Get_Shortcut;
 
 
@@ -641,7 +641,7 @@ package body FLTK.Widgets.Inputs is
            (This : in out Input;
             To   : in     Key_Combo) is
     begin
-        fl_input_set_shortcut (This.Void_Ptr, To_C (To));
+        fl_input_set_shortcut (This.Void_Ptr, Interfaces.C.int (To_C (To)));
     end Set_Shortcut;
 
 

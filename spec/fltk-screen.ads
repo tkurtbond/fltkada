@@ -7,10 +7,22 @@
 package FLTK.Screen is
 
 
+    type Visual_Mode is (RGB, RGB_24bit, Double_Buffer, Double_RGB, Double_RGB_24bit);
+
+
+
+
     --  Environment  --
 
     procedure Set_Display_String
            (Value : in String);
+
+    procedure Set_Visual_Mode
+           (Value : in Visual_Mode);
+
+    function Set_Visual_Mode
+           (Value : in Visual_Mode)
+        return Boolean;
 
 
 
@@ -87,10 +99,30 @@ package FLTK.Screen is
             PX, PY, PW, PH : in     Integer);
 
 
+
+
+    --  Drawing  --
+
+    function Is_Damaged
+        return Boolean;
+
+    procedure Set_Damaged
+           (To : in Boolean);
+
+    procedure Flush;
+
+    procedure Redraw;
+
+
 private
 
 
+    pragma Import (C, Flush, "fl_screen_flush");
+    pragma Import (C, Redraw, "fl_screen_redraw");
+
+
     pragma Inline (Set_Display_String);
+    pragma Inline (Set_Visual_Mode);
 
     pragma Inline (Get_X);
     pragma Inline (Get_Y);
@@ -103,6 +135,11 @@ private
     pragma Inline (Containing);
     pragma Inline (Work_Area);
     pragma Inline (Bounding_Rect);
+
+    pragma Inline (Is_Damaged);
+    pragma Inline (Set_Damaged);
+    pragma Inline (Flush);
+    pragma Inline (Redraw);
 
 
 end FLTK.Screen;

@@ -2172,7 +2172,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
            (This : in Text_Display)
         return Key_Combo is
     begin
-        return To_Ada (fl_text_display_get_shortcut (This.Void_Ptr));
+        return To_Ada (Interfaces.C.unsigned (fl_text_display_get_shortcut (This.Void_Ptr)));
     end Get_Shortcut;
 
 
@@ -2180,7 +2180,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
            (This  : in out Text_Display;
             Value : in     Key_Combo) is
     begin
-        fl_text_display_set_shortcut (This.Void_Ptr, To_C (Value));
+        fl_text_display_set_shortcut (This.Void_Ptr, Interfaces.C.int (To_C (Value)));
     end Set_Shortcut;
 
 

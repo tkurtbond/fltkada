@@ -68,6 +68,31 @@
 
 
 <table class="function">
+  <tr><th colspan="2">Static Attributes</th></tr>
+
+  <tr>
+<td><pre>
+static char const * const clipboard_image = "image";
+</pre></td>
+<td><pre>
+Clipboard_Image : constant String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static char const * const clipboard_plain_text = "text/plain";
+</pre></td>
+<td><pre>
+Clipboard_Plain_Text : constant String;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
   <tr><th colspan="2">Static Functions and Procedures</th></tr>
 
   <tr>
@@ -98,15 +123,6 @@ static int api_version();
 <td><pre>
 function API_Version
     return Version_Number;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-static void awake(void *message=0);
-</pre></td>
-<td><pre>
-procedure Awake;
 </pre></td>
   </tr>
 
@@ -150,6 +166,8 @@ static cairo_t * cairo_make_current(Fl_Window *w);
 static int check();
 </pre></td>
 <td><pre>
+procedure Check;
+
 function Check
     return Boolean;
 </pre></td>
@@ -160,26 +178,6 @@ function Check
 static void clear_widget_pointer(Fl_Widget const *w);
 </pre></td>
 <td>Marked as internal use only.</td>
-  </tr>
-
-  <tr>
-<td><pre>
-static void damage(int d);
-</pre></td>
-<td><pre>
-procedure Set_Damaged
-       (To : in Boolean);
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-static int damage();
-</pre></td>
-<td><pre>
-function Is_Damaged
-    return Boolean;
-</pre></td>
   </tr>
 
   <tr>
@@ -198,36 +196,9 @@ static void do_widget_deletion();
 
   <tr>
 <td><pre>
-static void flush();
-</pre></td>
-<td><pre>
-procedure Flush;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
 static int gl_visual(int, int *alist=0);
 </pre></td>
 <td>&nbsp;</td>
-  </tr>
-
-  <tr>
-<td><pre>
-static int handle(int, Fl_Window *);
-
-static int handle_(int, Fl_Window *);
-</pre></td>
-<td>&nbsp;</td>
-  </tr>
-
-  <tr>
-<td><pre>
-static int lock();
-</pre></td>
-<td><pre>
-procedure Lock;
-</pre></td>
   </tr>
 
   <tr>
@@ -237,15 +208,6 @@ static int ready();
 <td><pre>
 function Ready
     return Boolean;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-static void redraw();
-</pre></td>
-<td><pre>
-procedure Redraw;
 </pre></td>
   </tr>
 
@@ -263,22 +225,6 @@ static int run();
 <td><pre>
 function Run
     return Integer;
-</pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-static void * thread_message();
-</pre></td>
-<td>&nbsp;</td>
-  </tr>
-
-  <tr>
-<td><pre>
-static void unlock();
-</pre></td>
-<td><pre>
-procedure Unlock;
 </pre></td>
   </tr>
 

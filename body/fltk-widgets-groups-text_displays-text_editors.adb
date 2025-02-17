@@ -8,7 +8,7 @@ with
 
     Ada.Assertions,
     Ada.Characters.Latin_1,
-    FLTK.Event,
+    FLTK.Events,
     Interfaces.C;
 
 
@@ -476,8 +476,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
         Editor_Ptr : Storage.Integer_Address := fl_widget_get_user_data (E);
         Ada_Editor : access Text_Editor'Class;
 
-        Extra_Keys : Modifier  := FLTK.Event.Last_Modifier;
-        Actual_Key : Keypress  := FLTK.Event.Last_Key;  --  fuck you FLTK, give me the real code
+        Extra_Keys : Modifier  := FLTK.Events.Last_Modifier;
+        Actual_Key : Keypress  := FLTK.Events.Last_Key;  --  fuck you FLTK, give me the real code
         Ada_Key    : Key_Combo := Extra_Keys + Actual_Key;
 
         --  For whatever reason, if a regular key function is used then FLTK will
