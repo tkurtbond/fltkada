@@ -6,7 +6,7 @@
 
 with
 
-    FLTK.Show_Argv,
+    FLTK.Args_Marshal,
     Interfaces.C,
     System.Address_To_Access_Conversions;
 
@@ -257,7 +257,7 @@ package body FLTK.Widgets.Groups.Windows.Double.Overlay is
     procedure Show_With_Args
            (This : in out Overlay_Window) is
     begin
-        FLTK.Show_Argv.Dispatch (fl_overlay_window_show2'Access, This.Void_Ptr);
+        FLTK.Args_Marshal.Dispatch (fl_overlay_window_show2'Access, This.Void_Ptr);
     end Show_With_Args;
 
 

@@ -6,7 +6,12 @@
 
 with
 
+    FLTK.Registry,
     Interfaces.C.Strings;
+
+use type
+
+    Interfaces.C.Strings.chars_ptr;
 
 
 package body FLTK.Labels is
@@ -38,6 +43,12 @@ package body FLTK.Labels is
 
 
     --  Attributes  --
+
+    function fl_label_get_value
+           (L : in Storage.Integer_Address)
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_label_get_value, "fl_label_get_value");
+    pragma Inline (fl_label_get_value);
 
     procedure fl_label_set_value
            (L : in Storage.Integer_Address;
@@ -144,10 +155,11 @@ package body FLTK.Labels is
            (This : in out Label) is
     begin
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
+            FLTK.Registry.Label_Store.Delete (This.Void_Ptr);
             free_fl_label (This.Void_Ptr);
             This.Void_Ptr := Null_Pointer;
-            Interfaces.C.Strings.Free (This.My_Text);
         end if;
+        Interfaces.C.Strings.Free (This.My_Text);
     end Finalize;
 
 
@@ -181,6 +193,7 @@ package body FLTK.Labels is
                     Interfaces.C.unsigned (Place));
                 This.Set_Active (Active);
                 This.Set_Inactive (Inactive);
+                FLTK.Registry.Label_Store.Insert (This.Void_Ptr, This'Unchecked_Access);
             end return;
         end Create;
 
@@ -197,9 +210,15 @@ package body FLTK.Labels is
 
     function Get_Value
            (This : in Label)
-        return String is
+        return String
+    is
+        Text : Interfaces.C.Strings.chars_ptr := fl_label_get_value (This.Void_Ptr);
     begin
-        return Interfaces.C.Strings.Value (This.My_Text);
+        if Text = Interfaces.C.Strings.Null_Ptr then
+            return "";
+        else
+            return Interfaces.C.Strings.Value (Text);
+        end if;
     end Get_Value;
 
 

@@ -7,6 +7,7 @@
 with
 
     Ada.Assertions,
+    Ada.Containers.Vectors,
     Interfaces.C.Strings;
 
 use type
@@ -70,6 +71,26 @@ package body FLTK.Events is
            (F : in Storage.Integer_Address);
     pragma Import (C, fl_event_add_handler, "fl_event_add_handler");
     pragma Inline (fl_event_add_handler);
+
+    procedure fl_event_remove_handler
+           (F : in Storage.Integer_Address);
+    pragma Import (C, fl_event_remove_handler, "fl_event_remove_handler");
+    pragma Inline (fl_event_remove_handler);
+
+    procedure fl_event_add_system_handler
+           (H, F : in Storage.Integer_Address);
+    pragma Import (C, fl_event_add_system_handler, "fl_event_add_system_handler");
+    pragma Inline (fl_event_add_system_handler);
+
+    procedure fl_event_remove_system_handler
+           (H : in Storage.Integer_Address);
+    pragma Import (C, fl_event_remove_system_handler, "fl_event_remove_system_handler");
+    pragma Inline (fl_event_remove_system_handler);
+
+
+
+
+    --  Dispatch  --
 
     procedure fl_event_set_dispatch
            (F : in Storage.Integer_Address);
@@ -369,20 +390,63 @@ package body FLTK.Events is
     --  Hooks  --
     -------------
 
+    --  This is handled on the Ada side since otherwise marshalling the
+    --  types from C++ to Ada would be extremely difficult. This hook is
+    --  passed during package init.
+    package Handler_Vectors is new Ada.Containers.Vectors
+       (Index_Type   => Positive,
+        Element_Type => Event_Handler);
+
+    Handlers : Handler_Vectors.Vector;
+
     function Event_Handler_Hook
            (Num : in Interfaces.C.int)
-        return Interfaces.C.int
-    is
-        Ret_Val : Event_Outcome;
+        return Interfaces.C.int;
+    pragma Convention (C, Event_Handler_Hook);
+
+    function Event_Handler_Hook
+           (Num : in Interfaces.C.int)
+        return Interfaces.C.int is
     begin
-        for Func of reverse Handlers loop
-            Ret_Val := Func (Event_Kind'Val (Num));
-            if Ret_Val /= Not_Handled then
-                return Event_Outcome'Pos (Ret_Val);
+        for Call of reverse Handlers loop
+            if Call (Event_Kind'Val (Num)) /= Not_Handled then
+                return Event_Outcome'Pos (Handled);
             end if;
         end loop;
         return Event_Outcome'Pos (Not_Handled);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Event_Handler hook received unexpected event int value of " &
+        Interfaces.C.int'Image (Num);
     end Event_Handler_Hook;
+
+
+    --  This is handled on the Ada side because otherwise there would be
+    --  no way to specify which callback to remove in FLTK once one was
+    --  added. This is because Fl::remove_system_handler does not pay
+    --  attention to the void * data. This hook is passed during package init.
+    package System_Handler_Vectors is new Ada.Containers.Vectors
+       (Index_Type   => Positive,
+        Element_Type => System_Handler);
+
+    System_Handlers : System_Handler_Vectors.Vector;
+
+    function System_Handler_Hook
+           (E, U : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Convention (C, System_Handler_Hook);
+
+    function System_Handler_Hook
+           (E, U : in Storage.Integer_Address)
+        return Interfaces.C.int is
+    begin
+        for Call of reverse System_Handlers loop
+            if Call (System_Event (Storage.To_Address (E))) = Handled then
+                return Event_Outcome'Pos (Handled);
+            end if;
+        end loop;
+        return Event_Outcome'Pos (Not_Handled);
+    end System_Handler_Hook;
 
 
     function Dispatch_Hook
@@ -403,9 +467,23 @@ package body FLTK.Events is
     when Chk.Assertion_Error => raise Internal_FLTK_Error with
         "Window passed to Event_Dispatch hook did not have user_data pointer back to Ada";
     when Constraint_Error => raise Internal_FLTK_Error with
-        "Event_Dispatch hook passed unexpected event int value of " &
+        "Event_Dispatch hook received unexpected event int value of " &
         Interfaces.C.int'Image (Num);
     end Dispatch_Hook;
+
+
+
+
+    -------------------
+    --  Destructors  --
+    -------------------
+
+    procedure Finalize
+           (This : in out FLTK_Events_Final_Controller) is
+    begin
+        fl_event_remove_handler (Storage.To_Integer (Event_Handler_Hook'Address));
+        fl_event_remove_system_handler (Storage.To_Integer (System_Handler_Hook'Address));
+    end Finalize;
 
 
 
@@ -417,14 +495,14 @@ package body FLTK.Events is
     --  Handlers  --
 
     procedure Add_Handler
-           (Func : in Event_Handler) is
+           (Func : in not null Event_Handler) is
     begin
         Handlers.Append (Func);
     end Add_Handler;
 
 
     procedure Remove_Handler
-           (Func : in Event_Handler) is
+           (Func : in not null Event_Handler) is
     begin
         for I in reverse Handlers.First_Index .. Handlers.Last_Index loop
             if Handlers (I) = Func then
@@ -434,6 +512,29 @@ package body FLTK.Events is
         end loop;
     end Remove_Handler;
 
+
+    procedure Add_System_Handler
+           (Func : in not null System_Handler) is
+    begin
+        System_Handlers.Append (Func);
+    end Add_System_Handler;
+
+
+    procedure Remove_System_Handler
+           (Func : in not null System_Handler) is
+    begin
+        for I in reverse System_Handlers.First_Index .. System_Handlers.Last_Index loop
+            if System_Handlers (I) = Func then
+                System_Handlers.Delete (I);
+                return;
+            end if;
+        end loop;
+    end Remove_System_Handler;
+
+
+
+
+    --  Dispatch  --
 
     function Get_Dispatch
         return Event_Dispatch is
@@ -981,6 +1082,7 @@ begin
 
 
     fl_event_add_handler (Storage.To_Integer (Event_Handler_Hook'Address));
+    fl_event_add_system_handler (Storage.To_Integer (System_Handler_Hook'Address), Null_Pointer);
 
 
 end FLTK.Events;

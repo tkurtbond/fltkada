@@ -6,10 +6,19 @@
 
 with
 
-    Interfaces.C;
+    Interfaces.C.Strings;
 
 
-private package FLTK.Show_Argv is
+private package FLTK.Args_Marshal is
+
+
+    function Create_Argv
+        return Interfaces.C.Strings.chars_ptr_array;
+
+    procedure Free_Argv
+           (Argv : in out Interfaces.C.Strings.chars_ptr_array);
+
+
 
 
     --  Used for implementing show(argc,argv)
@@ -32,6 +41,6 @@ private
     pragma Convention (C, Show_With_Args_Func);
 
 
-end FLTK.Show_Argv;
+end FLTK.Args_Marshal;
 
 

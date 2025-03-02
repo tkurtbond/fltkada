@@ -9,7 +9,7 @@ with
     Ada.Command_Line,
     Interfaces.C.Strings,
     FLTK.Images.RGB,
-    FLTK.Show_Argv;
+    FLTK.Args_Marshal;
 
 use type
 
@@ -513,7 +513,7 @@ package body FLTK.Widgets.Groups.Windows is
     procedure Show_With_Args
            (This : in out Window) is
     begin
-        FLTK.Show_Argv.Dispatch (fl_window_show2'Access, This.Void_Ptr);
+        FLTK.Args_Marshal.Dispatch (fl_window_show2'Access, This.Void_Ptr);
     end Show_With_Args;
 
 

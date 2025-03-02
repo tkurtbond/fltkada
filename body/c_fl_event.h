@@ -9,6 +9,11 @@
 
 
 extern "C" void fl_event_add_handler(void * f);
+extern "C" void fl_event_remove_handler(void * f);
+extern "C" void fl_event_add_system_handler(void * h, void * f);
+extern "C" void fl_event_remove_system_handler(void * h);
+
+
 extern "C" void fl_event_set_dispatch(void * f);
 extern "C" int fl_event_handle_dispatch(int e, void * w);
 extern "C" int fl_event_handle(int e, void * w);

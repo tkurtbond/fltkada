@@ -80,8 +80,8 @@ extern "C" int fl_enum_frame(int b);
 extern "C" int fl_enum_down(int b);
 
 
-extern "C" const char * fl_clip_image_char_ptr;
-extern "C" const char * fl_clip_plain_text_char_ptr;
+extern "C" const char * const fl_clip_image_char_ptr;
+extern "C" const char * const fl_clip_plain_text_char_ptr;
 
 
 extern "C" int fl_abi_check(int v);

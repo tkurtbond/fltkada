@@ -6,7 +6,7 @@
 
 with
 
-    FLTK.Show_Argv,
+    FLTK.Args_Marshal,
     Interfaces.C.Strings;
 
 use type
@@ -227,7 +227,7 @@ package body FLTK.Help_Dialogs is
     procedure Show_With_Args
            (This : in out Help_Dialog) is
     begin
-        FLTK.Show_Argv.Dispatch (fl_help_dialog_show2'Access, This.Void_Ptr);
+        FLTK.Args_Marshal.Dispatch (fl_help_dialog_show2'Access, This.Void_Ptr);
     end Show_With_Args;
 
 

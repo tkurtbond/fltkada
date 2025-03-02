@@ -6,11 +6,12 @@
 
 with
 
-    FLTK.Widgets.Groups.Windows;
+    FLTK.Widgets.Groups.Windows,
+    System;
 
 private with
 
-    Ada.Containers.Vectors,
+    Ada.Finalization,
     System.Address_To_Access_Conversions;
 
 
@@ -27,15 +28,33 @@ package FLTK.Events is
         return Event_Outcome;
 
 
+    type System_Event is new System.Address;
+
+    type System_Handler is access function
+           (Event : in System_Event)
+        return Event_Outcome;
+
+
 
 
     --  Handlers  --
 
     procedure Add_Handler
-           (Func : in Event_Handler);
+           (Func : in not null Event_Handler);
 
     procedure Remove_Handler
-           (Func : in Event_Handler);
+           (Func : in not null Event_Handler);
+
+    procedure Add_System_Handler
+           (Func : in not null System_Handler);
+
+    procedure Remove_System_Handler
+           (Func : in not null System_Handler);
+
+
+
+
+    --  Dispatch  --
 
     function Get_Dispatch
         return Event_Dispatch;
@@ -255,11 +274,6 @@ private
         (FLTK.Widgets.Groups.Windows.Window'Class);
 
 
-    package Handler_Vectors is new Ada.Containers.Vectors
-        (Index_Type => Positive, Element_Type => Event_Handler);
-
-
-    Handlers : Handler_Vectors.Vector := Handler_Vectors.Empty_Vector;
     Current_Dispatch : Event_Dispatch := null;
 
 
@@ -275,6 +289,9 @@ private
 
     pragma Inline (Add_Handler);
     pragma Inline (Remove_Handler);
+    pragma Inline (Add_System_Handler);
+    pragma Inline (Remove_System_Handler);
+
     pragma Inline (Get_Dispatch);
     pragma Inline (Set_Dispatch);
     pragma Inline (Handle_Dispatch);
@@ -331,6 +348,15 @@ private
     pragma Inline (Key_Alt);
     pragma Inline (Key_Command);
     pragma Inline (Key_Shift);
+
+
+    --  Needed to deregister the handlers
+    type FLTK_Events_Final_Controller is new Ada.Finalization.Limited_Controlled with null record;
+
+    overriding procedure Finalize
+           (This : in out FLTK_Events_Final_Controller);
+
+    Cleanup : FLTK_Events_Final_Controller;
 
 
 end FLTK.Events;

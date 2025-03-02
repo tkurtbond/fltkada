@@ -15,6 +15,7 @@ extern "C" LABEL new_fl_label(const char * v, int f, int s, unsigned int h, int 
 extern "C" void free_fl_label(LABEL l);
 
 
+extern "C" const char * fl_label_get_value(LABEL l);
 extern "C" void fl_label_set_value(LABEL l, const char * v);
 extern "C" int fl_label_get_font(LABEL l);
 extern "C" void fl_label_set_font(LABEL l, int f);

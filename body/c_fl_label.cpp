@@ -29,6 +29,10 @@ void free_fl_label(LABEL l) {
 
 
 
+const char * fl_label_get_value(LABEL l) {
+    return static_cast<Fl_Label*>(l)->value;
+}
+
 void fl_label_set_value(LABEL l, const char * v) {
     static_cast<Fl_Label*>(l)->value = v;
 }

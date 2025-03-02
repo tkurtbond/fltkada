@@ -10,7 +10,7 @@ with
     Interfaces.C.Strings;
 
 
-package body FLTK.Show_Argv is
+package body FLTK.Args_Marshal is
 
 
     package ACom renames Ada.Command_Line;
@@ -31,20 +31,26 @@ package body FLTK.Show_Argv is
     end Create_Argv;
 
 
+    procedure Free_Argv
+           (Argv : in out Interfaces.C.Strings.chars_ptr_array) is
+    begin
+        for Ptr of Argv loop
+            ICS.Free (Ptr);
+        end loop;
+    end Free_Argv;
+
+
     procedure Dispatch
            (Func : in Show_With_Args_Func;
             CObj : in Storage.Integer_Address)
     is
         Argv : ICS.chars_ptr_array := Create_Argv;
     begin
-        Func (CObj, IntC.int (ACom.Argument_Count + 1),
-            Storage.To_Integer (Argv (Argv'First)'Address));
-        for Ptr of Argv loop
-            ICS.Free (Ptr);
-        end loop;
+        Func (CObj, Argv'Length, Storage.To_Integer (Argv (Argv'First)'Address));
+        Free_Argv (Argv);
     end Dispatch;
 
 
-end FLTK.Show_Argv;
+end FLTK.Args_Marshal;
 
 

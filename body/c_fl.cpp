@@ -147,9 +147,9 @@ int fl_enum_down(int b) {
 
 
 
-const char * fl_clip_image_char_ptr = Fl::clipboard_image;
+const char * const fl_clip_image_char_ptr = Fl::clipboard_image;
 
-const char * fl_clip_plain_text_char_ptr = Fl::clipboard_plain_text;
+const char * const fl_clip_plain_text_char_ptr = Fl::clipboard_plain_text;
 
 
 

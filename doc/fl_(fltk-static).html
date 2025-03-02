@@ -38,7 +38,7 @@
 
   <tr>
     <td>Fl_Args_Handler</td>
-    <td>&nbsp;</td>
+    <td>Args_Handler</td>
   </tr>
 
   <tr>
@@ -58,11 +58,6 @@
 
   <tr>
     <td>Fl_Old_Idle_Handler</td>
-    <td>&nbsp;</td>
-  </tr>
-
-  <tr>
-    <td>Fl_System_Handler</td>
     <td>&nbsp;</td>
   </tr>
 
@@ -97,23 +92,40 @@
   </tr>
 
   <tr>
+    <td>uchar</td>
+    <td>Byte_Integer</td>
+  </tr>
+
+  <tr>
     <td>Fl_Box_Draw_F</td>
     <td>Box_Draw_Function</td>
   </tr>
 
   <tr>
     <td>Fl_Label_Draw_F</td>
-    <td>&nbsp;</td>
+    <td>Label_Draw_Function</td>
   </tr>
 
   <tr>
     <td>Fl_Label_Measure_F</td>
-    <td>&nbsp;</td>
+    <td>Label_Measure_Function</td>
   </tr>
 
   <tr>
     <td>Fl_Option</td>
     <td>Option</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Errors</th></tr>
+
+  <tr>
+    <td>int</td>
+    <td>Argument_Error</td>
   </tr>
 
 </table>
@@ -134,7 +146,9 @@ static void (*atclose)(Fl_Window *, void *);
 <td><pre>
 static const char * const help = helpmsg + 13;
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+Help_Message : constant String;
+</pre></td>
   </tr>
 
   <tr>
@@ -167,7 +181,7 @@ static void add_check(Fl_Timeout_Handler, void *=0);
 </pre></td>
 <td><pre>
 procedure Add_Check
-       (Func : in Timeout_Handler);
+       (Func : in not null Timeout_Handler);
 </pre></td>
   </tr>
 
@@ -178,7 +192,7 @@ static void add_clipboard_notify(Fl_Clipboard_Notify_Handler h,
 </pre></td>
 <td><pre>
 procedure Add_Clipboard_Notify
-       (Func : in Clipboard_Notify_Handler);
+       (Func : in not null Clipboard_Notify_Handler);
 </pre></td>
   </tr>
 
@@ -188,8 +202,8 @@ static void add_fd(int fd, Fl_FD_Handler cb, void *=0);
 </pre></td>
 <td><pre>
 procedure Add_File_Descriptor
-       (FD   : in File_Descriptor;
-        Func : in File_Handler);
+       (FD   : in          File_Descriptor;
+        Func : in not null File_Handler);
 </pre></td>
   </tr>
 
@@ -200,9 +214,9 @@ static void add_fd(int fd, int when, Fl_FD_Handler cb,
 </pre></td>
 <td><pre>
 procedure Add_File_Descriptor
-       (FD   : in File_Descriptor;
-        Mode : in File_Mode;
-        Func : in File_Handler);
+       (FD   : in          File_Descriptor;
+        Mode : in          File_Mode;
+        Func : in not null File_Handler);
 </pre></td>
   </tr>
 
@@ -212,16 +226,8 @@ static void add_idle(Fl_Idle_Handler cb, void *data=0);
 </pre></td>
 <td><pre>
 procedure Add_Idle
-       (Func : in Idle_Handler);
+       (Func : in not null Idle_Handler);
 </pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-static void add_system_handler(Fl_System_Handler h,
-    void *data);
-</pre></td>
-<td>&nbsp;</td>
   </tr>
 
   <tr>
@@ -231,8 +237,8 @@ static void add_timeout(double t, Fl_Timeout_Handler,
 </pre></td>
 <td><pre>
 procedure Add_Timeout
-       (Seconds : in Long_Float;
-        Func    : in Timeout_Handler);
+       (Seconds : in          Long_Float;
+        Func    : in not null Timeout_Handler);
 </pre></td>
   </tr>
 
@@ -240,7 +246,11 @@ procedure Add_Timeout
 <td><pre>
 static int arg(int argc, char **argv, int &i);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Parse_Arg
+       (Index : in Positive)
+    return Natural;
+</pre></td>
   </tr>
 
   <tr>
@@ -248,21 +258,30 @@ static int arg(int argc, char **argv, int &i);
 static int args(int argc, char **argv, int &i,
     Fl_Args_Handler cb=0);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Parse_Args
+       (Count :    out Natural;
+        Func  : in     Args_Handler := null);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 static void args(int argc, char **argv);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Parse_Args;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 static int awake(Fl_Awake_Handler cb, void *message=0);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Awake
+       (Func : in Awake_Handler);
+</pre></td>
   </tr>
 
   <tr>
@@ -298,7 +317,11 @@ procedure Set_Alt_Background
 <td><pre>
 static Fl_Color box_color(Fl_Color);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Get_Box_Color
+       (Tone : in Color)
+    return Color;
+</pre></td>
   </tr>
 
   <tr>
@@ -349,7 +372,11 @@ function Get_Box_Y_Offset
 <td><pre>
 static int clipboard_contains(const char *type);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Clipboard_Contains
+       (Kind : in String)
+    return Boolean;
+</pre></td>
   </tr>
 
   <tr>
@@ -487,14 +514,22 @@ function Get_Awake_Handler
 <td><pre>
 static Fl_Box_Draw_F * get_boxtype(Fl_Boxtype);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Get_Box_Draw_Function
+       (Kind : in Box_Kind)
+    return Box_Draw_Function;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 static unsigned get_color(Fl_Color i);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Get_Color
+       (From : in Color)
+    return Color;
+</pre></td>
   </tr>
 
   <tr>
@@ -558,7 +593,7 @@ static int has_check(Fl_Timeout_Handler, void *=0);
 </pre></td>
 <td><pre>
 function Has_Check
-       (Func : in Timeout_Handler)
+       (Func : in not null Timeout_Handler)
     return Boolean;
 </pre></td>
   </tr>
@@ -569,7 +604,7 @@ static int has_idle(Fl_Idle_Handler cb, void *data=0);
 </pre></td>
 <td><pre>
 function Has_Idle
-       (Func : in Idle_Handler)
+       (Func : in not null Idle_Handler)
     return Boolean;
 </pre></td>
   </tr>
@@ -580,7 +615,7 @@ static int has_timeout(Fl_Timeout_Handler, void *=0);
 </pre></td>
 <td><pre>
 function Has_Timeout
-       (Func : in Timeout_Handler)
+       (Func : in not null Timeout_Handler)
     return Boolean;
 </pre></td>
   </tr>
@@ -702,7 +737,7 @@ static void remove_check(Fl_Timeout_Handler, void *=0);
 </pre></td>
 <td><pre>
 procedure Remove_Check
-       (Func : in Timeout_Handler);
+       (Func : in not null Timeout_Handler);
 </pre></td>
   </tr>
 
@@ -713,7 +748,7 @@ static void remove_clipboard_notify
 </pre></td>
 <td><pre>
 procedure Remove_Clipboard_Notify
-       (Func : in Clipboard_Notify_Handler);
+       (Func : in not null Clipboard_Notify_Handler);
 </pre></td>
   </tr>
 
@@ -745,15 +780,8 @@ static void remove_idle(Fl_Idle_Handler cb,
 </pre></td>
 <td><pre>
 procedure Remove_Idle
-       (Func : in Idle_Handler);
+       (Func : in not null Idle_Handler);
 </pre></td>
-  </tr>
-
-  <tr>
-<td><pre>
-static void remove_system_handler(Fl_System_Handler h);
-</pre></td>
-<td>&nbsp;</td>
   </tr>
 
   <tr>
@@ -763,7 +791,7 @@ static void remove_timeout(Fl_Timeout_Handler,
 </pre></td>
 <td><pre>
 procedure Remove_Timeout
-       (Func : in Timeout_Handler);
+       (Func : in not null Timeout_Handler);
 </pre></td>
   </tr>
 
@@ -774,8 +802,8 @@ static repeat_timeout(double t, Fl_Timeout_Handler,
 </pre></td>
 <td><pre>
 procedure Repeat_Timeout
-       (Seconds : in Long_Float;
-        Func    : in Timeout_Handler);
+       (Seconds : in          Long_Float;
+        Func    : in not null Timeout_Handler);
 </pre></td>
   </tr>
 
@@ -863,7 +891,10 @@ static void set_atclose(Fl_Atclose_Handler f);
 <td><pre>
 static void set_box_color(Fl_Color);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Set_Box_Color
+       (Tone : in Color);
+</pre></td>
   </tr>
 
   <tr>
@@ -871,7 +902,13 @@ static void set_box_color(Fl_Color);
 static void set_boxtype(Fl_Boxtype, Fl_Box_Draw_F *,
     uchar, uchar, uchar, uchar);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Set_Box_Draw_Function
+       (Kind               : in Box_Kind;
+        Func               : in Box_Draw_Function;
+        Offset_X, Offset_Y : in Byte_Integer := 0;
+        Offset_W, Offset_H : in Byte_Integer := 0);
+</pre></td>
   </tr>
 
   <tr>
@@ -888,7 +925,10 @@ procedure Set_Box_Kind
 <td><pre>
 static void set_color(Fl_Color i, unsigned c);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Set_Color
+       (Target, Source : in Color);
+</pre></td>
   </tr>
 
   <tr>
@@ -898,7 +938,7 @@ static void set_color(Fl_Color,
 </pre></td>
 <td><pre>
 procedure Set_Color
-       (To      : in Color;
+       (Target  : in Color;
         R, G, B : in Color_Component);
 </pre></td>
   </tr>
@@ -907,7 +947,11 @@ procedure Set_Color
 <td><pre>
 static void set_font(Fl_Font, const char *);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Set_Font_Kind
+       (Target : in Font_Kind;
+        Source : in String);
+</pre></td>
   </tr>
 
   <tr>
@@ -916,7 +960,7 @@ static void set_font(Fl_Font, Fl_Font);
 </pre></td>
 <td><pre>
 procedure Set_Font_Kind
-       (To, From : in Font_Kind);
+       (Target, Source : in Font_Kind);
 </pre></td>
   </tr>
 
@@ -942,21 +986,29 @@ static void set_idle(Fl_Old_Idle_Handler cb);
 static void set_labeltype(Fl_Labeltype, Fl_Label_Draw_F *,
     FL_Label_Measure_F *);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Set_Label_Draw_Function
+       (Kind         : in Label_Kind;
+        Draw_Func    : in Label_Draw_Function;
+        Measure_Func : in Label_Measure_Function);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 static void set_labeltype(Fl_Labeltype, Fl_Labeltype from);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Set_Label_Kind
+       (Target, Source : in Label_Kind);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 static void * thread_message();
 </pre></td>
-<td>&nbsp;</td>
+<td>Intentionally left unbound.</td>
   </tr>
 
   <tr>

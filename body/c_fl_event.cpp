@@ -16,6 +16,21 @@ void fl_event_add_handler(void * f) {
     Fl::add_handler(reinterpret_cast<Fl_Event_Handler>(f));
 }
 
+void fl_event_remove_handler(void * f) {
+    Fl::remove_handler(reinterpret_cast<Fl_Event_Handler>(f));
+}
+
+void fl_event_add_system_handler(void * h, void * f) {
+    Fl::add_system_handler(reinterpret_cast<Fl_System_Handler>(h), f);
+}
+
+void fl_event_remove_system_handler(void * h) {
+    Fl::remove_system_handler(reinterpret_cast<Fl_System_Handler>(h));
+}
+
+
+
+
 void fl_event_set_dispatch(void * f) {
     Fl::event_dispatch(reinterpret_cast<Fl_Event_Dispatch>(f));
 }

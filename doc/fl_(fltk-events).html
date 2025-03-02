@@ -41,6 +41,16 @@
     <td>Event_Dispatch</td>
   </tr>
 
+  <tr>
+    <td>void *</td>
+    <td>System_Event</td>
+  </tr>
+
+  <tr>
+    <td>Fl_System_Handler</td>
+    <td>System_Handler</td>
+  </tr>
+
 </table>
 
 
@@ -54,7 +64,18 @@ static void add_handler(Fl_Event_Handler h);
 </pre></td>
 <td><pre>
 procedure Add_Handler
-       (Func : in Event_Handler);
+       (Func : in not null Event_Handler);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void add_system_handler(Fl_System_Handler h,
+    void *data);
+</pre></td>
+<td><pre>
+procedure Add_System_Handler
+       (Func : in not null System_Handler);
 </pre></td>
   </tr>
 
@@ -576,7 +597,17 @@ static void remove_handler(Fl_Event_Handler h);
 </pre></td>
 <td><pre>
 procedure Remove_Handler
-       (Func : in Event_Handler);
+       (Func : in not null Event_Handler);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void remove_system_handler(Fl_System_Handler h);
+</pre></td>
+<td><pre>
+procedure Remove_System_Handler
+       (Func : in not null System_Handler);
 </pre></td>
   </tr>
 

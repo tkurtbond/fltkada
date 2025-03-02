@@ -8,8 +8,11 @@ with
 
     Ada.Assertions,
     Ada.Containers.Vectors,
+    Ada.Unchecked_Conversion,
     Interfaces.C.Strings,
     System.Address_To_Access_Conversions,
+    FLTK.Box_Draw_Marshal,
+    FLTK.Label_Draw_Marshal,
     FLTK.Static_Callback_Conversions;
 
 use type
@@ -27,21 +30,93 @@ package body FLTK.Static is
 
 
 
+    -----------------
+    --  Operators  --
+    -----------------
+
+    type File_Mode_Bitmask is mod 2 ** Interfaces.C.int'Size;
+
+    function FMode_To_Bits is new
+        Ada.Unchecked_Conversion (File_Mode, File_Mode_Bitmask);
+
+    function Bits_To_FMode is new
+        Ada.Unchecked_Conversion (File_Mode_Bitmask, File_Mode);
+
+
+    function "+"
+           (Left, Right : in File_Mode)
+        return File_Mode is
+    begin
+        return Bits_To_FMode (FMode_To_Bits (Left) or FMode_To_Bits (Right));
+    end "+";
+
+
+    function "-"
+           (Left, Right : in File_Mode)
+        return File_Mode is
+    begin
+        return Bits_To_FMode (FMode_To_Bits (Left) and not FMode_To_Bits (Right));
+    end "-";
+
+
+
+
     ------------------------
     --  Functions From C  --
     ------------------------
 
-    --  Interthread Notify  --
+    --  Command Line Arguments  --
 
-    procedure fl_static_add_awake_handler
-           (H, F : in Storage.Integer_Address);
+    function fl_static_arg
+           (C : in     Interfaces.C.int;
+            V : in     Storage.Integer_Address;
+            I : in out Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_static_arg, "fl_static_arg");
+    pragma Inline (fl_static_arg);
+
+    procedure fl_static_args
+           (C : in Interfaces.C.int;
+            V : in Storage.Integer_Address);
+    pragma Import (C, fl_static_args, "fl_static_args");
+    pragma Inline (fl_static_args);
+
+    function fl_static_args2
+           (C : in     Interfaces.C.int;
+            V : in     Storage.Integer_Address;
+            I : in out Interfaces.C.int;
+            H : in     Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_static_args2, "fl_static_args2");
+    pragma Inline (fl_static_args2);
+
+
+
+
+    --  Thread Notify  --
+
+    function fl_static_add_awake_handler
+           (H, F : in Storage.Integer_Address)
+        return Interfaces.C.int;
     pragma Import (C, fl_static_add_awake_handler, "fl_static_add_awake_handler");
     pragma Inline (fl_static_add_awake_handler);
 
-    procedure fl_static_get_awake_handler
-           (H, F : out Storage.Integer_Address);
+    function fl_static_get_awake_handler
+           (H, F : out Storage.Integer_Address)
+        return Interfaces.C.int;
     pragma Import (C, fl_static_get_awake_handler, "fl_static_get_awake_handler");
     pragma Inline (fl_static_get_awake_handler);
+
+    function fl_static_awake2
+           (H, F : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_static_awake2, "fl_static_awake2");
+    pragma Inline (fl_static_awake2);
+
+    procedure fl_static_awake
+           (M : in Storage.Integer_Address);
+    pragma Import (C, fl_static_awake, "fl_static_awake");
+    pragma Inline (fl_static_awake);
 
 
 
@@ -102,6 +177,11 @@ package body FLTK.Static is
     pragma Import (C, fl_static_add_clipboard_notify, "fl_static_add_clipboard_notify");
     pragma Inline (fl_static_add_clipboard_notify);
 
+    procedure fl_static_remove_clipboard_notify
+           (H : in Storage.Integer_Address);
+    pragma Import (C, fl_static_remove_clipboard_notify, "fl_static_remove_clipboard_notify");
+    pragma Inline (fl_static_remove_clipboard_notify);
+
 
 
 
@@ -153,13 +233,34 @@ package body FLTK.Static is
 
 
 
+    --  System Events  --
+
+    procedure fl_static_add_system_handler
+           (H, F : in Storage.Integer_Address);
+    pragma Import (C, fl_static_add_system_handler, "fl_static_add_system_handler");
+    pragma Inline (fl_static_add_system_handler);
+
+
+
+
     --  Custom Colors  --
+
+    function fl_static_get_color2
+           (C : in Interfaces.C.unsigned)
+        return Interfaces.C.unsigned;
+    pragma Import (C, fl_static_get_color2, "fl_static_get_color2");
+    pragma Inline (fl_static_get_color2);
 
     procedure fl_static_get_color
            (C       : in     Interfaces.C.unsigned;
             R, G, B :    out Interfaces.C.unsigned_char);
     pragma Import (C, fl_static_get_color, "fl_static_get_color");
     pragma Inline (fl_static_get_color);
+
+    procedure fl_static_set_color2
+           (T, F : in Interfaces.C.unsigned);
+    pragma Import (C, fl_static_set_color2, "fl_static_set_color2");
+    pragma Inline (fl_static_set_color2);
 
     procedure fl_static_set_color
            (C       : in Interfaces.C.unsigned;
@@ -172,6 +273,17 @@ package body FLTK.Static is
             B : in Interfaces.C.int);
     pragma Import (C, fl_static_free_color, "fl_static_free_color");
     pragma Inline (fl_static_free_color);
+
+    function fl_static_get_box_color
+           (T : in Interfaces.C.unsigned)
+        return Interfaces.C.unsigned;
+    pragma Import (C, fl_static_get_box_color, "fl_static_get_box_color");
+    pragma Inline (fl_static_get_box_color);
+
+    procedure fl_static_set_box_color
+           (T : in Interfaces.C.unsigned);
+    pragma Import (C, fl_static_set_box_color, "fl_static_set_box_color");
+    pragma Inline (fl_static_set_box_color);
 
     procedure fl_static_foreground
            (R, G, B : in Interfaces.C.unsigned_char);
@@ -209,6 +321,12 @@ package body FLTK.Static is
            (T, F : in Interfaces.C.int);
     pragma Import (C, fl_static_set_font, "fl_static_set_font");
     pragma Inline (fl_static_set_font);
+
+    procedure fl_static_set_font2
+           (T : in Interfaces.C.int;
+            S : in Interfaces.C.Strings.chars_ptr);
+    pragma Import (C, fl_static_set_font2, "fl_static_set_font2");
+    pragma Inline (fl_static_set_font2);
 
     function fl_static_get_font_sizes
            (F : in     Interfaces.C.int;
@@ -258,15 +376,39 @@ package body FLTK.Static is
     pragma Import (C, fl_static_box_dy, "fl_static_box_dy");
     pragma Inline (fl_static_box_dy);
 
+    function fl_static_get_boxtype
+           (T : in Interfaces.C.int)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_static_get_boxtype, "fl_static_get_boxtype");
+    pragma Inline (fl_static_get_boxtype);
+
     procedure fl_static_set_boxtype
            (T, F : in Interfaces.C.int);
     pragma Import (C, fl_static_set_boxtype, "fl_static_set_boxtype");
     pragma Inline (fl_static_set_boxtype);
 
+    procedure fl_static_set_boxtype2
+           (T              : in Interfaces.C.int;
+            F              : in Storage.Integer_Address;
+            DX, DY, DW, DH : in Interfaces.C.unsigned_char);
+    pragma Import (C, fl_static_set_boxtype2, "fl_static_set_boxtype2");
+    pragma Inline (fl_static_set_boxtype2);
+
     function fl_static_draw_box_active
         return Interfaces.C.int;
     pragma Import (C, fl_static_draw_box_active, "fl_static_draw_box_active");
     pragma Inline (fl_static_draw_box_active);
+
+
+
+
+    --  Label_Kind Attributes  --
+
+    procedure fl_static_set_labeltype
+           (K    : in Interfaces.C.int;
+            D, M : in Storage.Integer_Address);
+    pragma Import (C, fl_static_set_labeltype, "fl_static_set_labeltype");
+    pragma Inline (fl_static_set_labeltype);
 
 
 
@@ -292,10 +434,21 @@ package body FLTK.Static is
     pragma Import (C, fl_static_selection, "fl_static_selection");
     pragma Inline (fl_static_selection);
 
+    function fl_static_clipboard_contains
+           (K : in Interfaces.C.char_array)
+        return Interfaces.C.int;
+    pragma Import (C, fl_static_clipboard_contains, "fl_static_clipboard_contains");
+    pragma Inline (fl_static_clipboard_contains);
+
 
 
 
     --  Dragon Drop  --
+
+    function fl_static_dnd
+        return Interfaces.C.int;
+    pragma Import (C, fl_static_dnd, "fl_static_dnd");
+    pragma Inline (fl_static_dnd);
 
     function fl_static_get_dnd_text_ops
         return Interfaces.C.int;
@@ -313,7 +466,7 @@ package body FLTK.Static is
     --  Windows  --
 
     procedure fl_static_default_atclose
-           (W : in Storage.Integer_Address);
+           (W, U : in Storage.Integer_Address);
     pragma Import (C, fl_static_default_atclose, "fl_static_default_atclose");
     pragma Inline (fl_static_default_atclose);
 
@@ -422,6 +575,33 @@ package body FLTK.Static is
     --  Callback Hooks  --
     ----------------------
 
+    Current_Args_Handler : Args_Handler;
+
+    function Args_Hook
+           (C : in     Interfaces.C.int;
+            V : in     Storage.Integer_Address;
+            I : in out Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Convention (C, Args_Hook);
+
+    function Args_Hook
+           (C : in     Interfaces.C.int;
+            V : in     Storage.Integer_Address;
+            I : in out Interfaces.C.int)
+        return Interfaces.C.int
+    is
+        Result : Natural;
+    begin
+        Result := Current_Args_Handler (Positive (I));
+        I := I + Interfaces.C.int (Result);
+        return Interfaces.C.int (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Args_Handler callback was supplied unexpected int i value of " &
+        Interfaces.C.int'Image (I);
+    end Args_Hook;
+
+
     procedure Awake_Hook
            (U : in Storage.Integer_Address);
     pragma Convention (C, Awake_Hook);
@@ -429,7 +609,9 @@ package body FLTK.Static is
     procedure Awake_Hook
            (U : in Storage.Integer_Address) is
     begin
-        Conv.To_Awake_Access (U).all;
+        if U /= Null_Pointer then
+            Conv.To_Awake_Access (U).all;
+        end if;
     end Awake_Hook;
 
 
@@ -446,7 +628,8 @@ package body FLTK.Static is
 
     --  This is handled on the Ada side because otherwise there would be
     --  no way to specify which callback to remove in FLTK once one was
-    --  added. The hook is passed during package init.
+    --  added. This is because Fl::remove_clipboard_notify does not pay
+    --  attention to the void * data. This hook is passed during package init.
     package Clipboard_Notify_Vectors is new Ada.Containers.Vectors
        (Index_Type   => Positive,
         Element_Type => Clipboard_Notify_Handler);
@@ -462,9 +645,15 @@ package body FLTK.Static is
            (S : in Interfaces.C.int;
             U : in Storage.Integer_Address) is
     begin
+        pragma Assert (S in
+            Buffer_Kind'Pos (Buffer_Kind'First) .. Buffer_Kind'Pos (Buffer_Kind'Last));
         for Call of Current_Clip_Notes loop
             Call.all (Buffer_Kind'Val (S));
         end loop;
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Clipboard_Notify_Hook was passed unexpected Buffer_Kind int value of " &
+        Interfaces.C.int'Image (S);
     end Clipboard_Notify_Hook;
 
 
@@ -494,17 +683,99 @@ package body FLTK.Static is
 
 
 
+    -------------------
+    --  Destructors  --
+    -------------------
+
+    procedure Finalize
+           (This : in out FLTK_Static_Final_Controller) is
+    begin
+        FLTK.Args_Marshal.Free_Argv (The_Argv);
+        for Override of Font_Overrides loop
+            Interfaces.C.Strings.Free (Override);
+        end loop;
+        fl_static_remove_clipboard_notify (Storage.To_Integer (Clipboard_Notify_Hook'Address));
+    end Finalize;
+
+
+
+
     -----------------------
     --  API Subprograms  --
     -----------------------
 
-    --  Interthread Notify  --
+    --  Command Line Arguments  --
+
+    function Parse_Arg
+           (Index : in Positive)
+        return Natural
+    is
+        Count : Interfaces.C.int := Interfaces.C.int (Index);
+    begin
+        return Natural (fl_static_arg
+           (The_Argv'Length,
+            Storage.To_Integer (The_Argv (The_Argv'First)'Address),
+            Count));
+    end Parse_Arg;
+
+
+    procedure Parse_Args is
+    begin
+        fl_static_args (The_Argv'Length, Storage.To_Integer (The_Argv (The_Argv'First)'Address));
+    end Parse_Args;
+
+
+    procedure Parse_Args
+           (Count :    out Natural;
+            Func  : in     Args_Handler := null)
+    is
+        My_Count : Interfaces.C.int := 1;
+        Result   : Interfaces.C.int;
+    begin
+        Current_Args_Handler := Func;
+        Result := fl_static_args2
+           (The_Argv'Length,
+            Storage.To_Integer (The_Argv (The_Argv'First)'Address),
+            My_Count,
+            (if Func = null then Null_Pointer else Storage.To_Integer (Args_Hook'Address)));
+        Count := Integer (My_Count) - 1;
+        if Result = 0 then
+            raise Argument_Error with
+                "Fl::args could not recognise switch at argument number " &
+                Interfaces.C.int'Image (My_Count);
+        else
+            pragma Assert (Result > 0);
+        end if;
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl::args produced unexpected i parameter of " & Interfaces.C.int'Image (My_Count);
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl::args returned unexpected int value of " & Interfaces.C.int'Image (Result);
+    end Parse_Args;
+
+
+
+
+    --  Thread Notify  --
 
     procedure Add_Awake_Handler
-           (Func : in Awake_Handler) is
+           (Func : in Awake_Handler)
+    is
+        Result : Interfaces.C.int := fl_static_add_awake_handler
+           (Storage.To_Integer (Awake_Hook'Address),
+            Conv.To_Address (Func));
     begin
-        fl_static_add_awake_handler
-           (Storage.To_Integer (Awake_Hook'Address), Conv.To_Address (Func));
+        pragma Assert (Result = 0);
+    exception
+    when Chk.Assertion_Error =>
+        if Result = -1 then
+            raise Tasking_Error with
+                "Fl::add_awake_handler_ failed to register Awake_Handler callback";
+        else
+            raise Internal_FLTK_Error with
+                "Fl::add_awake_handler_ returned unexpected int value of " &
+                Interfaces.C.int'Image (Result);
+        end if;
     end Add_Awake_Handler;
 
 
@@ -512,10 +783,46 @@ package body FLTK.Static is
         return Awake_Handler
     is
         Hook, Func : Storage.Integer_Address;
+        Result : Interfaces.C.int := fl_static_get_awake_handler (Hook, Func);
     begin
-        fl_static_get_awake_handler (Hook, Func);
+        pragma Assert (Result = 0);
         return Conv.To_Awake_Access (Func);
+    exception
+    when Chk.Assertion_Error =>
+        if Result = -1 then
+            raise Tasking_Error with
+                "Fl::get_awake_handler_ invoked without prior awake setup";
+        else
+            raise Internal_FLTK_Error with
+                "Fl::get_awake_handler_ returned unexpected int value of " &
+                Interfaces.C.int'Image (Result);
+        end if;
     end Get_Awake_Handler;
+
+
+    procedure Awake
+           (Func : in Awake_Handler)
+    is
+        Result : Interfaces.C.int := fl_static_awake2
+           (Storage.To_Integer (Awake_Hook'Address),
+            Conv.To_Address (Func));
+    begin
+        pragma Assert (Result = 0);
+    exception
+    when Chk.Assertion_Error =>
+        if Result = -1 then
+            raise Tasking_Error with "Fl::awake failed to register Awake_Handler callback";
+        else
+            raise Internal_FLTK_Error with "Fl::awake returned unexpected int value of " &
+                Interfaces.C.int'Image (Result);
+        end if;
+    end Awake;
+
+
+    procedure Awake is
+    begin
+        fl_static_awake (Null_Pointer);
+    end Awake;
 
 
 
@@ -523,29 +830,30 @@ package body FLTK.Static is
     --  Pre-Eventloop Callbacks  --
 
     procedure Add_Check
-           (Func : in Timeout_Handler) is
+           (Func : in not null Timeout_Handler) is
     begin
         fl_static_add_check
-           (Storage.To_Integer (Timeout_Hook'Address), Conv.To_Address (Func));
+           (Storage.To_Integer (Timeout_Hook'Address),
+            Conv.To_Address (Timeout_Handler'(Func)));
     end Add_Check;
 
 
     function Has_Check
-           (Func : in Timeout_Handler)
+           (Func : in not null Timeout_Handler)
         return Boolean is
     begin
         return fl_static_has_check
            (Storage.To_Integer (Timeout_Hook'Address),
-            Conv.To_Address (Func)) /= 0;
+            Conv.To_Address (Timeout_Handler'(Func))) /= 0;
     end Has_Check;
 
 
     procedure Remove_Check
-           (Func : in Timeout_Handler) is
+           (Func : in not null Timeout_Handler) is
     begin
         fl_static_remove_check
            (Storage.To_Integer (Timeout_Hook'Address),
-            Conv.To_Address (Func));
+            Conv.To_Address (Timeout_Handler'(Func)));
     end Remove_Check;
 
 
@@ -554,43 +862,43 @@ package body FLTK.Static is
     --  Timer Callbacks  --
 
     procedure Add_Timeout
-           (Seconds : in Long_Float;
-            Func    : in Timeout_Handler) is
+           (Seconds : in          Long_Float;
+            Func    : in not null Timeout_Handler) is
     begin
         fl_static_add_timeout
            (Interfaces.C.double (Seconds),
             Storage.To_Integer (Timeout_Hook'Address),
-            Conv.To_Address (Func));
+            Conv.To_Address (Timeout_Handler'(Func)));
     end Add_Timeout;
 
 
     function Has_Timeout
-           (Func : in Timeout_Handler)
+           (Func : in not null Timeout_Handler)
         return Boolean is
     begin
         return fl_static_has_timeout
            (Storage.To_Integer (Timeout_Hook'Address),
-            Conv.To_Address (Func)) /= 0;
+            Conv.To_Address (Timeout_Handler'(Func))) /= 0;
     end Has_Timeout;
 
 
     procedure Remove_Timeout
-           (Func : in Timeout_Handler) is
+           (Func : in not null Timeout_Handler) is
     begin
         fl_static_remove_timeout
            (Storage.To_Integer (Timeout_Hook'Address),
-            Conv.To_Address (Func));
+            Conv.To_Address (Timeout_Handler'(Func)));
     end Remove_Timeout;
 
 
     procedure Repeat_Timeout
-           (Seconds : in Long_Float;
-            Func    : in Timeout_Handler) is
+           (Seconds : in          Long_Float;
+            Func    : in not null Timeout_Handler) is
     begin
         fl_static_repeat_timeout
            (Interfaces.C.double (Seconds),
             Storage.To_Integer (Timeout_Hook'Address),
-            Conv.To_Address (Func));
+            Conv.To_Address (Timeout_Handler'(Func)));
     end Repeat_Timeout;
 
 
@@ -599,16 +907,16 @@ package body FLTK.Static is
     --  Clipboard Callbacks  --
 
     procedure Add_Clipboard_Notify
-           (Func : in Clipboard_Notify_Handler) is
+           (Func : in not null Clipboard_Notify_Handler) is
     begin
         Current_Clip_Notes.Append (Func);
     end Add_Clipboard_Notify;
 
 
     procedure Remove_Clipboard_Notify
-           (Func : in Clipboard_Notify_Handler) is
+           (Func : in not null Clipboard_Notify_Handler) is
     begin
-        for Index in Current_Clip_Notes.First_Index .. Current_Clip_Notes.Last_Index loop
+        for Index in reverse Current_Clip_Notes.First_Index .. Current_Clip_Notes.Last_Index loop
             if Current_Clip_Notes (Index) = Func then
                 Current_Clip_Notes.Delete (Index);
                 return;
@@ -622,8 +930,8 @@ package body FLTK.Static is
     --  File Descriptor Waiting Callbacks  --
 
     procedure Add_File_Descriptor
-           (FD   : in File_Descriptor;
-            Func : in File_Handler) is
+           (FD   : in          File_Descriptor;
+            Func : in not null File_Handler) is
     begin
         fl_static_add_fd
            (Interfaces.C.int (FD),
@@ -633,13 +941,13 @@ package body FLTK.Static is
 
 
     procedure Add_File_Descriptor
-           (FD   : in File_Descriptor;
-            Mode : in File_Mode;
-            Func : in File_Handler) is
+           (FD   : in          File_Descriptor;
+            Mode : in          File_Mode;
+            Func : in not null File_Handler) is
     begin
         fl_static_add_fd2
            (Interfaces.C.int (FD),
-            File_Mode_Codes (Mode),
+            FMode_To_Cint (Mode),
             Storage.To_Integer (FD_Hook'Address),
             Conv.To_Address (Func));
     end Add_File_Descriptor;
@@ -656,7 +964,7 @@ package body FLTK.Static is
            (FD   : in File_Descriptor;
             Mode : in File_Mode) is
     begin
-        fl_static_remove_fd2 (Interfaces.C.int (FD), File_Mode_Codes (Mode));
+        fl_static_remove_fd2 (Interfaces.C.int (FD), FMode_To_Cint (Mode));
     end Remove_File_Descriptor;
 
 
@@ -665,36 +973,44 @@ package body FLTK.Static is
     --  Idle Callbacks  --
 
     procedure Add_Idle
-           (Func : in Idle_Handler) is
+           (Func : in not null Idle_Handler) is
     begin
         fl_static_add_idle
            (Storage.To_Integer (Idle_Hook'Address),
-            Conv.To_Address (Func));
+            Conv.To_Address (Idle_Handler'(Func)));
     end Add_Idle;
 
 
     function Has_Idle
-           (Func : in Idle_Handler)
+           (Func : in not null Idle_Handler)
         return Boolean is
     begin
         return fl_static_has_idle
            (Storage.To_Integer (Idle_Hook'Address),
-            Conv.To_Address (Func)) /= 0;
+            Conv.To_Address (Idle_Handler'(Func))) /= 0;
     end Has_Idle;
 
 
     procedure Remove_Idle
-           (Func : in Idle_Handler) is
+           (Func : in not null Idle_Handler) is
     begin
         fl_static_remove_idle
            (Storage.To_Integer (Idle_Hook'Address),
-            Conv.To_Address (Func));
+            Conv.To_Address (Idle_Handler'(Func)));
     end Remove_Idle;
 
 
 
 
     --  Custom Colors  --
+
+    function Get_Color
+           (From : in Color)
+        return Color is
+    begin
+        return Color (fl_static_get_color2 (Interfaces.C.unsigned (From)));
+    end Get_Color;
+
 
     procedure Get_Color
            (From    : in     Color;
@@ -709,11 +1025,20 @@ package body FLTK.Static is
 
 
     procedure Set_Color
-           (To      : in Color;
+           (Target, Source : in Color) is
+    begin
+        fl_static_set_color2
+           (Interfaces.C.unsigned (Target),
+            Interfaces.C.unsigned (Source));
+    end Set_Color;
+
+
+    procedure Set_Color
+           (Target  : in Color;
             R, G, B : in Color_Component) is
     begin
         fl_static_set_color
-           (Interfaces.C.unsigned (To),
+           (Interfaces.C.unsigned (Target),
             Interfaces.C.unsigned_char (R),
             Interfaces.C.unsigned_char (G),
             Interfaces.C.unsigned_char (B));
@@ -728,6 +1053,21 @@ package body FLTK.Static is
            (Interfaces.C.unsigned (Value),
             Boolean'Pos (Overlay));
     end Free_Color;
+
+
+    function Get_Box_Color
+           (Tone : in Color)
+        return Color is
+    begin
+        return Color (fl_static_get_box_color (Interfaces.C.unsigned (Tone)));
+    end Get_Box_Color;
+
+
+    procedure Set_Box_Color
+           (Tone : in Color) is
+    begin
+        fl_static_set_box_color (Interfaces.C.unsigned (Tone));
+    end Set_Box_Color;
 
 
     procedure Set_Foreground
@@ -783,9 +1123,19 @@ package body FLTK.Static is
 
 
     procedure Set_Font_Kind
-           (To, From : in Font_Kind) is
+           (Target, Source : in Font_Kind) is
     begin
-        fl_static_set_font (Font_Kind'Pos (To), Font_Kind'Pos (From));
+        fl_static_set_font (Font_Kind'Pos (Target), Font_Kind'Pos (Source));
+    end Set_Font_Kind;
+
+
+    procedure Set_Font_Kind
+           (Target : in Font_Kind;
+            Source : in String) is
+    begin
+        Interfaces.C.Strings.Free (Font_Overrides (Target));
+        Font_Overrides (Target) := Interfaces.C.Strings.New_String (Source);
+        fl_static_set_font2 (Font_Kind'Pos (Target), Font_Overrides (Target));
     end Set_Font_Kind;
 
 
@@ -806,9 +1156,15 @@ package body FLTK.Static is
 
 
     procedure Setup_Fonts
-           (How_Many_Set_Up : out Natural) is
+           (How_Many_Set_Up : out Natural)
+    is
+        Result : Interfaces.C.int := fl_static_set_fonts;
     begin
-        How_Many_Set_Up := Natural (fl_static_set_fonts);
+        How_Many_Set_Up := Natural (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl::set_fonts returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Setup_Fonts;
 
 
@@ -862,22 +1218,53 @@ package body FLTK.Static is
     end Draw_Box_Active;
 
 
-    --  function Get_Box_Draw_Function
-    --         (Kind : in Box_Kind)
-    --      return Box_Draw_Function is
-    --  begin
-    --      return null;
-    --  end Get_Box_Draw_Function;
+    function Get_Box_Draw_Function
+           (Kind : in Box_Kind)
+        return Box_Draw_Function is
+    begin
+        return FLTK.Box_Draw_Marshal.To_Ada (Kind, fl_static_get_boxtype (Box_Kind'Pos (Kind)));
+    end Get_Box_Draw_Function;
 
 
-    --  procedure Set_Box_Draw_Function
-    --         (Kind               : in Box_Kind;
-    --          Func               : in Box_Draw_Function;
-    --          Offset_X, Offset_Y : in Integer := 0;
-    --          Offset_W, Offset_H : in Integer := 0) is
-    --  begin
-    --      null;
-    --  end Set_Box_Draw_Function;
+    procedure Set_Box_Draw_Function
+           (Kind               : in Box_Kind;
+            Func               : in Box_Draw_Function;
+            Offset_X, Offset_Y : in Byte_Integer := 0;
+            Offset_W, Offset_H : in Byte_Integer := 0) is
+    begin
+        fl_static_set_boxtype2
+           (Box_Kind'Pos (Kind),
+            FLTK.Box_Draw_Marshal.To_C (Kind, Func),
+            Interfaces.C.unsigned_char (Offset_X),
+            Interfaces.C.unsigned_char (Offset_Y),
+            Interfaces.C.unsigned_char (Offset_W),
+            Interfaces.C.unsigned_char (Offset_H));
+    end Set_Box_Draw_Function;
+
+
+
+
+    --  Label_Kind Attributes  --
+
+    procedure Set_Label_Kind
+           (Target, Source : in Label_Kind) is
+    begin
+        --  As of FLTK 1.3.11 there is no definition given for this function
+        --  so this is null to avoid linker errors.
+        null;
+    end Set_Label_Kind;
+
+
+    procedure Set_Label_Draw_Function
+           (Kind         : in Label_Kind;
+            Draw_Func    : in Label_Draw_Function;
+            Measure_Func : in Label_Measure_Function) is
+    begin
+        fl_static_set_labeltype
+           (Label_Kind'Pos (Kind),
+            FLTK.Label_Draw_Marshal.To_C (Kind, Draw_Func),
+            FLTK.Label_Draw_Marshal.To_C (Kind, Measure_Func));
+    end Set_Label_Draw_Function;
 
 
 
@@ -916,9 +1303,24 @@ package body FLTK.Static is
     end Selection;
 
 
+    function Clipboard_Contains
+           (Kind : in String)
+        return Boolean is
+    begin
+        return fl_static_clipboard_contains (Interfaces.C.To_C (Kind)) /= 0;
+    end Clipboard_Contains;
+
+
 
 
     --  Dragon Drop  --
+
+    procedure Drag_Drop_Start is
+        Ignore : Interfaces.C.int := fl_static_dnd;
+    begin
+        null;
+    end Drag_Drop_Start;
+
 
     function Get_Drag_Drop_Text_Support
         return Boolean is
@@ -941,7 +1343,13 @@ package body FLTK.Static is
     procedure Default_Window_Close
            (Item : in out FLTK.Widgets.Widget'Class) is
     begin
-        fl_static_default_atclose (Wrapper (Item).Void_Ptr);
+        pragma Assert (Wrapper (Item).Void_Ptr /= Null_Pointer);
+        fl_static_default_atclose
+           (Wrapper (Item).Void_Ptr,
+            fl_widget_get_user_data (Wrapper (Item).Void_Ptr));
+    exception
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Fl::default_atclose received uninitialised widget";
     end Default_Window_Close;
 
 
@@ -1049,15 +1457,22 @@ package body FLTK.Static is
     procedure Set_Scheme
            (To : in String) is
     begin
+        --  A copy of the Scheme string is stored in FLTK
         fl_static_set_scheme (Interfaces.C.To_C (To));
     end Set_Scheme;
 
 
     function Is_Scheme
            (Scheme : in String)
-        return Boolean is
+        return Boolean
+    is
+        Result : Interfaces.C.int := fl_static_is_scheme (Interfaces.C.To_C (Scheme));
     begin
-        return fl_static_is_scheme (Interfaces.C.To_C (Scheme)) /= 0;
+        return Boolean'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl::is_scheme returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Is_Scheme;
 
 
@@ -1086,9 +1501,15 @@ package body FLTK.Static is
     --  Scrollbars  --
 
     function Get_Default_Scrollbar_Size
-        return Natural is
+        return Natural
+    is
+        Result : Interfaces.C.int := fl_static_get_scrollbar_size;
     begin
-        return Natural (fl_static_get_scrollbar_size);
+        return Natural (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl::scrollbar_size returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Get_Default_Scrollbar_Size;
 
 
