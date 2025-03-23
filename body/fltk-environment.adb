@@ -125,9 +125,9 @@ package body FLTK.Environment is
     pragma Inline (fl_preferences_flush);
 
     function fl_preferences_getuserdatapath
-           (E : in Storage.Integer_Address;
-            P : in Interfaces.C.char_array;
-            L : in Interfaces.C.int)
+           (E : in     Storage.Integer_Address;
+            P :    out Interfaces.C.char_array;
+            L : in     Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_preferences_getuserdatapath, "fl_preferences_getuserdatapath");
     pragma Inline (fl_preferences_getuserdatapath);
@@ -285,11 +285,11 @@ package body FLTK.Environment is
     pragma Inline (fl_preferences_get_str);
 
     function fl_preferences_get_str_limit
-           (E : in Storage.Integer_Address;
-            K : in Interfaces.C.char_array;
-            V : in Interfaces.C.char_array;
-            D : in Interfaces.C.char_array;
-            M : in Interfaces.C.int)
+           (E : in     Storage.Integer_Address;
+            K : in     Interfaces.C.char_array;
+            V :    out Interfaces.C.char_array;
+            D : in     Interfaces.C.char_array;
+            M : in     Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_preferences_get_str_limit, "fl_preferences_get_str_limit");
     pragma Inline (fl_preferences_get_str_limit);
@@ -552,7 +552,7 @@ package body FLTK.Environment is
     function New_UUID
         return String
     is
-        Text : Interfaces.C.Strings.chars_ptr := fl_preferences_new_uuid;
+        Text : constant Interfaces.C.Strings.chars_ptr := fl_preferences_new_uuid;
     begin
         return Interfaces.C.Strings.Value (Text);
     end New_UUID;
@@ -655,7 +655,7 @@ package body FLTK.Environment is
             Index : in Positive)
         return String
     is
-        Key : Interfaces.C.Strings.chars_ptr :=
+        Key : constant Interfaces.C.Strings.chars_ptr :=
             fl_preferences_entry (This.Void_Ptr, Interfaces.C.int (Index) - 1);
     begin
         --  no need for dealloc?
@@ -702,7 +702,7 @@ package body FLTK.Environment is
             Index : in Positive)
         return String
     is
-        Name : Interfaces.C.Strings.chars_ptr :=
+        Name : constant Interfaces.C.Strings.chars_ptr :=
             fl_preferences_group (This.Void_Ptr, Interfaces.C.int (Index) - 1);
     begin
         --  no need for dealloc?
@@ -731,7 +731,7 @@ package body FLTK.Environment is
            (This : in Pref_Group)
         return String
     is
-        Text : Interfaces.C.Strings.chars_ptr := fl_preferences_name (This.Void_Ptr);
+        Text : constant Interfaces.C.Strings.chars_ptr := fl_preferences_name (This.Void_Ptr);
     begin
         if Text = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -745,7 +745,7 @@ package body FLTK.Environment is
            (This : in Pref_Group)
         return String
     is
-        Text : Interfaces.C.Strings.chars_ptr := fl_preferences_path (This.Void_Ptr);
+        Text : constant Interfaces.C.Strings.chars_ptr := fl_preferences_path (This.Void_Ptr);
     begin
         if Text = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -783,9 +783,9 @@ package body FLTK.Environment is
             Default : in Integer)
         return Integer
     is
-        Value, X : Interfaces.C.int;
+        Value, Ignore : Interfaces.C.int;
     begin
-        X := fl_preferences_get_int
+        Ignore := fl_preferences_get_int
            (This.Void_Ptr,
             Interfaces.C.To_C (Key),
             Value,
@@ -819,9 +819,9 @@ package body FLTK.Environment is
         return Float
     is
         Value : Interfaces.C.C_float;
-        X : Interfaces.C.int;
+        Ignore : Interfaces.C.int;
     begin
-        X := fl_preferences_get_float
+        Ignore := fl_preferences_get_float
            (This.Void_Ptr,
             Interfaces.C.To_C (Key),
             Value,
@@ -855,9 +855,9 @@ package body FLTK.Environment is
         return Long_Float
     is
         Value : Interfaces.C.double;
-        X : Interfaces.C.int;
+        Ignore : Interfaces.C.int;
     begin
-        X := fl_preferences_get_double
+        Ignore := fl_preferences_get_double
            (This.Void_Ptr,
             Interfaces.C.To_C (Key),
             Value,
@@ -872,7 +872,7 @@ package body FLTK.Environment is
         return String
     is
         Text : Interfaces.C.Strings.chars_ptr;
-        Check : Interfaces.C.int := fl_preferences_get_str
+        Check : constant Interfaces.C.int := fl_preferences_get_str
            (This.Void_Ptr,
             Interfaces.C.To_C (Key),
             Text,
@@ -884,7 +884,7 @@ package body FLTK.Environment is
         if Text = Interfaces.C.Strings.Null_Ptr then
             return "";
         end if;
-        return Str : String := Interfaces.C.Strings.Value (Text) do
+        return Str : constant String := Interfaces.C.Strings.Value (Text) do
             Interfaces.C.Strings.Free (Text);
         end return;
     end Get;
@@ -897,7 +897,7 @@ package body FLTK.Environment is
         return String
     is
         Text : Interfaces.C.Strings.chars_ptr;
-        X : Interfaces.C.int := fl_preferences_get_str
+        Ignore : Interfaces.C.int := fl_preferences_get_str
            (This.Void_Ptr,
             Interfaces.C.To_C (Key),
             Text,
@@ -906,7 +906,7 @@ package body FLTK.Environment is
         if Text = Interfaces.C.Strings.Null_Ptr then
             return Default;
         end if;
-        return Str : String := Interfaces.C.Strings.Value (Text) do
+        return Str : constant String := Interfaces.C.Strings.Value (Text) do
             Interfaces.C.Strings.Free (Text);
         end return;
     end Get;
@@ -920,7 +920,7 @@ package body FLTK.Environment is
         return String
     is
         Text : Interfaces.C.char_array := (1 .. Interfaces.C.size_t (Max_Length + 1) => ' ');
-        Check : Interfaces.C.int := fl_preferences_get_str_limit
+        Check : constant Interfaces.C.int := fl_preferences_get_str_limit
            (This.Void_Ptr,
             Interfaces.C.To_C (Key),
             Text,
@@ -942,7 +942,7 @@ package body FLTK.Environment is
     is
         Thing : Storage.Integer_Address;
         Dummy : Interfaces.C.int := 42;
-        Check : Interfaces.C.int := fl_preferences_get_void
+        Check : constant Interfaces.C.int := fl_preferences_get_void
            (This.Void_Ptr,
             Interfaces.C.To_C (Key),
             Thing,
@@ -954,12 +954,12 @@ package body FLTK.Environment is
             raise Preference_Error;
         end if;
         declare
-            Length : Natural := This.Value_Size (Key) * Natural (c_pointer_size);
+            Length : constant Natural := This.Value_Size (Key) * Natural (c_pointer_size);
             Actual : Binary_Data (1 .. Length);
             for Actual'Address use Storage.To_Address (Thing);
             pragma Import (Ada, Actual);
         begin
-            return Result : Binary_Data := Actual do
+            return Result : constant Binary_Data := Actual do
                 free_fl_preferences_void_data (Thing);
             end return;
         end;
@@ -979,12 +979,12 @@ package body FLTK.Environment is
             Thing,
             Storage.To_Integer (Default'Address),
             Default'Length / Interfaces.C.int (c_pointer_size));
-        Length : Natural := This.Value_Size (Key) * Natural (c_pointer_size);
+        Length : constant Natural := This.Value_Size (Key) * Natural (c_pointer_size);
         Actual : Binary_Data (1 .. Length);
         for Actual'Address use Storage.To_Address (Thing);
         pragma Import (Ada, Actual);
     begin
-        return Result : Binary_Data := Actual do
+        return Result : constant Binary_Data := Actual do
             free_fl_preferences_void_data (Thing);
         end return;
     end Get;
@@ -1005,7 +1005,7 @@ package body FLTK.Environment is
             Storage.To_Integer (Default'Address),
             Default'Length / Interfaces.C.int (c_pointer_size),
             Interfaces.C.int (Max_Length) / Interfaces.C.int (c_pointer_size));
-        Length : Natural := This.Value_Size (Key) * Natural (c_pointer_size);
+        Length : constant Natural := This.Value_Size (Key) * Natural (c_pointer_size);
     begin
         return Actual (1 .. Length);
     end Get;

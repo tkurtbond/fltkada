@@ -9,7 +9,6 @@
 
 with
 
-    FLTK.Tooltips,
     FLTK.Widgets.Buttons.Enter,
     FLTK.Widgets.Buttons.Light.Check,
     FLTK.Widgets.Buttons.Light.Round,

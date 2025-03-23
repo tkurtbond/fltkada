@@ -212,7 +212,7 @@ package body FLTK.Labels is
            (This : in Label)
         return String
     is
-        Text : Interfaces.C.Strings.chars_ptr := fl_label_get_value (This.Void_Ptr);
+        Text : constant Interfaces.C.Strings.chars_ptr := fl_label_get_value (This.Void_Ptr);
     begin
         if Text = Interfaces.C.Strings.Null_Ptr then
             return "";

@@ -39,7 +39,7 @@ begin
     end if;
 
     declare
-        Name : Fil.Path_String := Fil.Expand (ACom.Argument (1));
+        Name : constant Fil.Path_String := Fil.Expand (ACom.Argument (1));
     begin
         if not Fil.Is_Directory (Name) then
             TIO.Put_Line ("Error: " & Name & " is not a valid directory.");
@@ -48,7 +48,7 @@ begin
         end if;
 
         declare
-            The_List : Fil.File_List := Fil.Get_Listing (Name, Fil.Alpha_Sort'Access);
+            The_List : constant Fil.File_List := Fil.Get_Listing (Name, Fil.Alpha_Sort'Access);
         begin
             TIO.Put_Line ("Alphabetical Sort:");
             for Index in 1 .. The_List.Length loop
@@ -58,7 +58,7 @@ begin
         end;
 
         declare
-            The_List : Fil.File_List := Fil.Get_Listing (Name, Fil.Case_Alpha_Sort'Access);
+            The_List : constant Fil.File_List := Fil.Get_Listing (Name, Fil.Case_Alpha_Sort'Access);
         begin
             TIO.Put_Line ("Case Insensitive Alphabetical Sort:");
             for Index in 1 .. The_List.Length loop
@@ -68,7 +68,7 @@ begin
         end;
 
         declare
-            The_List : Fil.File_List := Fil.Get_Listing (Name, Fil.Numeric_Sort'Access);
+            The_List : constant Fil.File_List := Fil.Get_Listing (Name, Fil.Numeric_Sort'Access);
         begin
             TIO.Put_Line ("Numeric Sort:");
             for Index in 1 .. The_List.Length loop
@@ -78,7 +78,8 @@ begin
         end;
 
         declare
-            The_List : Fil.File_List := Fil.Get_Listing (Name, Fil.Case_Numeric_Sort'Access);
+            The_List : constant Fil.File_List :=
+                Fil.Get_Listing (Name, Fil.Case_Numeric_Sort'Access);
         begin
             TIO.Put_Line ("Case Insensitive Numeric Sort:");
             for Index in 1 .. The_List.Length loop

@@ -10,8 +10,7 @@ limited with
 
 private with
 
-    Interfaces.C.Strings,
-    System;
+    Interfaces.C.Strings;
 
 
 package FLTK.Widgets.Inputs is

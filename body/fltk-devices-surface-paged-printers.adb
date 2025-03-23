@@ -6,7 +6,7 @@
 
 with
 
-    Interfaces.C.Strings;
+    Interfaces.C;
 
 use type
 

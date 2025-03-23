@@ -8,10 +8,6 @@ with
 
     FLTK.Images.RGB;
 
-private with
-
-    Interfaces.C.Strings;
-
 
 package FLTK.Widgets.Groups.Windows is
 

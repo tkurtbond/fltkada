@@ -16,7 +16,6 @@ with
     FLTK.Widgets.Boxes,
     FLTK.Widgets.Buttons,
     FLTK.Widgets.Buttons.Enter,
-    FLTK.Widgets.Inputs.Text,
     FLTK.Widgets.Groups.Windows.Double;
 
 use type
@@ -38,7 +37,6 @@ is
     package BX  renames FLTK.Widgets.Boxes;
     package BTN renames FLTK.Widgets.Buttons;
     package ENT renames FLTK.Widgets.Buttons.Enter;
-    package INP renames FLTK.Widgets.Inputs.Text;
     package WD  renames FLTK.Widgets.Groups.Windows.Double;
 
 
@@ -54,7 +52,7 @@ is
     procedure Rename_Me
            (Item : in out FLTK.Widgets.Widget'Class)
     is
-        Input : String := AK.Text_Input ("Input:", Item.Get_Label);
+        Input : constant String := AK.Text_Input ("Input:", Item.Get_Label);
     begin
         Update_Input_Text (Item, Input);
     end Rename_Me;
@@ -63,7 +61,7 @@ is
     procedure Rename_Me_Pwd
            (Item : in out FLTK.Widgets.Widget'Class)
     is
-        Input : String := AK.Password ("Input PWD:", Item.Get_Label);
+        Input : constant String := AK.Password ("Input PWD:", Item.Get_Label);
     begin
         Update_Input_Text (Item, Input);
     end Rename_Me_Pwd;
@@ -72,7 +70,7 @@ is
     procedure Window_Callback
            (Item : in out FLTK.Widgets.Widget'Class)
     is
-        Hotspot : Boolean := AK.Get_Message_Hotspot;
+        Hotspot : constant Boolean := AK.Get_Message_Hotspot;
         Reply   : AK.Choice_Result;
     begin
         AK.Set_Message_Hotspot (False);
@@ -91,7 +89,7 @@ is
     Stop : Boolean := False;
 
     procedure Timer_Callback is
-        Message_Icon : BX.Box_Reference := AK.Get_Message_Icon;
+        Message_Icon : constant BX.Box_Reference := AK.Get_Message_Icon;
         My_Color     : FLTK.Color;
     begin
         if Stop then

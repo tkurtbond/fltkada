@@ -321,7 +321,7 @@ package body FLTK.Widgets.Groups.Browsers.Check is
             Text    : in     String;
             Checked : in     Boolean := False)
     is
-        Code : Interfaces.C.int := fl_check_browser_add
+        Ignore : Interfaces.C.int := fl_check_browser_add
            (This.Void_Ptr,
             Interfaces.C.To_C (Text),
             Boolean'Pos (Checked));
@@ -334,7 +334,7 @@ package body FLTK.Widgets.Groups.Browsers.Check is
            (This  : in out Check_Browser;
             Index : in     Positive)
     is
-        Code : Interfaces.C.int := fl_check_browser_remove
+        Ignore : Interfaces.C.int := fl_check_browser_remove
            (This.Void_Ptr,
             Interfaces.C.int (Index));
     begin

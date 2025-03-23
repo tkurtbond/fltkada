@@ -7,7 +7,6 @@
 with
 
     Ada.Assertions,
-    Ada.Strings.Unbounded,
     Interfaces.C.Strings;
 
 use type

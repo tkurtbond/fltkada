@@ -66,7 +66,8 @@ is
 
     Image_Width, Image_Height : constant Natural := 100;
 
-    The_Image_Data : FLTK.Color_Component_Array := Make_Image_Data (Image_Width, Image_Height);
+    The_Image_Data : constant FLTK.Color_Component_Array :=
+        Make_Image_Data (Image_Width, Image_Height);
 
 
     type Pens is new Bx.Box with null record;
@@ -108,7 +109,7 @@ is
 
 
     procedure Callback_One
-           (This : in out FLTK.Widgets.Widget'Class) is
+           (Ignore : in out FLTK.Widgets.Widget'Class) is
     begin
         My_Color := Ask.Show_Colormap (My_Color);
         The_Box.Set_Background_Color (My_Color);
@@ -118,7 +119,7 @@ is
 
 
     procedure Callback_Two
-           (This : in out FLTK.Widgets.Widget'Class)
+           (Ignore : in out FLTK.Widgets.Widget'Class)
     is
         R, G, B : FLTK.Color_Component;
     begin

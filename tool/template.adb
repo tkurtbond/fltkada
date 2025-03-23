@@ -19,7 +19,6 @@
 
 with
 
-    Ada.Characters.Latin_1,
     Ada.Command_Line,
     Ada.Containers.Indefinite_Ordered_Maps,
     Ada.Direct_IO,
@@ -32,7 +31,6 @@ with
 procedure Template is
 
 
-    package Latin renames Ada.Characters.Latin_1;
     package ACom  renames Ada.Command_Line;
     package ADir  renames Ada.Directories;
     package SMap  renames Ada.Strings.Maps;

@@ -4,10 +4,6 @@
 --  Released into the public domain
 
 
-with
-
-    FLTK.Menu_Items;
-
 limited with
 
     FLTK.Widgets.Groups;

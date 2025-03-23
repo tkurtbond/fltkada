@@ -7,7 +7,7 @@
 with
 
     Ada.Assertions,
-    Interfaces.C.Strings,
+    Interfaces.C,
     System.Address_To_Access_Conversions;
 
 use type
@@ -255,7 +255,7 @@ package body FLTK.Widgets.Groups.Help_Views is
             S : in Interfaces.C.Strings.chars_ptr)
         return Interfaces.C.Strings.chars_ptr
     is
-        User_Data : Storage.Integer_Address := fl_widget_get_user_data (V);
+        User_Data : constant Storage.Integer_Address := fl_widget_get_user_data (V);
         Ada_Help_View : access Help_View'Class;
     begin
         pragma Assert (User_Data /= Null_Pointer);
@@ -463,7 +463,8 @@ package body FLTK.Widgets.Groups.Help_Views is
            (This : in out Help_View;
             Name : in     String)
     is
-        Code : Interfaces.C.int := fl_help_view_load (This.Void_Ptr, Interfaces.C.To_C (Name));
+        Code : constant Interfaces.C.int :=
+            fl_help_view_load (This.Void_Ptr, Interfaces.C.To_C (Name));
     begin
         if Code = -1 then
             raise Load_Help_Error;
@@ -481,7 +482,7 @@ package body FLTK.Widgets.Groups.Help_Views is
            (This : in Help_View)
         return String
     is
-        Raw_Chars : Interfaces.C.Strings.chars_ptr := fl_help_view_title (This.Void_Ptr);
+        Raw_Chars : constant Interfaces.C.Strings.chars_ptr := fl_help_view_title (This.Void_Ptr);
         use type Interfaces.C.Strings.chars_ptr;
     begin
         if Raw_Chars = Interfaces.C.Strings.Null_Ptr then
@@ -496,7 +497,8 @@ package body FLTK.Widgets.Groups.Help_Views is
            (This : in Help_View)
         return String
     is
-        Raw_Chars : Interfaces.C.Strings.chars_ptr := fl_help_view_get_value (This.Void_Ptr);
+        Raw_Chars : constant Interfaces.C.Strings.chars_ptr :=
+            fl_help_view_get_value (This.Void_Ptr);
         use type Interfaces.C.Strings.chars_ptr;
     begin
         if Raw_Chars = Interfaces.C.Strings.Null_Ptr then

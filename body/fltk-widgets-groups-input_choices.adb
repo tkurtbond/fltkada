@@ -468,7 +468,7 @@ package body FLTK.Widgets.Groups.Input_Choices is
            (This : in Input_Choice)
         return String
     is
-        Ptr : Interfaces.C.Strings.chars_ptr := fl_input_choice_get_value (This.Void_Ptr);
+        Ptr : constant Interfaces.C.Strings.chars_ptr := fl_input_choice_get_value (This.Void_Ptr);
     begin
         if Ptr = Interfaces.C.Strings.Null_Ptr then
             return "";

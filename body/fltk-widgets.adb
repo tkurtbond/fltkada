@@ -8,9 +8,7 @@ with
 
     Ada.Assertions,
     Interfaces.C.Strings,
-    System.Address_To_Access_Conversions,
-    FLTK.Widgets.Groups.Windows,
-    FLTK.Images;
+    FLTK.Widgets.Groups.Windows;
 
 use type
 
@@ -601,7 +599,7 @@ package body FLTK.Widgets is
     procedure Callback_Hook
            (W, U : in Storage.Integer_Address)
     is
-        Ada_Widget : access Widget'Class :=
+        Ada_Widget : constant access Widget'Class :=
             Widget_Convert.To_Pointer (Storage.To_Address (U));
     begin
         Ada_Widget.Callback.all (Ada_Widget.all);
@@ -611,7 +609,7 @@ package body FLTK.Widgets is
     procedure Draw_Hook
            (U : in Storage.Integer_Address)
     is
-        Ada_Widget : access Widget'Class :=
+        Ada_Widget : constant access Widget'Class :=
             Widget_Convert.To_Pointer (Storage.To_Address (U));
     begin
         Ada_Widget.Draw;
@@ -623,7 +621,7 @@ package body FLTK.Widgets is
             E : in Interfaces.C.int)
         return Interfaces.C.int
     is
-        Ada_Widget : access Widget'Class :=
+        Ada_Widget : constant access Widget'Class :=
             Widget_Convert.To_Pointer (Storage.To_Address (U));
     begin
         return Event_Outcome'Pos (Ada_Widget.Handle (Event_Kind'Val (E)));
@@ -639,7 +637,7 @@ package body FLTK.Widgets is
     procedure Extra_Final
            (This : in out Widget)
     is
-        Maybe_Parent : access FLTK.Widgets.Groups.Group'Class := This.Parent;
+        Maybe_Parent : constant access FLTK.Widgets.Groups.Group'Class := This.Parent;
     begin
         if Maybe_Parent /= null then
             Maybe_Parent.Remove (This);
@@ -1136,7 +1134,7 @@ package body FLTK.Widgets is
            (This : in Widget)
         return Box_Kind
     is
-        Result : Interfaces.C.int := fl_widget_get_box (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_widget_get_box (This.Void_Ptr);
     begin
         return Box_Kind'Val (Result);
     exception
@@ -1158,7 +1156,7 @@ package body FLTK.Widgets is
            (This : in Widget)
         return String
     is
-        Ptr : Interfaces.C.Strings.chars_ptr := fl_widget_tooltip (This.Void_Ptr);
+        Ptr : constant Interfaces.C.Strings.chars_ptr := fl_widget_tooltip (This.Void_Ptr);
     begin
         if Ptr = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -1185,7 +1183,7 @@ package body FLTK.Widgets is
            (This : in Widget)
         return String
     is
-        Ptr : Interfaces.C.Strings.chars_ptr := fl_widget_get_label (This.Void_Ptr);
+        Ptr : constant Interfaces.C.Strings.chars_ptr := fl_widget_get_label (This.Void_Ptr);
     begin
         if Ptr = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -1265,7 +1263,7 @@ package body FLTK.Widgets is
            (This : in Widget)
         return Label_Kind
     is
-        Result : Interfaces.C.int := fl_widget_get_labeltype (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_widget_get_labeltype (This.Void_Ptr);
     begin
         return Label_Kind'Val (Result);
     exception
@@ -1663,7 +1661,7 @@ package body FLTK.Widgets is
         for my_handle'Address use This.Handle_Ptr;
         pragma Import (Ada, my_handle);
 
-        Result : Interfaces.C.int := my_handle (This.Void_Ptr, Event_Kind'Pos (Event));
+        Result : constant Interfaces.C.int := my_handle (This.Void_Ptr, Event_Kind'Pos (Event));
     begin
         return Event_Outcome'Val (Result);
     exception

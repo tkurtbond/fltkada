@@ -268,7 +268,7 @@ package body FLTK.Widgets.Groups.Color_Choosers is
            (This    : in out Color_Chooser;
             R, G, B : in     Long_Float)
     is
-        Result : Interfaces.C.int := fl_color_chooser_rgb
+        Result : constant Interfaces.C.int := fl_color_chooser_rgb
            (This.Void_Ptr,
             Interfaces.C.double (R),
             Interfaces.C.double (G),
@@ -287,7 +287,7 @@ package body FLTK.Widgets.Groups.Color_Choosers is
             R, G, B : in     Long_Float)
         return Boolean
     is
-        Result : Interfaces.C.int := fl_color_chooser_rgb
+        Result : constant Interfaces.C.int := fl_color_chooser_rgb
            (This.Void_Ptr,
             Interfaces.C.double (R),
             Interfaces.C.double (G),
@@ -333,7 +333,7 @@ package body FLTK.Widgets.Groups.Color_Choosers is
            (This    : in out Color_Chooser;
             H, S, V : in     Long_Float)
     is
-        Result : Interfaces.C.int := fl_color_chooser_hsv
+        Result : constant Interfaces.C.int := fl_color_chooser_hsv
            (This.Void_Ptr,
             Interfaces.C.double (H),
             Interfaces.C.double (S),
@@ -352,7 +352,7 @@ package body FLTK.Widgets.Groups.Color_Choosers is
             H, S, V : in     Long_Float)
         return Boolean
     is
-        Result : Interfaces.C.int := fl_color_chooser_hsv
+        Result : constant Interfaces.C.int := fl_color_chooser_hsv
            (This.Void_Ptr,
             Interfaces.C.double (H),
             Interfaces.C.double (S),

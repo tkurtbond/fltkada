@@ -218,7 +218,7 @@ package body FLTK.Widgets.Menus.Menu_Buttons is
            (This : in Menu_Button)
         return Popup_Buttons
     is
-        Result : Interfaces.C.unsigned_char := fl_widget_get_type (This.Void_Ptr);
+        Result : constant Interfaces.C.unsigned_char := fl_widget_get_type (This.Void_Ptr);
     begin
         return Popup_Buttons'Val (Result);
     exception
@@ -241,7 +241,7 @@ package body FLTK.Widgets.Menus.Menu_Buttons is
         return Extended_Index
     is
         use type Interfaces.C.int;
-        Ptr : Storage.Integer_Address := fl_menu_button_popup (This.Void_Ptr);
+        Ptr : constant Storage.Integer_Address := fl_menu_button_popup (This.Void_Ptr);
     begin
         return Extended_Index (fl_menu_find_index2 (This.Void_Ptr, Ptr) + 1);
     end Popup;

@@ -9,8 +9,7 @@ with
     Ada.Strings.Fixed,
     Ada.Strings.Unbounded,
     Ada.Unchecked_Deallocation,
-    FLTK.Images.Pixmaps,
-    Interfaces.C.Strings;
+    FLTK.Images.Pixmaps;
 
 
 package body FLTK.Pixmap_Marshal is
@@ -45,7 +44,7 @@ package body FLTK.Pixmap_Marshal is
             Pixels : in Pix.Pixmap_Data)
         return chars_ptr_array_access
     is
-        C_Data : chars_ptr_array_access := new CS.chars_ptr_array
+        C_Data : constant chars_ptr_array_access := new CS.chars_ptr_array
             (1 .. C.size_t (1 + Colors'Length + Pixels'Length (1)));
     begin
         --  Header values line

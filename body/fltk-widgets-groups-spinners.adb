@@ -481,7 +481,7 @@ package body FLTK.Widgets.Groups.Spinners is
            (This : in Spinner)
         return String
     is
-        Result : Interfaces.C.Strings.chars_ptr := fl_spinner_get_format (This.Void_Ptr);
+        Result : constant Interfaces.C.Strings.chars_ptr := fl_spinner_get_format (This.Void_Ptr);
     begin
         if Result = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -505,7 +505,7 @@ package body FLTK.Widgets.Groups.Spinners is
            (This : in Spinner)
         return Spinner_Kind
     is
-        Result : Interfaces.C.unsigned_char := fl_spinner_get_type (This.Void_Ptr);
+        Result : constant Interfaces.C.unsigned_char := fl_spinner_get_type (This.Void_Ptr);
     begin
         return Spinner_Kind'Val (Result - 1);
     exception

@@ -498,11 +498,11 @@ package body FLTK.Text_Buffers is
             UD                          : in Storage.Integer_Address)
     is
         Action : Modification;
-        Place : Position := Position (Pos);
+        Place  : constant Position := Position (Pos);
         Length : Natural;
         Deleted_Text : Unbounded_String := To_Unbounded_String ("");
 
-        Ada_Text_Buffer : access Text_Buffer :=
+        Ada_Text_Buffer : constant access Text_Buffer :=
             Text_Buffer_Convert.To_Pointer (Storage.To_Address (UD));
     begin
         if Ada_Text_Buffer.CB_Active then
@@ -534,10 +534,10 @@ package body FLTK.Text_Buffers is
            (Pos, Deleted : in Interfaces.C.int;
             UD           : in Storage.Integer_Address)
     is
-        Place : Position := Position (Pos);
-        Length : Natural := Natural (Deleted);
+        Place  : constant Position := Position (Pos);
+        Length : constant Natural  := Natural (Deleted);
 
-        Ada_Text_Buffer : access Text_Buffer :=
+        Ada_Text_Buffer : constant access Text_Buffer :=
             Text_Buffer_Convert.To_Pointer (Storage.To_Address (UD));
     begin
         if Ada_Text_Buffer.CB_Active then
@@ -682,10 +682,10 @@ package body FLTK.Text_Buffers is
             Name   : in     String;
             Buffer : in     Natural := 128 * 1024)
     is
-        Err_No : Interfaces.C.int := fl_text_buffer_loadfile
-               (This.Void_Ptr,
-                Interfaces.C.To_C (Name),
-                Interfaces.C.int (Buffer));
+        Err_No : constant Interfaces.C.int := fl_text_buffer_loadfile
+           (This.Void_Ptr,
+            Interfaces.C.To_C (Name),
+            Interfaces.C.int (Buffer));
     begin
         if Err_No /= 0 then
             raise Storage_Error with Interfaces.C.Strings.Value (strerror (Err_No));
@@ -698,7 +698,7 @@ package body FLTK.Text_Buffers is
             Name   : in     String;
             Buffer : in     Natural := 128 * 1024)
     is
-        Err_No : Interfaces.C.int := fl_text_buffer_appendfile
+        Err_No : constant Interfaces.C.int := fl_text_buffer_appendfile
            (This.Void_Ptr,
             Interfaces.C.To_C (Name),
             Interfaces.C.int (Buffer));
@@ -715,7 +715,7 @@ package body FLTK.Text_Buffers is
             Place  : in     Position;
             Buffer : in     Natural := 128 * 1024)
     is
-        Err_No : Interfaces.C.int := fl_text_buffer_insertfile
+        Err_No : constant Interfaces.C.int := fl_text_buffer_insertfile
            (This.Void_Ptr,
             Interfaces.C.To_C (Name),
             Interfaces.C.int (Place),
@@ -733,7 +733,7 @@ package body FLTK.Text_Buffers is
             Start, Finish : in Position;
             Buffer        : in Natural := 128 * 1024)
     is
-        Err_No : Interfaces.C.int := fl_text_buffer_outputfile
+        Err_No : constant Interfaces.C.int := fl_text_buffer_outputfile
            (This.Void_Ptr,
             Interfaces.C.To_C (Name),
             Interfaces.C.int (Start),
@@ -751,10 +751,10 @@ package body FLTK.Text_Buffers is
             Name   : in String;
             Buffer : in Natural := 128 * 1024)
     is
-        Err_No : Interfaces.C.int := fl_text_buffer_savefile
-               (This.Void_Ptr,
-                Interfaces.C.To_C (Name),
-                Interfaces.C.int (Buffer));
+        Err_No : constant Interfaces.C.int := fl_text_buffer_savefile
+           (This.Void_Ptr,
+            Interfaces.C.To_C (Name),
+            Interfaces.C.int (Buffer));
     begin
         if Err_No /= 0 then
             raise Storage_Error with Interfaces.C.Strings.Value (strerror (Err_No));
@@ -772,9 +772,9 @@ package body FLTK.Text_Buffers is
             Text  : in     String) is
     begin
         fl_text_buffer_insert
-               (This.Void_Ptr,
-                Interfaces.C.int (Place),
-                Interfaces.C.To_C (Text));
+           (This.Void_Ptr,
+            Interfaces.C.int (Place),
+            Interfaces.C.To_C (Text));
     end Insert_Text;
 
 
@@ -806,9 +806,9 @@ package body FLTK.Text_Buffers is
             Start, Finish : in     Position) is
     begin
         fl_text_buffer_remove
-               (This.Void_Ptr,
-                Interfaces.C.int (Start),
-                Interfaces.C.int (Finish));
+           (This.Void_Ptr,
+            Interfaces.C.int (Start),
+            Interfaces.C.int (Finish));
     end Remove_Text;
 
 
@@ -823,7 +823,7 @@ package body FLTK.Text_Buffers is
             return "";
         else
             declare
-                Ada_String : String := Interfaces.C.Strings.Value (Raw);
+                Ada_String : constant String := Interfaces.C.Strings.Value (Raw);
             begin
                 Interfaces.C.Strings.Free (Raw);
                 return Ada_String;
@@ -856,8 +856,8 @@ package body FLTK.Text_Buffers is
         return Character is
     begin
         return Character'Val (fl_text_buffer_char_at
-               (This.Void_Ptr,
-                Interfaces.C.int (Place)));
+           (This.Void_Ptr,
+            Interfaces.C.int (Place)));
     end Character_At;
 
 
@@ -867,15 +867,15 @@ package body FLTK.Text_Buffers is
         return String
     is
         C_Str : Interfaces.C.Strings.chars_ptr := fl_text_buffer_text_range
-               (This.Void_Ptr,
-                Interfaces.C.int (Start),
-                Interfaces.C.int (Finish));
+           (This.Void_Ptr,
+            Interfaces.C.int (Start),
+            Interfaces.C.int (Finish));
     begin
         if C_Str = Interfaces.C.Strings.Null_Ptr then
             return "";
         else
             declare
-                The_Text : String := Interfaces.C.Strings.Value (C_Str);
+                The_Text : constant String := Interfaces.C.Strings.Value (C_Str);
             begin
                 Interfaces.C.Strings.Free (C_Str);
                 return The_Text;
@@ -1001,9 +1001,9 @@ package body FLTK.Text_Buffers is
             Start, Finish : in     Position) is
     begin
         fl_text_buffer_select
-               (This.Void_Ptr,
-                Interfaces.C.int (Start),
-                Interfaces.C.int (Finish));
+           (This.Void_Ptr,
+            Interfaces.C.int (Start),
+            Interfaces.C.int (Finish));
     end Set_Selection;
 
 
@@ -1045,7 +1045,7 @@ package body FLTK.Text_Buffers is
             return "";
         else
             declare
-                Ada_String : String := Interfaces.C.Strings.Value (Raw);
+                Ada_String : constant String := Interfaces.C.Strings.Value (Raw);
             begin
                 Interfaces.C.Strings.Free (Raw);
                 return Ada_String;
@@ -1065,7 +1065,7 @@ package body FLTK.Text_Buffers is
             return "";
         else
             declare
-                Ada_String : String := Interfaces.C.Strings.Value (Raw);
+                Ada_String : constant String := Interfaces.C.Strings.Value (Raw);
             begin
                 Interfaces.C.Strings.Free (Raw);
                 return Ada_String;
@@ -1155,7 +1155,7 @@ package body FLTK.Text_Buffers is
             return "";
         else
             declare
-                Ada_String : String := Interfaces.C.Strings.Value (Raw);
+                Ada_String : constant String := Interfaces.C.Strings.Value (Raw);
             begin
                 Interfaces.C.Strings.Free (Raw);
                 return Ada_String;
@@ -1324,7 +1324,7 @@ package body FLTK.Text_Buffers is
             return "";
         else
             declare
-                Ada_String : String := Interfaces.C.Strings.Value (Raw);
+                Ada_String : constant String := Interfaces.C.Strings.Value (Raw);
             begin
                 Interfaces.C.Strings.Free (Raw);
                 return Ada_String;

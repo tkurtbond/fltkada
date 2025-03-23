@@ -39,16 +39,16 @@ package body FLTK.File_Choosers is
     pragma Import (C, fl_widget_get_user_data, "fl_widget_get_user_data");
     pragma Inline (fl_widget_get_user_data);
 
-    procedure fl_widget_set_user_data
-           (W, D : in Storage.Integer_Address);
-    pragma Import (C, fl_widget_set_user_data, "fl_widget_set_user_data");
-    pragma Inline (fl_widget_set_user_data);
+    --  procedure fl_widget_set_user_data
+    --         (W, D : in Storage.Integer_Address);
+    --  pragma Import (C, fl_widget_set_user_data, "fl_widget_set_user_data");
+    --  pragma Inline (fl_widget_set_user_data);
 
-    function fl_file_chooser_get_user_data
-           (F : in Storage.Integer_Address)
-        return Storage.Integer_Address;
-    pragma Import (C, fl_file_chooser_get_user_data, "fl_file_chooser_get_user_data");
-    pragma Inline (fl_file_chooser_get_user_data);
+    --  function fl_file_chooser_get_user_data
+    --         (F : in Storage.Integer_Address)
+    --      return Storage.Integer_Address;
+    --  pragma Import (C, fl_file_chooser_get_user_data, "fl_file_chooser_get_user_data");
+    --  pragma Inline (fl_file_chooser_get_user_data);
 
     procedure fl_file_chooser_set_user_data
            (F, U : in Storage.Integer_Address);
@@ -514,14 +514,13 @@ package body FLTK.File_Choosers is
 
 
     procedure File_Chooser_Callback_Hook
-           (C_Addr, User_Data : in Storage.Integer_Address);
-
+           (Ignore, User_Data : in Storage.Integer_Address);
     pragma Convention (C, File_Chooser_Callback_Hook);
 
     procedure File_Chooser_Callback_Hook
-           (C_Addr, User_Data : in Storage.Integer_Address)
+           (Ignore, User_Data : in Storage.Integer_Address)
     is
-        Ada_Obj : access File_Chooser'Class :=
+        Ada_Obj : constant access File_Chooser'Class :=
             File_Chooser_Convert.To_Pointer (Storage.To_Address (User_Data));
     begin
         if Ada_Obj.My_Callback /= null then
@@ -960,18 +959,19 @@ package body FLTK.File_Choosers is
            (This : in out File_Chooser;
             Item : in out Widgets.Widget'Class)
     is
-        C_Addr : Storage.Integer_Address;
+        Ignore : Storage.Integer_Address :=
+            fl_file_chooser_add_extra (This.Void_Ptr, Wrapper (Item).Void_Ptr);
     begin
-        C_Addr := fl_file_chooser_add_extra (This.Void_Ptr, Wrapper (Item).Void_Ptr);
+        null;
     end Add_Extra;
 
 
     procedure Remove_Extra
            (This : in out File_Chooser)
     is
-        C_Addr : Storage.Integer_Address;
+        Ignore : Storage.Integer_Address := fl_file_chooser_add_extra (This.Void_Ptr, Null_Pointer);
     begin
-        C_Addr := fl_file_chooser_add_extra (This.Void_Ptr, Null_Pointer);
+        null;
     end Remove_Extra;
 
 
@@ -1080,7 +1080,7 @@ package body FLTK.File_Choosers is
            (This : in File_Chooser)
         return Boolean
     is
-        Ret : Interfaces.C.int := fl_file_chooser_get_preview (This.Void_Ptr);
+        Ret : constant Interfaces.C.int := fl_file_chooser_get_preview (This.Void_Ptr);
     begin
         pragma Assert (Ret in 0 .. 1);
         return Boolean'Val (Ret);
@@ -1151,7 +1151,7 @@ package body FLTK.File_Choosers is
            (This : in File_Chooser)
         return Chooser_Kind
     is
-        Ret : Interfaces.C.int := fl_file_chooser_get_type (This.Void_Ptr);
+        Ret : constant Interfaces.C.int := fl_file_chooser_get_type (This.Void_Ptr);
     begin
         pragma Assert (Ret in 0 .. Chooser_Kind'Pos (Chooser_Kind'Last));
         return Chooser_Kind'Val (Ret);
@@ -1186,7 +1186,8 @@ package body FLTK.File_Choosers is
            (This : in File_Chooser)
         return String
     is
-        C_Ptr : Interfaces.C.Strings.chars_ptr := fl_file_chooser_get_directory (This.Void_Ptr);
+        C_Ptr : constant Interfaces.C.Strings.chars_ptr :=
+            fl_file_chooser_get_directory (This.Void_Ptr);
     begin
         if C_Ptr = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -1217,7 +1218,8 @@ package body FLTK.File_Choosers is
            (This : in File_Chooser)
         return String
     is
-        C_Ptr : Interfaces.C.Strings.chars_ptr := fl_file_chooser_get_filter (This.Void_Ptr);
+        C_Ptr : constant Interfaces.C.Strings.chars_ptr :=
+            fl_file_chooser_get_filter (This.Void_Ptr);
     begin
         if C_Ptr = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -1279,7 +1281,7 @@ package body FLTK.File_Choosers is
             Index : in Positive := 1)
         return String
     is
-        C_Ptr : Interfaces.C.Strings.chars_ptr :=
+        C_Ptr : constant Interfaces.C.Strings.chars_ptr :=
             fl_file_chooser_get_value (This.Void_Ptr, Interfaces.C.int (Index));
     begin
         if C_Ptr = Interfaces.C.Strings.Null_Ptr then

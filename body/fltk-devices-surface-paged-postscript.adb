@@ -7,7 +7,7 @@
 with
 
     Ada.Assertions,
-    Interfaces.C.Strings;
+    Interfaces.C;
 
 use type
 
@@ -75,11 +75,12 @@ package body FLTK.Devices.Surface.Paged.Postscript is
 
     --  Driver  --
 
-    function fl_postscript_file_device_get_driver
-           (D : in Storage.Integer_Address)
-        return Storage.Integer_Address;
-    pragma Import (C, fl_postscript_file_device_get_driver, "fl_postscript_file_device_get_driver");
-    pragma Inline (fl_postscript_file_device_get_driver);
+    --  function fl_postscript_file_device_get_driver
+    --         (D : in Storage.Integer_Address)
+    --      return Storage.Integer_Address;
+    --  pragma Import (C, fl_postscript_file_device_get_driver,
+    --      "fl_postscript_file_device_get_driver");
+    --  pragma Inline (fl_postscript_file_device_get_driver);
 
 
 
@@ -362,7 +363,7 @@ package body FLTK.Devices.Surface.Paged.Postscript is
             Format : in     Page_Format := A4;
             Layout : in     Page_Layout := Portrait)
     is
-        Code : Interfaces.C.int := fl_postscript_file_device_start_job3
+        Code : constant Interfaces.C.int := fl_postscript_file_device_start_job3
            (This.Void_Ptr,
             Output.C_File,
             Interfaces.C.int (Count),
@@ -383,7 +384,7 @@ package body FLTK.Devices.Surface.Paged.Postscript is
             Format : in     Page_Format := A4;
             Layout : in     Page_Layout := Portrait)
     is
-        Code : Interfaces.C.int := fl_postscript_file_device_start_job4
+        Code : constant Interfaces.C.int := fl_postscript_file_device_start_job4
            (This.Void_Ptr,
             Interfaces.C.int (Count),
             To_Cint (Format),

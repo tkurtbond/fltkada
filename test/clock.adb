@@ -23,11 +23,11 @@ is
     package WD renames FLTK.Widgets.Groups.Windows.Double;
 
 
-    Window_One : WD.Double_Window := WD.Forge.Create (220, 220, "Fl_Clock");
-    Clock_One  : CL.Updated_Clock := CL.Forge.Create (Window_One, 0, 0, 220, 220);
+    Window_One :          WD.Double_Window := WD.Forge.Create (220, 220, "Fl_Clock");
+    Clock_One  : constant CL.Updated_Clock := CL.Forge.Create (Window_One, 0, 0, 220, 220);
 
-    Window_Two : WD.Double_Window := WD.Forge.Create (220, 220, "Fl_Round_Clock");
-    Clock_Two  : CR.Round_Clock   := CR.Forge.Create (Window_Two, 0, 0, 220, 220);
+    Window_Two :          WD.Double_Window := WD.Forge.Create (220, 220, "Fl_Round_Clock");
+    Clock_Two  : constant CR.Round_Clock   := CR.Forge.Create (Window_Two, 0, 0, 220, 220);
 
 
 begin

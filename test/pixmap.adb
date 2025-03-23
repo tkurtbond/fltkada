@@ -34,15 +34,15 @@ is
     package WD  renames FLTK.Widgets.Groups.Windows.Double;
 
 
-    Porsche_Header : Pix.Header := (64, 64, 4, 1);
+    Porsche_Header : constant Pix.Header := (64, 64, 4, 1);
 
-    Porsche_Colors : Pix.Color_Definition_Array :=
+    Porsche_Colors : constant Pix.Color_Definition_Array :=
        ((Name => +" ", Kind => Pix.Colorful, Value => +"#background"),
         (Name => +".", Kind => Pix.Colorful, Value => +"#000000000000"),
         (Name => +"X", Kind => Pix.Colorful, Value => +"#ffd100"),
         (Name => +"o", Kind => Pix.Colorful, Value => +"#FFFF00000000"));
 
-    Porsche_Data : Pix.Pixmap_Data :=
+    Porsche_Data : constant Pix.Pixmap_Data :=
        ("                                                                ",
         "                   ..........................                   ",
         "              .....................................             ",
@@ -126,7 +126,7 @@ is
 
 
     procedure Button_Callback
-           (Item : in out FLTK.Widgets.Widget'Class)
+           (Ignore : in out FLTK.Widgets.Widget'Class)
     is
         New_Align : FLTK.Alignment;
     begin

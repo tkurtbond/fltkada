@@ -12,8 +12,7 @@ use type
 
     Interfaces.C.int,
     Interfaces.C.unsigned,
-    Interfaces.C.unsigned_char,
-    Interfaces.C.unsigned_long;
+    Interfaces.C.unsigned_char;
 
 
 package body FLTK is
@@ -566,7 +565,7 @@ package body FLTK is
            (Box : in Box_Kind)
         return Box_Kind
     is
-        Result : Interfaces.C.int := fl_enum_box (Box_Kind'Pos (Box));
+        Result : constant Interfaces.C.int := fl_enum_box (Box_Kind'Pos (Box));
     begin
         return Box_Kind'Val (Result);
     exception
@@ -580,7 +579,7 @@ package body FLTK is
            (Box : in Box_Kind)
         return Box_Kind
     is
-        Result : Interfaces.C.int := fl_enum_frame (Box_Kind'Pos (Box));
+        Result : constant Interfaces.C.int := fl_enum_frame (Box_Kind'Pos (Box));
     begin
         return Box_Kind'Val (Result);
     exception
@@ -594,7 +593,7 @@ package body FLTK is
            (Box : in Box_Kind)
         return Box_Kind
     is
-        Result : Interfaces.C.int := fl_enum_down (Box_Kind'Pos (Box));
+        Result : constant Interfaces.C.int := fl_enum_down (Box_Kind'Pos (Box));
     begin
         return Box_Kind'Val (Result);
     exception

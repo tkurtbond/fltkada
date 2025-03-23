@@ -8,7 +8,6 @@ with
 
     Ada.Assertions,
     Ada.Unchecked_Deallocation,
-    FLTK.Images,
     Interfaces.C.Strings;
 
 use type
@@ -644,7 +643,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
             File : in     String)
     is
         Msg  : Interfaces.C.Strings.chars_ptr;
-        Code : Interfaces.C.int := fl_browser_load (This.Void_Ptr, Interfaces.C.To_C (File));
+        Code : constant Interfaces.C.int :=
+            fl_browser_load (This.Void_Ptr, Interfaces.C.To_C (File));
     begin
         if Code = 0 then
             Msg := get_error_message;
@@ -667,7 +667,7 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
             Line : in Positive)
         return String
     is
-        Ptr : Interfaces.C.Strings.chars_ptr := fl_browser_get_text
+        Ptr : constant Interfaces.C.Strings.chars_ptr := fl_browser_get_text
            (This.Void_Ptr,
             Interfaces.C.int (Line));
     begin
@@ -828,7 +828,7 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
             State : in     Boolean := True)
         return Boolean
     is
-        Code : Interfaces.C.int := fl_browser_select
+        Code : constant Interfaces.C.int := fl_browser_select
            (This.Void_Ptr,
             Interfaces.C.int (Line),
             Boolean'Pos (State));
@@ -846,7 +846,7 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
             Line  : in     Positive;
             State : in     Boolean := True)
     is
-        Code : Interfaces.C.int := fl_browser_select
+        Code : constant Interfaces.C.int := fl_browser_select
            (This.Void_Ptr,
             Interfaces.C.int (Line),
             Boolean'Pos (State));
@@ -863,7 +863,7 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
             Line : in Positive)
         return Boolean
     is
-        Code : Interfaces.C.int := fl_browser_selected
+        Code : constant Interfaces.C.int := fl_browser_selected
            (This.Void_Ptr,
             Interfaces.C.int (Line));
     begin
@@ -909,7 +909,7 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
             Line : in Positive)
         return Boolean
     is
-        Code : Interfaces.C.int := fl_browser_displayed
+        Code : constant Interfaces.C.int := fl_browser_displayed
            (This.Void_Ptr,
             Interfaces.C.int (Line));
     begin
@@ -1174,7 +1174,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
             return Interfaces.C.int;
         for my_item_selected'Address use This.Item_Override_Ptrs (Item_Selected_Ptr);
         pragma Import (Ada, my_item_selected);
-        Code : Interfaces.C.int := my_item_selected (This.Void_Ptr, Cursor_To_Address (Item));
+        Code : constant Interfaces.C.int :=
+            my_item_selected (This.Void_Ptr, Cursor_To_Address (Item));
     begin
         pragma Assert (Code in 0 .. 1);
         return Boolean'Val (Code);

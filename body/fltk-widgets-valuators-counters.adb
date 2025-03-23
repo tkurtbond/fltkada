@@ -6,8 +6,7 @@
 
 with
 
-    FLTK.Widgets.Groups,
-    Interfaces.C.Strings;
+    FLTK.Widgets.Groups;
 
 
 package body FLTK.Widgets.Valuators.Counters is
@@ -331,7 +330,7 @@ package body FLTK.Widgets.Valuators.Counters is
            (This : in out Counter)
         return Counter_Kind
     is
-        Result : Interfaces.C.unsigned_char := fl_widget_get_type (This.Void_Ptr);
+        Result : constant Interfaces.C.unsigned_char := fl_widget_get_type (This.Void_Ptr);
     begin
         return Counter_Kind'Val (Result);
     exception

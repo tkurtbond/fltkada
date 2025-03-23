@@ -145,7 +145,7 @@ package body FLTK.Widgets.Inputs.Text.Whole_Number is
            (This : in Integer_Input)
         return Long_Integer
     is
-        Ptr : Interfaces.C.Strings.chars_ptr := fl_input_get_value (This.Void_Ptr);
+        Ptr : constant Interfaces.C.Strings.chars_ptr := fl_input_get_value (This.Void_Ptr);
     begin
         if Ptr = Interfaces.C.Strings.Null_Ptr or else
             Interfaces.C.Strings.Value (Ptr) = ""

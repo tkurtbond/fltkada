@@ -210,7 +210,7 @@ package body FLTK.Widgets.Valuators is
         declare
             --  God this whole Format method is sketchy as hell.
             --  ...what? This is the area to declare things and that needed declaring.
-            String_Result : String := Ada_Obj.Format;
+            String_Result : constant String := Ada_Obj.Format;
         begin
             if String_Result'Length <= FLTK.Buffer_Size then
                 Interfaces.C.Strings.Update (Buffer, 0, Interfaces.C.To_C (String_Result), False);
@@ -321,7 +321,7 @@ package body FLTK.Widgets.Valuators is
     is
         Buffer : Interfaces.C.char_array :=
             (1 .. Interfaces.C.size_t (FLTK.Buffer_Size) => Interfaces.C.To_C (Character'Val (0)));
-        Result : Interfaces.C.int := fl_valuator_format (This.Void_Ptr, Buffer);
+        Result : constant Interfaces.C.int := fl_valuator_format (This.Void_Ptr, Buffer);
     begin
         return Interfaces.C.To_Ada (Buffer (1 .. Interfaces.C.size_t (Result)), False);
     end Format;

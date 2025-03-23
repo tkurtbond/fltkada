@@ -6,8 +6,7 @@
 
 with
 
-    FLTK.Pixmap_Marshal,
-    Interfaces.C.Strings;
+    FLTK.Pixmap_Marshal;
 
 
 package body FLTK.Images.Pixmaps is

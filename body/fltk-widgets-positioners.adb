@@ -289,7 +289,7 @@ package body FLTK.Widgets.Positioners is
            (This : in out Positioner;
             X, Y : in     Long_Float)
     is
-        Result : Interfaces.C.int := fl_positioner_set_value
+        Result : constant Interfaces.C.int := fl_positioner_set_value
            (This.Void_Ptr,
             Interfaces.C.double (X),
             Interfaces.C.double (Y));
@@ -307,7 +307,7 @@ package body FLTK.Widgets.Positioners is
             X, Y : in     Long_Float)
         return Boolean
     is
-        Result : Interfaces.C.int := fl_positioner_set_value
+        Result : constant Interfaces.C.int := fl_positioner_set_value
            (This.Void_Ptr,
             Interfaces.C.double (X),
             Interfaces.C.double (Y));
@@ -387,7 +387,7 @@ package body FLTK.Widgets.Positioners is
            (This  : in out Positioner;
             Value : in     Long_Float)
     is
-        Result : Interfaces.C.int := fl_positioner_set_xvalue
+        Result : constant Interfaces.C.int := fl_positioner_set_xvalue
            (This.Void_Ptr,
             Interfaces.C.double (Value));
     begin
@@ -404,7 +404,7 @@ package body FLTK.Widgets.Positioners is
             Value : in     Long_Float)
         return Boolean
     is
-        Result : Interfaces.C.int := fl_positioner_set_xvalue
+        Result : constant Interfaces.C.int := fl_positioner_set_xvalue
            (This.Void_Ptr,
             Interfaces.C.double (Value));
     begin
@@ -483,7 +483,7 @@ package body FLTK.Widgets.Positioners is
            (This  : in out Positioner;
             Value : in     Long_Float)
     is
-        Result : Interfaces.C.int := fl_positioner_set_yvalue
+        Result : constant Interfaces.C.int := fl_positioner_set_yvalue
            (This.Void_Ptr,
             Interfaces.C.double (Value));
     begin
@@ -500,7 +500,7 @@ package body FLTK.Widgets.Positioners is
             Value : in     Long_Float)
         return Boolean
     is
-        Result : Interfaces.C.int := fl_positioner_set_yvalue
+        Result : constant Interfaces.C.int := fl_positioner_set_yvalue
            (This.Void_Ptr,
             Interfaces.C.double (Value));
     begin
@@ -551,7 +551,7 @@ package body FLTK.Widgets.Positioners is
             X, Y, W, H : in     Integer)
         return Event_Outcome
     is
-        Result : Interfaces.C.int := fl_positioner_handle2
+        Result : constant Interfaces.C.int := fl_positioner_handle2
            (This.Void_Ptr,
             Event_Kind'Pos (Event),
             Interfaces.C.int (X),

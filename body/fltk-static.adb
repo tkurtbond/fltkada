@@ -8,7 +8,6 @@ with
 
     Ada.Assertions,
     Ada.Containers.Vectors,
-    Ada.Unchecked_Conversion,
     Interfaces.C.Strings,
     System.Address_To_Access_Conversions,
     FLTK.Box_Draw_Marshal,
@@ -229,16 +228,6 @@ package body FLTK.Static is
            (H, F : in Storage.Integer_Address);
     pragma Import (C, fl_static_remove_idle, "fl_static_remove_idle");
     pragma Inline (fl_static_remove_idle);
-
-
-
-
-    --  System Events  --
-
-    procedure fl_static_add_system_handler
-           (H, F : in Storage.Integer_Address);
-    pragma Import (C, fl_static_add_system_handler, "fl_static_add_system_handler");
-    pragma Inline (fl_static_add_system_handler);
 
 
 
@@ -592,6 +581,7 @@ package body FLTK.Static is
     is
         Result : Natural;
     begin
+        pragma Assert (I < C and V /= Null_Pointer);
         Result := Current_Args_Handler (Positive (I));
         I := I + Interfaces.C.int (Result);
         return Interfaces.C.int (Result);
@@ -599,6 +589,9 @@ package body FLTK.Static is
     when Constraint_Error => raise Internal_FLTK_Error with
         "Args_Handler callback was supplied unexpected int i value of " &
         Interfaces.C.int'Image (I);
+    when Chk.Assertion_Error => raise Internal_FLTK_Error with
+        "Args_Handler callback was supplied irregular argc and argv values of " &
+        Interfaces.C.int'Image (C) & " and " & Storage.Integer_Address'Image (V);
     end Args_Hook;
 
 
@@ -761,7 +754,7 @@ package body FLTK.Static is
     procedure Add_Awake_Handler
            (Func : in Awake_Handler)
     is
-        Result : Interfaces.C.int := fl_static_add_awake_handler
+        Result : constant Interfaces.C.int := fl_static_add_awake_handler
            (Storage.To_Integer (Awake_Hook'Address),
             Conv.To_Address (Func));
     begin
@@ -783,7 +776,7 @@ package body FLTK.Static is
         return Awake_Handler
     is
         Hook, Func : Storage.Integer_Address;
-        Result : Interfaces.C.int := fl_static_get_awake_handler (Hook, Func);
+        Result : constant Interfaces.C.int := fl_static_get_awake_handler (Hook, Func);
     begin
         pragma Assert (Result = 0);
         return Conv.To_Awake_Access (Func);
@@ -803,7 +796,7 @@ package body FLTK.Static is
     procedure Awake
            (Func : in Awake_Handler)
     is
-        Result : Interfaces.C.int := fl_static_awake2
+        Result : constant Interfaces.C.int := fl_static_awake2
            (Storage.To_Integer (Awake_Hook'Address),
             Conv.To_Address (Func));
     begin
@@ -1158,7 +1151,7 @@ package body FLTK.Static is
     procedure Setup_Fonts
            (How_Many_Set_Up : out Natural)
     is
-        Result : Interfaces.C.int := fl_static_set_fonts;
+        Result : constant Interfaces.C.int := fl_static_set_fonts;
     begin
         How_Many_Set_Up := Natural (Result);
     exception
@@ -1444,7 +1437,7 @@ package body FLTK.Static is
     function Get_Scheme
         return String
     is
-        Ptr : Interfaces.C.Strings.chars_ptr := fl_static_get_scheme;
+        Ptr : constant Interfaces.C.Strings.chars_ptr := fl_static_get_scheme;
     begin
         if Ptr = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -1466,7 +1459,7 @@ package body FLTK.Static is
            (Scheme : in String)
         return Boolean
     is
-        Result : Interfaces.C.int := fl_static_is_scheme (Interfaces.C.To_C (Scheme));
+        Result : constant Interfaces.C.int := fl_static_is_scheme (Interfaces.C.To_C (Scheme));
     begin
         return Boolean'Val (Result);
     exception
@@ -1503,7 +1496,7 @@ package body FLTK.Static is
     function Get_Default_Scrollbar_Size
         return Natural
     is
-        Result : Interfaces.C.int := fl_static_get_scrollbar_size;
+        Result : constant Interfaces.C.int := fl_static_get_scrollbar_size;
     begin
         return Natural (Result);
     exception

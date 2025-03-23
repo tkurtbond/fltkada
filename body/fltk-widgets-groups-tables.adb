@@ -1024,7 +1024,7 @@ package body FLTK.Widgets.Groups.Tables is
             Item : in Widget'Class)
         return Extended_Index
     is
-        Result : Interfaces.C.int := fl_table_find (This.Void_Ptr, Item.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_table_find (This.Void_Ptr, Item.Void_Ptr);
     begin
         if Result = fl_table_children (This.Void_Ptr) then
             return No_Index;
@@ -1086,7 +1086,7 @@ package body FLTK.Widgets.Groups.Tables is
            (This : in Table)
         return Positive
     is
-        Result : Interfaces.C.int := fl_table_callback_col (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_table_callback_col (This.Void_Ptr);
     begin
         return Positive (Result + 1);
     exception
@@ -1100,7 +1100,7 @@ package body FLTK.Widgets.Groups.Tables is
            (This : in Table)
         return Positive
     is
-        Result : Interfaces.C.int := fl_table_callback_row (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_table_callback_row (This.Void_Ptr);
     begin
         return Positive (Result + 1);
     exception
@@ -1114,7 +1114,7 @@ package body FLTK.Widgets.Groups.Tables is
            (This : in Table)
         return Table_Context
     is
-        Result : Interfaces.C.int := fl_table_callback_context (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_table_callback_context (This.Void_Ptr);
     begin
         return To_Context (Result);
     exception
@@ -1192,7 +1192,7 @@ package body FLTK.Widgets.Groups.Tables is
            (This : in Table)
         return Positive
     is
-        Result : Interfaces.C.int := fl_table_get_col_header_height (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_table_get_col_header_height (This.Void_Ptr);
     begin
         return Positive (Result);
     exception
@@ -1215,7 +1215,7 @@ package body FLTK.Widgets.Groups.Tables is
             Column : in Positive)
         return Positive
     is
-        Result : Interfaces.C.int := fl_table_get_col_width
+        Result : constant Interfaces.C.int := fl_table_get_col_width
             (This.Void_Ptr, Interfaces.C.int (Column) - 1);
     begin
         return Positive (Result);
@@ -1250,7 +1250,7 @@ package body FLTK.Widgets.Groups.Tables is
            (This : in Table)
         return Natural
     is
-        Result : Interfaces.C.int := fl_table_get_cols (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_table_get_cols (This.Void_Ptr);
     begin
         return Natural (Result);
     exception
@@ -1272,7 +1272,7 @@ package body FLTK.Widgets.Groups.Tables is
            (This : in Table)
         return Positive
     is
-        Result : Interfaces.C.int := fl_table_get_col_position (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_table_get_col_position (This.Void_Ptr);
     begin
         return Positive (Result + 1);
     exception
@@ -1321,7 +1321,7 @@ package body FLTK.Widgets.Groups.Tables is
            (This : in Table)
         return Positive
     is
-        Result : Interfaces.C.int := fl_table_get_col_resize_min (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_table_get_col_resize_min (This.Void_Ptr);
     begin
         return Positive (Result);
     exception
@@ -1379,7 +1379,7 @@ package body FLTK.Widgets.Groups.Tables is
            (This : in Table)
         return Positive
     is
-        Result : Interfaces.C.int := fl_table_get_row_header_width (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_table_get_row_header_width (This.Void_Ptr);
     begin
         return Positive (Result);
     exception
@@ -1402,7 +1402,7 @@ package body FLTK.Widgets.Groups.Tables is
             Row  : in Positive)
         return Positive
     is
-        Result : Interfaces.C.int := fl_table_get_row_height
+        Result : constant Interfaces.C.int := fl_table_get_row_height
             (This.Void_Ptr, Interfaces.C.int (Row) - 1);
     begin
         return Positive (Result);
@@ -1437,7 +1437,7 @@ package body FLTK.Widgets.Groups.Tables is
            (This : in Table)
         return Natural
     is
-        Result : Interfaces.C.int := fl_table_get_rows (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_table_get_rows (This.Void_Ptr);
     begin
         return Natural (Result);
     exception
@@ -1459,7 +1459,7 @@ package body FLTK.Widgets.Groups.Tables is
            (This : in Table)
         return Positive
     is
-        Result : Interfaces.C.int := fl_table_get_row_position (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_table_get_row_position (This.Void_Ptr);
     begin
         return Positive (Result + 1);
     exception
@@ -1508,7 +1508,7 @@ package body FLTK.Widgets.Groups.Tables is
            (This : in Table)
         return Positive
     is
-        Result : Interfaces.C.int := fl_table_get_row_resize_min (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_table_get_row_resize_min (This.Void_Ptr);
     begin
         return Positive (Result);
     exception
@@ -1530,7 +1530,7 @@ package body FLTK.Widgets.Groups.Tables is
            (This : in Table)
         return Positive
     is
-        Result : Interfaces.C.int := fl_table_get_top_row (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_table_get_top_row (This.Void_Ptr);
     begin
         return Positive (Result + 1);
     exception
@@ -1567,7 +1567,7 @@ package body FLTK.Widgets.Groups.Tables is
             Resize      :    out Resize_Flag)
     is
         C_Row, C_Column, C_Flag : Interfaces.C.int;
-        Result : Interfaces.C.int := fl_table_cursor2rowcol
+        Result : constant Interfaces.C.int := fl_table_cursor2rowcol
             (This.Void_Ptr, C_Row, C_Column, C_Flag);
     begin
         Row     := Positive (C_Row + 1);
@@ -1659,7 +1659,7 @@ package body FLTK.Widgets.Groups.Tables is
             Row, Column : in Positive)
         return Boolean
     is
-        Result : Interfaces.C.int := fl_table_is_selected
+        Result : constant Interfaces.C.int := fl_table_is_selected
            (This.Void_Ptr,
             Interfaces.C.int (Row) - 1,
             Interfaces.C.int (Column) - 1);
@@ -1677,7 +1677,7 @@ package body FLTK.Widgets.Groups.Tables is
             Row, Column  : in     Positive;
             Shift_Select : in     Boolean := True)
     is
-        Result : Interfaces.C.int := fl_table_move_cursor
+        Result : constant Interfaces.C.int := fl_table_move_cursor
            (This.Void_Ptr,
             Interfaces.C.int (Row) - 1,
             Interfaces.C.int (Column) - 1,
@@ -1697,7 +1697,7 @@ package body FLTK.Widgets.Groups.Tables is
             Shift_Select : in     Boolean := True)
         return Boolean
     is
-        Result : Interfaces.C.int := fl_table_move_cursor
+        Result : constant Interfaces.C.int := fl_table_move_cursor
            (This.Void_Ptr,
             Interfaces.C.int (Row) - 1,
             Interfaces.C.int (Column) - 1,
@@ -1715,7 +1715,7 @@ package body FLTK.Widgets.Groups.Tables is
            (This : in Table)
         return Tab_Navigation
     is
-        Result : Interfaces.C.int := fl_table_get_tab_cell_nav (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_table_get_tab_cell_nav (This.Void_Ptr);
     begin
         return Tab_Navigation'Val (Result);
     exception
@@ -1737,7 +1737,7 @@ package body FLTK.Widgets.Groups.Tables is
            (This : in Table)
         return Box_Kind
     is
-        Result : Interfaces.C.int := fl_table_get_table_box (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_table_get_table_box (This.Void_Ptr);
     begin
         return Box_Kind'Val (Result);
     exception
@@ -1792,7 +1792,7 @@ package body FLTK.Widgets.Groups.Tables is
            (This : in Table)
         return Boolean
     is
-        Result : Interfaces.C.int := fl_table_is_interactive_resize (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_table_is_interactive_resize (This.Void_Ptr);
     begin
         return Boolean'Val (Result);
     exception
@@ -1922,7 +1922,7 @@ package body FLTK.Widgets.Groups.Tables is
             Row, Column : in     Positive;
             X, Y, W, H  :    out Integer)
     is
-        Result : Interfaces.C.int := fl_table_find_cell
+        Result : constant Interfaces.C.int := fl_table_find_cell
            (This.Void_Ptr,
             To_Cint (Context),
             Interfaces.C.int (Row) - 1,
@@ -1967,7 +1967,7 @@ package body FLTK.Widgets.Groups.Tables is
     is
         C_Row    : Interfaces.C.int := Interfaces.C.int (Row) - 1;
         C_Column : Interfaces.C.int := Interfaces.C.int (Column) - 1;
-        Result : Interfaces.C.int := fl_table_row_col_clamp
+        Result : constant Interfaces.C.int := fl_table_row_col_clamp
            (This.Void_Ptr,
             To_Cint (Context),
             C_Row, C_Column);
@@ -1990,7 +1990,7 @@ package body FLTK.Widgets.Groups.Tables is
     is
         C_Row    : Interfaces.C.int := Interfaces.C.int (Row) - 1;
         C_Column : Interfaces.C.int := Interfaces.C.int (Column) - 1;
-        Result : Interfaces.C.int := fl_table_row_col_clamp
+        Result : constant Interfaces.C.int := fl_table_row_col_clamp
            (This.Void_Ptr,
             To_Cint (Context),
             C_Row, C_Column);

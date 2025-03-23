@@ -11,16 +11,23 @@ project Tools is
     for Languages use ("Ada");
 
     for Source_Dirs use ("tool");
-    for Object_Dir use "obj";
-    for Exec_Dir use "bin";
+    for Object_Dir  use "obj";
+    for Exec_Dir    use "bin";
 
     for Main use ("template.adb");
 
     package Builder is
         for Executable ("template.adb") use "template";
+
+        for Default_Switches ("Ada") use
+            Common.Builder'Default_Switches ("Ada");
+        for Global_Compilation_Switches ("Ada") use
+            Common.Builder'Global_Compilation_Switches ("Ada");
     end Builder;
 
     package Compiler renames Common.Compiler;
+    package Binder   renames Common.Binder;
+    package Linker   renames Common.Linker;
 
 
 end Tools;

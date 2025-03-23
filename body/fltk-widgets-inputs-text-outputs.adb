@@ -6,8 +6,7 @@
 
 with
 
-    FLTK.Widgets.Groups,
-    Interfaces.C.Strings;
+    FLTK.Widgets.Groups;
 
 
 package body FLTK.Widgets.Inputs.Text.Outputs is

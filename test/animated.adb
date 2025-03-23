@@ -130,7 +130,7 @@ is
     Frame_Image_Data : constant Image_Data_Array := Make_Image_Data;
 
     --  This syntax requires Ada 2022, but it allows all overt heap usage to be avoided
-    Frame_Images : array (Positive range <>) of RGB.RGB_Image :=
+    Frame_Images : constant array (Positive range <>) of RGB.RGB_Image :=
        (for Index in Frame_Image_Data'Range =>
         RGB.Forge.Create (Frame_Image_Data (Index), Dimension, Dimension, Channels));
 

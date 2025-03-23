@@ -9,8 +9,7 @@ with
     Ada.Assertions,
     Ada.Characters.Latin_1,
     Ada.Unchecked_Conversion,
-    Interfaces.C.Strings,
-    FLTK.Text_Buffers;
+    Interfaces.C.Strings;
 
 use type
 
@@ -50,11 +49,11 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
     --  Buffers  --
 
-    function fl_text_display_get_buffer
-           (TD : in Storage.Integer_Address)
-        return Storage.Integer_Address;
-    pragma Import (C, fl_text_display_get_buffer, "fl_text_display_get_buffer");
-    pragma Inline (fl_text_display_get_buffer);
+    --  function fl_text_display_get_buffer
+    --         (TD : in Storage.Integer_Address)
+    --      return Storage.Integer_Address;
+    --  pragma Import (C, fl_text_display_get_buffer, "fl_text_display_get_buffer");
+    --  pragma Inline (fl_text_display_get_buffer);
 
     procedure fl_text_display_set_buffer
            (TD, TB : in Storage.Integer_Address);
@@ -834,7 +833,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
     is
         use Styles;  --  for maximum stylin'
 
-        Ada_Widget : access Text_Display'Class :=
+        Ada_Widget : constant access Text_Display'Class :=
             Text_Display_Convert.To_Pointer (Storage.To_Address (D));
     begin
         if Ada_Widget.Style_Callback /= null then
@@ -1041,7 +1040,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
             Line_Index  : in Natural)
         return Styles.Style_Info
     is
-        Result : Interfaces.C.int := fl_text_display_position_style
+        Result : constant Interfaces.C.int := fl_text_display_position_style
            (This.Void_Ptr,
             Interfaces.C.int (Line_Start),
             Interfaces.C.int (Line_Length),
@@ -1134,7 +1133,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
             X     : in Integer)
         return Natural
     is
-        Result : Interfaces.C.int := fl_text_display_find_x
+        Result : constant Interfaces.C.int := fl_text_display_find_x
            (This.Void_Ptr,
             Interfaces.C.To_C (Text),
             Text'Length,
@@ -1155,7 +1154,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
         return Natural
     is
         C_Line_Num : Interfaces.C.int;
-        Result : Interfaces.C.int := fl_text_display_position_to_line
+        Result : constant Interfaces.C.int := fl_text_display_position_to_line
            (This.Void_Ptr,
             Interfaces.C.int (Position),
             C_Line_Num);
@@ -1179,7 +1178,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
         return Natural
     is
         C_Line_Num : Interfaces.C.int;
-        Result : Interfaces.C.int := fl_text_display_position_to_line
+        Result : constant Interfaces.C.int := fl_text_display_position_to_line
            (This.Void_Ptr,
             Interfaces.C.int (Position),
             C_Line_Num);
@@ -1204,7 +1203,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
             Column   :    out Natural)
     is
         C_Line_Num, C_Column : Interfaces.C.int;
-        Result : Interfaces.C.int := fl_text_display_position_to_linecol
+        Result : constant Interfaces.C.int := fl_text_display_position_to_linecol
            (This.Void_Ptr,
             Interfaces.C.int (Position),
             C_Line_Num, C_Column);
@@ -1231,7 +1230,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
             Displayed :    out Boolean)
     is
         C_Line_Num, C_Column : Interfaces.C.int;
-        Result : Interfaces.C.int := fl_text_display_position_to_linecol
+        Result : constant Interfaces.C.int := fl_text_display_position_to_linecol
            (This.Void_Ptr,
             Interfaces.C.int (Position),
             C_Line_Num, C_Column);
@@ -1257,7 +1256,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
             Kind : in Position_Kind := Character_Position)
         return Natural
     is
-        Result : Interfaces.C.int := fl_text_display_xy_to_position
+        Result : constant Interfaces.C.int := fl_text_display_xy_to_position
            (This.Void_Ptr,
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
@@ -1493,7 +1492,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
             Row  : in Natural)
         return Natural
     is
-        Result : Interfaces.C.int := fl_text_display_wrapped_row
+        Result : constant Interfaces.C.int := fl_text_display_wrapped_row
            (This.Void_Ptr,
             Interfaces.C.int (Row));
     begin
@@ -1510,7 +1509,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
             Row, Column : in Natural)
         return Natural
     is
-        Result : Interfaces.C.int := fl_text_display_wrapped_column
+        Result : constant Interfaces.C.int := fl_text_display_wrapped_column
            (This.Void_Ptr,
             Interfaces.C.int (Row),
             Interfaces.C.int (Column));
@@ -1528,7 +1527,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
             Line_End : in Natural)
         return Boolean
     is
-        Result : Interfaces.C.int := fl_text_display_wrap_uses_character
+        Result : constant Interfaces.C.int := fl_text_display_wrap_uses_character
            (This.Void_Ptr,
             Interfaces.C.int (Line_End));
     begin
@@ -1693,7 +1692,8 @@ package body FLTK.Widgets.Groups.Text_Displays is
            (This : in Text_Display)
         return Natural
     is
-        Result : Interfaces.C.int := fl_text_display_get_absolute_top_line_number (This.Void_Ptr);
+        Result : constant Interfaces.C.int :=
+            fl_text_display_get_absolute_top_line_number (This.Void_Ptr);
     begin
         return Natural (Result);
     exception
@@ -1715,7 +1715,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
            (This : in Text_Display)
         return Boolean
     is
-        Result : Interfaces.C.int := fl_text_display_maintaining_absolute_top_line_number
+        Result : constant Interfaces.C.int := fl_text_display_maintaining_absolute_top_line_number
             (This.Void_Ptr);
     begin
         return Boolean'Val (Result);
@@ -1741,7 +1741,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
            (This : in Text_Display)
         return Boolean
     is
-        Result : Interfaces.C.int := fl_text_display_empty_vlines (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_text_display_empty_vlines (This.Void_Ptr);
     begin
         return Boolean'Val (Result);
     exception
@@ -1755,7 +1755,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
            (This : in Text_Display)
         return Natural
     is
-        Result : Interfaces.C.int := fl_text_display_longest_vline (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_text_display_longest_vline (This.Void_Ptr);
     begin
         return Natural (Result);
     exception
@@ -1770,7 +1770,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
             Line : in Natural)
         return Natural
     is
-        Result : Interfaces.C.int := fl_text_display_vline_length
+        Result : constant Interfaces.C.int := fl_text_display_vline_length
            (This.Void_Ptr,
             Interfaces.C.int (Line));
     begin
@@ -1898,7 +1898,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
            (This : in Text_Display)
         return String
     is
-        Result : Interfaces.C.Strings.chars_ptr :=
+        Result : constant Interfaces.C.Strings.chars_ptr :=
             fl_text_display_get_linenumber_format (This.Void_Ptr);
     begin
         if Result = Interfaces.C.Strings.Null_Ptr then
@@ -1941,7 +1941,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
             Line : in Natural)
         return Natural
     is
-        Result : Interfaces.C.int := fl_text_display_measure_vline
+        Result : constant Interfaces.C.int := fl_text_display_measure_vline
            (This.Void_Ptr,
             Interfaces.C.int (Line));
     begin
@@ -1974,7 +1974,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
     procedure Move_Down
            (This : in out Text_Display)
     is
-        Result : Interfaces.C.int := fl_text_display_move_down (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_text_display_move_down (This.Void_Ptr);
     begin
         pragma Assert (Result in 0 .. 1);
     exception
@@ -1988,7 +1988,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
            (This : in out Text_Display)
         return Boolean
     is
-        Result : Interfaces.C.int := fl_text_display_move_down (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_text_display_move_down (This.Void_Ptr);
     begin
         return Boolean'Val (Result);
     exception
@@ -2001,7 +2001,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
     procedure Move_Left
            (This : in out Text_Display)
     is
-        Result : Interfaces.C.int := fl_text_display_move_left (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_text_display_move_left (This.Void_Ptr);
     begin
         pragma Assert (Result in 0 .. 1);
     exception
@@ -2015,7 +2015,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
            (This : in out Text_Display)
         return Boolean
     is
-        Result : Interfaces.C.int := fl_text_display_move_left (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_text_display_move_left (This.Void_Ptr);
     begin
         return Boolean'Val (Result);
     exception
@@ -2028,7 +2028,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
     procedure Move_Right
            (This : in out Text_Display)
     is
-        Result : Interfaces.C.int := fl_text_display_move_right (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_text_display_move_right (This.Void_Ptr);
     begin
         pragma Assert (Result in 0 .. 1);
     exception
@@ -2042,7 +2042,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
            (This : in out Text_Display)
         return Boolean
     is
-        Result : Interfaces.C.int := fl_text_display_move_right (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_text_display_move_right (This.Void_Ptr);
     begin
         return Boolean'Val (Result);
     exception
@@ -2055,7 +2055,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
     procedure Move_Up
            (This : in out Text_Display)
     is
-        Result : Interfaces.C.int := fl_text_display_move_up (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_text_display_move_up (This.Void_Ptr);
     begin
         pragma Assert (Result in 0 .. 1);
     exception
@@ -2069,7 +2069,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
            (This : in out Text_Display)
         return Boolean
     is
-        Result : Interfaces.C.int := fl_text_display_move_up (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_text_display_move_up (This.Void_Ptr);
     begin
         return Boolean'Val (Result);
     exception
@@ -2101,7 +2101,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
             Pixel : in     Natural := 0)
         return Boolean
     is
-        Result : Interfaces.C.int := fl_text_display_scroll2
+        Result : constant Interfaces.C.int := fl_text_display_scroll2
            (This.Void_Ptr,
             Interfaces.C.int (Line),
             Interfaces.C.int (Pixel));

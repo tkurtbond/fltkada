@@ -362,7 +362,7 @@ package body FLTK.Asks is
            (Message, Button1 : in String)
         return Choice_Result
     is
-        Result : Interfaces.C.int := fl_ask_choice
+        Result : constant Interfaces.C.int := fl_ask_choice
            (Interfaces.C.To_C (Message),
             Interfaces.C.To_C (Button1),
             Interfaces.C.Strings.Null_Ptr,
@@ -377,7 +377,7 @@ package body FLTK.Asks is
         return Choice_Result
     is
         Str2 : aliased Interfaces.C.char_array := Interfaces.C.To_C (Button2);
-        Result : Interfaces.C.int := fl_ask_choice
+        Result : constant Interfaces.C.int := fl_ask_choice
            (Interfaces.C.To_C (Message),
             Interfaces.C.To_C (Button1),
             Interfaces.C.Strings.To_Chars_Ptr (Str2'Unchecked_Access),
@@ -393,7 +393,7 @@ package body FLTK.Asks is
     is
         Str2 : aliased Interfaces.C.char_array := Interfaces.C.To_C (Button2);
         Str3 : aliased Interfaces.C.char_array := Interfaces.C.To_C (Button3);
-        Result : Interfaces.C.int := fl_ask_choice
+        Result : constant Interfaces.C.int := fl_ask_choice
            (Interfaces.C.To_C (Message),
             Interfaces.C.To_C (Button1),
             Interfaces.C.Strings.To_Chars_Ptr (Str2'Unchecked_Access),
@@ -407,7 +407,7 @@ package body FLTK.Asks is
            (Message, Button1 : in String)
         return Extended_Choice_Result
     is
-        Result : Interfaces.C.int := fl_ask_choice_n
+        Result : constant Interfaces.C.int := fl_ask_choice_n
            (Interfaces.C.To_C (Message),
             Interfaces.C.To_C (Button1),
             Interfaces.C.Strings.Null_Ptr,
@@ -427,7 +427,7 @@ package body FLTK.Asks is
         return Extended_Choice_Result
     is
         Str2 : aliased Interfaces.C.char_array := Interfaces.C.To_C (Button2);
-        Result : Interfaces.C.int := fl_ask_choice_n
+        Result : constant Interfaces.C.int := fl_ask_choice_n
            (Interfaces.C.To_C (Message),
             Interfaces.C.To_C (Button1),
             Interfaces.C.Strings.To_Chars_Ptr (Str2'Unchecked_Access),
@@ -448,7 +448,7 @@ package body FLTK.Asks is
     is
         Str2 : aliased Interfaces.C.char_array := Interfaces.C.To_C (Button2);
         Str3 : aliased Interfaces.C.char_array := Interfaces.C.To_C (Button3);
-        Result : Interfaces.C.int := fl_ask_choice_n
+        Result : constant Interfaces.C.int := fl_ask_choice_n
            (Interfaces.C.To_C (Message),
             Interfaces.C.To_C (Button1),
             Interfaces.C.Strings.To_Chars_Ptr (Str2'Unchecked_Access),
@@ -468,7 +468,7 @@ package body FLTK.Asks is
             Default : in String := "")
         return String
     is
-        Result : Interfaces.C.Strings.chars_ptr := fl_ask_input
+        Result : constant Interfaces.C.Strings.chars_ptr := fl_ask_input
                (Interfaces.C.To_C (Message),
                 Interfaces.C.To_C (Default));
     begin
@@ -493,7 +493,7 @@ package body FLTK.Asks is
             Default : in String := "")
         return String
     is
-        Result : Interfaces.C.Strings.chars_ptr := fl_ask_password
+        Result : constant Interfaces.C.Strings.chars_ptr := fl_ask_password
                (Interfaces.C.To_C (Message),
                 Interfaces.C.To_C (Default));
     begin
@@ -520,8 +520,8 @@ package body FLTK.Asks is
         C_R : Interfaces.C.double := Interfaces.C.double (R);
         C_G : Interfaces.C.double := Interfaces.C.double (G);
         C_B : Interfaces.C.double := Interfaces.C.double (B);
-        M : Interfaces.C.int := FLTK.Widgets.Groups.Color_Choosers.Color_Mode'Pos (Mode);
-        Result : Interfaces.C.int := fl_ask_color_chooser
+        M : constant Interfaces.C.int := FLTK.Widgets.Groups.Color_Choosers.Color_Mode'Pos (Mode);
+        Result : constant Interfaces.C.int := fl_ask_color_chooser
             (Interfaces.C.To_C (Title), C_R, C_G, C_B, M);
     begin
         if Result = 1 then
@@ -550,8 +550,8 @@ package body FLTK.Asks is
         C_R : Interfaces.C.unsigned_char := Interfaces.C.unsigned_char (R);
         C_G : Interfaces.C.unsigned_char := Interfaces.C.unsigned_char (G);
         C_B : Interfaces.C.unsigned_char := Interfaces.C.unsigned_char (B);
-        M : Interfaces.C.int := FLTK.Widgets.Groups.Color_Choosers.Color_Mode'Pos (Mode);
-        Result : Interfaces.C.int := fl_ask_color_chooser2
+        M : constant Interfaces.C.int := FLTK.Widgets.Groups.Color_Choosers.Color_Mode'Pos (Mode);
+        Result : constant Interfaces.C.int := fl_ask_color_chooser2
                (Interfaces.C.To_C (Title), C_R, C_G, C_B, M);
     begin
         if Result = 1 then
@@ -583,7 +583,7 @@ package body FLTK.Asks is
             Relative         : in Boolean := False)
         return String
     is
-        Result : Interfaces.C.Strings.chars_ptr := fl_ask_dir_chooser
+        Result : constant Interfaces.C.Strings.chars_ptr := fl_ask_dir_chooser
                (Interfaces.C.To_C (Message),
                 Interfaces.C.To_C (Default),
                 Boolean'Pos (Relative));
@@ -602,7 +602,7 @@ package body FLTK.Asks is
             Relative                         : in Boolean := False)
         return String
     is
-        Result : Interfaces.C.Strings.chars_ptr := fl_ask_file_chooser
+        Result : constant Interfaces.C.Strings.chars_ptr := fl_ask_file_chooser
                (Interfaces.C.To_C (Message),
                 Interfaces.C.To_C (Filter_Pattern),
                 Interfaces.C.To_C (Default),

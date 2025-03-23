@@ -7,7 +7,7 @@
 with
 
     FLTK.Widgets.Groups,
-    Interfaces.C.Strings;
+    Interfaces.C;
 
 
 package body FLTK.Widgets.Valuators.Sliders is
@@ -367,7 +367,7 @@ package body FLTK.Widgets.Valuators.Sliders is
            (This : in Slider)
         return Slider_Kind
     is
-        Result : Interfaces.C.unsigned_char := fl_widget_get_type (This.Void_Ptr);
+        Result : constant Interfaces.C.unsigned_char := fl_widget_get_type (This.Void_Ptr);
     begin
         return Slider_Kind'Val (Result);
     exception

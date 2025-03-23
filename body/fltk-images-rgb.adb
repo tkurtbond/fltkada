@@ -275,7 +275,7 @@ package body FLTK.Images.RGB is
            (This : in RGB_Image)
         return Natural
     is
-        Per_Line : Natural := This.Get_Line_Size;
+        Per_Line : constant Natural := This.Get_Line_Size;
     begin
         if Per_Line = 0 then
             return This.Get_W * This.Get_D * This.Get_H;

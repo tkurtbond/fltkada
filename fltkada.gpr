@@ -10,13 +10,15 @@ library project FLTKAda is
 
     for Languages use ("Ada", "C++");
 
-    for Source_Dirs use ("body", "spec");
-    for Object_Dir use "obj";
-    for Library_Dir use "lib";
+    for Source_Dirs  use ("body", "spec");
+    for Object_Dir   use "obj";
+    for Library_Dir  use "lib";
     for Library_Name use "fltkada";
     for Library_Kind use "dynamic";
 
+    package Builder  renames Common.Builder;
     package Compiler renames Common.Compiler;
+    package Binder   renames Common.Binder;
 
 
 end FLTKAda;

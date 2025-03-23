@@ -8,8 +8,7 @@ with
 
     Ada.Assertions,
     Ada.Characters.Latin_1,
-    FLTK.Events,
-    Interfaces.C;
+    FLTK.Events;
 
 
 package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
@@ -385,12 +384,12 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
     --  Key Binding Modification  --
 
-    procedure fl_text_editor_add_key_binding
-           (TE   : in Storage.Integer_Address;
-            K, S : in Interfaces.C.int;
-            F    : in Storage.Integer_Address);
-    pragma Import (C, fl_text_editor_add_key_binding, "fl_text_editor_add_key_binding");
-    pragma Inline (fl_text_editor_add_key_binding);
+    --  procedure fl_text_editor_add_key_binding
+    --         (TE   : in Storage.Integer_Address;
+    --          K, S : in Interfaces.C.int;
+    --          F    : in Storage.Integer_Address);
+    --  pragma Import (C, fl_text_editor_add_key_binding, "fl_text_editor_add_key_binding");
+    --  pragma Inline (fl_text_editor_add_key_binding);
 
     procedure fl_text_editor_remove_all_key_bindings
            (TE : in Storage.Integer_Address);
@@ -473,12 +472,13 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
             E : in Storage.Integer_Address)
         return Interfaces.C.int
     is
-        Editor_Ptr : Storage.Integer_Address := fl_widget_get_user_data (E);
+        Editor_Ptr : constant Storage.Integer_Address := fl_widget_get_user_data (E);
         Ada_Editor : access Text_Editor'Class;
 
-        Extra_Keys : Modifier  := FLTK.Events.Last_Modifier;
-        Actual_Key : Keypress  := FLTK.Events.Last_Key;  --  fuck you FLTK, give me the real code
-        Ada_Key    : Key_Combo := Extra_Keys + Actual_Key;
+        Extra_Keys : constant Modifier  := FLTK.Events.Last_Modifier;
+        Actual_Key : constant Keypress  := FLTK.Events.Last_Key;
+            --  fuck you FLTK, give me the real code
+        Ada_Key    : constant Key_Combo := Extra_Keys + Actual_Key;
 
         --  For whatever reason, if a regular key function is used then FLTK will
         --  give you the key code, but if a default key function is used instead it
@@ -577,9 +577,7 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
         function Create
                (X, Y, W, H : in Integer;
                 Text       : in String := "")
-            return Text_Editor
-        is
-            use type Interfaces.C.int;
+            return Text_Editor is
         begin
             return This : Text_Editor do
                 This.Void_Ptr := new_fl_text_editor
@@ -1198,7 +1196,7 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
            (This : in Text_Editor)
         return Insert_Mode
     is
-        Result : Interfaces.C.int := fl_text_editor_get_insert_mode (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_text_editor_get_insert_mode (This.Void_Ptr);
     begin
         return Insert_Mode'Val (Result);
     exception
@@ -1220,7 +1218,7 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
            (This : in Text_Editor)
         return Tab_Navigation
     is
-        Result : Interfaces.C.int := fl_text_editor_get_tab_nav (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_text_editor_get_tab_nav (This.Void_Ptr);
     begin
         return Tab_Navigation'Val (Result);
     exception
@@ -1255,7 +1253,7 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
            (This : in out Text_Editor)
         return Event_Outcome
     is
-        Result : Interfaces.C.int := fl_text_editor_handle_key (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_text_editor_handle_key (This.Void_Ptr);
     begin
         return Event_Outcome'Val (Result);
     exception

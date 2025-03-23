@@ -81,9 +81,9 @@ package body FLTK.Widgets.Groups.Windows.Double.Cairo is
     procedure Cairo_Draw_Hook
            (C_Addr, Cairo_Addr : in Storage.Integer_Address)
     is
-        Ada_Addr : System.Address :=
+        Ada_Addr : constant System.Address :=
             Storage.To_Address (fl_widget_get_user_data (C_Addr));
-        Ada_Object : access Cairo_Window'Class :=
+        Ada_Object : constant access Cairo_Window'Class :=
             Cairo_Convert.To_Pointer (Ada_Addr);
     begin
         pragma Assert (Ada_Object /= null);

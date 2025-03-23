@@ -7,7 +7,7 @@
 with
 
     Ada.Assertions,
-    Interfaces.C.Strings,
+    Interfaces.C,
     System.Address_To_Access_Conversions;
 
 
@@ -366,7 +366,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr : in Storage.Integer_Address)
         return Interfaces.C.int
     is
-        Ada_Object : access Browser'Class :=
+        Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Interfaces.C.int (Ada_Object.Full_List_Width);
@@ -382,7 +382,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr : in Storage.Integer_Address)
         return Interfaces.C.int
     is
-        Ada_Object : access Browser'Class :=
+        Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Interfaces.C.int (Ada_Object.Full_List_Height);
@@ -398,7 +398,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr : in Storage.Integer_Address)
         return Interfaces.C.int
     is
-        Ada_Object : access Browser'Class :=
+        Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Interfaces.C.int (Ada_Object.Average_Item_Height);
@@ -414,7 +414,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address)
         return Interfaces.C.int
     is
-        Ada_Object : access Browser'Class :=
+        Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Interfaces.C.int (Ada_Object.Item_Quick_Height (Address_To_Cursor (Item_Ptr)));
@@ -430,7 +430,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address)
         return Interfaces.C.int
     is
-        Ada_Object : access Browser'Class :=
+        Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Interfaces.C.int (Ada_Object.Item_Width (Address_To_Cursor (Item_Ptr)));
@@ -446,7 +446,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address)
         return Interfaces.C.int
     is
-        Ada_Object : access Browser'Class :=
+        Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Interfaces.C.int (Ada_Object.Item_Height (Address_To_Cursor (Item_Ptr)));
@@ -462,7 +462,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr : in Storage.Integer_Address)
         return Storage.Integer_Address
     is
-        Ada_Object : access Browser'Class :=
+        Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Cursor_To_Address (Ada_Object.Item_First);
@@ -478,7 +478,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr : in Storage.Integer_Address)
         return Storage.Integer_Address
     is
-        Ada_Object : access Browser'Class :=
+        Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Cursor_To_Address (Ada_Object.Item_Last);
@@ -494,7 +494,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address)
         return Storage.Integer_Address
     is
-        Ada_Object : access Browser'Class :=
+        Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Cursor_To_Address (Ada_Object.Item_Next (Address_To_Cursor (Item_Ptr)));
@@ -510,7 +510,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address)
         return Storage.Integer_Address
     is
-        Ada_Object : access Browser'Class :=
+        Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Cursor_To_Address (Ada_Object.Item_Previous (Address_To_Cursor (Item_Ptr)));
@@ -528,7 +528,7 @@ package body FLTK.Widgets.Groups.Browsers is
             Index    : in Interfaces.C.int)
         return Storage.Integer_Address
     is
-        Ada_Object : access Browser'Class :=
+        Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
         use type Interfaces.C.int;
     begin
@@ -545,7 +545,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address;
             Int_State          : in Interfaces.C.int)
     is
-        Ada_Object : access Browser'Class :=
+        Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
         use type Interfaces.C.int;
     begin
@@ -564,7 +564,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address)
         return Interfaces.C.int
     is
-        Ada_Object : access Browser'Class :=
+        Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Boolean'Pos (Ada_Object.Item_Selected (Address_To_Cursor (Item_Ptr)));
@@ -578,7 +578,7 @@ package body FLTK.Widgets.Groups.Browsers is
     procedure Item_Swap_Hook
            (Ada_Addr, A_Ptr, B_Ptr : in Storage.Integer_Address)
     is
-        Ada_Object : access Browser'Class :=
+        Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         Ada_Object.Item_Swap (Address_To_Cursor (A_Ptr), Address_To_Cursor (B_Ptr));
@@ -606,13 +606,13 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address)
         return Interfaces.C.Strings.chars_ptr
     is
-        Ada_Object : access Browser'Class :=
+        Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         Interfaces.C.Strings.Free (Ada_Object.Text_Store (Ada_Object.Current));
         Ada_Object.Text_Store (Ada_Object.Current) := Interfaces.C.Strings.New_String
             (Ada_Object.Item_Text (Address_To_Cursor (Item_Ptr)));
-        return C_Char_Is_Not_A_String : Interfaces.C.Strings.chars_ptr :=
+        return C_Char_Is_Not_A_String : constant Interfaces.C.Strings.chars_ptr :=
             Ada_Object.Text_Store (Ada_Object.Current)
         do
             Ada_Object.Current := Ada_Object.Current + 1;
@@ -632,7 +632,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address;
             X, Y, W, H         : in Interfaces.C.int)
     is
-        Ada_Object : access Browser'Class :=
+        Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         Ada_Object.Item_Draw
@@ -803,7 +803,7 @@ package body FLTK.Widgets.Groups.Browsers is
             Do_Callbacks : in     Boolean := False)
         return Boolean
     is
-        Code : Interfaces.C.int := fl_abstract_browser_select
+        Code : constant Interfaces.C.int := fl_abstract_browser_select
            (This.Void_Ptr,
             Cursor_To_Address (Item),
             Boolean'Pos (State),
@@ -823,7 +823,7 @@ package body FLTK.Widgets.Groups.Browsers is
             State        : in     Boolean := True;
             Do_Callbacks : in     Boolean := False)
     is
-        Code : Interfaces.C.int := fl_abstract_browser_select
+        Code : constant Interfaces.C.int := fl_abstract_browser_select
            (This.Void_Ptr,
             Cursor_To_Address (Item),
             Boolean'Pos (State),
@@ -842,7 +842,7 @@ package body FLTK.Widgets.Groups.Browsers is
             Do_Callbacks : in     Boolean := False)
         return Boolean
     is
-        Code : Interfaces.C.int := fl_abstract_browser_select_only
+        Code : constant Interfaces.C.int := fl_abstract_browser_select_only
            (This.Void_Ptr,
             Cursor_To_Address (Item),
             Boolean'Pos (Do_Callbacks));
@@ -861,7 +861,7 @@ package body FLTK.Widgets.Groups.Browsers is
             Item         : in     Item_Cursor;
             Do_Callbacks : in     Boolean := False)
     is
-        Code : Interfaces.C.int := fl_abstract_browser_select_only
+        Code : constant Interfaces.C.int := fl_abstract_browser_select_only
            (This.Void_Ptr,
             Cursor_To_Address (Item),
             Boolean'Pos (Do_Callbacks));
@@ -887,7 +887,7 @@ package body FLTK.Widgets.Groups.Browsers is
             Do_Callbacks : in     Boolean := False)
         return Boolean
     is
-        Code : Interfaces.C.int := fl_abstract_browser_deselect
+        Code : constant Interfaces.C.int := fl_abstract_browser_deselect
            (This.Void_Ptr,
             Boolean'Pos (Do_Callbacks));
     begin
@@ -904,7 +904,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (This         : in out Browser;
             Do_Callbacks : in     Boolean := False)
     is
-        Code : Interfaces.C.int := fl_abstract_browser_deselect
+        Code : constant Interfaces.C.int := fl_abstract_browser_deselect
            (This.Void_Ptr,
             Boolean'Pos (Do_Callbacks));
     begin
@@ -929,7 +929,7 @@ package body FLTK.Widgets.Groups.Browsers is
             Item : in Item_Cursor)
         return Boolean
     is
-        Code : Interfaces.C.int := fl_abstract_browser_displayed
+        Code : constant Interfaces.C.int := fl_abstract_browser_displayed
             (This.Void_Ptr, Cursor_To_Address (Item));
     begin
         pragma Assert (Code in 0 .. 1);
@@ -964,7 +964,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (This  : in out Browser;
             Order : in     Sort_Order)
     is
-        Code : Interfaces.C.int :=
+        Code : constant Interfaces.C.int :=
            (case Order is
             when Ascending  => fl_sort_ascending,
             when Descending => fl_sort_descending);

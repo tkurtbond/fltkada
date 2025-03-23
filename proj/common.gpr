@@ -3,10 +3,99 @@
 abstract project Common is
 
 
+    type Build_Kind is ("release", "debug");
+
+    Ver : Build_Kind := external ("build", "release");
+
+
+    package Builder is
+        for Default_Switches ("Ada") use ("-j4", "-m");
+        for Global_Compilation_Switches ("Ada") use ("-shared");
+
+        case Ver is
+
+        when "release" =>
+            null;
+
+        when "debug" =>
+            for Default_Switches ("Ada") use Builder'Default_Switches ("Ada") & "-g";
+
+        end case;
+    end Builder;
+
+
+    Ada_Common :=
+       ("-gnaty"
+        & "4"     --  indentation
+        & "a"     --  attribute casing
+        & "A"     --  array attribute indices
+        & "b"     --  blanks at end of lines
+        & "c"     --  two space comments
+        & "e"     --  end/exit labels
+        & "f"     --  no form feeds or vertical tabs
+        & "h"     --  no horizontal tabs
+        & "i"     --  if/then layout
+        & "k"     --  keyword casing
+        & "l"     --  reference manual layout
+        & "M100"  --  max line length
+        & "n"     --  package Standard casing
+        & "p"     --  pragma casing
+        & "r"     --  identifier casing
+        & "t",    --  token separation
+        "-gnatw"
+        & "a"     --  various warning modes
+        & "F"     --  don't check for unreferenced formal parameters
+        & "J"     --  don't check for obsolescent feature use
+        & "U");   --  don't check for unused entities
+
+    CPP_Common :=
+       ("-Wall",
+        "-Werror",
+        "-Wextra",
+        "-Wpedantic",
+        "-std=c++11");
+
     package Compiler is
-        for Default_Switches ("Ada") use ("-gnaty4aAbcefhiklM100nprt");
-        for Default_Switches("C++") use ("-Wall","-Wextra","-std=c++11");
+        case Ver is
+
+        when "release" =>
+            for Default_Switches ("Ada") use Ada_Common & "-O3" & "-Os" & "-gnatn";
+            for Default_Switches ("C++") use CPP_Common & "-O3" & "-Os";
+
+        when "debug" =>
+            for Default_Switches ("Ada") use Ada_Common & "-O0" & "-gnata" & "-gnato" & "-g";
+            for Default_Switches ("C++") use CPP_Common & "-O0";
+
+        end case;
     end Compiler;
+
+
+    package Binder is
+        for Default_Switches ("Ada") use ("-shared");
+
+        case Ver is
+
+        when "release" =>
+            null;
+
+        when "debug" =>
+            for Default_Switches ("Ada") use Binder'Default_Switches ("Ada") & "-E";
+
+        end case;
+    end Binder;
+
+
+    package Linker is
+        case Ver is
+
+        when "release" =>
+            null;
+
+        when "debug" =>
+            for Default_Switches ("Ada") use ("-g");
+
+        end case;
+    end Linker;
 
 
 end Common;

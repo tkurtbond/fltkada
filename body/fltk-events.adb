@@ -560,7 +560,7 @@ package body FLTK.Events is
             Origin : in out FLTK.Widgets.Groups.Windows.Window'Class)
         return Event_Outcome
     is
-        Result : Interfaces.C.int := fl_event_handle_dispatch
+        Result : constant Interfaces.C.int := fl_event_handle_dispatch
            (Event_Kind'Pos (Event),
             Wrapper (Origin).Void_Ptr);
     begin
@@ -576,7 +576,7 @@ package body FLTK.Events is
             Origin : in out FLTK.Widgets.Groups.Windows.Window'Class)
         return Event_Outcome
     is
-        Result : Interfaces.C.int := fl_event_handle
+        Result : constant Interfaces.C.int := fl_event_handle
            (Event_Kind'Pos (Event),
             Wrapper (Origin).Void_Ptr);
     begin
@@ -718,7 +718,7 @@ package body FLTK.Events is
     function Clipboard_Text
         return String
     is
-        Text_Ptr : Interfaces.C.Strings.chars_ptr := fl_event_clipboard_text;
+        Text_Ptr : constant Interfaces.C.Strings.chars_ptr := fl_event_clipboard_text;
     begin
         if Text_Ptr = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -731,7 +731,7 @@ package body FLTK.Events is
     function Clipboard_Kind
         return String
     is
-        Text_Ptr : Interfaces.C.Strings.chars_ptr := fl_event_clipboard_type;
+        Text_Ptr : constant Interfaces.C.Strings.chars_ptr := fl_event_clipboard_type;
     begin
         if Text_Ptr = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -756,7 +756,7 @@ package body FLTK.Events is
     function Text
         return String
     is
-        Str : Interfaces.C.Strings.chars_ptr := fl_event_text;
+        Str : constant Interfaces.C.Strings.chars_ptr := fl_event_text;
     begin
         if Str = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -788,7 +788,7 @@ package body FLTK.Events is
     function Last
         return Event_Kind
     is
-        Value : Interfaces.C.int := fl_event_get;
+        Value : constant Interfaces.C.int := fl_event_get;
     begin
         return Event_Kind'Val (Value);
     exception
@@ -889,7 +889,7 @@ package body FLTK.Events is
     function Get_Clicks
         return Natural
     is
-        Raw : Interfaces.C.int := fl_event_get_clicks;
+        Raw : constant Interfaces.C.int := fl_event_get_clicks;
     begin
         if Is_Click then
             return Positive (Raw + 1);
@@ -920,7 +920,7 @@ package body FLTK.Events is
     function Last_Button
         return Mouse_Button
     is
-        Code : Interfaces.C.int := fl_event_button;
+        Code : constant Interfaces.C.int := fl_event_button;
     begin
         pragma Assert (Last = Push or Last = Release);
         if Code = fl_enum_left_mouse then
@@ -982,7 +982,7 @@ package body FLTK.Events is
            (Left, Middle, Right, Back, Forward : out Boolean)
     is
         type Cint_Mod is mod 2 ** Interfaces.C.int'Size;
-        Mask : Interfaces.C.int := fl_event_buttons;
+        Mask : constant Interfaces.C.int := fl_event_buttons;
     begin
         Left    := (Cint_Mod (Mask) and Cint_Mod (fl_enum_button1)) /= 0;
         Middle  := (Cint_Mod (Mask) and Cint_Mod (fl_enum_button2)) /= 0;

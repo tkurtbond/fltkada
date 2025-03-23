@@ -7,7 +7,7 @@
 with
 
     Ada.Command_Line,
-    Interfaces.C.Strings;
+    Interfaces.C;
 
 
 package body FLTK.Args_Marshal is

@@ -429,7 +429,7 @@ package body FLTK.Widgets.Inputs is
            (This        : in out Input;
             Destination : in     Clipboard_Kind := Cut_Paste_Board)
     is
-        Result : Interfaces.C.int := fl_input_copy
+        Result : constant Interfaces.C.int := fl_input_copy
             (This.Void_Ptr, Clipboard_Kind'Pos (Destination));
     begin
         pragma Assert (Result in 0 .. 1);
@@ -445,7 +445,7 @@ package body FLTK.Widgets.Inputs is
             Destination : in     Clipboard_Kind := Cut_Paste_Board)
         return Boolean
     is
-        Result : Interfaces.C.int := fl_input_copy
+        Result : constant Interfaces.C.int := fl_input_copy
             (This.Void_Ptr, Clipboard_Kind'Pos (Destination));
     begin
         pragma Assert (Result in 0 .. 1);
@@ -460,7 +460,7 @@ package body FLTK.Widgets.Inputs is
     procedure Cut
            (This : in out Input)
     is
-        Result : Interfaces.C.int := fl_input_cut (This.Void_Ptr);
+        Ignore : constant Interfaces.C.int := fl_input_cut (This.Void_Ptr);
     begin
         null;
     end Cut;
@@ -478,7 +478,7 @@ package body FLTK.Widgets.Inputs is
            (This      : in out Input;
             Num_Bytes : in     Integer)
     is
-        Result : Interfaces.C.int := fl_input_cut2
+        Ignore : constant Interfaces.C.int := fl_input_cut2
            (This.Void_Ptr,
             Interfaces.C.int (Num_Bytes));
     begin
@@ -501,7 +501,7 @@ package body FLTK.Widgets.Inputs is
            (This          : in out Input;
             Start, Finish : in     Integer)
     is
-        Result : Interfaces.C.int := fl_input_cut3
+        Ignore : constant Interfaces.C.int := fl_input_cut3
            (This.Void_Ptr,
             Interfaces.C.int (Start),
             Interfaces.C.int (Finish));
@@ -525,7 +525,7 @@ package body FLTK.Widgets.Inputs is
     procedure Copy_Cuts
            (This : in out Input)
     is
-        Result : Interfaces.C.int := fl_input_copy_cuts (This.Void_Ptr);
+        Ignore : constant Interfaces.C.int := fl_input_copy_cuts (This.Void_Ptr);
     begin
         null;
     end Copy_Cuts;
@@ -535,7 +535,7 @@ package body FLTK.Widgets.Inputs is
            (This : in out Input)
         return Boolean
     is
-        Result : Interfaces.C.int := fl_input_copy_cuts (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_input_copy_cuts (This.Void_Ptr);
     begin
         return Result /= 0;
     end Copy_Cuts;
@@ -544,7 +544,7 @@ package body FLTK.Widgets.Inputs is
     procedure Undo
            (This : in out Input)
     is
-        Result : Interfaces.C.int := fl_input_undo (This.Void_Ptr);
+        Ignore : constant Interfaces.C.int := fl_input_undo (This.Void_Ptr);
     begin
         null;
     end Undo;
@@ -618,7 +618,7 @@ package body FLTK.Widgets.Inputs is
            (This : in Input)
         return Input_Kind
     is
-        C_Val : Interfaces.C.int := fl_input_get_input_type (This.Void_Ptr);
+        C_Val : constant Interfaces.C.int := fl_input_get_input_type (This.Void_Ptr);
     begin
         for V in Input_Kind loop
             if Input_Kind_Values (V) = C_Val then
@@ -657,7 +657,7 @@ package body FLTK.Widgets.Inputs is
            (This : in out Input;
             To   : in     Natural)
     is
-        Result : Interfaces.C.int := fl_input_set_mark
+        Ignore : constant Interfaces.C.int := fl_input_set_mark
            (This.Void_Ptr,
             Interfaces.C.int (To));
     begin
@@ -688,7 +688,7 @@ package body FLTK.Widgets.Inputs is
            (This : in out Input;
             To   : in     Natural)
     is
-        Result : Interfaces.C.int := fl_input_set_position
+        Ignore : constant Interfaces.C.int := fl_input_set_position
            (This.Void_Ptr,
             Interfaces.C.int (To));
     begin
@@ -712,7 +712,7 @@ package body FLTK.Widgets.Inputs is
             Place : in     Natural;
             Mark  : in     Natural)
     is
-        Result : Interfaces.C.int := fl_input_set_position2
+        Ignore : constant Interfaces.C.int := fl_input_set_position2
            (This.Void_Ptr,
             Interfaces.C.int (Place),
             Interfaces.C.int (Mark));
@@ -751,7 +751,7 @@ package body FLTK.Widgets.Inputs is
            (This : in out Input;
             Str  : in     String)
     is
-        Result : Interfaces.C.int := fl_input_insert
+        Ignore : constant Interfaces.C.int := fl_input_insert
            (This.Void_Ptr,
             Interfaces.C.To_C (Str, False),
             Str'Length);
@@ -777,7 +777,7 @@ package body FLTK.Widgets.Inputs is
             From, To : in     Natural;
             New_Text : in     String)
     is
-        Result : Interfaces.C.int := fl_input_replace
+        Ignore : constant Interfaces.C.int := fl_input_replace
            (This.Void_Ptr,
             Interfaces.C.int (From),
             Interfaces.C.int (To),
@@ -807,7 +807,7 @@ package body FLTK.Widgets.Inputs is
            (This : in Input)
         return String
     is
-        Ptr : Interfaces.C.Strings.chars_ptr := fl_input_get_value (This.Void_Ptr);
+        Ptr : constant Interfaces.C.Strings.chars_ptr := fl_input_get_value (This.Void_Ptr);
     begin
         if Ptr = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -822,7 +822,7 @@ package body FLTK.Widgets.Inputs is
            (This : in out Input;
             To   : in     String)
     is
-        Result : Interfaces.C.int := fl_input_set_value
+        Ignore : constant Interfaces.C.int := fl_input_set_value
             (This.Void_Ptr, Interfaces.C.To_C (To), To'Length);
     begin
         null;

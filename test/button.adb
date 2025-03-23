@@ -29,7 +29,7 @@ is
 
 
     procedure Beep_Callback
-           (This : in out Wdg.Widget'Class) is
+           (Ignore : in out Wdg.Widget'Class) is
     begin
         Ask.Beep;
     end Beep_Callback;
@@ -39,7 +39,7 @@ is
 
 
     procedure Exit_Callback
-           (This : in out Wdg.Widget'Class) is
+           (Ignore : in out Wdg.Widget'Class) is
     begin
         ACom.Set_Exit_Status (ACom.Success);
         The_Window.Hide;

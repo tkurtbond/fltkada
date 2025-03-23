@@ -125,7 +125,7 @@ package body FLTK.Widgets.Groups.Windows.Double.Overlay is
     procedure Overlay_Window_Draw_Overlay_Hook
            (U : in Storage.Integer_Address)
     is
-        Overlay_Widget : access Overlay_Window'Class :=
+        Overlay_Widget : constant access Overlay_Window'Class :=
             Over_Convert.To_Pointer (Storage.To_Address (U));
     begin
         Overlay_Widget.Draw_Overlay;

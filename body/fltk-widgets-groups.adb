@@ -411,7 +411,7 @@ package body FLTK.Widgets.Groups is
             Item : in Widget'Class)
         return Extended_Index
     is
-        Result : Interfaces.C.int := fl_group_find (This.Void_Ptr, Item.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_group_find (This.Void_Ptr, Item.Void_Ptr);
     begin
         if Result = fl_group_children (This.Void_Ptr) then
             return No_Index;
@@ -436,7 +436,7 @@ package body FLTK.Widgets.Groups is
            (This : in Group)
         return Group_Iterators.Reversible_Iterator'Class is
     begin
-        return It : Iterator := (My_Container => This'Unrestricted_Access);
+        return It : constant Iterator := (My_Container => This'Unrestricted_Access);
     end Iterate;
 
 
@@ -444,7 +444,7 @@ package body FLTK.Widgets.Groups is
            (Object : in Iterator)
         return Cursor is
     begin
-        return Cu : Cursor :=
+        return Cu : constant Cursor :=
            (My_Container => Object.My_Container,
             My_Index     => 1);
     end First;
@@ -458,7 +458,7 @@ package body FLTK.Widgets.Groups is
         if Object.My_Container /= Place.My_Container then
             raise Program_Error;
         end if;
-        return Cu : Cursor :=
+        return Cu : constant Cursor :=
            (My_Container => Place.My_Container,
             My_Index     => Place.My_Index + 1);
     end Next;
@@ -468,7 +468,7 @@ package body FLTK.Widgets.Groups is
            (Object : in Iterator)
         return Cursor is
     begin
-        return Cu : Cursor :=
+        return Cu : constant Cursor :=
            (My_Container => Object.My_Container,
             My_Index     => Object.My_Container.Number_Of_Children);
     end Last;
@@ -482,7 +482,7 @@ package body FLTK.Widgets.Groups is
         if Object.My_Container /= Place.My_Container then
             raise Program_Error;
         end if;
-        return Cu : Cursor :=
+        return Cu : constant Cursor :=
            (My_Container => Place.My_Container,
             My_Index     => Place.My_Index - 1);
     end Previous;
@@ -496,7 +496,7 @@ package body FLTK.Widgets.Groups is
            (This : in Group)
         return Clip_Mode
     is
-        Result : Interfaces.C.unsigned := fl_group_get_clip_children (This.Void_Ptr);
+        Result : constant Interfaces.C.unsigned := fl_group_get_clip_children (This.Void_Ptr);
     begin
         return Clip_Mode'Val (Result);
     exception

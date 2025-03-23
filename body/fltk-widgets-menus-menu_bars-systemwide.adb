@@ -308,7 +308,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
            (This : in out System_Menu_Bar;
             Text : in     String)
     is
-        Added_Spot : Interfaces.C.int := fl_sys_menu_bar_add
+        Ignore : constant Interfaces.C.int := fl_sys_menu_bar_add
             (This.Void_Ptr, Interfaces.C.To_C (Text));
     begin
         This.Adjust_Item_Store;
@@ -320,7 +320,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Text : in     String)
         return Index
     is
-        Added_Spot : Interfaces.C.int := fl_sys_menu_bar_add
+        Added_Spot : constant Interfaces.C.int := fl_sys_menu_bar_add
             (This.Void_Ptr, Interfaces.C.To_C (Text));
     begin
         This.Adjust_Item_Store;
@@ -335,7 +335,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Shortcut : in     Key_Combo := No_Key;
             Flags    : in     Menu_Flag := Flag_Normal)
     is
-        Added_Spot : Interfaces.C.int := fl_sys_menu_bar_add2
+        Ignore : constant Interfaces.C.int := fl_sys_menu_bar_add2
            (This.Void_Ptr,
             Interfaces.C.To_C (Text),
             Interfaces.C.int (To_C (Shortcut)),
@@ -354,7 +354,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Flags    : in     Menu_Flag := Flag_Normal)
         return Index
     is
-        Added_Spot : Interfaces.C.int := fl_sys_menu_bar_add2
+        Added_Spot : constant Interfaces.C.int := fl_sys_menu_bar_add2
            (This.Void_Ptr,
             Interfaces.C.To_C (Text),
             Interfaces.C.int (To_C (Shortcut)),
@@ -373,7 +373,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Shortcut : in     String;
             Flags    : in     Menu_Flag := Flag_Normal)
     is
-        Added_Spot : Interfaces.C.int := fl_sys_menu_bar_add3
+        Ignore : constant Interfaces.C.int := fl_sys_menu_bar_add3
            (This.Void_Ptr,
             Interfaces.C.To_C (Text),
             Interfaces.C.To_C (Shortcut),
@@ -392,7 +392,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Flags    : in     Menu_Flag := Flag_Normal)
         return Index
     is
-        Added_Spot : Interfaces.C.int := fl_sys_menu_bar_add3
+        Added_Spot : constant Interfaces.C.int := fl_sys_menu_bar_add3
            (This.Void_Ptr,
             Interfaces.C.To_C (Text),
             Interfaces.C.To_C (Shortcut),
@@ -412,7 +412,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Shortcut : in     Key_Combo := No_Key;
             Flags    : in     Menu_Flag := Flag_Normal)
     is
-        Added_Spot : Interfaces.C.int := fl_sys_menu_bar_insert
+        Ignore : constant Interfaces.C.int := fl_sys_menu_bar_insert
            (This.Void_Ptr,
             Interfaces.C.int (Place) - 1,
             Interfaces.C.To_C (Text),
@@ -433,7 +433,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Flags    : in     Menu_Flag := Flag_Normal)
         return Index
     is
-        Added_Spot : Interfaces.C.int := fl_sys_menu_bar_insert
+        Added_Spot : constant Interfaces.C.int := fl_sys_menu_bar_insert
            (This.Void_Ptr,
             Interfaces.C.int (Place) - 1,
             Interfaces.C.To_C (Text),
@@ -454,7 +454,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Shortcut : in     String;
             Flags    : in     Menu_Flag := Flag_Normal)
     is
-        Added_Spot : Interfaces.C.int := fl_sys_menu_bar_insert2
+        Ignore : constant Interfaces.C.int := fl_sys_menu_bar_insert2
            (This.Void_Ptr,
             Interfaces.C.int (Place) - 1,
             Interfaces.C.To_C (Text),
@@ -475,7 +475,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             Flags    : in     Menu_Flag := Flag_Normal)
         return Index
     is
-        Added_Spot : Interfaces.C.int := fl_sys_menu_bar_insert2
+        Added_Spot : constant Interfaces.C.int := fl_sys_menu_bar_insert2
            (This.Void_Ptr,
             Interfaces.C.int (Place) - 1,
             Interfaces.C.To_C (Text),
@@ -522,7 +522,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
            (This  : in out System_Menu_Bar;
             Place : in     Index)
     is
-        Result : Interfaces.C.int := fl_sys_menu_bar_clear_submenu
+        Result : constant Interfaces.C.int := fl_sys_menu_bar_clear_submenu
            (This.Void_Ptr,
             Interfaces.C.int (Place) - 1);
     begin

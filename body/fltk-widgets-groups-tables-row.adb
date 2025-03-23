@@ -232,7 +232,7 @@ package body FLTK.Widgets.Groups.Tables.Row is
            (This : in Row_Table)
         return Natural
     is
-        Result : Interfaces.C.int := fl_table_row_get_rows (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_table_row_get_rows (This.Void_Ptr);
     begin
         return Natural (Result);
     exception
@@ -259,7 +259,7 @@ package body FLTK.Widgets.Groups.Tables.Row is
             Row  : in Positive)
         return Boolean
     is
-        Result : Interfaces.C.int := fl_table_row_row_selected
+        Result : constant Interfaces.C.int := fl_table_row_row_selected
             (This.Void_Ptr, Interfaces.C.int (Row) - 1);
     begin
         return Boolean'Val (Result);
@@ -275,7 +275,7 @@ package body FLTK.Widgets.Groups.Tables.Row is
             Row   : in     Positive;
             Value : in     Selection_State := Selected)
     is
-        Result : Interfaces.C.int := fl_table_row_select_row
+        Result : constant Interfaces.C.int := fl_table_row_select_row
            (This.Void_Ptr,
             Interfaces.C.int (Row) - 1,
             Selection_State'Pos (Value));
@@ -298,7 +298,7 @@ package body FLTK.Widgets.Groups.Tables.Row is
             Value : in     Selection_State := Selected)
         return Boolean
     is
-        Result : Interfaces.C.int := fl_table_row_select_row
+        Result : constant Interfaces.C.int := fl_table_row_select_row
            (This.Void_Ptr,
             Interfaces.C.int (Row) - 1,
             Selection_State'Pos (Value));
@@ -327,7 +327,7 @@ package body FLTK.Widgets.Groups.Tables.Row is
            (This : in Row_Table)
         return Row_Select_Mode
     is
-        Result : Interfaces.C.int := fl_table_row_get_type (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_table_row_get_type (This.Void_Ptr);
     begin
         return Row_Select_Mode'Val (Result);
     exception
@@ -355,7 +355,7 @@ package body FLTK.Widgets.Groups.Tables.Row is
             Row, Column : in     Positive;
             X, Y, W, H  :    out Integer)
     is
-        Result : Interfaces.C.int := fl_table_row_find_cell
+        Result : constant Interfaces.C.int := fl_table_row_find_cell
            (This.Void_Ptr,
             To_Cint (Context),
             Interfaces.C.int (Row) - 1,

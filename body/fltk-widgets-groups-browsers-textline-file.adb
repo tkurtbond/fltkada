@@ -266,7 +266,7 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
            (DA, DB : in Storage.Integer_Address)
         return Interfaces.C.int
     is
-        Result : FLTK.Filenames.Comparison := Current_Sort
+        Result : constant FLTK.Filenames.Comparison := Current_Sort
            (Interfaces.C.Strings.Value (filename_dname (DA, 0)),
             Interfaces.C.Strings.Value (filename_dname (DB, 0)));
     begin
@@ -411,7 +411,7 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
             Sort : in not null FLTK.Filenames.Compare_Function :=
                 FLTK.Filenames.Numeric_Sort'Access)
     is
-        Result : Natural := This.Load (Dir, Sort);
+        Ignore : constant Natural := This.Load (Dir, Sort);
     begin
         null;
     end Load;
@@ -425,7 +425,7 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
            (This : in File_Browser)
         return File_Kind
     is
-        Code : Interfaces.C.int := fl_file_browser_get_filetype (This.Void_Ptr);
+        Code : constant Interfaces.C.int := fl_file_browser_get_filetype (This.Void_Ptr);
     begin
         pragma Assert (Code in File_Kind'Pos (File_Kind'First) .. File_Kind'Pos (File_Kind'Last));
         return File_Kind'Val (Code);
@@ -448,7 +448,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
            (This : in File_Browser)
         return String
     is
-        Result : Interfaces.C.Strings.chars_ptr := fl_file_browser_get_filter (This.Void_Ptr);
+        Result : constant Interfaces.C.Strings.chars_ptr :=
+            fl_file_browser_get_filter (This.Void_Ptr);
     begin
         if Result = Interfaces.C.Strings.Null_Ptr then
             return "";

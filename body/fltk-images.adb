@@ -6,7 +6,7 @@
 
 with
 
-    Interfaces.C.Strings;
+    Interfaces.C;
 
 use type
 
@@ -181,7 +181,7 @@ package body FLTK.Images is
     procedure Raise_Fail_Errors
            (This : in Image'Class)
     is
-        Result : Interfaces.C.int := fl_image_fail (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_image_fail (This.Void_Ptr);
     begin
         if Result = fl_image_err_no_image and This.Is_Empty then
             raise No_Image_Error;

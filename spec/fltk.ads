@@ -593,7 +593,6 @@ private
 
     for Color_Component_Array'Component_Size use Interfaces.C.CHAR_BIT;
     pragma Convention (C, Color_Component_Array);
-    pragma Pack (Color_Component_Array);
 
 
 

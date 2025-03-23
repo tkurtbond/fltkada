@@ -415,7 +415,7 @@ package body FLTK.Widgets.Menus is
     procedure Adjust_Item_Store
            (This : in out Menu)
     is
-        Target : Natural := This.Number_Of_Items;
+        Target : constant Natural := This.Number_Of_Items;
     begin
         while Natural (This.My_Items.Length) > Target loop
             Free_Item (This.My_Items.Reference (This.My_Items.Last_Index));
@@ -446,9 +446,9 @@ package body FLTK.Widgets.Menus is
     procedure Item_Hook
            (C_Obj, User_Data : in Storage.Integer_Address)
     is
-        Ada_Ptr : Storage.Integer_Address := fl_widget_get_user_data (C_Obj);
+        Ada_Ptr : constant Storage.Integer_Address := fl_widget_get_user_data (C_Obj);
         Ada_Widget : access Widget'Class;
-        Action : Widget_Callback := Callback_Convert.To_Access (User_Data);
+        Action : constant Widget_Callback := Callback_Convert.To_Access (User_Data);
     begin
         pragma Assert (Ada_Ptr /= Null_Pointer);
         Ada_Widget := Widget_Convert.To_Pointer (Storage.To_Address (Ada_Ptr));
@@ -568,7 +568,7 @@ package body FLTK.Widgets.Menus is
            (This : in out Menu;
             Text : in     String)
     is
-        Added_Spot : Interfaces.C.int := fl_menu_add (This.Void_Ptr, Interfaces.C.To_C (Text));
+        Ignore : constant Interfaces.C.int := fl_menu_add (This.Void_Ptr, Interfaces.C.To_C (Text));
     begin
         This.Adjust_Item_Store;
     end Add;
@@ -579,7 +579,8 @@ package body FLTK.Widgets.Menus is
             Text : in     String)
         return Index
     is
-        Added_Spot : Interfaces.C.int := fl_menu_add (This.Void_Ptr, Interfaces.C.To_C (Text));
+        Added_Spot : constant Interfaces.C.int :=
+            fl_menu_add (This.Void_Ptr, Interfaces.C.To_C (Text));
     begin
         This.Adjust_Item_Store;
         return Index (Added_Spot + 1);
@@ -593,7 +594,7 @@ package body FLTK.Widgets.Menus is
             Shortcut : in     Key_Combo := No_Key;
             Flags    : in     Menu_Flag := Flag_Normal)
     is
-        Added_Spot : Interfaces.C.int := fl_menu_add2
+        Ignore : constant Interfaces.C.int := fl_menu_add2
            (This.Void_Ptr,
             Interfaces.C.To_C (Text),
             Interfaces.C.int (To_C (Shortcut)),
@@ -612,7 +613,7 @@ package body FLTK.Widgets.Menus is
             Flags    : in     Menu_Flag := Flag_Normal)
         return Index
     is
-        Added_Spot : Interfaces.C.int := fl_menu_add2
+        Added_Spot : constant Interfaces.C.int := fl_menu_add2
            (This.Void_Ptr,
             Interfaces.C.To_C (Text),
             Interfaces.C.int (To_C (Shortcut)),
@@ -631,7 +632,7 @@ package body FLTK.Widgets.Menus is
             Shortcut : in     String;
             Flags    : in     Menu_Flag := Flag_Normal)
     is
-        Added_Spot : Interfaces.C.int := fl_menu_add3
+        Ignore : constant Interfaces.C.int := fl_menu_add3
            (This.Void_Ptr,
             Interfaces.C.To_C (Text),
             Interfaces.C.To_C (Shortcut),
@@ -650,7 +651,7 @@ package body FLTK.Widgets.Menus is
             Flags    : in     Menu_Flag := Flag_Normal)
         return Index
     is
-        Added_Spot : Interfaces.C.int := fl_menu_add3
+        Added_Spot : constant Interfaces.C.int := fl_menu_add3
            (This.Void_Ptr,
             Interfaces.C.To_C (Text),
             Interfaces.C.To_C (Shortcut),
@@ -670,7 +671,7 @@ package body FLTK.Widgets.Menus is
             Shortcut : in     Key_Combo := No_Key;
             Flags    : in     Menu_Flag := Flag_Normal)
     is
-        Added_Spot : Interfaces.C.int := fl_menu_insert
+        Ignore : constant Interfaces.C.int := fl_menu_insert
            (This.Void_Ptr,
             Interfaces.C.int (Place) - 1,
             Interfaces.C.To_C (Text),
@@ -691,7 +692,7 @@ package body FLTK.Widgets.Menus is
             Flags    : in     Menu_Flag := Flag_Normal)
         return Index
     is
-        Added_Spot : Interfaces.C.int := fl_menu_insert
+        Added_Spot : constant Interfaces.C.int := fl_menu_insert
            (This.Void_Ptr,
             Interfaces.C.int (Place) - 1,
             Interfaces.C.To_C (Text),
@@ -712,7 +713,7 @@ package body FLTK.Widgets.Menus is
             Shortcut : in     String;
             Flags    : in     Menu_Flag := Flag_Normal)
     is
-        Added_Spot : Interfaces.C.int := fl_menu_insert2
+        Ignore : constant Interfaces.C.int := fl_menu_insert2
            (This.Void_Ptr,
             Interfaces.C.int (Place) - 1,
             Interfaces.C.To_C (Text),
@@ -733,7 +734,7 @@ package body FLTK.Widgets.Menus is
             Flags    : in     Menu_Flag := Flag_Normal)
         return Index
     is
-        Added_Spot : Interfaces.C.int := fl_menu_insert2
+        Added_Spot : constant Interfaces.C.int := fl_menu_insert2
            (This.Void_Ptr,
             Interfaces.C.int (Place) - 1,
             Interfaces.C.To_C (Text),
@@ -796,7 +797,7 @@ package body FLTK.Widgets.Menus is
            (This  : in out Menu;
             Place : in     Index)
     is
-        Result : Interfaces.C.int := fl_menu_clear_submenu
+        Result : constant Interfaces.C.int := fl_menu_clear_submenu
            (This.Void_Ptr,
             Interfaces.C.int (Place) - 1);
     begin
@@ -866,7 +867,7 @@ package body FLTK.Widgets.Menus is
             Name : in String)
         return FLTK.Menu_Items.Menu_Item_Reference
     is
-        Place : Extended_Index := This.Find_Index (Name);
+        Place : constant Extended_Index := This.Find_Index (Name);
     begin
         if Place = No_Index then
             raise No_Reference_Error;
@@ -880,7 +881,7 @@ package body FLTK.Widgets.Menus is
             Action : in Widget_Callback)
         return FLTK.Menu_Items.Menu_Item_Reference
     is
-        Place : Extended_Index := This.Find_Index (Action);
+        Place : constant Extended_Index := This.Find_Index (Action);
     begin
         if Place = No_Index then
             raise No_Reference_Error;
@@ -894,7 +895,8 @@ package body FLTK.Widgets.Menus is
             Name : in String)
         return Extended_Index
     is
-        Result : Interfaces.C.int := fl_menu_find_index (This.Void_Ptr, Interfaces.C.To_C (Name));
+        Result : constant Interfaces.C.int :=
+            fl_menu_find_index (This.Void_Ptr, Interfaces.C.To_C (Name));
     begin
         return Extended_Index (Result + 1);
     end Find_Index;
@@ -905,7 +907,8 @@ package body FLTK.Widgets.Menus is
             Item : in FLTK.Menu_Items.Menu_Item)
         return Extended_Index
     is
-        Result : Interfaces.C.int := fl_menu_find_index2 (This.Void_Ptr, Wrapper (Item).Void_Ptr);
+        Result : constant Interfaces.C.int :=
+            fl_menu_find_index2 (This.Void_Ptr, Wrapper (Item).Void_Ptr);
     begin
         return Extended_Index (Result + 1);
     end Find_Index;
@@ -931,7 +934,7 @@ package body FLTK.Widgets.Menus is
     is
         Buffer : Interfaces.C.char_array :=
             (0 .. Interfaces.C.size_t (Item_Path_Max) => Interfaces.C.nul);
-        Result : Interfaces.C.int := fl_menu_item_pathname
+        Result : constant Interfaces.C.int := fl_menu_item_pathname
            (This.Void_Ptr,
             Buffer,
             Interfaces.C.int (Item_Path_Max),
@@ -959,7 +962,7 @@ package body FLTK.Widgets.Menus is
     is
         Buffer : Interfaces.C.char_array :=
             (0 .. Interfaces.C.size_t (Item_Path_Max) => Interfaces.C.nul);
-        Result : Interfaces.C.int := fl_menu_item_pathname
+        Result : constant Interfaces.C.int := fl_menu_item_pathname
            (This.Void_Ptr,
             Buffer,
             Interfaces.C.int (Item_Path_Max),
@@ -999,7 +1002,7 @@ package body FLTK.Widgets.Menus is
            (This : in Menu)
         return Menu_Iterators.Reversible_Iterator'Class is
     begin
-        return It : Iterator := (My_Container => This'Unrestricted_Access);
+        return It : constant Iterator := (My_Container => This'Unrestricted_Access);
     end Iterate;
 
 
@@ -1007,7 +1010,7 @@ package body FLTK.Widgets.Menus is
            (Object : in Iterator)
         return Cursor is
     begin
-        return Cu : Cursor :=
+        return Cu : constant Cursor :=
            (My_Container => Object.My_Container,
             My_Index     => 1);
     end First;
@@ -1018,7 +1021,7 @@ package body FLTK.Widgets.Menus is
             Place  : in Cursor)
         return Cursor is
     begin
-        return Cu : Cursor :=
+        return Cu : constant Cursor :=
            (My_Container => Place.My_Container,
             My_Index     => Place.My_Index + 1);
     end Next;
@@ -1028,7 +1031,7 @@ package body FLTK.Widgets.Menus is
            (Object : in Iterator)
         return Cursor is
     begin
-        return Cu : Cursor :=
+        return Cu : constant Cursor :=
            (My_Container => Object.My_Container,
             My_Index     => Object.My_Container.Number_Of_Items);
     end Last;
@@ -1039,7 +1042,7 @@ package body FLTK.Widgets.Menus is
             Place  : in Cursor)
         return Cursor is
     begin
-        return Cu : Cursor :=
+        return Cu : constant Cursor :=
            (My_Container => Place.My_Container,
             My_Index     => Place.My_Index - 1);
     end Previous;
@@ -1053,7 +1056,7 @@ package body FLTK.Widgets.Menus is
            (This : in Menu)
         return FLTK.Menu_Items.Menu_Item_Reference
     is
-        Place : Extended_Index := This.Chosen_Index;
+        Place : constant Extended_Index := This.Chosen_Index;
     begin
         if Place = No_Index then
             raise No_Reference_Error;
@@ -1066,7 +1069,7 @@ package body FLTK.Widgets.Menus is
            (This : in Menu)
         return String
     is
-        Ptr : Interfaces.C.Strings.chars_ptr := fl_menu_text (This.Void_Ptr);
+        Ptr : constant Interfaces.C.Strings.chars_ptr := fl_menu_text (This.Void_Ptr);
     begin
         if Ptr = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -1145,7 +1148,7 @@ package body FLTK.Widgets.Menus is
             Place : in Index)
         return String
     is
-        Result : Interfaces.C.Strings.chars_ptr := fl_menu_text2
+        Result : constant Interfaces.C.Strings.chars_ptr := fl_menu_text2
            (This.Void_Ptr,
             Interfaces.C.int (Place) - 1);
     begin
@@ -1226,7 +1229,7 @@ package body FLTK.Widgets.Menus is
            (This : in Menu)
         return Font_Kind
     is
-        Result : Interfaces.C.int := fl_menu_get_textfont (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_menu_get_textfont (This.Void_Ptr);
     begin
         return Font_Kind'Val (Result);
     exception
@@ -1248,7 +1251,7 @@ package body FLTK.Widgets.Menus is
            (This : in Menu)
         return Font_Size
     is
-        Result : Interfaces.C.int := fl_menu_get_textsize (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_menu_get_textsize (This.Void_Ptr);
     begin
         return Font_Size (Result);
     exception
@@ -1274,7 +1277,7 @@ package body FLTK.Widgets.Menus is
            (This : in Menu)
         return Box_Kind
     is
-        Result : Interfaces.C.int := fl_menu_get_down_box (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_menu_get_down_box (This.Void_Ptr);
     begin
         return Box_Kind'Val (Result);
     exception
@@ -1323,7 +1326,7 @@ package body FLTK.Widgets.Menus is
         return Extended_Index
     is
         C_Title : aliased Interfaces.C.char_array := Interfaces.C.To_C (Title);
-        Ptr : Storage.Integer_Address := fl_menu_popup
+        Ptr : constant Storage.Integer_Address := fl_menu_popup
            (This.Void_Ptr,
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
@@ -1342,7 +1345,7 @@ package body FLTK.Widgets.Menus is
             Initial    : in Extended_Index := No_Index)
         return Extended_Index
     is
-        Ptr : Storage.Integer_Address := fl_menu_pulldown
+        Ptr : constant Storage.Integer_Address := fl_menu_pulldown
            (This.Void_Ptr,
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
@@ -1371,7 +1374,7 @@ package body FLTK.Widgets.Menus is
             Require_Alt : in     Boolean := False)
         return access FLTK.Menu_Items.Menu_Item'Class
     is
-        Tentative_Result : Storage.Integer_Address := fl_menu_find_shortcut
+        Tentative_Result : constant Storage.Integer_Address := fl_menu_find_shortcut
            (This.Void_Ptr,
             Null_Pointer,
             Boolean'Pos (Require_Alt));
@@ -1392,7 +1395,7 @@ package body FLTK.Widgets.Menus is
         return access FLTK.Menu_Items.Menu_Item'Class
     is
         C_Place : Interfaces.C.int;
-        Tentative_Result : Storage.Integer_Address := fl_menu_find_shortcut
+        Tentative_Result : constant Storage.Integer_Address := fl_menu_find_shortcut
            (This.Void_Ptr,
             Storage.To_Integer (C_Place'Address),
             Boolean'Pos (Require_Alt));
@@ -1412,7 +1415,7 @@ package body FLTK.Widgets.Menus is
            (This : in out Menu)
         return access FLTK.Menu_Items.Menu_Item'Class
     is
-        Tentative_Pick : Storage.Integer_Address := fl_menu_test_shortcut (This.Void_Ptr);
+        Tentative_Pick : constant Storage.Integer_Address := fl_menu_test_shortcut (This.Void_Ptr);
     begin
         if Tentative_Pick = Null_Pointer then
             return null;

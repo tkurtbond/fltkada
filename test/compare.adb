@@ -15,11 +15,11 @@ procedure Compare is
     package TIO renames Ada.Text_IO;
     package FFN renames FLTK.Filenames;
 
-    Aardvark : String := "aardvark";
-    Zebra    : String := "Zebra";
-    Two      : String := "item_2";
-    Ten      : String := "item_10";
-    Cap_Ten  : String := "Item_10";
+    Aardvark : constant String := "aardvark";
+    Zebra    : constant String := "Zebra";
+    Two      : constant String := "item_2";
+    Ten      : constant String := "item_10";
+    Cap_Ten  : constant String := "Item_10";
 
 begin
 

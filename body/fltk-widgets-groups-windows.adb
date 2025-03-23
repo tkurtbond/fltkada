@@ -6,9 +6,7 @@
 
 with
 
-    Ada.Command_Line,
     Interfaces.C.Strings,
-    FLTK.Images.RGB,
     FLTK.Args_Marshal;
 
 use type
@@ -681,7 +679,7 @@ package body FLTK.Widgets.Groups.Windows is
            (This : in Window)
         return String
     is
-        Ptr : Interfaces.C.Strings.chars_ptr := fl_window_get_iconlabel (This.Void_Ptr);
+        Ptr : constant Interfaces.C.Strings.chars_ptr := fl_window_get_iconlabel (This.Void_Ptr);
     begin
         if Ptr = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -842,7 +840,7 @@ package body FLTK.Widgets.Groups.Windows is
            (This : in Window)
         return String
     is
-        Ptr : Interfaces.C.Strings.chars_ptr := fl_window_get_label (This.Void_Ptr);
+        Ptr : constant Interfaces.C.Strings.chars_ptr := fl_window_get_label (This.Void_Ptr);
     begin
         if Ptr = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -942,7 +940,7 @@ package body FLTK.Widgets.Groups.Windows is
            (This : in Window)
         return Boolean
     is
-        Result : Interfaces.C.int := fl_window_get_force_position (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_window_get_force_position (This.Void_Ptr);
     begin
         return Boolean'Val (Result);
     exception
@@ -1000,7 +998,7 @@ package body FLTK.Widgets.Groups.Windows is
            (This : in Window)
         return String
     is
-        Result : Interfaces.C.Strings.chars_ptr := fl_window_get_xclass (This.Void_Ptr);
+        Result : constant Interfaces.C.Strings.chars_ptr := fl_window_get_xclass (This.Void_Ptr);
     begin
         if Result = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -1021,7 +1019,7 @@ package body FLTK.Widgets.Groups.Windows is
     function Get_Default_X_Class
         return String
     is
-        Result : Interfaces.C.Strings.chars_ptr := fl_window_get_default_xclass;
+        Result : constant Interfaces.C.Strings.chars_ptr := fl_window_get_default_xclass;
     begin
         if Result = Interfaces.C.Strings.Null_Ptr then
             return "";

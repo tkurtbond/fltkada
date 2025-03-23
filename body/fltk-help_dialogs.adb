@@ -282,7 +282,8 @@ package body FLTK.Help_Dialogs is
            (This : in Help_Dialog)
         return String
     is
-        Raw_Chars : Interfaces.C.Strings.chars_ptr := fl_help_dialog_get_value (This.Void_Ptr);
+        Raw_Chars : constant Interfaces.C.Strings.chars_ptr :=
+            fl_help_dialog_get_value (This.Void_Ptr);
         use type Interfaces.C.Strings.chars_ptr;
     begin
         if Raw_Chars = Interfaces.C.Strings.Null_Ptr then

@@ -173,7 +173,7 @@ package body FLTK.Widgets.Groups.Packed is
            (This : in Packed_Group)
         return Pack_Kind
     is
-        Result : Interfaces.C.unsigned_char := fl_widget_get_type (This.Void_Ptr);
+        Result : constant Interfaces.C.unsigned_char := fl_widget_get_type (This.Void_Ptr);
     begin
         return Pack_Kind'Val (Result);
     exception

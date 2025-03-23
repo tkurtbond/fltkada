@@ -63,17 +63,17 @@ package body FLTK.Filenames is
     pragma Inline (filename_decode_uri);
 
     function filename_absolute
-           (To   : in Interfaces.C.char_array;
-            Len  : in Interfaces.C.int;
-            From : in Interfaces.C.char_array)
+           (To   :    out Interfaces.C.char_array;
+            Len  : in     Interfaces.C.int;
+            From : in     Interfaces.C.char_array)
         return Interfaces.C.int;
     pragma Import (C, filename_absolute, "filename_absolute");
     pragma Inline (filename_absolute);
 
     function filename_expand
-           (To   : in Interfaces.C.char_array;
-            Len  : in Interfaces.C.int;
-            From : in Interfaces.C.char_array)
+           (To   :    out Interfaces.C.char_array;
+            Len  : in     Interfaces.C.int;
+            From : in     Interfaces.C.char_array)
         return Interfaces.C.int;
     pragma Import (C, filename_expand, "filename_expand");
     pragma Inline (filename_expand);
@@ -111,9 +111,9 @@ package body FLTK.Filenames is
     pragma Inline (filename_name);
 
     function filename_relative
-           (To   : in Interfaces.C.char_array;
-            Len  : in Interfaces.C.int;
-            From : in Interfaces.C.char_array)
+           (To   :    out Interfaces.C.char_array;
+            Len  : in     Interfaces.C.int;
+            From : in     Interfaces.C.char_array)
         return Interfaces.C.int;
     pragma Import (C, filename_relative, "filename_relative");
     pragma Inline (filename_relative);
@@ -127,8 +127,9 @@ package body FLTK.Filenames is
     pragma Inline (filename_setext);
 
     function filename_open_uri
-           (U, M : in Interfaces.C.char_array;
-            Len  : in Interfaces.C.int)
+           (U   : in     Interfaces.C.char_array;
+            M   :    out Interfaces.C.char_array;
+            Len : in     Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, filename_open_uri, "filename_open_uri");
     pragma Inline (filename_open_uri);
@@ -171,7 +172,7 @@ package body FLTK.Filenames is
            (A, B : in String)
         return Comparison
     is
-        Result : Interfaces.C.int :=
+        Result : constant Interfaces.C.int :=
             filename_alphasort (Interfaces.C.To_C (A), Interfaces.C.To_C (B));
     begin
         pragma Assert
@@ -188,7 +189,7 @@ package body FLTK.Filenames is
            (A, B : in String)
         return Comparison
     is
-        Result : Interfaces.C.int :=
+        Result : constant Interfaces.C.int :=
             filename_casealphasort (Interfaces.C.To_C (A), Interfaces.C.To_C (B));
     begin
         pragma Assert
@@ -205,7 +206,7 @@ package body FLTK.Filenames is
            (A, B : in String)
         return Comparison
     is
-        Result : Interfaces.C.int :=
+        Result : constant Interfaces.C.int :=
             filename_numericsort (Interfaces.C.To_C (A), Interfaces.C.To_C (B));
     begin
         pragma Assert
@@ -222,7 +223,7 @@ package body FLTK.Filenames is
            (A, B : in String)
         return Comparison
     is
-        Result : Interfaces.C.int :=
+        Result : constant Interfaces.C.int :=
             filename_casenumericsort (Interfaces.C.To_C (A), Interfaces.C.To_C (B));
     begin
         pragma Assert
@@ -279,7 +280,7 @@ package body FLTK.Filenames is
            (URI : in Path_String)
         return Path_String
     is
-        C_Ptr : Interfaces.C.char_array := Interfaces.C.To_C (URI);
+        C_Ptr : constant Interfaces.C.char_array := Interfaces.C.To_C (URI);
     begin
         filename_decode_uri (C_Ptr);
         return Interfaces.C.To_Ada (C_Ptr);
@@ -291,7 +292,7 @@ package body FLTK.Filenames is
     is
         Message : Interfaces.C.char_array (1 .. Interfaces.C.size_t (error_bsize)) :=
            (others => Interfaces.C.char'Val (0));
-        Result : Interfaces.C.int := filename_open_uri
+        Result : constant Interfaces.C.int := filename_open_uri
            (Interfaces.C.To_C (URI),
             Message,
             error_bsize);
@@ -317,7 +318,7 @@ package body FLTK.Filenames is
     is
         Result : Interfaces.C.char_array (1 .. Interfaces.C.size_t (Max_Path_Length)) :=
            (others => Interfaces.C.char'Val (0));
-        Code : Interfaces.C.int := filename_absolute
+        Ignore : constant Interfaces.C.int := filename_absolute
            (Result,
             Interfaces.C.int (Max_Path_Length),
             Interfaces.C.To_C (Name));
@@ -333,7 +334,7 @@ package body FLTK.Filenames is
     is
         Result : Interfaces.C.char_array (1 .. Interfaces.C.size_t (Max_Path_Length)) :=
            (others => Interfaces.C.char'Val (0));
-        Code : Interfaces.C.int := filename_absolute
+        Code : constant Interfaces.C.int := filename_absolute
            (Result,
             Interfaces.C.int (Max_Path_Length),
             Interfaces.C.To_C (Name));
@@ -349,7 +350,7 @@ package body FLTK.Filenames is
     is
         Result : Interfaces.C.char_array (1 .. Interfaces.C.size_t (Max_Path_Length)) :=
            (others => Interfaces.C.char'Val (0));
-        Code : Interfaces.C.int := filename_relative
+        Ignore : constant Interfaces.C.int := filename_relative
            (Result,
             Interfaces.C.int (Max_Path_Length),
             Interfaces.C.To_C (Name));
@@ -365,7 +366,7 @@ package body FLTK.Filenames is
     is
         Result : Interfaces.C.char_array (1 .. Interfaces.C.size_t (Max_Path_Length)) :=
            (others => Interfaces.C.char'Val (0));
-        Code : Interfaces.C.int := filename_relative
+        Code : constant Interfaces.C.int := filename_relative
            (Result,
             Interfaces.C.int (Max_Path_Length),
             Interfaces.C.To_C (Name));
@@ -381,7 +382,7 @@ package body FLTK.Filenames is
     is
         Result : Interfaces.C.char_array (1 .. Interfaces.C.size_t (Max_Path_Length)) :=
            (others => Interfaces.C.char'Val (0));
-        Code : Interfaces.C.int := filename_expand
+        Ignore : constant Interfaces.C.int := filename_expand
            (Result,
             Interfaces.C.int (Max_Path_Length),
             Interfaces.C.To_C (Name));
@@ -397,7 +398,7 @@ package body FLTK.Filenames is
     is
         Result : Interfaces.C.char_array (1 .. Interfaces.C.size_t (Max_Path_Length)) :=
            (others => Interfaces.C.char'Val (0));
-        Code : Interfaces.C.int := filename_expand
+        Code : constant Interfaces.C.int := filename_expand
            (Result,
             Interfaces.C.int (Max_Path_Length),
             Interfaces.C.To_C (Name));
@@ -415,7 +416,7 @@ package body FLTK.Filenames is
            (Name : in Path_String)
         return Path_String
     is
-        Data : Interfaces.C.char_array := Interfaces.C.To_C (Name);
+        Data : constant Interfaces.C.char_array := Interfaces.C.To_C (Name);
     begin
         return Interfaces.C.Strings.Value (filename_name (Data));
     end Base_Name;
@@ -425,8 +426,8 @@ package body FLTK.Filenames is
            (Name : in Path_String)
         return Path_String
     is
-        Data : Interfaces.C.char_array := Interfaces.C.To_C (Name);
-        Result : Interfaces.C.Strings.chars_ptr := filename_ext (Data);
+        Data : constant Interfaces.C.char_array := Interfaces.C.To_C (Name);
+        Result : constant Interfaces.C.Strings.chars_ptr := filename_ext (Data);
     begin
         if Result = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -478,7 +479,7 @@ package body FLTK.Filenames is
            (DA, DB : in Storage.Integer_Address)
         return Interfaces.C.int
     is
-        Result : Comparison := Current_Sort
+        Result : constant Comparison := Current_Sort
            (Interfaces.C.Strings.Value (filename_dname (DA, 0)),
             Interfaces.C.Strings.Value (filename_dname (DB, 0)));
     begin

@@ -287,7 +287,7 @@ package body FLTK.Images.Shared is
            (This : in Shared_Image)
         return String
     is
-        Ptr : Interfaces.C.Strings.chars_ptr := fl_shared_image_name (This.Void_Ptr);
+        Ptr : constant Interfaces.C.Strings.chars_ptr := fl_shared_image_name (This.Void_Ptr);
     begin
         if Ptr = Interfaces.C.Strings.Null_Ptr then
             return "";

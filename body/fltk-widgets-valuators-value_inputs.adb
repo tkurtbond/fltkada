@@ -7,7 +7,7 @@
 with
 
     FLTK.Widgets.Groups,
-    Interfaces.C.Strings;
+    Interfaces.C;
 
 use type
 

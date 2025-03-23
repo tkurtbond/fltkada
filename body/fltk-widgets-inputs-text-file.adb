@@ -236,7 +236,7 @@ package body FLTK.Widgets.Inputs.Text.File is
            (This : in File_Input)
         return String
     is
-        Ptr : Interfaces.C.Strings.chars_ptr := fl_file_input_get_value (This.Void_Ptr);
+        Ptr : constant Interfaces.C.Strings.chars_ptr := fl_file_input_get_value (This.Void_Ptr);
     begin
         if Ptr = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -251,7 +251,7 @@ package body FLTK.Widgets.Inputs.Text.File is
            (This : in out File_Input;
             To   : in     String)
     is
-        Result : Interfaces.C.int := fl_file_input_set_value
+        Result : constant Interfaces.C.int := fl_file_input_set_value
            (This.Void_Ptr,
             Interfaces.C.To_C (To), To'Length);
     begin

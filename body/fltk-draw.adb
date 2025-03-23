@@ -14,8 +14,7 @@ with
 
 use type
 
-    Interfaces.C.int,
-    Interfaces.C.size_t;
+    Interfaces.C.int;
 
 
 package body FLTK.Draw is
@@ -642,7 +641,7 @@ package body FLTK.Draw is
     function Can_Do_Alpha_Blending
         return Boolean
     is
-        Result : Interfaces.C.int := fl_draw_can_do_alpha_blending;
+        Result : constant Interfaces.C.int := fl_draw_can_do_alpha_blending;
     begin
         if Result = 1 then
             return True;
@@ -662,7 +661,7 @@ package body FLTK.Draw is
         return String is
     begin
         return Interfaces.C.Strings.Value
-            (fl_draw_shortcut_label (Interfaces.C.unsigned (To_C (Keys))));
+            (fl_draw_shortcut_label (To_C (Keys)));
     end Shortcut_Label;
 
 
@@ -716,7 +715,7 @@ package body FLTK.Draw is
         return Boolean
     is
         CX, CY, CW, CH : Interfaces.C.int;
-        Result : Interfaces.C.int := fl_draw_clip_box
+        Result : constant Interfaces.C.int := fl_draw_clip_box
            (Interfaces.C.int (X),
             Interfaces.C.int (Y),
             Interfaces.C.int (W),
@@ -1038,14 +1037,13 @@ package body FLTK.Draw is
     Image_Func_Ptr : Image_Draw_Function;
 
     procedure Draw_Image_Hook
-           (User    : in Storage.Integer_Address;
+           (Ignore  : in Storage.Integer_Address;
             X, Y, W : in Interfaces.C.int;
             Buf_Ptr : in Storage.Integer_Address);
-
     pragma Convention (C, Draw_Image_Hook);
 
     procedure Draw_Image_Hook
-           (User    : in Storage.Integer_Address;
+           (Ignore  : in Storage.Integer_Address;
             X, Y, W : in Interfaces.C.int;
             Buf_Ptr : in Storage.Integer_Address)
     is
@@ -1108,14 +1106,13 @@ package body FLTK.Draw is
     Mono_Image_Func_Ptr : Image_Draw_Function;
 
     procedure Draw_Image_Mono_Hook
-           (User    : in Storage.Integer_Address;
+           (Ignore  : in Storage.Integer_Address;
             X, Y, W : in Interfaces.C.int;
             Buf_Ptr : in Storage.Integer_Address);
-
     pragma Convention (C, Draw_Image_Mono_Hook);
 
     procedure Draw_Image_Mono_Hook
-           (User    : in Storage.Integer_Address;
+           (Ignore  : in Storage.Integer_Address;
             X, Y, W : in Interfaces.C.int;
             Buf_Ptr : in Storage.Integer_Address)
     is
@@ -1152,7 +1149,7 @@ package body FLTK.Draw is
     is
         C_Data : Pixmap_Marshal.chars_ptr_array_access :=
             Pixmap_Marshal.Marshal_Data (Values, Colors, Pixels);
-        Result : Interfaces.C.int := fl_draw_draw_pixmap
+        Result : constant Interfaces.C.int := fl_draw_draw_pixmap
            (Storage.To_Integer (C_Data (C_Data'First)'Address),
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
@@ -1172,7 +1169,7 @@ package body FLTK.Draw is
             Alpha      : in Integer := 0)
         return Color_Component_Array
     is
-        My_Len : Integer := (if Alpha = 0 then W * H * 3 else W * H * 4);
+        My_Len : constant Integer := (if Alpha = 0 then W * H * 3 else W * H * 4);
         Result : Color_Component_Array (1 .. My_Len);
         Buffer : Storage.Integer_Address;
     begin
@@ -1201,7 +1198,7 @@ package body FLTK.Draw is
             Callback : in Symbol_Draw_Function;
             Scalable : in Boolean)
     is
-        Ret_Val : Interfaces.C.int := fl_draw_add_symbol
+        Ret_Val : constant Interfaces.C.int := fl_draw_add_symbol
            (Interfaces.C.To_C (Text),
             Storage.To_Integer (Callback.all'Address),
             Boolean'Pos (Scalable));
@@ -1374,7 +1371,7 @@ package body FLTK.Draw is
             Name       : in String;
             Hue        : in Color)
     is
-        Ret_Val : Interfaces.C.int := fl_draw_draw_symbol
+        Ret_Val : constant Interfaces.C.int := fl_draw_draw_symbol
            (Interfaces.C.To_C (Name),
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
@@ -1479,7 +1476,7 @@ package body FLTK.Draw is
         Buffer : Interfaces.C.Strings.chars_ptr;
         Length : Interfaces.C.int;
         Temp   : Interfaces.C.char_array := Interfaces.C.To_C (Text);
-        Result : Char_Pointers.Pointer := fl_draw_expand_text
+        Result : constant Char_Pointers.Pointer := fl_draw_expand_text
            (Temp, Buffer, 0,
             Interfaces.C.double (Max_Width),
             Length,

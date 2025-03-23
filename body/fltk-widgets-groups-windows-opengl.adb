@@ -7,8 +7,7 @@
 with
 
     FLTK.Args_Marshal,
-    Interfaces.C,
-    System;
+    Interfaces.C;
 
 use type
 

@@ -6,8 +6,7 @@
 
 with
 
-    FLTK.Widgets.Groups,
-    Interfaces.C.Strings;
+    FLTK.Widgets.Groups;
 
 
 package body FLTK.Widgets.Valuators.Dials is
@@ -284,7 +283,7 @@ package body FLTK.Widgets.Valuators.Dials is
             X, Y, W, H : in     Integer)
         return Event_Outcome
     is
-        Result : Interfaces.C.int := fl_dial_handle2
+        Result : constant Interfaces.C.int := fl_dial_handle2
            (This.Void_Ptr,
             Event_Kind'Pos (Event),
             Interfaces.C.int (X),
@@ -308,7 +307,7 @@ package body FLTK.Widgets.Valuators.Dials is
            (This : in Dial)
         return Dial_Kind
     is
-        Result : Interfaces.C.unsigned_char := fl_widget_get_type (This.Void_Ptr);
+        Result : constant Interfaces.C.unsigned_char := fl_widget_get_type (This.Void_Ptr);
     begin
         return Dial_Kind'Val (Result);
     exception

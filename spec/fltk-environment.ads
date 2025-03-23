@@ -317,7 +317,6 @@ private
 
 
     pragma Convention (C, Binary_Data);
-    pragma Pack (Binary_Data);
     for Binary_Data'Component_Size use Interfaces.C.CHAR_BIT;
 
 

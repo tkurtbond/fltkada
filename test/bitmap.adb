@@ -117,7 +117,7 @@ is
 
 
     procedure Button_Callback
-           (Item : in out FLTK.Widgets.Widget'Class)
+           (Ignore : in out FLTK.Widgets.Widget'Class)
     is
         New_Align : FLTK.Alignment;
     begin

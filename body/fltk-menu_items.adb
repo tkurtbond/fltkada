@@ -419,7 +419,7 @@ package body FLTK.Menu_Items is
            (This : in Menu_Item)
         return String
     is
-        Ptr : Interfaces.C.Strings.chars_ptr := fl_menu_item_get_label (This.Void_Ptr);
+        Ptr : constant Interfaces.C.Strings.chars_ptr := fl_menu_item_get_label (This.Void_Ptr);
     begin
         if Ptr = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -466,7 +466,7 @@ package body FLTK.Menu_Items is
            (This : in Menu_Item)
         return Font_Kind
     is
-        Result : Interfaces.C.int := fl_menu_item_get_labelfont (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_menu_item_get_labelfont (This.Void_Ptr);
     begin
         return Font_Kind'Val (Result);
     exception
@@ -488,7 +488,7 @@ package body FLTK.Menu_Items is
            (This : in Menu_Item)
         return Font_Size
     is
-        Result : Interfaces.C.int := fl_menu_item_get_labelsize (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_menu_item_get_labelsize (This.Void_Ptr);
     begin
         return Font_Size (Result);
     exception
@@ -510,7 +510,7 @@ package body FLTK.Menu_Items is
            (This : in Menu_Item)
         return Label_Kind
     is
-        Result : Interfaces.C.int := fl_menu_item_get_labeltype (This.Void_Ptr);
+        Result : constant Interfaces.C.int := fl_menu_item_get_labeltype (This.Void_Ptr);
     begin
         return Label_Kind'Val (Result);
     exception
