@@ -1,12 +1,9 @@
 
-
 Approximate Progress List
 
 
 
-
 Overall estimate: 85+%
-
 
 
 
@@ -130,11 +127,9 @@ FLTK.Widgets.Valuators.Value_Outputs
 
 
 
-
 Partially Done:
 
 Fl_Graphics_Driver / FLTK.Devices.Graphics
-
 
 
 
@@ -168,7 +163,6 @@ Fl_PostScript_File_Device (internal Fl_PostScript_Graphics_Driver)
 
 
 
-
 Never:
 
 (C++ binary plugins) (I have no idea how to bind these)
@@ -189,7 +183,6 @@ Fl_System_Printer
 
 
 
-
 Bugs to fix:
 
 Fl_Wizard draw() method private/protected
@@ -206,7 +199,6 @@ the latest version?
 
 Fl_Table::callback has wrong signature, still around and unfixed in 1.4
 possibly this hasn't been noticed because it's only visible to doxygen
-
 
 
 
