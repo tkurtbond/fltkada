@@ -6,7 +6,8 @@
 
 with
 
-    FLTK.Images.Pixmaps;
+    FLTK.Images.Pixmaps,
+    System.Storage_Elements;
 
 
 package FLTK.Images.RGB is
@@ -19,16 +20,18 @@ package FLTK.Images.RGB is
 
     type RGB_Image_Array is array (Positive range <>) of RGB_Image;
 
+    type Size_Type is mod 2 ** System.Storage_Elements.Integer_Address'Size;
+
 
 
 
     --  Static Settings  --
 
     function Get_Max_Size
-        return Natural;
+        return Size_Type;
 
     procedure Set_Max_Size
-           (Value : in Natural);
+           (Value : in Size_Type);
 
 
 
@@ -45,8 +48,8 @@ package FLTK.Images.RGB is
                 Line_Size     : in Natural := 0)
             return RGB_Image
         with Pre => (if Line_Size = 0
-            then Data'Length = Width * Height * Depth
-            else Data'Length = Line_Size * Height)
+            then Data'Length >= Width * Height * Depth
+            else Data'Length >= Line_Size * Height)
             and Data'Length <= Get_Max_Size;
 
         function Create

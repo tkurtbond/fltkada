@@ -118,7 +118,9 @@ package body FLTK.Images.Bitmaps is
         begin
             return This : Bitmap do
                 This.Void_Ptr := new_fl_bitmap
-                   (Storage.To_Integer (Data (Data'First)'Address),
+                   ((if Data'Length > 0
+                     then Storage.To_Integer (Data (Data'First)'Address)
+                     else Null_Pointer),
                     Interfaces.C.int (Width),
                     Interfaces.C.int (Height));
             end return;
@@ -135,13 +137,13 @@ package body FLTK.Images.Bitmaps is
 
     --  Contracts  --
 
-    function To_Next_Byte
+    function Bytes_Needed
            (Bits : in Natural)
         return Natural is
     begin
-        return Integer (Float'Ceiling (Float (Bits) / Float (Color_Component_Array'Component_Size)))
-            * Color_Component_Array'Component_Size;
-    end To_Next_Byte;
+        return Integer (Float'Ceiling
+            (Float (Bits) / Float (Color_Component_Array'Component_Size)));
+    end Bytes_Needed;
 
 
 
@@ -191,7 +193,7 @@ package body FLTK.Images.Bitmaps is
            (This : in Bitmap)
         return Natural is
     begin
-        return To_Next_Byte (This.Get_W) * This.Get_H;
+        return Bytes_Needed (This.Get_W) * This.Get_H;
     end Data_Size;
 
 

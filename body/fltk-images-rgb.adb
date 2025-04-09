@@ -159,7 +159,9 @@ package body FLTK.Images.RGB is
         begin
             return This : RGB_Image do
                 This.Void_Ptr := new_fl_rgb_image
-                   (Storage.To_Integer (Data (Data'First)'Address),
+                   ((if Data'Length > 0
+                     then Storage.To_Integer (Data (Data'First)'Address)
+                     else Null_Pointer),
                     Interfaces.C.int (Width),
                     Interfaces.C.int (Height),
                     Interfaces.C.int (Depth),
@@ -192,14 +194,14 @@ package body FLTK.Images.RGB is
     --  Static Settings  --
 
     function Get_Max_Size
-        return Natural is
+        return Size_Type is
     begin
-        return Natural (fl_rgb_image_get_max_size);
+        return Size_Type (fl_rgb_image_get_max_size);
     end Get_Max_Size;
 
 
     procedure Set_Max_Size
-           (Value : in Natural) is
+           (Value : in Size_Type) is
     begin
         fl_rgb_image_set_max_size (Interfaces.C.size_t (Value));
     end Set_Max_Size;

@@ -15,9 +15,9 @@ package FLTK.Images.Bitmaps is
 
 
 
-    --  Rounds a number of bits up to the next byte boundary.
+    --  Calculates the bytes needed to hold a given number of bits.
 
-    function To_Next_Byte
+    function Bytes_Needed
            (Bits : in Natural)
         return Natural;
 
@@ -33,7 +33,7 @@ package FLTK.Images.Bitmaps is
                (Data          : in Color_Component_Array;
                 Width, Height : in Natural)
             return Bitmap
-        with Pre => Data'Length = To_Next_Byte (Width) * Height;
+        with Pre => Data'Length >= Bytes_Needed (Width) * Height;
 
     end Forge;
 
@@ -123,7 +123,7 @@ private
            (This : in out Bitmap);
 
 
-    pragma Inline (To_Next_Byte);
+    pragma Inline (Bytes_Needed);
 
     pragma Inline (Copy);
 
