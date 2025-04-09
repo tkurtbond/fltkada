@@ -59,8 +59,8 @@ abstract project Common is
         case Ver is
 
         when "release" =>
-            for Default_Switches ("Ada") use Ada_Common & "-O3" & "-Os" & "-gnatn";
-            for Default_Switches ("C++") use CPP_Common & "-O3" & "-Os";
+            for Default_Switches ("Ada") use Ada_Common & "-O3" & "-gnatn";
+            for Default_Switches ("C++") use CPP_Common & "-O3";
 
         when "debug" =>
             for Default_Switches ("Ada") use Ada_Common & "-O0" & "-gnata" & "-gnato" & "-g";
@@ -79,7 +79,7 @@ abstract project Common is
             null;
 
         when "debug" =>
-            for Default_Switches ("Ada") use Binder'Default_Switches ("Ada") & "-E";
+            for Default_Switches ("Ada") use Binder'Default_Switches ("Ada") & "-Es";
 
         end case;
     end Binder;
