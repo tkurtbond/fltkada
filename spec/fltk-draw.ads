@@ -252,9 +252,12 @@ package FLTK.Draw is
            (X, Y, W, H      : in Integer;
             Data            : in Color_Component_Array;
             Depth           : in Positive := 3;
-            Line_Data       : in Natural := 0;
+            Line_Size       : in Natural := 0;
             Flip_Horizontal : in Boolean := False;
-            Flip_Vertical   : in Boolean := False);
+            Flip_Vertical   : in Boolean := False)
+    with Pre => (if Line_Size = 0
+        then Data'Length >= W * H * Depth
+        else Data'Length >= Line_Size * H);
 
     procedure Draw_Image
            (X, Y, W, H : in Integer;
@@ -265,9 +268,12 @@ package FLTK.Draw is
            (X, Y, W, H      : in Integer;
             Data            : in Color_Component_Array;
             Depth           : in Positive := 1;
-            Line_Data       : in Natural := 0;
+            Line_Size       : in Natural := 0;
             Flip_Horizontal : Boolean := False;
-            Flip_Vertical   : Boolean := False);
+            Flip_Vertical   : Boolean := False)
+    with Pre => (if Line_Size = 0
+        then Data'Length >= W * H * Depth
+        else Data'Length >= Line_Size * H);
 
     procedure Draw_Image_Mono
            (X, Y, W, H : in Integer;
@@ -279,7 +285,7 @@ package FLTK.Draw is
             Colors : in FLTK.Images.Pixmaps.Color_Definition_Array;
             Pixels : in FLTK.Images.Pixmaps.Pixmap_Data;
             X, Y   : in Integer;
-            Hue    : in Color := Grey0_Color)
+            Tone   : in Color := Grey0_Color)
     with Pre =>
         Colors'Length = Values.Colors and
         Pixels'Length (1) = Values.Height and
@@ -292,9 +298,9 @@ package FLTK.Draw is
             Alpha      : in Integer := 0)
         return Color_Component_Array
     with Post =>
-           (if Alpha = 0
-            then Read_Image'Result'Length = W * H * 3
-            else Read_Image'Result'Length = W * H * 4);
+       (if Alpha = 0
+        then Read_Image'Result'Length = W * H * 3
+        else Read_Image'Result'Length = W * H * 4);
 
 
 

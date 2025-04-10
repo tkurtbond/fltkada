@@ -1006,12 +1006,12 @@ package body FLTK.Draw is
            (X, Y, W, H      : in Integer;
             Data            : in Color_Component_Array;
             Depth           : in Positive := 3;
-            Line_Data       : in Natural := 0;
+            Line_Size       : in Natural := 0;
             Flip_Horizontal : in Boolean := False;
             Flip_Vertical   : in Boolean := False)
     is
         Real_Depth : Integer := Depth;
-        Real_Line_Data : Integer := Line_Data;
+        Real_Line_Data : Integer := Line_Size;
     begin
         if Flip_Horizontal then
             Real_Depth := Real_Depth * (-1);
@@ -1077,12 +1077,12 @@ package body FLTK.Draw is
            (X, Y, W, H      : in Integer;
             Data            : in Color_Component_Array;
             Depth           : in Positive := 1;
-            Line_Data       : in Natural := 0;
+            Line_Size       : in Natural := 0;
             Flip_Horizontal : Boolean := False;
             Flip_Vertical   : Boolean := False)
     is
         Real_Depth : Integer := Depth;
-        Real_Line_Data : Integer := Line_Data;
+        Real_Line_Data : Integer := Line_Size;
     begin
         if Flip_Horizontal then
             Real_Depth := Real_Depth * (-1);
@@ -1149,7 +1149,7 @@ package body FLTK.Draw is
             Colors : in FLTK.Images.Pixmaps.Color_Definition_Array;
             Pixels : in FLTK.Images.Pixmaps.Pixmap_Data;
             X, Y   : in Integer;
-            Hue    : in Color := Grey0_Color)
+            Tone   : in Color := Grey0_Color)
     is
         C_Data : Pixmap_Marshal.chars_ptr_array_access :=
             Pixmap_Marshal.Marshal_Data (Values, Colors, Pixels);
@@ -1157,7 +1157,7 @@ package body FLTK.Draw is
            (Storage.To_Integer (C_Data (C_Data'First)'Address),
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
-            Interfaces.C.unsigned (Hue));
+            Interfaces.C.unsigned (Tone));
     begin
         pragma Assert (Result /= 0);
         Pixmap_Marshal.Free_Recursive (C_Data);
