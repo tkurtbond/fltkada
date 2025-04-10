@@ -82,7 +82,9 @@ package body FLTK.Images.RGB.PNG is
             return This : PNG_Image do
                 This.Void_Ptr := new_fl_png_image2
                    (Interfaces.C.To_C (Name),
-                    Storage.To_Integer (Data (Data'First)'Address),
+                    (if Data'Length > 0
+                     then Storage.To_Integer (Data (Data'First)'Address)
+                     else Null_Pointer),
                     Data'Length);
                 Raise_Fail_Errors (This);
             end return;

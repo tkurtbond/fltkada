@@ -81,7 +81,9 @@ package body FLTK.Images.RGB.JPEG is
             return This : JPEG_Image do
                 This.Void_Ptr := new_fl_jpeg_image2
                    (Interfaces.C.To_C (Name),
-                    Storage.To_Integer (Data (Data'First)'Address));
+                    (if Data'Length > 0
+                     then Storage.To_Integer (Data (Data'First)'Address)
+                     else Null_Pointer));
                 Raise_Fail_Errors (This);
             end return;
         end Create;

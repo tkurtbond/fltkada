@@ -636,7 +636,9 @@ package body FLTK.Widgets.Groups.Windows is
         end loop;
         fl_window_icons
            (This.Void_Ptr,
-            Storage.To_Integer (Pointers (Pointers'First)'Address),
+            (if Pointers'Length > 0
+             then Storage.To_Integer (Pointers (Pointers'First)'Address)
+             else Null_Pointer),
             Pointers'Length);
     end Set_Icons;
 
@@ -664,7 +666,9 @@ package body FLTK.Widgets.Groups.Windows is
             Pointers (Index) := Wrapper (Pics (Index)).Void_Ptr;
         end loop;
         fl_window_default_icons
-           (Storage.To_Integer (Pointers (Pointers'First)'Address),
+           ((if Pointers'Length > 0
+             then Storage.To_Integer (Pointers (Pointers'First)'Address)
+             else Null_Pointer),
             Pointers'Length);
     end Set_Default_Icons;
 

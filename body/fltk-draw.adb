@@ -1024,7 +1024,9 @@ package body FLTK.Draw is
             end if;
         end if;
         fl_draw_draw_image
-           (Storage.To_Integer (Data (Data'First)'Address),
+           ((if Data'Length > 0
+             then Storage.To_Integer (Data (Data'First)'Address)
+             else Null_Pointer),
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
             Interfaces.C.int (W),
@@ -1093,7 +1095,9 @@ package body FLTK.Draw is
             end if;
         end if;
         fl_draw_draw_image_mono
-           (Storage.To_Integer (Data (Data'First)'Address),
+           ((if Data'Length > 0
+             then Storage.To_Integer (Data (Data'First)'Address)
+             else Null_Pointer),
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
             Interfaces.C.int (W),
@@ -1174,13 +1178,18 @@ package body FLTK.Draw is
         Buffer : Storage.Integer_Address;
     begin
         Buffer := fl_draw_read_image
-           (Storage.To_Integer (Result (Result'First)'Address),
+           ((if Result'Length > 0
+             then Storage.To_Integer (Result (Result'First)'Address)
+             else Null_Pointer),
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
             Interfaces.C.int (W),
             Interfaces.C.int (H),
             Interfaces.C.int (Alpha));
-        pragma Assert (Buffer = Storage.To_Integer (Result (Result'First)'Address));
+        pragma Assert
+           ((if Result'Length > 0
+             then Buffer = Storage.To_Integer (Result (Result'First)'Address)
+             else Buffer = Null_Pointer));
         return Result;
     exception
     when Chk.Assertion_Error => raise Internal_FLTK_Error with

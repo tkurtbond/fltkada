@@ -1009,7 +1009,9 @@ package body FLTK.Widgets.Groups.Text_Displays is
         fl_text_display_highlight_data
            (This.Void_Ptr,
             Wrapper (Buff).Void_Ptr,
-            Storage.To_Integer (Table (Table'First)'Address),
+            (if Table'Length > 0
+             then Storage.To_Integer (Table (Table'First)'Address)
+             else Null_Pointer),
             Table'Length);
     end Highlight_Data;
 
@@ -1025,7 +1027,9 @@ package body FLTK.Widgets.Groups.Text_Displays is
         fl_text_display_highlight_data2
            (This.Void_Ptr,
             Wrapper (Buff).Void_Ptr,
-            Storage.To_Integer (Table (Table'First)'Address),
+            (if Table'Length > 0
+             then Storage.To_Integer (Table (Table'First)'Address)
+             else Null_Pointer),
             Table'Length,
             Interfaces.C.To_C (Unfinished),
             Storage.To_Integer (Style_Hook'Address),

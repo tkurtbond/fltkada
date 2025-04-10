@@ -751,7 +751,8 @@ package body FLTK.Widgets.Menus is
            (This  : in out Menu;
             Items : in     FLTK.Menu_Items.Menu_Item_Array)
     is
-        Pointers : aliased array (Items'First .. Items'Last + 1) of Storage.Integer_Address;
+        Pointers : aliased array
+            (Items'First .. Integer'Max (Items'First, Items'Last + 1)) of Storage.Integer_Address;
         pragma Convention (C, Pointers);
     begin
         for Place in Pointers'First .. Pointers'Last - 1 loop
