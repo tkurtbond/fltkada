@@ -21,6 +21,7 @@ with
 use type
 
     FLTK.Color,
+    FLTK.Size_Type,
     FLTK.Asks.Confirm_Result;
 
 
@@ -44,14 +45,14 @@ is
         return FLTK.Color_Component_Array
     is
         X_Frac, Y_Frac : Long_Float;
-        Offset : Integer;
+        Offset : FLTK.Size_Type;
     begin
-        return Data : FLTK.Color_Component_Array (1 .. W * H * 3) do
+        return Data : FLTK.Color_Component_Array (1 .. FLTK.Size_Type (W * H * 3)) do
             for Y in 0 .. H - 1 loop
                 Y_Frac := Long_Float (Y) / Long_Float (H - 1);
                 for X in 0 .. W - 1 loop
                     X_Frac := Long_Float (X) / Long_Float (W - 1);
-                    Offset := 3 * (Y * W + X);
+                    Offset := 3 * FLTK.Size_Type (Y * W + X);
                     Data (Offset + 1) :=
                         FLTK.Color_Component (255.0 * (1.0 - X_Frac) * (1.0 - Y_Frac));
                     Data (Offset + 2) :=

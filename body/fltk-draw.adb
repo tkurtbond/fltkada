@@ -1049,7 +1049,7 @@ package body FLTK.Draw is
             X, Y, W : in Interfaces.C.int;
             Buf_Ptr : in Storage.Integer_Address)
     is
-        Data_Buffer : Color_Component_Array (1 .. Integer (W));
+        Data_Buffer : Color_Component_Array (1 .. Size_Type (W));
         for Data_Buffer'Address use Storage.To_Address (Buf_Ptr);
         pragma Import (Ada, Data_Buffer);
     begin
@@ -1120,7 +1120,7 @@ package body FLTK.Draw is
             X, Y, W : in Interfaces.C.int;
             Buf_Ptr : in Storage.Integer_Address)
     is
-        Data_Buffer : Color_Component_Array (1 .. Integer (W));
+        Data_Buffer : Color_Component_Array (1 .. Size_Type (W));
         for Data_Buffer'Address use Storage.To_Address (Buf_Ptr);
         pragma Import (Ada, Data_Buffer);
     begin
@@ -1173,7 +1173,10 @@ package body FLTK.Draw is
             Alpha      : in Integer := 0)
         return Color_Component_Array
     is
-        My_Len : constant Integer := (if Alpha = 0 then W * H * 3 else W * H * 4);
+        My_Len : constant Size_Type :=
+           (if Alpha = 0
+            then Size_Type (W) * Size_Type (H) * 3
+            else Size_Type (W) * Size_Type (H) * 4);
         Result : Color_Component_Array (1 .. My_Len);
         Buffer : Storage.Integer_Address;
     begin

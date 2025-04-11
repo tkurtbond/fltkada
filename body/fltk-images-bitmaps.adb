@@ -191,15 +191,15 @@ package body FLTK.Images.Bitmaps is
 
     function Data_Size
            (This : in Bitmap)
-        return Natural is
+        return Size_Type is
     begin
-        return Bytes_Needed (This.Get_W) * This.Get_H;
+        return Size_Type (Bytes_Needed (This.Get_W)) * Size_Type (This.Get_H);
     end Data_Size;
 
 
     function Get_Datum
            (This  : in Bitmap;
-            Place : in Positive)
+            Place : in Positive_Size)
         return Color_Component
     is
         The_Data : Color_Component_Array (1 .. This.Data_Size);
@@ -212,7 +212,7 @@ package body FLTK.Images.Bitmaps is
 
     procedure Set_Datum
            (This  : in out Bitmap;
-            Place : in     Positive;
+            Place : in     Positive_Size;
             Value : in     Color_Component)
     is
         The_Data : Color_Component_Array (1 .. This.Data_Size);
@@ -225,8 +225,8 @@ package body FLTK.Images.Bitmaps is
 
     function Slice
            (This : in Bitmap;
-            Low  : in Positive;
-            High : in Natural)
+            Low  : in Positive_Size;
+            High : in Size_Type)
         return Color_Component_Array
     is
         The_Data : Color_Component_Array (1 .. This.Data_Size);
@@ -239,7 +239,7 @@ package body FLTK.Images.Bitmaps is
 
     procedure Overwrite
            (This   : in out Bitmap;
-            Place  : in     Positive;
+            Place  : in     Positive_Size;
             Values : in     Color_Component_Array)
     is
         The_Data : Color_Component_Array (1 .. This.Data_Size);

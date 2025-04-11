@@ -6,7 +6,8 @@
 
 with
 
-    Ada.Finalization;
+    Ada.Finalization,
+    System;
 
 private with
 
@@ -34,18 +35,22 @@ package FLTK is
     --  Text buffers for marshalling purposes will be this size.
     Buffer_Size : constant Natural := 1024;
 
+    --  For image data arrays.
+    type Size_Type is mod 2 ** System.Word_Size;
+    subtype Positive_Size is Size_Type range 1 .. Size_Type'Last;
+
 
 
 
     --  Color  --
 
-    --  Values scale from A/Black to X/White
+    --  Values scale from A/Black to X/White.
     type Greyscale is new Character range 'A' .. 'X';
 
     type Color is mod 2**32;
 
     type Color_Component is mod 256;
-    type Color_Component_Array is array (Positive range <>) of aliased Color_Component;
+    type Color_Component_Array is array (Positive_Size range <>) of aliased Color_Component;
 
     subtype Blend is Float range 0.0 .. 1.0;
 

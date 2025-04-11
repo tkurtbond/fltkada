@@ -6,8 +6,7 @@
 
 with
 
-    FLTK.Images.Pixmaps,
-    System.Storage_Elements;
+    FLTK.Images.Pixmaps;
 
 
 package FLTK.Images.RGB is
@@ -19,8 +18,6 @@ package FLTK.Images.RGB is
         with Implicit_Dereference => Data;
 
     type RGB_Image_Array is array (Positive range <>) of RGB_Image;
-
-    type Size_Type is mod 2 ** System.Storage_Elements.Integer_Address'Size;
 
 
 
@@ -48,8 +45,8 @@ package FLTK.Images.RGB is
                 Line_Size     : in Natural := 0)
             return RGB_Image
         with Pre => (if Line_Size = 0
-            then Data'Length >= Width * Height * Depth
-            else Data'Length >= Line_Size * Height)
+            then Data'Length >= Size_Type (Width) * Size_Type (Height) * Size_Type (Depth)
+            else Data'Length >= Size_Type (Line_Size) * Size_Type (Height))
             and Data'Length <= Get_Max_Size;
 
         function Create
@@ -101,31 +98,31 @@ package FLTK.Images.RGB is
 
     function Data_Size
            (This : in RGB_Image)
-        return Natural;
+        return Size_Type;
 
     function Get_Datum
            (This  : in RGB_Image;
-            Place : in Positive)
+            Place : in Positive_Size)
         return Color_Component
     with Pre => Place <= This.Data_Size;
 
     procedure Set_Datum
            (This  : in out RGB_Image;
-            Place : in     Positive;
+            Place : in     Positive_Size;
             Value : in     Color_Component)
     with Pre => Place <= This.Data_Size;
 
     function Slice
            (This : in RGB_Image;
-            Low  : in Positive;
-            High : in Natural)
+            Low  : in Positive_Size;
+            High : in Size_Type)
         return Color_Component_Array
     with Pre => High <= This.Data_Size,
-        Post => Slice'Result'Length = Integer'Max (0, High - Low + 1);
+        Post => Slice'Result'Length = Size_Type'Max (0, High - Low + 1);
 
     procedure Overwrite
            (This   : in out RGB_Image;
-            Place  : in     Positive;
+            Place  : in     Positive_Size;
             Values : in     Color_Component_Array)
     with Pre => Place + Values'Length - 1 <= This.Data_Size;
 

@@ -256,8 +256,8 @@ package FLTK.Draw is
             Flip_Horizontal : in Boolean := False;
             Flip_Vertical   : in Boolean := False)
     with Pre => (if Line_Size = 0
-        then Data'Length >= W * H * Depth
-        else Data'Length >= Line_Size * H);
+        then Data'Length >= Size_Type (W) * Size_Type (H) * Size_Type (Depth)
+        else Data'Length >= Size_Type (Line_Size) * Size_Type (H));
 
     procedure Draw_Image
            (X, Y, W, H : in Integer;
@@ -272,8 +272,8 @@ package FLTK.Draw is
             Flip_Horizontal : Boolean := False;
             Flip_Vertical   : Boolean := False)
     with Pre => (if Line_Size = 0
-        then Data'Length >= W * H * Depth
-        else Data'Length >= Line_Size * H);
+        then Data'Length >= Size_Type (W) * Size_Type (H) * Size_Type (Depth)
+        else Data'Length >= Size_Type (Line_Size) * Size_Type (H));
 
     procedure Draw_Image_Mono
            (X, Y, W, H : in Integer;
@@ -299,8 +299,8 @@ package FLTK.Draw is
         return Color_Component_Array
     with Post =>
        (if Alpha = 0
-        then Read_Image'Result'Length = W * H * 3
-        else Read_Image'Result'Length = W * H * 4);
+        then Read_Image'Result'Length = Size_Type (W) * Size_Type (H) * 3
+        else Read_Image'Result'Length = Size_Type (W) * Size_Type (H) * 4);
 
 
 

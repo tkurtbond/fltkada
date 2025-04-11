@@ -34,7 +34,8 @@ is
     Dimension : constant Integer := 256;
 
 
-    subtype Image_Data is FLTK.Color_Component_Array (1 .. Dimension ** 2 * Channels);
+    subtype Image_Data is FLTK.Color_Component_Array
+        (1 .. FLTK.Size_Type (Dimension ** 2 * Channels));
     type Image_Data_Array is array (Positive range <>) of Image_Data;
 
 
@@ -43,7 +44,7 @@ is
     begin
         for X in Integer range 0 .. 9 loop
             for Y in Integer range 0 .. 9 loop
-                Store (Y * Dimension * Channels + X * Channels + 4) := 255;
+                Store (FLTK.Size_Type (Channels * (Y * Dimension + X) + 4)) := 255;
             end loop;
         end loop;
     end Black_Box_Corner;
@@ -82,10 +83,10 @@ is
                         My_Alpha := FLTK.Color_Component (Float (My_Alpha) * (1.0 - Fill) * 10.0);
                     end if;
 
-                    Store (Y * Dimension * Channels + X * Channels + 1) := Grey;
-                    Store (Y * Dimension * Channels + X * Channels + 2) := Grey;
-                    Store (Y * Dimension * Channels + X * Channels + 3) := Grey;
-                    Store (Y * Dimension * Channels + X * Channels + 4) := My_Alpha;
+                    Store (FLTK.Size_Type (Channels * (Y * Dimension + X) + 1)) := Grey;
+                    Store (FLTK.Size_Type (Channels * (Y * Dimension + X) + 2)) := Grey;
+                    Store (FLTK.Size_Type (Channels * (Y * Dimension + X) + 3)) := Grey;
+                    Store (FLTK.Size_Type (Channels * (Y * Dimension + X) + 4)) := My_Alpha;
                 end if;
             end loop;
         end loop;
@@ -106,8 +107,10 @@ is
             if (X + X_Offset >= 0) and (X + X_Offset < Dimension) then
                 for Y in Integer range Y_Offset - W .. Y_Offset + W - 1 loop
                     Grey := FLTK.Color_Component (abs (Y - Y_Offset));
-                    Store (Y * Dimension * Channels + (X + X_Offset) * Channels + 3) := Grey;
-                    Store (Y * Dimension * Channels + (X + X_Offset) * Channels + 4) := 127;
+                    Store (FLTK.Size_Type
+                        (Channels * (Y * Dimension + (X + X_Offset)) + 3)) := Grey;
+                    Store (FLTK.Size_Type
+                        (Channels * (Y * Dimension + (X + X_Offset)) + 4)) := 127;
                 end loop;
             end if;
         end loop;
