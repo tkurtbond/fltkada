@@ -86,6 +86,30 @@ package body FLTK.Widgets.Boxes is
     --  Constructors  --
     --------------------
 
+    --  Hole successfully dug out of
+    procedure box_extra_init_hook
+           (Ada_Obj    : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int;
+            C_Str      : in Interfaces.C.Strings.chars_ptr);
+    pragma Export (C, box_extra_init_hook, "box_extra_init_hook");
+
+    procedure box_extra_init_hook
+           (Ada_Obj    : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int;
+            C_Str      : in Interfaces.C.Strings.chars_ptr)
+    is
+        My_Box : Box;
+        for My_Box'Address use Storage.To_Address (Ada_Obj);
+        pragma Import (Ada, My_Box);
+    begin
+        Extra_Init
+           (My_Box,
+            Integer (X), Integer (Y),
+            Integer (W), Integer (H),
+            Interfaces.C.Strings.Value (C_Str));
+    end box_extra_init_hook;
+
+
     procedure Extra_Init
            (This       : in out Box;
             X, Y, W, H : in     Integer;

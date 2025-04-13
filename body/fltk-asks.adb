@@ -234,9 +234,9 @@ package body FLTK.Asks is
 
 
 
-    ---------------
-    --  Cleanup  --
-    ---------------
+    -------------------
+    --  Destructors  --
+    -------------------
 
     procedure Finalize
            (This : in out Dialog_String_Final_Controller)
@@ -250,6 +250,21 @@ package body FLTK.Asks is
         Free (Yes_Str);
         Free (Chooser_OK_Str);
     end Finalize;
+
+
+
+
+    --------------------
+    --  Constructors  --
+    --------------------
+
+    --  You can get out of a hole by digging deeper, right?
+    procedure fl_box_extra_init
+           (Ada_Obj    : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int;
+            C_Str      : in Interfaces.C.char_array);
+    pragma Import (C, fl_box_extra_init, "fl_box_extra_init");
+    pragma Inline (fl_box_extra_init);
 
 
 
@@ -369,6 +384,10 @@ package body FLTK.Asks is
             Interfaces.C.Strings.Null_Ptr);
     begin
         return Choice_Result'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "fl_choice returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Choice;
 
 
@@ -384,6 +403,10 @@ package body FLTK.Asks is
             Interfaces.C.Strings.Null_Ptr);
     begin
         return Choice_Result'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "fl_choice returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Choice;
 
 
@@ -400,6 +423,10 @@ package body FLTK.Asks is
             Interfaces.C.Strings.To_Chars_Ptr (Str3'Unchecked_Access));
     begin
         return Choice_Result'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "fl_choice returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
     end Choice;
 
 
@@ -685,6 +712,14 @@ begin
 
     Wrapper (Icon_Box).Void_Ptr := fl_ask_message_icon;
     Wrapper (Icon_Box).Needs_Dealloc := False;
+    fl_box_extra_init
+       (Storage.To_Integer (Icon_Box'Address),
+        Interfaces.C.int (Icon_Box.Get_X),
+        Interfaces.C.int (Icon_Box.Get_Y),
+        Interfaces.C.int (Icon_Box.Get_W),
+        Interfaces.C.int (Icon_Box.Get_H),
+        Interfaces.C.To_C (Icon_Box.Get_Label));
+
 
     fl_ask_file_chooser_callback (Storage.To_Integer (File_Chooser_Callback_Hook'Address));
 

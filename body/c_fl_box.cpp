@@ -11,6 +11,16 @@
 
 
 
+//  Telprot stopover
+
+extern "C" void box_extra_init_hook(void * aobj, int x, int y, int w, int h, const char * l);
+void fl_box_extra_init(void * adaobj, int x, int y, int w, int h, const char * label) {
+    box_extra_init_hook(adaobj, x, y, w, h, label);
+}
+
+
+
+
 //  Exports from Ada
 
 extern "C" void widget_draw_hook(void * ud);

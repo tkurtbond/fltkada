@@ -172,6 +172,10 @@ package FLTK.Asks is
            (Font : in Font_Kind;
             Size : in Font_Size);
 
+    --  Technically the returned Box should have a parent, but you can't access
+    --  it for annoying technical reasons relating to how the Choice functions
+    --  work in C++. You shouldn't be trying to poke at those internals anyway.
+    --  Just stick to calling subprograms to change stuff about this Box.
     function Get_Message_Icon
         return FLTK.Widgets.Boxes.Box_Reference;
 

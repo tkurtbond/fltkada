@@ -8,6 +8,9 @@
 #define FL_BOX_GUARD
 
 
+extern "C" void fl_box_extra_init(void * adaobj, int x, int y, int w, int h, const char * label);
+
+
 typedef void* BOX;
 
 
