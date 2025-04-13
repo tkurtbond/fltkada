@@ -1024,13 +1024,13 @@ package body FLTK.Widgets is
     begin
         if Parent_Ptr /= Null_Pointer then
             Parent_Ptr := fl_widget_get_user_data (Parent_Ptr);
-            pragma Assert (Parent_Ptr /= Null_Pointer);
+            --  Can't assert user data being not null here because fl_ask is a bitch,
+            --  so have to fall back on saying that if it's null then you get nothing.
+            --  Any widget created by users of this binding will have appropriate back
+            --  reference to the corresponding Ada object in the user data anyway.
             Actual_Parent := Group_Convert.To_Pointer (Storage.To_Address (Parent_Ptr));
         end if;
         return Actual_Parent;
-    exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "Widget returned by Fl_Widget::parent has no user_data reference back to Ada";
     end Parent;
 
 
