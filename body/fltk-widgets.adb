@@ -637,10 +637,13 @@ package body FLTK.Widgets is
     procedure Extra_Final
            (This : in out Widget)
     is
-        Maybe_Parent : constant access FLTK.Widgets.Groups.Group'Class := This.Parent;
+        Maybe_Parent : access FLTK.Widgets.Groups.Group'Class;
     begin
-        if Maybe_Parent /= null then
-            Maybe_Parent.Remove (This);
+        if This.Needs_Dealloc then
+            Maybe_Parent := This.Parent;
+            if Maybe_Parent /= null then
+                Maybe_Parent.Remove (This);
+            end if;
         end if;
     end Extra_Final;
 

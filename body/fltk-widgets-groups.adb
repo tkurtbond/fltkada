@@ -217,7 +217,9 @@ package body FLTK.Widgets.Groups is
     procedure Extra_Final
            (This : in out Group) is
     begin
-        This.Clear;
+        if This.Needs_Dealloc then
+            This.Clear;
+        end if;
         Extra_Final (Widget (This));
     end Extra_Final;
 
