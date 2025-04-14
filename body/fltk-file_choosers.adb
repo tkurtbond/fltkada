@@ -535,28 +535,11 @@ package body FLTK.File_Choosers is
     --  Destructors  --
     -------------------
 
-    --  Releasing carrier pigeon
-    procedure fl_button_extra_final
-           (Ada_Obj : in Storage.Integer_Address);
-    pragma Import (C, fl_button_extra_final, "fl_button_extra_final");
-    pragma Inline (fl_button_extra_final);
-
-
-    --  Entering wormhole
-    procedure fl_check_button_extra_final
-           (Ada_Obj : in Storage.Integer_Address);
-    pragma Import (C, fl_check_button_extra_final, "fl_check_button_extra_final");
-    pragma Inline (fl_check_button_extra_final);
-
-
     procedure Extra_Final
            (This : in out File_Chooser)
     is
         use Interfaces.C.Strings;
     begin
-        fl_button_extra_final (Storage.To_Integer (This.New_Butt'Address));
-        fl_check_button_extra_final (Storage.To_Integer (This.Preview_Butt'Address));
-        fl_check_button_extra_final (Storage.To_Integer (This.Hidden_Butt'Address));
         Free (This.My_Label);
         Free (This.My_OK_Label);
     end Extra_Final;

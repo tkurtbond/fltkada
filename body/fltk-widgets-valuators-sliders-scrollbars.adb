@@ -90,22 +90,6 @@ package body FLTK.Widgets.Valuators.Sliders.Scrollbars is
     --  Destructors  --
     -------------------
 
-    --  End of the line
-    procedure scrollbar_extra_final_hook
-           (Ada_Obj : in Storage.Integer_Address);
-    pragma Export (C, scrollbar_extra_final_hook, "scrollbar_extra_final_hook");
-
-    procedure scrollbar_extra_final_hook
-           (Ada_Obj : in Storage.Integer_Address)
-    is
-        My_Scrollbar : Scrollbar;
-        for My_Scrollbar'Address use Storage.To_Address (Ada_Obj);
-        pragma Import (Ada, My_Scrollbar);
-    begin
-        Extra_Final (My_Scrollbar);
-    end scrollbar_extra_final_hook;
-
-
     procedure Extra_Final
            (This : in out Scrollbar) is
     begin

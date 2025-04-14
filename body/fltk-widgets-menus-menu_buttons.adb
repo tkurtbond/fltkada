@@ -90,22 +90,6 @@ package body FLTK.Widgets.Menus.Menu_Buttons is
     --  Destructors  --
     -------------------
 
-    --  More magic
-    procedure menu_button_extra_final_hook
-           (Ada_Obj : in Storage.Integer_Address);
-    pragma Export (C, menu_button_extra_final_hook, "menu_button_extra_final_hook");
-
-    procedure menu_button_extra_final_hook
-           (Ada_Obj : in Storage.Integer_Address)
-    is
-        My_Menu_Button : Menu_Button;
-        for My_Menu_Button'Address use Storage.To_Address (Ada_Obj);
-        pragma Import (Ada, My_Menu_Button);
-    begin
-        Extra_Final (My_Menu_Button);
-    end menu_button_extra_final_hook;
-
-
     procedure Extra_Final
            (This : in out Menu_Button) is
     begin

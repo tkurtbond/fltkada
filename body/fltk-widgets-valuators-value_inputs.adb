@@ -173,17 +173,9 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
     --  Destructors  --
     -------------------
 
-    --  Making a long distance telephone call
-    procedure fl_text_input_extra_final
-           (Ada_Obj : in Storage.Integer_Address);
-    pragma Import (C, fl_text_input_extra_final, "fl_text_input_extra_final");
-    pragma Inline (fl_text_input_extra_final);
-
-
     procedure Extra_Final
            (This : in out Value_Input) is
     begin
-        fl_text_input_extra_final (Storage.To_Integer (This.My_Input'Address));
         Extra_Final (Valuator (This));
     end Extra_Final;
 

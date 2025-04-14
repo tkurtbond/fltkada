@@ -55,22 +55,6 @@ package body FLTK.Widgets.Inputs.Text is
     --  Destructors  --
     -------------------
 
-    --  Message received, every zig will take off
-    procedure text_input_extra_final_hook
-           (Ada_Obj : in Storage.Integer_Address);
-    pragma Export (C, text_input_extra_final_hook, "text_input_extra_final_hook");
-
-    procedure text_input_extra_final_hook
-           (Ada_Obj : in Storage.Integer_Address)
-    is
-        My_Text_Input : Text_Input;
-        for My_Text_Input'Address use Storage.To_Address (Ada_Obj);
-        pragma Import (Ada, My_Text_Input);
-    begin
-        Extra_Final (My_Text_Input);
-    end text_input_extra_final_hook;
-
-
     procedure Extra_Final
            (This : in out Text_Input) is
     begin

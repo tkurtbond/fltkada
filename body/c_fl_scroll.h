@@ -9,7 +9,6 @@
 
 
 extern "C" void fl_scroll_extra_init(void * adaobj, int x, int y, int w, int h, const char * label);
-extern "C" void fl_scroll_extra_final(void * adaobj);
 
 
 typedef void* SCROLL;

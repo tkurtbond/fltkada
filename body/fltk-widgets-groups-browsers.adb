@@ -650,18 +650,9 @@ package body FLTK.Widgets.Groups.Browsers is
     --  Destructors  --
     -------------------
 
-    --  Preparing to use morse code
-    procedure fl_scrollbar_extra_final
-           (Ada_Obj : in Storage.Integer_Address);
-    pragma Import (C, fl_scrollbar_extra_final, "fl_scrollbar_extra_final");
-    pragma Inline (fl_scrollbar_extra_final);
-
-
     procedure Extra_Final
            (This : in out Browser) is
     begin
-        fl_scrollbar_extra_final (Storage.To_Integer (This.Horizon'Address));
-        fl_scrollbar_extra_final (Storage.To_Integer (This.Vertigo'Address));
         Extra_Final (Group (This));
         for Index in This.Text_Store'Range loop
             Interfaces.C.Strings.Free (This.Text_Store (Index));

@@ -184,25 +184,9 @@ package body FLTK.Widgets.Groups.Input_Choices is
     --  Destructors  --
     -------------------
 
-    --  Resorting to smoke signals
-    procedure fl_text_input_extra_final
-           (Ada_Obj : in Storage.Integer_Address);
-    pragma Import (C, fl_text_input_extra_final, "fl_text_input_extra_final");
-    pragma Inline (fl_text_input_extra_final);
-
-
-    --  Message in a bottle
-    procedure fl_menu_button_extra_final
-           (Ada_Obj : in Storage.Integer_Address);
-    pragma Import (C, fl_menu_button_extra_final, "fl_menu_button_extra_final");
-    pragma Inline (fl_menu_button_extra_final);
-
-
     procedure Extra_Final
            (This : in out Input_Choice) is
     begin
-        fl_text_input_extra_final (Storage.To_Integer (This.My_Input'Address));
-        fl_menu_button_extra_final (Storage.To_Integer (This.My_Menu_Button'Address));
         Extra_Final (Group (This));
     end Extra_Final;
 

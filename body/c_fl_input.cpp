@@ -11,16 +11,11 @@
 
 
 
-//  Telprot stopovers
+//  Telprot stopover
 
 extern "C" void text_input_extra_init_hook(void * aobj, int x, int y, int w, int h, const char * l);
 void fl_text_input_extra_init(void * adaobj, int x, int y, int w, int h, const char * label) {
     text_input_extra_init_hook(adaobj, x, y, w, h, label);
-}
-
-extern "C" void text_input_extra_final_hook(void * aobj);
-void fl_text_input_extra_final(void * adaobj) {
-    text_input_extra_final_hook(adaobj);
 }
 
 

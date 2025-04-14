@@ -116,22 +116,6 @@ package body FLTK.Widgets.Buttons is
     --  Destructors  --
     -------------------
 
-    --  Clipper route successfully navigated
-    procedure button_extra_final_hook
-           (Ada_Obj : in Storage.Integer_Address);
-    pragma Export (C, button_extra_final_hook, "button_extra_final_hook");
-
-    procedure button_extra_final_hook
-           (Ada_Obj : in Storage.Integer_Address)
-    is
-        My_Button : Button;
-        for My_Button'Address use Storage.To_Address (Ada_Obj);
-        pragma Import (Ada, My_Button);
-    begin
-        Extra_Final (My_Button);
-    end button_extra_final_hook;
-
-
     procedure Extra_Final
            (This : in out Button) is
     begin

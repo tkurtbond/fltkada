@@ -10,7 +10,6 @@
 
 extern "C" void fl_check_button_extra_init
     (void * adaobj, int x, int y, int w, int h, const char * label);
-extern "C" void fl_check_button_extra_final(void * adaobj);
 
 
 typedef void* CHECKBUTTON;

@@ -153,34 +153,9 @@ package body FLTK.Widgets.Groups.Scrolls is
     --  Destructors  --
     -------------------
 
-    --  I used the FFI to bypass namespace rules and all I got was this lousy tshirt
-    procedure scroll_extra_final_hook
-           (Ada_Obj : in Storage.Integer_Address);
-    pragma Export (C, scroll_extra_final_hook, "scroll_extra_final_hook");
-
-    procedure scroll_extra_final_hook
-           (Ada_Obj : in Storage.Integer_Address)
-    is
-        My_Scroll : Scroll;
-        for My_Scroll'Address use Storage.To_Address (Ada_Obj);
-        pragma Import (Ada, My_Scroll);
-    begin
-        Extra_Final (My_Scroll);
-    end scroll_extra_final_hook;
-
-
-    --  It's the only way to be sure
-    procedure fl_scrollbar_extra_final
-           (Ada_Obj : in Storage.Integer_Address);
-    pragma Import (C, fl_scrollbar_extra_final, "fl_scrollbar_extra_final");
-    pragma Inline (fl_scrollbar_extra_final);
-
-
     procedure Extra_Final
            (This : in out Scroll) is
     begin
-        fl_scrollbar_extra_final (Storage.To_Integer (This.Horizon'Address));
-        fl_scrollbar_extra_final (Storage.To_Integer (This.Vertigo'Address));
         Extra_Final (Group (This));
     end Extra_Final;
 

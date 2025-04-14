@@ -11,16 +11,11 @@
 
 
 
-//  Telprot stopovers
+//  Telprot stopover
 
 extern "C" void scroll_extra_init_hook(void * aobj, int x, int y, int w, int h, const char * l);
 void fl_scroll_extra_init(void * adaobj, int x, int y, int w, int h, const char * label) {
     scroll_extra_init_hook(adaobj, x, y, w, h, label);
-}
-
-extern "C" void scroll_extra_final_hook(void * aobj);
-void fl_scroll_extra_final(void * adaobj) {
-    scroll_extra_final_hook(adaobj);
 }
 
 

@@ -55,22 +55,6 @@ package body FLTK.Widgets.Buttons.Light.Check is
     --  Destructors  --
     -------------------
 
-    --  Round the world and home again, that's the sailor's way!
-    procedure check_button_extra_final_hook
-           (Ada_Obj : in Storage.Integer_Address);
-    pragma Export (C, check_button_extra_final_hook, "check_button_extra_final_hook");
-
-    procedure check_button_extra_final_hook
-           (Ada_Obj : in Storage.Integer_Address)
-    is
-        My_Check_Button : Check_Button;
-        for My_Check_Button'Address use Storage.To_Address (Ada_Obj);
-        pragma Import (Ada, My_Check_Button);
-    begin
-        Extra_Final (My_Check_Button);
-    end check_button_extra_final_hook;
-
-
     procedure Extra_Final
            (This : in out Check_Button) is
     begin

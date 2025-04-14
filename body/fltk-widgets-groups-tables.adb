@@ -743,26 +743,9 @@ package body FLTK.Widgets.Groups.Tables is
     --  Destructors  --
     -------------------
 
-    --  Attempting to divide by zero
-    procedure fl_scrollbar_extra_final
-           (Ada_Obj : in Storage.Integer_Address);
-    pragma Import (C, fl_scrollbar_extra_final, "fl_scrollbar_extra_final");
-    pragma Inline (fl_scrollbar_extra_final);
-
-
-    --  Close the door; Open the nExt
-    procedure fl_scroll_extra_final
-           (Ada_Obj : in Storage.Integer_Address);
-    pragma Import (C, fl_scroll_extra_final, "fl_scroll_extra_final");
-    pragma Inline (fl_scroll_extra_final);
-
-
     procedure Extra_Final
            (This : in out Table) is
     begin
-        fl_scrollbar_extra_final (Storage.To_Integer (This.Horizon'Address));
-        fl_scrollbar_extra_final (Storage.To_Integer (This.Vertigo'Address));
-        fl_scroll_extra_final (Storage.To_Integer (This.Playing_Area'Address));
         Extra_Final (Group (This));
     end Extra_Final;
 
