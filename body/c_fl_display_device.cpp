@@ -11,12 +11,16 @@
 
 
 DISPLAYDEVICE new_fl_display_device(void * g) {
-    Fl_Display_Device *d = new Fl_Display_Device(static_cast<Fl_Graphics_Driver*>(g));
-    return d;
+    //  Since FLTK 1.4.0, Fl_Display_Device's constructor is private and it is
+    //  a singleton; only the platform-provided instance can be obtained.
+    (void)g;
+    return Fl_Display_Device::display_device();
 }
 
 void free_fl_display_device(DISPLAYDEVICE d) {
-    delete static_cast<Fl_Display_Device*>(d);
+    //  The instance returned by new_fl_display_device is the shared
+    //  singleton owned by FLTK itself, so it must never be deleted here.
+    (void)d;
 }
 
 

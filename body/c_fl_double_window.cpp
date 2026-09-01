@@ -19,17 +19,6 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 
 
-//  Non-friend protected access
-
-class Friend_Double_Window : Fl_Double_Window {
-public:
-    //  Only needed for the (int) version
-    using Fl_Double_Window::flush;
-};
-
-
-
-
 //  Attaching all relevant hooks and friends
 
 class My_Double_Window : public Fl_Double_Window {
@@ -94,8 +83,10 @@ void fl_double_window_flush(DOUBLEWINDOW d) {
 }
 
 void fl_double_window_flush2(DOUBLEWINDOW d, int e) {
-    void (Fl_Double_Window::*myflush)(int) = &Friend_Double_Window::flush;
-    (static_cast<Fl_Double_Window*>(d)->*myflush)(e);
+    //  Fl_Double_Window::flush(int eraseoverlay) no longer exists in
+    //  FLTK 1.4 (hardware overlay support removed); fall back to flush().
+    (void)e;
+    static_cast<Fl_Double_Window*>(d)->flush();
 }
 
 

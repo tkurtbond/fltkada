@@ -79,22 +79,27 @@ void fl_menu_window_flush(MENUWINDOW m) {
 }
 
 void fl_menu_window_erase(MENUWINDOW m) {
-    static_cast<Fl_Menu_Window*>(m)->erase();
+    //  Hardware overlay planes were removed in FLTK 1.4; nothing to erase.
+    (void)m;
 }
 
 
 
 
 void fl_menu_window_set_overlay(MENUWINDOW m) {
-    static_cast<Fl_Menu_Window*>(m)->set_overlay();
+    //  Hardware overlay planes were removed in FLTK 1.4; no-op.
+    (void)m;
 }
 
 void fl_menu_window_clear_overlay(MENUWINDOW m) {
-    static_cast<Fl_Menu_Window*>(m)->clear_overlay();
+    //  Hardware overlay planes were removed in FLTK 1.4; no-op.
+    (void)m;
 }
 
 unsigned int fl_menu_window_overlay(MENUWINDOW m) {
-    return static_cast<Fl_Menu_Window*>(m)->overlay();
+    //  Hardware overlay planes were removed in FLTK 1.4; never overlaid.
+    (void)m;
+    return 0;
 }
 
 

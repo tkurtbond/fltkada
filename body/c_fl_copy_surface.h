@@ -5,7 +5,7 @@
 
 
 #ifndef FL_COPY_SURFACE_GUARD
-#define CL_COPY_SURFACE_GUARD
+#define FL_COPY_SURFACE_GUARD
 
 
 typedef void* COPYSURFACE;

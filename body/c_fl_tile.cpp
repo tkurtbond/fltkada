@@ -62,7 +62,7 @@ void free_fl_tile(TILE t) {
 
 
 void fl_tile_position(TILE t, int ox, int oy, int nx, int ny) {
-    static_cast<Fl_Tile*>(t)->position(ox,oy,nx,ny);
+    static_cast<Fl_Tile*>(t)->move_intersection(ox,oy,nx,ny);
 }
 
 void fl_tile_resize(TILE t, int x, int y, int w, int h) {

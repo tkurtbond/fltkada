@@ -57,7 +57,7 @@ void fl_ask_set_yes(const char * v) {
 
 
 void fl_ask_alert(const char * m) {
-    fl_alert(m);
+    fl_alert("%s", m);
 }
 
 void fl_ask_beep(int b) {
@@ -65,23 +65,23 @@ void fl_ask_beep(int b) {
 }
 
 int fl_ask_choice(const char * m, const char * a, const char * b, const char * c) {
-    return fl_choice(m, a, b, c);
+    return fl_choice("%s", a, b, c, m);
 }
 
 int fl_ask_choice_n(const char * m, const char * a, const char * b, const char * c) {
-    return fl_choice_n(m, a, b, c);
+    return fl_choice_n("%s", a, b, c, m);
 }
 
 const char * fl_ask_input(const char * m, const char * d) {
-    return fl_input(m, d);
+    return fl_input("%s", d, m);
 }
 
 void fl_ask_message(const char * m) {
-    fl_message(m);
+    fl_message("%s", m);
 }
 
 const char * fl_ask_password(const char * m, const char * d) {
-    return fl_password(m, d);
+    return fl_password("%s", d, m);
 }
 
 

@@ -10,6 +10,16 @@
 
 
 
+//  Non-friend protected access
+
+class Friend_Surface_Device : Fl_Surface_Device {
+public:
+    using Fl_Surface_Device::driver;
+};
+
+
+
+
 //  Adding relevant friends
 
 class My_Surface_Device : public Fl_Surface_Device {
@@ -52,7 +62,8 @@ void * fl_surface_device_get_driver(SURFACEDEVICE s) {
 }
 
 void fl_surface_device_set_driver(SURFACEDEVICE s, void * g) {
-    static_cast<Fl_Surface_Device*>(s)->driver(static_cast<Fl_Graphics_Driver*>(g));
+    void (Fl_Surface_Device::*mydriver)(Fl_Graphics_Driver*) = &Friend_Surface_Device::driver;
+    (static_cast<Fl_Surface_Device*>(s)->*mydriver)(static_cast<Fl_Graphics_Driver*>(g));
 }
 
 

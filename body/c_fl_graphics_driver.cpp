@@ -5,8 +5,19 @@
 
 
 #include <FL/Fl_Device.H>
+#include <FL/Fl_Graphics_Driver.H>
 #include <FL/Fl_Image.H>
 #include "c_fl_graphics_driver.h"
+
+
+
+
+//  Non-friend protected access
+
+class Friend_Image : Fl_Image {
+public:
+    using Fl_Image::draw_scaled;
+};
 
 
 
@@ -55,9 +66,10 @@ void fl_graphics_driver_set_font(GRAPHICSDRIVER g, int f, int s) {
 
 
 void fl_graphics_driver_draw_scaled(GRAPHICSDRIVER g, void * i, int x, int y, int w, int h) {
-    //  virtual so disable dispatch
-    static_cast<Fl_Graphics_Driver*>(g)->Fl_Graphics_Driver::draw_scaled
-        (static_cast<Fl_Image*>(i),x,y,w,h);
+    //  Since FLTK 1.4.0, image scaling has moved from Fl_Graphics_Driver to
+    //  Fl_Image itself, drawing through whichever driver is currently current.
+    (void)g;
+    (static_cast<Fl_Image*>(i)->*(&Friend_Image::draw_scaled))(x,y,w,h);
 }
 
 

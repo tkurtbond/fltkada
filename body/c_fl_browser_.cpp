@@ -268,11 +268,11 @@ void fl_abstract_browser_set_hposition(ABSTRACTBROWSER b, int p) {
 }
 
 int fl_abstract_browser_get_position(ABSTRACTBROWSER b) {
-    return static_cast<Fl_Browser_*>(b)->position();
+    return static_cast<Fl_Browser_*>(b)->vposition();
 }
 
 void fl_abstract_browser_set_position(ABSTRACTBROWSER b, int p) {
-    static_cast<Fl_Browser_*>(b)->position(p);
+    static_cast<Fl_Browser_*>(b)->vposition(p);
 }
 
 void fl_abstract_browser_scrollbar_left(ABSTRACTBROWSER b) {

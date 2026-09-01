@@ -74,7 +74,7 @@ void free_fl_cairo_window(CAIROWINDOW w) {
 
 void fl_cairo_window_set_draw_cb(CAIROWINDOW w, void * cb) {
     #ifdef FLTK_HAVE_CAIRO
-    static_cast<Fl_Cairo_Window*>(w)->set_draw_cb(reinterpret_cast<cairo_draw_cb>(cb));
+    static_cast<Fl_Cairo_Window*>(w)->set_draw_cb(reinterpret_cast<Fl_Cairo_Window::cairo_draw_cb>(cb));
     #else
     (void)(w);
     (void)(cb);

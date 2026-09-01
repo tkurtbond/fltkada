@@ -450,7 +450,7 @@ void fl_widget_draw_box3(WIDGET o, int k, int x, int y, int w, int h, unsigned i
 }
 
 void fl_widget_draw_focus(WIDGET w) {
-    void (Fl_Widget::*mydraw)(void) = &Friend_Widget::draw_focus;
+    void (Fl_Widget::*mydraw)(void) const = &Friend_Widget::draw_focus;
     (static_cast<Fl_Widget*>(w)->*mydraw)();
 }
 

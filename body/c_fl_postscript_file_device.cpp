@@ -53,11 +53,11 @@ void * fl_postscript_file_device_get_driver(POSTSCRIPTFILEDEVICE p) {
 
 
 int fl_postscript_file_device_start_job(POSTSCRIPTFILEDEVICE p, int c) {
-    return static_cast<Fl_PostScript_File_Device*>(p)->start_job(c, 0, 0);
+    return static_cast<Fl_PostScript_File_Device*>(p)->Fl_Paged_Device::start_job(c, 0, 0);
 }
 
 int fl_postscript_file_device_start_job2(POSTSCRIPTFILEDEVICE p, int c, int * f, int * t) {
-    return static_cast<Fl_PostScript_File_Device*>(p)->start_job(c, f, t);
+    return static_cast<Fl_PostScript_File_Device*>(p)->Fl_Paged_Device::start_job(c, f, t);
 }
 
 int fl_postscript_file_device_start_job3(POSTSCRIPTFILEDEVICE p, void * o, int c, int f, int l) {

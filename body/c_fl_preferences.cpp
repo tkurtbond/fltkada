@@ -37,7 +37,7 @@ class My_Preferences : public Fl_Preferences {
 
 
 PREFS new_fl_pref_database_path(char * p, char * v, char * a) {
-    My_Preferences *e = new My_Preferences(p, v, a);
+    My_Preferences *e = new My_Preferences(p, v, a, (Fl_Preferences::Root)0);
     return e;
 }
 

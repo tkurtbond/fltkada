@@ -140,15 +140,15 @@ int fl_input_set_mark(INPUT i, int t) {
 }
 
 int fl_input_get_position(INPUT i) {
-    return static_cast<Fl_Input_*>(i)->position();
+    return static_cast<Fl_Input_*>(i)->insert_position();
 }
 
 int fl_input_set_position(INPUT i, int t) {
-    return static_cast<Fl_Input_*>(i)->position(t);
+    return static_cast<Fl_Input_*>(i)->insert_position(t);
 }
 
 int fl_input_set_position2(INPUT i, int p, int m) {
-    return static_cast<Fl_Input_*>(i)->position(p, m);
+    return static_cast<Fl_Input_*>(i)->insert_position(p, m);
 }
 
 

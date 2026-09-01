@@ -394,7 +394,7 @@ int fl_text_editor_handle_key(TEXTEDITOR te) {
 }
 
 void fl_text_editor_maybe_do_callback(TEXTEDITOR te) {
-    (static_cast<Fl_Text_Editor*>(te)->*(&Friend_Text_Editor::maybe_do_callback))();
+    (static_cast<Fl_Text_Editor*>(te)->*(&Friend_Text_Editor::maybe_do_callback))(FL_REASON_CHANGED);
 }
 
 

@@ -53,7 +53,8 @@ abstract project Common is
         "-Werror",
         "-Wextra",
         "-Wpedantic",
-        "-std=c++11");
+        "-std=c++11",
+        "-fPIC");
 
     package Compiler is
         case Ver is
