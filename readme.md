@@ -76,7 +76,26 @@ keeping consistency with Ada semantics, overriding the Push method will NOT
 change the behaviour of the corresponding Handle method. You must also override
 Handle.
 
+#### Portability Notes
 
+To compile this on NetBSD using the RavenPorts GNAT, first set the
+following environment variables so it will compile:
+
+``` bash
+export CPATH=/usr/pkg/include
+export LIBRARY_PATH=/usr/pkg/lib
+```
+
+There are a bunch of link errors about "reference to compatibility X"
+where X is socket or __kevent50(), etc., but I haven't figured those
+out yet.
+
+Before running any of the test programs, you have to set the following
+environment variable:
+
+``` bash
+export LIBRARY_PATH=/usr/pkg/lib
+```
 
 #### Credits and Licensing
 
