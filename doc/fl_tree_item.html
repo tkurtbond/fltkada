@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Tree_Item Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Tree_Item Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+<p>Also covers Fl_Tree_Item_Array (bound as a plain Ada array rather than
+its own type) and Fl_Tree_Prefs (not bound as a standalone object; its
+sort/connector/selection enums live here, and its other settings are
+reached only through Fl_Tree's own forwarding methods -- see
+fl_tree.html and doc/binding_architecture.md).</p>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Tree_Item</td>
+    <td>FLTK.Tree_Items</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Tree_Item *</td>
+    <td>Tree_Item</td>
+  </tr>
+
+  <tr>
+    <td>(0, ie. a null Fl_Tree_Item *)</td>
+    <td>No_Tree_Item</td>
+  </tr>
+
+  <tr>
+    <td>Fl_Tree_Item_Array</td>
+    <td>Tree_Item_Array (a plain array (Positive range &lt;&gt;) of Tree_Item)</td>
+  </tr>
+
+  <tr>
+    <td>enum Fl_Tree_Sort {<br />
+    FL_TREE_SORT_NONE = 0,<br />
+    FL_TREE_SORT_ASCENDING = 1,<br />
+    FL_TREE_SORT_DESCENDING = 2 }</td>
+    <td>Sort_Kind</td>
+  </tr>
+
+  <tr>
+    <td>enum Fl_Tree_Connector {<br />
+    FL_TREE_CONNECTOR_NONE = 0,<br />
+    FL_TREE_CONNECTOR_DOTTED = 1,<br />
+    FL_TREE_CONNECTOR_SOLID = 2 }</td>
+    <td>Connector_Kind</td>
+  </tr>
+
+  <tr>
+    <td>enum Fl_Tree_Select {<br />
+    FL_TREE_SELECT_NONE = 0,<br />
+    FL_TREE_SELECT_SINGLE = 1,<br />
+    FL_TREE_SELECT_MULTI = 2,<br />
+    FL_TREE_SELECT_SINGLE_DRAGGABLE = 3 }</td>
+    <td>Selection_Kind</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td>Items are never constructed directly -- see doc/binding_architecture.md.
+Values of type Tree_Item are only ever obtained from a Tree (via Add, Find,
+Root, First, Last, or from another Tree_Item via Child, Parent, Next, Prev).</td>
+<td>(no Forge)</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td>(a null Fl_Tree_Item *)</td>
+<td><pre>
+function Is_Null
+       (This : in Tree_Item)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char *label() const;
+</pre></td>
+<td><pre>
+function Get_Label
+       (This : in Tree_Item)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void label(const char *val);
+</pre></td>
+<td><pre>
+procedure Set_Label
+       (This : in Tree_Item;
+        Text : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int is_open() const;
+</pre></td>
+<td><pre>
+function Is_Open
+       (This : in Tree_Item)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+char is_selected() const;
+</pre></td>
+<td><pre>
+function Is_Selected
+       (This : in Tree_Item)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+char is_active() const;
+</pre></td>
+<td><pre>
+function Is_Active
+       (This : in Tree_Item)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int is_visible() const;
+</pre></td>
+<td><pre>
+function Is_Visible
+       (This : in Tree_Item)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int is_root() const;
+</pre></td>
+<td><pre>
+function Is_Root
+       (This : in Tree_Item)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int has_children() const;
+</pre></td>
+<td><pre>
+function Has_Children
+       (This : in Tree_Item)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int children() const;
+</pre></td>
+<td><pre>
+function Number_Of_Children
+       (This : in Tree_Item)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Place is 1-based here; index is 0-based in FLTK.</td>
+<td><pre>
+function Child
+       (This  : in Tree_Item;
+        Place : in Positive)
+    return Tree_Item;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Tree_Item *parent();
+</pre></td>
+<td><pre>
+function Parent
+       (This : in Tree_Item)
+    return Tree_Item;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int depth() const;
+</pre></td>
+<td><pre>
+function Depth
+       (This : in Tree_Item)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Tree_Item *next();    // walks the whole tree, not just This's siblings
+</pre></td>
+<td><pre>
+function Next
+       (This : in Tree_Item)
+    return Tree_Item;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Tree_Item *prev();
+</pre></td>
+<td><pre>
+function Prev
+       (This : in Tree_Item)
+    return Tree_Item;
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>

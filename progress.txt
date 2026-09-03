@@ -45,6 +45,7 @@ FLTK.Screen
 FLTK.Static
 FLTK.Text_Buffers
 FLTK.Tooltips
+FLTK.Tree_Items
 FLTK.Widgets
 FLTK.Widgets.Boxes
 FLTK.Widgets.Buttons
@@ -81,6 +82,7 @@ FLTK.Widgets.Groups.Tables.Row
 FLTK.Widgets.Groups.Text_Displays
 FLTK.Widgets.Groups.Text_Displays.Text_Editors
 FLTK.Widgets.Groups.Tiled
+FLTK.Widgets.Groups.Trees
 FLTK.Widgets.Groups.Windows
 FLTK.Widgets.Groups.Windows.Double
 FLTK.Widgets.Groups.Windows.Double.Cairo
@@ -140,9 +142,6 @@ Fl_GDI_Printer_Graphics_Driver
 Fl_Glut_Window
 Fl_Postscript_Graphics_Driver
 Fl_Quartz_Graphics_Driver
-Fl_Tree
-Fl_Tree_Item
-Fl_Tree_Prefs
 Fl_Xlib_Graphics_Driver
 gl
 glut
@@ -210,5 +209,28 @@ FLTK.Images.Pixmaps (unmarshall data access?)
 FLTK.Images.Shared (images(), compare)
 FLTK.Text_Buffers (a few functions, protected stuff, ensure buffer is 1-indexed)
 FLTK.Widgets.Groups.Text_Displays (ensure text buffer is 1-indexed)
+
+FLTK.Tree_Items / FLTK.Widgets.Groups.Trees -- deliberately scoped to the
+common ~60% of the Fl_Tree / Fl_Tree_Item API rather than full parity
+(see doc/binding_architecture.md for the design notes). Not bound:
+  - standalone/detached Fl_Tree_Item construction (new_fl_tree_item);
+    items are only ever obtained from a Tree.
+  - insert()/insert_above()/move()/reparent()/deparent(), swap_children().
+  - per-item font/color overrides beyond the label (Fl_Tree_Item's own
+    labelfont/labelsize/labelfgcolor/labelbgcolor).
+  - widget() embedding (assigning an FLTK widget in place of an item's
+    label) and custom icons (usericon/openicon/closeicon).
+  - overriding draw_item_content() -- would need the full Draw_Ptr-style
+    hook machinery for an item type, which doesn't otherwise need it.
+  - item_draw_callback(), callback_item()/callback_reason().
+  - the path-string overloads of open/close/select/is_open/is_selected,
+    and their docallback parameter (Tree-level Open/Close/Select_Item/
+    Deselect always behave as if docallback=1).
+  - Fl_Tree_Prefs as a standalone bindable object -- its settings are
+    exposed only via Fl_Tree's own forwarding methods, matching what
+    FLTK's own docs recommend using instead of Fl_Tree_Prefs directly.
+  - scrollbar/position controls (vposition/hposition/scrollbar_size),
+    load() from Fl_Preferences.
+See test/tree.adb for a working example of what is bound.
 
 

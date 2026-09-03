@@ -29,7 +29,8 @@ project Tests is
         "filename.adb",
         "hello.adb",
         "page_formats.adb",
-        "pixmap.adb");
+        "pixmap.adb",
+        "tree.adb");
 
     package Builder is
         for Executable ("adjuster.adb")      use "adjuster";
@@ -46,6 +47,7 @@ project Tests is
         for Executable ("hello.adb")         use "hello";
         for Executable ("page_formats.adb")  use "page_formats";
         for Executable ("pixmap.adb")        use "pixmap";
+        for Executable ("tree.adb")          use "tree";
 
         for Default_Switches ("Ada") use
             Common.Builder'Default_Switches ("Ada");

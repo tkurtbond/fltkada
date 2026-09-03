@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Tree Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Tree Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+<p>A deliberately-scoped subset of the API is bound; see the
+FLTK.Tree_Items / FLTK.Widgets.Groups.Trees note under "Incomplete APIs"
+in progress.txt for exactly what's left out, and
+doc/binding_architecture.md for the design notes. Fl_Tree_Item is
+covered separately in fl_tree_item.html.</p>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Tree</td>
+    <td>FLTK.Widgets.Groups.Trees</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Tree</td>
+    <td>Tree</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Tree_Reference</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Tree(int X, int Y, int W, int H, const char *L=0);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return Tree;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Rely on the automatic use of begin when a group is created, or use begin/end
+explicitly, or add each widget to its intended parent group manually.</td>
+<td><pre>
+function Create
+       (Parent     : in out Groups.Group'Class;
+        X, Y, W, H : in     Integer;
+        Text       : in     String := "")
+    return Tree;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td>Path components are separated by '/'; any parent items named along the
+way that don't already exist are created automatically. Only the
+newitem=0 form is bound.
+<pre>
+Fl_Tree_Item *add(const char *path, Fl_Tree_Item *newitem=0);
+</pre></td>
+<td><pre>
+function Add
+       (This : in out Tree;
+        Path : in     String)
+    return FLTK.Tree_Items.Tree_Item;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Return value not bound -- see the FLTK.Tree_Items /
+FLTK.Widgets.Groups.Trees note in progress.txt.
+<pre>
+int remove(Fl_Tree_Item *item);
+</pre></td>
+<td><pre>
+procedure Remove
+       (This : in out Tree;
+        Item : in     FLTK.Tree_Items.Tree_Item);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void clear();
+</pre></td>
+<td><pre>
+procedure Clear
+       (This : in out Tree);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void clear_children(Fl_Tree_Item *item);
+</pre></td>
+<td><pre>
+procedure Clear_Children
+       (This : in out Tree;
+        Item : in     FLTK.Tree_Items.Tree_Item);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Only the non-const overload is bound; returns No_Tree_Item if not found.
+<pre>
+Fl_Tree_Item *find_item(const char *path);
+</pre></td>
+<td><pre>
+function Find
+       (This : in Tree;
+        Path : in String)
+    return FLTK.Tree_Items.Tree_Item;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Tree_Item* root();
+</pre></td>
+<td><pre>
+function Root
+       (This : in Tree)
+    return FLTK.Tree_Items.Tree_Item;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>root(Fl_Tree_Item*) not bound.
+<pre>
+void root_label(const char *new_label);
+</pre></td>
+<td><pre>
+procedure Set_Root_Label
+       (This : in out Tree;
+        Text : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Tree_Item *first();
+</pre></td>
+<td><pre>
+function First
+       (This : in Tree)
+    return FLTK.Tree_Items.Tree_Item;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Tree_Item *last();
+</pre></td>
+<td><pre>
+function Last
+       (This : in Tree)
+    return FLTK.Tree_Items.Tree_Item;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>docallback is always 1 (the default); the path-string overload isn't bound.
+<pre>
+int open(Fl_Tree_Item *item, int docallback=1);
+</pre></td>
+<td><pre>
+procedure Open
+       (This : in out Tree;
+        Item : in     FLTK.Tree_Items.Tree_Item);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Same caveats as open() above.
+<pre>
+int close(Fl_Tree_Item *item, int docallback=1);
+</pre></td>
+<td><pre>
+procedure Close
+       (This : in out Tree;
+        Item : in     FLTK.Tree_Items.Tree_Item);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void open_toggle(Fl_Tree_Item *item, int docallback=1);
+</pre></td>
+<td><pre>
+procedure Open_Toggle
+       (This : in out Tree;
+        Item : in     FLTK.Tree_Items.Tree_Item);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Named Select_Item since "Select" is an Ada reserved word.
+<pre>
+int select(Fl_Tree_Item *item, int docallback=1);
+</pre></td>
+<td><pre>
+procedure Select_Item
+       (This : in out Tree;
+        Item : in     FLTK.Tree_Items.Tree_Item);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int deselect(Fl_Tree_Item *item, int docallback=1);
+</pre></td>
+<td><pre>
+procedure Deselect
+       (This : in out Tree;
+        Item : in     FLTK.Tree_Items.Tree_Item);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>item is always 0 (the whole tree); returns count of items changed.
+<pre>
+int select_all(Fl_Tree_Item *item=0, int docallback=1);
+</pre></td>
+<td><pre>
+function Select_All
+       (This : in out Tree)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Same caveats as select_all() above.
+<pre>
+int deselect_all(Fl_Tree_Item *item=0, int docallback=1);
+</pre></td>
+<td><pre>
+function Deselect_All
+       (This : in out Tree)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Fl_Tree_Item_Array is marshalled as a plain Ada array -- see
+fl_tree_item.html.
+<pre>
+int get_selected_items(Fl_Tree_Item_Array &items);
+</pre></td>
+<td><pre>
+function Selected_Items
+       (This : in Tree)
+    return FLTK.Tree_Items.Tree_Item_Array;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int showroot() const;
+void showroot(int val);
+</pre></td>
+<td><pre>
+function Get_Show_Root
+       (This : in Tree)
+    return Boolean;
+
+procedure Set_Show_Root
+       (This : in out Tree;
+        To   : in     Boolean);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int showcollapse() const;
+void showcollapse(int val);
+</pre></td>
+<td><pre>
+function Get_Show_Collapse
+       (This : in Tree)
+    return Boolean;
+
+procedure Set_Show_Collapse
+       (This : in out Tree;
+        To   : in     Boolean);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Tree_Select selectmode() const;
+void selectmode(Fl_Tree_Select val);
+</pre></td>
+<td><pre>
+function Get_Select_Mode
+       (This : in Tree)
+    return FLTK.Tree_Items.Selection_Kind;
+
+procedure Set_Select_Mode
+       (This : in out Tree;
+        Mode : in     FLTK.Tree_Items.Selection_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Tree_Connector connectorstyle() const;
+void connectorstyle(Fl_Tree_Connector val);
+</pre></td>
+<td><pre>
+function Get_Connector_Style
+       (This : in Tree)
+    return FLTK.Tree_Items.Connector_Kind;
+
+procedure Set_Connector_Style
+       (This  : in out Tree;
+        Style : in     FLTK.Tree_Items.Connector_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Tree_Sort sortorder() const;
+void sortorder(Fl_Tree_Sort val);
+</pre></td>
+<td><pre>
+function Get_Sort_Order
+       (This : in Tree)
+    return FLTK.Tree_Items.Sort_Kind;
+
+procedure Set_Sort_Order
+       (This  : in out Tree;
+        Order : in     FLTK.Tree_Items.Sort_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Applies to new items only, not retroactively.
+<pre>
+Fl_Font item_labelfont() const;
+void item_labelfont(Fl_Font val);
+</pre></td>
+<td><pre>
+function Get_Item_Label_Font
+       (This : in Tree)
+    return Font_Kind;
+
+procedure Set_Item_Label_Font
+       (This : in out Tree;
+        Kind : in     Font_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Applies to new items only, not retroactively.
+<pre>
+Fl_Fontsize item_labelsize() const;
+void item_labelsize(Fl_Fontsize val);
+</pre></td>
+<td><pre>
+function Get_Item_Label_Size
+       (This : in Tree)
+    return Font_Size;
+
+procedure Set_Item_Label_Size
+       (This : in out Tree;
+        Size : in     Font_Size);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Applies to new items only, not retroactively.
+<pre>
+Fl_Color item_labelfgcolor() const;
+void item_labelfgcolor(Fl_Color val);
+</pre></td>
+<td><pre>
+function Get_Item_Label_Color
+       (This : in Tree)
+    return Color;
+
+procedure Set_Item_Label_Color
+       (This : in out Tree;
+        Hue  : in     Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int marginleft() const;
+void marginleft(int val);
+</pre></td>
+<td><pre>
+function Get_Margin_Left
+       (This : in Tree)
+    return Integer;
+
+procedure Set_Margin_Left
+       (This : in out Tree;
+        To   : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int linespacing() const;
+void linespacing(int val);
+</pre></td>
+<td><pre>
+function Get_Line_Spacing
+       (This : in Tree)
+    return Integer;
+
+procedure Set_Line_Spacing
+       (This : in out Tree;
+        To   : in     Integer);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Tree);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int handle(int);
+</pre></td>
+<td><pre>
+function Handle
+       (This  : in out Tree;
+        Event : in     Event_Kind)
+    return Event_Outcome;
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>

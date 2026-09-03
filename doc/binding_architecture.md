@@ -616,10 +616,24 @@ None of these have a `body/c_fl_*.h` shim yet, confirming
 
 | Class | Notes |
 |---|---|
-| `Fl_Tree`, `Fl_Tree_Item`, `Fl_Tree_Prefs` | A `Fl_Tree_Item_Array` class also now exists in 1.4.5 (not mentioned in `progress.txt`) — bind alongside the other three if attempting this. |
 | `Fl_GDI_Graphics_Driver`, `Fl_GDI_Printer_Graphics_Driver`, `Fl_Quartz_Graphics_Driver`, `Fl_Xlib_Graphics_Driver` | Platform-specific graphics drivers; gated on `FLTK.Devices.Graphics` (currently only "Partially Done"). |
 | `Fl_Glut_Window`, `gl`, `glut` | OpenGL/GLUT support. |
 | `Fl_Postscript_Graphics_Driver` | Internal driver used by the already-bound `Fl_PostScript_File_Device`. |
+
+`Fl_Tree`, `Fl_Tree_Item`, `Fl_Tree_Item_Array`, and `Fl_Tree_Prefs` were
+on this list as of the original writing of this document; they're now
+bound (`FLTK.Tree_Items`, `FLTK.Widgets.Groups.Trees`) on the
+`experimental/fl-tree-binding` branch, deliberately covering a pragmatic
+core of the API rather than full parity — see the "Incomplete APIs"
+note for `FLTK.Tree_Items` in `progress.txt` for exactly what was left
+out and why, and `test/tree.adb` for a working example. It's a useful
+worked example of §6's recipes: `FLTK.Widgets.Groups.Trees` follows
+Recipe A: (`Fl_Tree` needs the full `Draw_Ptr`/`Handle_Ptr` machinery,
+being a real `Fl_Group` subclass), while `FLTK.Tree_Items` deliberately
+does *not* follow the "everything is a `Wrapper`" shape from §2.3 —
+`Fl_Tree_Item` objects are always owned by their tree and have no
+FLTK-invoked virtual dispatch this binding supports, so `Tree_Item` is
+just a thin, freely-copyable pointer-holding record instead.
 
 The "Never" list (binary plugins, XForms legacy compatibility classes,
 the two `Fl_*_Printer` classes FLTK's own docs say to avoid in favour of

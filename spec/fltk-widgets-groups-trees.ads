@@ -1,0 +1,311 @@
+
+
+--  Programmed by Jedidiah Barber
+--  Released into the public domain
+
+
+with
+
+    FLTK.Tree_Items;
+
+
+package FLTK.Widgets.Groups.Trees is
+
+
+    type Tree is new Group with private;
+
+    type Tree_Reference (Data : not null access Tree'Class) is limited null record
+        with Implicit_Dereference => Data;
+
+
+
+
+    package Forge is
+
+        function Create
+               (X, Y, W, H : in Integer;
+                Text       : in String := "")
+            return Tree;
+
+        function Create
+               (Parent     : in out Group'Class;
+                X, Y, W, H : in     Integer;
+                Text       : in     String := "")
+            return Tree;
+
+    end Forge;
+
+
+
+
+    --  Item Creation and Removal  --
+
+    --  Path components are separated by '/', eg. "Flintstones/Fred" --
+    --  any parent items named along the way that don't already exist
+    --  are created automatically.
+    function Add
+           (This : in out Tree;
+            Path : in     String)
+        return FLTK.Tree_Items.Tree_Item;
+
+    procedure Remove
+           (This : in out Tree;
+            Item : in     FLTK.Tree_Items.Tree_Item);
+
+    procedure Clear
+           (This : in out Tree);
+
+    procedure Clear_Children
+           (This : in out Tree;
+            Item : in     FLTK.Tree_Items.Tree_Item);
+
+    function Find
+           (This : in Tree;
+            Path : in String)
+        return FLTK.Tree_Items.Tree_Item;
+
+
+
+
+    --  Root  --
+
+    function Root
+           (This : in Tree)
+        return FLTK.Tree_Items.Tree_Item;
+
+    procedure Set_Root_Label
+           (This : in out Tree;
+            Text : in     String);
+
+
+
+
+    --  Walking the Tree  --
+
+    function First
+           (This : in Tree)
+        return FLTK.Tree_Items.Tree_Item;
+
+    function Last
+           (This : in Tree)
+        return FLTK.Tree_Items.Tree_Item;
+
+
+
+
+    --  Open and Close  --
+
+    procedure Open
+           (This : in out Tree;
+            Item : in     FLTK.Tree_Items.Tree_Item);
+
+    procedure Close
+           (This : in out Tree;
+            Item : in     FLTK.Tree_Items.Tree_Item);
+
+    procedure Open_Toggle
+           (This : in out Tree;
+            Item : in     FLTK.Tree_Items.Tree_Item);
+
+
+
+
+    --  Selection  --
+
+    procedure Select_Item
+           (This : in out Tree;
+            Item : in     FLTK.Tree_Items.Tree_Item);
+
+    procedure Deselect
+           (This : in out Tree;
+            Item : in     FLTK.Tree_Items.Tree_Item);
+
+    --  Returns how many items in the whole tree changed state.
+    function Select_All
+           (This : in out Tree)
+        return Natural;
+
+    function Deselect_All
+           (This : in out Tree)
+        return Natural;
+
+    function Selected_Items
+           (This : in Tree)
+        return FLTK.Tree_Items.Tree_Item_Array;
+
+
+
+
+    --  Preferences  --
+
+    --  These stand in for a standalone Fl_Tree_Prefs binding -- see
+    --  FLTK.Tree_Items for why.
+
+    function Get_Show_Root
+           (This : in Tree)
+        return Boolean;
+
+    procedure Set_Show_Root
+           (This : in out Tree;
+            To   : in     Boolean);
+
+    function Get_Show_Collapse
+           (This : in Tree)
+        return Boolean;
+
+    procedure Set_Show_Collapse
+           (This : in out Tree;
+            To   : in     Boolean);
+
+    function Get_Select_Mode
+           (This : in Tree)
+        return FLTK.Tree_Items.Selection_Kind;
+
+    procedure Set_Select_Mode
+           (This : in out Tree;
+            Mode : in     FLTK.Tree_Items.Selection_Kind);
+
+    function Get_Connector_Style
+           (This : in Tree)
+        return FLTK.Tree_Items.Connector_Kind;
+
+    procedure Set_Connector_Style
+           (This  : in out Tree;
+            Style : in     FLTK.Tree_Items.Connector_Kind);
+
+    function Get_Sort_Order
+           (This : in Tree)
+        return FLTK.Tree_Items.Sort_Kind;
+
+    procedure Set_Sort_Order
+           (This  : in out Tree;
+            Order : in     FLTK.Tree_Items.Sort_Kind);
+
+    --  Fonts, sizes, and colors below apply to new items only; they do
+    --  not retroactively change items already in the tree.
+
+    function Get_Item_Label_Font
+           (This : in Tree)
+        return Font_Kind;
+
+    procedure Set_Item_Label_Font
+           (This : in out Tree;
+            Kind : in     Font_Kind);
+
+    function Get_Item_Label_Size
+           (This : in Tree)
+        return Font_Size;
+
+    procedure Set_Item_Label_Size
+           (This : in out Tree;
+            Size : in     Font_Size);
+
+    function Get_Item_Label_Color
+           (This : in Tree)
+        return Color;
+
+    procedure Set_Item_Label_Color
+           (This : in out Tree;
+            Hue  : in     Color);
+
+    function Get_Margin_Left
+           (This : in Tree)
+        return Integer;
+
+    procedure Set_Margin_Left
+           (This : in out Tree;
+            To   : in     Integer);
+
+    function Get_Line_Spacing
+           (This : in Tree)
+        return Integer;
+
+    procedure Set_Line_Spacing
+           (This : in out Tree;
+            To   : in     Integer);
+
+
+
+
+    --  Drawing, Events  --
+
+    procedure Draw
+           (This : in out Tree);
+
+    function Handle
+           (This  : in out Tree;
+            Event : in     Event_Kind)
+        return Event_Outcome;
+
+
+private
+
+
+    type Tree is new Group with null record;
+
+    overriding procedure Initialize
+           (This : in out Tree);
+
+    overriding procedure Finalize
+           (This : in out Tree);
+
+    procedure Extra_Init
+           (This       : in out Tree;
+            X, Y, W, H : in     Integer;
+            Text       : in     String)
+    with Inline;
+
+    procedure Extra_Final
+           (This : in out Tree)
+    with Inline;
+
+
+    pragma Inline (Add);
+    pragma Inline (Remove);
+    pragma Inline (Clear);
+    pragma Inline (Clear_Children);
+    pragma Inline (Find);
+
+    pragma Inline (Root);
+    pragma Inline (Set_Root_Label);
+
+    pragma Inline (First);
+    pragma Inline (Last);
+
+    pragma Inline (Open);
+    pragma Inline (Close);
+    pragma Inline (Open_Toggle);
+
+    pragma Inline (Select_Item);
+    pragma Inline (Deselect);
+    pragma Inline (Select_All);
+    pragma Inline (Deselect_All);
+
+    pragma Inline (Get_Show_Root);
+    pragma Inline (Set_Show_Root);
+    pragma Inline (Get_Show_Collapse);
+    pragma Inline (Set_Show_Collapse);
+    pragma Inline (Get_Select_Mode);
+    pragma Inline (Set_Select_Mode);
+    pragma Inline (Get_Connector_Style);
+    pragma Inline (Set_Connector_Style);
+    pragma Inline (Get_Sort_Order);
+    pragma Inline (Set_Sort_Order);
+    pragma Inline (Get_Item_Label_Font);
+    pragma Inline (Set_Item_Label_Font);
+    pragma Inline (Get_Item_Label_Size);
+    pragma Inline (Set_Item_Label_Size);
+    pragma Inline (Get_Item_Label_Color);
+    pragma Inline (Set_Item_Label_Color);
+    pragma Inline (Get_Margin_Left);
+    pragma Inline (Set_Margin_Left);
+    pragma Inline (Get_Line_Spacing);
+    pragma Inline (Set_Line_Spacing);
+
+    pragma Inline (Draw);
+    pragma Inline (Handle);
+
+
+end FLTK.Widgets.Groups.Trees;
+
+
