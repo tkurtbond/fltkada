@@ -1686,6 +1686,29 @@ package body FLTK.Widgets is
     end Uses_Accents_Menu;
 
 
+    function Address_Of
+           (This : in Widget'Class)
+        return System.Address is
+    begin
+        return Storage.To_Address (This.Void_Ptr);
+    end Address_Of;
+
+
+    function Widget_At
+           (Addr : in System.Address)
+        return access Widget'Class
+    is
+        User_Data : constant Storage.Integer_Address :=
+            fl_widget_get_user_data (Storage.To_Integer (Addr));
+    begin
+        if User_Data = Null_Pointer then
+            return null;
+        else
+            return Widget_Convert.To_Pointer (Storage.To_Address (User_Data));
+        end if;
+    end Widget_At;
+
+
 end FLTK.Widgets;
 
 

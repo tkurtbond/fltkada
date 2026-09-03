@@ -1,6 +1,6 @@
 
 
-//  Programmed by Jedidiah Barber
+//  Programmed by T. Kurt Bond and Claude Sonnet 5
 //  Released into the public domain
 
 
@@ -23,6 +23,8 @@ extern "C" int fl_tree_handle(TREE n, int e);
 
 
 extern "C" TREEITEM fl_tree_add(TREE t, const char * path);
+extern "C" TREEITEM fl_tree_insert(TREE t, TREEITEM under, const char * name, int pos);
+extern "C" TREEITEM fl_tree_insert_above(TREE t, TREEITEM above, const char * name);
 extern "C" void fl_tree_remove(TREE t, TREEITEM item);
 extern "C" void fl_tree_clear(TREE t);
 extern "C" void fl_tree_clear_children(TREE t, TREEITEM item);
@@ -70,8 +72,12 @@ extern "C" unsigned int fl_tree_get_item_label_color(TREE t);
 extern "C" void fl_tree_set_item_label_color(TREE t, unsigned int val);
 extern "C" int fl_tree_get_margin_left(TREE t);
 extern "C" void fl_tree_set_margin_left(TREE t, int val);
+extern "C" int fl_tree_get_widget_margin_left(TREE t);
+extern "C" void fl_tree_set_widget_margin_left(TREE t, int val);
 extern "C" int fl_tree_get_line_spacing(TREE t);
 extern "C" void fl_tree_set_line_spacing(TREE t, int val);
+extern "C" int fl_tree_get_item_draw_mode(TREE t);
+extern "C" void fl_tree_set_item_draw_mode(TREE t, int val);
 
 
 #endif

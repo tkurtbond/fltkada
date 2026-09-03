@@ -1,6 +1,6 @@
 
 
-//  Programmed by Jedidiah Barber
+//  Programmed by T. Kurt Bond and Claude Sonnet 5
 //  Released into the public domain
 
 
@@ -63,6 +63,14 @@ void free_fl_tree(TREE t) {
 
 TREEITEM fl_tree_add(TREE t, const char * path) {
     return static_cast<Fl_Tree*>(t)->add(path);
+}
+
+TREEITEM fl_tree_insert(TREE t, TREEITEM under, const char * name, int pos) {
+    return static_cast<Fl_Tree*>(t)->insert(static_cast<Fl_Tree_Item*>(under), name, pos);
+}
+
+TREEITEM fl_tree_insert_above(TREE t, TREEITEM above, const char * name) {
+    return static_cast<Fl_Tree*>(t)->insert_above(static_cast<Fl_Tree_Item*>(above), name);
 }
 
 void fl_tree_remove(TREE t, TREEITEM item) {
@@ -233,12 +241,28 @@ void fl_tree_set_margin_left(TREE t, int val) {
     static_cast<Fl_Tree*>(t)->marginleft(val);
 }
 
+int fl_tree_get_widget_margin_left(TREE t) {
+    return static_cast<Fl_Tree*>(t)->widgetmarginleft();
+}
+
+void fl_tree_set_widget_margin_left(TREE t, int val) {
+    static_cast<Fl_Tree*>(t)->widgetmarginleft(val);
+}
+
 int fl_tree_get_line_spacing(TREE t) {
     return static_cast<Fl_Tree*>(t)->linespacing();
 }
 
 void fl_tree_set_line_spacing(TREE t, int val) {
     static_cast<Fl_Tree*>(t)->linespacing(val);
+}
+
+int fl_tree_get_item_draw_mode(TREE t) {
+    return static_cast<Fl_Tree*>(t)->item_draw_mode();
+}
+
+void fl_tree_set_item_draw_mode(TREE t, int val) {
+    static_cast<Fl_Tree*>(t)->item_draw_mode(val);
 }
 
 

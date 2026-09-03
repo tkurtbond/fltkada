@@ -6,7 +6,8 @@
 
 with
 
-    FLTK.Images;
+    FLTK.Images,
+    System;
 
 limited with
 
@@ -478,6 +479,21 @@ package FLTK.Widgets is
            (This : in Widget)
         return Boolean;
 
+    --  Escape hatches for other FLTK child packages (namely
+    --  FLTK.Tree_Items) that need to hand a Widget's underlying C
+    --  pointer across the boundary, eg. to embed it in a tree item, or
+    --  recover the Ada object on the way back. Application code should
+    --  never need these.
+    function Address_Of
+           (This : in Widget'Class)
+        return System.Address;
+
+    --  Returns null if Addr isn't a live FLTK-side widget with an Ada
+    --  twin (eg. one Extra_Init never ran for).
+    function Widget_At
+           (Addr : in System.Address)
+        return access Widget'Class;
+
 
 private
 
@@ -658,6 +674,8 @@ private
     pragma Inline (Handle);
 
     pragma Inline (Uses_Accents_Menu);
+    pragma Inline (Address_Of);
+    pragma Inline (Widget_At);
 
 
 end FLTK.Widgets;

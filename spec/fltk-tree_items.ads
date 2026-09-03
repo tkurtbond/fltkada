@@ -1,11 +1,13 @@
 
 
---  Programmed by Jedidiah Barber
+--  Programmed by T. Kurt Bond and Claude Sonnet 5
 --  Released into the public domain
 
 
 with
 
+    FLTK.Images,
+    FLTK.Widgets,
     System;
 
 
@@ -63,6 +65,22 @@ package FLTK.Tree_Items is
         Single_Selection,
         Multi_Selection,
         Single_Draggable_Selection);
+
+    --  Controls how an item's label and Set_Widget-assigned widget (if
+    --  any) are drawn together. With neither flag set (the default),
+    --  an assigned widget replaces the label entirely, and the item's
+    --  own height controls the widget's height.
+    type Item_Draw_Mode is record
+        Label_And_Widget   : Boolean := False;
+        Height_From_Widget : Boolean := False;
+    end record;
+
+    function "+" (Left, Right : in Item_Draw_Mode) return Item_Draw_Mode;
+    function "-" (Left, Right : in Item_Draw_Mode) return Item_Draw_Mode;
+
+    Draw_Default            : constant Item_Draw_Mode;
+    Draw_Label_And_Widget   : constant Item_Draw_Mode;
+    Draw_Height_From_Widget : constant Item_Draw_Mode;
 
 
 
@@ -139,6 +157,131 @@ package FLTK.Tree_Items is
         return Tree_Item;
 
 
+
+
+    --  Restructuring  --
+
+    --  All return False (making no change) on failure -- eg. Move_Into
+    --  would create a cycle, or Reparent/Swap_Children's arguments
+    --  aren't actually children of This.
+
+    function Move_Above
+           (This   : in Tree_Item;
+            Target : in Tree_Item)
+        return Boolean;
+
+    function Move_Below
+           (This   : in Tree_Item;
+            Target : in Tree_Item)
+        return Boolean;
+
+    --  Place is the child index (0 = first) to move This to within
+    --  Target's children.
+    function Move_Into
+           (This   : in Tree_Item;
+            Target : in Tree_Item;
+            Place  : in Natural := 0)
+        return Boolean;
+
+    --  Detaches the child at Place from This without destroying it,
+    --  returning the now-parentless item (typically to Reparent
+    --  elsewhere). Returns No_Tree_Item if Place is out of range.
+    function Deparent
+           (This  : in Tree_Item;
+            Place : in Positive)
+        return Tree_Item;
+
+    --  Adopts Child_Item (typically just Deparent-ed from somewhere
+    --  else) as This's child at index Place.
+    function Reparent
+           (This       : in Tree_Item;
+            Child_Item : in Tree_Item;
+            Place      : in Natural)
+        return Boolean;
+
+    --  Swaps two of This's immediate children.
+    function Swap_Children
+           (This          : in Tree_Item;
+            First, Second : in Tree_Item)
+        return Boolean;
+
+
+
+
+    --  Embedded Widget  --
+
+    --  Replaces the item's label area with an arbitrary FLTK widget
+    --  (eg. a table, an input field, or any other bound widget type).
+    --  The tree takes over the widget's x/y position and, by default,
+    --  its height; see FLTK.Widgets.Groups.Trees.Set_Item_Draw_Mode to
+    --  have the widget's own height control the item's height instead.
+    --  The widget's lifetime is still the caller's responsibility --
+    --  the tree does not take ownership of it, so it must outlive the
+    --  item (or be detached with Set_Widget again before it doesn't).
+    procedure Set_Widget
+           (This : in Tree_Item;
+            W    : in out FLTK.Widgets.Widget'Class);
+
+    function Has_Widget
+           (This : in Tree_Item)
+        return Boolean;
+
+    --  Returns null if no widget is assigned, or if the assigned
+    --  widget has no Ada twin (eg. it was assigned from outside this
+    --  binding).
+    function Get_Widget
+           (This : in Tree_Item)
+        return access FLTK.Widgets.Widget'Class;
+
+
+
+
+    --  Icons  --
+
+    --  A per-item icon shown in place of the tree's default one (see
+    --  FLTK.Widgets.Groups.Trees for the tree-wide default icons). As
+    --  with Set_Widget, the image's lifetime remains the caller's
+    --  responsibility.
+    procedure Set_User_Icon
+           (This : in Tree_Item;
+            Pic  : in out FLTK.Images.Image'Class);
+
+    function Has_User_Icon
+           (This : in Tree_Item)
+        return Boolean;
+
+    procedure Clear_User_Icon
+           (This : in Tree_Item);
+
+    --  Returns null if no icon is assigned, or if the assigned icon
+    --  has no Ada twin. Unlike Get_Widget, this can't be recovered via
+    --  a spare pointer FLTK already tracks (Fl_Image has none), so it
+    --  relies on a small internal table populated by Set_User_Icon;
+    --  looking up an icon assigned from outside this binding, or one
+    --  whose Tree_Item slot was since reused by an unrelated item,
+    --  will also return null.
+    function Get_User_Icon
+           (This : in Tree_Item)
+        return access FLTK.Images.Image'Class;
+
+    --  The icon shown when the item is Is_Active = False. Same caveats
+    --  as the user icon above.
+    procedure Set_User_Deicon
+           (This : in Tree_Item;
+            Pic  : in out FLTK.Images.Image'Class);
+
+    function Has_User_Deicon
+           (This : in Tree_Item)
+        return Boolean;
+
+    procedure Clear_User_Deicon
+           (This : in Tree_Item);
+
+    function Get_User_Deicon
+           (This : in Tree_Item)
+        return access FLTK.Images.Image'Class;
+
+
 private
 
 
@@ -147,6 +290,15 @@ private
     end record;
 
     No_Tree_Item : constant Tree_Item := (Void_Ptr => Null_Pointer);
+
+    Draw_Default            : constant Item_Draw_Mode := (others => False);
+    Draw_Label_And_Widget   : constant Item_Draw_Mode :=
+        (Label_And_Widget => True, others => False);
+    Draw_Height_From_Widget : constant Item_Draw_Mode :=
+        (Height_From_Widget => True, others => False);
+
+    pragma Inline ("+");
+    pragma Inline ("-");
 
     pragma Inline (Is_Null);
     pragma Inline (Cast);
@@ -161,6 +313,26 @@ private
     pragma Inline (Has_Children);
     pragma Inline (Number_Of_Children);
     pragma Inline (Depth);
+
+    pragma Inline (Move_Above);
+    pragma Inline (Move_Below);
+    pragma Inline (Move_Into);
+    pragma Inline (Deparent);
+    pragma Inline (Reparent);
+    pragma Inline (Swap_Children);
+
+    pragma Inline (Set_Widget);
+    pragma Inline (Has_Widget);
+    pragma Inline (Get_Widget);
+
+    pragma Inline (Set_User_Icon);
+    pragma Inline (Has_User_Icon);
+    pragma Inline (Clear_User_Icon);
+    pragma Inline (Get_User_Icon);
+    pragma Inline (Set_User_Deicon);
+    pragma Inline (Has_User_Deicon);
+    pragma Inline (Clear_User_Deicon);
+    pragma Inline (Get_User_Deicon);
 
 
 end FLTK.Tree_Items;

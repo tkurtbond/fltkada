@@ -101,6 +101,35 @@ function Add
   </tr>
 
   <tr>
+<td>Place is 0-based, matching pos, and inserts rather than appending
+(compare Add above).
+<pre>
+Fl_Tree_Item* insert(Fl_Tree_Item *item, const char *name, int pos);
+</pre></td>
+<td><pre>
+function Insert
+       (This  : in out Tree;
+        Under : in     FLTK.Tree_Items.Tree_Item;
+        Name  : in     String;
+        Place : in     Natural)
+    return FLTK.Tree_Items.Tree_Item;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Tree_Item *insert_above(Fl_Tree_Item *above, const char *name);
+</pre></td>
+<td><pre>
+function Insert_Above
+       (This  : in out Tree;
+        Above : in     FLTK.Tree_Items.Tree_Item;
+        Name  : in     String)
+    return FLTK.Tree_Items.Tree_Item;
+</pre></td>
+  </tr>
+
+  <tr>
 <td>Return value not bound -- see the FLTK.Tree_Items /
 FLTK.Widgets.Groups.Trees note in progress.txt.
 <pre>
@@ -445,6 +474,39 @@ function Get_Line_Spacing
     return Integer;
 
 procedure Set_Line_Spacing
+       (This : in out Tree;
+        To   : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Also accepts an int overload; not bound (the enum overload covers it).
+<pre>
+Fl_Tree_Item_Draw_Mode item_draw_mode() const;
+void item_draw_mode(Fl_Tree_Item_Draw_Mode val);
+</pre></td>
+<td><pre>
+function Get_Item_Draw_Mode
+       (This : in Tree)
+    return FLTK.Tree_Items.Item_Draw_Mode;
+
+procedure Set_Item_Draw_Mode
+       (This : in out Tree;
+        Mode : in     FLTK.Tree_Items.Item_Draw_Mode);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int widgetmarginleft() const;
+void widgetmarginleft(int val);
+</pre></td>
+<td><pre>
+function Get_Widget_Margin_Left
+       (This : in Tree)
+    return Integer;
+
+procedure Set_Widget_Margin_Left
        (This : in out Tree;
         To   : in     Integer);
 </pre></td>

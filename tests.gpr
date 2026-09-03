@@ -30,7 +30,8 @@ project Tests is
         "hello.adb",
         "page_formats.adb",
         "pixmap.adb",
-        "tree.adb");
+        "tree.adb",
+        "tree_table1.adb");
 
     package Builder is
         for Executable ("adjuster.adb")      use "adjuster";
@@ -48,6 +49,7 @@ project Tests is
         for Executable ("page_formats.adb")  use "page_formats";
         for Executable ("pixmap.adb")        use "pixmap";
         for Executable ("tree.adb")          use "tree";
+        for Executable ("tree_table1.adb")   use "tree_table1";
 
         for Default_Switches ("Ada") use
             Common.Builder'Default_Switches ("Ada");

@@ -215,13 +215,36 @@ common ~60% of the Fl_Tree / Fl_Tree_Item API rather than full parity
 (see doc/binding_architecture.md for the design notes). Not bound:
   - standalone/detached Fl_Tree_Item construction (new_fl_tree_item);
     items are only ever obtained from a Tree.
-  - insert()/insert_above()/move()/reparent()/deparent(), swap_children().
+  - the raw move(int,int)/move(item,op,pos) and replace()/replace_child()
+    are NOT bound, but the higher-level operations built on them ARE:
+    Trees.Insert/Insert_Above (parallel to Add, for a specific position
+    rather than appending) and Tree_Items.Move_Above/Move_Below/
+    Move_Into/Deparent/Reparent/Swap_Children (item restructuring).
   - per-item font/color overrides beyond the label (Fl_Tree_Item's own
     labelfont/labelsize/labelfgcolor/labelbgcolor).
-  - widget() embedding (assigning an FLTK widget in place of an item's
-    label) and custom icons (usericon/openicon/closeicon).
+  - widget() embedding IS bound (Tree_Items.Set_Widget/Has_Widget/
+    Get_Widget), along with item_draw_mode() (Tree_Items.Item_Draw_Mode,
+    Trees.Get/Set_Item_Draw_Mode) and widgetmarginleft()
+    (Trees.Get/Set_Widget_Margin_Left) -- both needed to make an
+    embedded widget lay out sensibly, following the same
+    FL_TREE_ITEM_DRAW_LABEL_AND_WIDGET | FL_TREE_ITEM_HEIGHT_FROM_WIDGET
+    pattern as FLTK's own examples/tree-of-tables.cxx. test/tree.adb
+    embeds a live FLTK.Widgets.Groups.Tables.Table this way.
+  - per-item icons (usericon/userdeicon) ARE bound
+    (Tree_Items.Set/Has/Clear/Get_User_Icon and the _Deicon equivalents).
+    Get_User_Icon/Get_User_Deicon can't recover the Ada object the way
+    Get_Widget does (Fl_Image has no spare pointer to piggyback on like
+    Fl_Widget's user_data()), so they're backed by a small internal
+    table in FLTK.Tree_Items keyed by the *item's* address -- stale if
+    that address is later reused for an unrelated item, same caveat
+    FLTK.Registry's Label_Store already carries. The tree-wide default
+    icons (Fl_Tree::usericon/openicon/closeicon, as opposed to a
+    specific item's) are still not bound.
   - overriding draw_item_content() -- would need the full Draw_Ptr-style
     hook machinery for an item type, which doesn't otherwise need it.
+    Confirmed via FLTK's own docs that this is independent of widget()
+    embedding (two separate customization paths), so it doesn't block
+    anything above.
   - item_draw_callback(), callback_item()/callback_reason().
   - the path-string overloads of open/close/select/is_open/is_selected,
     and their docallback parameter (Tree-level Open/Close/Select_Item/

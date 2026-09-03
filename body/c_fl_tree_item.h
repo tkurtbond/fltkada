@@ -1,6 +1,6 @@
 
 
-//  Programmed by Jedidiah Barber
+//  Programmed by T. Kurt Bond and Claude Sonnet 5
 //  Released into the public domain
 
 
@@ -34,6 +34,24 @@ extern "C" TREEITEM fl_tree_item_parent(TREEITEM ti);
 extern "C" int fl_tree_item_depth(TREEITEM ti);
 extern "C" TREEITEM fl_tree_item_next(TREEITEM ti);
 extern "C" TREEITEM fl_tree_item_prev(TREEITEM ti);
+
+
+extern "C" void fl_tree_item_set_widget(TREEITEM ti, void * w);
+extern "C" void * fl_tree_item_get_widget(TREEITEM ti);
+
+
+extern "C" void fl_tree_item_set_usericon(TREEITEM ti, void * img);
+extern "C" void * fl_tree_item_get_usericon(TREEITEM ti);
+extern "C" void fl_tree_item_set_userdeicon(TREEITEM ti, void * img);
+extern "C" void * fl_tree_item_get_userdeicon(TREEITEM ti);
+
+
+extern "C" int fl_tree_item_move_above(TREEITEM ti, TREEITEM item);
+extern "C" int fl_tree_item_move_below(TREEITEM ti, TREEITEM item);
+extern "C" int fl_tree_item_move_into(TREEITEM ti, TREEITEM item, int pos);
+extern "C" TREEITEM fl_tree_item_deparent(TREEITEM ti, int index);
+extern "C" int fl_tree_item_reparent(TREEITEM ti, TREEITEM newchild, int index);
+extern "C" int fl_tree_item_swap_children(TREEITEM ti, TREEITEM a, TREEITEM b);
 
 
 #endif

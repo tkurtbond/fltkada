@@ -1,6 +1,6 @@
 
 
---  Programmed by Jedidiah Barber
+--  Programmed by T. Kurt Bond and Claude Sonnet 5
 --  Released into the public domain
 
 
@@ -47,6 +47,23 @@ package body FLTK.Widgets.Groups.Trees is
         return Storage.Integer_Address;
     pragma Import (C, fl_tree_add, "fl_tree_add");
     pragma Inline (fl_tree_add);
+
+    function fl_tree_insert
+           (T     : in Storage.Integer_Address;
+            Under : in Storage.Integer_Address;
+            Name  : in Interfaces.C.char_array;
+            Place : in Interfaces.C.int)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_tree_insert, "fl_tree_insert");
+    pragma Inline (fl_tree_insert);
+
+    function fl_tree_insert_above
+           (T     : in Storage.Integer_Address;
+            Above : in Storage.Integer_Address;
+            Name  : in Interfaces.C.char_array)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_tree_insert_above, "fl_tree_insert_above");
+    pragma Inline (fl_tree_insert_above);
 
     procedure fl_tree_remove
            (T    : in Storage.Integer_Address;
@@ -284,6 +301,18 @@ package body FLTK.Widgets.Groups.Trees is
     pragma Import (C, fl_tree_set_margin_left, "fl_tree_set_margin_left");
     pragma Inline (fl_tree_set_margin_left);
 
+    function fl_tree_get_widget_margin_left
+           (T : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_get_widget_margin_left, "fl_tree_get_widget_margin_left");
+    pragma Inline (fl_tree_get_widget_margin_left);
+
+    procedure fl_tree_set_widget_margin_left
+           (T   : in Storage.Integer_Address;
+            Val : in Interfaces.C.int);
+    pragma Import (C, fl_tree_set_widget_margin_left, "fl_tree_set_widget_margin_left");
+    pragma Inline (fl_tree_set_widget_margin_left);
+
     function fl_tree_get_line_spacing
            (T : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -295,6 +324,18 @@ package body FLTK.Widgets.Groups.Trees is
             Val : in Interfaces.C.int);
     pragma Import (C, fl_tree_set_line_spacing, "fl_tree_set_line_spacing");
     pragma Inline (fl_tree_set_line_spacing);
+
+    function fl_tree_get_item_draw_mode
+           (T : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_get_item_draw_mode, "fl_tree_get_item_draw_mode");
+    pragma Inline (fl_tree_get_item_draw_mode);
+
+    procedure fl_tree_set_item_draw_mode
+           (T   : in Storage.Integer_Address;
+            Val : in Interfaces.C.int);
+    pragma Import (C, fl_tree_set_item_draw_mode, "fl_tree_set_item_draw_mode");
+    pragma Inline (fl_tree_set_item_draw_mode);
 
 
 
@@ -410,6 +451,38 @@ package body FLTK.Widgets.Groups.Trees is
         return FLTK.Tree_Items.Cast
            (Storage.To_Address (fl_tree_add (This.Void_Ptr, Interfaces.C.To_C (Path))));
     end Add;
+
+
+    function Insert
+           (This  : in out Tree;
+            Under : in     FLTK.Tree_Items.Tree_Item;
+            Name  : in     String;
+            Place : in     Natural)
+        return FLTK.Tree_Items.Tree_Item is
+    begin
+        return FLTK.Tree_Items.Cast
+           (Storage.To_Address
+              (fl_tree_insert
+                 (This.Void_Ptr,
+                  Storage.To_Integer (FLTK.Tree_Items.Address_Of (Under)),
+                  Interfaces.C.To_C (Name),
+                  Interfaces.C.int (Place))));
+    end Insert;
+
+
+    function Insert_Above
+           (This  : in out Tree;
+            Above : in     FLTK.Tree_Items.Tree_Item;
+            Name  : in     String)
+        return FLTK.Tree_Items.Tree_Item is
+    begin
+        return FLTK.Tree_Items.Cast
+           (Storage.To_Address
+              (fl_tree_insert_above
+                 (This.Void_Ptr,
+                  Storage.To_Integer (FLTK.Tree_Items.Address_Of (Above)),
+                  Interfaces.C.To_C (Name))));
+    end Insert_Above;
 
 
     procedure Remove
@@ -751,6 +824,22 @@ package body FLTK.Widgets.Groups.Trees is
     end Set_Margin_Left;
 
 
+    function Get_Widget_Margin_Left
+           (This : in Tree)
+        return Integer is
+    begin
+        return Integer (fl_tree_get_widget_margin_left (This.Void_Ptr));
+    end Get_Widget_Margin_Left;
+
+
+    procedure Set_Widget_Margin_Left
+           (This : in out Tree;
+            To   : in     Integer) is
+    begin
+        fl_tree_set_widget_margin_left (This.Void_Ptr, Interfaces.C.int (To));
+    end Set_Widget_Margin_Left;
+
+
     function Get_Line_Spacing
            (This : in Tree)
         return Integer is
@@ -765,6 +854,34 @@ package body FLTK.Widgets.Groups.Trees is
     begin
         fl_tree_set_line_spacing (This.Void_Ptr, Interfaces.C.int (To));
     end Set_Line_Spacing;
+
+
+    function Get_Item_Draw_Mode
+           (This : in Tree)
+        return FLTK.Tree_Items.Item_Draw_Mode
+    is
+        Raw : constant Interfaces.C.int := fl_tree_get_item_draw_mode (This.Void_Ptr);
+    begin
+        return
+           (Label_And_Widget   => Raw = 1 or Raw = 3,
+            Height_From_Widget => Raw = 2 or Raw = 3);
+    end Get_Item_Draw_Mode;
+
+
+    procedure Set_Item_Draw_Mode
+           (This : in out Tree;
+            Mode : in     FLTK.Tree_Items.Item_Draw_Mode)
+    is
+        Raw : Interfaces.C.int := 0;
+    begin
+        if Mode.Label_And_Widget then
+            Raw := Raw + 1;
+        end if;
+        if Mode.Height_From_Widget then
+            Raw := Raw + 2;
+        end if;
+        fl_tree_set_item_draw_mode (This.Void_Ptr, Raw);
+    end Set_Item_Draw_Mode;
 
 
 

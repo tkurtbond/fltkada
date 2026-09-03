@@ -1,6 +1,6 @@
 
 
---  Programmed by Jedidiah Barber
+--  Programmed by T. Kurt Bond and Claude Sonnet 5
 --  Released into the public domain
 
 
@@ -46,6 +46,22 @@ package FLTK.Widgets.Groups.Trees is
     function Add
            (This : in out Tree;
             Path : in     String)
+        return FLTK.Tree_Items.Tree_Item;
+
+    --  Adds a new child item named Name to Under at child position
+    --  Place (0 = first), rather than appending it like Add does.
+    function Insert
+           (This  : in out Tree;
+            Under : in     FLTK.Tree_Items.Tree_Item;
+            Name  : in     String;
+            Place : in     Natural)
+        return FLTK.Tree_Items.Tree_Item;
+
+    --  Adds a new item named Name as Above's previous sibling.
+    function Insert_Above
+           (This  : in out Tree;
+            Above : in     FLTK.Tree_Items.Tree_Item;
+            Name  : in     String)
         return FLTK.Tree_Items.Tree_Item;
 
     procedure Remove
@@ -216,6 +232,16 @@ package FLTK.Widgets.Groups.Trees is
            (This : in out Tree;
             To   : in     Integer);
 
+    --  Space between an item's label and its Tree_Items.Set_Widget
+    --  widget, when both are shown together (see Item_Draw_Mode).
+    function Get_Widget_Margin_Left
+           (This : in Tree)
+        return Integer;
+
+    procedure Set_Widget_Margin_Left
+           (This : in out Tree;
+            To   : in     Integer);
+
     function Get_Line_Spacing
            (This : in Tree)
         return Integer;
@@ -223,6 +249,16 @@ package FLTK.Widgets.Groups.Trees is
     procedure Set_Line_Spacing
            (This : in out Tree;
             To   : in     Integer);
+
+    --  Controls how a Tree_Items.Set_Widget-assigned widget is drawn
+    --  relative to its item's label; see FLTK.Tree_Items.Item_Draw_Mode.
+    function Get_Item_Draw_Mode
+           (This : in Tree)
+        return FLTK.Tree_Items.Item_Draw_Mode;
+
+    procedure Set_Item_Draw_Mode
+           (This : in out Tree;
+            Mode : in     FLTK.Tree_Items.Item_Draw_Mode);
 
 
 
@@ -261,6 +297,8 @@ private
 
 
     pragma Inline (Add);
+    pragma Inline (Insert);
+    pragma Inline (Insert_Above);
     pragma Inline (Remove);
     pragma Inline (Clear);
     pragma Inline (Clear_Children);
@@ -299,8 +337,12 @@ private
     pragma Inline (Set_Item_Label_Color);
     pragma Inline (Get_Margin_Left);
     pragma Inline (Set_Margin_Left);
+    pragma Inline (Get_Widget_Margin_Left);
+    pragma Inline (Set_Widget_Margin_Left);
     pragma Inline (Get_Line_Spacing);
     pragma Inline (Set_Line_Spacing);
+    pragma Inline (Get_Item_Draw_Mode);
+    pragma Inline (Set_Item_Draw_Mode);
 
     pragma Inline (Draw);
     pragma Inline (Handle);

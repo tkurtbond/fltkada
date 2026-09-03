@@ -4,6 +4,11 @@
 --  Released into the public domain
 
 
+with
+
+    System;
+
+
 package FLTK.Images is
 
 
@@ -118,6 +123,17 @@ package FLTK.Images is
             X, Y : in Integer);
 
 
+
+
+    --  Escape hatch for other FLTK child packages (namely
+    --  FLTK.Tree_Items) that need to hand an Image's underlying C
+    --  pointer across the boundary, eg. to assign it as a tree item's
+    --  icon. Application code should never need this.
+    function Address_Of
+           (This : in Image'Class)
+        return System.Address;
+
+
 private
 
 
@@ -162,6 +178,8 @@ private
 
     pragma Inline (Draw);
     pragma Inline (Draw_Empty);
+
+    pragma Inline (Address_Of);
 
 
 end FLTK.Images;

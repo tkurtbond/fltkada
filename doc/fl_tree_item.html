@@ -260,6 +260,206 @@ function Prev
 </pre></td>
   </tr>
 
+  <tr>
+<td>0 = success, so this and the other Move_*/Reparent/Swap_Children
+functions below return (result = 0), per the FLTK source (not
+documented in the header/Doxygen comments for these specifically).
+<pre>
+int move_above(Fl_Tree_Item *item);
+</pre></td>
+<td><pre>
+function Move_Above
+       (This   : in Tree_Item;
+        Target : in Tree_Item)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int move_below(Fl_Tree_Item *item);
+</pre></td>
+<td><pre>
+function Move_Below
+       (This   : in Tree_Item;
+        Target : in Tree_Item)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int move_into(Fl_Tree_Item *item, int pos=0);
+</pre></td>
+<td><pre>
+function Move_Into
+       (This   : in Tree_Item;
+        Target : in Tree_Item;
+        Place  : in Natural := 0)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Place is 1-based here; index is 0-based in FLTK (compare Child
+above). Returns No_Tree_Item on failure (eg. Place out of range).
+<pre>
+Fl_Tree_Item* deparent(int index);
+</pre></td>
+<td><pre>
+function Deparent
+       (This  : in Tree_Item;
+        Place : in Positive)
+    return Tree_Item;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Place is 0-based, matching index.
+<pre>
+int reparent(Fl_Tree_Item *newchild, int index);
+</pre></td>
+<td><pre>
+function Reparent
+       (This       : in Tree_Item;
+        Child_Item : in Tree_Item;
+        Place      : in Natural)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Only the item-pointer overload is bound (documented as slower than
+the index-pair overload, but doesn't require knowing indices).
+<pre>
+int swap_children(Fl_Tree_Item *a, Fl_Tree_Item *b);
+</pre></td>
+<td><pre>
+function Swap_Children
+       (This          : in Tree_Item;
+        First, Second : in Tree_Item)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>The tree does not take ownership of the widget -- it must outlive
+the item, or be detached with another Set_Widget call first.
+<pre>
+void widget(Fl_Widget *val);
+</pre></td>
+<td><pre>
+procedure Set_Widget
+       (This : in Tree_Item;
+        W    : in out FLTK.Widgets.Widget'Class);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>(widget() != 0)</td>
+<td><pre>
+function Has_Widget
+       (This : in Tree_Item)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Returns null if no widget is assigned, or if the assigned widget
+has no Ada twin (eg. assigned from outside this binding).
+<pre>
+Fl_Widget *widget() const;
+</pre></td>
+<td><pre>
+function Get_Widget
+       (This : in Tree_Item)
+    return access FLTK.Widgets.Widget'Class;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void usericon(Fl_Image *val);
+</pre></td>
+<td><pre>
+procedure Set_User_Icon
+       (This : in Tree_Item;
+        Pic  : in out FLTK.Images.Image'Class);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>(usericon() != 0)</td>
+<td><pre>
+function Has_User_Icon
+       (This : in Tree_Item)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>usericon(0)</td>
+<td><pre>
+procedure Clear_User_Icon
+       (This : in Tree_Item);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Unlike Get_Widget, backed by a small internal table (Fl_Image has
+no spare pointer to recover the Ada object from) -- see the
+FLTK.Tree_Items note in progress.txt.
+<pre>
+Fl_Image *usericon() const;
+</pre></td>
+<td><pre>
+function Get_User_Icon
+       (This : in Tree_Item)
+    return access FLTK.Images.Image'Class;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>The icon shown when the item is deactivated. Same caveats as the
+user icon above.
+<pre>
+void userdeicon(Fl_Image* val);
+Fl_Image* userdeicon() const;
+</pre></td>
+<td><pre>
+procedure Set_User_Deicon
+       (This : in Tree_Item;
+        Pic  : in out FLTK.Images.Image'Class);
+
+function Has_User_Deicon
+       (This : in Tree_Item)
+    return Boolean;
+
+procedure Clear_User_Deicon
+       (This : in Tree_Item);
+
+function Get_User_Deicon
+       (This : in Tree_Item)
+    return access FLTK.Images.Image'Class;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">More Types (from Fl_Tree_Prefs)</th></tr>
+
+  <tr>
+    <td>enum Fl_Tree_Item_Draw_Mode {<br />
+    FL_TREE_ITEM_DRAW_DEFAULT = 0,<br />
+    FL_TREE_ITEM_DRAW_LABEL_AND_WIDGET = 1,<br />
+    FL_TREE_ITEM_HEIGHT_FROM_WIDGET = 2 }</td>
+    <td>Item_Draw_Mode (a record of two Booleans, Label_And_Widget and
+    Height_From_Widget, combinable with "+"/"-" like Callback_Flag)</td>
+  </tr>
+
 </table>
 
 

@@ -405,6 +405,14 @@ package body FLTK.Images is
     end Draw_Empty;
 
 
+    function Address_Of
+           (This : in Image'Class)
+        return System.Address is
+    begin
+        return Storage.To_Address (This.Void_Ptr);
+    end Address_Of;
+
+
 end FLTK.Images;
 
 

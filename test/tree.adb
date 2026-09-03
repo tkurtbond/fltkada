@@ -1,6 +1,6 @@
 
 
---  Programmed by Jedidiah Barber
+--  Programmed by T. Kurt Bond and Claude Sonnet 5
 --  Released into the public domain
 
 
