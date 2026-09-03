@@ -78,8 +78,12 @@ is
 
         when Tbl.Row_Header | Tbl.Column_Header =>
             declare
+                --  Table_Draw_Cell_Hook (fltk-widgets-groups-tables.adb)
+                --  already converts Row/Column to 1-based for these two
+                --  contexts, despite the Natural parameter type here --
+                --  so no further "+ 1" is needed.
                 Number : constant String :=
-                    Integer'Image ((if Context = Tbl.Row_Header then Row else Column) + 1);
+                    Integer'Image (if Context = Tbl.Row_Header then Row else Column);
             begin
                 FD.Push_Clip (X, Y, W, H);
                 FD.Draw_Box (X, Y, W, H, FLTK.Thin_Up_Box, FLTK.Background_Color);
@@ -90,8 +94,10 @@ is
 
         when Tbl.Within_Cell =>
             declare
-                Row_Letter : constant Character := Character'Val (Character'Pos ('A') + Row);
-                Number     : constant String := Integer'Image (Column + 1);
+                --  Row/Column are 1-based here too (see above), hence
+                --  "Row - 1" below to get a 0-based letter offset.
+                Row_Letter : constant Character := Character'Val (Character'Pos ('A') + Row - 1);
+                Number     : constant String := Integer'Image (Column);
                 Cell_Label : constant String := Row_Letter & Number (2 .. Number'Last);
             begin
                 FD.Push_Clip (X, Y, W, H);

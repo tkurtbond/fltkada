@@ -1,0 +1,11 @@
+* TODO Compare FLTK's tree examples against the FLTKAda tree tests line-by-line.
+Ported test/tree_simple.adb, test/tree_as_container.adb,
+test/tree_custom_sort.adb, and test/tree_of_tables.adb from FLTK's own
+examples/tree-simple.cxx, examples/tree-as-container.cxx,
+examples/tree-custom-sort.cxx, and examples/tree-of-tables.cxx (under
+/usr/local/sw/src/lang/C++/fltk/fltk-1.4.5/examples), but only spot-checked
+each against its original rather than going through both more or less
+line by line. Do that pass -- catch anything ported loosely, skipped
+without a documented reason, or (as already happened once with
+tree_of_tables.adb's resize/label-positioning bug) behaving subtly
+differently from the real widget despite looking right in a screenshot.

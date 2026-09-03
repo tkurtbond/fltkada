@@ -31,25 +31,33 @@ project Tests is
         "page_formats.adb",
         "pixmap.adb",
         "tree.adb",
-        "tree_table1.adb");
+        "tree_table1.adb",
+        "tree_simple.adb",
+        "tree_as_container.adb",
+        "tree_custom_sort.adb",
+        "tree_of_tables.adb");
 
     package Builder is
-        for Executable ("adjuster.adb")      use "adjuster";
-        for Executable ("ask.adb")           use "ask";
-        for Executable ("bitmap.adb")        use "bitmap";
-        for Executable ("button.adb")        use "button";
-        for Executable ("buttons.adb")       use "buttons";
-        for Executable ("compare.adb")       use "compare";
-        for Executable ("clock.adb")         use "clock";
-        for Executable ("color_chooser.adb") use "color_chooser";
-        for Executable ("cursor.adb")        use "cursor";
-        for Executable ("dirlist.adb")       use "dirlist";
-        for Executable ("filename.adb")      use "filename";
-        for Executable ("hello.adb")         use "hello";
-        for Executable ("page_formats.adb")  use "page_formats";
-        for Executable ("pixmap.adb")        use "pixmap";
-        for Executable ("tree.adb")          use "tree";
-        for Executable ("tree_table1.adb")   use "tree_table1";
+        for Executable ("adjuster.adb")           use "adjuster";
+        for Executable ("ask.adb")                use "ask";
+        for Executable ("bitmap.adb")             use "bitmap";
+        for Executable ("button.adb")             use "button";
+        for Executable ("buttons.adb")            use "buttons";
+        for Executable ("compare.adb")            use "compare";
+        for Executable ("clock.adb")              use "clock";
+        for Executable ("color_chooser.adb")      use "color_chooser";
+        for Executable ("cursor.adb")             use "cursor";
+        for Executable ("dirlist.adb")            use "dirlist";
+        for Executable ("filename.adb")           use "filename";
+        for Executable ("hello.adb")              use "hello";
+        for Executable ("page_formats.adb")       use "page_formats";
+        for Executable ("pixmap.adb")             use "pixmap";
+        for Executable ("tree.adb")               use "tree";
+        for Executable ("tree_table1.adb")        use "tree_table1";
+        for Executable ("tree_simple.adb")        use "tree_simple";
+        for Executable ("tree_as_container.adb")  use "tree_as_container";
+        for Executable ("tree_custom_sort.adb")   use "tree_custom_sort";
+        for Executable ("tree_of_tables.adb")     use "tree_of_tables";
 
         for Default_Switches ("Ada") use
             Common.Builder'Default_Switches ("Ada");
