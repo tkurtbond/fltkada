@@ -99,6 +99,27 @@ abstract project Common is
     end Linker;
 
 
+    --  See doc/gnatpp_configuration.md for what these do and don't
+    --  reproduce of the style described in doc/ada_formatting_standard.md.
+    package Pretty_Printer is
+        for Default_Switches ("ada") use
+           ("--indentation=4",
+            "--indent-continuation=3",
+            "--par-threshold=0",
+            "--max-line-length=100",
+            "--decimal-grouping=0",
+            "--based-grouping=0",
+            "--keyword-lower-case",
+            "--attribute-mixed-case",
+            "--name-case-as-declared",
+            "--type-case-as-declared",
+            "--enum-case-as-declared",
+            "--number-case-as-declared",
+            "--pragma-mixed-case",
+            "--eol=lf");
+    end Pretty_Printer;
+
+
 end Common;
 
 

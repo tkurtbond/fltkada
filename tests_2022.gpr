@@ -31,9 +31,10 @@ project Tests_2022 is
             Common.Builder'Global_Compilation_Switches ("Ada");
     end Builder;
 
-    package Compiler renames Common.Compiler;
-    package Binder   renames Common.Binder;
-    package Linker   renames Common.Linker;
+    package Compiler       renames Common.Compiler;
+    package Binder         renames Common.Binder;
+    package Linker         renames Common.Linker;
+    package Pretty_Printer renames Common.Pretty_Printer;
 
 
 end Tests_2022;

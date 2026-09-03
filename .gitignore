@@ -1,0 +1,75 @@
+# --- Ada / GNAT / GPRbuild -------------------------------------------------
+*.ali
+*.o
+*.obj
+*.su
+b~*.adb
+b~*.ads
+*.bexch
+*.lexch
+*.gnatdebug
+gnatinspect.db
+gnat.dbg
+*.npp
+
+# --- C / C++ -----------------------------------------------------------
+*.a
+*.la
+*.lo
+*.so
+*.so.*
+*.dylib
+*.dll
+*.dSYM/
+*.d
+*.gch
+*.pch
+*.out
+core
+core.*
+vgcore.*
+*.gcda
+*.gcno
+*.gcov
+compile_commands.json
+
+# --- Emacs ---------------------------------------------------------------
+*~
+\#*\#
+.\#*
+.~/
+.~*
+auto-save-list/
+tramp
+.projectile
+.dir-locals-2.el
+
+# --- Vim ---------------------------------------------------------------
+*.swp
+*.swo
+*.swn
+Session.vim
+.netrwhist
+
+# --- Editors / IDEs --------------------------------------------------------
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# --- OS cruft ------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# --- Generic build/backup noise ------------------------------------------
+*.bak
+*.orig
+*.rej
+*.log
+*.tmp
