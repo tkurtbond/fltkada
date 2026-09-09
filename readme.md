@@ -62,6 +62,25 @@ To install the binding, use
 
 `gprinstall -p -m fltkada.gpr`
 
+This installs whichever library kind was last built. To install both the
+static and dynamic libraries side by side, build and install each with a
+distinct `--build-name`, sharing `library_type` as the installed project's
+build-selection variable via `--build-var`:
+
+```
+gprbuild -p -Xlibrary_type=dynamic fltkada.gpr
+gprinstall -p -m -Xlibrary_type=dynamic fltkada.gpr \
+    --build-name=relocatable --build-var=library_type
+
+gprbuild -p -Xlibrary_type=static fltkada.gpr
+gprinstall -p -m -Xlibrary_type=static fltkada.gpr \
+    --build-name=static --build-var=library_type
+```
+
+A project that depends on the installed binding can then select which
+library to link against with the same `-Xlibrary_type=static` or
+`-Xlibrary_type=dynamic` switch.
+
 For further information on the build tools, consult the
 [GPRbuild docs](https://docs.adacore.com/gprbuild-docs/html/gprbuild_ug.html).
 
