@@ -49,9 +49,14 @@ build, use the following command
 
 `gprbuild fltkada.gpr`
 
-There is a single build switch of `-Xbuild` which can have a value of `release`
+There is a build switch of `-Xbuild` which can have a value of `release`
 (the default) or `debug`. The other project files in the main directory can be
 used with similar build commands to build tests, examples, and tools.
+
+By default the binding is built as a shared library. To build a static
+library instead, add `-Xlibrary_type=static` (the default is `dynamic`):
+
+`gprbuild -Xlibrary_type=static fltkada.gpr`
 
 To install the binding, use
 
