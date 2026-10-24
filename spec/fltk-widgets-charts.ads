@@ -17,6 +17,10 @@ package FLTK.Widgets.Charts is
     type Chart_Reference (Data : not null access Chart'Class) is limited null record
         with Implicit_Dereference => Data;
 
+    type Chart_Kind is
+       (Bar_Chart, Horizontal_Bar_Chart, Line_Chart, Fill_Chart,
+        Spike_Chart, Pie_Chart, Special_Pie_Chart);
+
 
 
 
@@ -67,6 +71,14 @@ package FLTK.Widgets.Charts is
 
 
     --  Settings  --
+
+    function Get_Kind
+           (This : in Chart)
+        return Chart_Kind;
+
+    procedure Set_Kind
+           (This : in out Chart;
+            Kind : in     Chart_Kind);
 
     function Will_Autosize
            (This : in Chart)
@@ -170,6 +182,8 @@ private
     pragma Inline (Replace);
     pragma Inline (Clear);
 
+    pragma Inline (Get_Kind);
+    pragma Inline (Set_Kind);
     pragma Inline (Will_Autosize);
     pragma Inline (Set_Autosize);
     pragma Inline (Get_Bounds);

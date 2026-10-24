@@ -20,32 +20,39 @@ FLTK.Devices.Surface.Paged
 FLTK.Devices.Surface.Paged.Postscript
 FLTK.Devices.Surface.Paged.Printers
 FLTK.Draw
+FLTK.Draw.OpenGL
 FLTK.Environment
 FLTK.Errors
 FLTK.Event
 FLTK.File_Choosers
 FLTK.Filenames
+FLTK.GLUT
 FLTK.Help_Dialogs
 FLTK.Images
 FLTK.Images.Bitmaps
 FLTK.Images.Bitmaps.XBM
 FLTK.Images.Pixmaps
 FLTK.Images.Pixmaps.GIF
+FLTK.Images.Pixmaps.GIF.Animated
 FLTK.Images.Pixmaps.XPM
 FLTK.Images.RGB
 FLTK.Images.RGB.BMP
 FLTK.Images.RGB.JPEG
 FLTK.Images.RGB.PNG
 FLTK.Images.RGB.PNM
+FLTK.Images.RGB.SVG
 FLTK.Images.Shared
 FLTK.Images.Tiled
 FLTK.Labels
 FLTK.Menu_Items
+FLTK.Multi_Labels
+FLTK.Native_File_Choosers
 FLTK.Screen
 FLTK.Static
 FLTK.Text_Buffers
 FLTK.Tooltips
 FLTK.Tree_Items
+FLTK.Tree_Items.Custom
 FLTK.Widgets
 FLTK.Widgets.Boxes
 FLTK.Widgets.Buttons
@@ -71,6 +78,8 @@ FLTK.Widgets.Groups.Browsers.Textline.File
 FLTK.Widgets.Groups.Browsers.Textline.Hold
 FLTK.Widgets.Groups.Browsers.Textline.Multi
 FLTK.Widgets.Groups.Color_Choosers
+FLTK.Widgets.Groups.Flex
+FLTK.Widgets.Groups.Grids
 FLTK.Widgets.Groups.Help_Views
 FLTK.Widgets.Groups.Input_Choices
 FLTK.Widgets.Groups.Packed
@@ -79,6 +88,7 @@ FLTK.Widgets.Groups.Spinners
 FLTK.Widgets.Groups.Tabbed
 FLTK.Widgets.Groups.Tables
 FLTK.Widgets.Groups.Tables.Row
+FLTK.Widgets.Groups.Terminals
 FLTK.Widgets.Groups.Text_Displays
 FLTK.Widgets.Groups.Text_Displays.Text_Editors
 FLTK.Widgets.Groups.Tiled
@@ -88,6 +98,7 @@ FLTK.Widgets.Groups.Windows.Double
 FLTK.Widgets.Groups.Windows.Double.Cairo
 FLTK.Widgets.Groups.Windows.Double.Overlay
 FLTK.Widgets.Groups.Windows.OpenGL
+FLTK.Widgets.Groups.Windows.OpenGL.GLUT
 FLTK.Widgets.Groups.Windows.Single
 FLTK.Widgets.Groups.Windows.Single.Menu
 FLTK.Widgets.Groups.Wizards
@@ -102,6 +113,7 @@ FLTK.Widgets.Inputs.Text.Secret
 FLTK.Widgets.Inputs.Text.Whole_Number
 FLTK.Widgets.Menus
 FLTK.Widgets.Menus.Choices
+FLTK.Widgets.Menus.Choices.Schemes
 FLTK.Widgets.Menus.Menu_Bars
 FLTK.Widgets.Menus.Menu_Bars.Systemwide
 FLTK.Widgets.Menus.Menu_Buttons
@@ -139,12 +151,9 @@ To-Do:
 
 Fl_GDI_Graphics_Driver
 Fl_GDI_Printer_Graphics_Driver
-Fl_Glut_Window
 Fl_Postscript_Graphics_Driver
 Fl_Quartz_Graphics_Driver
 Fl_Xlib_Graphics_Driver
-gl
-glut
 
 
 Doesn't need an internal Graphics_Driver:
@@ -199,6 +208,55 @@ the latest version?
 Fl_Table::callback has wrong signature, still around and unfixed in 1.4
 possibly this hasn't been noticed because it's only visible to doxygen
 
+Menu.Add (Text) with one argument is ambiguous between the defaulted Add
+overloads; callers must write Add (Text, null)
+
+calling Remove_Clipboard_Notify from inside a clipboard notify handler raises
+Program_Error (the handler vector is tamper-checked while it is being iterated);
+the other Events handler vectors likely have the same problem
+
+Dispatch_Hook's Constraint_Error handler reports any Constraint_Error raised in
+the user's dispatch function as an unexpected event value
+
+Menu_Item Set_Label (Kind => Image_Label or Multi_Label, Text) is meaningless,
+since FLTK treats the label text as a pointer to an image or Fl_Multi_Label;
+use Set_Image / Set_Multi_Label instead
+
+FLTK's glut.H declares glutExtensionSupported as taking char*, but its
+definition takes const char* (see body/c_fl_glut.cpp)
+
+
+
+Bugs fixed while porting FLTK's examples/:
+
+Fl_Text_Editor: every key binding with Shift/Ctrl/Alt/Meta was dead, because
+all keys were routed via default_key_function_, which FLTK only calls with no
+modifiers; and Key_Func_Hook masked in NumLock/CapsLock
+
+Widget Extra_Init set an empty label as "" rather than NULL, so unlabelled
+widgets (including wrapped C++-owned ones such as Table's scrollbars and the
+fl_message_icon template) drew a label: Table's Start_Page font was reset,
+images on unlabelled boxes were offset, and ask/message dialogs lost their icon
+
+Window Forge.Create (Parent, X, Y, W, H, ...) made an invisible subwindow;
+it is now shown, as a C++ Fl_Window(x,y,w,h) inside a current group is
+
+handle() results were converted with Event_Outcome'Val, raising
+Internal_FLTK_Error when FLTK returned a nonzero value other than 1
+
+FLTK.Static registered its clipboard notify hook at elaboration, before the
+display was open, so on X11 every program polled the clipboard twice a
+second forever; the hook is now registered with the first Ada handler
+
+Menu_Item labels pointed at Ada temporaries (dangling, and freed by
+Fl_Menu_::clear); the shim now copies text labels and frees them
+
+Text_Displays Style_Entry had the wrong layout (Hue at byte 4, 16 bytes not
+20); it now matches Fl_Text_Display::Style_Table_Entry, with attr and bgcolor
+
+Table Callback_Row/Callback_Column/Get_Selection raised on FLTK's -1 (none)
+values; they are now Natural, with 0 meaning none
+
 
 
 Incomplete APIs:
@@ -209,19 +267,50 @@ FLTK.Images.Pixmaps (unmarshall data access?)
 FLTK.Images.Shared (images(), compare)
 FLTK.Text_Buffers (a few functions, protected stuff, ensure buffer is 1-indexed)
 FLTK.Widgets.Groups.Text_Displays (ensure text buffer is 1-indexed)
+FLTK.GLUT (the GLUT bitmap/stroke fonts, the geometric models glutWire*/glutSolid*,
+    and the glut_window/glut_menu globals; windows from Create_Window/
+    Create_Sub_Window have no Ada object; menu labels and the icon title are
+    kept by FLTK without copying, so their C strings are never freed)
+FLTK.Images.Pixmaps.GIF.Animated (Fail_Code clamps a positive ld() to 0)
+FLTK.Multi_Labels (only usable on menu items: there is no way yet to put a
+    Multi_Label on a widget, Fl_Multi_Label::label(Fl_Widget*))
+FLTK.Images.Tiled (Tile returns a non-owning view of the tiled image)
+FLTK.Static / FLTK.Widgets (no Fl::redraw; no way to clear a widget's image)
+FLTK.Widgets.Groups.Flex (protected init, alloc_size, on_remove)
+FLTK.Widgets.Groups.Grids (Fl_Grid::Cell and cell(row,col) / cell(widget);
+    protected draw_grid (virtual), init, add_cell, remove_cell, on_remove)
+FLTK.Widgets.Groups.Terminals
+    Nested helper classes Utf8Char, RingBuffer, CharStyle, Cursor, EscapeSeq,
+    Margin and Selection are not bound.
+    Protected internals not bound: u8c_* row/char accessors, cursor_up/down/
+    left/right, scroll, insert/delete rows/chars, clear_eol/clear_sod/etc,
+    handle_unknown_char, draw_row*/draw_buff, walk_selection, select_word/line,
+    handle_selection*, is_redraw_style.
+    printf/vprintf varargs replaced by Print (format in Ada).
+    color() not overridden (Fl_Terminal's version is a no-op pass-through);
+    box() getter is inherited from Widget.
+    Pitfall: Group.Child on a Terminal returns the internal scrollbars, whose
+    user_data is the C++ terminal pointer rather than an Ada wrapper.
+FLTK.Widgets.Groups.Windows (Get_First_Window/Get_Next_Window unsafe with
+    C++-created windows such as the file chooser)
+FLTK.Widgets.Menus.Choices.Schemes (init_value callable but not overridable
+    from Ada; setting a callback replaces the built-in scheme-switching one)
 
 FLTK.Tree_Items / FLTK.Widgets.Groups.Trees -- deliberately scoped to the
 common ~60% of the Fl_Tree / Fl_Tree_Item API rather than full parity
 (see doc/binding_architecture.md for the design notes). Not bound:
   - standalone/detached Fl_Tree_Item construction (new_fl_tree_item);
     items are only ever obtained from a Tree.
-  - the raw move(int,int)/move(item,op,pos) and replace()/replace_child()
-    are NOT bound, but the higher-level operations built on them ARE:
+  - the raw move(int,int)/move(item,op,pos) and replace_child() are NOT
+    bound, but the higher-level operations built on them ARE:
     Trees.Insert/Insert_Above (parallel to Add, for a specific position
     rather than appending) and Tree_Items.Move_Above/Move_Below/
     Move_Into/Deparent/Reparent/Swap_Children (item restructuring).
-  - per-item font/color overrides beyond the label (Fl_Tree_Item's own
-    labelfont/labelsize/labelfgcolor/labelbgcolor).
+    replace() IS bound (Tree_Items.Replace), as is add(path, newitem)
+    (Trees.Add with an Item), so custom items can be put in the tree.
+  - Fl_Tree_Item's labelfont/labelsize ARE bound (Tree_Items.Get/
+    Set_Label_Font, Get/Set_Label_Size), along with label_x/y/w/h;
+    labelfgcolor/labelbgcolor are not.
   - widget() embedding IS bound (Tree_Items.Set_Widget/Has_Widget/
     Get_Widget), along with item_draw_mode() (Tree_Items.Item_Draw_Mode,
     Trees.Get/Set_Item_Draw_Mode) and widgetmarginleft()
@@ -240,12 +329,12 @@ common ~60% of the Fl_Tree / Fl_Tree_Item API rather than full parity
     FLTK.Registry's Label_Store already carries. The tree-wide default
     icons (Fl_Tree::usericon/openicon/closeicon, as opposed to a
     specific item's) are still not bound.
-  - overriding draw_item_content() -- would need the full Draw_Ptr-style
-    hook machinery for an item type, which doesn't otherwise need it.
-    Confirmed via FLTK's own docs that this is independent of widget()
-    embedding (two separate customization paths), so it doesn't block
-    anything above.
-  - item_draw_callback(), callback_item()/callback_reason().
+  - overriding draw_item_content() IS bound, through the separate
+    FLTK.Tree_Items.Custom package: derive from Custom_Item and override
+    Draw_Item_Content (see examples/tree_custom_draw_items.adb).
+  - callback_item()/callback_reason() ARE bound (Trees.Callback_Item,
+    Callback_Reason, Reason_Kind), as are item_pathname(), selectbox()
+    (Trees.Get/Set_Select_Box) and show_self(). item_draw_callback() is not.
   - the path-string overloads of open/close/select/is_open/is_selected,
     and their docallback parameter (Tree-level Open/Close/Select_Item/
     Deselect always behave as if docallback=1).
@@ -254,6 +343,7 @@ common ~60% of the Fl_Tree / Fl_Tree_Item API rather than full parity
     FLTK's own docs recommend using instead of Fl_Tree_Prefs directly.
   - scrollbar/position controls (vposition/hposition/scrollbar_size),
     load() from Fl_Preferences.
-See test/tree.adb for a working example of what is bound.
+See test/tree.adb and the examples/tree_*.adb ports for working examples
+of what is bound.
 
 

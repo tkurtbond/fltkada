@@ -156,6 +156,10 @@ package FLTK.Widgets.Groups is
            (This : in out Group;
             Item : in     Widget'Class);
 
+    --  Afterwards no child resizes when This does, they only move.
+    procedure Clear_Resizable
+           (This : in out Group);
+
     procedure Reset_Sizes
            (This : in out Group);
 
@@ -277,6 +281,7 @@ private
 
     pragma Inline (Add_Resizable);
     pragma Inline (Set_Resizable);
+    pragma Inline (Clear_Resizable);
     pragma Inline (Reset_Sizes);
     pragma Inline (Resize);
 

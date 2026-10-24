@@ -52,6 +52,54 @@ package body FLTK.Tree_Items is
     pragma Import (C, fl_tree_item_set_label, "fl_tree_item_set_label");
     pragma Inline (fl_tree_item_set_label);
 
+    function fl_tree_item_get_labelfont
+           (TI : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_item_get_labelfont, "fl_tree_item_get_labelfont");
+    pragma Inline (fl_tree_item_get_labelfont);
+
+    procedure fl_tree_item_set_labelfont
+           (TI : in Storage.Integer_Address;
+            F  : in Interfaces.C.int);
+    pragma Import (C, fl_tree_item_set_labelfont, "fl_tree_item_set_labelfont");
+    pragma Inline (fl_tree_item_set_labelfont);
+
+    function fl_tree_item_get_labelsize
+           (TI : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_item_get_labelsize, "fl_tree_item_get_labelsize");
+    pragma Inline (fl_tree_item_get_labelsize);
+
+    procedure fl_tree_item_set_labelsize
+           (TI : in Storage.Integer_Address;
+            S  : in Interfaces.C.int);
+    pragma Import (C, fl_tree_item_set_labelsize, "fl_tree_item_set_labelsize");
+    pragma Inline (fl_tree_item_set_labelsize);
+
+    function fl_tree_item_label_x
+           (TI : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_item_label_x, "fl_tree_item_label_x");
+    pragma Inline (fl_tree_item_label_x);
+
+    function fl_tree_item_label_y
+           (TI : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_item_label_y, "fl_tree_item_label_y");
+    pragma Inline (fl_tree_item_label_y);
+
+    function fl_tree_item_label_w
+           (TI : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_item_label_w, "fl_tree_item_label_w");
+    pragma Inline (fl_tree_item_label_w);
+
+    function fl_tree_item_label_h
+           (TI : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_item_label_h, "fl_tree_item_label_h");
+    pragma Inline (fl_tree_item_label_h);
+
 
 
 
@@ -172,6 +220,19 @@ package body FLTK.Tree_Items is
     pragma Import (C, fl_tree_item_swap_children, "fl_tree_item_swap_children");
     pragma Inline (fl_tree_item_swap_children);
 
+    procedure fl_tree_item_swap_children2
+           (TI   : in Storage.Integer_Address;
+            A, B : in Interfaces.C.int);
+    pragma Import (C, fl_tree_item_swap_children2, "fl_tree_item_swap_children2");
+    pragma Inline (fl_tree_item_swap_children2);
+
+    function fl_tree_item_replace
+           (TI : in Storage.Integer_Address;
+            N  : in Storage.Integer_Address)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_tree_item_replace, "fl_tree_item_replace");
+    pragma Inline (fl_tree_item_replace);
+
 
 
 
@@ -291,6 +352,70 @@ package body FLTK.Tree_Items is
     begin
         fl_tree_item_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
     end Set_Label;
+
+
+    function Get_Label_Font
+           (This : in Tree_Item)
+        return Font_Kind is
+    begin
+        return Font_Kind'Val (fl_tree_item_get_labelfont (This.Void_Ptr));
+    end Get_Label_Font;
+
+
+    procedure Set_Label_Font
+           (This : in Tree_Item;
+            Font : in Font_Kind) is
+    begin
+        fl_tree_item_set_labelfont (This.Void_Ptr, Font_Kind'Pos (Font));
+    end Set_Label_Font;
+
+
+    function Get_Label_Size
+           (This : in Tree_Item)
+        return Font_Size is
+    begin
+        return Font_Size (fl_tree_item_get_labelsize (This.Void_Ptr));
+    end Get_Label_Size;
+
+
+    procedure Set_Label_Size
+           (This : in Tree_Item;
+            Size : in Font_Size) is
+    begin
+        fl_tree_item_set_labelsize (This.Void_Ptr, Interfaces.C.int (Size));
+    end Set_Label_Size;
+
+
+    function Label_X
+           (This : in Tree_Item)
+        return Integer is
+    begin
+        return Integer (fl_tree_item_label_x (This.Void_Ptr));
+    end Label_X;
+
+
+    function Label_Y
+           (This : in Tree_Item)
+        return Integer is
+    begin
+        return Integer (fl_tree_item_label_y (This.Void_Ptr));
+    end Label_Y;
+
+
+    function Label_W
+           (This : in Tree_Item)
+        return Integer is
+    begin
+        return Integer (fl_tree_item_label_w (This.Void_Ptr));
+    end Label_W;
+
+
+    function Label_H
+           (This : in Tree_Item)
+        return Integer is
+    begin
+        return Integer (fl_tree_item_label_h (This.Void_Ptr));
+    end Label_H;
 
 
 
@@ -462,6 +587,29 @@ package body FLTK.Tree_Items is
     begin
         return fl_tree_item_swap_children (This.Void_Ptr, First.Void_Ptr, Second.Void_Ptr) = 0;
     end Swap_Children;
+
+
+    procedure Swap_Children
+           (This          : in Tree_Item;
+            First, Second : in Positive) is
+    begin
+        if First > Number_Of_Children (This) or Second > Number_Of_Children (This) then
+            raise Constraint_Error;
+        end if;
+        fl_tree_item_swap_children2
+           (This.Void_Ptr,
+            Interfaces.C.int (First) - 1,
+            Interfaces.C.int (Second) - 1);
+    end Swap_Children;
+
+
+    function Replace
+           (This     : in Tree_Item;
+            New_Item : in Tree_Item)
+        return Tree_Item is
+    begin
+        return (Void_Ptr => fl_tree_item_replace (This.Void_Ptr, New_Item.Void_Ptr));
+    end Replace;
 
 
 

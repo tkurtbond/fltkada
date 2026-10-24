@@ -7,6 +7,7 @@
 with
 
     FLTK.Images,
+    FLTK.Multi_Labels,
     FLTK.Widgets;
 
 
@@ -172,6 +173,12 @@ package FLTK.Menu_Items is
            (This : in out Menu_Item;
             Pict : in out FLTK.Images.Image'Class);
 
+    --  Replaces the label with one that can combine text and images.  The
+    --  Multi_Label is not copied, so it must last as long as the item does.
+    procedure Set_Multi_Label
+           (This  : in out Menu_Item;
+            Label : in out FLTK.Multi_Labels.Multi_Label'Class);
+
 
 
 
@@ -241,6 +248,7 @@ private
 
     pragma Inline (Get_Image);
     pragma Inline (Set_Image);
+    pragma Inline (Set_Multi_Label);
 
     pragma Inline (Activate);
     pragma Inline (Deactivate);

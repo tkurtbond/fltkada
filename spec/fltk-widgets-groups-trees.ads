@@ -17,6 +17,10 @@ package FLTK.Widgets.Groups.Trees is
     type Tree_Reference (Data : not null access Tree'Class) is limited null record
         with Implicit_Dereference => Data;
 
+    --  Why the tree's callback was called; see Callback_Reason.
+    type Reason_Kind is
+       (No_Reason, Selected, Deselected, Reselected, Opened, Closed, Dragged);
+
 
 
 
@@ -46,6 +50,15 @@ package FLTK.Widgets.Groups.Trees is
     function Add
            (This : in out Tree;
             Path : in     String)
+        return FLTK.Tree_Items.Tree_Item;
+
+    --  As above, but the last path component is Item itself, typically a
+    --  FLTK.Tree_Items.Custom item, rather than a new item.  Item's label
+    --  is left as it is.  The tree takes ownership of Item.
+    function Add
+           (This : in out Tree;
+            Path : in     String;
+            Item : in     FLTK.Tree_Items.Tree_Item)
         return FLTK.Tree_Items.Tree_Item;
 
     --  Adds a new child item named Name to Under at child position
@@ -92,6 +105,28 @@ package FLTK.Widgets.Groups.Trees is
     procedure Set_Root_Label
            (This : in out Tree;
             Text : in     String);
+
+
+
+
+    --  Callback Information  --
+
+    --  Inside the tree's callback, the item that caused the callback
+    --  and why. The item can be null, so check with Tree_Items.Is_Null.
+    function Callback_Item
+           (This : in Tree)
+        return FLTK.Tree_Items.Tree_Item;
+
+    function Callback_Reason
+           (This : in Tree)
+        return Reason_Kind;
+
+    --  The '/'-separated path of Item, as Find takes it, with any '/' or
+    --  '\' in item labels escaped by a '\'. A null Item means the root.
+    function Item_Pathname
+           (This : in Tree;
+            Item : in FLTK.Tree_Items.Tree_Item)
+        return String;
 
 
 
@@ -260,6 +295,24 @@ package FLTK.Widgets.Groups.Trees is
            (This : in out Tree;
             Mode : in     FLTK.Tree_Items.Item_Draw_Mode);
 
+    --  The box drawn behind selected items.
+    function Get_Select_Box
+           (This : in Tree)
+        return Box_Kind;
+
+    procedure Set_Select_Box
+           (This : in out Tree;
+            Box  : in     Box_Kind);
+
+
+
+
+    --  Debugging  --
+
+    --  Prints the tree's structure to standard output.
+    procedure Show_Self
+           (This : in out Tree);
+
 
 
 
@@ -307,6 +360,9 @@ private
     pragma Inline (Root);
     pragma Inline (Set_Root_Label);
 
+    pragma Inline (Callback_Item);
+    pragma Inline (Callback_Reason);
+
     pragma Inline (First);
     pragma Inline (Last);
 
@@ -343,6 +399,10 @@ private
     pragma Inline (Set_Line_Spacing);
     pragma Inline (Get_Item_Draw_Mode);
     pragma Inline (Set_Item_Draw_Mode);
+    pragma Inline (Get_Select_Box);
+    pragma Inline (Set_Select_Box);
+
+    pragma Inline (Show_Self);
 
     pragma Inline (Draw);
     pragma Inline (Handle);

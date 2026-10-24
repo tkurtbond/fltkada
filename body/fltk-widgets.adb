@@ -330,6 +330,12 @@ package body FLTK.Widgets is
     pragma Import (C, fl_widget_get_label, "fl_widget_get_label");
     pragma Inline (fl_widget_get_label);
 
+    procedure fl_widget_clear_label
+           (W : in Storage.Integer_Address;
+            T : in Interfaces.C.Strings.chars_ptr);
+    pragma Import (C, fl_widget_clear_label, "fl_widget_set_label");
+    pragma Inline (fl_widget_clear_label);
+
     function fl_widget_get_labelcolor
            (W : in Storage.Integer_Address)
         return Interfaces.C.unsigned;
@@ -628,6 +634,17 @@ package body FLTK.Widgets is
     end Handle_Hook;
 
 
+    procedure Resize_Hook
+           (U          : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int)
+    is
+        Ada_Widget : constant access Widget'Class :=
+            Widget_Convert.To_Pointer (Storage.To_Address (U));
+    begin
+        Ada_Widget.Resize (Integer (X), Integer (Y), Integer (W), Integer (H));
+    end Resize_Hook;
+
+
 
 
     -------------------
@@ -673,7 +690,14 @@ package body FLTK.Widgets is
         fl_widget_set_user_data
            (This.Void_Ptr,
             Storage.To_Integer (Widget_Convert.To_Address (This'Unchecked_Access)));
-        fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
+        --  An empty label is stored as null, as C++ code that leaves out the
+        --  label would get, since FLTK treats the two differently in places
+        --  such as Fl_Label::draw setting the font and Fl_Message's icon
+        if Text = "" then
+            fl_widget_clear_label (This.Void_Ptr, Interfaces.C.Strings.Null_Ptr);
+        else
+            fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
+        end if;
     end Extra_Init;
 
 
@@ -1666,11 +1690,7 @@ package body FLTK.Widgets is
 
         Result : constant Interfaces.C.int := my_handle (This.Void_Ptr, Event_Kind'Pos (Event));
     begin
-        return Event_Outcome'Val (Result);
-    exception
-    when Constraint_Error => raise Internal_FLTK_Error with
-        "Dispatched handle function returned unexpected int value of " &
-        Interfaces.C.int'Image (Result);
+        return (if Result = 0 then Not_Handled else Handled);
     end Handle;
 
 

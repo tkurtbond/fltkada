@@ -152,6 +152,15 @@ package body FLTK.Images.Shared is
 
 
 
+    --  Image Handlers  --
+
+    procedure fl_shared_image_register_images;
+    pragma Import (C, fl_shared_image_register_images, "fl_shared_image_register_images");
+    pragma Inline (fl_shared_image_register_images);
+
+
+
+
     -------------------
     --  Destructors  --
     -------------------
@@ -378,6 +387,16 @@ package body FLTK.Images.Shared is
             Interfaces.C.int (X),
             Interfaces.C.int (Y));
     end Draw;
+
+
+
+
+    --  Image Handlers  --
+
+    procedure Register_Images is
+    begin
+        fl_shared_image_register_images;
+    end Register_Images;
 
 
 end FLTK.Images.Shared;

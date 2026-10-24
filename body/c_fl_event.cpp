@@ -7,6 +7,7 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Window.H>
+#include <string>
 #include "c_fl_event.h"
 
 
@@ -114,6 +115,13 @@ const char * fl_event_text() {
 
 int fl_event_length() {
     return Fl::event_length();
+}
+
+void fl_event_set_text(const char * t, int len) {
+    static std::string buffer;
+    buffer.assign(t, len);
+    Fl::e_text = const_cast<char*>(buffer.c_str());
+    Fl::e_length = len;
 }
 
 int fl_event_test_shortcut(unsigned int s) {
@@ -235,6 +243,10 @@ int fl_event_key() {
 
 int fl_event_original_key() {
     return Fl::event_original_key();
+}
+
+void fl_event_set_key(int k) {
+    Fl::e_keysym = k;
 }
 
 int fl_event_key_during(int k) {

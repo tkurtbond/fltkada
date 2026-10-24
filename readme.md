@@ -11,7 +11,10 @@ and deallocation automatic for objects. Overrideable methods called from the
 FLTK event loop have been thunked. Iterators have been implemented. And a few
 convenience subprograms have been provided.
 
-Some of the FLTK test and example programs have also been ported.
+Some of the FLTK test and example programs have also been ported. All of the
+programs in FLTK 1.4.5's own `examples` directory have been ported to Ada in
+the `examples` subdirectory; build them with `gprbuild examples.gpr`, and they
+will be placed in `bin/examples`, named after the C++ originals.
 
 For documentation on what C++ function, method, or class corresponds to what
 Ada function, procedure, or package, see `index.html` in the `doc`
@@ -38,7 +41,9 @@ It may be possible to use alternate compilation tooling but this has not been
 tested. If attempted, some manual modification of project files may be
 necessary.
 
-Note that at this time only FLTK 1.3 is supported.
+FLTKAda targets FLTK 1.4.5. It binds classes that first appeared in FLTK 1.4
+(such as `Fl_Flex`, `Fl_Grid` and `Fl_Terminal`), so it will not build against
+FLTK 1.3.
 
 
 

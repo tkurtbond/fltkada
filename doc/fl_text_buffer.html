@@ -57,6 +57,12 @@
   </tr>
 
   <tr>
+    <td>Fl_Text_Modify_Cb (with every count FLTK passes:<br />
+    pos, nInserted, nDeleted, nRestyled, deletedText)</td>
+    <td>Modify_Details_Callback</td>
+  </tr>
+
+  <tr>
     <td>Fl_Text_Predelete_Cb</td>
     <td>Predelete_Callback</td>
   </tr>
@@ -149,6 +155,21 @@ void add_modify_callback(Fl_Text_Modify_Cb bufModifiedCB,
 procedure Add_Modify_Callback
        (This : in out Text_Buffer;
         Func : in     Modify_Callback);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Unlike Add_Modify_Callback, the Ada callback receives every count
+FLTK reports, so a modification that both inserts and deletes is not
+reduced to just its insertion.
+<pre>
+void add_modify_callback(Fl_Text_Modify_Cb bufModifiedCB,
+    void *cbArg);
+</pre></td>
+<td><pre>
+procedure Add_Modify_Details_Callback
+       (This : in out Text_Buffer;
+        Func : in     Modify_Details_Callback);
 </pre></td>
   </tr>
 
@@ -563,6 +584,21 @@ void remove_modify_callback(Fl_Text_Modify_Cb bufModifiedCB,
 procedure Remove_Modify_Callback
        (This : in out Text_Buffer;
         Func : in     Modify_Callback);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Unlike Remove_Modify_Callback, the Ada callback receives every count
+FLTK reports, so a modification that both inserts and deletes is not
+reduced to just its insertion.
+<pre>
+void remove_modify_callback(Fl_Text_Modify_Cb bufModifiedCB,
+    void *cbArg);
+</pre></td>
+<td><pre>
+procedure Remove_Modify_Details_Callback
+       (This : in out Text_Buffer;
+        Func : in     Modify_Details_Callback);
 </pre></td>
   </tr>
 

@@ -55,6 +55,12 @@ package body FLTK.Widgets.Boxes is
     pragma Import (C, fl_box_handle, "fl_box_handle");
     pragma Inline (fl_box_handle);
 
+    procedure fl_box_resize
+           (B          : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int);
+    pragma Import (C, fl_box_resize, "fl_box_resize");
+    pragma Inline (fl_box_resize);
+
 
 
 
@@ -214,6 +220,23 @@ package body FLTK.Widgets.Boxes is
     begin
         return Widget (This).Handle (Event);
     end Handle;
+
+
+
+
+    --  Dimensions  --
+
+    procedure Resize
+           (This       : in out Box;
+            X, Y, W, H : in     Integer) is
+    begin
+        fl_box_resize
+           (This.Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H));
+    end Resize;
 
 
 end FLTK.Widgets.Boxes;

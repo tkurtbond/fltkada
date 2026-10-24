@@ -333,6 +333,28 @@ package body FLTK.Widgets.Charts is
 
     --  Settings  --
 
+    function Get_Kind
+           (This : in Chart)
+        return Chart_Kind
+    is
+        Result : constant Interfaces.C.unsigned_char := fl_widget_get_type (This.Void_Ptr);
+    begin
+        return Chart_Kind'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Chart::type returned unexpected unsigned char value of " &
+        Interfaces.C.unsigned_char'Image (Result);
+    end Get_Kind;
+
+
+    procedure Set_Kind
+           (This : in out Chart;
+            Kind : in     Chart_Kind) is
+    begin
+        fl_widget_set_type (This.Void_Ptr, Chart_Kind'Pos (Kind));
+    end Set_Kind;
+
+
     function Will_Autosize
            (This : in Chart)
         return Boolean is

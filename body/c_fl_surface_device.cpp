@@ -54,6 +54,14 @@ SURFACEDEVICE fl_surface_device_get_surface(void) {
     return Fl_Surface_Device::surface();
 }
 
+void fl_surface_device_push_current(SURFACEDEVICE s) {
+    Fl_Surface_Device::push_current(static_cast<Fl_Surface_Device*>(s));
+}
+
+void fl_surface_device_pop_current(void) {
+    Fl_Surface_Device::pop_current();
+}
+
 
 
 

@@ -46,6 +46,15 @@ package FLTK.Images is
     procedure Set_Copy_Algorithm
            (To : in Scaling_Kind);
 
+    --  The algorithm used when an image is drawn scaled to a size other
+    --  than its data size, eg after Resize.
+
+    function Get_Draw_Algorithm
+        return Scaling_Kind;
+
+    procedure Set_Draw_Algorithm
+           (To : in Scaling_Kind);
+
     function Copy
            (This          : in Image;
             Width, Height : in Natural)
@@ -103,6 +112,12 @@ package FLTK.Images is
     function Get_Line_Size
            (This : in Image)
         return Natural;
+
+    procedure Scale
+           (This         : in out Image;
+            W, H         : in     Integer;
+            Proportional : in     Boolean := True;
+            Can_Expand   : in     Boolean := False);
 
 
 
@@ -162,6 +177,8 @@ private
 
     pragma Inline (Get_Copy_Algorithm);
     pragma Inline (Set_Copy_Algorithm);
+    pragma Inline (Get_Draw_Algorithm);
+    pragma Inline (Set_Draw_Algorithm);
     pragma Inline (Copy);
 
     pragma Inline (Color_Average);
@@ -175,6 +192,7 @@ private
     pragma Inline (Get_H);
     pragma Inline (Get_D);
     pragma Inline (Get_Line_Size);
+    pragma Inline (Scale);
 
     pragma Inline (Draw);
     pragma Inline (Draw_Empty);

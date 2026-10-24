@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Native_File_Chooser Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Native_File_Chooser Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Native_File_Chooser</td>
+    <td>FLTK.Native_File_Choosers</td>
+  </tr>
+
+</table>
+
+<p><b>Note:</b><br /><br />
+In Ada, filename indices and filter indices are 1-based, unlike the 0-based
+filename(int) and filter_value() of the C++ API. Options are combined with
+"+" and removed with "-", and Includes tests for one.</p>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Native_File_Chooser</td>
+    <td>Native_File_Chooser</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Native_File_Chooser_Reference</td>
+  </tr>
+
+  <tr>
+    <td>enum Type {<br />
+    BROWSE_FILE = 0,<br />
+    BROWSE_DIRECTORY,<br />
+    BROWSE_MULTI_FILE,<br />
+    BROWSE_MULTI_DIRECTORY,<br />
+    BROWSE_SAVE_FILE,<br />
+    BROWSE_SAVE_DIRECTORY }</td>
+    <td>Chooser_Kind</td>
+  </tr>
+
+  <tr>
+    <td>enum Option {<br />
+    NO_OPTIONS = 0x0000,<br />
+    SAVEAS_CONFIRM = 0x0001,<br />
+    NEW_FOLDER = 0x0002,<br />
+    PREVIEW = 0x0004,<br />
+    USE_FILTER_EXT = 0x0008 }</td>
+    <td>Chooser_Option</td>
+  </tr>
+
+  <tr>
+    <td>int (return value of show(): -1, 0, 1)</td>
+    <td>Show_Result (Error, Picked, Cancelled)</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Attributes</th></tr>
+
+  <tr>
+<td><pre>
+static const char *file_exists_message;
+</pre></td>
+<td><pre>
+function Get_File_Exists_Message
+    return String;
+
+procedure Set_File_Exists_Message
+       (Value : in String);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Native_File_Chooser(int val = BROWSE_FILE);
+</pre></td>
+<td><pre>
+function Create
+       (Kind : in Chooser_Kind := Browse_File)
+    return Native_File_Chooser;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+int count() const;
+</pre></td>
+<td><pre>
+function Number_Selected
+       (This : in Native_File_Chooser)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void directory(const char *val);
+</pre></td>
+<td><pre>
+procedure Set_Directory
+       (This  : in out Native_File_Chooser;
+        Value : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char *directory() const;
+</pre></td>
+<td><pre>
+function Get_Directory
+       (This : in Native_File_Chooser)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char *errmsg() const;
+</pre></td>
+<td><pre>
+function Get_Error_Message
+       (This : in Native_File_Chooser)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char *filename() const;
+</pre></td>
+<td><pre>
+function Get_Filename
+       (This : in Native_File_Chooser)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char *filename(int i) const;
+</pre></td>
+<td><pre>
+function Get_Filename
+       (This  : in Native_File_Chooser;
+        Index : in Positive)
+    return String
+with Pre => Index <= This.Number_Selected;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char *filter() const;
+</pre></td>
+<td><pre>
+function Get_Filter
+       (This : in Native_File_Chooser)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void filter(const char *f);
+</pre></td>
+<td><pre>
+procedure Set_Filter
+       (This  : in out Native_File_Chooser;
+        Value : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void filter_value(int i);
+</pre></td>
+<td><pre>
+procedure Set_Filter_Index
+       (This  : in out Native_File_Chooser;
+        Value : in     Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int filter_value() const;
+</pre></td>
+<td><pre>
+function Get_Filter_Index
+       (This : in Native_File_Chooser)
+    return Positive;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int filters() const;
+</pre></td>
+<td><pre>
+function Filter_Count
+       (This : in Native_File_Chooser)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void options(int o);
+</pre></td>
+<td><pre>
+procedure Set_Options
+       (This    : in out Native_File_Chooser;
+        Options : in     Chooser_Option);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int options() const;
+</pre></td>
+<td><pre>
+function Get_Options
+       (This : in Native_File_Chooser)
+    return Chooser_Option;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void preset_file(const char *f);
+</pre></td>
+<td><pre>
+procedure Set_Preset_File
+       (This  : in out Native_File_Chooser;
+        Value : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char *preset_file() const;
+</pre></td>
+<td><pre>
+function Get_Preset_File
+       (This : in Native_File_Chooser)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int show();
+</pre></td>
+<td><pre>
+function Show
+       (This : in out Native_File_Chooser)
+    return Show_Result;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void title(const char *t);
+</pre></td>
+<td><pre>
+procedure Set_Title
+       (This : in out Native_File_Chooser;
+        Text : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char *title() const;
+</pre></td>
+<td><pre>
+function Get_Title
+       (This : in Native_File_Chooser)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void type(int t);
+</pre></td>
+<td><pre>
+procedure Set_Kind
+       (This : in out Native_File_Chooser;
+        Kind : in     Chooser_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int type() const;
+</pre></td>
+<td><pre>
+function Get_Kind
+       (This : in Native_File_Chooser)
+    return Chooser_Kind;
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
+

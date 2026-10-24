@@ -141,6 +141,26 @@ function Get_Copy_Algorithm
 </pre></td>
   </tr>
 
+  <tr>
+<td><pre>
+static void scaling_algorithm(Fl_RGB_Scaling algorithm);
+</pre></td>
+<td><pre>
+procedure Set_Draw_Algorithm
+       (To : in Scaling_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static Fl_RGB_Scaling scaling_algorithm();
+</pre></td>
+<td><pre>
+function Get_Draw_Algorithm
+    return Scaling_Kind;
+</pre></td>
+  </tr>
+
 </table>
 
 
@@ -297,6 +317,20 @@ int ld() const;
 function Get_Line_Size
        (This : in Image)
     return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual void scale(int width, int height, int proportional = 1,
+    int can_expand = 0);
+</pre></td>
+<td><pre>
+procedure Scale
+       (This         : in out Image;
+        W, H         : in     Integer;
+        Proportional : in     Boolean := True;
+        Can_Expand   : in     Boolean := False);
 </pre></td>
   </tr>
 

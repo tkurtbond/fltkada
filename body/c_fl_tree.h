@@ -23,6 +23,7 @@ extern "C" int fl_tree_handle(TREE n, int e);
 
 
 extern "C" TREEITEM fl_tree_add(TREE t, const char * path);
+extern "C" TREEITEM fl_tree_add_item(TREE t, const char * path, TREEITEM item);
 extern "C" TREEITEM fl_tree_insert(TREE t, TREEITEM under, const char * name, int pos);
 extern "C" TREEITEM fl_tree_insert_above(TREE t, TREEITEM above, const char * name);
 extern "C" void fl_tree_remove(TREE t, TREEITEM item);
@@ -33,6 +34,11 @@ extern "C" TREEITEM fl_tree_find_item(TREE t, const char * path);
 
 extern "C" TREEITEM fl_tree_root(TREE t);
 extern "C" void fl_tree_set_root_label(TREE t, const char * label);
+
+
+extern "C" TREEITEM fl_tree_callback_item(TREE t);
+extern "C" int fl_tree_callback_reason(TREE t);
+extern "C" int fl_tree_item_pathname(TREE t, char * buf, int len, TREEITEM i);
 
 
 extern "C" TREEITEM fl_tree_first(TREE t);
@@ -78,6 +84,11 @@ extern "C" int fl_tree_get_line_spacing(TREE t);
 extern "C" void fl_tree_set_line_spacing(TREE t, int val);
 extern "C" int fl_tree_get_item_draw_mode(TREE t);
 extern "C" void fl_tree_set_item_draw_mode(TREE t, int val);
+extern "C" int fl_tree_get_select_box(TREE t);
+extern "C" void fl_tree_set_select_box(TREE t, int val);
+
+
+extern "C" void fl_tree_show_self(TREE t);
 
 
 #endif

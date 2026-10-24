@@ -202,6 +202,12 @@ package body FLTK.Events is
     pragma Import (C, fl_event_length, "fl_event_length");
     pragma Inline (fl_event_length);
 
+    procedure fl_event_set_text
+           (T : in Interfaces.C.char_array;
+            L : in Interfaces.C.int);
+    pragma Import (C, fl_event_set_text, "fl_event_set_text");
+    pragma Inline (fl_event_set_text);
+
     function fl_event_test_shortcut
            (S : in Interfaces.C.unsigned)
         return Interfaces.C.int;
@@ -350,6 +356,11 @@ package body FLTK.Events is
         return Interfaces.C.int;
     pragma Import (C, fl_event_original_key, "fl_event_original_key");
     pragma Inline (fl_event_original_key);
+
+    procedure fl_event_set_key
+           (K : in Interfaces.C.int);
+    pragma Import (C, fl_event_set_key, "fl_event_set_key");
+    pragma Inline (fl_event_set_key);
 
     function fl_event_key_during
            (K : in Interfaces.C.int)
@@ -564,10 +575,7 @@ package body FLTK.Events is
            (Event_Kind'Pos (Event),
             Wrapper (Origin).Void_Ptr);
     begin
-        return Event_Outcome'Val (Result);
-    exception
-    when Constraint_Error => raise Internal_FLTK_Error with
-        "Fl::handle returned unexpected int value of " & Interfaces.C.int'Image (Result);
+        return (if Result = 0 then Not_Handled else Handled);
     end Handle_Dispatch;
 
 
@@ -580,10 +588,33 @@ package body FLTK.Events is
            (Event_Kind'Pos (Event),
             Wrapper (Origin).Void_Ptr);
     begin
-        return Event_Outcome'Val (Result);
-    exception
-    when Constraint_Error => raise Internal_FLTK_Error with
-        "Fl::handle_ returned unexpected int value of " & Interfaces.C.int'Image (Result);
+        return (if Result = 0 then Not_Handled else Handled);
+    end Handle;
+
+
+    function Handle_Dispatch
+           (Event  : in Event_Kind;
+            Origin : access FLTK.Widgets.Groups.Windows.Window'Class)
+        return Event_Outcome
+    is
+        Result : constant Interfaces.C.int := fl_event_handle_dispatch
+           (Event_Kind'Pos (Event),
+            (if Origin = null then Null_Pointer else Wrapper (Origin.all).Void_Ptr));
+    begin
+        return (if Result = 0 then Not_Handled else Handled);
+    end Handle_Dispatch;
+
+
+    function Handle
+           (Event  : in Event_Kind;
+            Origin : access FLTK.Widgets.Groups.Windows.Window'Class)
+        return Event_Outcome
+    is
+        Result : constant Interfaces.C.int := fl_event_handle
+           (Event_Kind'Pos (Event),
+            (if Origin = null then Null_Pointer else Wrapper (Origin.all).Void_Ptr));
+    begin
+        return (if Result = 0 then Not_Handled else Handled);
     end Handle;
 
 
@@ -771,6 +802,13 @@ package body FLTK.Events is
     begin
         return Natural (fl_event_length);
     end Text_Length;
+
+
+    procedure Set_Text
+           (To : in String) is
+    begin
+        fl_event_set_text (Interfaces.C.To_C (To), To'Length);
+    end Set_Text;
 
 
     function Test_Shortcut
@@ -1032,6 +1070,13 @@ package body FLTK.Events is
     begin
         return To_Ada (Interfaces.C.unsigned (fl_event_original_key));
     end Original_Last_Key;
+
+
+    procedure Set_Last_Key
+           (To : in Keypress) is
+    begin
+        fl_event_set_key (Interfaces.C.int (To_C (To)));
+    end Set_Last_Key;
 
 
     function Pressed_During

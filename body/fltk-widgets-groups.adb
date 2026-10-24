@@ -555,6 +555,13 @@ package body FLTK.Widgets.Groups is
     end Set_Resizable;
 
 
+    procedure Clear_Resizable
+           (This : in out Group) is
+    begin
+        fl_group_set_resizable (This.Void_Ptr, Null_Pointer);
+    end Clear_Resizable;
+
+
     procedure Reset_Sizes
            (This : in out Group) is
     begin

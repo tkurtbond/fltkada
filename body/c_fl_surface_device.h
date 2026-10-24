@@ -17,6 +17,8 @@ extern "C" void free_fl_surface_device(SURFACEDEVICE s);
 
 extern "C" void fl_surface_device_set_current(SURFACEDEVICE s);
 extern "C" SURFACEDEVICE fl_surface_device_get_surface(void);
+extern "C" void fl_surface_device_push_current(SURFACEDEVICE s);
+extern "C" void fl_surface_device_pop_current(void);
 
 
 extern "C" void * fl_surface_device_get_driver(SURFACEDEVICE s);

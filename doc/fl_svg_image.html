@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_SVG_Image Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_SVG_Image Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_SVG_Image</td>
+    <td>FLTK.Images.RGB.SVG</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_SVG_Image</td>
+    <td>SVG_Image</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>SVG_Image_Reference</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Attributes</th></tr>
+
+  <tr>
+<td><pre>
+bool proportional;
+</pre></td>
+<td><pre>
+function Is_Proportional
+       (This : in SVG_Image)
+    return Boolean;
+
+procedure Set_Proportional
+       (This  : in out SVG_Image;
+        Value : in     Boolean);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_SVG_Image(const char *filename);
+</pre></td>
+<td><pre>
+function Create
+       (Filename : in String)
+    return SVG_Image;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_SVG_Image(const char *sharedname, const char *svg_data);
+</pre></td>
+<td><pre>
+function Create
+       (Name : in String := "";
+        Data : in String)
+    return SVG_Image;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_SVG_Image(const char *sharedname, const unsigned char *svg_data,
+    size_t length);
+</pre></td>
+<td><pre>
+function Create
+       (Name : in String := "";
+        Data : in Color_Component_Array)
+    return SVG_Image;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+Fl_SVG_Image * as_svg_image();
+</pre></td>
+<td>Unnecessary, use a membership test or view conversion instead.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void color_average(Fl_Color c, float i);
+</pre></td>
+<td><pre>
+procedure Color_Average
+       (This   : in out SVG_Image;
+        Col    : in     Color;
+        Amount : in     Blend);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Image * copy(int W, int H) const;
+</pre></td>
+<td><pre>
+function Copy
+       (This          : in SVG_Image;
+        Width, Height : in Natural)
+    return SVG_Image'Class;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Image * copy() const;
+</pre></td>
+<td><pre>
+function Copy
+       (This : in SVG_Image)
+    return SVG_Image'Class;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void desaturate();
+</pre></td>
+<td><pre>
+procedure Desaturate
+       (This : in out SVG_Image);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw(int X, int Y, int W, int H, int cx = 0, int cy = 0);
+</pre></td>
+<td><pre>
+procedure Draw
+       (This           : in SVG_Image;
+        X, Y, W, H     : in Integer;
+        Clip_X, Clip_Y : in Integer := 0);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw(int X, int Y);
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in Image;
+        X, Y : in Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void normalize();
+</pre></td>
+<td><pre>
+procedure Normalize
+       (This : in out SVG_Image);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void resize(int width, int height);
+</pre></td>
+<td><pre>
+procedure Resize
+       (This          : in out SVG_Image;
+        Width, Height : in     Natural);
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
+

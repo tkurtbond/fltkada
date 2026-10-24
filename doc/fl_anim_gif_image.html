@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Anim_GIF_Image Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Anim_GIF_Image Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Anim_GIF_Image</td>
+    <td>FLTK.Images.Pixmaps.GIF.Animated</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Anim_GIF_Image</td>
+    <td>Animated_GIF_Image</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Animated_GIF_Image_Reference</td>
+  </tr>
+
+  <tr>
+    <td>enum Flags</td>
+    <td>Animation_Flags</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Frame_Index</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Extended_Frame_Index</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constants</th></tr>
+
+  <tr>
+<td><pre>
+DONT_START = 1
+</pre></td>
+<td><pre>
+Flag_Dont_Start : constant Animation_Flags;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+DONT_RESIZE_CANVAS = 2
+</pre></td>
+<td><pre>
+Flag_Dont_Resize_Canvas : constant Animation_Flags;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+DONT_SET_AS_IMAGE = 4
+</pre></td>
+<td><pre>
+Flag_Dont_Set_As_Image : constant Animation_Flags;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+OPTIMIZE_MEMORY = 8
+</pre></td>
+<td><pre>
+Flag_Optimize_Memory : constant Animation_Flags;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+LOG_FLAG = 64
+</pre></td>
+<td><pre>
+Flag_Log : constant Animation_Flags;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+DEBUG_FLAG = 128
+</pre></td>
+<td><pre>
+Flag_Debug : constant Animation_Flags;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+0
+</pre></td>
+<td><pre>
+No_Animation_Flags : constant Animation_Flags;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Flags are combined with the bitwise or operator.</td>
+<td><pre>
+function "+" (Left, Right : in Animation_Flags) return Animation_Flags;
+function "-" (Left, Right : in Animation_Flags) return Animation_Flags;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>C++ frames are numbered from 0, with -1 meaning no frame. Ada frames are numbered from 1, with 0 (No_Frame) meaning no frame.</td>
+<td><pre>
+No_Frame : constant Extended_Frame_Index;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Attributes</th></tr>
+
+  <tr>
+<td><pre>
+static bool loop;
+</pre></td>
+<td><pre>
+function Get_Loop
+    return Boolean;
+
+procedure Set_Loop
+       (Value : in Boolean);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static double min_delay;
+</pre></td>
+<td><pre>
+function Get_Min_Delay
+    return Long_Float;
+
+procedure Set_Min_Delay
+       (Value : in Long_Float);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Anim_GIF_Image(const char *filename, Fl_Widget *canvas = 0,
+    unsigned short flags = 0);
+</pre></td>
+<td><pre>
+function Create
+       (Filename : in String;
+        Flags    : in Animation_Flags := No_Animation_Flags)
+    return Animated_GIF_Image;
+
+function Create
+       (Filename : in     String;
+        Canvas   : in out FLTK.Widgets.Widget'Class;
+        Flags    : in     Animation_Flags := No_Animation_Flags)
+    return Animated_GIF_Image;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Anim_GIF_Image(const char* imagename, const unsigned char *data,
+    const size_t length, Fl_Widget *canvas = 0,
+    unsigned short flags = 0);
+</pre></td>
+<td><pre>
+function Create
+       (Name  : in String := "";
+        Data  : in Color_Component_Array;
+        Flags : in Animation_Flags := No_Animation_Flags)
+    return Animated_GIF_Image;
+
+function Create
+       (Name   : in     String := "";
+        Data   : in     Color_Component_Array;
+        Canvas : in out FLTK.Widgets.Widget'Class;
+        Flags  : in     Animation_Flags := No_Animation_Flags)
+    return Animated_GIF_Image;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Anim_GIF_Image();
+</pre></td>
+<td><pre>
+function Create
+    return Animated_GIF_Image;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Unlike most image constructors in the binding, these do not raise an exception when loading fails.</td>
+<td>Check Is_Loaded and Fail_Code instead.</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+static int frame_count(const char *name,
+    const unsigned char *imgdata = NULL, size_t imglength = 0);
+</pre></td>
+<td><pre>
+function Frame_Count
+       (Filename : in String)
+    return Natural;
+
+function Frame_Count
+       (Name : in String := "";
+        Data : in Color_Component_Array)
+    return Natural;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void canvas(Fl_Widget *canvas, unsigned short flags = 0);
+</pre></td>
+<td><pre>
+procedure Set_Canvas
+       (This   : in out Animated_GIF_Image;
+        Canvas : in out FLTK.Widgets.Widget'Class;
+        Flags  : in     Animation_Flags := No_Animation_Flags);
+
+procedure Clear_Canvas
+       (This : in out Animated_GIF_Image);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Widget * canvas() const;
+</pre></td>
+<td><pre>
+function Get_Canvas
+       (This : in Animated_GIF_Image)
+    return access FLTK.Widgets.Widget'Class;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int canvas_h() const;
+</pre></td>
+<td><pre>
+function Get_Canvas_H
+       (This : in Animated_GIF_Image)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int canvas_w() const;
+</pre></td>
+<td><pre>
+function Get_Canvas_W
+       (This : in Animated_GIF_Image)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void color_average(Fl_Color c, float i);
+</pre></td>
+<td><pre>
+procedure Color_Average
+       (This   : in out Animated_GIF_Image;
+        Col    : in     Color;
+        Amount : in     Blend);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Image * copy(int W, int H) const;
+</pre></td>
+<td><pre>
+function Copy
+       (This          : in Animated_GIF_Image;
+        Width, Height : in Natural)
+    return Animated_GIF_Image'Class;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Image * copy() const;
+</pre></td>
+<td><pre>
+function Copy
+       (This : in Animated_GIF_Image)
+    return Animated_GIF_Image'Class;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int debug() const;
+</pre></td>
+<td><pre>
+function Debug_Level
+       (This : in Animated_GIF_Image)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+double delay(int frame_) const;
+</pre></td>
+<td><pre>
+function Get_Delay
+       (This  : in Animated_GIF_Image;
+        Frame : in Frame_Index)
+    return Long_Float;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void delay(int frame, double delay);
+</pre></td>
+<td><pre>
+procedure Set_Delay
+       (This  : in out Animated_GIF_Image;
+        Frame : in     Frame_Index;
+        Value : in     Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void desaturate();
+</pre></td>
+<td><pre>
+procedure Desaturate
+       (This : in out Animated_GIF_Image);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw(int x, int y, int w, int h, int cx = 0, int cy = 0);
+</pre></td>
+<td><pre>
+procedure Draw
+       (This           : in Animated_GIF_Image;
+        X, Y, W, H     : in Integer;
+        Clip_X, Clip_Y : in Integer := 0);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void frame(int frame);
+</pre></td>
+<td><pre>
+procedure Set_Frame
+       (This  : in out Animated_GIF_Image;
+        Frame : in     Frame_Index);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int frame() const;
+</pre></td>
+<td><pre>
+function Get_Frame
+       (This : in Animated_GIF_Image)
+    return Extended_Frame_Index;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int frame_h(int frame) const;
+</pre></td>
+<td><pre>
+function Frame_H
+       (This  : in Animated_GIF_Image;
+        Frame : in Frame_Index)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void frame_uncache(bool uncache);
+</pre></td>
+<td><pre>
+procedure Set_Frame_Uncache
+       (This  : in out Animated_GIF_Image;
+        Value : in     Boolean);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+bool frame_uncache() const;
+</pre></td>
+<td><pre>
+function Get_Frame_Uncache
+       (This : in Animated_GIF_Image)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int frame_w(int frame) const;
+</pre></td>
+<td><pre>
+function Frame_W
+       (This  : in Animated_GIF_Image;
+        Frame : in Frame_Index)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int frame_x(int frame) const;
+</pre></td>
+<td><pre>
+function Frame_X
+       (This  : in Animated_GIF_Image;
+        Frame : in Frame_Index)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int frame_y(int frame) const;
+</pre></td>
+<td><pre>
+function Frame_Y
+       (This  : in Animated_GIF_Image;
+        Frame : in Frame_Index)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int frames() const;
+</pre></td>
+<td><pre>
+function Frames
+       (This : in Animated_GIF_Image)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Image * image() const;
+</pre></td>
+<td><pre>
+function Current_Frame_Image
+       (This : in out Animated_GIF_Image)
+    return FLTK.Images.RGB.RGB_Image_Reference;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Image * image(int frame) const;
+</pre></td>
+<td><pre>
+function Frame_Image
+       (This  : in out Animated_GIF_Image;
+        Frame : in     Frame_Index)
+    return FLTK.Images.RGB.RGB_Image_Reference;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+bool is_animated() const;
+</pre></td>
+<td><pre>
+function Is_Animated
+       (This : in Animated_GIF_Image)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+bool load(const char *name, const unsigned char *imgdata=NULL,
+    size_t imglength=0);
+</pre></td>
+<td><pre>
+procedure Load
+       (This     : in out Animated_GIF_Image;
+        Filename : in     String);
+
+function Load
+       (This     : in out Animated_GIF_Image;
+        Filename : in     String)
+    return Boolean;
+
+procedure Load
+       (This : in out Animated_GIF_Image;
+        Name : in     String := "";
+        Data : in     Color_Component_Array);
+
+function Load
+       (This : in out Animated_GIF_Image;
+        Name : in     String := "";
+        Data : in     Color_Component_Array)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char * name() const;
+</pre></td>
+<td><pre>
+function Name
+       (This : in Animated_GIF_Image)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+bool next();
+</pre></td>
+<td><pre>
+procedure Next
+       (This : in out Animated_GIF_Image);
+
+function Next
+       (This : in out Animated_GIF_Image)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+bool playing() const;
+</pre></td>
+<td><pre>
+function Is_Playing
+       (This : in Animated_GIF_Image)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Anim_GIF_Image &amp; resize(int w, int h);
+</pre></td>
+<td><pre>
+procedure Resize
+       (This          : in out Animated_GIF_Image;
+        Width, Height : in     Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Anim_GIF_Image &amp; resize(double scale);
+</pre></td>
+<td><pre>
+procedure Resize
+       (This   : in out Animated_GIF_Image;
+        Factor : in     Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void speed(double speed);
+</pre></td>
+<td><pre>
+procedure Set_Speed
+       (This  : in out Animated_GIF_Image;
+        Value : in     Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+double speed() const;
+</pre></td>
+<td><pre>
+function Get_Speed
+       (This : in Animated_GIF_Image)
+    return Long_Float;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+bool start();
+</pre></td>
+<td><pre>
+procedure Start
+       (This : in out Animated_GIF_Image);
+
+function Start
+       (This : in out Animated_GIF_Image)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+bool stop();
+</pre></td>
+<td><pre>
+procedure Stop
+       (This : in out Animated_GIF_Image);
+
+function Stop
+       (This : in out Animated_GIF_Image)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void uncache();
+</pre></td>
+<td><pre>
+procedure Uncache
+       (This : in out Animated_GIF_Image);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+bool valid() const;
+</pre></td>
+<td><pre>
+function Is_Loaded
+       (This : in Animated_GIF_Image)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int ld() const;
+</pre></td>
+<td><pre>
+function Fail_Code
+       (This : in Animated_GIF_Image)
+    return Integer;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+static void cb_animate(void *d);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void clear_frames();
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+bool next_frame();
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void on_extension_data(Fl_GIF_Image::GIF_FRAME &amp;f);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void on_frame_data(Fl_GIF_Image::GIF_FRAME &amp;f);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void scale_frame();
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void set_frame(int frame);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void set_frame();
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
+

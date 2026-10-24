@@ -59,6 +59,93 @@ function Create
 </pre></td>
   </tr>
 
+  <tr>
+<td><pre>
+Fl_GIF_Image(const char* imagename, const unsigned char *data);
+</pre></td>
+<td>Unsafe, use the version with a length instead.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_GIF_Image(const char* imagename, const unsigned char *data,
+    const size_t length);
+</pre></td>
+<td><pre>
+function Create
+       (Name : in String := "";
+        Data : in Color_Component_Array)
+    return GIF_Image;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Attributes</th></tr>
+
+  <tr>
+<td><pre>
+static bool animate;
+</pre></td>
+<td><pre>
+function Get_Animate
+    return Boolean;
+
+procedure Set_Animate
+       (Value : in Boolean);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+static bool is_animated(const char *name_);
+</pre></td>
+<td><pre>
+function Is_Animated
+       (Filename : in String)
+    return Boolean;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+Fl_GIF_Image(const char* filename, bool anim);
+</pre></td>
+<td>Used internally by Fl_Anim_GIF_Image.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_GIF_Image(const char* imagename, const unsigned char *data,
+    const size_t length, bool anim);
+</pre></td>
+<td>Used internally by Fl_Anim_GIF_Image.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_GIF_Image();
+</pre></td>
+<td>Used internally by Fl_Anim_GIF_Image.</td>
+  </tr>
+
 </table>
 
 

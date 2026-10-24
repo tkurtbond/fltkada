@@ -74,6 +74,16 @@ package body FLTK.Images is
     pragma Import (C, fl_image_set_rgb_scaling, "fl_image_set_rgb_scaling");
     pragma Inline (fl_image_set_rgb_scaling);
 
+    function fl_image_get_scaling_algorithm
+        return Interfaces.C.int;
+    pragma Import (C, fl_image_get_scaling_algorithm, "fl_image_get_scaling_algorithm");
+    pragma Inline (fl_image_get_scaling_algorithm);
+
+    procedure fl_image_set_scaling_algorithm
+           (T : in Interfaces.C.int);
+    pragma Import (C, fl_image_set_scaling_algorithm, "fl_image_set_scaling_algorithm");
+    pragma Inline (fl_image_set_scaling_algorithm);
+
     function fl_image_copy
            (I    : in Storage.Integer_Address;
             W, H : in Interfaces.C.int)
@@ -147,6 +157,13 @@ package body FLTK.Images is
         return Interfaces.C.int;
     pragma Import (C, fl_image_ld, "fl_image_ld");
     pragma Inline (fl_image_ld);
+
+    procedure fl_image_scale
+           (I    : in Storage.Integer_Address;
+            W, H : in Interfaces.C.int;
+            P, E : in Interfaces.C.int);
+    pragma Import (C, fl_image_scale, "fl_image_scale");
+    pragma Inline (fl_image_scale);
 
 
 
@@ -252,6 +269,20 @@ package body FLTK.Images is
     begin
         fl_image_set_rgb_scaling (Scaling_Kind'Pos (To));
     end Set_Copy_Algorithm;
+
+
+    function Get_Draw_Algorithm
+        return Scaling_Kind is
+    begin
+        return Scaling_Kind'Val (fl_image_get_scaling_algorithm);
+    end Get_Draw_Algorithm;
+
+
+    procedure Set_Draw_Algorithm
+           (To : in Scaling_Kind) is
+    begin
+        fl_image_set_scaling_algorithm (Scaling_Kind'Pos (To));
+    end Set_Draw_Algorithm;
 
 
     function Copy
@@ -361,6 +392,21 @@ package body FLTK.Images is
     begin
         return Natural (fl_image_ld (This.Void_Ptr));
     end Get_Line_Size;
+
+
+    procedure Scale
+           (This         : in out Image;
+            W, H         : in     Integer;
+            Proportional : in     Boolean := True;
+            Can_Expand   : in     Boolean := False) is
+    begin
+        fl_image_scale
+           (This.Void_Ptr,
+            Interfaces.C.int (W),
+            Interfaces.C.int (H),
+            Boolean'Pos (Proportional),
+            Boolean'Pos (Can_Expand));
+    end Scale;
 
 
 

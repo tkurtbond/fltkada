@@ -48,6 +48,14 @@ package body FLTK.Widgets.Groups.Trees is
     pragma Import (C, fl_tree_add, "fl_tree_add");
     pragma Inline (fl_tree_add);
 
+    function fl_tree_add_item
+           (T    : in Storage.Integer_Address;
+            Path : in Interfaces.C.char_array;
+            Item : in Storage.Integer_Address)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_tree_add_item, "fl_tree_add_item");
+    pragma Inline (fl_tree_add_item);
+
     function fl_tree_insert
            (T     : in Storage.Integer_Address;
             Under : in Storage.Integer_Address;
@@ -105,6 +113,32 @@ package body FLTK.Widgets.Groups.Trees is
             Text : in Interfaces.C.char_array);
     pragma Import (C, fl_tree_set_root_label, "fl_tree_set_root_label");
     pragma Inline (fl_tree_set_root_label);
+
+
+
+
+    --  Callback Information  --
+
+    function fl_tree_callback_item
+           (T : in Storage.Integer_Address)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_tree_callback_item, "fl_tree_callback_item");
+    pragma Inline (fl_tree_callback_item);
+
+    function fl_tree_callback_reason
+           (T : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_callback_reason, "fl_tree_callback_reason");
+    pragma Inline (fl_tree_callback_reason);
+
+    function fl_tree_item_pathname
+           (T   : in Storage.Integer_Address;
+            Buf : in Interfaces.C.Strings.chars_ptr;
+            Len : in Interfaces.C.int;
+            I   : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_item_pathname, "fl_tree_item_pathname");
+    pragma Inline (fl_tree_item_pathname);
 
 
 
@@ -337,6 +371,28 @@ package body FLTK.Widgets.Groups.Trees is
     pragma Import (C, fl_tree_set_item_draw_mode, "fl_tree_set_item_draw_mode");
     pragma Inline (fl_tree_set_item_draw_mode);
 
+    function fl_tree_get_select_box
+           (T : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_get_select_box, "fl_tree_get_select_box");
+    pragma Inline (fl_tree_get_select_box);
+
+    procedure fl_tree_set_select_box
+           (T   : in Storage.Integer_Address;
+            Val : in Interfaces.C.int);
+    pragma Import (C, fl_tree_set_select_box, "fl_tree_set_select_box");
+    pragma Inline (fl_tree_set_select_box);
+
+
+
+
+    --  Debugging  --
+
+    procedure fl_tree_show_self
+           (T : in Storage.Integer_Address);
+    pragma Import (C, fl_tree_show_self, "fl_tree_show_self");
+    pragma Inline (fl_tree_show_self);
+
 
 
 
@@ -453,6 +509,21 @@ package body FLTK.Widgets.Groups.Trees is
     end Add;
 
 
+    function Add
+           (This : in out Tree;
+            Path : in     String;
+            Item : in     FLTK.Tree_Items.Tree_Item)
+        return FLTK.Tree_Items.Tree_Item is
+    begin
+        return FLTK.Tree_Items.Cast
+           (Storage.To_Address
+              (fl_tree_add_item
+                 (This.Void_Ptr,
+                  Interfaces.C.To_C (Path),
+                  Storage.To_Integer (FLTK.Tree_Items.Address_Of (Item)))));
+    end Add;
+
+
     function Insert
            (This  : in out Tree;
             Under : in     FLTK.Tree_Items.Tree_Item;
@@ -538,6 +609,61 @@ package body FLTK.Widgets.Groups.Trees is
     begin
         fl_tree_set_root_label (This.Void_Ptr, Interfaces.C.To_C (Text));
     end Set_Root_Label;
+
+
+
+
+    --  Callback Information  --
+
+    function Callback_Item
+           (This : in Tree)
+        return FLTK.Tree_Items.Tree_Item is
+    begin
+        return FLTK.Tree_Items.Cast (Storage.To_Address (fl_tree_callback_item (This.Void_Ptr)));
+    end Callback_Item;
+
+
+    function Callback_Reason
+           (This : in Tree)
+        return Reason_Kind
+    is
+        Result : constant Interfaces.C.int := fl_tree_callback_reason (This.Void_Ptr);
+    begin
+        if Result in Reason_Kind'Pos (Reason_Kind'First) .. Reason_Kind'Pos (Reason_Kind'Last) then
+            return Reason_Kind'Val (Result);
+        else
+            return No_Reason;
+        end if;
+    end Callback_Reason;
+
+
+    function Item_Pathname
+           (This : in Tree;
+            Item : in FLTK.Tree_Items.Tree_Item)
+        return String
+    is
+        Length : Interfaces.C.size_t := 256;
+        Result : Interfaces.C.int;
+    begin
+        loop
+            declare
+                Buffer : aliased Interfaces.C.char_array := (1 .. Length => Interfaces.C.nul);
+            begin
+                Result := fl_tree_item_pathname
+                   (This.Void_Ptr,
+                    Interfaces.C.Strings.To_Chars_Ptr (Buffer'Unchecked_Access),
+                    Interfaces.C.int (Length),
+                    Storage.To_Integer (FLTK.Tree_Items.Address_Of (Item)));
+                if Result = 0 then
+                    return Interfaces.C.To_Ada (Buffer);
+                elsif Result = -1 then
+                    return "";
+                end if;
+            end;
+            --  -2 means the buffer was too small
+            Length := Length * 2;
+        end loop;
+    end Item_Pathname;
 
 
 
@@ -882,6 +1008,39 @@ package body FLTK.Widgets.Groups.Trees is
         end if;
         fl_tree_set_item_draw_mode (This.Void_Ptr, Raw);
     end Set_Item_Draw_Mode;
+
+
+    function Get_Select_Box
+           (This : in Tree)
+        return Box_Kind
+    is
+        Result : constant Interfaces.C.int := fl_tree_get_select_box (This.Void_Ptr);
+    begin
+        return Box_Kind'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Tree::selectbox returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Get_Select_Box;
+
+
+    procedure Set_Select_Box
+           (This : in out Tree;
+            Box  : in     Box_Kind) is
+    begin
+        fl_tree_set_select_box (This.Void_Ptr, Box_Kind'Pos (Box));
+    end Set_Select_Box;
+
+
+
+
+    --  Debugging  --
+
+    procedure Show_Self
+           (This : in out Tree) is
+    begin
+        fl_tree_show_self (This.Void_Ptr);
+    end Show_Self;
 
 
 

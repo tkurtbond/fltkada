@@ -39,6 +39,7 @@ extern "C" int fl_event_compose(int &d);
 extern "C" void fl_event_compose_reset();
 extern "C" const char * fl_event_text();
 extern "C" int fl_event_length();
+extern "C" void fl_event_set_text(const char * t, int len);
 extern "C" int fl_event_test_shortcut(unsigned int s);
 
 
@@ -71,6 +72,7 @@ extern "C" int fl_event_inside(int x, int y, int w, int h);
 
 extern "C" int fl_event_key();
 extern "C" int fl_event_original_key();
+extern "C" void fl_event_set_key(int k);
 extern "C" int fl_event_key_during(int k);
 extern "C" int fl_event_get_key(int k);
 extern "C" int fl_event_ctrl();

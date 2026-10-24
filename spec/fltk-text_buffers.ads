@@ -33,6 +33,16 @@ package FLTK.Text_Buffers is
            (Place  : in Position;
             Length : in Natural);
 
+    --  Unlike Modify_Callback, receives every count FLTK reports, so a
+    --  single modification that both inserts and deletes (such as typing
+    --  over a selection) is not reduced to just its insertion
+    type Modify_Details_Callback is access procedure
+           (Place        : in Position;
+            Inserted     : in Natural;
+            Deleted      : in Natural;
+            Restyled     : in Natural;
+            Deleted_Text : in String);
+
 
 
 
@@ -65,6 +75,14 @@ package FLTK.Text_Buffers is
     procedure Remove_Predelete_Callback
            (This : in out Text_Buffer;
             Func : in     Predelete_Callback);
+
+    procedure Add_Modify_Details_Callback
+           (This : in out Text_Buffer;
+            Func : in     Modify_Details_Callback);
+
+    procedure Remove_Modify_Details_Callback
+           (This : in out Text_Buffer;
+            Func : in     Modify_Details_Callback);
 
     procedure Call_Modify_Callbacks
            (This : in out Text_Buffer);
@@ -387,6 +405,9 @@ private
     package Predelete_Vectors is new Ada.Containers.Vectors
            (Index_Type => Positive,
             Element_Type => Predelete_Callback);
+    package Modify_Details_Vectors is new Ada.Containers.Vectors
+           (Index_Type => Positive,
+            Element_Type => Modify_Details_Callback);
 
 
     type Text_Buffer is new Wrapper with
@@ -394,6 +415,7 @@ private
             CB_Active          : Boolean := True;
             Modify_CBs         : Modify_Vectors.Vector;
             Predelete_CBs      : Predelete_Vectors.Vector;
+            Modify_Details_CBs : Modify_Details_Vectors.Vector;
             High_From, High_To : Natural := 0;
         end record;
 
@@ -419,6 +441,8 @@ private
     pragma Inline (Add_Modify_Callback);
     pragma Inline (Add_Predelete_Callback);
     pragma Inline (Remove_Modify_Callback);
+    pragma Inline (Add_Modify_Details_Callback);
+    pragma Inline (Remove_Modify_Details_Callback);
     pragma Inline (Remove_Predelete_Callback);
     pragma Inline (Call_Modify_Callbacks);
     pragma Inline (Call_Predelete_Callbacks);

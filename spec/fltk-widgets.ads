@@ -547,6 +547,11 @@ private
         return Interfaces.C.int;
     pragma Export (C, Handle_Hook, "widget_handle_hook");
 
+    procedure Resize_Hook
+           (U          : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int);
+    pragma Export (C, Resize_Hook, "widget_resize_hook");
+
 
     package Widget_Convert is new System.Address_To_Access_Conversions (Widget'Class);
     package Callback_Convert renames FLTK.Widget_Callback_Conversions;

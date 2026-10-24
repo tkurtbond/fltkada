@@ -15,6 +15,7 @@
 
 extern "C" void widget_draw_hook(void * ud);
 extern "C" int widget_handle_hook(void * ud, int e);
+extern "C" void widget_resize_hook(void * ud, int x, int y, int w, int h);
 
 extern "C" void table_draw_cell_hook(void * ud, int e, int r, int c, int x, int y, int w, int h);
 
@@ -44,6 +45,7 @@ public:
     void draw();
     void draw_cell(Fl_Table::TableContext e, int r=0, int c=0, int x=0, int y=0, int w=0, int h=0);
     int handle(int e);
+    void resize(int x, int y, int w, int h);
 };
 
 void My_Table_Row::draw() {
@@ -56,6 +58,15 @@ void My_Table_Row::draw_cell(Fl_Table::TableContext e, int r, int c, int x, int 
 
 int My_Table_Row::handle(int e) {
     return widget_handle_hook(this->user_data(), e);
+}
+
+//  Before the Ada side has attached itself there is nothing to dispatch to
+void My_Table_Row::resize(int x, int y, int w, int h) {
+    if (this->user_data() == nullptr) {
+        Fl_Table_Row::resize(x, y, w, h);
+    } else {
+        widget_resize_hook(this->user_data(), x, y, w, h);
+    }
 }
 
 

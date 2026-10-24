@@ -21,6 +21,7 @@ extern "C" void free_fl_box(BOX b);
 
 extern "C" void fl_box_draw(BOX n);
 extern "C" int fl_box_handle(BOX n, int e);
+extern "C" void fl_box_resize(BOX n, int x, int y, int w, int h);
 
 
 #endif

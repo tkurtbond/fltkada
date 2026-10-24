@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Flex Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Flex Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Flex</td>
+    <td>FLTK.Widgets.Groups.Flex</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Flex</td>
+    <td>Flex_Group</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Flex_Group_Reference</td>
+  </tr>
+
+  <tr>
+    <td>enum {<br />
+    VERTICAL = 0,<br />
+    HORIZONTAL = 1,<br />
+    COLUMN = 0,<br />
+    ROW = 1 }</td>
+    <td>Flex_Kind (Vertical_Flex, Horizontal_Flex)<br />
+Column_Flex : constant Flex_Kind := Vertical_Flex;<br />
+Row_Flex : constant Flex_Kind := Horizontal_Flex;</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Flex(int X, int Y, int W, int H, const char *L = 0);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return Flex_Group;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Rely on the automatic use of begin when a group is created, or use begin/end
+explicitly, or add each widget to its intended parent group manually.</td>
+<td><pre>
+function Create
+       (Parent     : in out Group'Class;
+        X, Y, W, H : in     Integer;
+        Text       : in     String := "")
+    return Flex_Group;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Flex(int X, int Y, int W, int H, int direction);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Kind       : in Flex_Kind)
+    return Flex_Group;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Rely on the automatic use of begin when a group is created, or use begin/end
+explicitly, or add each widget to its intended parent group manually.</td>
+<td><pre>
+function Create
+       (Parent     : in out Group'Class;
+        X, Y, W, H : in     Integer;
+        Kind       : in     Flex_Kind)
+    return Flex_Group;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Flex(int W, int H, int direction);
+</pre></td>
+<td><pre>
+function Create
+       (W, H : in Integer;
+        Kind : in Flex_Kind)
+    return Flex_Group;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Rely on the automatic use of begin when a group is created, or use begin/end
+explicitly, or add each widget to its intended parent group manually.</td>
+<td><pre>
+function Create
+       (Parent : in out Group'Class;
+        W, H   : in     Integer;
+        Kind   : in     Flex_Kind)
+    return Flex_Group;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Flex(int direction);
+</pre></td>
+<td><pre>
+function Create
+       (Kind : in Flex_Kind)
+    return Flex_Group;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Rely on the automatic use of begin when a group is created, or use begin/end
+explicitly, or add each widget to its intended parent group manually.</td>
+<td><pre>
+function Create
+       (Parent : in out Group'Class;
+        Kind   : in     Flex_Kind)
+    return Flex_Group;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void end() FL_OVERRIDE;
+</pre></td>
+<td><pre>
+procedure End_Current
+       (This : in out Flex_Group);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void fixed(Fl_Widget *w, int size);
+</pre></td>
+<td><pre>
+procedure Set_Fixed
+       (This : in out Flex_Group;
+        Item : in     Widget'Class;
+        Size : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void fixed(Fl_Widget &amp;w, int size);
+</pre></td>
+<td><pre>
+procedure Set_Fixed
+       (This : in out Flex_Group;
+        Item : in     Widget'Class;
+        Size : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fixed(Fl_Widget *w) const;
+</pre></td>
+<td><pre>
+function Is_Fixed
+       (This : in Flex_Group;
+        Item : in Widget'Class)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int gap() const;
+</pre></td>
+<td><pre>
+function Get_Gap
+       (This : in Flex_Group)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void gap(int g);
+</pre></td>
+<td><pre>
+procedure Set_Gap
+       (This : in out Flex_Group;
+        To   : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int handle(int event) FL_OVERRIDE;
+</pre></td>
+<td><pre>
+function Handle
+       (This  : in out Flex_Group;
+        Event : in     Event_Kind)
+    return Event_Outcome;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int horizontal() const;
+</pre></td>
+<td><pre>
+function Is_Horizontal
+       (This : in Flex_Group)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void layout();
+</pre></td>
+<td><pre>
+procedure Layout
+       (This : in out Flex_Group);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int margin() const;
+</pre></td>
+<td><pre>
+function Get_Margin
+       (This : in Flex_Group)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int margin(int *left, int *top, int *right, int *bottom) const;
+</pre></td>
+<td><pre>
+procedure Get_Margin
+       (This                     : in     Flex_Group;
+        Left, Top, Right, Bottom :    out Integer);
+
+function Get_Margin
+       (This                     : in     Flex_Group;
+        Left, Top, Right, Bottom :    out Integer)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void margin(int m, int g = -1);
+</pre></td>
+<td><pre>
+procedure Set_Margin
+       (This : in out Flex_Group;
+        To   : in     Integer);
+
+procedure Set_Margin
+       (This : in out Flex_Group;
+        To   : in     Integer;
+        Gap  : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void margin(int left, int top, int right, int bottom);
+</pre></td>
+<td><pre>
+procedure Set_Margin
+       (This                     : in out Flex_Group;
+        Left, Top, Right, Bottom : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void need_layout(int set);
+</pre></td>
+<td><pre>
+procedure Set_Need_Layout
+       (This : in out Flex_Group;
+        To   : in     Boolean := True);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+bool need_layout() const;
+</pre></td>
+<td><pre>
+function Get_Need_Layout
+       (This : in Flex_Group)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void resize(int x, int y, int w, int h) FL_OVERRIDE;
+</pre></td>
+<td><pre>
+!Inherited from FLTK.Widgets.Groups; FLTK dispatches to Fl_Flex::resize.
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int spacing() const;
+</pre></td>
+<td><pre>
+function Get_Spacing
+       (This : in Flex_Group)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void spacing(int i);
+</pre></td>
+<td><pre>
+procedure Set_Spacing
+       (This : in out Flex_Group;
+        To   : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+uchar type() const;
+</pre></td>
+<td><pre>
+function Get_Kind
+       (This : in Flex_Group)
+    return Flex_Kind;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void type(uchar t);
+</pre></td>
+<td><pre>
+procedure Set_Kind
+       (This : in out Flex_Group;
+        Kind : in     Flex_Kind);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void draw() FL_OVERRIDE;
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Flex_Group);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void init(int t = VERTICAL);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int alloc_size(int size) const;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void on_remove(int) FL_OVERRIDE;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
+

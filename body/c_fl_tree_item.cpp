@@ -4,10 +4,51 @@
 //  Released into the public domain
 
 
+#include <FL/Fl_Tree.H>
 #include <FL/Fl_Tree_Item.H>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Image.H>
 #include "c_fl_tree_item.h"
+
+
+
+
+//  Exports from Ada
+
+extern "C" int tree_item_draw_content_hook(void * ud, int r);
+extern "C" void tree_item_gone_hook(void * ud);
+
+
+
+
+//  Attaching all relevant hooks and friends
+
+//  A custom item, whose draw_item_content dispatches to Ada.  ada_obj is
+//  cleared when the Ada object goes away first, and the Ada object is
+//  told when the tree deletes the item first.
+
+class My_Tree_Item : public Fl_Tree_Item {
+public:
+    using Fl_Tree_Item::Fl_Tree_Item;
+    using Fl_Tree_Item::drawfgcolor;
+    using Fl_Tree_Item::drawbgcolor;
+    ~My_Tree_Item();
+    int draw_item_content(int r);
+    void * ada_obj = nullptr;
+};
+
+My_Tree_Item::~My_Tree_Item() {
+    if (ada_obj != nullptr) {
+        tree_item_gone_hook(ada_obj);
+    }
+}
+
+int My_Tree_Item::draw_item_content(int r) {
+    if (ada_obj == nullptr) {
+        return Fl_Tree_Item::draw_item_content(r);
+    }
+    return tree_item_draw_content_hook(ada_obj, r);
+}
 
 
 
@@ -134,4 +175,83 @@ int fl_tree_item_swap_children(TREEITEM ti, TREEITEM a, TREEITEM b) {
        (static_cast<Fl_Tree_Item*>(a), static_cast<Fl_Tree_Item*>(b));
 }
 
+void fl_tree_item_swap_children2(TREEITEM ti, int a, int b) {
+    static_cast<Fl_Tree_Item*>(ti)->swap_children(a, b);
+}
 
+
+
+TREEITEM fl_tree_item_replace(TREEITEM ti, TREEITEM n) {
+    return static_cast<Fl_Tree_Item*>(ti)->replace(static_cast<Fl_Tree_Item*>(n));
+}
+
+
+
+
+int fl_tree_item_get_labelfont(TREEITEM ti) {
+    return static_cast<Fl_Tree_Item*>(ti)->labelfont();
+}
+
+void fl_tree_item_set_labelfont(TREEITEM ti, int f) {
+    static_cast<Fl_Tree_Item*>(ti)->labelfont(f);
+}
+
+int fl_tree_item_get_labelsize(TREEITEM ti) {
+    return static_cast<Fl_Tree_Item*>(ti)->labelsize();
+}
+
+void fl_tree_item_set_labelsize(TREEITEM ti, int s) {
+    static_cast<Fl_Tree_Item*>(ti)->labelsize(s);
+}
+
+
+
+
+int fl_tree_item_label_x(TREEITEM ti) {
+    return static_cast<Fl_Tree_Item*>(ti)->label_x();
+}
+
+int fl_tree_item_label_y(TREEITEM ti) {
+    return static_cast<Fl_Tree_Item*>(ti)->label_y();
+}
+
+int fl_tree_item_label_w(TREEITEM ti) {
+    return static_cast<Fl_Tree_Item*>(ti)->label_w();
+}
+
+int fl_tree_item_label_h(TREEITEM ti) {
+    return static_cast<Fl_Tree_Item*>(ti)->label_h();
+}
+
+
+
+
+TREEITEM new_fl_tree_item_custom(void * t) {
+    My_Tree_Item *ti = new My_Tree_Item(static_cast<Fl_Tree*>(t));
+    return ti;
+}
+
+//  Once an item is in a tree the tree owns it, so it is only detached
+void free_fl_tree_item_custom(TREEITEM ti) {
+    My_Tree_Item *i = static_cast<My_Tree_Item*>(ti);
+    i->ada_obj = nullptr;
+    if (i->parent() == nullptr && (i->tree() == nullptr || i->tree()->root() != i)) {
+        delete i;
+    }
+}
+
+void fl_tree_item_custom_set_ada(TREEITEM ti, void * ud) {
+    static_cast<My_Tree_Item*>(ti)->ada_obj = ud;
+}
+
+int fl_tree_item_custom_draw_item_content(TREEITEM ti, int r) {
+    return static_cast<My_Tree_Item*>(ti)->Fl_Tree_Item::draw_item_content(r);
+}
+
+unsigned int fl_tree_item_custom_drawfgcolor(TREEITEM ti) {
+    return static_cast<My_Tree_Item*>(ti)->drawfgcolor();
+}
+
+unsigned int fl_tree_item_custom_drawbgcolor(TREEITEM ti) {
+    return static_cast<My_Tree_Item*>(ti)->drawbgcolor();
+}

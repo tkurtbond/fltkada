@@ -10,6 +10,10 @@ with
     FLTK.Widgets.Groups,
     Interfaces.C;
 
+use type
+
+    Interfaces.C.int;
+
 
 package body FLTK.Widgets.Positioners is
 
@@ -559,11 +563,7 @@ package body FLTK.Widgets.Positioners is
             Interfaces.C.int (W),
             Interfaces.C.int (H));
     begin
-        return Event_Outcome'Val (Result);
-    exception
-    when Constraint_Error => raise Internal_FLTK_Error with
-        "Fl_Positioner::handle returned unexpected int value of " &
-        Interfaces.C.int'Image (Result);
+        return (if Result = 0 then Not_Handled else Handled);
     end Handle;
 
 

@@ -50,6 +50,7 @@ extern "C" void fl_menu_item_set_flags(MENUITEM mi, int f);
 
 
 extern "C" void fl_menu_item_image(MENUITEM mi, void * i);
+extern "C" void fl_menu_item_multi_label(MENUITEM mi, void * ml);
 
 
 extern "C" void fl_menu_item_activate(MENUITEM mi);

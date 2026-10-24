@@ -365,6 +365,22 @@ package body FLTK is
     end Press;
 
 
+    function Is_Keypad
+           (Key : in Keypress)
+        return Boolean is
+    begin
+        return Key in 16#ff80# .. 16#ffbd#;
+    end Is_Keypad;
+
+
+    function Keypad_Character
+           (Key : in Keypress)
+        return Character is
+    begin
+        return Character'Val (Key - 16#ff80#);
+    end Keypad_Character;
+
+
     function Press
            (Key : Pressable_Key)
         return Key_Combo is

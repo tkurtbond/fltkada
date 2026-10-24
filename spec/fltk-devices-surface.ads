@@ -42,6 +42,13 @@ package FLTK.Devices.Surface is
     function Get_Original
         return Surface_Device_Reference;
 
+    --  Makes This the current surface, remembering the previous one so a
+    --  matching Pop_Current can restore it.  At most 16 can be remembered.
+    procedure Push_Current
+           (This : in out Surface_Device'Class);
+
+    procedure Pop_Current;
+
 
 
 

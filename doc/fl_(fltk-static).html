@@ -546,6 +546,18 @@ procedure Get_Color
 
   <tr>
 <td><pre>
+static void get_color(Fl_Color i,
+    uchar &red, uchar &green, uchar &blue, uchar &alpha);
+</pre></td>
+<td><pre>
+procedure Get_Color
+       (From       : in     Color;
+        R, G, B, A :    out Color_Component);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 static const char * get_font(Fl_Font);
 </pre></td>
 <td><pre>
@@ -934,12 +946,24 @@ procedure Set_Color
   <tr>
 <td><pre>
 static void set_color(Fl_Color,
-    uchar, uchar, uchar, uchar);
+    uchar, uchar, uchar);
 </pre></td>
 <td><pre>
 procedure Set_Color
        (Target  : in Color;
         R, G, B : in Color_Component);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void set_color(Fl_Color,
+    uchar, uchar, uchar, uchar);
+</pre></td>
+<td><pre>
+procedure Set_Color
+       (Target     : in Color;
+        R, G, B, A : in Color_Component);
 </pre></td>
   </tr>
 
@@ -1017,6 +1041,26 @@ static void unlock();
 </pre></td>
 <td><pre>
 procedure Unlock;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int use_high_res_GL();
+</pre></td>
+<td><pre>
+function Get_Use_High_Res_GL
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void use_high_res_GL(int val);
+</pre></td>
+<td><pre>
+procedure Set_Use_High_Res_GL
+       (To : in Boolean);
 </pre></td>
   </tr>
 

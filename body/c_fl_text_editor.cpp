@@ -4,6 +4,7 @@
 //  Released into the public domain
 
 
+#include <FL/Fl.H>
 #include <FL/Fl_Text_Editor.H>
 #include "c_fl_text_editor.h"
 #include "c_fl.h"
@@ -386,7 +387,15 @@ void fl_text_editor_draw(TEXTEDITOR te) {
 }
 
 int fl_text_editor_handle(TEXTEDITOR te, int e) {
-    return static_cast<My_Text_Editor*>(te)->Fl_Text_Editor::handle(e);
+    My_Text_Editor * ed = static_cast<My_Text_Editor*>(te);
+    int result = ed->Fl_Text_Editor::handle(e);
+    //  FLTK only calls the default key function for keys without modifiers,
+    //  but the Ada side keeps every key binding itself behind that function
+    if (result == 0 && e == FL_KEYBOARD && ed->default_key_function_ != 0 &&
+        (Fl::event_state() & (FL_SHIFT | FL_CTRL | FL_ALT | FL_META)) != 0) {
+        result = ed->default_key_function_(Fl::event_text()[0], ed);
+    }
+    return result;
 }
 
 int fl_text_editor_handle_key(TEXTEDITOR te) {

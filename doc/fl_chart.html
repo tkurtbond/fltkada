@@ -41,6 +41,18 @@
     <td>Chart_Reference</td>
   </tr>
 
+  <tr>
+    <td>#define FL_BAR_CHART 0<br />
+    #define FL_HORBAR_CHART 1<br />
+    #define FL_LINE_CHART 2<br />
+    #define FL_FILL_CHART 3<br />
+    #define FL_SPIKE_CHART 4<br />
+    #define FL_PIE_CHART 5<br />
+    #define FL_SPECIALPIE_CHART 6</td>
+    <td>Chart_Kind (Bar_Chart, Horizontal_Bar_Chart, Line_Chart, Fill_Chart,
+    Spike_Chart, Pie_Chart, Special_Pie_Chart)</td>
+  </tr>
+
 </table>
 
 
@@ -281,6 +293,30 @@ void textsize(Fl_Fontsize s);
 procedure Set_Text_Size
        (This : in out Chart;
         To   : in     Font_Size);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Inherited from Fl_Widget.
+<pre>
+uchar type() const;
+</pre></td>
+<td><pre>
+function Get_Kind
+       (This : in Chart)
+    return Chart_Kind;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Inherited from Fl_Widget.
+<pre>
+void type(uchar t);
+</pre></td>
+<td><pre>
+procedure Set_Kind
+       (This : in out Chart;
+        Kind : in     Chart_Kind);
 </pre></td>
   </tr>
 

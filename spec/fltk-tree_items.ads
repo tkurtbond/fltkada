@@ -95,6 +95,41 @@ package FLTK.Tree_Items is
            (This : in Tree_Item;
             Text : in String);
 
+    function Get_Label_Font
+           (This : in Tree_Item)
+        return Font_Kind;
+
+    procedure Set_Label_Font
+           (This : in Tree_Item;
+            Font : in Font_Kind);
+
+    function Get_Label_Size
+           (This : in Tree_Item)
+        return Font_Size;
+
+    procedure Set_Label_Size
+           (This : in Tree_Item;
+            Size : in Font_Size);
+
+    --  The area the item's label is drawn in, as of the last time the
+    --  tree was drawn.  Mostly of use when drawing a custom item; see
+    --  FLTK.Tree_Items.Custom.
+    function Label_X
+           (This : in Tree_Item)
+        return Integer;
+
+    function Label_Y
+           (This : in Tree_Item)
+        return Integer;
+
+    function Label_W
+           (This : in Tree_Item)
+        return Integer;
+
+    function Label_H
+           (This : in Tree_Item)
+        return Integer;
+
 
 
 
@@ -205,6 +240,20 @@ package FLTK.Tree_Items is
             First, Second : in Tree_Item)
         return Boolean;
 
+    --  Swaps two of This's immediate children by place (1 = first).
+    --  Raises Constraint_Error if either place is past the last child.
+    procedure Swap_Children
+           (This          : in Tree_Item;
+            First, Second : in Positive);
+
+    --  Puts New_Item in This's place in the tree, destroying This, and
+    --  returns New_Item, or No_Tree_Item on failure.  New_Item is
+    --  typically a FLTK.Tree_Items.Custom item, which the tree then owns.
+    function Replace
+           (This     : in Tree_Item;
+            New_Item : in Tree_Item)
+        return Tree_Item;
+
 
 
 
@@ -304,6 +353,15 @@ private
     pragma Inline (Cast);
     pragma Inline (Address_Of);
 
+    pragma Inline (Get_Label_Font);
+    pragma Inline (Set_Label_Font);
+    pragma Inline (Get_Label_Size);
+    pragma Inline (Set_Label_Size);
+    pragma Inline (Label_X);
+    pragma Inline (Label_Y);
+    pragma Inline (Label_W);
+    pragma Inline (Label_H);
+
     pragma Inline (Is_Open);
     pragma Inline (Is_Selected);
     pragma Inline (Is_Active);
@@ -320,6 +378,7 @@ private
     pragma Inline (Deparent);
     pragma Inline (Reparent);
     pragma Inline (Swap_Children);
+    pragma Inline (Replace);
 
     pragma Inline (Set_Widget);
     pragma Inline (Has_Widget);

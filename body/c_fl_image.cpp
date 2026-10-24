@@ -51,6 +51,14 @@ void fl_image_set_rgb_scaling(int t) {
     Fl_Image::RGB_scaling(static_cast<Fl_RGB_Scaling>(t));
 }
 
+int fl_image_get_scaling_algorithm() {
+    return Fl_Image::scaling_algorithm();
+}
+
+void fl_image_set_scaling_algorithm(int t) {
+    Fl_Image::scaling_algorithm(static_cast<Fl_RGB_Scaling>(t));
+}
+
 IMAGE fl_image_copy(IMAGE i, int w, int h) {
     //  virtual so disable dispatch
     return static_cast<Fl_Image*>(i)->Fl_Image::copy(w, h);
@@ -106,6 +114,10 @@ int fl_image_d(IMAGE i) {
 
 int fl_image_ld(IMAGE i) {
     return static_cast<Fl_Image*>(i)->ld();
+}
+
+void fl_image_scale(IMAGE i, int w, int h, int p, int e) {
+    static_cast<Fl_Image*>(i)->scale(w, h, p, e);
 }
 
 

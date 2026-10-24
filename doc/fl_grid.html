@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Grid Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Grid Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Grid</td>
+    <td>FLTK.Widgets.Groups.Grids</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Grid</td>
+    <td>Grid</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Grid_Reference</td>
+  </tr>
+
+  <tr>
+    <td>typedef unsigned short Fl_Grid_Align;</td>
+    <td>Grid_Alignment</td>
+  </tr>
+
+  <tr>
+    <td>const int *value, size_t size<br />
+    (array overloads)</td>
+    <td>Size_Array</td>
+  </tr>
+
+  <tr>
+    <td>Fl_Grid::Cell</td>
+    <td>Not yet bound</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Attributes</th></tr>
+
+  <tr>
+<td><pre>
+const Fl_Grid_Align FL_GRID_CENTER;
+</pre></td>
+<td><pre>
+Grid_Center : constant Grid_Alignment;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const Fl_Grid_Align FL_GRID_TOP;
+</pre></td>
+<td><pre>
+Grid_Top : constant Grid_Alignment;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const Fl_Grid_Align FL_GRID_BOTTOM;
+</pre></td>
+<td><pre>
+Grid_Bottom : constant Grid_Alignment;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const Fl_Grid_Align FL_GRID_LEFT;
+</pre></td>
+<td><pre>
+Grid_Left : constant Grid_Alignment;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const Fl_Grid_Align FL_GRID_RIGHT;
+</pre></td>
+<td><pre>
+Grid_Right : constant Grid_Alignment;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const Fl_Grid_Align FL_GRID_HORIZONTAL;
+</pre></td>
+<td><pre>
+Grid_Horizontal : constant Grid_Alignment;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const Fl_Grid_Align FL_GRID_VERTICAL;
+</pre></td>
+<td><pre>
+Grid_Vertical : constant Grid_Alignment;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const Fl_Grid_Align FL_GRID_FILL;
+</pre></td>
+<td><pre>
+Grid_Fill : constant Grid_Alignment;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const Fl_Grid_Align FL_GRID_PROPORTIONAL;
+</pre></td>
+<td><pre>
+Grid_Proportional : constant Grid_Alignment;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const Fl_Grid_Align FL_GRID_TOP_LEFT;
+</pre></td>
+<td><pre>
+Grid_Top_Left : constant Grid_Alignment;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const Fl_Grid_Align FL_GRID_TOP_RIGHT;
+</pre></td>
+<td><pre>
+Grid_Top_Right : constant Grid_Alignment;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const Fl_Grid_Align FL_GRID_BOTTOM_LEFT;
+</pre></td>
+<td><pre>
+Grid_Bottom_Left : constant Grid_Alignment;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const Fl_Grid_Align FL_GRID_BOTTOM_RIGHT;
+</pre></td>
+<td><pre>
+Grid_Bottom_Right : constant Grid_Alignment;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Grid(int X, int Y, int W, int H, const char *L = 0);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return Grid;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Rely on the automatic use of begin when a group is created, or use begin/end
+explicitly, or add each widget to its intended parent group manually.</td>
+<td><pre>
+function Create
+       (Parent     : in out Group'Class;
+        X, Y, W, H : in     Integer;
+        Text       : in     String := "")
+    return Grid;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+Cell *cell(int row, int col) const;
+</pre></td>
+<td>Not yet bound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+Cell *cell(Fl_Widget *widget) const;
+</pre></td>
+<td>Not yet bound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void clear_layout();
+</pre></td>
+<td><pre>
+procedure Clear_Layout
+       (This : in out Grid);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void col_gap(int col, int value);
+</pre></td>
+<td><pre>
+procedure Set_Column_Gap
+       (This   : in out Grid;
+        Column : in     Positive;
+        Value  : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void col_gap(const int *value, size_t size);
+</pre></td>
+<td><pre>
+procedure Set_Column_Gap
+       (This   : in out Grid;
+        Values : in     Size_Array);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int col_gap(int col) const;
+</pre></td>
+<td><pre>
+function Get_Column_Gap
+       (This   : in Grid;
+        Column : in Positive)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void col_weight(int col, int value);
+</pre></td>
+<td><pre>
+procedure Set_Column_Weight
+       (This   : in out Grid;
+        Column : in     Positive;
+        Value  : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void col_weight(const int *value, size_t size);
+</pre></td>
+<td><pre>
+procedure Set_Column_Weight
+       (This   : in out Grid;
+        Values : in     Size_Array);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int col_weight(int col) const;
+</pre></td>
+<td><pre>
+function Get_Column_Weight
+       (This   : in Grid;
+        Column : in Positive)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void col_width(int col, int value);
+</pre></td>
+<td><pre>
+procedure Set_Column_Width
+       (This   : in out Grid;
+        Column : in     Positive;
+        Value  : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void col_width(const int *value, size_t size);
+</pre></td>
+<td><pre>
+procedure Set_Column_Width
+       (This   : in out Grid;
+        Values : in     Size_Array);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int col_width(int col) const;
+</pre></td>
+<td><pre>
+function Get_Column_Width
+       (This   : in Grid;
+        Column : in Positive)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int cols() const;
+</pre></td>
+<td><pre>
+function Get_Columns
+       (This : in Grid)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int computed_col_width(int col) const;
+</pre></td>
+<td><pre>
+function Computed_Column_Width
+       (This   : in Grid;
+        Column : in Positive)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int computed_row_height(int row) const;
+</pre></td>
+<td><pre>
+function Computed_Row_Height
+       (This : in Grid;
+        Row  : in Positive)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void debug(int level = 127);
+</pre></td>
+<td><pre>
+procedure Debug
+       (This  : in out Grid;
+        Level : in     Integer := 127);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void gap(int *row_gap, int *col_gap) const;
+</pre></td>
+<td><pre>
+procedure Get_Gap
+       (This                : in     Grid;
+        Row_Gap, Column_Gap :    out Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void gap(int row_gap, int col_gap = -1);
+</pre></td>
+<td><pre>
+procedure Set_Gap
+       (This       : in out Grid;
+        Row_Gap    : in     Integer;
+        Column_Gap : in     Integer := -1);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int handle(int event) FL_OVERRIDE;
+</pre></td>
+<td><pre>
+function Handle
+       (This  : in out Grid;
+        Event : in     Event_Kind)
+    return Event_Outcome;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void layout(int rows, int cols, int margin = -1, int gap = -1);
+</pre></td>
+<td><pre>
+procedure Set_Layout
+       (This          : in out Grid;
+        Rows, Columns : in     Natural;
+        Margin, Gap   : in     Integer := -1);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void layout();
+</pre></td>
+<td><pre>
+procedure Layout
+       (This : in out Grid);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int margin(int *left, int *top, int *right, int *bottom) const;
+</pre></td>
+<td><pre>
+procedure Get_Margin
+       (This                     : in     Grid;
+        Left, Top, Right, Bottom :    out Integer);
+
+function Get_Margin
+       (This                     : in     Grid;
+        Left, Top, Right, Bottom :    out Integer)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void margin(int left, int top = -1, int right = -1, int bottom = -1);
+</pre></td>
+<td><pre>
+procedure Set_Margin
+       (This               : in out Grid;
+        Left               : in     Integer;
+        Top, Right, Bottom : in     Integer := -1);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void need_layout(int set);
+</pre></td>
+<td><pre>
+procedure Set_Need_Layout
+       (This : in out Grid;
+        To   : in     Boolean := True);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+bool need_layout() const;
+</pre></td>
+<td><pre>
+function Get_Need_Layout
+       (This : in Grid)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void resize(int X, int Y, int W, int H) FL_OVERRIDE;
+</pre></td>
+<td><pre>
+!Inherited from FLTK.Widgets.Groups; FLTK dispatches to Fl_Grid::resize.
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void row_gap(int row, int value);
+</pre></td>
+<td><pre>
+procedure Set_Row_Gap
+       (This  : in out Grid;
+        Row   : in     Positive;
+        Value : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void row_gap(const int *value, size_t size);
+</pre></td>
+<td><pre>
+procedure Set_Row_Gap
+       (This   : in out Grid;
+        Values : in     Size_Array);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int row_gap(int row) const;
+</pre></td>
+<td><pre>
+function Get_Row_Gap
+       (This : in Grid;
+        Row  : in Positive)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void row_height(int row, int value);
+</pre></td>
+<td><pre>
+procedure Set_Row_Height
+       (This  : in out Grid;
+        Row   : in     Positive;
+        Value : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void row_height(const int *value, size_t size);
+</pre></td>
+<td><pre>
+procedure Set_Row_Height
+       (This   : in out Grid;
+        Values : in     Size_Array);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int row_height(int row) const;
+</pre></td>
+<td><pre>
+function Get_Row_Height
+       (This : in Grid;
+        Row  : in Positive)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void row_weight(int row, int value);
+</pre></td>
+<td><pre>
+procedure Set_Row_Weight
+       (This  : in out Grid;
+        Row   : in     Positive;
+        Value : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void row_weight(const int *value, size_t size);
+</pre></td>
+<td><pre>
+procedure Set_Row_Weight
+       (This   : in out Grid;
+        Values : in     Size_Array);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int row_weight(int row) const;
+</pre></td>
+<td><pre>
+function Get_Row_Weight
+       (This : in Grid;
+        Row  : in Positive)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int rows() const;
+</pre></td>
+<td><pre>
+function Get_Rows
+       (This : in Grid)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void show_grid(int set);
+</pre></td>
+<td><pre>
+procedure Show_Grid
+       (This  : in out Grid;
+        State : in     Boolean);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void show_grid(int set, Fl_Color col);
+</pre></td>
+<td><pre>
+procedure Show_Grid
+       (This       : in out Grid;
+        State      : in     Boolean;
+        Line_Color : in     Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Cell *widget(Fl_Widget *wi, int row, int col,
+    Fl_Grid_Align align = FL_GRID_FILL);
+</pre></td>
+<td><pre>
+procedure Set_Widget
+       (This        : in out Grid;
+        Item        : in     Widget'Class;
+        Row, Column : in     Positive;
+        Align       : in     Grid_Alignment := Grid_Fill);
+
+function Set_Widget
+       (This        : in out Grid;
+        Item        : in     Widget'Class;
+        Row, Column : in     Positive;
+        Align       : in     Grid_Alignment := Grid_Fill)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Cell *widget(Fl_Widget *wi, int row, int col, int rowspan, int colspan,
+    Fl_Grid_Align align = FL_GRID_FILL);
+</pre></td>
+<td><pre>
+procedure Set_Widget
+       (This                  : in out Grid;
+        Item                  : in     Widget'Class;
+        Row, Column           : in     Positive;
+        Row_Span, Column_Span : in     Positive;
+        Align                 : in     Grid_Alignment := Grid_Fill);
+
+function Set_Widget
+       (This                  : in out Grid;
+        Item                  : in     Widget'Class;
+        Row, Column           : in     Positive;
+        Row_Span, Column_Span : in     Positive;
+        Align                 : in     Grid_Alignment := Grid_Fill)
+    return Boolean;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+Cell *add_cell(int row, int col);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw() FL_OVERRIDE;
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Grid);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual void draw_grid();
+</pre></td>
+<td>Not yet bound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void init();
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void on_remove(int) FL_OVERRIDE;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void remove_cell(int row, int col);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
+

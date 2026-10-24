@@ -56,6 +56,38 @@
 
 
 <table class="function">
+  <tr><th colspan="2">Static Attributes</th></tr>
+
+  <tr>
+<td>Public (marked "should be private!") but undocumented. FLTK has no
+setter; an event dispatch function assigns the member directly.
+<pre>
+static int e_keysym;
+</pre></td>
+<td><pre>
+procedure Set_Last_Key
+       (To : in Keypress);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Public (marked "should be private!") but undocumented. FLTK has no
+setter; an event dispatch function assigns both members directly.
+<pre>
+static char* e_text;
+static int e_length;
+</pre></td>
+<td><pre>
+procedure Set_Text
+       (To : in String);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
   <tr><th colspan="2">Static Functions and Procedures</th></tr>
 
   <tr>
@@ -551,6 +583,20 @@ function Handle_Dispatch
   </tr>
 
   <tr>
+<td>Overload accepting a possibly null window, such as the one given to an
+Event_Dispatch function, since FLTK dispatches some events without one.
+<pre>
+static int handle(int, Fl_Window *);
+</pre></td>
+<td><pre>
+function Handle_Dispatch
+       (Event  : in Event_Kind;
+        Origin : access FLTK.Widgets.Groups.Windows.Window'Class)
+    return Event_Outcome;
+</pre></td>
+  </tr>
+
+  <tr>
 <td><pre>
 static int handle_(int, Fl_Window *);
 </pre></td>
@@ -558,6 +604,20 @@ static int handle_(int, Fl_Window *);
 function Handle
        (Event  : in     Event_Kind;
         Origin : in out FLTK.Widgets.Groups.Windows.Window'Class)
+    return Event_Outcome;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Overload accepting a possibly null window, such as the one given to an
+Event_Dispatch function, since FLTK dispatches some events without one.
+<pre>
+static int handle_(int, Fl_Window *);
+</pre></td>
+<td><pre>
+function Handle
+       (Event  : in Event_Kind;
+        Origin : access FLTK.Widgets.Groups.Windows.Window'Class)
     return Event_Outcome;
 </pre></td>
   </tr>

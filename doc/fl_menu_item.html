@@ -505,6 +505,20 @@ int measure(int *h, const Fl_Menu_ *) const;
   </tr>
 
   <tr>
+<td>Equivalent to label(FL_MULTI_LABEL, (const char *)ml), or the
+deprecated Fl_Multi_Label::label(Fl_Menu_Item *). The Multi_Label is not
+copied, so it must last as long as the item does.
+<pre>
+void multi_label(const Fl_Multi_Label *ml);
+</pre></td>
+<td><pre>
+procedure Set_Multi_Label
+       (This  : in out Menu_Item;
+        Label : in out FLTK.Multi_Labels.Multi_Label'Class);
+</pre></td>
+  </tr>
+
+  <tr>
 <td><pre>
 const Fl_Menu_Item * next(int=1) const;
 

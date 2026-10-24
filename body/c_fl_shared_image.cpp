@@ -98,3 +98,10 @@ void fl_shared_image_draw2(SHAREDIMAGE i, int x, int y) {
 }
 
 
+
+
+void fl_shared_image_register_images() {
+    fl_register_images();
+}
+
+

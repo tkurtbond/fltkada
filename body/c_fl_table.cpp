@@ -29,6 +29,7 @@ const int fl_context_rc_resize  = Fl_Table::CONTEXT_RC_RESIZE;
 
 extern "C" void widget_draw_hook(void * ud);
 extern "C" int widget_handle_hook(void * ud, int e);
+extern "C" void widget_resize_hook(void * ud, int x, int y, int w, int h);
 
 extern "C" void table_draw_cell_hook(void * ud, int e, int r, int c, int x, int y, int w, int h);
 
@@ -81,6 +82,7 @@ public:
     void draw();
     void draw_cell(Fl_Table::TableContext e, int r=0, int c=0, int x=0, int y=0, int w=0, int h=0);
     int handle(int e);
+    void resize(int x, int y, int w, int h);
 };
 
 void My_Table::draw() {
@@ -93,6 +95,15 @@ void My_Table::draw_cell(Fl_Table::TableContext e, int r, int c, int x, int y, i
 
 int My_Table::handle(int e) {
     return widget_handle_hook(this->user_data(), e);
+}
+
+//  Before the Ada side has attached itself there is nothing to dispatch to
+void My_Table::resize(int x, int y, int w, int h) {
+    if (this->user_data() == nullptr) {
+        Fl_Table::resize(x, y, w, h);
+    } else {
+        widget_resize_hook(this->user_data(), x, y, w, h);
+    }
 }
 
 
@@ -451,7 +462,8 @@ void fl_table_set_scrollbar_size(TABLE t, int v) {
 }
 
 void fl_table_resize(TABLE t, int x, int y, int w, int h) {
-    static_cast<Fl_Table*>(t)->resize(x, y, w, h);
+    //  Non-virtual, since the virtual resize may lead right back here via Ada
+    static_cast<Fl_Table*>(t)->Fl_Table::resize(x, y, w, h);
 }
 
 int fl_table_is_interactive_resize(TABLE t) {

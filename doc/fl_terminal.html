@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Terminal Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Terminal Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Terminal</td>
+    <td>FLTK.Widgets.Groups.Terminals</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Terminal</td>
+    <td>Terminal</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Terminal_Reference</td>
+  </tr>
+
+  <tr>
+    <td>Fl_Terminal::Attrib</td>
+    <td>Text_Attributes</td>
+  </tr>
+
+  <tr>
+    <td>Fl_Terminal::OutFlags</td>
+    <td>Output_Translation</td>
+  </tr>
+
+  <tr>
+    <td>Fl_Terminal::RedrawStyle</td>
+    <td>Redraw_Style</td>
+  </tr>
+
+  <tr>
+    <td>Fl_Terminal::ScrollbarStyle</td>
+    <td>Scrollbar_Style</td>
+  </tr>
+
+  <tr>
+    <td>uchar (xterm 256 color index)</td>
+    <td>Xterm_Color</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Constants</th></tr>
+
+  <tr>
+    <td>ATTR_NONE</td>
+    <td>Attrib_Normal</td>
+  </tr>
+
+  <tr>
+    <td>BOLD</td>
+    <td>Attrib_Bold</td>
+  </tr>
+
+  <tr>
+    <td>DIM</td>
+    <td>Attrib_Dim</td>
+  </tr>
+
+  <tr>
+    <td>ITALIC</td>
+    <td>Attrib_Italic</td>
+  </tr>
+
+  <tr>
+    <td>UNDERLINE</td>
+    <td>Attrib_Underline</td>
+  </tr>
+
+  <tr>
+    <td>INVERSE</td>
+    <td>Attrib_Inverse</td>
+  </tr>
+
+  <tr>
+    <td>STRIKEOUT</td>
+    <td>Attrib_Strikeout</td>
+  </tr>
+
+  <tr>
+    <td>OFF</td>
+    <td>Translate_Off</td>
+  </tr>
+
+  <tr>
+    <td>CR_TO_LF</td>
+    <td>Translate_CR_To_LF</td>
+  </tr>
+
+  <tr>
+    <td>LF_TO_CR</td>
+    <td>Translate_LF_To_CR</td>
+  </tr>
+
+  <tr>
+    <td>LF_TO_CRLF</td>
+    <td>Translate_LF_To_CRLF</td>
+  </tr>
+
+  <tr>
+    <td>NO_REDRAW</td>
+    <td>No_Redraw</td>
+  </tr>
+
+  <tr>
+    <td>RATE_LIMITED</td>
+    <td>Rate_Limited</td>
+  </tr>
+
+  <tr>
+    <td>PER_WRITE</td>
+    <td>Per_Write</td>
+  </tr>
+
+  <tr>
+    <td>SCROLLBAR_OFF</td>
+    <td>Scrollbar_Off</td>
+  </tr>
+
+  <tr>
+    <td>SCROLLBAR_AUTO</td>
+    <td>Scrollbar_Auto</td>
+  </tr>
+
+  <tr>
+    <td>SCROLLBAR_ON</td>
+    <td>Scrollbar_On</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Terminal(int X, int Y, int W, int H, const char *L=0);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := &quot;&quot;)
+    return Terminal;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Rely on the automatic use of begin when a group is created, or use begin/end
+explicitly, or add each widget to its intended parent group manually.</td>
+<td><pre>
+function Create
+       (Parent     : in out Group&#x27;Class;
+        X, Y, W, H : in     Integer;
+        Text       : in     String := &quot;&quot;)
+    return Terminal;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Terminal(int X, int Y, int W, int H, const char *L,
+    int rows, int cols, int hist);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Rows       : in Integer;
+        Columns    : in Integer;
+        History    : in Integer;
+        Text       : in String := &quot;&quot;)
+    return Terminal;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Rely on the automatic use of begin when a group is created, or use begin/end
+explicitly, or add each widget to its intended parent group manually.</td>
+<td><pre>
+function Create
+       (Parent     : in out Group&#x27;Class;
+        X, Y, W, H : in     Integer;
+        Rows       : in     Integer;
+        Columns    : in     Integer;
+        History    : in     Integer;
+        Text       : in     String := &quot;&quot;)
+    return Terminal;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void ansi(bool val);
+</pre></td>
+<td><pre>
+procedure Set_ANSI
+       (This : in out Terminal;
+        To   : in     Boolean);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+bool ansi() const;
+</pre></td>
+<td><pre>
+function Get_ANSI
+       (This : in Terminal)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void append(const char *s, int len=-1);
+</pre></td>
+<td><pre>
+procedure Append
+       (This : in out Terminal;
+        Text : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void append_ascii(const char *s);
+</pre></td>
+<td><pre>
+procedure Append_ASCII
+       (This : in out Terminal;
+        Text : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void append_utf8(const char *buf, int len=-1);
+</pre></td>
+<td><pre>
+procedure Append_UTF8
+       (This : in out Terminal;
+        Text : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void box(Fl_Boxtype val);
+</pre></td>
+<td><pre>
+procedure Set_Box
+       (This : in out Terminal;
+        Box  : in     Box_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void clear();
+</pre></td>
+<td><pre>
+procedure Clear
+       (This : in out Terminal);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void clear(Fl_Color val);
+</pre></td>
+<td><pre>
+procedure Clear
+       (This : in out Terminal;
+        Hue  : in     Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void clear_history();
+</pre></td>
+<td><pre>
+procedure Clear_History
+       (This : in out Terminal);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void clear_screen(bool scroll_to_hist=true);
+</pre></td>
+<td><pre>
+procedure Clear_Screen
+       (This              : in out Terminal;
+        Scroll_To_History : in     Boolean := True);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void clear_screen_home(bool scroll_to_hist=true);
+</pre></td>
+<td><pre>
+procedure Clear_Screen_Home
+       (This              : in out Terminal;
+        Scroll_To_History : in     Boolean := True);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int cursor_col() const;
+</pre></td>
+<td><pre>
+function Get_Cursor_Column
+       (This : in Terminal)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cursor_home();
+</pre></td>
+<td><pre>
+procedure Cursor_Home
+       (This : in out Terminal);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int cursor_row() const;
+</pre></td>
+<td><pre>
+function Get_Cursor_Row
+       (This : in Terminal)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cursorbgcolor(Fl_Color val);
+</pre></td>
+<td><pre>
+procedure Set_Cursor_Back_Color
+       (This : in out Terminal;
+        To   : in     Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Color cursorbgcolor() const;
+</pre></td>
+<td><pre>
+function Get_Cursor_Back_Color
+       (This : in Terminal)
+    return Color;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cursorfgcolor(Fl_Color val);
+</pre></td>
+<td><pre>
+procedure Set_Cursor_Fore_Color
+       (This : in out Terminal;
+        To   : in     Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Color cursorfgcolor() const;
+</pre></td>
+<td><pre>
+function Get_Cursor_Fore_Color
+       (This : in Terminal)
+    return Color;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw() FL_OVERRIDE;
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Terminal);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void display_columns(int val);
+</pre></td>
+<td><pre>
+procedure Set_Display_Columns
+       (This : in out Terminal;
+        To   : in     Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int display_columns() const;
+</pre></td>
+<td><pre>
+function Get_Display_Columns
+       (This : in Terminal)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void display_rows(int val);
+</pre></td>
+<td><pre>
+procedure Set_Display_Rows
+       (This : in out Terminal;
+        To   : in     Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int display_rows() const;
+</pre></td>
+<td><pre>
+function Get_Display_Rows
+       (This : in Terminal)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void error_char(const char *val);
+</pre></td>
+<td><pre>
+procedure Set_Error_Char
+       (This : in out Terminal;
+        To   : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char *error_char() const;
+</pre></td>
+<td><pre>
+function Get_Error_Char
+       (This : in Terminal)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int handle(int e) FL_OVERRIDE;
+</pre></td>
+<td><pre>
+function Handle
+       (This  : in out Terminal;
+        Event : in     Event_Kind)
+    return Event_Outcome;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void history_lines(int val);
+</pre></td>
+<td><pre>
+procedure Set_History_Lines
+       (This : in out Terminal;
+        To   : in     Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int history_lines() const;
+</pre></td>
+<td><pre>
+function Get_History_Lines
+       (This : in Terminal)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void history_rows(int val);
+</pre></td>
+<td><pre>
+procedure Set_History_Rows
+       (This : in out Terminal;
+        To   : in     Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int history_rows() const;
+</pre></td>
+<td><pre>
+function Get_History_Rows
+       (This : in Terminal)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int history_use() const;
+</pre></td>
+<td><pre>
+function Get_History_Use
+       (This : in Terminal)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void hscrollbar_style(ScrollbarStyle val);
+</pre></td>
+<td><pre>
+procedure Set_Hscrollbar_Style
+       (This : in out Terminal;
+        To   : in     Scrollbar_Style);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+ScrollbarStyle hscrollbar_style() const;
+</pre></td>
+<td><pre>
+function Get_Hscrollbar_Style
+       (This : in Terminal)
+    return Scrollbar_Style;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void margin_bottom(int val);
+</pre></td>
+<td><pre>
+procedure Set_Margin_Bottom
+       (This : in out Terminal;
+        To   : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int margin_bottom() const;
+</pre></td>
+<td><pre>
+function Get_Margin_Bottom
+       (This : in Terminal)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void margin_left(int val);
+</pre></td>
+<td><pre>
+procedure Set_Margin_Left
+       (This : in out Terminal;
+        To   : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int margin_left() const;
+</pre></td>
+<td><pre>
+function Get_Margin_Left
+       (This : in Terminal)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void margin_right(int val);
+</pre></td>
+<td><pre>
+procedure Set_Margin_Right
+       (This : in out Terminal;
+        To   : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int margin_right() const;
+</pre></td>
+<td><pre>
+function Get_Margin_Right
+       (This : in Terminal)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void margin_top(int val);
+</pre></td>
+<td><pre>
+procedure Set_Margin_Top
+       (This : in out Terminal;
+        To   : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int margin_top() const;
+</pre></td>
+<td><pre>
+function Get_Margin_Top
+       (This : in Terminal)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void output_translate(Fl_Terminal::OutFlags val);
+</pre></td>
+<td><pre>
+procedure Set_Output_Translate
+       (This : in out Terminal;
+        To   : in     Output_Translation);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Terminal::OutFlags output_translate() const;
+</pre></td>
+<td><pre>
+function Get_Output_Translate
+       (This : in Terminal)
+    return Output_Translation;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void plot_char(const char *text, int len, int drow, int dcol);
+</pre></td>
+<td><pre>
+procedure Plot_Char
+       (This   : in out Terminal;
+        Text   : in     String;
+        Row    : in     Natural;
+        Column : in     Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void plot_char(char c, int drow, int dcol);
+</pre></td>
+<td><pre>
+procedure Plot_Char
+       (This   : in out Terminal;
+        Char   : in     Character;
+        Row    : in     Natural;
+        Column : in     Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void print_char(const char *text, int len=-1);
+</pre></td>
+<td><pre>
+procedure Print_Char
+       (This : in out Terminal;
+        Text : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void print_char(char c);
+</pre></td>
+<td><pre>
+procedure Print_Char
+       (This : in out Terminal;
+        Char : in     Character);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void printf(const char *fmt, ...);
+void vprintf(const char *fmt, va_list ap);
+</pre></td>
+<td><pre>
+procedure Print
+       (This : in out Terminal;
+        Text : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void redraw_rate(float val);
+</pre></td>
+<td><pre>
+procedure Set_Redraw_Rate
+       (This : in out Terminal;
+        To   : in     Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+float redraw_rate() const;
+</pre></td>
+<td><pre>
+function Get_Redraw_Rate
+       (This : in Terminal)
+    return Float;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void redraw_style(RedrawStyle val);
+</pre></td>
+<td><pre>
+procedure Set_Redraw_Style
+       (This : in out Terminal;
+        To   : in     Redraw_Style);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+RedrawStyle redraw_style() const;
+</pre></td>
+<td><pre>
+function Get_Redraw_Style
+       (This : in Terminal)
+    return Redraw_Style;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void reset_terminal();
+</pre></td>
+<td><pre>
+procedure Reset_Terminal
+       (This : in out Terminal);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int scrollbar_actual_size() const;
+</pre></td>
+<td><pre>
+function Get_Scrollbar_Actual_Size
+       (This : in Terminal)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void scrollbar_size(int val);
+</pre></td>
+<td><pre>
+procedure Set_Scrollbar_Size
+       (This : in out Terminal;
+        To   : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int scrollbar_size() const;
+</pre></td>
+<td><pre>
+function Get_Scrollbar_Size
+       (This : in Terminal)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char *selection_text() const;
+</pre></td>
+<td><pre>
+function Selection_Text
+       (This : in Terminal)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int selection_text_len() const;
+</pre></td>
+<td><pre>
+function Selection_Text_Length
+       (This : in Terminal)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void selectionbgcolor(Fl_Color val);
+</pre></td>
+<td><pre>
+procedure Set_Selection_Back_Color
+       (This : in out Terminal;
+        To   : in     Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Color selectionbgcolor() const;
+</pre></td>
+<td><pre>
+function Get_Selection_Back_Color
+       (This : in Terminal)
+    return Color;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void selectionfgcolor(Fl_Color val);
+</pre></td>
+<td><pre>
+procedure Set_Selection_Fore_Color
+       (This : in out Terminal;
+        To   : in     Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Color selectionfgcolor() const;
+</pre></td>
+<td><pre>
+function Get_Selection_Fore_Color
+       (This : in Terminal)
+    return Color;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void show_unknown(bool val);
+</pre></td>
+<td><pre>
+procedure Set_Show_Unknown
+       (This : in out Terminal;
+        To   : in     Boolean);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+bool show_unknown() const;
+</pre></td>
+<td><pre>
+function Get_Show_Unknown
+       (This : in Terminal)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char *text(bool lines_below_cursor=false) const;
+</pre></td>
+<td><pre>
+function Get_Text
+       (This               : in Terminal;
+        Lines_Below_Cursor : in Boolean := False)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void textattrib(uchar val);
+</pre></td>
+<td><pre>
+procedure Set_Text_Attrib
+       (This : in out Terminal;
+        To   : in     Text_Attributes);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+uchar textattrib() const;
+</pre></td>
+<td><pre>
+function Get_Text_Attrib
+       (This : in Terminal)
+    return Text_Attributes;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void textbgcolor(Fl_Color val);
+</pre></td>
+<td><pre>
+procedure Set_Text_Back_Color
+       (This : in out Terminal;
+        To   : in     Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Color textbgcolor() const;
+</pre></td>
+<td><pre>
+function Get_Text_Back_Color
+       (This : in Terminal)
+    return Color;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void textbgcolor_default(Fl_Color val);
+</pre></td>
+<td><pre>
+procedure Set_Text_Back_Color_Default
+       (This : in out Terminal;
+        To   : in     Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Color textbgcolor_default() const;
+</pre></td>
+<td><pre>
+function Get_Text_Back_Color_Default
+       (This : in Terminal)
+    return Color;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void textbgcolor_xterm(uchar val);
+</pre></td>
+<td><pre>
+procedure Set_Text_Back_Color_Xterm
+       (This : in out Terminal;
+        To   : in     Xterm_Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void textcolor(Fl_Color val);
+</pre></td>
+<td><pre>
+procedure Set_Text_Color
+       (This : in out Terminal;
+        To   : in     Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Color textcolor() const;
+</pre></td>
+<td><pre>
+function Get_Text_Color
+       (This : in Terminal)
+    return Color;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void textfgcolor(Fl_Color val);
+</pre></td>
+<td><pre>
+procedure Set_Text_Fore_Color
+       (This : in out Terminal;
+        To   : in     Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Color textfgcolor() const;
+</pre></td>
+<td><pre>
+function Get_Text_Fore_Color
+       (This : in Terminal)
+    return Color;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void textfgcolor_default(Fl_Color val);
+</pre></td>
+<td><pre>
+procedure Set_Text_Fore_Color_Default
+       (This : in out Terminal;
+        To   : in     Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Color textfgcolor_default() const;
+</pre></td>
+<td><pre>
+function Get_Text_Fore_Color_Default
+       (This : in Terminal)
+    return Color;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void textfgcolor_xterm(uchar val);
+</pre></td>
+<td><pre>
+procedure Set_Text_Fore_Color_Xterm
+       (This : in out Terminal;
+        To   : in     Xterm_Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void textfont(Fl_Font val);
+</pre></td>
+<td><pre>
+procedure Set_Text_Font
+       (This : in out Terminal;
+        To   : in     Font_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Font textfont() const;
+</pre></td>
+<td><pre>
+function Get_Text_Font
+       (This : in Terminal)
+    return Font_Kind;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void textsize(Fl_Fontsize val);
+</pre></td>
+<td><pre>
+procedure Set_Text_Size
+       (This : in out Terminal;
+        To   : in     Font_Size);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Fontsize textsize() const;
+</pre></td>
+<td><pre>
+function Get_Text_Size
+       (This : in Terminal)
+    return Font_Size;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void cursor_col(int col);
+</pre></td>
+<td><pre>
+procedure Set_Cursor_Column
+       (This : in out Terminal;
+        To   : in     Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cursor_row(int row);
+</pre></td>
+<td><pre>
+procedure Set_Cursor_Row
+       (This : in out Terminal;
+        To   : in     Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+bool get_selection(int &amp;srow, int &amp;scol, int &amp;erow, int &amp;ecol) const;
+</pre></td>
+<td><pre>
+function Get_Selection
+       (This         : in     Terminal;
+        Start_Row    :    out Integer;
+        Start_Column :    out Integer;
+        End_Row      :    out Integer;
+        End_Column   :    out Integer)
+    return Boolean;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Ada-only Additions</th></tr>
+
+  <tr>
+<td>&nbsp;</td>
+<td><pre>
+function &quot;+&quot; (Left, Right : in Text_Attributes) return Text_Attributes;
+
+function &quot;-&quot; (Left, Right : in Text_Attributes) return Text_Attributes;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>&nbsp;</td>
+<td><pre>
+function &quot;+&quot; (Left, Right : in Output_Translation) return Output_Translation;
+
+function &quot;-&quot; (Left, Right : in Output_Translation) return Output_Translation;
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>

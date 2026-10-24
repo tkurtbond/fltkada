@@ -47,6 +47,11 @@ covered separately in fl_tree_item.html.</p>
     <td>Tree_Reference</td>
   </tr>
 
+  <tr>
+    <td>Fl_Tree_Reason</td>
+    <td>Reason_Kind</td>
+  </tr>
+
 </table>
 
 
@@ -87,8 +92,8 @@ function Create
 
   <tr>
 <td>Path components are separated by '/'; any parent items named along the
-way that don't already exist are created automatically. Only the
-newitem=0 form is bound.
+way that don't already exist are created automatically. The
+newitem=0 form creates a new item for the last path component.
 <pre>
 Fl_Tree_Item *add(const char *path, Fl_Tree_Item *newitem=0);
 </pre></td>
@@ -96,6 +101,22 @@ Fl_Tree_Item *add(const char *path, Fl_Tree_Item *newitem=0);
 function Add
        (This : in out Tree;
         Path : in     String)
+    return FLTK.Tree_Items.Tree_Item;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>The non-null newitem form: the last path component is newitem itself
+(typically a FLTK.Tree_Items.Custom item), whose label is left as it is.
+The tree takes ownership of it.
+<pre>
+Fl_Tree_Item *add(const char *path, Fl_Tree_Item *newitem=0);
+</pre></td>
+<td><pre>
+function Add
+       (This : in out Tree;
+        Path : in     String;
+        Item : in     FLTK.Tree_Items.Tree_Item)
     return FLTK.Tree_Items.Tree_Item;
 </pre></td>
   </tr>
@@ -196,6 +217,45 @@ void root_label(const char *new_label);
 procedure Set_Root_Label
        (This : in out Tree;
         Text : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>The setter is not bound. The item can be null; check with
+Tree_Items.Is_Null.
+<pre>
+Fl_Tree_Item* callback_item();
+</pre></td>
+<td><pre>
+function Callback_Item
+       (This : in Tree)
+    return FLTK.Tree_Items.Tree_Item;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>The setter is not bound.
+<pre>
+Fl_Tree_Reason callback_reason() const;
+</pre></td>
+<td><pre>
+function Callback_Reason
+       (This : in Tree)
+    return Reason_Kind;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Returns the path directly rather than filling a caller-supplied buffer.
+A null Item means the root.
+<pre>
+int item_pathname(char *pathname, int pathnamelen, const Fl_Tree_Item *item) const;
+</pre></td>
+<td><pre>
+function Item_Pathname
+       (This : in Tree;
+        Item : in FLTK.Tree_Items.Tree_Item)
+    return String;
 </pre></td>
   </tr>
 
@@ -509,6 +569,32 @@ function Get_Widget_Margin_Left
 procedure Set_Widget_Margin_Left
        (This : in out Tree;
         To   : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Boxtype selectbox() const;
+void selectbox(Fl_Boxtype val);
+</pre></td>
+<td><pre>
+function Get_Select_Box
+       (This : in Tree)
+    return Box_Kind;
+
+procedure Set_Select_Box
+       (This : in out Tree;
+        Box  : in     Box_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void show_self();
+</pre></td>
+<td><pre>
+procedure Show_Self
+       (This : in out Tree);
 </pre></td>
   </tr>
 

@@ -8,7 +8,12 @@ with
 
     Ada.Assertions,
     Ada.Characters.Latin_1,
-    FLTK.Events;
+    FLTK.Events,
+    Interfaces.C;
+
+use type
+
+    Interfaces.C.int;
 
 
 package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
@@ -475,7 +480,8 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
         Editor_Ptr : constant Storage.Integer_Address := fl_widget_get_user_data (E);
         Ada_Editor : access Text_Editor'Class;
 
-        Extra_Keys : constant Modifier  := FLTK.Events.Last_Modifier;
+        Extra_Keys : constant Modifier  := FLTK.Events.Last_Modifier and
+            (Mod_Shift or Mod_Ctrl or Mod_Alt or Mod_Meta);
         Actual_Key : constant Keypress  := FLTK.Events.Last_Key;
             --  fuck you FLTK, give me the real code
         Ada_Key    : constant Key_Combo := Extra_Keys + Actual_Key;
@@ -499,7 +505,7 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
                 return Event_Outcome'Pos (Handled);
             end if;
         end loop;
-        if Ada_Editor.Default_Func /= null then
+        if Ada_Editor.Default_Func /= null and Extra_Keys = Mod_None then
             Ada_Editor.Default_Func (Ada_Editor.all, Ada_Key);
             return Event_Outcome'Pos (Handled);
         end if;
@@ -1255,11 +1261,7 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
     is
         Result : constant Interfaces.C.int := fl_text_editor_handle_key (This.Void_Ptr);
     begin
-        return Event_Outcome'Val (Result);
-    exception
-    when Constraint_Error => raise Internal_FLTK_Error with
-        "Fl_Text_Editor::handle_key returned unexpected int value of " &
-        Interfaces.C.int'Image (Result);
+        return (if Result = 0 then Not_Handled else Handled);
     end Handle_Key;
 
 

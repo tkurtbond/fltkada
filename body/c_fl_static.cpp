@@ -193,6 +193,14 @@ void fl_static_get_system_colors() {
     Fl::get_system_colors();
 }
 
+void fl_static_get_color3(unsigned int c, unsigned char &r, unsigned char &g, unsigned char &b, unsigned char &a) {
+    Fl::get_color(c, r, g, b, a);
+}
+
+void fl_static_set_color3(unsigned int c, unsigned char r, unsigned char g, unsigned char b, unsigned char a) {
+    Fl::set_color(c, r, g, b, a);
+}
+
 
 
 
@@ -375,6 +383,14 @@ int fl_static_get_option(int o) {
 
 void fl_static_set_option(int o, int t) {
     Fl::option(static_cast<Fl::Fl_Option>(o), t!=0);
+}
+
+int fl_static_get_use_high_res_gl() {
+    return Fl::use_high_res_GL();
+}
+
+void fl_static_set_use_high_res_gl(int v) {
+    Fl::use_high_res_GL(v);
 }
 
 

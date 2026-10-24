@@ -62,6 +62,15 @@ package FLTK.Widgets.Boxes is
         return Event_Outcome;
 
 
+
+
+    --  Dimensions  --
+
+    procedure Resize
+           (This       : in out Box;
+            X, Y, W, H : in     Integer);
+
+
 private
 
 
@@ -86,6 +95,8 @@ private
 
     pragma Inline (Draw);
     pragma Inline (Handle);
+
+    pragma Inline (Resize);
 
 
 end FLTK.Widgets.Boxes;

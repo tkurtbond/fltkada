@@ -1,0 +1,176 @@
+# FLTKAda: outstanding problems
+
+Known problems and gaps in FLTKAda that are **not** fixed. Most of them were
+found while porting FLTK 1.4.5's `examples/` directory. The bugs that were
+fixed during that work are in `FLTKAda-BUGS.md`. `progress.txt` is still the
+checklist of what is bound; this file explains the problems in more detail.
+
+
+## Problems found during the porting
+
+### Menu.Add (Text) is ambiguous
+
+A call to `Add (Text)` with only one argument matches both
+`Add (This, Text)` and the overload whose other parameters all have defaults,
+`Add (This, Text, Action := null, Shortcut := No_Key, Flags := ...)`. GNAT
+rejects it as ambiguous, so callers must write `Add (Text, null)`. The ports
+in `examples/` do this, for example in howto-browser-with-icons.
+
+### Removing a clipboard handler from inside a handler raises Program_Error
+
+If a clipboard notify handler calls `Remove_Clipboard_Notify`, it raises
+Program_Error. This is because the handler vector is being iterated with
+`for Call of`, and the vector's tamper check forbids changing it during the
+loop. The other handler vectors in `FLTK.Events` probably have the same
+problem.
+
+### Dispatch_Hook's error message is misleading
+
+`Dispatch_Hook` handles Constraint_Error by reporting an unexpected event
+value. It does this for *any* Constraint_Error raised in the user's dispatch
+function, so a bug in user code is reported as an FLTK event problem.
+
+### Menu_Item Set_Label with an image or multi-label kind is meaningless
+
+`Set_Label (Kind => Image_Label or Multi_Label, Text)` passes `Text` as the
+label, but for those label types FLTK treats the label as a pointer to an
+`Fl_Image` or an `Fl_Multi_Label`. Use `Set_Image` or `Set_Multi_Label`
+instead. A precondition that rejects these kinds might be worth adding.
+
+### Multi_Labels can only be used on menu items
+
+`FLTK.Multi_Labels` binds `Fl_Multi_Label`, but only `Menu_Item.Set_Multi_Label`
+uses it. `Fl_Multi_Label::label (Fl_Widget *)` is not bound yet, so a widget
+can't be given a multi label.
+
+Within a Multi_Label:
+- the text parts are owned by the Ada object;
+- images and chained Multi_Labels are not owned, and must outlive it.
+
+### FLTK only calls Resize overrides for some widgets
+
+The new `widget_resize_hook` lets FLTK call an Ada `Resize` override, but so
+far only these use it:
+- `FLTK.Widgets.Boxes.Box`
+- `Tables.Table`
+- `Table_Row`
+
+For any other widget type, FLTK never calls an Ada override of `Resize`.
+Adding the hook to another widget means giving its `My_X` shim class a
+`resize` override; see `doc/binding_architecture.md` §2.5.
+
+### Group.Child on a Terminal returns unwrapped scrollbars
+
+The children of an `Fl_Terminal` include its internal scrollbars. Their
+`user_data` is the C++ terminal pointer, not an Ada wrapper, so
+`Group.Child` on a `Terminals.Terminal` returns objects that are not valid
+Ada objects.
+
+### Window lists are unsafe with C++-created windows
+
+`FLTK.Widgets.Groups.Windows.Get_First_Window` and `Get_Next_Window` assume
+every window has an Ada object. That isn't true of windows FLTK creates
+itself, such as the file chooser's.
+
+### GIF.Animated Fail_Code clamps positive values
+
+`FLTK.Images.Pixmaps.GIF.Animated` `Fail_Code` maps a positive `ld ()`
+value to 0.
+
+### Tiled.Tile is a non-owning view
+
+`FLTK.Images.Tiled.Tile` returns a view of the tiled image that does not own
+it, so it becomes invalid if the tiled image is finalized.
+
+### Missing small operations
+
+- There is no binding for `Fl::redraw ()`, which redraws all windows.
+- There is no way to clear a widget's image, that is, to call `image (NULL)`.
+
+
+## Incomplete APIs added during the porting
+
+### FLTK.GLUT and Windows.OpenGL.GLUT
+
+These parts of GLUT are not bound:
+- the bitmap and stroke fonts;
+- the geometric models (`glutWire*` and `glutSolid*`);
+- the `glut_window` and `glut_menu` globals.
+
+Other problems:
+- Windows made by `Create_Window` and `Create_Sub_Window` have no Ada
+  object.
+- FLTK keeps menu labels and the icon title without copying them, so their
+  C strings are never freed.
+
+### FLTK.Widgets.Menus.Choices.Schemes
+
+- `init_value` can be called, but not overridden from Ada.
+- Setting a callback replaces the built-in scheme-switching callback, because
+  `scheme_cb_` is not bound.
+
+### FLTK.Widgets.Groups.Grids
+
+These are not bound:
+- `Fl_Grid::Cell`, and `cell (row, col)` and `cell (widget)`;
+- the protected members `draw_grid` (virtual), `init`, `add_cell`,
+  `remove_cell` and `on_remove`.
+
+### FLTK.Widgets.Groups.Flex
+
+The protected members `init`, `alloc_size` and `on_remove` are not bound.
+
+### FLTK.Widgets.Groups.Terminals
+
+- The nested helper classes are not bound: `Utf8Char`, `RingBuffer`,
+  `CharStyle`, `Cursor`, `EscapeSeq`, `Margin` and `Selection`.
+- These protected internals are not bound:
+  - the `u8c_*` row and character accessors;
+  - cursor movement, scrolling, inserting and deleting rows and characters,
+    and the `clear_*` operations;
+  - `handle_unknown_char`, `draw_row*` and `draw_buff`;
+  - selection handling.
+- `printf` and `vprintf` are replaced by `Print`, which takes a string
+  already formatted in Ada.
+- `color ()` is not overridden, because `Fl_Terminal`'s version only passes
+  through to the inherited one.
+
+### FLTK.Tree_Items and FLTK.Widgets.Groups.Trees
+
+These are deliberately scoped to the commonly used part of the API. The full
+list of what is and isn't bound is in `progress.txt`. The main gaps are:
+- creating a standalone `Fl_Tree_Item`;
+- the low-level child-array operations;
+- `labelfgcolor` and `labelbgcolor`;
+- the tree-wide default icons;
+- `item_draw_callback`;
+- the path-string overloads of open, close and select;
+- the `docallback` parameter;
+- `Fl_Tree_Prefs` as an object of its own.
+
+
+## Problems from before the porting (from progress.txt)
+
+- **Fl_Wizard:** `draw ()` is protected in FLTK, so it can't be bound
+  directly.
+- **GNAT:** a compiler bug with `Type_Invariant` combined with a derived type
+  and a package `begin` section; see `dialogs.adb`.
+- **Fl_Bitmap and Fl_XBM_Image:** instances always have `fail ()` return
+  `ERR_NO_IMAGE`.
+- **Fl_Positioner:** FLTK's own documentation for the `value`, `xvalue` and
+  `yvalue` setters is poor.
+- **Fl_Menu_Item::test_shortcut:** FLTK's code appears to use `FL_SUBMENU`
+  to mean that the user data points to another menu item array, where
+  `FL_SUBMENU_POINTER` is meant. This should be checked against current FLTK.
+- **Fl_Table::callback:** FLTK declares it with the wrong signature. This is
+  still unfixed in 1.4, but is probably only visible in the Doxygen
+  documentation.
+
+
+## Testing environment quirk
+
+Under Xvfb, arrow keys sent with `xdotool` don't move the keyboard cursor in
+the table-with-keynav and table-spreadsheet-with-keyboard-nav ports. The
+original C++ programs behave exactly the same way, so this comes from the
+test environment, not the binding. These keys were not verified
+automatically.

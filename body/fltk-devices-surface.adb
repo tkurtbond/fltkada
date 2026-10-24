@@ -39,6 +39,15 @@ package body FLTK.Devices.Surface is
     pragma Import (C, fl_surface_device_get_surface, "fl_surface_device_get_surface");
     pragma Inline (fl_surface_device_get_surface);
 
+    procedure fl_surface_device_push_current
+           (S : in Storage.Integer_Address);
+    pragma Import (C, fl_surface_device_push_current, "fl_surface_device_push_current");
+    pragma Inline (fl_surface_device_push_current);
+
+    procedure fl_surface_device_pop_current;
+    pragma Import (C, fl_surface_device_pop_current, "fl_surface_device_pop_current");
+    pragma Inline (fl_surface_device_pop_current);
+
 
 
 
@@ -104,6 +113,11 @@ package body FLTK.Devices.Surface is
 
     Current_Surface : access Surface_Device'Class := Original_Surface'Access;
 
+    --  Mirrors the stack kept by Fl_Surface_Device::push_current
+    type Surface_Access is access all Surface_Device'Class;
+    Surface_Stack  : array (1 .. 16) of Surface_Access;
+    Stack_Height   : Natural := 0;
+
 
     procedure Set_Current_Bookkeep
            (Surface : in out Surface_Device'Class) is
@@ -140,6 +154,28 @@ package body FLTK.Devices.Surface is
     begin
         return Ref : Surface_Device_Reference (Data => Original_Surface'Access);
     end Get_Original;
+
+
+    procedure Push_Current
+           (This : in out Surface_Device'Class) is
+    begin
+        if Stack_Height < Surface_Stack'Last then
+            Stack_Height := Stack_Height + 1;
+            Surface_Stack (Stack_Height) := Surface_Access (Current_Surface);
+        end if;
+        fl_surface_device_push_current (This.Void_Ptr);
+        Current_Surface := This'Unchecked_Access;
+    end Push_Current;
+
+
+    procedure Pop_Current is
+    begin
+        fl_surface_device_pop_current;
+        if Stack_Height > 0 then
+            Current_Surface := Surface_Stack (Stack_Height);
+            Stack_Height := Stack_Height - 1;
+        end if;
+    end Pop_Current;
 
 
 

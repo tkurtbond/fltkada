@@ -303,6 +303,9 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
         begin
             return This : GL_Window := Create (X, Y, W, H, Text) do
                 Parent.Add (This);
+                --  FLTK leaves a window made with a position visible only when it
+                --  has a parent from the start, which here it only gets afterwards
+                This.Set_Visible;
             end return;
         end Create;
 

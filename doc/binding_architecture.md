@@ -325,6 +325,21 @@ when nothing overrides it.
 
 `Handle` works identically via `Handle_Ptr`/`fl_box_handle`.
 
+`resize()` is a third virtual that a few widgets route back into Ada
+the same way, so that an Ada override of `Resize` is called when FLTK
+resizes the widget (e.g. as part of a window or group layout).
+`FLTK.Widgets` exports `Resize_Hook` as `widget_resize_hook`, and a
+shim whose `My_X` class overrides `resize()` calls it, falling back to
+the base class `resize()` while `user_data()` is still null (FLTK can
+resize a widget before the Ada side has attached itself). The leaf
+binding's own `Resize` then calls a `fl_<thing>_resize` trampoline for
+the default behaviour. Unlike `Draw`/`Handle` this is not wired into
+every widget: only `Box`, `Table` and `Table_Row` have it so far, so an
+Ada `Resize` override on any other widget type is only called when Ada
+code calls it. Adding it to another widget means adding the `resize()`
+override and the `fl_<thing>_resize` trampoline to that widget's shim,
+and an overriding `Resize` to its Ada package.
+
 ### 2.6 Callbacks: not the same mechanism as `Draw`/`Handle`
 
 FLTK's other big virtual-ish hook — the "when clicked/changed" callback
@@ -612,12 +627,14 @@ reference docs, and `/usr/include/FL/*.H`).
 ### 7.1 `progress.txt`'s existing To-Do list — still accurate
 
 None of these have a `body/c_fl_*.h` shim yet, confirming
-`progress.txt` is still correct about them:
+`progress.txt` is still correct about them (`Fl_Glut_Window`, `gl.h`
+and `glut.H` were also on this list; they're now bound as
+`FLTK.Widgets.Groups.Windows.OpenGL.GLUT`, `FLTK.Draw.OpenGL` and
+`FLTK.GLUT`):
 
 | Class | Notes |
 |---|---|
 | `Fl_GDI_Graphics_Driver`, `Fl_GDI_Printer_Graphics_Driver`, `Fl_Quartz_Graphics_Driver`, `Fl_Xlib_Graphics_Driver` | Platform-specific graphics drivers; gated on `FLTK.Devices.Graphics` (currently only "Partially Done"). |
-| `Fl_Glut_Window`, `gl`, `glut` | OpenGL/GLUT support. |
 | `Fl_Postscript_Graphics_Driver` | Internal driver used by the already-bound `Fl_PostScript_File_Device`. |
 
 `Fl_Tree`, `Fl_Tree_Item`, `Fl_Tree_Item_Array`, and `Fl_Tree_Prefs` were
@@ -633,7 +650,12 @@ being a real `Fl_Group` subclass), while `FLTK.Tree_Items` deliberately
 does *not* follow the "everything is a `Wrapper`" shape from §2.3 —
 `Fl_Tree_Item` objects are always owned by their tree and have no
 FLTK-invoked virtual dispatch this binding supports, so `Tree_Item` is
-just a thin, freely-copyable pointer-holding record instead.
+just a thin, freely-copyable pointer-holding record instead. The one
+exception is `draw_item_content()`, which is bound by a separate child
+package, `FLTK.Tree_Items.Custom`: its `Custom_Item` *is* a `Wrapper`
+whose shim subclass dispatches `draw_item_content()` into Ada, and its
+`Item` function hands back the plain `Tree_Item` handle for use with
+everything else (see `examples/tree_custom_draw_items.adb`).
 
 The "Never" list (binary plugins, XForms legacy compatibility classes,
 the two `Fl_*_Printer` classes FLTK's own docs say to avoid in favour of
@@ -643,23 +665,26 @@ the two `Fl_*_Printer` classes FLTK's own docs say to avoid in favour of
 
 None of these are mentioned anywhere in `progress.txt` (by class *or*
 package name) and none have a shim under `body/`. Roughly in priority
-order for an application-facing binding:
+order for an application-facing binding.
+
+This list originally also had `Fl_Flex`, `Fl_Grid`, `Fl_Terminal`,
+`Fl_Native_File_Chooser`, `Fl_Anim_GIF_Image`, `Fl_SVG_Image` and
+`Fl_Scheme_Choice`. They were bound (as `FLTK.Widgets.Groups.Flex`,
+`FLTK.Widgets.Groups.Grids`, `FLTK.Widgets.Groups.Terminals`,
+`FLTK.Native_File_Choosers`, `FLTK.Images.Pixmaps.GIF.Animated`,
+`FLTK.Images.RGB.SVG` and `FLTK.Widgets.Menus.Choices.Schemes`), along
+with `Fl_Multi_Label` (`FLTK.Multi_Labels`), to port FLTK's own
+`examples/` directory to Ada (see `examples/`). `Fl_Anim_GIF_Image`
+needed no closure registration: FLTK's own timer redraws the canvas.
 
 **Worth binding — user-facing widgets/images/utilities:**
 
 | Class | Parent (C++) | Suggested Ada package | What it is |
 |---|---|---|---|
-| `Fl_Flex` | `Fl_Group` | `FLTK.Widgets.Groups.Flex` | Single-row/column flexible-layout container. |
-| `Fl_Grid` | `Fl_Group` | `FLTK.Widgets.Groups.Grid` | Multi-row/column grid-layout container (has a nested `Fl_Grid::Cell` class too). |
-| `Fl_Terminal` | `Fl_Group` | `FLTK.Widgets.Groups.Terminal` | ANSI/xterm-escape-aware terminal-emulator widget. Substantial API (`Fl_Terminal` has several nested classes: `CharStyle`, `Cursor`, `EscapeSeq`, `Margin`, `Selection`, `Utf8Char`, ...) — the biggest single undertaking on this list. |
 | `Fl_Shortcut_Button` | `Fl_Button` | `FLTK.Widgets.Buttons.Shortcut` | Button that records a key-combo typed into it; small, self-contained. |
-| `Fl_Native_File_Chooser` | (standalone) | `FLTK.Native_File_Choosers` | OS-native file dialog, parallel to the already-bound `FLTK.File_Choosers` (which wraps FLTK's own `Fl_File_Chooser`). |
-| `Fl_Anim_GIF_Image` | `Fl_GIF_Image` | `FLTK.Images.Pixmaps.GIF.Anim` | Animated GIF; needs a "container widget" argument and a per-frame redraw callback — check whether that needs the closure-registration pattern (§4) or can reuse a widget's existing redraw/idle hooks. |
-| `Fl_SVG_Image` | `Fl_RGB_Image` | `FLTK.Images.RGB.SVG` | SVG rasterization, parallel to the existing `.BMP`/`.JPEG`/`.PNG`/`.PNM` siblings. |
 | `Fl_ICO_Image` | `Fl_BMP_Image` | `FLTK.Images.RGB.BMP.ICO` | Windows `.ico` icon files. |
 | `Fl_File_Icon` | (standalone) | `FLTK.Images.File_Icons` (or similar) | Icon images used as labels/in file browsers; check whether the already-bound `FLTK.Widgets.Groups.Browsers.Textline.File` (`Fl_File_Browser`) already needs this to be useful. |
 | `Fl_Scheme` | (standalone) | extend `FLTK.Static` or new `FLTK.Schemes` | New class-based scheme-registration API. `FLTK.Static` already binds the older string-based `Get_Scheme`/`Set_Scheme`/`Is_Scheme`/`Reload_Scheme` (`Fl::scheme()` etc.) — this is the newer, richer API layered on top, not a replacement. |
-| `Fl_Scheme_Choice` | `Fl_Choice` | `FLTK.Widgets.Menus.Choices.Scheme` | A ready-made `Fl_Choice` populated with the available schemes. |
 | `Fl_EPS_File_Surface`, `Fl_PDF_File_Surface`, `Fl_SVG_File_Surface` | `Fl_Widget_Surface`/`Fl_Paged_Device` | `FLTK.Devices.Surface.EPS`/`.PDF`/`.SVG` (or `.Paged.PDF` for the `Fl_Paged_Device`-derived one) | New vector-output drawing surfaces, parallel to the already-bound `.Copy`/`.Image`/`.Paged.Postscript`/`.Paged.Printers`. See §7.3 for the hierarchy wrinkle. |
 
 **Probably not worth binding — internal/superseded/no public header:**

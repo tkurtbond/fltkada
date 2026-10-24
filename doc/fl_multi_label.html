@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Multi_Label Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Multi_Label Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Multi_Label</td>
+    <td>FLTK.Multi_Labels</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Multi_Label</td>
+    <td>Multi_Label</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Attributes</th></tr>
+
+  <tr>
+<td>Set together with typea, according to what labela is.
+<pre>
+const char* labela;
+uchar typea;
+</pre></td>
+<td><pre>
+procedure Set_First
+       (This : in out Multi_Label;
+        Text : in     String;
+        Kind : in     Label_Kind := Normal_Label);
+
+procedure Set_First
+       (This : in out Multi_Label;
+        Pict : in out FLTK.Images.Image'Class);
+
+procedure Set_First
+       (This : in out Multi_Label;
+        Next : in out Multi_Label'Class);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Set together with typeb, according to what labelb is.
+<pre>
+const char* labelb;
+uchar typeb;
+</pre></td>
+<td><pre>
+procedure Set_Second
+       (This : in out Multi_Label;
+        Text : in     String;
+        Kind : in     Label_Kind := Normal_Label);
+
+procedure Set_Second
+       (This : in out Multi_Label;
+        Pict : in out FLTK.Images.Image'Class);
+
+procedure Set_Second
+       (This : in out Multi_Label;
+        Next : in out Multi_Label'Class);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td>(the implicit default constructor of the struct)</td>
+<td><pre>
+function Create
+    return Multi_Label;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void label(Fl_Widget*);
+</pre></td>
+<td>Not yet bound.</td>
+  </tr>
+
+  <tr>
+<td>Deprecated since FLTK 1.4.0 in favour of Fl_Menu_Item::multi_label.
+<pre>
+void label(Fl_Menu_Item*);
+</pre></td>
+<td>See Set_Multi_Label in FLTK.Menu_Items.</td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>

@@ -9,6 +9,10 @@ with
     FLTK.Widgets.Groups,
     Interfaces.C;
 
+use type
+
+    Interfaces.C.int;
+
 
 package body FLTK.Widgets.Valuators.Sliders is
 
@@ -347,15 +351,17 @@ package body FLTK.Widgets.Valuators.Sliders is
            (This       : in out Slider;
             Event      : in     Event_Kind;
             X, Y, W, H : in     Integer)
-        return Event_Outcome is
-    begin
-        return Event_Outcome'Val (fl_slider_handle2
+        return Event_Outcome
+    is
+        Result : constant Interfaces.C.int := fl_slider_handle2
            (This.Void_Ptr,
             Event_Kind'Pos (Event),
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
             Interfaces.C.int (W),
-            Interfaces.C.int (H)));
+            Interfaces.C.int (H));
+    begin
+        return (if Result = 0 then Not_Handled else Handled);
     end Handle;
 
 

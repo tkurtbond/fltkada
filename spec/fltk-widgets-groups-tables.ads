@@ -153,13 +153,15 @@ package FLTK.Widgets.Groups.Tables is
            (This : in out Table;
             Func : in     Widget_Callback);
 
+    --  Zero when the callback was not for a particular column or row,
+    --  such as for a click in the dead zone
     function Callback_Column
            (This : in Table)
-        return Positive;
+        return Natural;
 
     function Callback_Row
            (This : in Table)
-        return Positive;
+        return Natural;
 
     function Callback_Context
            (This : in Table)
@@ -370,12 +372,13 @@ package FLTK.Widgets.Groups.Tables is
             Row_Bottom   :    out Natural;
             Column_Right :    out Natural);
 
+    --  All zero when nothing is selected, such as after a click on a header
     procedure Get_Selection
            (This         : in     Table;
-            Row_Top      :    out Positive;
-            Column_Left  :    out Positive;
-            Row_Bottom   :    out Positive;
-            Column_Right :    out Positive);
+            Row_Top      :    out Natural;
+            Column_Left  :    out Natural;
+            Row_Bottom   :    out Natural;
+            Column_Right :    out Natural);
 
     procedure Set_Selection
            (This         : in out Table;

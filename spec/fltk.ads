@@ -216,6 +216,12 @@ package FLTK is
 
     function Press (Key : in Pressable_Key) return Keypress;
 
+    --  Keys on the numeric keypad, and the character each one stands for
+    --  when NumLock is on, such as '7' for the key also marked Home.
+    function Is_Keypad (Key : in Keypress) return Boolean;
+    function Keypad_Character (Key : in Keypress) return Character
+        with Pre => Is_Keypad (Key);
+
     Enter_Key        : constant Keypress;
     Keypad_Enter_Key : constant Keypress;
     Backspace_Key    : constant Keypress;

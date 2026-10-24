@@ -22,6 +22,8 @@ extern "C" void free_fl_image(IMAGE i);
 
 extern "C" int fl_image_get_rgb_scaling();
 extern "C" void fl_image_set_rgb_scaling(int t);
+extern "C" int fl_image_get_scaling_algorithm();
+extern "C" void fl_image_set_scaling_algorithm(int t);
 extern "C" IMAGE fl_image_copy(IMAGE i, int w, int h);
 extern "C" IMAGE fl_image_copy2(IMAGE i);
 
@@ -39,6 +41,7 @@ extern "C" int fl_image_w(IMAGE i);
 extern "C" int fl_image_h(IMAGE i);
 extern "C" int fl_image_d(IMAGE i);
 extern "C" int fl_image_ld(IMAGE i);
+extern "C" void fl_image_scale(IMAGE i, int w, int h, int p, int e);
 
 
 extern "C" const void * fl_image_data(IMAGE i);

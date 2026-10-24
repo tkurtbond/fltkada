@@ -294,6 +294,31 @@ function RGB_Color
 </pre></td>
   </tr>
 
+  <tr>
+<td>No function in FLTK; the range check on the keypad keys.
+<pre>
+#define FL_KP      0xff80
+#define FL_KP_Last 0xffbd
+
+(key &gt;= FL_KP &amp;&amp; key &lt;= FL_KP_Last)
+</pre></td>
+<td><pre>
+function Is_Keypad (Key : in Keypress) return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>No function in FLTK; the character a keypad key stands for when
+NumLock is on, eg. '7' for the key also marked Home.
+<pre>
+(char)(key - FL_KP)
+</pre></td>
+<td><pre>
+function Keypad_Character (Key : in Keypress) return Character
+    with Pre => Is_Keypad (Key);
+</pre></td>
+  </tr>
+
 </table>
 
 

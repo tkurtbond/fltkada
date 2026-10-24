@@ -115,6 +115,15 @@ package FLTK.Images.Shared is
             X, Y : in Integer);
 
 
+
+
+    --  Image Handlers  --
+
+    --  Registers handlers for all the image file formats FLTK supports,
+    --  so that Shared_Image and the file chooser preview can load them.
+    procedure Register_Images;
+
+
 private
 
 
@@ -139,6 +148,8 @@ private
     pragma Inline (Set_Scaling_Algorithm);
     pragma Inline (Scale);
     pragma Inline (Draw);
+
+    pragma Inline (Register_Images);
 
 
 end FLTK.Images.Shared;

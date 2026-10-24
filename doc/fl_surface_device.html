@@ -81,6 +81,27 @@ function Create
   <tr><th colspan="2">Static Functions and Procedures</th></tr>
 
   <tr>
+<td>The previous surface is not returned.
+<pre>
+static Fl_Surface_Device *pop_current();
+</pre></td>
+<td><pre>
+procedure Pop_Current;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>At most 16 surfaces can be remembered.
+<pre>
+static void push_current(Fl_Surface_Device *new_current);
+</pre></td>
+<td><pre>
+procedure Push_Current
+       (This : in out Surface_Device'Class);
+</pre></td>
+  </tr>
+
+  <tr>
 <td><pre>
 static Fl_Surface_Device * surface();
 </pre></td>

@@ -34,6 +34,7 @@ gprbuild fltkada.gpr -Xbuild=debug   # debug build: -O0 -gnata -gnato -g
 gprinstall -p -m fltkada.gpr      # install
 gprbuild tests.gpr                # build the test/example programs
 gprbuild tests_2022.gpr           # build the Ada-2022-only test/example programs
+gprbuild examples.gpr             # build the ports of FLTK 1.4.5's examples/ (bin/examples/)
 gprbuild tools.gpr                # build tool/ (template.adb, a codegen helper)
 ```
 
@@ -50,6 +51,7 @@ and `Builder` in `tests.gpr`, and running it.
 | `body/fltk-*.adb` | Ada package bodies |
 | `body/c_fl_*.h`, `body/c_fl_*.cpp` | The C++ shim, one pair per bound FLTK class |
 | `test/`, `test/.dir-locals.el` | Example/test programs (built by `tests.gpr`/`tests_2022.gpr`) |
+| `examples/` | Ada ports of every program in FLTK 1.4.5's `examples/` (built by `examples.gpr`, executables named after the C++ originals) |
 | `tool/` | `template.adb`, an unrelated text-substitution codegen helper — not a widget template |
 | `proj/common.gpr` | Shared `gprbuild` switches (style checks, warnings, `Pretty_Printer` config) for all the other `.gpr` files |
 | `doc/` | `index.html` + one `<header>.html` per bound C++ header (hand-maintained C++↔Ada API map) plus the Markdown docs listed below |

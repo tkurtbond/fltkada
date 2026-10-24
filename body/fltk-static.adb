@@ -289,6 +289,18 @@ package body FLTK.Static is
     pragma Import (C, fl_static_background2, "fl_static_background2");
     pragma Inline (fl_static_background2);
 
+    procedure fl_static_get_color3
+           (C          : in     Interfaces.C.unsigned;
+            R, G, B, A :    out Interfaces.C.unsigned_char);
+    pragma Import (C, fl_static_get_color3, "fl_static_get_color3");
+    pragma Inline (fl_static_get_color3);
+
+    procedure fl_static_set_color3
+           (C          : in Interfaces.C.unsigned;
+            R, G, B, A : in Interfaces.C.unsigned_char);
+    pragma Import (C, fl_static_set_color3, "fl_static_set_color3");
+    pragma Inline (fl_static_set_color3);
+
 
 
 
@@ -527,6 +539,16 @@ package body FLTK.Static is
     pragma Import (C, fl_static_set_option, "fl_static_set_option");
     pragma Inline (fl_static_set_option);
 
+    function fl_static_get_use_high_res_gl
+        return Interfaces.C.int;
+    pragma Import (C, fl_static_get_use_high_res_gl, "fl_static_get_use_high_res_gl");
+    pragma Inline (fl_static_get_use_high_res_gl);
+
+    procedure fl_static_set_use_high_res_gl
+           (V : in Interfaces.C.int);
+    pragma Import (C, fl_static_set_use_high_res_gl, "fl_static_set_use_high_res_gl");
+    pragma Inline (fl_static_set_use_high_res_gl);
+
 
 
 
@@ -622,7 +644,10 @@ package body FLTK.Static is
     --  This is handled on the Ada side because otherwise there would be
     --  no way to specify which callback to remove in FLTK once one was
     --  added. This is because Fl::remove_clipboard_notify does not pay
-    --  attention to the void * data. This hook is passed during package init.
+    --  attention to the void * data. This hook is passed to FLTK only while
+    --  at least one handler is registered, since on X11 without XFixes FLTK
+    --  polls the clipboard owner twice a second for as long as any notify
+    --  handler exists.
     package Clipboard_Notify_Vectors is new Ada.Containers.Vectors
        (Index_Type   => Positive,
         Element_Type => Clipboard_Notify_Handler);
@@ -687,7 +712,9 @@ package body FLTK.Static is
         for Override of Font_Overrides loop
             Interfaces.C.Strings.Free (Override);
         end loop;
-        fl_static_remove_clipboard_notify (Storage.To_Integer (Clipboard_Notify_Hook'Address));
+        if not Current_Clip_Notes.Is_Empty then
+            fl_static_remove_clipboard_notify (Storage.To_Integer (Clipboard_Notify_Hook'Address));
+        end if;
     end Finalize;
 
 
@@ -902,6 +929,10 @@ package body FLTK.Static is
     procedure Add_Clipboard_Notify
            (Func : in not null Clipboard_Notify_Handler) is
     begin
+        if Current_Clip_Notes.Is_Empty then
+            fl_static_add_clipboard_notify
+                (Storage.To_Integer (Clipboard_Notify_Hook'Address), Null_Pointer);
+        end if;
         Current_Clip_Notes.Append (Func);
     end Add_Clipboard_Notify;
 
@@ -912,6 +943,10 @@ package body FLTK.Static is
         for Index in reverse Current_Clip_Notes.First_Index .. Current_Clip_Notes.Last_Index loop
             if Current_Clip_Notes (Index) = Func then
                 Current_Clip_Notes.Delete (Index);
+                if Current_Clip_Notes.Is_Empty then
+                    fl_static_remove_clipboard_notify
+                        (Storage.To_Integer (Clipboard_Notify_Hook'Address));
+                end if;
                 return;
             end if;
         end loop;
@@ -1091,6 +1126,32 @@ package body FLTK.Static is
             Interfaces.C.unsigned_char (G),
             Interfaces.C.unsigned_char (B));
     end Set_Alt_Background;
+
+
+    procedure Get_Color
+           (From       : in     Color;
+            R, G, B, A :    out Color_Component) is
+    begin
+        fl_static_get_color3
+           (Interfaces.C.unsigned (From),
+            Interfaces.C.unsigned_char (R),
+            Interfaces.C.unsigned_char (G),
+            Interfaces.C.unsigned_char (B),
+            Interfaces.C.unsigned_char (A));
+    end Get_Color;
+
+
+    procedure Set_Color
+           (Target     : in Color;
+            R, G, B, A : in Color_Component) is
+    begin
+        fl_static_set_color3
+           (Interfaces.C.unsigned (Target),
+            Interfaces.C.unsigned_char (R),
+            Interfaces.C.unsigned_char (G),
+            Interfaces.C.unsigned_char (B),
+            Interfaces.C.unsigned_char (A));
+    end Set_Color;
 
 
 
@@ -1489,6 +1550,20 @@ package body FLTK.Static is
     end Set_Option;
 
 
+    function Get_Use_High_Res_GL
+        return Boolean is
+    begin
+        return fl_static_get_use_high_res_gl /= 0;
+    end Get_Use_High_Res_GL;
+
+
+    procedure Set_Use_High_Res_GL
+           (To : in Boolean) is
+    begin
+        fl_static_set_use_high_res_gl (Boolean'Pos (To));
+    end Set_Use_High_Res_GL;
+
+
 
 
     --  Scrollbars  --
@@ -1511,13 +1586,6 @@ package body FLTK.Static is
     begin
         fl_static_set_scrollbar_size (Interfaces.C.int (To));
     end Set_Default_Scrollbar_Size;
-
-
-begin
-
-
-    fl_static_add_clipboard_notify
-        (Storage.To_Integer (Clipboard_Notify_Hook'Address), Null_Pointer);
 
 
 end FLTK.Static;

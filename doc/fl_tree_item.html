@@ -30,6 +30,11 @@ fl_tree.html and doc/binding_architecture.md).</p>
     <td>FLTK.Tree_Items</td>
   </tr>
 
+  <tr>
+    <td>Fl_Tree_Item (subclassed, overriding draw_item_content)</td>
+    <td>FLTK.Tree_Items.Custom</td>
+  </tr>
+
 </table>
 
 
@@ -50,6 +55,11 @@ fl_tree.html and doc/binding_architecture.md).</p>
   <tr>
     <td>Fl_Tree_Item_Array</td>
     <td>Tree_Item_Array (a plain array (Positive range &lt;&gt;) of Tree_Item)</td>
+  </tr>
+
+  <tr>
+    <td>class derived from Fl_Tree_Item</td>
+    <td>Custom_Item (in FLTK.Tree_Items.Custom; a Wrapper, unlike Tree_Item)</td>
   </tr>
 
   <tr>
@@ -91,6 +101,19 @@ Root, First, Last, or from another Tree_Item via Child, Parent, Next, Prev).</td
 <td>(no Forge)</td>
   </tr>
 
+  <tr>
+<td>Only for FLTK.Tree_Items.Custom. Handing the result to the tree with
+Trees.Add or Tree_Items.Replace makes the tree its owner.
+<pre>
+Fl_Tree_Item(Fl_Tree *tree);
+</pre></td>
+<td><pre>
+function Create
+       (Parent : in out FLTK.Widgets.Groups.Trees.Tree'Class)
+    return Custom_Item;
+</pre></td>
+  </tr>
+
 </table>
 
 
@@ -126,6 +149,65 @@ void label(const char *val);
 procedure Set_Label
        (This : in Tree_Item;
         Text : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Font labelfont() const;
+void labelfont(Fl_Font val);
+</pre></td>
+<td><pre>
+function Get_Label_Font
+       (This : in Tree_Item)
+    return Font_Kind;
+
+procedure Set_Label_Font
+       (This : in Tree_Item;
+        Font : in Font_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Fontsize labelsize() const;
+void labelsize(Fl_Fontsize val);
+</pre></td>
+<td><pre>
+function Get_Label_Size
+       (This : in Tree_Item)
+    return Font_Size;
+
+procedure Set_Label_Size
+       (This : in Tree_Item;
+        Size : in Font_Size);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>As of the last time the tree was drawn.
+<pre>
+int label_x() const;
+int label_y() const;
+int label_w() const;
+int label_h() const;
+</pre></td>
+<td><pre>
+function Label_X
+       (This : in Tree_Item)
+    return Integer;
+
+function Label_Y
+       (This : in Tree_Item)
+    return Integer;
+
+function Label_W
+       (This : in Tree_Item)
+    return Integer;
+
+function Label_H
+       (This : in Tree_Item)
+    return Integer;
 </pre></td>
   </tr>
 
@@ -329,8 +411,8 @@ function Reparent
   </tr>
 
   <tr>
-<td>Only the item-pointer overload is bound (documented as slower than
-the index-pair overload, but doesn't require knowing indices).
+<td>The item-pointer overload (documented as slower than the index-pair
+overload, but doesn't require knowing indices).
 <pre>
 int swap_children(Fl_Tree_Item *a, Fl_Tree_Item *b);
 </pre></td>
@@ -339,6 +421,33 @@ function Swap_Children
        (This          : in Tree_Item;
         First, Second : in Tree_Item)
     return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Places are 1-based here; ax and bx are 0-based in FLTK. Raises
+Constraint_Error if either place is past the last child.
+<pre>
+void swap_children(int ax, int bx);
+</pre></td>
+<td><pre>
+procedure Swap_Children
+       (This          : in Tree_Item;
+        First, Second : in Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Destroys this item. New_Item is typically a FLTK.Tree_Items.Custom
+item, which the tree then owns. replace_child is not bound.
+<pre>
+Fl_Tree_Item *replace(Fl_Tree_Item *new_item);
+</pre></td>
+<td><pre>
+function Replace
+       (This     : in Tree_Item;
+        New_Item : in Tree_Item)
+    return Tree_Item;
 </pre></td>
   </tr>
 
@@ -441,6 +550,57 @@ procedure Clear_User_Deicon
 function Get_User_Deicon
        (This : in Tree_Item)
     return access FLTK.Images.Image'Class;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures (FLTK.Tree_Items.Custom)</th></tr>
+
+  <tr>
+<td>(the subclass's this pointer, as a plain Fl_Tree_Item *)</td>
+<td><pre>
+function Item
+       (This : in Custom_Item)
+    return Tree_Item;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Overridable in Ada. Render is a Boolean here.
+<pre>
+virtual int draw_item_content(int render);
+</pre></td>
+<td><pre>
+function Draw_Item_Content
+       (This   : in out Custom_Item;
+        Render : in     Boolean)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Color drawfgcolor() const;
+</pre></td>
+<td><pre>
+function Draw_Foreground_Color
+       (This : in Custom_Item)
+    return Color;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Color drawbgcolor() const;
+</pre></td>
+<td><pre>
+function Draw_Background_Color
+       (This : in Custom_Item)
+    return Color;
 </pre></td>
   </tr>
 

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Scheme_Choice Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Scheme_Choice Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Scheme_Choice</td>
+    <td>FLTK.Widgets.Menus.Choices.Schemes</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Scheme_Choice</td>
+    <td>Scheme_Choice</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Scheme_Choice_Reference</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Scheme_Choice(int X, int Y, int W, int H, const char *L = 0);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return Scheme_Choice;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Rely on the automatic use of begin when a group is created, or use begin/end
+explicitly, or add each widget to its intended parent group manually.</td>
+<td><pre>
+function Create
+       (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+        X, Y, W, H : in     Integer;
+        Text       : in     String := "")
+    return Scheme_Choice;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+int handle(int event) FL_OVERRIDE;
+</pre></td>
+<td><pre>
+function Handle
+       (This  : in out Scheme_Choice;
+        Event : in     Event_Kind)
+    return Event_Outcome;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual void init_value();
+</pre></td>
+<td><pre>
+procedure Init_Value
+       (This : in out Scheme_Choice);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+static void scheme_cb_(Fl_Widget *w, void *);
+</pre></td>
+<td>Intentionally left unbound. It is installed as the callback by the constructor, and setting a callback replaces it.</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Scheme_Choice);
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
+

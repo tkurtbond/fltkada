@@ -67,6 +67,10 @@ extern "C" void fl_static_foreground(unsigned int r, unsigned int g, unsigned in
 extern "C" void fl_static_background(unsigned int r, unsigned int g, unsigned int b);
 extern "C" void fl_static_background2(unsigned int r, unsigned int g, unsigned int b);
 extern "C" void fl_static_get_system_colors();
+extern "C" void fl_static_get_color3(unsigned int c,
+    unsigned char &r, unsigned char &g, unsigned char &b, unsigned char &a);
+extern "C" void fl_static_set_color3(unsigned int c,
+    unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 
 
 extern "C" const char * fl_static_get_font(int f);
@@ -125,6 +129,8 @@ extern "C" void fl_static_reload_scheme();
 
 extern "C" int fl_static_get_option(int o);
 extern "C" void fl_static_set_option(int o, int t);
+extern "C" int fl_static_get_use_high_res_gl();
+extern "C" void fl_static_set_use_high_res_gl(int v);
 
 
 extern "C" int fl_static_get_scrollbar_size();

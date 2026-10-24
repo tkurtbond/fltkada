@@ -9,9 +9,8 @@
 
 
 //  Fl_Tree_Item objects are always owned by the Fl_Tree (or parent item)
-//  they belong to; this layer never allocates or frees one on its own,
-//  so unlike most other bound classes there is no new_fl_/free_fl_ pair
-//  here.
+//  they belong to.  The one exception is a custom item (My_Tree_Item),
+//  which is allocated here and freed here only if no tree ever took it.
 
 typedef void* TREEITEM;
 
@@ -52,6 +51,28 @@ extern "C" int fl_tree_item_move_into(TREEITEM ti, TREEITEM item, int pos);
 extern "C" TREEITEM fl_tree_item_deparent(TREEITEM ti, int index);
 extern "C" int fl_tree_item_reparent(TREEITEM ti, TREEITEM newchild, int index);
 extern "C" int fl_tree_item_swap_children(TREEITEM ti, TREEITEM a, TREEITEM b);
+extern "C" void fl_tree_item_swap_children2(TREEITEM ti, int a, int b);
+extern "C" TREEITEM fl_tree_item_replace(TREEITEM ti, TREEITEM n);
+
+
+extern "C" int fl_tree_item_get_labelfont(TREEITEM ti);
+extern "C" void fl_tree_item_set_labelfont(TREEITEM ti, int f);
+extern "C" int fl_tree_item_get_labelsize(TREEITEM ti);
+extern "C" void fl_tree_item_set_labelsize(TREEITEM ti, int s);
+
+
+extern "C" int fl_tree_item_label_x(TREEITEM ti);
+extern "C" int fl_tree_item_label_y(TREEITEM ti);
+extern "C" int fl_tree_item_label_w(TREEITEM ti);
+extern "C" int fl_tree_item_label_h(TREEITEM ti);
+
+
+extern "C" TREEITEM new_fl_tree_item_custom(void * t);
+extern "C" void free_fl_tree_item_custom(TREEITEM ti);
+extern "C" void fl_tree_item_custom_set_ada(TREEITEM ti, void * ud);
+extern "C" int fl_tree_item_custom_draw_item_content(TREEITEM ti, int r);
+extern "C" unsigned int fl_tree_item_custom_drawfgcolor(TREEITEM ti);
+extern "C" unsigned int fl_tree_item_custom_drawbgcolor(TREEITEM ti);
 
 
 #endif

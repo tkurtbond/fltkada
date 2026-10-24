@@ -1,0 +1,141 @@
+
+
+--  Programmed by T. Kurt Bond and Claude Opus 5.5
+--  Released into the public domain
+
+
+--  Ada ports of the programs in FLTK 1.4.5's own examples/ directory.
+--  Executables are named after the C++ originals.
+
+
+with
+
+    "fltkada",
+    "proj/common";
+
+
+project Examples is
+
+
+    for Languages use ("Ada");
+
+    for Source_Dirs use ("examples");
+    for Object_Dir  use "obj/examples";
+    for Exec_Dir    use "bin/examples";
+
+    for Main use
+       ("animgifimage.adb",
+        "animgifimage_play.adb",
+        "animgifimage_resize.adb",
+        "animgifimage_simple.adb",
+        "browser_simple.adb",
+        "cairo_draw_x.adb",
+        "callbacks.adb",
+        "chart_simple.adb",
+        "draggable_group.adb",
+        "fluid_callback.adb",
+        "grid_simple.adb",
+        "howto_add_fd_and_popen.adb",
+        "howto_browser_with_icons.adb",
+        "howto_drag_and_drop.adb",
+        "howto_draw_an_x.adb",
+        "howto_flex_simple.adb",
+        "howto_menu_with_images.adb",
+        "howto_parse_args.adb",
+        "howto_remap_numpad_keyboard_keys.adb",
+        "howto_simple_svg.adb",
+        "howto_text_over_image_button.adb",
+        "menubar_add.adb",
+        "nativefilechooser_simple.adb",
+        "nativefilechooser_simple_app.adb",
+        "opengl3_glut_test.adb",
+        "opengl3test.adb",
+        "progress_simple.adb",
+        "shapedwindow.adb",
+        "simple_terminal.adb",
+        "table_as_container.adb",
+        "table_simple.adb",
+        "table_sort.adb",
+        "table_spreadsheet.adb",
+        "table_spreadsheet_with_keyboard_nav.adb",
+        "table_with_keynav.adb",
+        "table_with_right_click_menu.adb",
+        "table_with_right_column_stretch_fit.adb",
+        "tabs_simple.adb",
+        "textdisplay_with_colors.adb",
+        "texteditor_simple.adb",
+        "texteditor_with_dynamic_colors.adb",
+        "tree_as_container.adb",
+        "tree_custom_draw_items.adb",
+        "tree_custom_sort.adb",
+        "tree_of_tables.adb",
+        "tree_simple.adb",
+        "wizard_simple.adb");
+
+    package Builder is
+        for Default_Switches ("Ada") use Common.Builder'Default_Switches ("Ada");
+        for Global_Compilation_Switches ("Ada")
+            use Common.Builder'Global_Compilation_Switches ("Ada");
+        for Executable ("animgifimage.adb") use "animgifimage";
+        for Executable ("animgifimage_play.adb") use "animgifimage-play";
+        for Executable ("animgifimage_resize.adb") use "animgifimage-resize";
+        for Executable ("animgifimage_simple.adb") use "animgifimage-simple";
+        for Executable ("browser_simple.adb") use "browser-simple";
+        for Executable ("cairo_draw_x.adb") use "cairo-draw-x";
+        for Executable ("callbacks.adb") use "callbacks";
+        for Executable ("chart_simple.adb") use "chart-simple";
+        for Executable ("draggable_group.adb") use "draggable-group";
+        for Executable ("fluid_callback.adb") use "fluid-callback";
+        for Executable ("grid_simple.adb") use "grid-simple";
+        for Executable ("howto_add_fd_and_popen.adb") use "howto-add_fd-and-popen";
+        for Executable ("howto_browser_with_icons.adb") use "howto-browser-with-icons";
+        for Executable ("howto_drag_and_drop.adb") use "howto-drag-and-drop";
+        for Executable ("howto_draw_an_x.adb") use "howto-draw-an-x";
+        for Executable ("howto_flex_simple.adb") use "howto-flex-simple";
+        for Executable ("howto_menu_with_images.adb") use "howto-menu-with-images";
+        for Executable ("howto_parse_args.adb") use "howto-parse-args";
+        for Executable ("howto_remap_numpad_keyboard_keys.adb") use "howto-remap-numpad-keyboard-keys";
+        for Executable ("howto_simple_svg.adb") use "howto-simple-svg";
+        for Executable ("howto_text_over_image_button.adb") use "howto-text-over-image-button";
+        for Executable ("menubar_add.adb") use "menubar-add";
+        for Executable ("nativefilechooser_simple.adb") use "nativefilechooser-simple";
+        for Executable ("nativefilechooser_simple_app.adb") use "nativefilechooser-simple-app";
+        for Executable ("opengl3_glut_test.adb") use "opengl3-glut-test";
+        for Executable ("opengl3test.adb") use "opengl3test";
+        for Executable ("progress_simple.adb") use "progress-simple";
+        for Executable ("shapedwindow.adb") use "shapedwindow";
+        for Executable ("simple_terminal.adb") use "simple-terminal";
+        for Executable ("table_as_container.adb") use "table-as-container";
+        for Executable ("table_simple.adb") use "table-simple";
+        for Executable ("table_sort.adb") use "table-sort";
+        for Executable ("table_spreadsheet.adb") use "table-spreadsheet";
+        for Executable ("table_spreadsheet_with_keyboard_nav.adb") use "table-spreadsheet-with-keyboard-nav";
+        for Executable ("table_with_keynav.adb") use "table-with-keynav";
+        for Executable ("table_with_right_click_menu.adb") use "table-with-right-click-menu";
+        for Executable ("table_with_right_column_stretch_fit.adb") use "table-with-right-column-stretch-fit";
+        for Executable ("tabs_simple.adb") use "tabs-simple";
+        for Executable ("textdisplay_with_colors.adb") use "textdisplay-with-colors";
+        for Executable ("texteditor_simple.adb") use "texteditor-simple";
+        for Executable ("texteditor_with_dynamic_colors.adb") use "texteditor-with-dynamic-colors";
+        for Executable ("tree_as_container.adb") use "tree-as-container";
+        for Executable ("tree_custom_draw_items.adb") use "tree-custom-draw-items";
+        for Executable ("tree_custom_sort.adb") use "tree-custom-sort";
+        for Executable ("tree_of_tables.adb") use "tree-of-tables";
+        for Executable ("tree_simple.adb") use "tree-simple";
+        for Executable ("wizard_simple.adb") use "wizard-simple";
+    end Builder;
+
+    package Compiler       renames Common.Compiler;
+    package Binder         renames Common.Binder;
+    package Pretty_Printer renames Common.Pretty_Printer;
+
+    package Linker is
+        for Default_Switches ("Ada") use Common.Linker'Default_Switches ("Ada");
+        --  per-main extra libraries
+        for Switches ("opengl3test.adb") use ("-lGL");
+        for Switches ("opengl3_glut_test.adb") use ("-lGL");
+        for Switches ("cairo_draw_x.adb") use ("-lcairo");
+    end Linker;
+
+
+end Examples;

@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>glut.H Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>glut.H Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<p>FLTK's GLUT emulation is bound in two packages: FLTK.GLUT holds the glut* functions, which refer to windows and menus by number as GLUT does, and FLTK.Widgets.Groups.Windows.OpenGL.GLUT holds Fl_Glut_Window. A window made with Create_Window or Create_Sub_Window has no Ada object; a Glut_Window made with Forge.Create is also a GLUT window and can be made current with Make_Current or Set_Window (Get_Number).</p>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>glut.H</td>
+    <td>FLTK.GLUT</td>
+  </tr>
+
+  <tr>
+    <td>Fl_Glut_Window</td>
+    <td>FLTK.Widgets.Groups.Windows.OpenGL.GLUT</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Glut_Window</td>
+    <td>Glut_Window</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Glut_Window_Reference</td>
+  </tr>
+
+  <tr>
+    <td>int (window number)</td>
+    <td>Window_Number</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Valid_Window_Number</td>
+  </tr>
+
+  <tr>
+    <td>int (menu number)</td>
+    <td>Menu_Number</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Valid_Menu_Number</td>
+  </tr>
+
+  <tr>
+    <td>unsigned int (GLUT_RGB, GLUT_DOUBLE, ...)</td>
+    <td>Display_Mode</td>
+  </tr>
+
+  <tr>
+    <td>int (GLUT_LEFT_BUTTON, ...)</td>
+    <td>Mouse_Button_Index</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Menu_Button</td>
+  </tr>
+
+  <tr>
+    <td>int (GLUT_DOWN, GLUT_UP)</td>
+    <td>Button_State</td>
+  </tr>
+
+  <tr>
+    <td>int (GLUT_LEFT, GLUT_ENTERED)</td>
+    <td>Entry_State</td>
+  </tr>
+
+  <tr>
+    <td>int (GLUT_NOT_VISIBLE, GLUT_VISIBLE)</td>
+    <td>Visibility_State</td>
+  </tr>
+
+  <tr>
+    <td>int (GLUT_MENU_NOT_IN_USE, GLUT_MENU_IN_USE)</td>
+    <td>Menu_State</td>
+  </tr>
+
+  <tr>
+    <td>int (GLUT_NORMAL, GLUT_OVERLAY)</td>
+    <td>Layer_Kind</td>
+  </tr>
+
+  <tr>
+    <td>int (GLUT_KEY_F1, ...)</td>
+    <td>Special_Key</td>
+  </tr>
+
+  <tr>
+    <td>int (GLUT_CURSOR_*)</td>
+    <td>Cursor_Kind</td>
+  </tr>
+
+  <tr>
+    <td>GLenum (GLUT_WINDOW_X, ...)</td>
+    <td>State_Query</td>
+  </tr>
+
+  <tr>
+    <td>GLenum (GLUT_HAS_KEYBOARD, ...)</td>
+    <td>Device_Query</td>
+  </tr>
+
+  <tr>
+    <td>GLenum (GLUT_OVERLAY_POSSIBLE, ...)</td>
+    <td>Layer_Query</td>
+  </tr>
+
+  <tr>
+    <td>void (*)()</td>
+    <td>Display_Function</td>
+  </tr>
+
+  <tr>
+    <td>void (*)(int w, int h)</td>
+    <td>Reshape_Function</td>
+  </tr>
+
+  <tr>
+    <td>void (*)(uchar key, int x, int y)</td>
+    <td>Keyboard_Function</td>
+  </tr>
+
+  <tr>
+    <td>void (*)(int b, int state, int x, int y)</td>
+    <td>Mouse_Function</td>
+  </tr>
+
+  <tr>
+    <td>void (*)(int x, int y)</td>
+    <td>Motion_Function</td>
+  </tr>
+
+  <tr>
+    <td>void (*)(int state)</td>
+    <td>Entry_Function</td>
+  </tr>
+
+  <tr>
+    <td>void (*)(int state)</td>
+    <td>Visibility_Function</td>
+  </tr>
+
+  <tr>
+    <td>void (*)(int key, int x, int y)</td>
+    <td>Special_Function</td>
+  </tr>
+
+  <tr>
+    <td>void (*)()</td>
+    <td>Idle_Function</td>
+  </tr>
+
+  <tr>
+    <td>void (*)(int value)</td>
+    <td>Timer_Function</td>
+  </tr>
+
+  <tr>
+    <td>void (*)(int value)</td>
+    <td>Menu_Function</td>
+  </tr>
+
+  <tr>
+    <td>void (*)(int state)</td>
+    <td>Menu_State_Function</td>
+  </tr>
+
+  <tr>
+    <td>void (*)(int status, int x, int y)</td>
+    <td>Menu_Status_Function</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Fl_Glut_Window Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Glut_Window(int x, int y, int w, int h, const char * = 0);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return Glut_Window;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Rely on the automatic use of begin when a group is created, or use begin/end
+explicitly, or add each widget to its intended parent group manually.</td>
+<td><pre>
+function Create
+       (Parent     : in out Groups.Group'Class;
+        X, Y, W, H : in     Integer;
+        Text       : in     String := "")
+    return Glut_Window;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Glut_Window(int w, int h, const char * = 0);
+</pre></td>
+<td><pre>
+function Create
+       (W, H : in Integer;
+        Text : in String := "")
+    return Glut_Window;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Rely on the automatic use of begin when a group is created, or use begin/end
+explicitly, or add each widget to its intended parent group manually.</td>
+<td><pre>
+function Create
+       (Parent : in out Groups.Group'Class;
+        W, H   : in     Integer;
+        Text   : in     String := "")
+    return Glut_Window;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Fl_Glut_Window Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+int number;
+</pre></td>
+<td><pre>
+function Get_Number
+       (This : in Glut_Window)
+    return FLTK.GLUT.Valid_Window_Number;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int menu[3];
+</pre></td>
+<td><pre>
+function Get_Menu
+       (This   : in Glut_Window;
+        Button : in FLTK.GLUT.Menu_Button)
+    return FLTK.GLUT.Menu_Number;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>&nbsp;</td>
+<td><pre>
+procedure Set_Menu
+       (This   : in out Glut_Window;
+        Button : in     FLTK.GLUT.Menu_Button;
+        Menu   : in     FLTK.GLUT.Menu_Number);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void make_current();
+</pre></td>
+<td><pre>
+procedure Make_Current
+       (This : in out Glut_Window);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int handle(int);
+</pre></td>
+<td><pre>
+function Handle
+       (This  : in out Glut_Window;
+        Event : in     Event_Kind)
+    return Event_Outcome;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Fl_Glut_Window Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Glut_Window);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Initialisation</th></tr>
+
+  <tr>
+<td><pre>
+void glutInit(int *argcp, char **argv);
+</pre></td>
+<td><pre>
+procedure Init;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutInitDisplayMode(unsigned int mode);
+</pre></td>
+<td><pre>
+procedure Init_Display_Mode
+       (Mode : in Display_Mode);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutInitWindowPosition(int x, int y);
+</pre></td>
+<td><pre>
+procedure Init_Window_Position
+       (X, Y : in Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutInitWindowSize(int w, int h);
+</pre></td>
+<td><pre>
+procedure Init_Window_Size
+       (W, H : in Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutMainLoop();
+</pre></td>
+<td><pre>
+procedure Main_Loop;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Windows</th></tr>
+
+  <tr>
+<td><pre>
+int glutCreateWindow(char *title);
+int glutCreateWindow(const char *title);
+</pre></td>
+<td><pre>
+function Create_Window
+       (Title : in String)
+    return Valid_Window_Number;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int glutCreateSubWindow(int win, int x, int y, int width, int height);
+</pre></td>
+<td><pre>
+function Create_Sub_Window
+       (Parent     : in Valid_Window_Number;
+        X, Y, W, H : in Integer)
+    return Valid_Window_Number;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutDestroyWindow(int win);
+</pre></td>
+<td><pre>
+procedure Destroy_Window
+       (Number : in Valid_Window_Number);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutPostRedisplay();
+</pre></td>
+<td><pre>
+procedure Post_Redisplay;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutPostWindowRedisplay(int win);
+</pre></td>
+<td><pre>
+procedure Post_Window_Redisplay
+       (Number : in Valid_Window_Number);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutSwapBuffers();
+</pre></td>
+<td><pre>
+procedure Swap_Buffers;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int glutGetWindow();
+</pre></td>
+<td><pre>
+function Get_Window
+    return Window_Number;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutSetWindow(int win);
+</pre></td>
+<td><pre>
+procedure Set_Window
+       (Number : in Valid_Window_Number);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutSetWindowTitle(char *t);
+</pre></td>
+<td><pre>
+procedure Set_Window_Title
+       (Text : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutSetIconTitle(char *t);
+</pre></td>
+<td><pre>
+procedure Set_Icon_Title
+       (Text : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutPositionWindow(int x, int y);
+</pre></td>
+<td><pre>
+procedure Position_Window
+       (X, Y : in Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutReshapeWindow(int w, int h);
+</pre></td>
+<td><pre>
+procedure Reshape_Window
+       (W, H : in Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutPopWindow();
+</pre></td>
+<td><pre>
+procedure Pop_Window;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutPushWindow();
+</pre></td>
+<td><pre>
+procedure Push_Window;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutIconifyWindow();
+</pre></td>
+<td><pre>
+procedure Iconify_Window;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutShowWindow();
+</pre></td>
+<td><pre>
+procedure Show_Window;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutHideWindow();
+</pre></td>
+<td><pre>
+procedure Hide_Window;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutFullScreen();
+</pre></td>
+<td><pre>
+procedure Full_Screen;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutSetCursor(Fl_Cursor cursor);
+</pre></td>
+<td><pre>
+procedure Set_Cursor
+       (Kind : in Cursor_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutWarpPointer(int x, int y);
+</pre></td>
+<td><pre>
+procedure Warp_Pointer
+       (X, Y : in Integer);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Overlays</th></tr>
+
+  <tr>
+<td><pre>
+void glutEstablishOverlay();
+</pre></td>
+<td><pre>
+procedure Establish_Overlay;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutRemoveOverlay();
+</pre></td>
+<td><pre>
+procedure Remove_Overlay;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutUseLayer(GLenum layer);
+</pre></td>
+<td><pre>
+procedure Use_Layer
+       (Layer : in Layer_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutPostOverlayRedisplay();
+</pre></td>
+<td><pre>
+procedure Post_Overlay_Redisplay;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutShowOverlay();
+</pre></td>
+<td><pre>
+procedure Show_Overlay;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutHideOverlay();
+</pre></td>
+<td><pre>
+procedure Hide_Overlay;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Menus</th></tr>
+
+  <tr>
+<td><pre>
+int glutCreateMenu(void (*)(int));
+</pre></td>
+<td><pre>
+function Create_Menu
+       (Func : in not null Menu_Function)
+    return Valid_Menu_Number;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutDestroyMenu(int menu);
+</pre></td>
+<td><pre>
+procedure Destroy_Menu
+       (Number : in Valid_Menu_Number);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int glutGetMenu();
+</pre></td>
+<td><pre>
+function Get_Menu
+    return Menu_Number;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutSetMenu(int m);
+</pre></td>
+<td><pre>
+procedure Set_Menu
+       (Number : in Valid_Menu_Number);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutAddMenuEntry(char *label, int value);
+</pre></td>
+<td><pre>
+procedure Add_Menu_Entry
+       (Label : in String;
+        Value : in Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutAddSubMenu(char *label, int submenu);
+</pre></td>
+<td><pre>
+procedure Add_Sub_Menu
+       (Label   : in String;
+        Submenu : in Valid_Menu_Number);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutChangeToMenuEntry(int item, char *labela, int value);
+</pre></td>
+<td><pre>
+procedure Change_To_Menu_Entry
+       (Item  : in Positive;
+        Label : in String;
+        Value : in Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutChangeToSubMenu(int item, char *label, int submenu);
+</pre></td>
+<td><pre>
+procedure Change_To_Sub_Menu
+       (Item    : in Positive;
+        Label   : in String;
+        Submenu : in Valid_Menu_Number);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutRemoveMenuItem(int item);
+</pre></td>
+<td><pre>
+procedure Remove_Menu_Item
+       (Item : in Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutAttachMenu(int b);
+</pre></td>
+<td><pre>
+procedure Attach_Menu
+       (Button : in Menu_Button);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutDetachMenu(int b);
+</pre></td>
+<td><pre>
+procedure Detach_Menu
+       (Button : in Menu_Button);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Callbacks</th></tr>
+
+  <tr>
+<td><pre>
+void glutDisplayFunc(void (*f)());
+</pre></td>
+<td><pre>
+procedure Display_Func
+       (Func : in not null Display_Function);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutReshapeFunc(void (*f)(int w, int h));
+</pre></td>
+<td><pre>
+procedure Reshape_Func
+       (Func : in not null Reshape_Function);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutKeyboardFunc(void (*f)(uchar key, int x, int y));
+</pre></td>
+<td><pre>
+procedure Keyboard_Func
+       (Func : in Keyboard_Function);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutMouseFunc(void (*f)(int b, int state, int x, int y));
+</pre></td>
+<td><pre>
+procedure Mouse_Func
+       (Func : in Mouse_Function);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutMotionFunc(void (*f)(int x, int y));
+</pre></td>
+<td><pre>
+procedure Motion_Func
+       (Func : in Motion_Function);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutPassiveMotionFunc(void (*f)(int x, int y));
+</pre></td>
+<td><pre>
+procedure Passive_Motion_Func
+       (Func : in Motion_Function);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutEntryFunc(void (*f)(int s));
+</pre></td>
+<td><pre>
+procedure Entry_Func
+       (Func : in Entry_Function);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutVisibilityFunc(void (*f)(int s));
+</pre></td>
+<td><pre>
+procedure Visibility_Func
+       (Func : in Visibility_Function);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutSpecialFunc(void (*f)(int key, int x, int y));
+</pre></td>
+<td><pre>
+procedure Special_Func
+       (Func : in Special_Function);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutOverlayDisplayFunc(void (*f)());
+</pre></td>
+<td><pre>
+procedure Overlay_Display_Func
+       (Func : in not null Display_Function);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutIdleFunc(void (*f)());
+</pre></td>
+<td><pre>
+procedure Idle_Func
+       (Func : in Idle_Function);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutTimerFunc(unsigned int msec, void (*f)(int), int value);
+</pre></td>
+<td><pre>
+procedure Timer_Func
+       (Milliseconds : in Natural;
+        Func         : in not null Timer_Function;
+        Value        : in Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutMenuStateFunc(void (*f)(int state));
+</pre></td>
+<td><pre>
+procedure Menu_State_Func
+       (Func : in Menu_State_Function);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutMenuStatusFunc(void (*f)(int status, int x, int y));
+</pre></td>
+<td><pre>
+procedure Menu_Status_Func
+       (Func : in Menu_Status_Function);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutSpaceballMotionFunc(void (*)(int, int, int));
+void glutSpaceballRotateFunc(void (*)(int, int, int));
+void glutSpaceballButtonFunc(void (*)(int, int));
+void glutButtonBoxFunc(void (*)(int, int));
+void glutDialsFunc(void (*)(int, int));
+void glutTabletMotionFunc(void (*)(int, int));
+void glutTabletButtonFunc(void (*)(int, int, int, int));
+</pre></td>
+<td>These are empty macros in FLTK's GLUT emulation and are not bound.</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Queries</th></tr>
+
+  <tr>
+<td><pre>
+int glutGet(GLenum type);
+</pre></td>
+<td><pre>
+function Get
+       (Query : in State_Query)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int glutDeviceGet(GLenum type);
+</pre></td>
+<td><pre>
+function Device_Get
+       (Query : in Device_Query)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int glutLayerGet(GLenum);
+</pre></td>
+<td><pre>
+function Layer_Get
+       (Query : in Layer_Query)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int glutGetModifiers();
+</pre></td>
+<td><pre>
+function Get_Modifiers
+    return Modifier;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int glutExtensionSupported(char *name);
+</pre></td>
+<td><pre>
+function Extension_Supported
+       (Name : in String)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+GLUTproc glutGetProcAddress(const char *procName);
+</pre></td>
+<td><pre>
+function Get_Proc_Address
+       (Name : in String)
+    return System.Address;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Not Bound</th></tr>
+
+  <tr>
+<td><pre>
+void glutBitmapCharacter(void *font, int character);
+int glutBitmapHeight(void *font);
+int glutBitmapLength(void *font, const unsigned char *string);
+void glutBitmapString(void *font, const unsigned char *string);
+int glutBitmapWidth(void *font, int character);
+</pre></td>
+<td>Not bound. Use the FLTK.Draw.OpenGL text procedures instead.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutStrokeCharacter(void *font, int character);
+GLfloat glutStrokeHeight(void *font);
+int glutStrokeLength(void *font, const unsigned char *string);
+void glutStrokeString(void *font, const unsigned char *string);
+int glutStrokeWidth(void *font, int character);
+</pre></td>
+<td>Not bound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutWireSphere(GLdouble radius, GLint slices, GLint stacks);
+void glutSolidSphere(GLdouble radius, GLint slices, GLint stacks);
+... and the other glutWire* and glutSolid* geometric models
+</pre></td>
+<td>Not bound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Glut_Window *glut_window;
+Fl_Menu_Item *glut_menu;
+</pre></td>
+<td>Not bound. Use Get_Window and Get_Menu.</td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
+

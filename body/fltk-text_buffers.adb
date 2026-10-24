@@ -526,6 +526,18 @@ package body FLTK.Text_Buffers is
             for CB of Ada_Text_Buffer.Modify_CBs loop
                 CB.all (Action, Place, Length, To_String (Deleted_Text));
             end loop;
+
+            if Text /= Interfaces.C.Strings.Null_Ptr and Deleted > 0 then
+                Deleted_Text := To_Unbounded_String (Interfaces.C.Strings.Value (Text));
+            end if;
+            for CB of Ada_Text_Buffer.Modify_Details_CBs loop
+                CB.all
+                   (Place,
+                    Natural (Inserted),
+                    Natural (Deleted),
+                    Natural (Restyled),
+                    To_String (Deleted_Text));
+            end loop;
         end if;
     end Modify_Callback_Hook;
 
@@ -643,6 +655,29 @@ package body FLTK.Text_Buffers is
             end if;
         end loop;
     end Remove_Predelete_Callback;
+
+
+    procedure Add_Modify_Details_Callback
+           (This : in out Text_Buffer;
+            Func : in     Modify_Details_Callback) is
+    begin
+        This.Modify_Details_CBs.Append (Func);
+    end Add_Modify_Details_Callback;
+
+
+    procedure Remove_Modify_Details_Callback
+           (This : in out Text_Buffer;
+            Func : in     Modify_Details_Callback) is
+    begin
+        for I in reverse
+            This.Modify_Details_CBs.First_Index .. This.Modify_Details_CBs.Last_Index
+        loop
+            if This.Modify_Details_CBs.Element (I) = Func then
+                This.Modify_Details_CBs.Delete (I);
+                return;
+            end if;
+        end loop;
+    end Remove_Modify_Details_Callback;
 
 
     procedure Call_Modify_Callbacks

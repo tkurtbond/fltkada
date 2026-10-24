@@ -65,6 +65,10 @@ TREEITEM fl_tree_add(TREE t, const char * path) {
     return static_cast<Fl_Tree*>(t)->add(path);
 }
 
+TREEITEM fl_tree_add_item(TREE t, const char * path, TREEITEM item) {
+    return static_cast<Fl_Tree*>(t)->add(path, static_cast<Fl_Tree_Item*>(item));
+}
+
 TREEITEM fl_tree_insert(TREE t, TREEITEM under, const char * name, int pos) {
     return static_cast<Fl_Tree*>(t)->insert(static_cast<Fl_Tree_Item*>(under), name, pos);
 }
@@ -98,6 +102,21 @@ TREEITEM fl_tree_root(TREE t) {
 
 void fl_tree_set_root_label(TREE t, const char * label) {
     static_cast<Fl_Tree*>(t)->root_label(label);
+}
+
+
+
+
+TREEITEM fl_tree_callback_item(TREE t) {
+    return static_cast<Fl_Tree*>(t)->callback_item();
+}
+
+int fl_tree_callback_reason(TREE t) {
+    return static_cast<Fl_Tree*>(t)->callback_reason();
+}
+
+int fl_tree_item_pathname(TREE t, char * buf, int len, TREEITEM i) {
+    return static_cast<Fl_Tree*>(t)->item_pathname(buf, len, static_cast<Fl_Tree_Item*>(i));
 }
 
 
@@ -263,6 +282,21 @@ int fl_tree_get_item_draw_mode(TREE t) {
 
 void fl_tree_set_item_draw_mode(TREE t, int val) {
     static_cast<Fl_Tree*>(t)->item_draw_mode(val);
+}
+
+int fl_tree_get_select_box(TREE t) {
+    return static_cast<int>(static_cast<Fl_Tree*>(t)->selectbox());
+}
+
+void fl_tree_set_select_box(TREE t, int val) {
+    static_cast<Fl_Tree*>(t)->selectbox(static_cast<Fl_Boxtype>(val));
+}
+
+
+
+
+void fl_tree_show_self(TREE t) {
+    static_cast<Fl_Tree*>(t)->show_self();
 }
 
 

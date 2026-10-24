@@ -218,6 +218,11 @@ package body FLTK.Menu_Items is
     pragma Import (C, fl_menu_item_image, "fl_menu_item_image");
     pragma Inline (fl_menu_item_image);
 
+    procedure fl_menu_item_multi_label
+           (MI, L : in Storage.Integer_Address);
+    pragma Import (C, fl_menu_item_multi_label, "fl_menu_item_multi_label");
+    pragma Inline (fl_menu_item_multi_label);
+
 
 
 
@@ -583,6 +588,15 @@ package body FLTK.Menu_Items is
         fl_menu_item_image (This.Void_Ptr, Wrapper (Pict).Void_Ptr);
         This.Current_Image := Pict'Unchecked_Access;
     end Set_Image;
+
+
+    procedure Set_Multi_Label
+           (This  : in out Menu_Item;
+            Label : in out FLTK.Multi_Labels.Multi_Label'Class) is
+    begin
+        fl_menu_item_multi_label (This.Void_Ptr, Wrapper (Label).Void_Ptr);
+        This.Current_Image := null;
+    end Set_Multi_Label;
 
 
 

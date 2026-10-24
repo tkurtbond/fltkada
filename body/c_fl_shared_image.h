@@ -37,6 +37,9 @@ extern "C" void fl_shared_image_draw(SHAREDIMAGE i, int x, int y, int w, int h, 
 extern "C" void fl_shared_image_draw2(SHAREDIMAGE i, int x, int y);
 
 
+extern "C" void fl_shared_image_register_images();
+
+
 #endif
 
 

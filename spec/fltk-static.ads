@@ -257,6 +257,14 @@ package FLTK.Static is
 
     procedure System_Colors;
 
+    procedure Get_Color
+           (From       : in     Color;
+            R, G, B, A :    out Color_Component);
+
+    procedure Set_Color
+           (Target     : in Color;
+            R, G, B, A : in Color_Component);
+
 
 
 
@@ -436,6 +444,12 @@ package FLTK.Static is
            (Opt : in Option;
             To  : in Boolean);
 
+    function Get_Use_High_Res_GL
+        return Boolean;
+
+    procedure Set_Use_High_Res_GL
+           (To : in Boolean);
+
 
 
 
@@ -575,6 +589,8 @@ private
 
     pragma Inline (Get_Option);
     pragma Inline (Set_Option);
+    pragma Inline (Get_Use_High_Res_GL);
+    pragma Inline (Set_Use_High_Res_GL);
 
     pragma Inline (Get_Default_Scrollbar_Size);
     pragma Inline (Set_Default_Scrollbar_Size);

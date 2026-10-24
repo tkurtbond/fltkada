@@ -367,7 +367,7 @@ int callback_col();
 <td><pre>
 function Callback_Column
        (This : in Table)
-    return Positive;
+    return Natural;
 </pre></td>
   </tr>
 
@@ -389,7 +389,7 @@ int callback_row();
 <td><pre>
 function Callback_Row
        (This : in Table)
-    return Positive;
+    return Natural;
 </pre></td>
   </tr>
 
@@ -699,10 +699,10 @@ void get_selection(int &row_top, int &col_left,
 <td><pre>
 procedure Get_Selection
        (This         : in     Table;
-        Row_Top      :    out Positive;
-        Column_Left  :    out Positive;
-        Row_Bottom   :    out Positive;
-        Column_Right :    out Positive);
+        Row_Top      :    out Natural;
+        Column_Left  :    out Natural;
+        Row_Bottom   :    out Natural;
+        Column_Right :    out Natural);
 </pre></td>
   </tr>
 

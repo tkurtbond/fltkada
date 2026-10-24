@@ -1067,11 +1067,11 @@ package body FLTK.Widgets.Groups.Tables is
 
     function Callback_Column
            (This : in Table)
-        return Positive
+        return Natural
     is
         Result : constant Interfaces.C.int := fl_table_callback_col (This.Void_Ptr);
     begin
-        return Positive (Result + 1);
+        return Natural (Result + 1);
     exception
     when Constraint_Error => raise Internal_FLTK_Error with
         "Fl_Table::callback_col returned unexpected int value of " &
@@ -1081,11 +1081,11 @@ package body FLTK.Widgets.Groups.Tables is
 
     function Callback_Row
            (This : in Table)
-        return Positive
+        return Natural
     is
         Result : constant Interfaces.C.int := fl_table_callback_row (This.Void_Ptr);
     begin
-        return Positive (Result + 1);
+        return Natural (Result + 1);
     exception
     when Constraint_Error => raise Internal_FLTK_Error with
         "Fl_Table::callback_row returned unexpected int value of " &
@@ -1596,10 +1596,10 @@ package body FLTK.Widgets.Groups.Tables is
 
     procedure Get_Selection
            (This         : in     Table;
-            Row_Top      :    out Positive;
-            Column_Left  :    out Positive;
-            Row_Bottom   :    out Positive;
-            Column_Right :    out Positive)
+            Row_Top      :    out Natural;
+            Column_Left  :    out Natural;
+            Row_Bottom   :    out Natural;
+            Column_Right :    out Natural)
     is
         C_Row_Top, C_Column_Left, C_Row_Bottom, C_Column_Right : Interfaces.C.int;
     begin
@@ -1607,10 +1607,10 @@ package body FLTK.Widgets.Groups.Tables is
            (This.Void_Ptr,
             C_Row_Top,    C_Column_Left,
             C_Row_Bottom, C_Column_Right);
-        Row_Top      := Positive (C_Row_Top + 1);
-        Column_Left  := Positive (C_Column_Left + 1);
-        Row_Bottom   := Positive (C_Row_Bottom + 1);
-        Column_Right := Positive (C_Column_Right + 1);
+        Row_Top      := Natural (C_Row_Top + 1);
+        Column_Left  := Natural (C_Column_Left + 1);
+        Row_Bottom   := Natural (C_Row_Bottom + 1);
+        Column_Right := Natural (C_Column_Right + 1);
     exception
     when Constraint_Error => raise Internal_FLTK_Error with
         "Fl_Table::get_selection returned unexpected values with" & Latin.LF &

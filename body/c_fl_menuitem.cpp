@@ -7,6 +7,8 @@
 #include <FL/Fl_Menu_Item.H>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Image.H>
+#include <cstdlib>
+#include <cstring>
 #include "c_fl_menuitem.h"
 
 
@@ -15,6 +17,25 @@
 //  Exports from Ada
 
 extern "C" void menu_item_callback_hook(void * cobj, void * ud);
+
+
+
+
+//  Label Ownership
+
+//  Text labels are always strdup'd, so that they are owned by the item the
+//  same way Fl_Menu_ owns the labels of the items it adds.  Image and multi
+//  labels point to objects owned on the Ada side, and are never freed here.
+
+static void free_text_label(Fl_Menu_Item * mi) {
+    if (mi->text != 0 &&
+        mi->labeltype_ != _FL_IMAGE_LABEL &&
+        mi->labeltype_ != _FL_MULTI_LABEL)
+    {
+        free(const_cast<char*>(mi->text));
+    }
+    mi->text = 0;
+}
 
 
 
@@ -32,11 +53,12 @@ void * new_fl_menu_item(char * t, void * c, int s, int f) {
     mi->callback(c==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), c);
     mi->flags = static_cast<int>(f);
     mi->shortcut(static_cast<int>(s));
-    mi->label(t);
+    mi->label(t==0?0:strdup(t));
     return mi;
 }
 
 void free_fl_menu_item(MENUITEM mi) {
+    free_text_label(static_cast<Fl_Menu_Item*>(mi));
     delete static_cast<Fl_Menu_Item*>(mi);
 }
 
@@ -95,11 +117,13 @@ const char * fl_menu_item_get_label(MENUITEM mi) {
 }
 
 void fl_menu_item_set_label(MENUITEM mi, const char *t) {
-    static_cast<Fl_Menu_Item*>(mi)->label(t);
+    free_text_label(static_cast<Fl_Menu_Item*>(mi));
+    static_cast<Fl_Menu_Item*>(mi)->label(t==0?0:strdup(t));
 }
 
 void fl_menu_item_set_label2(MENUITEM mi, int k, const char * t) {
-    static_cast<Fl_Menu_Item*>(mi)->label(static_cast<Fl_Labeltype>(k), t);
+    free_text_label(static_cast<Fl_Menu_Item*>(mi));
+    static_cast<Fl_Menu_Item*>(mi)->label(static_cast<Fl_Labeltype>(k), t==0?0:strdup(t));
 }
 
 unsigned int fl_menu_item_get_labelcolor(MENUITEM mi) {
@@ -157,7 +181,13 @@ void fl_menu_item_set_flags(MENUITEM mi, int f) {
 
 
 void fl_menu_item_image(MENUITEM mi, void * i) {
+    free_text_label(static_cast<Fl_Menu_Item*>(mi));
     static_cast<Fl_Menu_Item*>(mi)->image(static_cast<Fl_Image*>(i));
+}
+
+void fl_menu_item_multi_label(MENUITEM mi, void * ml) {
+    free_text_label(static_cast<Fl_Menu_Item*>(mi));
+    static_cast<Fl_Menu_Item*>(mi)->multi_label(static_cast<Fl_Multi_Label*>(ml));
 }
 
 

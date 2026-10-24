@@ -84,8 +84,30 @@
   </tr>
 
   <tr>
-    <td>Style_Table_Entry</td>
-    <td>Style_Entry</td>
+    <td>struct Style_Table_Entry {<br />
+    Fl_Color color;<br />
+    Fl_Font font;<br />
+    Fl_Fontsize size;<br />
+    unsigned attr;<br />
+    Fl_Color bgcolor; }</td>
+    <td>Style_Entry (record with components Hue, Font, Size, Back_Mode,
+    Lines, Background; attr is split into Back_Mode and Lines)</td>
+  </tr>
+
+  <tr>
+    <td>ATTR_BGCOLOR = 0x0001,<br />
+    ATTR_BGCOLOR_EXT = 0x0003<br />
+    (the background bits of Style_Table_Entry::attr)</td>
+    <td>Background_Mode (No_Background, Background_Fill, Background_Extend)</td>
+  </tr>
+
+  <tr>
+    <td>ATTR_UNDERLINE = 0x0004,<br />
+    ATTR_GRAMMAR = 0x0008,<br />
+    ATTR_SPELLING = 0x000C,<br />
+    ATTR_STRIKE_THROUGH = 0x0010<br />
+    (the ATTR_LINES_MASK bits of Style_Table_Entry::attr)</td>
+    <td>Line_Mode (No_Line, Underline, Grammar, Spelling, Strike_Through)</td>
   </tr>
 
   <tr>

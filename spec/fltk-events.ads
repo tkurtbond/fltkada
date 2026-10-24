@@ -74,6 +74,18 @@ package FLTK.Events is
             Origin : in out FLTK.Widgets.Groups.Windows.Window'Class)
         return Event_Outcome;
 
+    --  These two accept the possibly null Win given to an Event_Dispatch
+    --  function, since FLTK dispatches some events without a window.
+    function Handle_Dispatch
+           (Event  : in Event_Kind;
+            Origin : access FLTK.Widgets.Groups.Windows.Window'Class)
+        return Event_Outcome;
+
+    function Handle
+           (Event  : in Event_Kind;
+            Origin : access FLTK.Widgets.Groups.Windows.Window'Class)
+        return Event_Outcome;
+
 
 
 
@@ -138,6 +150,11 @@ package FLTK.Events is
 
     function Text_Length
         return Natural;
+
+    --  Replaces the text of the current keyboard event, as an Event_Dispatch
+    --  function might to translate a key before it is handled.
+    procedure Set_Text
+           (To : in String);
 
     function Test_Shortcut
            (Shortcut : in Key_Combo)
@@ -244,6 +261,11 @@ package FLTK.Events is
     function Original_Last_Key
         return Keypress;
 
+    --  Replaces the key of the current keyboard event, as an Event_Dispatch
+    --  function might to translate a key before it is handled.
+    procedure Set_Last_Key
+           (To : in Keypress);
+
     function Pressed_During
            (Key : in Keypress)
         return Boolean;
@@ -316,6 +338,7 @@ private
     pragma Inline (Compose_Reset);
     pragma Inline (Text);
     pragma Inline (Text_Length);
+    pragma Inline (Set_Text);
     pragma Inline (Test_Shortcut);
 
     pragma Inline (Last);
@@ -342,6 +365,7 @@ private
 
     pragma Inline (Last_Key);
     pragma Inline (Original_Last_Key);
+    pragma Inline (Set_Last_Key);
     pragma Inline (Pressed_During);
     pragma Inline (Key_Now);
     pragma Inline (Key_Ctrl);

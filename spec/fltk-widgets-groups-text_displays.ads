@@ -51,10 +51,32 @@ package FLTK.Widgets.Groups.Text_Displays is
 
     package Styles is
 
+        --  Corresponds to the ATTR_BGCOLOR and ATTR_BGCOLOR_EXT attribute bits
+        type Background_Mode is (No_Background, Background_Fill, Background_Extend);
+
+        for Background_Mode use
+           (No_Background     => 0,
+            Background_Fill   => 1,
+            Background_Extend => 3);
+
+        --  Corresponds to the mutually exclusive ATTR_UNDERLINE, ATTR_GRAMMAR,
+        --  ATTR_SPELLING, and ATTR_STRIKE_THROUGH attribute bits
+        type Line_Mode is (No_Line, Underline, Grammar, Spelling, Strike_Through);
+
+        for Line_Mode use
+           (No_Line        => 0,
+            Underline      => 1,
+            Grammar        => 2,
+            Spelling       => 3,
+            Strike_Through => 4);
+
         type Style_Entry is record
-            Hue  : Color;
-            Font : Font_Kind;
-            Size : Font_Size;
+            Hue        : Color;
+            Font       : Font_Kind;
+            Size       : Font_Size;
+            Back_Mode  : Background_Mode := No_Background;
+            Lines      : Line_Mode       := No_Line;
+            Background : Color           := Background_Color;
         end record;
 
         type Style_Index is new Character range 'A' .. '~';
@@ -83,16 +105,24 @@ package FLTK.Widgets.Groups.Text_Displays is
 
     private
 
+        --  Mirrors Fl_Text_Display::Style_Table_Entry, whose attr field packs
+        --  the background mode into bits 0 .. 1 and the line mode into bits 2 .. 4
         for Style_Entry use record
-            Hue  at 1 * Interfaces.C.unsigned'Size / System.Storage_Unit
+            Hue        at 0 * Interfaces.C.unsigned'Size / System.Storage_Unit
                 range 0 .. Interfaces.C.unsigned'Size - 1;
-            Font at 2 * Interfaces.C.unsigned'Size / System.Storage_Unit
+            Font       at 1 * Interfaces.C.unsigned'Size / System.Storage_Unit
                 range 0 .. Interfaces.C.int'Size - 1;
-            Size at 3 * Interfaces.C.unsigned'Size / System.Storage_Unit
+            Size       at 2 * Interfaces.C.unsigned'Size / System.Storage_Unit
                 range 0 .. Interfaces.C.int'Size - 1;
+            Back_Mode  at 3 * Interfaces.C.unsigned'Size / System.Storage_Unit
+                range 0 .. 1;
+            Lines      at 3 * Interfaces.C.unsigned'Size / System.Storage_Unit
+                range 2 .. 4;
+            Background at 4 * Interfaces.C.unsigned'Size / System.Storage_Unit
+                range 0 .. Interfaces.C.unsigned'Size - 1;
         end record;
 
-        for Style_Entry'Size use Interfaces.C.unsigned'Size * 3 + Interfaces.C.int'Size;
+        for Style_Entry'Size use Interfaces.C.unsigned'Size * 4 + Interfaces.C.int'Size;
 
         for Style_Mask use record
             Fill       at 0 range 0 .. 0;

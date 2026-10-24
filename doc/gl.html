@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>gl.h Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>gl.h Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<p>These are the FLTK drawing helpers from FL/gl.h, for use while an OpenGL window is current (inside a GL_Window Draw, or between Start and Finish). OpenGL itself is not bound; the examples/gl3.ads package used by the OpenGL3 examples imports the few core functions they need.</p>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>gl.h</td>
+    <td>FLTK.Draw.OpenGL</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void gl_start();
+</pre></td>
+<td><pre>
+procedure Start;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void gl_finish();
+</pre></td>
+<td><pre>
+procedure Finish;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void gl_color(Fl_Color i);
+</pre></td>
+<td><pre>
+procedure Set_Color
+       (To : in Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void gl_color(int c);
+</pre></td>
+<td>Use the Fl_Color version.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void gl_rect(int x, int y, int w, int h);
+</pre></td>
+<td><pre>
+procedure Rect
+       (X, Y, W, H : in Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void gl_rectf(int x, int y, int w, int h);
+</pre></td>
+<td><pre>
+procedure Rect_Fill
+       (X, Y, W, H : in Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void gl_font(int fontid, int size);
+</pre></td>
+<td><pre>
+procedure Set_Font
+       (Kind : in Font_Kind;
+        Size : in Font_Size);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int gl_height();
+</pre></td>
+<td><pre>
+function Font_Height
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int gl_descent();
+</pre></td>
+<td><pre>
+function Font_Descent
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+double gl_width(const char *);
+double gl_width(const char *, int n);
+</pre></td>
+<td><pre>
+function Width
+       (Text : in String)
+    return Long_Float;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+double gl_width(uchar);
+</pre></td>
+<td><pre>
+function Width
+       (Glyph : in Character)
+    return Long_Float;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void gl_draw(const char *);
+void gl_draw(const char *, int n);
+</pre></td>
+<td><pre>
+procedure Draw_Text
+       (Text : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void gl_draw(const char *, int x, int y);
+void gl_draw(const char *, int n, int x, int y);
+</pre></td>
+<td><pre>
+procedure Draw_Text
+       (X, Y : in Integer;
+        Text : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void gl_draw(const char *, float x, float y);
+void gl_draw(const char *, int n, float x, float y);
+</pre></td>
+<td><pre>
+procedure Draw_Text
+       (X, Y : in Float;
+        Text : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void gl_draw(const char *, int x, int y, int w, int h,
+    Fl_Align = FL_ALIGN_CENTER);
+</pre></td>
+<td><pre>
+procedure Draw_Text
+       (X, Y, W, H : in Integer;
+        Text       : in String;
+        Align      : in Alignment);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void gl_measure(const char *, int &amp;x, int &amp;y);
+</pre></td>
+<td><pre>
+procedure Measure
+       (Text : in     String;
+        W, H :    out Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int gl_texture_pile_height();
+</pre></td>
+<td><pre>
+function Get_Texture_Pile_Height
+    return Positive;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void gl_texture_pile_height(int max);
+</pre></td>
+<td><pre>
+procedure Set_Texture_Pile_Height
+       (Max : in Positive);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void gl_texture_reset();
+</pre></td>
+<td><pre>
+procedure Texture_Reset;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void gl_draw_image(const uchar *, int x, int y, int w, int h,
+    int d = 3, int ld = 0);
+</pre></td>
+<td><pre>
+procedure Draw_Image
+       (X, Y, W, H : in Integer;
+        Data       : in Color_Component_Array;
+        Depth      : in Positive := 3;
+        Line_Size  : in Natural := 0)
+with Pre =&gt; (if Line_Size = 0
+    then Data'Length &gt;= Size_Type (W) * Size_Type (H) * Size_Type (Depth)
+    else Data'Length &gt;= Size_Type (Line_Size) * Size_Type (H));
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
+
