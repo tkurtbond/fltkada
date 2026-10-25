@@ -10,7 +10,7 @@ build-static:
 
 install-dynamic: build-dynamic
 	$(GPRINSTALL) -p -m -Xlibrary_type=dynamic fltkada.gpr \
-	    --build-name=relocatable --build-var=library_type
+	    --build-name=dynamic --build-var=library_type
 
 install-static: build-static
 	$(GPRINSTALL) -p -m -Xlibrary_type=static fltkada.gpr \

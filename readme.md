@@ -75,7 +75,7 @@ build-selection variable via `--build-var`:
 ```
 gprbuild -p -Xlibrary_type=dynamic fltkada.gpr
 gprinstall -p -m -Xlibrary_type=dynamic fltkada.gpr \
-    --build-name=relocatable --build-var=library_type
+    --build-name=dynamic --build-var=library_type
 
 gprbuild -p -Xlibrary_type=static fltkada.gpr
 gprinstall -p -m -Xlibrary_type=static fltkada.gpr \
