@@ -7,6 +7,7 @@
 with
 
     Ada.Assertions,
+    Ada.Unchecked_Deallocation,
     Interfaces.C;
 
 use type
@@ -18,6 +19,9 @@ package body FLTK.Widgets.Groups is
 
 
     package Chk renames Ada.Assertions;
+
+
+    procedure Free is new Ada.Unchecked_Deallocation (Address_Array, Address_Array_Access);
 
 
 
@@ -215,11 +219,33 @@ package body FLTK.Widgets.Groups is
     -------------------
 
     procedure Extra_Final
-           (This : in out Group) is
+           (This : in out Group)
+    is
+        function Is_Internal
+               (Child_Ptr : in Storage.Integer_Address)
+            return Boolean is
+        begin
+            if This.Internal /= null then
+                for Item of This.Internal.all loop
+                    if Item = Child_Ptr then
+                        return True;
+                    end if;
+                end loop;
+            end if;
+            return False;
+        end Is_Internal;
     begin
-        if This.Needs_Dealloc then
-            This.Clear;
+        --  Children with Ada objects are removed, as their Ada objects
+        --  delete them, but the ones FLTK made are left for the C++
+        --  destructor to delete.
+        if This.Needs_Dealloc and This.Void_Ptr /= Null_Pointer then
+            for I in reverse 1 .. This.Number_Of_Children loop
+                if not Is_Internal (fl_group_child (This.Void_Ptr, Interfaces.C.int (I) - 1)) then
+                    This.Remove (Index (I));
+                end if;
+            end loop;
         end if;
+        Free (This.Internal);
         Extra_Final (Widget (This));
     end Extra_Final;
 
@@ -244,9 +270,17 @@ package body FLTK.Widgets.Groups is
     procedure Extra_Init
            (This       : in out Group;
             X, Y, W, H : in     Integer;
-            Text       : in     String) is
+            Text       : in     String)
+    is
+        Count : constant Natural := This.Number_Of_Children;
     begin
         fl_group_end (This.Void_Ptr);
+        if Count > 0 then
+            This.Internal := new Address_Array (1 .. Count);
+            for I in This.Internal'Range loop
+                This.Internal (I) := fl_group_child (This.Void_Ptr, Interfaces.C.int (I) - 1);
+            end loop;
+        end if;
         Extra_Init (Widget (This), X, Y, W, H, Text);
     end Extra_Init;
 

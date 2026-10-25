@@ -216,7 +216,15 @@ package FLTK.Widgets.Groups is
 private
 
 
-    type Group is new Widget with null record;
+    type Address_Array is array (Positive range <>) of Storage.Integer_Address;
+    type Address_Array_Access is access Address_Array;
+
+    --  The children FLTK made itself in the C++ constructor, such as a
+    --  Text_Display's scrollbars, which its destructor deletes and so
+    --  must still be children when it runs.
+    type Group is new Widget with record
+        Internal : Address_Array_Access := null;
+    end record;
 
     overriding procedure Initialize
            (This : in out Group);

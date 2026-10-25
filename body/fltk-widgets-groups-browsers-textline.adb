@@ -749,8 +749,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
     begin
         Free (This.Columns);
         This.Columns := new C_Col_Widths (1 .. Widths'Length + 1);
-        for Index in This.Columns'Range loop
-            This.Columns (Index) := Interfaces.C.int (Widths (Widths'First + Index - 1));
+        for Index in Widths'Range loop
+            This.Columns (Index - Widths'First + 1) := Interfaces.C.int (Widths (Index));
         end loop;
         This.Columns (This.Columns'Last) := 0;
         fl_browser_set_column_widths (This.Void_Ptr, Storage.To_Integer (This.Columns.all'Address));

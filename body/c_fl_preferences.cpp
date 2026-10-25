@@ -59,8 +59,20 @@ void free_fl_pref_database(PREFS e) {
 }
 
 
+//  A database's root group: a copy, sharing the database's nodes.
+//  ~Fl_Preferences deletes the root node when its node has no parent,
+//  as a copy of the root's hasn't, but the database owns the root node,
+//  so this group forgets its node first.
+class My_Root_Group : public Fl_Preferences {
+    public:
+        My_Root_Group(const Fl_Preferences &from) : Fl_Preferences(from) { }
+        ~My_Root_Group() { node = 0; }
+};
+
 PREFS new_fl_pref_group_copy(PREFS e) {
-    Fl_Preferences *g = new Fl_Preferences(static_cast<Fl_Preferences*>(e));
+    //  Not new Fl_Preferences(e): with one pointer that is Fl_Preferences(ID),
+    //  which takes the database for a group's ID.
+    Fl_Preferences *g = new My_Root_Group(*static_cast<Fl_Preferences*>(e));
     return g;
 }
 
@@ -86,8 +98,8 @@ void free_fl_pref_group(PREFS e) {
 
 
 
-void fl_preferences_flush(PREFS e) {
-    static_cast<Fl_Preferences*>(e)->flush();
+int fl_preferences_flush(PREFS e) {
+    return static_cast<Fl_Preferences*>(e)->flush();
 }
 
 int fl_preferences_getuserdatapath(PREFS e, char * p, int len) {

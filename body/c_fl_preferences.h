@@ -32,7 +32,7 @@ extern "C" PREFS new_fl_pref_group_index(PREFS e, int i);
 extern "C" void free_fl_pref_group(PREFS e);
 
 
-extern "C" void fl_preferences_flush(PREFS e);
+extern "C" int fl_preferences_flush(PREFS e);
 extern "C" int fl_preferences_getuserdatapath(PREFS e, char * p, int len);
 
 

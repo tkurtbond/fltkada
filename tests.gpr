@@ -24,12 +24,15 @@ project Tests is
         "compare.adb",
         "clock.adb",
         "color_chooser.adb",
+        "column_widths.adb",
         "cursor.adb",
         "dirlist.adb",
         "filename.adb",
+        "group_children.adb",
         "hello.adb",
         "page_formats.adb",
         "pixmap.adb",
+        "preferences.adb",
         "tree.adb",
         "tree_table1.adb",
         "tree_simple.adb",
@@ -46,12 +49,15 @@ project Tests is
         for Executable ("compare.adb")            use "compare";
         for Executable ("clock.adb")              use "clock";
         for Executable ("color_chooser.adb")      use "color_chooser";
+        for Executable ("column_widths.adb")      use "column_widths";
         for Executable ("cursor.adb")             use "cursor";
         for Executable ("dirlist.adb")            use "dirlist";
         for Executable ("filename.adb")           use "filename";
+        for Executable ("group_children.adb")     use "group_children";
         for Executable ("hello.adb")              use "hello";
         for Executable ("page_formats.adb")       use "page_formats";
         for Executable ("pixmap.adb")             use "pixmap";
+        for Executable ("preferences.adb")        use "preferences";
         for Executable ("tree.adb")               use "tree";
         for Executable ("tree_table1.adb")        use "tree_table1";
         for Executable ("tree_simple.adb")        use "tree_simple";

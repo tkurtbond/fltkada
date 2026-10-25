@@ -119,8 +119,9 @@ package body FLTK.Environment is
 
     --  Disk Activity  --
 
-    procedure fl_preferences_flush
-           (E : in Storage.Integer_Address);
+    function fl_preferences_flush
+           (E : in Storage.Integer_Address)
+        return Interfaces.C.int;
     pragma Import (C, fl_preferences_flush, "fl_preferences_flush");
     pragma Inline (fl_preferences_flush);
 
@@ -565,7 +566,11 @@ package body FLTK.Environment is
     procedure Flush
            (This : in Database) is
     begin
-        fl_preferences_flush (This.Void_Ptr);
+        --  -1 is a file that couldn't be written, 0 one written, and
+        --  1 nothing changed to write.
+        if fl_preferences_flush (This.Void_Ptr) = -1 then
+            raise Preference_Error;
+        end if;
     end Flush;
 
 

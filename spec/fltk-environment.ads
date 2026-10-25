@@ -80,6 +80,7 @@ package FLTK.Environment is
 
     --  Disk Activity  --
 
+    --  Raises Preference_Error if the file can't be written.
     procedure Flush
            (This : in Database);
 
