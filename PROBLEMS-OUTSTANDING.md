@@ -174,3 +174,21 @@ the table-with-keynav and table-spreadsheet-with-keyboard-nav ports. The
 original C++ programs behave exactly the same way, so this comes from the
 test environment, not the binding. These keys were not verified
 automatically.
+
+## Valgrind reports FLTK's font caches as lost
+
+A program that draws text loses about 390 KB "definitely" under
+`valgrind --leak-check=full`, plus about 500 KB indirectly. All of it is
+fontconfig's and pango's font caches, allocated when FLTK first draws a
+label, and none of it is the binding's: a C++ FLTK program that shows a
+window with a labelled box and deletes it loses the same 393,728 bytes in
+the same four records as the same program in Ada, and with no label it
+loses nothing. libfltkada appears in those stacks only as the caller of
+FLTK's drawing (`widget_draw_hook`). Valgrind's ERROR SUMMARY counts each
+definitely or possibly lost record as an error (9 here); there are no
+memory errors.
+
+So to check a program for the binding's own leaks, look for definitely
+lost records whose stacks don't go through fontconfig (`Fc*`) or pango
+(`pango_*`). The figures are from FLTK 1.4.5 under Xvfb; other versions
+of the font libraries will lose other amounts.
