@@ -21,6 +21,7 @@ project Tests is
         "bitmap.adb",
         "button.adb",
         "buttons.adb",
+        "clear_image_chosen.adb",
         "compare.adb",
         "clock.adb",
         "color_chooser.adb",
@@ -46,6 +47,7 @@ project Tests is
         for Executable ("bitmap.adb")             use "bitmap";
         for Executable ("button.adb")             use "button";
         for Executable ("buttons.adb")            use "buttons";
+        for Executable ("clear_image_chosen.adb") use "clear_image_chosen";
         for Executable ("compare.adb")            use "compare";
         for Executable ("clock.adb")              use "clock";
         for Executable ("color_chooser.adb")      use "color_chooser";

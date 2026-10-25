@@ -1480,6 +1480,14 @@ package body FLTK.Widgets is
     end Set_Image;
 
 
+    procedure Clear_Image
+           (This : in out Widget) is
+    begin
+        This.Current_Image := null;
+        fl_widget_set_image (This.Void_Ptr, Null_Pointer);
+    end Clear_Image;
+
+
     function Get_Inactive_Image
            (This : in Widget)
         return access FLTK.Images.Image'Class is

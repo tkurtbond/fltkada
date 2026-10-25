@@ -384,6 +384,11 @@ package FLTK.Widgets is
            (This : in out Widget;
             Pic  : in out FLTK.Images.Image'Class);
 
+    --  Shows no image again: Get_Image is then null.  The image shown
+    --  before is still the caller's to free.
+    procedure Clear_Image
+           (This : in out Widget);
+
     function Get_Inactive_Image
            (This : in Widget)
         return access FLTK.Images.Image'Class;
@@ -663,6 +668,7 @@ private
 
     pragma Inline (Get_Image);
     pragma Inline (Set_Image);
+    pragma Inline (Clear_Image);
     pragma Inline (Get_Inactive_Image);
     pragma Inline (Set_Inactive_Image);
 

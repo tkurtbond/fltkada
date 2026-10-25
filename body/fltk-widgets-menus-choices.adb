@@ -225,6 +225,16 @@ package body FLTK.Widgets.Menus.Choices is
     end Set_Chosen;
 
 
+    procedure Clear_Chosen
+           (This : in out Choice)
+    is
+        Ignore_Ret : Interfaces.C.int;
+    begin
+        --  Fl_Choice::value (-1) chooses none.
+        Ignore_Ret := fl_choice_set_value2 (This.Void_Ptr, -1);
+    end Clear_Chosen;
+
+
 
 
     --  Drawing, Events  --

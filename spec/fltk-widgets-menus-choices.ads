@@ -62,6 +62,10 @@ package FLTK.Widgets.Menus.Choices is
             Place : in     Index)
         return Boolean;
 
+    --  Shows no item chosen: Chosen_Index is then No_Index.
+    procedure Clear_Chosen
+           (This : in out Choice);
+
 
 
 
@@ -100,6 +104,7 @@ private
 
     pragma Inline (Chosen_Index);
     pragma Inline (Set_Chosen);
+    pragma Inline (Clear_Chosen);
 
     pragma Inline (Draw);
     pragma Inline (Handle);
