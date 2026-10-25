@@ -10,9 +10,9 @@ and running both under the same private Xvfb display:
 - stdout and stderr were diffed;
 - valgrind, strace or gdb were used where those were relevant.
 
-Sections 9 to 12 turned up later, in a program using the binding
+Sections 9 to 12 and 14 turned up later, in a program using the binding
 (ova_cg_ada).
-The last section is a bug in FLTK itself, which the binding works around.
+Section 13 is a bug in FLTK itself, which the binding works around.
 
 
 ## 1. Text_Editor: every key binding with a modifier was dead
@@ -271,3 +271,27 @@ library defines and exports `glutExtensionSupported (const char *)`. Because
 these are C++ functions, the two declarations are mangled differently, and
 a call compiled against the header doesn't link. `body/c_fl_glut.cpp`
 declares the `const char *` version itself to work around this.
+
+
+## 14. The installed shared library refused -Xlibrary_type=dynamic
+
+**Symptom.** After `make install-dynamic install-static`, a project that
+withs the installed `fltkada.gpr` could not ask for the shared library
+with `-Xlibrary_type=dynamic`, the value `fltkada.gpr` and readme.md use
+for it; only `relocatable` and `static` were accepted.
+
+**Cause.** gprinstall makes the installed project's build variable a type
+whose values are the `--build-name`s, and `install-dynamic` installed the
+shared library as `--build-name=relocatable`.
+
+**Fix.** `install-dynamic` (and the readme's example) uses
+`--build-name=dynamic`, so the installed `fltkada.gpr` has
+`type BUILD_KIND is ("dynamic", "static")`, defaulting to `dynamic`.
+
+**Verified.** Installed with `make install-dynamic install-static
+GPRINSTALL=...` into `/usr/local/sw/versions/ada`, next to arg_parser and
+libfyaml_ada, whose files it left unchanged: a program withing all three
+builds and runs with no `-X` and with `-Xlibrary_type=dynamic`, both
+loading `lib/fltkada.dynamic/libfltkada.so`, and with
+`-Xlibrary_type=static`, linking no `libfltkada.so`;
+`-Xlibrary_type=relocatable` is refused.
