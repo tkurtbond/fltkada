@@ -82,6 +82,11 @@ gprinstall -p -m -Xlibrary_type=static fltkada.gpr \
     --build-name=static --build-var=library_type
 ```
 
+The Makefile's `install-dynamic` and `install-static` targets do each
+pair, passing `-f` so a reinstall replaces the files already installed;
+`GPRINSTALL` gives the installer and its options
+(`make install-dynamic GPRINSTALL="gprinstall --prefix=DIR"`).
+
 A project that depends on the installed binding can then select which
 library to link against with the same `-Xlibrary_type=static` or
 `-Xlibrary_type=dynamic` switch.

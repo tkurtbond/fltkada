@@ -9,9 +9,9 @@ build-static:
 	gprbuild -p -Xlibrary_type=static fltkada.gpr
 
 install-dynamic: build-dynamic
-	$(GPRINSTALL) -p -m -Xlibrary_type=dynamic fltkada.gpr \
+	$(GPRINSTALL) -f -p -m -Xlibrary_type=dynamic fltkada.gpr \
 	    --build-name=dynamic --build-var=library_type
 
 install-static: build-static
-	$(GPRINSTALL) -p -m -Xlibrary_type=static fltkada.gpr \
+	$(GPRINSTALL) -f -p -m -Xlibrary_type=static fltkada.gpr \
 	    --build-name=static --build-var=library_type
