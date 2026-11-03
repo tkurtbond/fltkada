@@ -32,6 +32,12 @@ package FLTK is
     --  acted in a way that the binding really did not expect.
     Internal_FLTK_Error : exception;
 
+    --  Raised when this FLTK, or the back end it is running on, can't do
+    --  what was asked: for example, an FLTK built without SVG support, or
+    --  a call that only works on X11 made under Wayland.  Each subprogram
+    --  that raises it says so in its own comment.
+    Unsupported_Error : exception;
+
     --  Text buffers for marshalling purposes will be this size.
     Buffer_Size : constant Natural := 1024;
 

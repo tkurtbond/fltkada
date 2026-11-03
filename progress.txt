@@ -275,7 +275,6 @@ FLTK.Images.Pixmaps.GIF.Animated (Fail_Code clamps a positive ld() to 0)
 FLTK.Multi_Labels (only usable on menu items: there is no way yet to put a
     Multi_Label on a widget, Fl_Multi_Label::label(Fl_Widget*))
 FLTK.Images.Tiled (Tile returns a non-owning view of the tiled image)
-FLTK.Static / FLTK.Widgets (no Fl::redraw; no way to clear a widget's image)
 FLTK.Widgets.Groups.Flex (protected init, alloc_size, on_remove)
 FLTK.Widgets.Groups.Grids (Fl_Grid::Cell and cell(row,col) / cell(widget);
     protected draw_grid (virtual), init, add_cell, remove_cell, on_remove)

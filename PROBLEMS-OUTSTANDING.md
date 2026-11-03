@@ -82,11 +82,6 @@ value to 0.
 `FLTK.Images.Tiled.Tile` returns a view of the tiled image that does not own
 it, so it becomes invalid if the tiled image is finalized.
 
-### Missing small operations
-
-- There is no binding for `Fl::redraw ()`, which redraws all windows.
-- There is no way to clear a widget's image, that is, to call `image (NULL)`.
-
 
 ## Incomplete APIs added during the porting
 

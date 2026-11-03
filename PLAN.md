@@ -469,12 +469,16 @@ valgrind-headless` and `make smoke-headless` all pass, with
 passed on 2026-11-03: 277 checks under Xvfb and under sway, valgrind
 clean, and 74 programs in the smoke run.
 
-### Phase 1: Housekeeping
+### Phase 1: Housekeeping [done, 2026-11-03]
 
-- Remove the two stale entries listed above.
+- Remove the two stale entries listed above [done]: from
+  PROBLEMS-OUTSTANDING.md's "Missing small operations", which had
+  nothing else and is gone, and from progress.txt's Incomplete APIs.
 - Add `Unsupported_Error : exception;` to `spec/fltk.ads` (decision 2),
-  with a comment saying what it means. Later phases raise it.
-- **Where findings are recorded:**
+  with a comment saying what it means. Later phases raise it [done; also
+  listed under Errors in `doc/fl.html`. Nothing raises it yet].
+- **Where findings are recorded** [done: AGENTS.md, "Where findings go",
+  says the same]:
   - Bugs in FLTKAda's own code go in `FLTKAda-BUGS.md`. Its sections
     15 onward hold the open ones from this triage. Move each to "Fixed",
     giving the fix and the test, when it is done.
