@@ -26,6 +26,24 @@ constructor/`Forge`/`Extra_Init` lifecycle, and — critically — the
 `draw()`/`handle()` dispatch into Ada. None of that is guessable from
 reading one file in isolation.
 
+## Status
+
+**PLAN.md** is the roadmap: it brings FLTKAda level with pofltk, the
+Oberon-2 binding at `~/Repos/Oberon/pofltk`. That means pofltk's coverage,
+its test suite and extra examples, and fixes for the FLTK bugs and
+pitfalls in pofltk's `doc/fltk-issues.md`. Read PLAN.md's "Architecture
+decisions" and "The issue triage" before fixing a bug or binding new API.
+Work through the phases in order. Phase 0, the test infrastructure, comes
+first, because every later fix is meant to start from a failing test.
+
+Where findings go:
+
+- **FLTKAda-BUGS.md**: bugs in FLTKAda's own code. Sections 1–14 are
+  fixed; 15 onward are open.
+- **FLTK-issues.md**: FLTK issues pofltk's list doesn't have (F1, F2, …).
+- **PLAN.md**: FLTKAda's verdict on each of pofltk's numbered issues, and
+  every decision.
+
 ## Build, install, test
 
 ```sh
@@ -38,10 +56,83 @@ gprbuild examples.gpr             # build the ports of FLTK 1.4.5's examples/ (b
 gprbuild tools.gpr                # build tool/ (template.adb, a codegen helper)
 ```
 
-Built test executables land in `bin/`. There is no automated test suite —
-"testing" a new binding means writing a small `test/<name>.adb` (see
+Built test executables land in `bin/`. There is no automated test suite
+yet; PLAN.md Phase 0 adds one (`test/unit/`, `make check-headless`, `make
+check-sway`, `make valgrind-headless`, `make smoke-headless`). Until then,
+"testing" a new binding means writing a small `test/<name>.adb` (see the
 existing files under `test/` for the idiomatic shape), adding it to `Main`
-and `Builder` in `tests.gpr`, and running it.
+and `Builder` in `tests.gpr`, and running it **headless**, as described in
+the next section. Eight of the existing programs check their own results
+and set the exit status: `button`, `ask`, `dirlist`, `filename`,
+`preferences`, `group_children`, `clear_image_chosen` and
+`column_widths`.
+
+## Tests and the display
+
+Every FLTK program needs a display (`DISPLAY` or `WAYLAND_DISPLAY`), even
+one whose widgets are never shown.
+
+- **An agent never opens windows on the user's desktop.** That rules out
+  running anything in `bin/` or `bin/examples/` directly,
+  `FLTK_BACKEND=x11 ...` (XWayland is the desktop too), and a scratch
+  program run directly. The user gave this instruction for pofltk on
+  2026-10-06, and it applies here. Windows on the real desktop can take
+  the user's keystrokes and clicks, and the user's input can make a test
+  fail.
+- **X11, headless:** `env -u WAYLAND_DISPLAY xvfb-run -a <program>`. A
+  plain `xvfb-run` in a Wayland session leaves `WAYLAND_DISPLAY` set, and
+  FLTK then prefers Wayland, which is the real desktop (pofltk 18). The
+  default screen is 640x480. Pass `-s '-screen 0 1280x1024x24'` for
+  larger windows.
+- **Wayland, headless:** `~/Repos/Oberon/pofltk/tools/with-sway.sh
+  <program>` (PLAN.md Phase 0 copies it to `tools/`). It runs the
+  command on a headless sway with `DISPLAY` unset. Pop-up menus close
+  at once there, as they do on the desktop, so menu tests need X11.
+- **Screenshots:** under Xvfb, use `xwd -root -display :N | convert xwd:-
+  out.png`, or `import -window root`. On the user's Sway desktop use
+  grimshot, but don't open windows there in the first place.
+- **Comparing with FLTK's C++:** build the C++ original with
+  `fltk-config --compile foo.cxx`, run both under the same private Xvfb,
+  and compare screenshots with `compare -metric AE` and diff the output.
+  This is how sections 1–14 of FLTKAda-BUGS.md were verified.
+- Tests drive themselves, without an input tool:
+  - `Do_Callback`;
+  - synthetic events from the test-only `Probe` package (Phase 0);
+  - timeouts, or `Wait`/`Check` in a loop;
+  - `Probe.Modal` to answer a dialog.
+
+## Valgrind
+
+Run a test under valgrind with
+`env -u WAYLAND_DISPLAY xvfb-run -a valgrind --leak-check=full <program>`.
+FLTK, fontconfig, Pango and libdecor leak by design (PROBLEMS-OUTSTANDING.md
+lists FLTK's font caches; see also pofltk 19). A leak is FLTKAda's only
+if its allocation stack has a shim frame (`fl_*` in `body/c_fl_*.cpp`) or
+an Ada frame (`fltk__*`) above FLTK's. Phase 0's `test/vg-check.sh`
+automates that test, following pofltk's `test/vg-check.sh`. Invalid reads
+and writes are always errors, whoever allocated the memory. Valgrind
+can't see a pointer into a dead stack frame or a reused buffer, so for
+dangling strings check the actual value too.
+
+## Reference material
+
+| What | Where |
+|---|---|
+| FLTK 1.4.5 source (`src/`, `test/`, `examples/`) | `/usr/local/sw/src/lang/C++/fltk/fltk-1.4.5/` |
+| FLTK headers | `/usr/include/FL/` |
+| FLTK HTML documentation | `/usr/share/doc/fltk-devel/html/` |
+| pofltk (Oberon-2 binding; reference for workarounds, tests and examples) | `~/Repos/Oberon/pofltk/` |
+| pofltk's FLTK issues (numbered 1–138, cited as "pofltk N") | `~/Repos/Oberon/pofltk/doc/fltk-issues.md` |
+| pofltk's shim code for each workaround (`ofl_*` functions) | `~/Repos/Oberon/pofltk/src/**/*.cpp` |
+| pofltk's tests (`Test*.Mod`, `Halt*.Mod`, `Probe.Mod`/`.cpp`, `vg-check.sh`) | `~/Repos/Oberon/pofltk/test/` |
+| pofltk's extra examples, with a README listing what each shows | `~/Repos/Oberon/pofltk/examples/` |
+| pofltk's operational notes, including the BSD test hosts | `~/Repos/Oberon/pofltk/AGENTS.md` |
+
+pofltk is Oberon-2, and its shim is written for a language without
+exceptions or controlled types. Port each workaround's *idea* and C++
+code, then express the Ada side idiomatically. For example, a pofltk halt
+code becomes an Ada exception, and a module-level table becomes a
+component of the Ada record.
 
 ## Directory layout
 
@@ -125,6 +216,38 @@ line rhythm) and will disturb them if run unattended.
    it from `doc/index.html`.
 5. Update `progress.txt` (move to Done, or note what's left under
    "Incomplete APIs").
+
+## Conventions
+
+- **Claim only what has been verified.** If a comment, a FLTKAda-BUGS.md
+  entry or a PLAN.md decision depends on how FLTK actually behaves, check
+  it with a scratch program run headless, or failing that in FLTK's
+  source, and say which. Check actual values, not just that nothing
+  crashed. When something recorded turns out to be wrong, correct it
+  where it was recorded and say so; don't silently delete it. For
+  example, PLAN.md's N6 is struck through, with the reason.
+- **Before binding anything that takes a pointer**, find out from FLTK's
+  source whether FLTK copies it or keeps it. If FLTK keeps it, never pass
+  an `Interfaces.C.To_C` temporary. Use FLTK's `copy_*` method, or keep
+  the copy in the Ada record or in the shim (PLAN.md, "Architecture
+  decisions", 4). pofltk's issue list says, for most FLTK calls, which
+  one it is.
+- **Guards against memory errors are explicit checks that raise.** They
+  are not `Pre` or predicates, which release builds don't check (PLAN.md,
+  "Architecture decisions", 1).
+- **No C++ exception may escape the shim.** Wrap any call that can throw
+  (image loaders, `new` with a size from a file) in `try`/`catch`, and
+  return an error code.
+- **Record every FLTK problem as it is found.**
+  - A problem pofltk already lists: note FLTKAda's verdict in PLAN.md.
+  - A new one: add it to FLTK-issues.md in its form (what happens, the
+    cause in FLTK's source, the effect on FLTKAda, how it was confirmed).
+  - A bug in FLTKAda's own code: add it to FLTKAda-BUGS.md.
+- **Record decisions and findings in PLAN.md as they happen.** Append to
+  the relevant section, mark finished phases `[done]`, and strike
+  through decided open questions, saying what was decided.
+- **Keep progress.txt and doc/*.html in step** with what is bound
+  (Workflow above).
 
 ## Git / commits
 

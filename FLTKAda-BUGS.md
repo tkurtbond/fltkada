@@ -1,7 +1,16 @@
 # FLTKAda bugs found while porting FLTK 1.4.5's examples
 
-These bugs turned up while porting every program in FLTK 1.4.5's
-`examples/` directory to Ada (see `examples/`). All of them are fixed. Each
+Sections 1 to 14 are fixed bugs. Sections 15 onward are **open**: they
+were found on 2026-11-03 by reading FLTKAda's code against pofltk's
+`doc/fltk-issues.md` (see PLAN.md, "The issue triage"). They have not yet
+been confirmed by running anything. When one is fixed, replace its
+"Status" with "Fix" and "Verified", as in sections 1 to 14. When one
+turns out not to be a bug, say so in its section rather than deleting it.
+Numbers like "pofltk 16" refer to `~/Repos/Oberon/pofltk/doc/fltk-issues.md`.
+Numbers like "F1" refer to `FLTK-issues.md` here.
+
+Sections 1 to 14 turned up while porting every program in FLTK 1.4.5's
+`examples/` directory to Ada (see `examples/`). Each
 port was checked by building the original C++ program next to the Ada port
 and running both under the same private Xvfb display:
 
@@ -295,3 +304,299 @@ builds and runs with no `-X` and with `-Xlibrary_type=dynamic`, both
 loading `lib/fltkada.dynamic/libfltkada.so`, and with
 `-Xlibrary_type=static`, linking no `libfltkada.so`;
 `-Xlibrary_type=relocatable` is refused.
+
+
+# Open bugs (found 2026-11-03, not yet confirmed by a run)
+
+"Checked" below means the code was re-read by hand after the triage agent
+reported it; the rest are the agent's reading only. PLAN.md gives the phase
+each is fixed in.
+
+
+## 15. Value_Input and Input_Choice probably crash on the first key or menu pick
+
+**Expected symptom.** Typing into a `Value_Input`, or picking an item from
+an `Input_Choice`'s menu, crashes or corrupts memory. Neither widget is
+used by any program in `test/` or `examples/`, which would explain why
+nobody has seen it.
+
+**Cause.** Both wrap the parts FLTK made: the inner `Fl_Input`, and
+`Input_Choice`'s menu button. Wrapping runs `Widget.Extra_Init`, which
+stores the Ada record's address in the part's `user_data`
+(`body/fltk-widgets.adb:690-692`). But FLTK's own callbacks for those parts
+use `user_data` to find the C++ parent: `Fl_Value_Input::input_cb`
+(`src/Fl_Value_Input.cxx:28`, set at `:120` with `input.callback(input_cb,
+this)`), and `Fl_Input_Choice::inp_cb`/`menu_cb`
+(`src/Fl_Input_Choice.cxx:206, 237`, set at `:266, 270`). They would cast
+an Ada record to `Fl_Value_Input*` or `Fl_Input_Choice*`. `Table` avoids
+this for its scrollbars by replacing their callbacks
+(`body/fltk-widgets-groups-tables.adb:801, 812`). See also F2 in
+`FLTK-issues.md`.
+
+**Planned fix.** After wrapping, put the C++ parent back in the part's
+`user_data`. Find the Ada wrapper some other way, for example through
+the parent, or route the part's callback through Ada as `Table` does.
+Test: `Probe.Key` into a `Value_Input`, and `Probe.Mouse` on an
+`Input_Choice` menu.
+
+**Status.** Open; FLTK side checked. PLAN.md Phase 2.
+
+
+## 16. Strings FLTK keeps were passed as temporaries
+
+**Expected symptom.** A label, tooltip, filter or symbol name shows
+garbage later, or valgrind reports reads of freed memory.
+
+**Cause.** These pass `Interfaces.C.To_C (...)`, a temporary that is gone
+once the call returns, to an FLTK function that keeps the pointer:
+- `Window.Set_Icon_Label` and `Set_Labels` → `Fl_Window::iconlabel`
+  (pofltk 5).
+- `Tooltips.Enter_Area` → `Fl_Tooltip::enter_area`
+  (`body/fltk-tooltips.adb:241-247`; checked) (pofltk 75).
+- `File_Browser.Set_Filter` → `Fl_File_Browser::filter` (pofltk 37).
+- `File_Choosers.Forge.Create` title → `window->label(title)`
+  (`src/Fl_File_Chooser.cxx:269`; checked).
+- `Asks.File_Chooser` and `Dir_Chooser` titles → the static chooser's
+  label (pofltk 30).
+- `Draw.Add_Symbol` → `fl_add_symbol` keeps the name, and every later
+  `@` symbol lookup `strcmp`s against it (`body/fltk-draw.adb:1208-1216`;
+  checked) (pofltk 123).
+
+**Planned fix.** Use FLTK's `copy_*` method where one exists. Otherwise
+keep a copy, either in the Ada record (freed in `Extra_Final`) or in a
+`static std::string` in the shim. Then audit every other `To_C`/
+`New_String` passed to the shim for the same problem (PLAN.md Phase 2).
+
+**Status.** Open. PLAN.md Phase 2.
+
+
+## 17. Help_View: the link hook frees its answer while FLTK still uses it
+
+**Expected symptom.** With a link callback set, loading a page after a page
+that had an `<IMG>` opens a file whose name is freed memory. A link callback
+that returns `""` for an image crashes.
+
+**Cause.** The link hook keeps one buffer, `Hilda`, and frees it on
+every call (`body/fltk-widgets-groups-help_views.adb:265`; checked).
+`Fl_Help_View::load` gets `localname` from the link function, then calls
+`free_data()`. That calls `get_image` for each image, which calls the link
+function again, which frees `Hilda`. Only then does `load` call
+`fl_fopen(localname)` (`src/Fl_Help_View.cxx:3408-3431`, `:2531`;
+checked). See F1. Separately, the hook maps `""` to NULL, and FLTK's
+`format()` dereferences a NULL image name (pofltk 90).
+
+**Planned fix.** Keep every answer for the life of the view, as pofltk
+does with a cache, freed in `Extra_Final`. Return `""`, not NULL, for an
+image (pofltk's `in_image` flag).
+
+**Status.** Open. PLAN.md Phase 2.
+
+
+## 18. Table: widgets added to cells are freed twice
+
+**Expected symptom.** When a `Table` is finalized before an Ada widget
+added to it, the widget is deleted by FLTK and then again by Ada.
+
+**Cause.** `Table.Extra_Final` calls `Group.Extra_Final`. That walks the
+`Fl_Table`'s real children, which are only its scrollbars and inner
+`Fl_Scroll`, so Ada children added to the cells are never detached.
+`~Fl_Scroll` then deletes them. Also, `Group.Remove (Place)` isn't
+overridden, so on a `Table` it removes one of the table's own parts
+(pofltk 52).
+
+**Planned fix.** Detach cell children in `Table.Extra_Final`, and override
+`Remove (Place)`. Test as `test/group_children.adb` does, under valgrind.
+
+**Status.** Open. PLAN.md Phase 2.
+
+
+## 19. Text_Buffer: its callbacks outlive the Ada buffer
+
+**Expected symptom.** If an Ada `Text_Buffer` is finalized while a display
+still holds the C++ buffer, the next edit calls into a freed Ada record.
+
+**Cause.** `Text_Buffer.Finalize` (`body/fltk-text_buffers.adb:569-576`)
+never removes the modify and predelete callbacks it registered with
+`This'Address` (`:596-603`). The C++ buffer itself is reference-counted
+and survives (pofltk 34).
+
+**Planned fix.** Remove both callbacks in `Finalize`.
+
+**Status.** Open. PLAN.md Phase 2.
+
+
+## 20. Textline_Browser: icons aren't kept alive, and the icon list drifts
+
+**Expected symptom.** A browser line's icon is drawn from a freed image
+after the Ada image is finalized. `Has_Icon` and `Get_Icon` report the
+wrong lines after lines are inserted, removed, moved or swapped.
+
+**Cause.** `Set_Icon` (`body/fltk-widgets-browsers-textline.adb:991-1006`)
+stores only the C++ pointer, in a wrapper that doesn't own it. The `Icons`
+vector is never shifted by `Insert`, `Remove`, `Move`, `Swap`, `Clear` or
+`Load` (pofltk 56).
+
+**Planned fix.** Hold a reference to each icon image, and keep `Icons` in
+step with the lines, or look the icon up from FLTK's line.
+
+**Status.** Open. PLAN.md Phase 2.
+
+
+## 21. Font_Sizes reads the wrong entries
+
+**Expected symptom.** `FLTK.Static.Font_Sizes` returns wrong sizes and
+reads past the end of FLTK's array.
+
+**Cause.** `fl_static_font_size_array_get` (`body/c_fl_static.cpp:226-228`;
+checked) returns `*(a+((i-1)*sizeof(int)))`. Pointer arithmetic on an
+`int*` already scales by `sizeof(int)`, so this reads entry `4*(i-1)`.
+
+**Planned fix.** `return a[i-1];`.
+
+**Status.** Open; checked. PLAN.md Phase 2.
+
+
+## 22. Draw_Image's line callback sees only part of the line
+
+**Expected symptom.** An Ada `Image_Draw_Function` for a colour image
+(depth 3 or 4) can fill only the first third or quarter of each line.
+
+**Cause.** `Draw_Image_Hook` (`body/fltk-draw.adb:1045-1056`; checked, and
+the mono hook near `:1123`) overlays a buffer of `W` components. FLTK's
+line buffer holds `W * abs (Depth)` bytes.
+
+**Planned fix.** Pass the depth to the hook (or keep it beside
+`Image_Func_Ptr`), and size the buffer `W * abs (Depth)`. While there,
+refuse re-entry: a nested `Draw_Image` from the callback replaces the
+single global `Image_Func_Ptr` (pofltk 133).
+
+**Status.** Open; checked. PLAN.md Phase 2.
+
+
+## 23. Expand_Text always fails
+
+**Expected symptom.** `FLTK.Draw.Expand_Text` raises `Dereference_Error`
+(or reads garbage) for any text that isn't empty.
+
+**Cause.** `Expand_Text` (`body/fltk-draw.adb:1485-1502`; checked) passes
+`maxbuf = 0` and expects FLTK to return the buffer it allocated in
+`Buffer`. The shim takes `char *&buf` (`body/c_fl_draw.cpp:287`), but
+`fl_expand_text` takes `buf` by value and passes it to the internal
+`expand_text_ (…, char *&buf, …)`, so the allocation never reaches the
+caller (pofltk 125).
+
+**Planned fix.** Have the shim allocate a buffer large enough
+(`strlen + 4` plus a margin) and pass its size as `maxbuf`.
+
+**Status.** Open; checked. PLAN.md Phase 2.
+
+
+## 24. Local_To_Mac_Roman and Mac_Roman_To_Local write to NULL and over-read
+
+**Expected symptom.** The first non-empty call crashes. Later calls return
+text with trailing garbage, and `Local_To_Mac_Roman` converts only the
+first byte.
+
+**Cause.** Both pass `n = -1` (`body/fltk-draw.adb:690-704`,
+`body/c_fl_draw.cpp:49, 53`) and read the result with `Value (ptr)`, but
+FLTK's result isn't NUL-terminated. FLTK's own part is pofltk 126.
+
+**Planned fix.** As pofltk does: call with `n = 0` first, convert a byte
+at a time, and return `Value (ptr, len)`.
+
+**Status.** Open. PLAN.md Phase 2.
+
+
+## 25. Shadow, engraved, embossed and round box and label types draw as plain
+
+**Expected symptom.** `test/hello.adb` asks for `Shadow_Label` and gets an
+ordinary label. Round, oval, plastic and gtk boxes draw as placeholders.
+
+**Cause.** In C++, `FL_SHADOW_LABEL`, `FL_ROUND_UP_BOX` and so on are
+macros that call `fl_define_FL_*()` before yielding the value, which
+installs the drawing function on first use. FLTKAda passes the raw
+enumeration value (`fl_widget_set_box`, `fl_widget_set_labeltype` in
+`body/c_fl_widget.cpp`, and menu item label kinds), so nothing installs
+them. Only `c_fl_multi_label.cpp` defines its label type (pofltk 8).
+
+**Planned fix.** Call the `fl_define_FL_*` functions once in the shim
+before any box or label type is set. Test with `Probe.Capture`.
+
+**Status.** Open. PLAN.md Phase 6.
+
+
+## 26. Set_Label with a label kind doesn't dispatch
+
+**Expected symptom.** `Set_Label (Some_Window, Kind, Text)` on a window
+already shown doesn't change its title.
+
+**Cause.** `Widget.Set_Label (This, Kind, Text)` (`body/fltk-widgets.adb:1231-1238`)
+calls `This.Set_Label (Text)` statically, so a `Window` reaches
+`Fl_Widget::copy_label` instead of `Fl_Window::copy_label`, which is
+FLTKAda's override (pofltk 6).
+
+**Planned fix.** `Widget'Class (This).Set_Label (Text)`.
+
+**Status.** Open. PLAN.md Phase 6.
+
+
+## 27. Spinner and Color_Chooser: inherited operations reach the wrong widget
+
+**Expected symptom.**
+- `Set_Colors` on a `Spinner` colours the group, not its field.
+- `Clear` on a `Spinner` or `Color_Chooser` removes the parts FLTK made,
+  leaving a dead widget.
+
+**Cause.** Neither overrides the inherited operation (pofltk 13, 23).
+`Spinner`'s format string also goes to `snprintf` as a format.
+
+**Planned fix.** Override them, and validate the format.
+
+**Status.** Open. PLAN.md Phases 4 and 6.
+
+
+## 28. Guards written as Pre or predicates are off in release builds
+
+**Expected symptom.** A check meant to keep bad values away from FLTK,
+such as `FLTK.Filenames.Path_String`'s 2048-byte limit (pofltk 121), does
+nothing unless the calling program is built with `-gnata`. The library's
+own `Pre` and `pragma Assert` are never checked in a release build.
+
+**Cause.** The release build has no `-gnata` (`proj/common.gpr:62`).
+
+**Planned fix.** Write guards that prevent memory errors as explicit
+checks that raise (PLAN.md, "Architecture decisions", 1).
+
+**Status.** Open. Applies throughout the fix phases.
+
+
+## 29. Exceptions raised in callbacks cross FLTK's C++ frames
+
+**Expected symptom.** Unknown. An exception from an Ada callback, or from
+a draw or handle override, unwinds through FLTK's C++ frames, or
+terminates the program, or leaves FLTK half-way through an event.
+
+**Cause.** `Callback_Hook` (`body/fltk-widgets.adb:605-612`) and the other
+hooks called from C++ have no exception handler.
+
+**Planned fix.** Decide after an experiment, which PLAN.md Phase 0 runs
+(Open question 2, decided 2026-11-03). Phase 2 implements the choice.
+
+**Status.** Open.
+
+
+## 30. GLUT: a Glut_Window with a parent that isn't a GLUT window
+
+**Expected symptom.** `GLUT.Get (Window_Parent)` misreads memory for a
+`Glut_Window` made with `Forge.Create (Parent => ...)` whose parent isn't
+an `Fl_Glut_Window`.
+
+**Cause.** The Ada `Forge.Create` accepts any `Group` as parent
+(`spec/fltk-widgets-groups-windows-opengl-glut.ads:35`), but `glutGet`
+casts the parent to `Fl_Glut_Window`. Related GLUT liveness problems are
+pofltk 112.
+
+**Planned fix.** Require a `Glut_Window` parent, or make `Get` refuse
+otherwise.
+
+**Status.** Open. PLAN.md Phase 4.
