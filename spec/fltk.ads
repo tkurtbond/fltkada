@@ -338,6 +338,18 @@ package FLTK is
         Gleam_Thin_Down_Box,
         Gleam_Round_Up_Box,
         Gleam_Round_Down_Box,
+        Oxy_Up_Box,
+        Oxy_Down_Box,
+        Oxy_Up_Frame,
+        Oxy_Down_Frame,
+        Oxy_Thin_Up_Box,
+        Oxy_Thin_Down_Box,
+        Oxy_Thin_Up_Frame,
+        Oxy_Thin_Down_Frame,
+        Oxy_Round_Up_Box,
+        Oxy_Round_Down_Box,
+        Oxy_Button_Up_Box,
+        Oxy_Button_Down_Box,
         Free_Box);
 
     function Filled
@@ -428,7 +440,9 @@ package FLTK is
         DnD_Leave,
         DnD_Release,
         Screen_Config_Changed,
-        Fullscreen);
+        Fullscreen,
+        Zoom_Gesture,
+        Zoom_Event);
 
     type Event_Outcome is (Not_Handled, Handled);
 

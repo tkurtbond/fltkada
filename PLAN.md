@@ -230,10 +230,11 @@ None of these are in `fltk-issues.md`:
   or `Load`. (Issue 56.)
 - **N12.** Ada exceptions raised in callbacks called from C++ are never
   caught at the boundary: `Callback_Hook`, the draw and handle hooks, the
-  GLUT hooks, the image-line hook and the `Scroll` hook. Whether GNAT's
-  zero-cost exceptions unwind through FLTK's frames cleanly, and what
-  state that leaves FLTK in, is untested. Phase 0 runs the experiment
-  that decides it (Open question 2).
+  GLUT hooks, the image-line hook and the `Scroll` hook. Phase 0's
+  experiment (below) found that they unwind through FLTK's frames to the
+  Ada handler, but leave FLTK's state broken in several hooks
+  (FLTK-issues.md F3). Decided: each hook catches the exception and the
+  binding re-raises it later (Phase 2).
 
 ### Stale entries to remove
 
@@ -270,18 +271,21 @@ It then prints a summary and exits 1 on any failure.
 
 ## Phased roadmap
 
-### Phase 0: Test infrastructure
+### Phase 0: Test infrastructure [done, 2026-11-03]
 
 Everything after this phase is test-first. This phase adds:
 
-- **`test/unit/check.ads/.adb`.**
+- **`test/unit/checks.ads/.adb`** [done] (package `Checks`; the plan
+  said `check.ads`).
   - `Check (OK : Boolean; Label : String)`, `Skip (Label)` and `Summary`
     (`Ada.Command_Line.Set_Exit_Status`).
   - `Raises (Proc : not null access procedure; E : Exception_Id; Label)`
     for exception tests. Several misuse cases fit in one file, which is
-    better than pofltk's one program per halt code.
+    better than pofltk's one program per halt code. Also `No_Raise`.
   - About 60 lines, with no AUnit dependency.
-- **`test/unit/probe.ads/.adb` + `test/unit/c_probe.cpp`.** Port pofltk's
+- **`test/unit/fltk-probe.ads/.adb` + `test/unit/c_probe.cpp`** [done]
+  (package `FLTK.Probe`, a child of `FLTK` so it can reach a widget's C++
+  object; the plan said `probe.ads`). Port pofltk's
   `test/Probe.Mod`/`Probe.cpp`:
   - Pixel capture: `Capture`, `Pixel`, `Shown_Pixel`.
   - Synthetic `Mouse`, `Wheel`, `Key` and `Shortcut` events.
@@ -291,25 +295,39 @@ Everything after this phase is test-first. This phase adds:
   - `Has_Wayland`, `Has_X11`, `Has_SVG`, `Has_Cairo` feature queries.
 
   Linked by the test project only.
-- **`tests_unit.gpr`.** A new project, with `test/unit/` as its source
+- **`tests_unit.gpr`** [done]. A new project, with `test/unit/` as its source
   directory and one `Main` per `test_<area>.adb` (decided 2026-11-03, Open
   question 4). It is kept separate so `tests.gpr` stays the demo set. It uses `proj/common.gpr` with `-gnata`
   on, so predicates in test code are checked.
-- **A `Makefile` runner.** The targets listed under Build and test.
+- **A `Makefile` runner** [done]. The targets listed under Build and
+  test, plus `valgrind-sway`, `smoke` and `smoke-sway`.
   `tools/with-sway.sh` is copied from pofltk. `test/vg-check.sh` comes
-  from pofltk's `vg-check.sh`, with the "FLTKAda's allocator" pattern
-  changed to `fl_[a-z_0-9]*` shim frames and `fltk__*` GNAT frames.
-  `test/fltkada.supp` holds suppressions for fontconfig, Pango, libdecor
-  and FLTK's font caches (PROBLEMS-OUTSTANDING.md already lists the
-  last).
-- **The 8 existing self-checking programs** (`button`, `ask`, `dirlist`,
+  from pofltk's `vg-check.sh`. ~~with the "FLTKAda's allocator" pattern
+  changed to `fl_[a-z_0-9]*` shim frames and `fltk__*` GNAT frames.~~
+  Without debug information valgrind names neither: shim frames show as
+  `(in .../libfltkada.so)`, and GNAT's as `fltk.widgets.boxes.forge.create`.
+  The script matches those.
+  ~~`test/fltkada.supp` holds suppressions for fontconfig, Pango, libdecor
+  and FLTK's font caches.~~ No suppression file: with
+  `--errors-for-leak-kinds=none` those leaks never count as valgrind
+  errors, and vg-check.sh ignores any whose allocator isn't FLTKAda's.
+  Every run so far has had 0 valgrind errors, so there is nothing to
+  suppress. Add a file only if a library outside FLTKAda gives one.
+- ~~**The 8 existing self-checking programs** (`button`, `ask`, `dirlist`,
   `filename`, `preferences`, `group_children`, `clear_image_chosen`,
-  `column_widths`). Either fold them into `make check`, or have them use
-  `Check`.
-- **Smoke runs.** A loop over `bin/*` and `bin/examples/*` with
-  `timeout $(EXAMPLETIME)`: status 124 passes. An `EXAMPLEONCE` list holds
-  programs that must exit 0 by themselves.
-- **`tools/gen-constants.py`.** Ported from pofltk. It compiles a C++
+  `column_widths`).~~ Wrong: only 4 check themselves (`preferences`,
+  `group_children`, `clear_image_chosen`, `column_widths`), and `make
+  check` runs them [done]. `button` and `ask` wait for the user.
+  `dirlist` and `filename` print a result for their argument and exit 0
+  (1 without one), so the smoke run gives them one and expects 0.
+- **Smoke runs** [done]. Every program `tests.gpr`, `tests_2022.gpr`
+  and `examples.gpr` name, not a `bin/*` glob: `bin/examples/` holds
+  stale binaries under old names (`OpenGL3-glut-test`, `OpenGL3test`).
+  A program must survive `EXAMPLETIME` seconds (status 124). One in
+  `ONCE` must exit 0 by itself. `ARGS` gives `dirlist`, `filename` and
+  the three GIF examples their arguments, with `test/images/anim.gif`
+  (pofltk's) for the GIFs. All 74 programs pass under Xvfb and sway.
+- **`tools/gen-constants.py`** [done, 2026-11-03]. Ported from pofltk. It compiles a C++
   table of `{name, value}` from `FL/*.H` and generates
   `test/unit/test_constants.adb`. That test compares each enumeration's
   `'Enum_Rep` and each constant in `spec/fltk.ads` (keys, events, boxes,
@@ -317,8 +335,37 @@ Everything after this phase is test-first. This phase adds:
   FLTK's value, so the next FLTK upgrade fails loudly instead of
   silently.
 
-- **The N12 experiment: exceptions crossing C++ frames** (Open
-  question 2). Write `test/unit/test_exceptions.adb`, which raises an Ada
+  As built, it writes two files:
+  - `test/unit/c_constants.cpp`, an array of FLTK's values in order. The
+    array, not `{name, value}` pairs, because the Ada side is generated
+    in the same order.
+  - `test/unit/fltk-test_constants.adb`, a child of `FLTK`, so that it
+    can see the private conversions (`To_C`, `Flag_To_UChar`,
+    `MFlag_To_Cint`, `Mask_To_UChar`, `Cursor_Values`).
+
+  The hand-written `test/unit/test_constants.adb` runs it. Enumerations
+  are compared by `'Pos`, which is what the bodies pass to C. The C++ is
+  compiled against the installed headers, so an FLTK upgrade needs no
+  rerun of the script, only a rebuild.
+
+  Each enumeration's last value is checked too: `Free_Box`,
+  `Free_Label`, `Free_Font`, and `Event_Kind'Last` against
+  `FL_ZOOM_EVENT`. That way, an enumerator FLTK adds fails as well as
+  one it renumbers.
+
+  It found two bugs on its first run, FLTKAda-BUGS.md 31 and 32:
+  - `Box_Kind` lacked FLTK 1.4's twelve Oxy box types, so `Free_Box`
+    was 56, not 68;
+  - `Event_Kind` lacked `FL_ZOOM_GESTURE` and `FL_ZOOM_EVENT`, so FLTK's
+    zoom shortcut raised `Internal_FLTK_Error` through any Ada global
+    handler, which a scratch program confirmed.
+
+  Both are fixed here, not in a later phase, because Phase 0 is done
+  only when `test_constants` passes, and each fix is an enumerator
+  list. All 260 checks pass.
+
+- **The N12 experiment: exceptions crossing C++ frames** [done,
+  2026-11-03] (Open question 2). Write `test/unit/test_exceptions.adb`, which raises an Ada
   exception from each kind of hook FLTK calls: a widget callback, an
   overridden `Draw`, an overridden `Handle`, a timeout, an idle, a GLUT
   callback, and an `Fl_Image` line hook. For each, record:
@@ -334,9 +381,93 @@ Everything after this phase is test-first. This phase adds:
   list of the FLTK state the binding must restore. Phase 2 implements the
   choice.
 
+  **Results.** `test/controls/n12.adb` (one case per hook, plus a
+  no-exception redraw as a control) ran each case in release and debug
+  builds, under Xvfb and headless sway, and under valgrind on X11.
+  `test/unit/test_exceptions.adb` then checks, for each hook, what
+  FLTKAda will promise afterwards: no grab or pushed widget left set, no
+  dialog left up, a later click runs its callback, a later redraw paints
+  correctly, a later timeout or idle runs.
+
+  The exception reached the Ada handler around `Wait` in every case, on
+  both back ends and in both builds, and C++ destructors ran on the way
+  (so `Fl_Button::handle`'s `Fl_Widget_Tracker` was removed: valgrind
+  saw no invalid access). Whether FLTK still worked:
+
+  | Hook | X11 | Wayland |
+  |---|---|---|
+  | callback (`Do_Callback`, a click) | works | works |
+  | `Handle` on push | works | works |
+  | timeout | works; not run again | works |
+  | timeout during a modal `Choice` | works; dialog gone | works |
+  | idle | no idle ever runs again | same |
+  | `Draw` | works after the next damage | works, except a window whose first frame raised is never drawn |
+  | `Draw` that raised inside its own `Push_Clip` | after 2 or more, later redraws miss part of the window | not run |
+  | image line | as `Draw`; FLTK's buffer leaks | as `Draw` |
+  | GLUT display | GLUT window works; plain windows then draw black | GLUT window never displayed again |
+  | timeout during `Popup` | `Fl::grab` left on a dead stack frame: invalid reads, then `Storage_Error` (release) or a segfault (debug) | popup closes at once, so untested |
+
+  Valgrind (debug, X11) shows no invalid access in any case but the
+  menu one, and vg-check.sh passes them all. The image case loses
+  1,200 bytes, but FLTK allocated them, so vg-check.sh rightly doesn't
+  count them. FLTK-issues.md F3 has the cause of each in FLTK's source.
+
+  Option (b) would have the binding restore `in_idle`, `Fl::grab`,
+  the Wayland flush state and GLUT's `indraw`, all FLTK statics it
+  can't reach. So the choice is **(a), with a deferred re-raise**:
+  - each hook catches every exception, saves it with
+    `Ada.Exceptions.Save_Occurrence`, and returns normally (a `Handle`
+    returns `Not_Handled`), so FLTK finishes what it was doing;
+  - the binding re-raises the saved occurrence when control is back in
+    Ada: on return from `Wait`, `Check`, `Run`, `Do_Callback`, `Popup`,
+    `Choice` and the other dialogs, and the `FLTK.Probe` calls;
+  - consequence: an exception can't cut a modal dialog or a menu short.
+    The dialog or menu stays up until it ends normally, and the
+    exception comes out after. Only the first is kept if several are
+    raised before control returns; the rest are dropped (Phase 2 decides
+    whether to count them);
+  - a clip the user's own `Draw` pushed and didn't pop before raising
+    stays pushed. That is the user's to fix with a handler. Document it
+    (Phase 15), and perhaps add a controlled clip guard.
+
+  This was recommended by the agent; the user can overturn it.
+  `test_exceptions` encodes it, so it fails until Phase 2 and is not in
+  `tests_unit.gpr`'s `Main` until then. On X11 its only failures now are
+  the idle and GLUT cases, and the menu case, which is run last because
+  it crashes. On Wayland they are the idle, first-frame and GLUT cases;
+  the menu case is skipped, since pop-up menus close at once there.
+
+- **Negative controls** [done, 2026-11-03]. Two programs in
+  `test/controls/` (`controls.gpr`, built into `bin/controls/`), kept
+  out of `make check` because they must fail:
+  - one `Check (False, ...)` makes a test print `FAIL` and exit 1;
+  - a `Box` allocated with `new`, under `pragma No_Heap_Finalization`
+    and never freed, must trip vg-check.sh.
+
+  The second found two bugs in the new vg-check.sh. Each made it pass
+  every leak of its kind:
+  - valgrind writes GNAT's allocator as `<__gnat_malloc>`, in angle
+    brackets, so it wasn't skipped as an allocator, and every Ada `new`
+    in FLTKAda looked like libgnat's;
+  - it writes `operator new` mangled, as `<_Znwm>`, so every `new` in
+    the shim (`new_fl_box`) looked like valgrind's own.
+
+  pofltk's `test/vg-check.sh` has the same `operator new` pattern, so it
+  probably misses leaks from `new` in its shim too (not checked there).
+  With both fixed, the control fails on the lost Ada object and on the
+  lost `Fl_Box`. The real tests then failed on two blocks still
+  reachable from `fltk'Elab_Spec`: `Clipboard_Image` and
+  `Clipboard_Plain_Text` (spec/fltk.ads:848), library-level `String`
+  constants whose length GNAT learns only at run time, so it puts them
+  on the heap. vg-check.sh now passes a still-reachable block that
+  elaboration allocated, and only that. A lost block from elaboration
+  still fails.
+
 Done when `make check-headless`, `make check-sway`, `make
 valgrind-headless` and `make smoke-headless` all pass, with
-`test_constants` and the folded-in programs as the first tests.
+`test_constants` and the folded-in programs as the first tests. All four
+passed on 2026-11-03: 277 checks under Xvfb and under sway, valgrind
+clean, and 74 programs in the smoke run.
 
 ### Phase 1: Housekeeping
 
@@ -381,8 +512,12 @@ These come first because they are FLTKAda's own errors, not FLTK's.
 - **N1** (`Font_Sizes`), **N2** (the `Draw_Image` line buffer), **N3**
   (`Expand_Text`).
 - **N12:** exceptions raised in hooks FLTK calls. Implement the choice
-  Phase 0's experiment made, in every hook: `Callback_Hook`, the draw and
-  handle hooks, the GLUT hooks, the image-line hook and the `Scroll` hook.
+  Phase 0's experiment made, (a) with a deferred re-raise, in every hook:
+  `Callback_Hook`, the draw and handle hooks, the timeout and idle hooks,
+  the GLUT hooks, the image-line hook and the `Scroll` hook. Re-raise in
+  `Wait`, `Check`, `Run`, `Do_Callback`, the menu and dialog calls, and
+  `FLTK.Probe`. Add `test_exceptions` to `tests_unit.gpr`'s `Main`, and
+  document the user's own `Push_Clip` (FLTK-issues.md F3).
 - **Issue 126:** `Local_To_Mac_Roman`/`Mac_Roman_To_Local`. Call FLTK
   with `n = 0` first, then convert a byte at a time, and return
   `Value (ptr, len)`.
@@ -807,7 +942,9 @@ All five were decided by the user on 2026-11-03.
    everything in each hook and report it. Option (b): let it propagate,
    which GNAT ZCX may manage through g++ frames built with unwind
    tables.~~ **Decided:** run the experiment in Phase 0, and choose from
-   its results.
+   its results. It ran on 2026-11-03 and chose (a), with the hook's
+   exception saved and re-raised once control is back in Ada (Phase 0,
+   N12 experiment).
 3. ~~**Display opening (decision 5).** Open the display lazily in the
    specific shim functions, or offer an explicit
    `FLTK.Static.Open_Display`?~~ **Decided:** both, documented (decision

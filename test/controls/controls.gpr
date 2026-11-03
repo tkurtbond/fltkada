@@ -1,0 +1,70 @@
+--  Programmed by T. Kurt Bond and Claude Opus 5.5
+--  Released into the public domain
+
+
+--  Programs that test the tests, kept out of make check (PLAN.md,
+--  Phase 0).  Build with gprbuild -P test/controls/controls.gpr; the
+--  executables land in bin/controls.
+--
+--  Negative controls, which must fail:
+--    control_fail  one failing Check, so it prints FAIL and exits 1;
+--    control_leak  a Box that is never freed, so test/vg-check.sh must
+--                  report a leak on its valgrind log.
+--
+--  The N12 experiment (PLAN.md, Phase 0): n12 CASE raises an Ada
+--  exception from one kind of hook FLTK calls and reports what state FLTK
+--  is left in.  Build it with -Xbuild=debug for the debug results.  Run
+--  everything headless, as AGENTS.md says.
+
+
+with
+
+    "../../fltkada",
+    "../../proj/common";
+
+
+project Controls is
+
+
+    for Languages use ("Ada", "C++");
+
+    for Source_Dirs use (".", "../unit");
+    for Excluded_Source_Files use
+       ("c_constants.cpp",
+        "fltk-test_constants.adb");
+    for Object_Dir  use "../../obj/controls";
+    for Exec_Dir    use "../../bin/controls";
+
+    for Main use
+       ("control_fail.adb",
+        "control_leak.adb",
+        "n12.adb");
+
+    package Builder is
+        for Default_Switches ("Ada") use
+            Common.Builder'Default_Switches ("Ada");
+        for Global_Compilation_Switches ("Ada") use
+            Common.Builder'Global_Compilation_Switches ("Ada");
+    end Builder;
+
+    package Compiler is
+        for Default_Switches ("Ada") use
+            Common.Compiler'Default_Switches ("Ada") & "-gnata";
+        for Default_Switches ("C++") use
+            Common.Compiler'Default_Switches ("C++");
+    end Compiler;
+
+    package Binder         renames Common.Binder;
+
+    --  control_fail uses only Checks, so nothing it withs brings in
+    --  spec/fltk.ads's Linker_Options, but libfltkada.so still needs FLTK.
+    package Linker is
+        for Default_Switches ("Ada") use
+            Common.Linker'Default_Switches ("Ada")
+            & ("-lfltk_images", "-lfltk_gl", "-lfltk");
+    end Linker;
+
+    package Pretty_Printer renames Common.Pretty_Printer;
+
+
+end Controls;

@@ -1,9 +1,10 @@
 # FLTKAda bugs found while porting FLTK 1.4.5's examples
 
-Sections 1 to 14 are fixed bugs. Sections 15 onward are **open**: they
+Sections 1 to 14 are fixed bugs. Sections 15 to 30 are **open**: they
 were found on 2026-11-03 by reading FLTKAda's code against pofltk's
 `doc/fltk-issues.md` (see PLAN.md, "The issue triage"). They have not yet
-been confirmed by running anything. When one is fixed, replace its
+been confirmed by running anything. Sections 31 and 32 were found by
+`test_constants` (PLAN.md, Phase 0) and are fixed. When one is fixed, replace its
 "Status" with "Fix" and "Verified", as in sections 1 to 14. When one
 turns out not to be a bug, say so in its section rather than deleting it.
 Numbers like "pofltk 16" refer to `~/Repos/Oberon/pofltk/doc/fltk-issues.md`.
@@ -600,3 +601,72 @@ pofltk 112.
 otherwise.
 
 **Status.** Open. PLAN.md Phase 4.
+
+
+## 31. Box_Kind lacks FLTK 1.4's Oxy box types, so Free_Box is wrong
+
+**Symptom.** `Box_Kind'Pos (Free_Box)` is 56, but FLTK 1.4.5's
+`FL_FREE_BOXTYPE` is 68. Found by `test_constants` on its first run
+(2026-11-03), which prints
+`FAIL - Box_Kind'Pos (Free_Box) = FL_FREE_BOXTYPE: FLTKAda has 56, FLTK 68`.
+
+**Cause.** FLTK 1.4 added twelve box types for the "oxy" scheme,
+`_FL_OXY_UP_BOX` (56) to `_FL_OXY_BUTTON_DOWN_BOX` (67), between the
+Gleam ones and `FL_FREE_BOXTYPE` (`FL/Enumerations.H`). `Box_Kind` in
+`spec/fltk.ads` still ends `Gleam_Round_Down_Box, Free_Box`. Effects,
+from FLTK's source and FLTKAda's:
+
+- Ada code can't name the Oxy boxes.
+- `Free_Box` is FLTK's `_FL_OXY_UP_BOX`. So `Set_Box_Draw_Function` for
+  `Free_Box` (`body/fltk-box_draw_marshal.adb`) overwrites
+  `fl_box_table[56]`, one of FLTK's own box types, instead of a free one
+  (`Fl::set_boxtype`, `src/fl_boxtype.cxx`).
+- A widget given an Oxy box from C++ makes `Box_Kind'Val` raise
+  `Constraint_Error` in every getter that converts a box. There are 15
+  such conversions, in 9 bodies, among them `Get_Box` and
+  `Filled`/`Frame`/`Down`.
+
+**Fix.** `Box_Kind` has the twelve, `Oxy_Up_Box` to
+`Oxy_Button_Down_Box`, before `Free_Box`. `body/fltk-box_draw_marshal.adb`
+has their draw and hook instances and `case` arms. `gen-constants.py`
+checks each one.
+
+**Verified.** 2026-11-03. `test_constants` passes, including
+`Free_Box = FL_FREE_BOXTYPE = 68`. `make check-headless`, `check-sway`,
+`valgrind-headless` and `smoke-headless` pass.
+
+
+## 32. Event_Kind lacks FL_ZOOM_GESTURE and FL_ZOOM_EVENT
+
+**Symptom.** A program with an Ada global handler (`FLTK.Events.Add_Handler`)
+gets `Internal_FLTK_Error` when the user zooms. FLTK's zoom shortcut,
+Ctrl with + or -, sends `Fl::handle (FL_ZOOM_EVENT, NULL)`
+(`src/Fl_Screen_Driver.cxx:574`). `Event_Handler_Hook`
+(`body/fltk-events.adb:423`) converts 27 with `Event_Kind'Val`, which
+raises `Constraint_Error`, and the hook turns that into
+`Internal_FLTK_Error`. `test_constants` prints
+`FAIL - Event_Kind'Pos (Event_Kind'Last) = FL_ZOOM_EVENT: FLTKAda has 25, FLTK 27`.
+
+**Cause.** FLTK 1.4 added `FL_ZOOM_GESTURE` (26, sent on macOS,
+`src/Fl_cocoa.mm:1046`) and `FL_ZOOM_EVENT` (27) to `Fl_Event`.
+`Event_Kind` ends at `Fullscreen` (25). The same `'Val` is in the
+dispatch hook (`body/fltk-events.adb:476`), in `Widget.Handle`'s hook
+(`body/fltk-widgets.adb:633`) and in `FLTK.Events`' current-event getter
+(`body/fltk-events.adb:831`).
+
+**Confirmed.** A scratch program, run under Xvfb on 2026-11-03, adds an
+Ada handler and calls `Fl::handle (FL_ZOOM_EVENT, 0)` from C++. The
+handler is never called. `Internal_FLTK_Error` ("Event_Handler hook
+received unexpected event int value of 27") reaches the Ada handler
+around the C++ call. The C++ line after `Fl::handle` never runs, so the
+exception unwound through FLTK's frames. That is one data point for the
+N12 experiment (section 29).
+
+**Fix.** `Event_Kind` ends `Fullscreen, Zoom_Gesture, Zoom_Event`.
+Still open: the hooks fail on an event number from a later FLTK. That
+goes with N12 (section 29), and `test_constants`' `Event_Kind'Last`
+check fails first when FLTK adds one.
+
+**Verified.** 2026-11-03. `test_constants` passes. Run again, the scratch
+program's handler is called once, and `Fl::handle` returns 0 to the C++
+line after it. The same four `make` targets pass.

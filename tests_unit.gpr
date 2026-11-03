@@ -1,0 +1,54 @@
+
+
+--  Programmed by T. Kurt Bond and Claude Opus 5.5
+--  Released into the public domain
+
+
+--  The unit tests in test/unit: each test_<area>.adb checks its own
+--  results, prints ok/FAIL/skip lines and sets the exit status.  make
+--  check runs them (PLAN.md, Phase 0).  FLTK.Probe and its C++ part are
+--  compiled here, not in the library.  Assertions are always on (-gnata),
+--  so predicates and Pre in the library's specs are checked in the test
+--  code that calls them.
+
+
+with
+
+    "fltkada",
+    "proj/common";
+
+
+project Tests_Unit is
+
+
+    for Languages use ("Ada", "C++");
+
+    for Source_Dirs use ("test/unit");
+    for Object_Dir  use "obj/unit";
+    for Exec_Dir    use "bin/unit";
+
+    for Main use
+       ("test_constants.adb",
+        "test_probe.adb");
+
+    package Builder is
+        for Default_Switches ("Ada") use
+            Common.Builder'Default_Switches ("Ada");
+        for Global_Compilation_Switches ("Ada") use
+            Common.Builder'Global_Compilation_Switches ("Ada");
+    end Builder;
+
+    package Compiler is
+        for Default_Switches ("Ada") use
+            Common.Compiler'Default_Switches ("Ada") & "-gnata";
+        for Default_Switches ("C++") use
+            Common.Compiler'Default_Switches ("C++");
+    end Compiler;
+
+    package Binder         renames Common.Binder;
+    package Linker         renames Common.Linker;
+    package Pretty_Printer renames Common.Pretty_Printer;
+
+
+end Tests_Unit;
+

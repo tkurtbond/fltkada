@@ -39,7 +39,7 @@ first, because every later fix is meant to start from a failing test.
 Where findings go:
 
 - **FLTKAda-BUGS.md**: bugs in FLTKAda's own code. Sections 1–14 are
-  fixed; 15 onward are open.
+  fixed; 15–30 are open; 31 and 32 are fixed.
 - **FLTK-issues.md**: FLTK issues pofltk's list doesn't have (F1, F2, …).
 - **PLAN.md**: FLTKAda's verdict on each of pofltk's numbered issues, and
   every decision.
@@ -56,16 +56,29 @@ gprbuild examples.gpr             # build the ports of FLTK 1.4.5's examples/ (b
 gprbuild tools.gpr                # build tool/ (template.adb, a codegen helper)
 ```
 
-Built test executables land in `bin/`. There is no automated test suite
-yet; PLAN.md Phase 0 adds one (`test/unit/`, `make check-headless`, `make
-check-sway`, `make valgrind-headless`, `make smoke-headless`). Until then,
-"testing" a new binding means writing a small `test/<name>.adb` (see the
-existing files under `test/` for the idiomatic shape), adding it to `Main`
-and `Builder` in `tests.gpr`, and running it **headless**, as described in
-the next section. Eight of the existing programs check their own results
-and set the exit status: `button`, `ask`, `dirlist`, `filename`,
-`preferences`, `group_children`, `clear_image_chosen` and
-`column_widths`.
+Built test executables land in `bin/`, the unit tests in `bin/unit/`.
+The automated tests (PLAN.md Phase 0) run headless:
+
+```sh
+make check-headless       # unit tests + self-checking programs, Xvfb (X11)
+make check-sway           # the same on a headless sway (Wayland)
+make valgrind-headless    # the same under valgrind; also valgrind-sway
+make smoke-headless       # every program starts and survives; also smoke-sway
+```
+
+Never run plain `make check`, `make valgrind` or `make smoke`: they use
+whatever display is set, which is the user's desktop.
+
+A unit test is a `test/unit/test_<area>.adb` using `Checks` and
+`FLTK.Probe` (see `test_probe.adb`), listed in `Main` in
+`tests_unit.gpr`; `make check` finds it there. A demo program goes in
+`test/`, in `Main` and `Builder` in `tests.gpr`, and the smoke run picks
+it up. Four of the existing programs check their own results and set
+the exit status, and `make check` runs them: `preferences`,
+`group_children`, `clear_image_chosen` and `column_widths`. (This file
+first said eight, including `button`, `ask`, `dirlist` and `filename`.
+That was wrong: `button` and `ask` wait for the user, and `dirlist` and
+`filename` only print a result for their argument.)
 
 ## Tests and the display
 
@@ -84,8 +97,8 @@ one whose widgets are never shown.
   FLTK then prefers Wayland, which is the real desktop (pofltk 18). The
   default screen is 640x480. Pass `-s '-screen 0 1280x1024x24'` for
   larger windows.
-- **Wayland, headless:** `~/Repos/Oberon/pofltk/tools/with-sway.sh
-  <program>` (PLAN.md Phase 0 copies it to `tools/`). It runs the
+- **Wayland, headless:** `tools/with-sway.sh <program>` (copied from
+  pofltk). It runs the
   command on a headless sway with `DISPLAY` unset. Pop-up menus close
   at once there, as they do on the desktop, so menu tests need X11.
 - **Screenshots:** under Xvfb, use `xwd -root -display :N | convert xwd:-
@@ -97,9 +110,10 @@ one whose widgets are never shown.
   This is how sections 1–14 of FLTKAda-BUGS.md were verified.
 - Tests drive themselves, without an input tool:
   - `Do_Callback`;
-  - synthetic events from the test-only `Probe` package (Phase 0);
+  - synthetic events from the test-only `FLTK.Probe` package
+    (`test/unit/fltk-probe.ads`);
   - timeouts, or `Wait`/`Check` in a loop;
-  - `Probe.Modal` to answer a dialog.
+  - `FLTK.Probe.Modal` to answer a dialog.
 
 ## Valgrind
 
@@ -107,9 +121,12 @@ Run a test under valgrind with
 `env -u WAYLAND_DISPLAY xvfb-run -a valgrind --leak-check=full <program>`.
 FLTK, fontconfig, Pango and libdecor leak by design (PROBLEMS-OUTSTANDING.md
 lists FLTK's font caches; see also pofltk 19). A leak is FLTKAda's only
-if its allocation stack has a shim frame (`fl_*` in `body/c_fl_*.cpp`) or
-an Ada frame (`fltk__*`) above FLTK's. Phase 0's `test/vg-check.sh`
-automates that test, following pofltk's `test/vg-check.sh`. Invalid reads
+if its allocator, the first frame after malloc or new, is in FLTKAda:
+`(in .../libfltkada.so)`, a `body/c_fl_*.cpp` or `fltk*.ad[bs]` source,
+or a GNAT name such as `fltk.widgets.boxes.forge.create`.
+`test/vg-check.sh LOG` applies that test, and `make valgrind-headless`
+runs it; read its header comment for the one exception (still-reachable
+blocks from elaboration). Invalid reads
 and writes are always errors, whoever allocated the memory. Valgrind
 can't see a pointer into a dead stack frame or a reused buffer, so for
 dangling strings check the actual value too.
@@ -142,6 +159,8 @@ component of the Ada record.
 | `body/fltk-*.adb` | Ada package bodies |
 | `body/c_fl_*.h`, `body/c_fl_*.cpp` | The C++ shim, one pair per bound FLTK class |
 | `test/`, `test/.dir-locals.el` | Example/test programs (built by `tests.gpr`/`tests_2022.gpr`) |
+| `test/unit/` | Unit tests, `Checks` and `FLTK.Probe` (built by `tests_unit.gpr` into `bin/unit/`) |
+| `test/controls/` | Programs that test the tests: the negative controls, which must fail, and the N12 experiment (built by `test/controls/controls.gpr` into `bin/controls/`) |
 | `examples/` | Ada ports of every program in FLTK 1.4.5's `examples/` (built by `examples.gpr`, executables named after the C++ originals) |
 | `tool/` | `template.adb`, an unrelated text-substitution codegen helper — not a widget template |
 | `proj/common.gpr` | Shared `gprbuild` switches (style checks, warnings, `Pretty_Printer` config) for all the other `.gpr` files |
@@ -246,8 +265,19 @@ line rhythm) and will disturb them if run unattended.
 - **Record decisions and findings in PLAN.md as they happen.** Append to
   the relevant section, mark finished phases `[done]`, and strike
   through decided open questions, saying what was decided.
+- **A file ported from pofltk** gets the new-file header plus these
+  two lines, which release it into the public domain like the rest of
+  FLTKAda (pofltk itself is BSD 3-Clause; its author, T. Kurt Bond,
+  released the derived files):
+  ```
+  --  Derived from pofltk (BSD 3-Clause, copyright T. Kurt Bond), whose
+  --  author releases this derived work into the public domain, as FLTKAda is.
+  ```
 - **Keep progress.txt and doc/*.html in step** with what is bound
   (Workflow above).
+- **A constant or enumerator that stands for an FLTK value** goes in
+  `tools/gen-constants.py` too. Rerun the script with
+  `python3 tools/gen-constants.py`, so that `test_constants` checks it.
 
 ## Git / commits
 

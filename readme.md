@@ -137,4 +137,9 @@ Written by Jedidiah Barber.
 
 Released into the public domain. For details see `unlicense.txt`.
 
+Some tests, tools and examples are derived from pofltk, the Oberon-2 FLTK
+binding by T. Kurt Bond, which is under the BSD 3-Clause license. Its
+author releases those derived files into the public domain like the rest
+of FLTKAda; each says so in its header.
+
 

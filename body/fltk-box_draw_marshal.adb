@@ -115,6 +115,18 @@ package body FLTK.Box_Draw_Marshal is
     procedure Gleam_Thin_Down_Box_Draw    is new Generic_Box_Draw (Gleam_Thin_Down_Box);
     procedure Gleam_Round_Up_Box_Draw     is new Generic_Box_Draw (Gleam_Round_Up_Box);
     procedure Gleam_Round_Down_Box_Draw   is new Generic_Box_Draw (Gleam_Round_Down_Box);
+    procedure Oxy_Up_Box_Draw             is new Generic_Box_Draw (Oxy_Up_Box);
+    procedure Oxy_Down_Box_Draw           is new Generic_Box_Draw (Oxy_Down_Box);
+    procedure Oxy_Up_Frame_Draw           is new Generic_Box_Draw (Oxy_Up_Frame);
+    procedure Oxy_Down_Frame_Draw         is new Generic_Box_Draw (Oxy_Down_Frame);
+    procedure Oxy_Thin_Up_Box_Draw        is new Generic_Box_Draw (Oxy_Thin_Up_Box);
+    procedure Oxy_Thin_Down_Box_Draw      is new Generic_Box_Draw (Oxy_Thin_Down_Box);
+    procedure Oxy_Thin_Up_Frame_Draw      is new Generic_Box_Draw (Oxy_Thin_Up_Frame);
+    procedure Oxy_Thin_Down_Frame_Draw    is new Generic_Box_Draw (Oxy_Thin_Down_Frame);
+    procedure Oxy_Round_Up_Box_Draw       is new Generic_Box_Draw (Oxy_Round_Up_Box);
+    procedure Oxy_Round_Down_Box_Draw     is new Generic_Box_Draw (Oxy_Round_Down_Box);
+    procedure Oxy_Button_Up_Box_Draw      is new Generic_Box_Draw (Oxy_Button_Up_Box);
+    procedure Oxy_Button_Down_Box_Draw    is new Generic_Box_Draw (Oxy_Button_Down_Box);
     procedure Free_Box_Draw               is new Generic_Box_Draw (Free_Box);
 
 
@@ -197,6 +209,18 @@ package body FLTK.Box_Draw_Marshal is
     procedure Gleam_Thin_Down_Box_Hook    is new Generic_Box_Draw_Hook (Gleam_Thin_Down_Box);
     procedure Gleam_Round_Up_Box_Hook     is new Generic_Box_Draw_Hook (Gleam_Round_Up_Box);
     procedure Gleam_Round_Down_Box_Hook   is new Generic_Box_Draw_Hook (Gleam_Round_Down_Box);
+    procedure Oxy_Up_Box_Hook             is new Generic_Box_Draw_Hook (Oxy_Up_Box);
+    procedure Oxy_Down_Box_Hook           is new Generic_Box_Draw_Hook (Oxy_Down_Box);
+    procedure Oxy_Up_Frame_Hook           is new Generic_Box_Draw_Hook (Oxy_Up_Frame);
+    procedure Oxy_Down_Frame_Hook         is new Generic_Box_Draw_Hook (Oxy_Down_Frame);
+    procedure Oxy_Thin_Up_Box_Hook        is new Generic_Box_Draw_Hook (Oxy_Thin_Up_Box);
+    procedure Oxy_Thin_Down_Box_Hook      is new Generic_Box_Draw_Hook (Oxy_Thin_Down_Box);
+    procedure Oxy_Thin_Up_Frame_Hook      is new Generic_Box_Draw_Hook (Oxy_Thin_Up_Frame);
+    procedure Oxy_Thin_Down_Frame_Hook    is new Generic_Box_Draw_Hook (Oxy_Thin_Down_Frame);
+    procedure Oxy_Round_Up_Box_Hook       is new Generic_Box_Draw_Hook (Oxy_Round_Up_Box);
+    procedure Oxy_Round_Down_Box_Hook     is new Generic_Box_Draw_Hook (Oxy_Round_Down_Box);
+    procedure Oxy_Button_Up_Box_Hook      is new Generic_Box_Draw_Hook (Oxy_Button_Up_Box);
+    procedure Oxy_Button_Down_Box_Hook    is new Generic_Box_Draw_Hook (Oxy_Button_Down_Box);
     procedure Free_Box_Hook               is new Generic_Box_Draw_Hook (Free_Box);
 
 
@@ -436,6 +460,54 @@ package body FLTK.Box_Draw_Marshal is
            (if Ptr = Storage.To_Integer (Gleam_Round_Down_Box_Hook'Address)
             then Ada_Access_Array (Kind)
             else Gleam_Round_Down_Box_Draw'Access);
+        when Oxy_Up_Box => return
+           (if Ptr = Storage.To_Integer (Oxy_Up_Box_Hook'Address)
+            then Ada_Access_Array (Kind)
+            else Oxy_Up_Box_Draw'Access);
+        when Oxy_Down_Box => return
+           (if Ptr = Storage.To_Integer (Oxy_Down_Box_Hook'Address)
+            then Ada_Access_Array (Kind)
+            else Oxy_Down_Box_Draw'Access);
+        when Oxy_Up_Frame => return
+           (if Ptr = Storage.To_Integer (Oxy_Up_Frame_Hook'Address)
+            then Ada_Access_Array (Kind)
+            else Oxy_Up_Frame_Draw'Access);
+        when Oxy_Down_Frame => return
+           (if Ptr = Storage.To_Integer (Oxy_Down_Frame_Hook'Address)
+            then Ada_Access_Array (Kind)
+            else Oxy_Down_Frame_Draw'Access);
+        when Oxy_Thin_Up_Box => return
+           (if Ptr = Storage.To_Integer (Oxy_Thin_Up_Box_Hook'Address)
+            then Ada_Access_Array (Kind)
+            else Oxy_Thin_Up_Box_Draw'Access);
+        when Oxy_Thin_Down_Box => return
+           (if Ptr = Storage.To_Integer (Oxy_Thin_Down_Box_Hook'Address)
+            then Ada_Access_Array (Kind)
+            else Oxy_Thin_Down_Box_Draw'Access);
+        when Oxy_Thin_Up_Frame => return
+           (if Ptr = Storage.To_Integer (Oxy_Thin_Up_Frame_Hook'Address)
+            then Ada_Access_Array (Kind)
+            else Oxy_Thin_Up_Frame_Draw'Access);
+        when Oxy_Thin_Down_Frame => return
+           (if Ptr = Storage.To_Integer (Oxy_Thin_Down_Frame_Hook'Address)
+            then Ada_Access_Array (Kind)
+            else Oxy_Thin_Down_Frame_Draw'Access);
+        when Oxy_Round_Up_Box => return
+           (if Ptr = Storage.To_Integer (Oxy_Round_Up_Box_Hook'Address)
+            then Ada_Access_Array (Kind)
+            else Oxy_Round_Up_Box_Draw'Access);
+        when Oxy_Round_Down_Box => return
+           (if Ptr = Storage.To_Integer (Oxy_Round_Down_Box_Hook'Address)
+            then Ada_Access_Array (Kind)
+            else Oxy_Round_Down_Box_Draw'Access);
+        when Oxy_Button_Up_Box => return
+           (if Ptr = Storage.To_Integer (Oxy_Button_Up_Box_Hook'Address)
+            then Ada_Access_Array (Kind)
+            else Oxy_Button_Up_Box_Draw'Access);
+        when Oxy_Button_Down_Box => return
+           (if Ptr = Storage.To_Integer (Oxy_Button_Down_Box_Hook'Address)
+            then Ada_Access_Array (Kind)
+            else Oxy_Button_Down_Box_Draw'Access);
         when Free_Box => return
            (if Ptr = Storage.To_Integer (Free_Box_Hook'Address)
             then Ada_Access_Array (Kind)
@@ -680,6 +752,54 @@ package body FLTK.Box_Draw_Marshal is
            (if Func = Gleam_Round_Down_Box_Draw'Access
             then C_Ptr_Array (Kind)
             else Storage.To_Integer (Gleam_Round_Down_Box_Hook'Address));
+        when Oxy_Up_Box => return
+           (if Func = Oxy_Up_Box_Draw'Access
+            then C_Ptr_Array (Kind)
+            else Storage.To_Integer (Oxy_Up_Box_Hook'Address));
+        when Oxy_Down_Box => return
+           (if Func = Oxy_Down_Box_Draw'Access
+            then C_Ptr_Array (Kind)
+            else Storage.To_Integer (Oxy_Down_Box_Hook'Address));
+        when Oxy_Up_Frame => return
+           (if Func = Oxy_Up_Frame_Draw'Access
+            then C_Ptr_Array (Kind)
+            else Storage.To_Integer (Oxy_Up_Frame_Hook'Address));
+        when Oxy_Down_Frame => return
+           (if Func = Oxy_Down_Frame_Draw'Access
+            then C_Ptr_Array (Kind)
+            else Storage.To_Integer (Oxy_Down_Frame_Hook'Address));
+        when Oxy_Thin_Up_Box => return
+           (if Func = Oxy_Thin_Up_Box_Draw'Access
+            then C_Ptr_Array (Kind)
+            else Storage.To_Integer (Oxy_Thin_Up_Box_Hook'Address));
+        when Oxy_Thin_Down_Box => return
+           (if Func = Oxy_Thin_Down_Box_Draw'Access
+            then C_Ptr_Array (Kind)
+            else Storage.To_Integer (Oxy_Thin_Down_Box_Hook'Address));
+        when Oxy_Thin_Up_Frame => return
+           (if Func = Oxy_Thin_Up_Frame_Draw'Access
+            then C_Ptr_Array (Kind)
+            else Storage.To_Integer (Oxy_Thin_Up_Frame_Hook'Address));
+        when Oxy_Thin_Down_Frame => return
+           (if Func = Oxy_Thin_Down_Frame_Draw'Access
+            then C_Ptr_Array (Kind)
+            else Storage.To_Integer (Oxy_Thin_Down_Frame_Hook'Address));
+        when Oxy_Round_Up_Box => return
+           (if Func = Oxy_Round_Up_Box_Draw'Access
+            then C_Ptr_Array (Kind)
+            else Storage.To_Integer (Oxy_Round_Up_Box_Hook'Address));
+        when Oxy_Round_Down_Box => return
+           (if Func = Oxy_Round_Down_Box_Draw'Access
+            then C_Ptr_Array (Kind)
+            else Storage.To_Integer (Oxy_Round_Down_Box_Hook'Address));
+        when Oxy_Button_Up_Box => return
+           (if Func = Oxy_Button_Up_Box_Draw'Access
+            then C_Ptr_Array (Kind)
+            else Storage.To_Integer (Oxy_Button_Up_Box_Hook'Address));
+        when Oxy_Button_Down_Box => return
+           (if Func = Oxy_Button_Down_Box_Draw'Access
+            then C_Ptr_Array (Kind)
+            else Storage.To_Integer (Oxy_Button_Down_Box_Hook'Address));
         when Free_Box => return
            (if Func = Free_Box_Draw'Access
             then C_Ptr_Array (Kind)
