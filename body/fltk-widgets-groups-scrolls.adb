@@ -7,6 +7,7 @@
 with
 
     Ada.Characters.Latin_1,
+    FLTK.Hook_Exceptions,
     Interfaces.C.Strings;
 
 use type
@@ -198,6 +199,9 @@ package body FLTK.Widgets.Groups.Scrolls is
             Integer (X), Integer (Y),
             Integer (W), Integer (H),
             Interfaces.C.Strings.Value (C_Str));
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end scroll_extra_init_hook;
 
 

@@ -8,6 +8,7 @@ with
 
     Ada.Assertions,
     Ada.Characters.Latin_1,
+    FLTK.Hook_Exceptions,
     Interfaces.C,
     System.Address_To_Access_Conversions;
 
@@ -728,12 +729,18 @@ package body FLTK.Widgets.Groups.Tables is
            (Context, Row, Column,
             Integer (X), Integer (Y), Integer (W), Integer (H));
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "User data null pointer passed to Fl_Table::draw_cell override hook";
-    when Constraint_Error => raise Internal_FLTK_Error with
-        "Unexpected int values passed to Fl_Table::draw_cell override hook of" & Latin.LF &
-        Latin.HT & "row = " & Interfaces.C.int'Image (R) & Latin.LF &
-        Latin.HT & "column = " & Interfaces.C.int'Image (C);
+    when Chk.Assertion_Error =>
+        Hook_Exceptions.Save_New
+           (Internal_FLTK_Error'Identity,
+            "User data null pointer passed to Fl_Table::draw_cell override hook");
+    when Constraint_Error =>
+        Hook_Exceptions.Save_New
+           (Internal_FLTK_Error'Identity,
+            "Unexpected int values passed to Fl_Table::draw_cell override hook of" & Latin.LF &
+            Latin.HT & "row = " & Interfaces.C.int'Image (R) & Latin.LF &
+            Latin.HT & "column = " & Interfaces.C.int'Image (C));
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Table_Draw_Cell_Hook;
 
 
@@ -746,6 +753,12 @@ package body FLTK.Widgets.Groups.Tables is
     procedure Extra_Final
            (This : in out Table) is
     begin
+        --  The widgets in the cells are the inner Fl_Scroll's children, not
+        --  the Fl_Table's, so Group's Extra_Final doesn't see them, and
+        --  ~Fl_Group would delete them (pofltk 52, PLAN.md N9).
+        if This.Needs_Dealloc and This.Void_Ptr /= Null_Pointer then
+            Group (This.Playing_Area).Remove_Ada_Children;
+        end if;
         Extra_Final (Group (This));
     end Extra_Final;
 
@@ -944,6 +957,22 @@ package body FLTK.Widgets.Groups.Tables is
     end Remove;
 
 
+    procedure Remove
+           (This  : in out Table;
+            Place : in     Index) is
+    begin
+        --  Fl_Table has no remove (int), and Group's reaches the Fl_Table's
+        --  own children, its scrollbars and inner Fl_Scroll (pofltk 52).
+        --  Fl_Group::child doesn't check the place; like Fl_Group::remove
+        --  (int), one out of range removes nothing.
+        if This.Has_Child (Place) then
+            fl_table_remove
+               (This.Void_Ptr,
+                fl_table_child (This.Void_Ptr, Interfaces.C.int (Place) - 1));
+        end if;
+    end Remove;
+
+
     procedure Clear
            (This : in out Table) is
     begin
@@ -1009,7 +1038,10 @@ package body FLTK.Widgets.Groups.Tables is
     is
         Result : constant Interfaces.C.int := fl_table_find (This.Void_Ptr, Item.Void_Ptr);
     begin
-        if Result = fl_table_children (This.Void_Ptr) then
+        --  Fl_Table::find is the inner Fl_Scroll's, which gives its own
+        --  number of children, two more than Fl_Table::children (its
+        --  scrollbars, FL/Fl_Table.H:870), for a widget not found.
+        if Result >= fl_table_children (This.Void_Ptr) then
             return No_Index;
         end if;
         return Extended_Index (Result + 1);
@@ -1117,6 +1149,7 @@ package body FLTK.Widgets.Groups.Tables is
             To_Cint (Context),
             Interfaces.C.int (Row) - 1,
             Interfaces.C.int (Column) - 1);
+        Hook_Exceptions.Reraise;
     end Do_Callback;
 
 

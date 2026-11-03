@@ -7,6 +7,7 @@
 with
 
     FLTK.Args_Marshal,
+    FLTK.Hook_Exceptions,
     Interfaces.C;
 
 
@@ -224,6 +225,7 @@ package body FLTK.Widgets.Groups.Windows.Single is
            (This : in out Single_Window) is
     begin
         fl_single_window_flush (This.Void_Ptr);
+        Hook_Exceptions.Reraise;
     end Flush;
 
 

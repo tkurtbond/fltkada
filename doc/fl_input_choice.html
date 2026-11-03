@@ -204,6 +204,7 @@ procedure Use_Same_Items
        (This  : in out Input_Choice;
         Donor : in     FLTK.Widgets.Menus.Menu'Class);
 </pre></td>
+<td>The menu gets its own copy of the donor's items and labels. Unlike FLTK's menu(m), the two menus do not share an array, so later changes to one do not show in the other.</td>
   </tr>
 
   <tr>

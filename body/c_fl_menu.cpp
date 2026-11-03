@@ -6,6 +6,8 @@
 
 #include <FL/Fl_Menu_.H>
 #include <FL/Fl_Menu_Item.H>
+#include <cstdlib>
+#include <cstring>
 #include "c_fl_menu.h"
 #include "c_fl.h"
 
@@ -88,13 +90,122 @@ int fl_menu_insert2(MENU m, int p, const char * t, const char * s, void * u, uns
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
 }
 
-void fl_menu_copy(MENU m, void * mi) {
-    static_cast<Fl_Menu_*>(m)->copy(static_cast<const Fl_Menu_Item*>(mi), 0);
+//  Fl_Menu_::alloc is protected, and FLTK has no setter for it.  A pointer to
+//  the member, formed in a class derived from Fl_Menu_, reaches it on any
+//  Fl_Menu_.  The class is never instantiated.
+class Menu_Alloc : public Fl_Menu_ {
+public:
+    static uchar Fl_Menu_::* member() {
+        return &Menu_Alloc::alloc;
+    }
+};
+
+//  Does an item own its text the way Fl_Menu_::clear frees it?  Image and
+//  multi labels point to objects that are not freed (Fl_Menu_.cxx:576-587).
+static bool owns_text(const Fl_Menu_Item & item) {
+    return item.text != 0 &&
+        item.labeltype_ != _FL_IMAGE_LABEL &&
+        item.labeltype_ != _FL_MULTI_LABEL;
 }
 
-void fl_menu_set_menu(MENU m, MENU d) {
-    static_cast<Fl_Menu_*>(m)->menu(static_cast<Fl_Menu_*>(d)->menu());
+//  Returns a copy of the n items that i points to, with copies of their
+//  texts, or 0 when out of memory.  The copy ends where Fl_Menu_Item::size
+//  would end it (Fl_Menu.cxx:58-70), and terminators are added for any
+//  submenu left open.
+static Fl_Menu_Item * copy_items(const Fl_Menu_Item * const * i, int n) {
+    int count = 0;
+    int nest = 0;
+    bool ended = false;
+    for (int k = 0; k < n && !ended; k++) {
+        count++;
+        if (i[k]->text == 0) {
+            if (nest == 0) {
+                ended = true;
+            } else {
+                nest--;
+            }
+        } else if (i[k]->flags & FL_SUBMENU) {
+            nest++;
+        }
+    }
+    int copied = count;
+    if (!ended) {
+        count += nest + 1;
+    }
+    Fl_Menu_Item * items = 0;
+    try {
+        items = new Fl_Menu_Item[count];
+    } catch (...) {
+        return 0;
+    }
+    std::memset(static_cast<void*>(items), 0, count * sizeof(Fl_Menu_Item));
+    for (int k = 0; k < copied; k++) {
+        items[k] = *i[k];
+        if (owns_text(items[k])) {
+            items[k].text = strdup(items[k].text);
+            if (items[k].text == 0) {
+                for (int j = 0; j < k; j++) {
+                    if (owns_text(items[j])) {
+                        std::free(const_cast<char*>(items[j].text));
+                    }
+                }
+                delete[] items;
+                return 0;
+            }
+        }
+    }
+    return items;
 }
+
+//  Sets the menu to a copy of the n items that i points to, and makes the
+//  menu own the copy and its texts, as if they had been added (alloc 2,
+//  Fl_Menu_add.cxx:406), so clear() frees them.  Fl_Menu_::copy would share
+//  the texts (alloc 1, Fl_Menu_.cxx:540), which the items' owners free.
+//  Returns 0, or 1 when out of memory.
+int fl_menu_set_items(MENU m, void * const * i, int n) {
+    Fl_Menu_Item * items = copy_items(reinterpret_cast<const Fl_Menu_Item * const *>(i), n);
+    if (items == 0) {
+        return 1;
+    }
+    Fl_Menu_ * menu = static_cast<Fl_Menu_*>(m);
+    menu->menu(items);
+    menu->*Menu_Alloc::member() = 2;
+    return 0;
+}
+
+//  Sets the menu to its own copy of the donor's items, as fl_menu_set_items
+//  does.  Fl_Menu_::menu would share the donor's array (alloc 0,
+//  Fl_Menu_.cxx:522-526), which the donor frees when it is deleted or when
+//  add() outgrows it (Fl_Menu_add.cxx:55-60), and the donor's texts, which
+//  it frees when it is cleared or an item is relabelled (FLTKAda-BUGS.md 38).
+//  Returns 0, or 1 when out of memory.
+int fl_menu_set_menu(MENU m, MENU d) {
+    const Fl_Menu_Item * donor = static_cast<Fl_Menu_*>(d)->menu();
+    Fl_Menu_ * menu = static_cast<Fl_Menu_*>(m);
+    if (donor == 0) {
+        menu->menu(0);
+        return 0;
+    }
+    int n = donor->size();
+    const Fl_Menu_Item ** pointers = 0;
+    try {
+        pointers = new const Fl_Menu_Item * [n];
+    } catch (...) {
+        return 1;
+    }
+    for (int k = 0; k < n; k++) {
+        pointers[k] = donor + k;
+    }
+    Fl_Menu_Item * items = copy_items(pointers, n);
+    delete[] pointers;
+    if (items == 0) {
+        return 1;
+    }
+    menu->menu(items);
+    menu->*Menu_Alloc::member() = 2;
+    return 0;
+}
+
 
 void fl_menu_remove(MENU m, int p) {
     static_cast<Fl_Menu_*>(m)->remove(p);
@@ -177,8 +288,33 @@ const char * fl_menu_text2(MENU m, int i) {
     return static_cast<Fl_Menu_*>(m)->text(i);
 }
 
-void fl_menu_replace(MENU m, int i, const char * t) {
-    static_cast<Fl_Menu_*>(m)->replace(i, t);
+//  Fl_Menu_::replace copies t only when the menu owns its strings (alloc > 1,
+//  Fl_Menu_add.cxx:472-480), and otherwise keeps the pointer.  Returns 1 when
+//  FLTK keeps t, so the caller must keep it alive, and sets *o to the text it
+//  replaced.
+int fl_menu_replace(MENU m, int i, const char * t, const char ** o) {
+    Fl_Menu_ * menu = static_cast<Fl_Menu_*>(m);
+    *o = 0;
+    if (i < 0 || i >= menu->size()) {
+        return 0;
+    }
+    *o = menu->menu()[i].text;
+    menu->replace(i, t);
+    return menu->menu()[i].text == t;
+}
+
+//  Points every item labelled t at a static empty string, before t is freed.
+void fl_menu_forget_text(MENU m, const char * t) {
+    Fl_Menu_ * menu = static_cast<Fl_Menu_*>(m);
+    Fl_Menu_Item * items = const_cast<Fl_Menu_Item*>(menu->menu());
+    if (items == 0) {
+        return;
+    }
+    for (int i = 0; i < menu->size(); i++) {
+        if (items[i].text == t) {
+            items[i].text = "";
+        }
+    }
 }
 
 void fl_menu_shortcut(MENU m, int i, unsigned long s) {

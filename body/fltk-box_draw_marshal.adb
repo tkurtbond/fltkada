@@ -7,6 +7,7 @@
 with
 
     Ada.Assertions,
+    FLTK.Hook_Exceptions,
     FLTK.Static,
     Interfaces.C;
 
@@ -149,8 +150,12 @@ package body FLTK.Box_Draw_Marshal is
             Integer (W), Integer (H),
             Color (Tone));
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "Box_Draw_Function hook tried to get a null subprogram access";
+    when Chk.Assertion_Error =>
+        Hook_Exceptions.Save_New
+           (Internal_FLTK_Error'Identity,
+            "Box_Draw_Function hook tried to get a null subprogram access");
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Generic_Box_Draw_Hook;
 
     procedure No_Box_Hook                 is new Generic_Box_Draw_Hook (No_Box);

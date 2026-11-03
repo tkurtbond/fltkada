@@ -8,6 +8,10 @@ with
 
     FLTK.Filenames;
 
+private with
+
+    Interfaces.C.Strings;
+
 
 package FLTK.Widgets.Groups.Browsers.Textline.File is
 
@@ -144,7 +148,11 @@ package FLTK.Widgets.Groups.Browsers.Textline.File is
 private
 
 
-    type File_Browser is new Textline_Browser with null record;
+    --  FLTK keeps the filter's pointer without copying it, so the record
+    --  keeps the copy.
+    type File_Browser is new Textline_Browser with record
+        My_Filter : Interfaces.C.Strings.chars_ptr := Interfaces.C.Strings.Null_Ptr;
+    end record;
 
     overriding procedure Initialize
            (This : in out File_Browser);

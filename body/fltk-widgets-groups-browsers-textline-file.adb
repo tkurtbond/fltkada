@@ -7,6 +7,7 @@
 with
 
     Ada.Assertions,
+    FLTK.Hook_Exceptions,
     Interfaces.C.Strings;
 
 use type
@@ -96,7 +97,7 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
 
     procedure fl_file_browser_set_filter
            (B : in Storage.Integer_Address;
-            F : in Interfaces.C.char_array);
+            F : in Interfaces.C.Strings.chars_ptr);
     pragma Import (C, fl_file_browser_set_filter, "fl_file_browser_set_filter");
     pragma Inline (fl_file_browser_set_filter);
 
@@ -271,6 +272,10 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
             Interfaces.C.Strings.Value (filename_dname (DB, 0)));
     begin
         return FLTK.Filenames.Comparison'Pos (Result) - 1;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return 0;
     end Compare_Hook;
 
 
@@ -283,6 +288,14 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
     procedure Extra_Final
            (This : in out File_Browser) is
     begin
+        --  FLTK reads the filter only in load(), never while deleting the
+        --  browser.  A browser FLTK goes on using is told to forget it.
+        if This.My_Filter /= Interfaces.C.Strings.Null_Ptr then
+            if This.Void_Ptr /= Null_Pointer and not This.Needs_Dealloc then
+                fl_file_browser_set_filter (This.Void_Ptr, Interfaces.C.Strings.Null_Ptr);
+            end if;
+            Interfaces.C.Strings.Free (This.My_Filter);
+        end if;
         Extra_Final (Textline_Browser (This));
     end Extra_Final;
 
@@ -395,6 +408,8 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
            (This.Void_Ptr,
             Interfaces.C.To_C (Dir),
             Storage.To_Integer (Compare_Hook'Address));
+        This.Drop_Icons;
+        Hook_Exceptions.Reraise;
         if Code = 0 then
             Msg := get_error_message;
             if Msg /= Interfaces.C.Strings.Null_Ptr then
@@ -461,9 +476,14 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
 
     procedure Set_Filter
            (This  : in out File_Browser;
-            Value : in     String) is
+            Value : in     String)
+    is
+        Old : Interfaces.C.Strings.chars_ptr := This.My_Filter;
     begin
-        fl_file_browser_set_filter (This.Void_Ptr, Interfaces.C.To_C (Value));
+        --  Free the old copy only once FLTK holds the new one.
+        This.My_Filter := Interfaces.C.Strings.New_String (Value);
+        fl_file_browser_set_filter (This.Void_Ptr, This.My_Filter);
+        Interfaces.C.Strings.Free (Old);
     end Set_Filter;
 
 

@@ -43,10 +43,36 @@ int My_Input_Choice::handle(int e) {
 
 
 
+//  The parts' callbacks
+
+//  FLTK's callbacks for the input and the menu button find the
+//  Fl_Input_Choice through their data, the parts' user_data
+//  (Fl_Input_Choice.cxx:206, 237, 266, 270).  The binding keeps each part's
+//  Ada record there, so these pass the parent instead, which both parts'
+//  parent() is.  FLTKAda-BUGS.md 15, FLTK-issues.md F2.
+
+static Fl_Callback_p input_choice_input_cb = 0;
+static Fl_Callback_p input_choice_menu_cb = 0;
+
+static void input_choice_input_thunk(Fl_Widget * w, void *) {
+    input_choice_input_cb(w, w->parent());
+}
+
+static void input_choice_menu_thunk(Fl_Widget * w, void *) {
+    input_choice_menu_cb(w, w->parent());
+}
+
+
+
+
 //  Flattened C API
 
 INPUTCHOICE new_fl_input_choice(int x, int y, int w, int h, char* label) {
     My_Input_Choice *n = new My_Input_Choice(x, y, w, h, label);
+    input_choice_input_cb = n->input()->callback();
+    n->input()->callback(input_choice_input_thunk);
+    input_choice_menu_cb = n->menubutton()->callback();
+    n->menubutton()->callback(input_choice_menu_thunk);
     return n;
 }
 

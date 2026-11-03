@@ -16,8 +16,7 @@ limited with
 private with
 
     Ada.Containers.Vectors,
-    Ada.Finalization,
-    Interfaces,
+    Interfaces.C.Strings,
     System;
 
 
@@ -428,8 +427,16 @@ private
        (Index_Type   => Positive,
         Element_Type => Item_Access);
 
+    package Label_Vectors is new Ada.Containers.Vectors
+       (Index_Type   => Positive,
+        Element_Type => Interfaces.C.Strings.chars_ptr,
+        "="          => Interfaces.C.Strings."=");
+
+    --  My_Labels holds the labels from Set_Label that FLTK keeps without
+    --  copying them, which it does when the menu doesn't own its strings.
     type Menu is new Widget with record
         My_Items     : Item_Vectors.Vector;
+        My_Labels    : Label_Vectors.Vector;
         My_Find      : aliased FLTK.Menu_Items.Menu_Item;
         My_Pick      : aliased FLTK.Menu_Items.Menu_Item;
         Get_Item_Ptr : System.Address;
@@ -450,6 +457,15 @@ private
 
     procedure Extra_Final
            (This : in out Menu);
+
+
+    --  Used by Set_Label after FLTK's replace: keeps Text if FLTK kept it,
+    --  frees it otherwise, and frees Old, the label replaced, if it was kept.
+    procedure Note_Label
+           (This : in out Menu;
+            Old  : in     Interfaces.C.Strings.chars_ptr;
+            Text : in out Interfaces.C.Strings.chars_ptr;
+            Kept : in     Boolean);
 
 
     --  Used internally after every time the number of menu items is meddled with
@@ -525,14 +541,6 @@ private
     pragma Inline (Resize);
 
     pragma Inline (Draw_Item);
-
-
-    type Menu_Final_Controller is new Ada.Finalization.Limited_Controlled with null record;
-
-    overriding procedure Finalize
-           (This : in out Menu_Final_Controller);
-
-    Cleanup : Menu_Final_Controller;
 
 
 end FLTK.Widgets.Menus;

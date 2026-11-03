@@ -92,6 +92,10 @@ package FLTK.Widgets.Groups.Tables is
            (This : in out Table;
             Item : in out Widget'Class);
 
+    procedure Remove
+           (This  : in out Table;
+            Place : in     Index);
+
     procedure Clear
            (This : in out Table);
 

@@ -6,6 +6,7 @@
 
 with
 
+    FLTK.Hook_Exceptions,
     FLTK.Widgets.Groups,
     Interfaces.C;
 
@@ -100,6 +101,9 @@ package body FLTK.Widgets.Inputs.Text is
             Integer (X), Integer (Y),
             Integer (W), Integer (H),
             Interfaces.C.Strings.Value (C_Str));
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end text_input_extra_init_hook;
 
 

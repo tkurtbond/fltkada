@@ -6,8 +6,9 @@
 
 with
 
-    Interfaces.C.Strings,
     Ada.Strings.Unbounded,
+    FLTK.Hook_Exceptions,
+    Interfaces.C.Strings,
     Ada.Containers;
 
 use
@@ -67,6 +68,18 @@ package body FLTK.Text_Buffers is
     pragma Import (C, fl_text_buffer_add_predelete_callback,
                     "fl_text_buffer_add_predelete_callback");
     pragma Inline (fl_text_buffer_add_predelete_callback);
+
+    procedure fl_text_buffer_remove_modify_callback
+           (TB, CB, UD : in Storage.Integer_Address);
+    pragma Import (C, fl_text_buffer_remove_modify_callback,
+                    "fl_text_buffer_remove_modify_callback");
+    pragma Inline (fl_text_buffer_remove_modify_callback);
+
+    procedure fl_text_buffer_remove_predelete_callback
+           (TB, CB, UD : in Storage.Integer_Address);
+    pragma Import (C, fl_text_buffer_remove_predelete_callback,
+                    "fl_text_buffer_remove_predelete_callback");
+    pragma Inline (fl_text_buffer_remove_predelete_callback);
 
     procedure fl_text_buffer_call_modify_callbacks
            (TB : in Storage.Integer_Address);
@@ -539,6 +552,9 @@ package body FLTK.Text_Buffers is
                     To_String (Deleted_Text));
             end loop;
         end if;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Modify_Callback_Hook;
 
 
@@ -557,6 +573,9 @@ package body FLTK.Text_Buffers is
                 CB.all (Place, Length);
             end loop;
         end if;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Predelete_Callback_Hook;
 
 
@@ -569,6 +588,20 @@ package body FLTK.Text_Buffers is
     procedure Finalize
            (This : in out Text_Buffer) is
     begin
+        --  The C++ buffer is reference counted, and outlives this record
+        --  while a display holds it, so it must stop calling the hooks
+        --  with this record's address (pofltk 34, PLAN.md N10).  Forge.Create
+        --  added them; FLTK reports an error for one removed that it lacks.
+        if This.Void_Ptr /= Null_Pointer then
+            fl_text_buffer_remove_modify_callback
+               (This.Void_Ptr,
+                Storage.To_Integer (Modify_Callback_Hook'Address),
+                Storage.To_Integer (This'Address));
+            fl_text_buffer_remove_predelete_callback
+               (This.Void_Ptr,
+                Storage.To_Integer (Predelete_Callback_Hook'Address),
+                Storage.To_Integer (This'Address));
+        end if;
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_text_buffer (This.Void_Ptr);
             This.Void_Ptr := Null_Pointer;

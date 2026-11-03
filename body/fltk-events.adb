@@ -8,6 +8,7 @@ with
 
     Ada.Assertions,
     Ada.Containers.Vectors,
+    FLTK.Hook_Exceptions,
     Interfaces.C.Strings;
 
 use type
@@ -426,9 +427,15 @@ package body FLTK.Events is
         end loop;
         return Event_Outcome'Pos (Not_Handled);
     exception
-    when Constraint_Error => raise Internal_FLTK_Error with
-        "Event_Handler hook received unexpected event int value of " &
-        Interfaces.C.int'Image (Num);
+    when Constraint_Error =>
+        Hook_Exceptions.Save_New
+           (Internal_FLTK_Error'Identity,
+            "Event_Handler hook received unexpected event int value of " &
+            Interfaces.C.int'Image (Num));
+        return 0;
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return 0;
     end Event_Handler_Hook;
 
 
@@ -457,6 +464,10 @@ package body FLTK.Events is
             end if;
         end loop;
         return Event_Outcome'Pos (Not_Handled);
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return 0;
     end System_Handler_Hook;
 
 
@@ -475,11 +486,20 @@ package body FLTK.Events is
         end if;
         return Event_Outcome'Pos (Current_Dispatch (Event_Kind'Val (Num), Actual_Window));
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "Window passed to Event_Dispatch hook did not have user_data pointer back to Ada";
-    when Constraint_Error => raise Internal_FLTK_Error with
-        "Event_Dispatch hook received unexpected event int value of " &
-        Interfaces.C.int'Image (Num);
+    when Chk.Assertion_Error =>
+        Hook_Exceptions.Save_New
+           (Internal_FLTK_Error'Identity,
+            "Window passed to Event_Dispatch hook did not have user_data pointer back to Ada");
+        return 0;
+    when Constraint_Error =>
+        Hook_Exceptions.Save_New
+           (Internal_FLTK_Error'Identity,
+            "Event_Dispatch hook received unexpected event int value of " &
+            Interfaces.C.int'Image (Num));
+        return 0;
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return 0;
     end Dispatch_Hook;
 
 
@@ -575,6 +595,7 @@ package body FLTK.Events is
            (Event_Kind'Pos (Event),
             Wrapper (Origin).Void_Ptr);
     begin
+        Hook_Exceptions.Reraise;
         return (if Result = 0 then Not_Handled else Handled);
     end Handle_Dispatch;
 
@@ -588,6 +609,7 @@ package body FLTK.Events is
            (Event_Kind'Pos (Event),
             Wrapper (Origin).Void_Ptr);
     begin
+        Hook_Exceptions.Reraise;
         return (if Result = 0 then Not_Handled else Handled);
     end Handle;
 
@@ -601,6 +623,7 @@ package body FLTK.Events is
            (Event_Kind'Pos (Event),
             (if Origin = null then Null_Pointer else Wrapper (Origin.all).Void_Ptr));
     begin
+        Hook_Exceptions.Reraise;
         return (if Result = 0 then Not_Handled else Handled);
     end Handle_Dispatch;
 
@@ -614,6 +637,7 @@ package body FLTK.Events is
            (Event_Kind'Pos (Event),
             (if Origin = null then Null_Pointer else Wrapper (Origin.all).Void_Ptr));
     begin
+        Hook_Exceptions.Reraise;
         return (if Result = 0 then Not_Handled else Handled);
     end Handle;
 

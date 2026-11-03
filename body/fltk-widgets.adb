@@ -7,6 +7,7 @@
 with
 
     Ada.Assertions,
+    FLTK.Hook_Exceptions,
     Interfaces.C.Strings,
     FLTK.Widgets.Groups.Windows;
 
@@ -609,6 +610,9 @@ package body FLTK.Widgets is
             Widget_Convert.To_Pointer (Storage.To_Address (U));
     begin
         Ada_Widget.Callback.all (Ada_Widget.all);
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Callback_Hook;
 
 
@@ -619,6 +623,9 @@ package body FLTK.Widgets is
             Widget_Convert.To_Pointer (Storage.To_Address (U));
     begin
         Ada_Widget.Draw;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Draw_Hook;
 
 
@@ -631,6 +638,10 @@ package body FLTK.Widgets is
             Widget_Convert.To_Pointer (Storage.To_Address (U));
     begin
         return Event_Outcome'Pos (Ada_Widget.Handle (Event_Kind'Val (E)));
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return Event_Outcome'Pos (Not_Handled);
     end Handle_Hook;
 
 
@@ -642,6 +653,9 @@ package body FLTK.Widgets is
             Widget_Convert.To_Pointer (Storage.To_Address (U));
     begin
         Ada_Widget.Resize (Integer (X), Integer (Y), Integer (W), Integer (H));
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Resize_Hook;
 
 

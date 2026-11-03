@@ -8,6 +8,7 @@ with
 
     Ada.Assertions,
     Ada.Unchecked_Deallocation,
+    FLTK.Hook_Exceptions,
     FLTK.Pixmap_Marshal,
     Interfaces.C.Pointers,
     Interfaces.C.Strings;
@@ -71,33 +72,14 @@ package body FLTK.Draw is
 
     --  Charset Conversion  --
 
-    function fl_draw_latin1_to_local
-           (T : in Interfaces.C.char_array;
-            N : in Interfaces.C.int)
-        return Interfaces.C.Strings.chars_ptr;
-    pragma Import (C, fl_draw_latin1_to_local, "fl_draw_latin1_to_local");
-    pragma Inline (fl_draw_latin1_to_local);
-
-    function fl_draw_local_to_latin1
-           (T : in Interfaces.C.char_array;
-            N : in Interfaces.C.int)
-        return Interfaces.C.Strings.chars_ptr;
-    pragma Import (C, fl_draw_local_to_latin1, "fl_draw_local_to_latin1");
-    pragma Inline (fl_draw_local_to_latin1);
-
-    function fl_draw_mac_roman_to_local
-           (T : in Interfaces.C.char_array;
-            N : in Interfaces.C.int)
-        return Interfaces.C.Strings.chars_ptr;
-    pragma Import (C, fl_draw_mac_roman_to_local, "fl_draw_mac_roman_to_local");
-    pragma Inline (fl_draw_mac_roman_to_local);
-
-    function fl_draw_local_to_mac_roman
-           (T : in Interfaces.C.char_array;
-            N : in Interfaces.C.int)
-        return Interfaces.C.Strings.chars_ptr;
-    pragma Import (C, fl_draw_local_to_mac_roman, "fl_draw_local_to_mac_roman");
-    pragma Inline (fl_draw_local_to_mac_roman);
+    function fl_draw_recode
+           (Kind : in     Interfaces.C.int;
+            From : in     Interfaces.C.char_array;
+            To   :    out Interfaces.C.char_array;
+            N    : in     Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_draw_recode, "fl_draw_recode");
+    pragma Inline (fl_draw_recode);
 
 
 
@@ -404,7 +386,7 @@ package body FLTK.Draw is
     --  This function in particular is such bullshit.
     function fl_draw_expand_text
            (Str       : in     Interfaces.C.char_array;
-            Buf       :    out Interfaces.C.Strings.chars_ptr;
+            Buf       :    out Interfaces.C.char_array;
             Max_Buf   : in     Interfaces.C.int;
             Max_W     : in     Interfaces.C.double;
             N         :    out Interfaces.C.int;
@@ -669,12 +651,38 @@ package body FLTK.Draw is
 
     --  Charset Conversion  --
 
+    --  The kinds fl_draw_recode takes.
+    Latin1_To_Local_Kind    : constant Interfaces.C.int := 0;
+    Local_To_Latin1_Kind    : constant Interfaces.C.int := 1;
+    Mac_Roman_To_Local_Kind : constant Interfaces.C.int := 2;
+    Local_To_Mac_Roman_Kind : constant Interfaces.C.int := 3;
+
+    function Recode
+           (Kind : in Interfaces.C.int;
+            From : in String)
+        return String is
+    begin
+        if From'Length = 0 then
+            return "";
+        end if;
+        declare
+            Source : constant Interfaces.C.char_array :=
+                Interfaces.C.To_C (From, Append_Nul => False);
+            Target : Interfaces.C.char_array (Source'Range);
+        begin
+            if fl_draw_recode (Kind, Source, Target, Interfaces.C.int (From'Length)) /= 0 then
+                raise Storage_Error with "charset conversion buffer could not be allocated";
+            end if;
+            return Interfaces.C.To_Ada (Target, Trim_Nul => False);
+        end;
+    end Recode;
+
+
     function Latin1_To_Local
            (From : in String)
         return String is
     begin
-        return Interfaces.C.Strings.Value
-            (fl_draw_latin1_to_local (Interfaces.C.To_C (From), -1));
+        return Recode (Latin1_To_Local_Kind, From);
     end Latin1_To_Local;
 
 
@@ -682,8 +690,7 @@ package body FLTK.Draw is
            (From : in String)
         return String is
     begin
-        return Interfaces.C.Strings.Value
-            (fl_draw_local_to_latin1 (Interfaces.C.To_C (From), -1));
+        return Recode (Local_To_Latin1_Kind, From);
     end Local_To_Latin1;
 
 
@@ -691,8 +698,7 @@ package body FLTK.Draw is
            (From : in String)
         return String is
     begin
-        return Interfaces.C.Strings.Value
-            (fl_draw_mac_roman_to_local (Interfaces.C.To_C (From), -1));
+        return Recode (Mac_Roman_To_Local_Kind, From);
     end Mac_Roman_To_Local;
 
 
@@ -700,8 +706,7 @@ package body FLTK.Draw is
            (From : in String)
         return String is
     begin
-        return Interfaces.C.Strings.Value
-            (fl_draw_local_to_mac_roman (Interfaces.C.To_C (From), -1));
+        return Recode (Local_To_Mac_Roman_Kind, From);
     end Local_To_Mac_Roman;
 
 
@@ -1037,6 +1042,13 @@ package body FLTK.Draw is
 
 
     Image_Func_Ptr : Image_Draw_Function;
+    Image_Depth : Positive := 1;
+
+    --  Set when an image-line function raised.  The hook then fills the
+    --  rest of the image's lines with zeros, without calling it again, and
+    --  Draw_Image and Draw_Image_Mono raise its exception once FLTK returns
+    --  (PLAN.md N12).
+    Line_Raised : Boolean := False;
 
     procedure Draw_Image_Hook
            (Ignore  : in Storage.Integer_Address;
@@ -1049,11 +1061,21 @@ package body FLTK.Draw is
             X, Y, W : in Interfaces.C.int;
             Buf_Ptr : in Storage.Integer_Address)
     is
-        Data_Buffer : Color_Component_Array (1 .. Size_Type (W));
+        --  FLTK's line holds W pixels of Depth bytes each.
+        Data_Buffer : Color_Component_Array (1 .. Size_Type (W) * Size_Type (Image_Depth));
         for Data_Buffer'Address use Storage.To_Address (Buf_Ptr);
         pragma Import (Ada, Data_Buffer);
     begin
-        Image_Func_Ptr (Integer (X), Integer (Y), Data_Buffer);
+        if Line_Raised then
+            Data_Buffer := (others => 0);
+        else
+            Image_Func_Ptr (Integer (X), Integer (Y), Data_Buffer);
+        end if;
+    exception
+    when Occurrence : others =>
+        Line_Raised := True;
+        Data_Buffer := (others => 0);
+        Hook_Exceptions.Save (Occurrence);
     end Draw_Image_Hook;
 
     procedure Draw_Image
@@ -1062,6 +1084,8 @@ package body FLTK.Draw is
             Depth      : in Positive := 3) is
     begin
         Image_Func_Ptr := Callback;
+        Image_Depth := Depth;
+        Line_Raised := False;
         fl_draw_draw_image2
            (Storage.To_Integer (Draw_Image_Hook'Address),
             Null_Pointer,
@@ -1070,6 +1094,7 @@ package body FLTK.Draw is
             Interfaces.C.int (W),
             Interfaces.C.int (H),
             Interfaces.C.int (Depth));
+        Hook_Exceptions.Reraise;
     end Draw_Image;
 
 
@@ -1108,6 +1133,7 @@ package body FLTK.Draw is
 
 
     Mono_Image_Func_Ptr : Image_Draw_Function;
+    Mono_Image_Depth : Positive := 1;
 
     procedure Draw_Image_Mono_Hook
            (Ignore  : in Storage.Integer_Address;
@@ -1120,11 +1146,21 @@ package body FLTK.Draw is
             X, Y, W : in Interfaces.C.int;
             Buf_Ptr : in Storage.Integer_Address)
     is
-        Data_Buffer : Color_Component_Array (1 .. Size_Type (W));
+        --  FLTK's line holds W pixels of Depth bytes each.
+        Data_Buffer : Color_Component_Array (1 .. Size_Type (W) * Size_Type (Mono_Image_Depth));
         for Data_Buffer'Address use Storage.To_Address (Buf_Ptr);
         pragma Import (Ada, Data_Buffer);
     begin
-        Mono_Image_Func_Ptr (Integer (X), Integer (Y), Data_Buffer);
+        if Line_Raised then
+            Data_Buffer := (others => 0);
+        else
+            Mono_Image_Func_Ptr (Integer (X), Integer (Y), Data_Buffer);
+        end if;
+    exception
+    when Occurrence : others =>
+        Line_Raised := True;
+        Data_Buffer := (others => 0);
+        Hook_Exceptions.Save (Occurrence);
     end Draw_Image_Mono_Hook;
 
     procedure Draw_Image_Mono
@@ -1133,6 +1169,8 @@ package body FLTK.Draw is
             Depth      : in Positive := 1) is
     begin
         Mono_Image_Func_Ptr := Callback;
+        Mono_Image_Depth := Depth;
+        Line_Raised := False;
         fl_draw_draw_image_mono2
            (Storage.To_Integer (Draw_Image_Mono_Hook'Address),
             Null_Pointer,
@@ -1141,6 +1179,7 @@ package body FLTK.Draw is
             Interfaces.C.int (W),
             Interfaces.C.int (H),
             Interfaces.C.int (Depth));
+        Hook_Exceptions.Reraise;
     end Draw_Image_Mono;
 
 
@@ -1292,6 +1331,9 @@ package body FLTK.Draw is
         pragma Import (Ada, Data);
     begin
         Text_Func_Ptr (Integer (X0), Integer (Y0), Data);
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Draw_Text_Hook;
 
     procedure Draw_Text
@@ -1312,6 +1354,7 @@ package body FLTK.Draw is
             Storage.To_Integer (Draw_Text_Hook'Address),
             Null_Pointer,
             Boolean'Pos (Symbols));
+        Hook_Exceptions.Reraise;
     end Draw_Text;
 
 
@@ -1334,6 +1377,7 @@ package body FLTK.Draw is
             Storage.To_Integer (Draw_Text_Hook'Address),
             Wrapper (Picture).Void_Ptr,
             Boolean'Pos (Symbols));
+        Hook_Exceptions.Reraise;
     end Draw_Text;
 
 
@@ -1437,6 +1481,9 @@ package body FLTK.Draw is
         pragma Import (Ada, my_area_draw);
     begin
         my_area_draw (Integer (X), Integer (Y), Integer (W), Integer (H));
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Scroll_Hook;
 
     procedure Scroll
@@ -1453,6 +1500,7 @@ package body FLTK.Draw is
             Interfaces.C.int (DY),
             Storage.To_Integer (Scroll_Hook'Address),
             Storage.To_Integer (Callback.all'Address));
+        Hook_Exceptions.Reraise;
     end Scroll;
 
 
@@ -1485,11 +1533,14 @@ package body FLTK.Draw is
             Symbols   : in     Boolean := False)
         return String
     is
-        Buffer : Interfaces.C.Strings.chars_ptr;
+        --  fl_expand_text writes up to 8 bytes for a character (a tab) and
+        --  stops 4 short of the end (fl_draw.cxx:76, 133-145).
+        Size   : constant Interfaces.C.size_t := 8 * Interfaces.C.size_t (Text'Length) + 16;
+        Buffer : Interfaces.C.char_array (0 .. Size - 1);
         Length : Interfaces.C.int;
-        Temp   : Interfaces.C.char_array := Interfaces.C.To_C (Text);
+        Temp   : aliased Interfaces.C.char_array := Interfaces.C.To_C (Text);
         Result : constant Char_Pointers.Pointer := fl_draw_expand_text
-           (Temp, Buffer, 0,
+           (Temp, Buffer, Interfaces.C.int (Size),
             Interfaces.C.double (Max_Width),
             Length,
             Interfaces.C.double (Width),
@@ -1497,8 +1548,12 @@ package body FLTK.Draw is
             Boolean'Pos (Symbols));
         use type Char_Pointers.Pointer;
     begin
-        Last := Natural (Result - Temp (Temp'First)'Unchecked_Access);
-        return Interfaces.C.Strings.Value (Buffer, Interfaces.C.size_t (Length));
+        Last := Text'First - 1 + Natural (Result - Temp (Temp'First)'Unchecked_Access);
+        if Length = 0 then
+            return "";
+        end if;
+        return Interfaces.C.To_Ada
+           (Buffer (0 .. Interfaces.C.size_t (Length) - 1), Trim_Nul => False);
     end Expand_Text;
 
 

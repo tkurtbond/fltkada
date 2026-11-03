@@ -243,11 +243,17 @@ package FLTK.Widgets.Groups.Browsers.Textline is
             Line : in Positive)
         return Boolean;
 
+    --  Raises Constraint_Error if the line has no icon.
     function Get_Icon
            (This : in Textline_Browser;
             Line : in Positive)
         return FLTK.Images.Image_Reference;
 
+    --  FLTK keeps the image it is given and draws it with the line, so the
+    --  browser gives it a copy of Icon, which it keeps while a line shows
+    --  it.  An icon goes with its line when lines are inserted, moved,
+    --  swapped and removed.  Get_Icon returns the copy, so later changes to
+    --  Icon don't show.  A line past the last is left alone, as FLTK does.
     procedure Set_Icon
            (This : in out Textline_Browser;
             Line : in     Positive;
@@ -354,6 +360,8 @@ private
 
     type Image_Access is access FLTK.Images.Image'Class;
 
+    --  The copies of the icons given to FLTK, in no order; FLTK's lines say
+    --  which line shows which (pofltk 56).
     package Image_Vectors is new Ada.Containers.Vectors
        (Index_Type   => Positive,
         Element_Type => Image_Access);
@@ -387,6 +395,11 @@ private
             Text       : in     String);
 
     procedure Extra_Final
+           (This : in out Textline_Browser);
+
+    --  Frees the copies of icons that no line shows any more.  Called after
+    --  each change that can take a line or an icon away.
+    procedure Drop_Icons
            (This : in out Textline_Browser);
 
 

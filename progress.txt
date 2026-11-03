@@ -216,7 +216,12 @@ Program_Error (the handler vector is tamper-checked while it is being iterated);
 the other Events handler vectors likely have the same problem
 
 Dispatch_Hook's Constraint_Error handler reports any Constraint_Error raised in
-the user's dispatch function as an unexpected event value
+the user's dispatch function as an unexpected event value; several other hooks'
+handlers relabel the user's Constraint_Error or Assertion_Error the same way
+(FLTKAda-BUGS.md 45)
+
+Events.Get_Grab can't return a window FLTK made itself, such as a pop-up
+menu's: it gives null, or Internal_FLTK_Error under -gnata (FLTKAda-BUGS.md 44)
 
 Menu_Item Set_Label (Kind => Image_Label or Multi_Label, Text) is meaningless,
 since FLTK treats the label text as a pointer to an image or Fl_Multi_Label;
@@ -257,6 +262,25 @@ Text_Displays Style_Entry had the wrong layout (Hue at byte 4, 16 bytes not
 Table Callback_Row/Callback_Column/Get_Selection raised on FLTK's -1 (none)
 values; they are now Natural, with 0 meaning none
 
+Table let the widgets in its cells be deleted by ~Fl_Group and then freed
+by Ada; Remove (Place) reached its scrollbars; Find of a widget not there
+gave an index past the end (FLTKAda-BUGS.md 39)
+
+Text_Buffer left its modify and predelete hooks in a C++ buffer a display
+still held, which called them with the freed record (FLTKAda-BUGS.md 40)
+
+Textline_Browser kept only a pointer to an icon's image, which could go
+first, and kept icons by line number, so they didn't follow their lines
+(FLTKAda-BUGS.md 42)
+
+An exception raised in any hook FLTK calls unwound through FLTK's C++ and
+left it broken; hooks now save it and the binding re-raises it when control
+is back in Ada, from Wait, Check, Run, the dialogs, menus and Do_Callback
+(FLTK.Hook_Exceptions; FLTKAda-BUGS.md 43)
+
+Menu_Item.Forge.Create left the item's label type, font, size and colour
+uninitialised (FLTKAda-BUGS.md 46)
+
 
 
 Incomplete APIs:
@@ -265,6 +289,8 @@ FLTK
 FLTK.Devices.Graphics
 FLTK.Images.Pixmaps (unmarshall data access?)
 FLTK.Images.Shared (images(), compare)
+FLTK.Static (Option lacks FNFC_Uses_Zenity, FNFC_Uses_Kdialog,
+    Printer_Uses_GTK, Show_Scaling and Simple_Zoom_Shortcut)
 FLTK.Text_Buffers (a few functions, protected stuff, ensure buffer is 1-indexed)
 FLTK.Widgets.Groups.Text_Displays (ensure text buffer is 1-indexed)
 FLTK.GLUT (the GLUT bitmap/stroke fonts, the geometric models glutWire*/glutSolid*,

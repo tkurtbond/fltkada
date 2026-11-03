@@ -7,6 +7,7 @@
 with
 
     FLTK.Args_Marshal,
+    FLTK.Hook_Exceptions,
     Interfaces.C;
 
 use type
@@ -379,6 +380,7 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
            (This : in out GL_Window) is
     begin
         fl_gl_window_flush (This.Void_Ptr);
+        Hook_Exceptions.Reraise;
     end Flush;
 
 

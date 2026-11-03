@@ -9,13 +9,11 @@
 --  around the FLTK call that ran the hook, and then checks that FLTK still
 --  works.  This is the behaviour PLAN.md's N12 decision asks for: each hook
 --  catches the exception, FLTK finishes what it was doing, and the binding
---  raises it again once FLTK returns to Ada.
+--  raises it again once FLTK returns to Ada (FLTK.Hook_Exceptions).
 --
---  Until Phase 2 implements that, several checks fail, and one case
---  crashes, so this test is not yet in tests_unit.gpr's Main.  The menu
---  case runs last, because the popup's grab is left dangling and the next
---  event crashes.  Under valgrind, the image-line case also leaks Cairo's
---  line buffer, which vg-check.sh doesn't count, because FLTK allocated it.
+--  Before that was done, several checks failed and the menu case crashed:
+--  the popup's grab was left dangling, and the next event crashed.  The
+--  menu case still runs last.
 
 
 with
@@ -230,7 +228,7 @@ procedure Test_Exceptions is
         use type Wdg.Widget'Class;
         Before : constant Natural := Presses;
     begin
-        Check (FLTK.Events.Get_Grab = null, After & ": no grab is left");
+        Check (not Prb.Grabbed, After & ": no grab is left");
         Check (FLTK.Events.Get_Pushed = null, After & ": no widget is left pushed");
         Check (not Prb.Modal, After & ": no dialog is left up");
         Click_Button;
@@ -254,11 +252,13 @@ procedure Test_Exceptions is
         Ignore := Prb.Modal_Key (Escape_Key);
     end Close_Dialog;
 
+    --  Prb.Grabbed, not FLTK.Events.Get_Grab: the grab is the menu's own
+    --  window, which FLTK made, and Get_Grab gives null for it in a release
+    --  build (FLTKAda-BUGS.md 44).
     procedure Close_Menu is
-        use type Win.Window'Class;
         Ignore : Boolean;
     begin
-        if FLTK.Events.Get_Grab /= null then
+        if Prb.Grabbed then
             Ignore := Prb.Handle_Key (Window, Keydown, Escape_Key);
         end if;
     end Close_Menu;
@@ -392,18 +392,22 @@ begin
     --  set.
     FLTK.GLUT.Init;
     FLTK.GLUT.Init_Window_Size (100, 100);
+    --  The GLUT window goes before Check_Still_Works: on Xvfb, it covers the
+    --  test's window, and fl_read_image reads what is on the screen.
     declare
-        Ignore : constant FLTK.GLUT.Valid_Window_Number :=
+        GLUT_Window : constant FLTK.GLUT.Valid_Window_Number :=
             FLTK.GLUT.Create_Window ("Test_Exceptions GLUT");
     begin
         FLTK.GLUT.Display_Func (Display'Unrestricted_Access);
+        Raise_In_Display := True;
+        Raises (Pump_10'Access, Boom_Id, "a GLUT display callback's exception reaches Wait");
+        Displays := 0;
+        FLTK.GLUT.Post_Redisplay;
+        Pump;
+        Check (Displays > 0, "the GLUT window is displayed again:" & Displays'Image);
+        FLTK.GLUT.Destroy_Window (GLUT_Window);
+        Pump (5);
     end;
-    Raise_In_Display := True;
-    Raises (Pump_10'Access, Boom_Id, "a GLUT display callback's exception reaches Wait");
-    Displays := 0;
-    FLTK.GLUT.Post_Redisplay;
-    Pump;
-    Check (Displays > 0, "the GLUT window is displayed again:" & Displays'Image);
     Check_Still_Works ("after a GLUT display callback raised");
 
 

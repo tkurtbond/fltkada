@@ -9,6 +9,8 @@
 #include <FL/Enumerations.H>
 #include "c_fl_help_view.h"
 #include "c_fl.h"
+#include <map>
+#include <string>
 
 
 
@@ -18,20 +20,43 @@
 extern "C" void widget_draw_hook(void * ud);
 extern "C" int widget_handle_hook(void * ud, int e);
 
+extern "C" int help_view_link_hook(void * ud, const char * uri);
+
 
 
 
 //  Attaching all relevant hooks and friends
 
+//  FLTK asks a view's link function two questions it doesn't tell apart:
+//  what to load, as a page loads, and where an image is, as a page is laid
+//  out, drawn or freed (Fl_Help_View.cxx:2788-2799, 3368, 3407).  It asks
+//  about each image again for each of those, and releases the image the
+//  answer names, so each image's answer is kept and given again without
+//  asking Ada.  The answer to what to load is kept till the next one, since
+//  load() reads it after free_data() has asked about the old page's images
+//  (FLTKAda-BUGS.md, N4 in PLAN.md).  A refused image is answered "", which
+//  names nothing, so FLTK draws its broken image, where NULL would crash it
+//  (pofltk 90).  Ported from pofltk's FlHelp.cpp.
+
 class My_Help_View : public Fl_Help_View {
 public:
     using Fl_Help_View::Fl_Help_View;
+
+    //  The destructor of Fl_Help_View would ask about its images once this
+    //  class is gone.
+    ~My_Help_View() { value(0); }
 
     friend void fl_help_view_draw(HELPVIEW v);
     friend int fl_help_view_handle(HELPVIEW v, int e);
 
     void draw();
     int handle(int e);
+
+    std::map<std::string, std::string> images;
+    std::string answer;
+    bool asks = false;
+    bool loading = false;
+    bool in_image = false;
 };
 
 void My_Help_View::draw() {
@@ -45,10 +70,36 @@ int My_Help_View::handle(int e) {
 
 
 
+static const char * help_view_link(Fl_Widget * w, const char * uri) {
+    My_Help_View * v = static_cast<My_Help_View*>(w);
+    if (v->loading) {
+        v->loading = false;
+        if (!v->asks) {
+            return uri;
+        }
+        return help_view_link_hook(v->user_data(), uri) ? v->answer.c_str() : 0;
+    }
+    std::map<std::string, std::string>::iterator i = v->images.find(uri);
+    if (i != v->images.end()) {
+        return i->second.c_str();
+    }
+    std::string r = uri;
+    if (v->asks) {
+        v->in_image = true;
+        r = help_view_link_hook(v->user_data(), uri) ? v->answer : "";
+        v->in_image = false;
+    }
+    return (v->images[uri] = r).c_str();
+}
+
+
+
+
 //  Flattened C API
 
 HELPVIEW new_fl_help_view(int x, int y, int w, int h, char * label) {
     My_Help_View *v = new My_Help_View(x, y, w, h, label);
+    v->link(help_view_link);
     return v;
 }
 
@@ -110,7 +161,11 @@ const char * fl_help_view_filename(HELPVIEW v) {
 }
 
 int fl_help_view_load(HELPVIEW v, const char * f) {
-    return static_cast<Fl_Help_View*>(v)->load(f);
+    My_Help_View * h = static_cast<My_Help_View*>(v);
+    h->loading = true;
+    int r = h->load(f);
+    h->loading = false;
+    return r;
 }
 
 const char * fl_help_view_title(HELPVIEW v) {
@@ -125,8 +180,16 @@ void fl_help_view_set_value(HELPVIEW v, const char * t) {
     static_cast<Fl_Help_View*>(v)->value(t);
 }
 
-void fl_help_view_link(HELPVIEW v, void * f) {
-    static_cast<Fl_Help_View*>(v)->link(reinterpret_cast<Fl_Help_Func*>(f));
+void fl_help_view_set_asks(HELPVIEW v, int a) {
+    static_cast<My_Help_View*>(v)->asks = a != 0;
+}
+
+void fl_help_view_set_answer(HELPVIEW v, const char * s) {
+    static_cast<My_Help_View*>(v)->answer = s;
+}
+
+int fl_help_view_in_image(HELPVIEW v) {
+    return static_cast<My_Help_View*>(v)->in_image;
 }
 
 
@@ -189,7 +252,12 @@ void fl_help_view_draw(HELPVIEW v) {
 
 int fl_help_view_handle(HELPVIEW v, int e) {
 #if FL_ABI_VERSION >= 10303
-    return static_cast<My_Help_View*>(v)->Fl_Help_View::handle(e);
+    //  A release on a link loads it (Fl_Help_View.cxx:3216-3220).
+    My_Help_View * h = static_cast<My_Help_View*>(v);
+    h->loading = e == FL_RELEASE;
+    int r = h->Fl_Help_View::handle(e);
+    h->loading = false;
+    return r;
 #else
     return static_cast<My_Help_View*>(v)->Fl_Group::handle(e);
 #endif

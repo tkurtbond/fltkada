@@ -7,6 +7,7 @@
 with
 
     Ada.Assertions,
+    FLTK.Hook_Exceptions,
     FLTK.Labels,
     FLTK.Registry,
     FLTK.Static,
@@ -53,8 +54,12 @@ package body FLTK.Label_Draw_Marshal is
             Integer (W), Integer (H),
             Alignment (A));
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "Label_Draw_Hook was handed Label with no back reference to Ada in registry";
+    when Chk.Assertion_Error =>
+        Hook_Exceptions.Save_New
+           (Internal_FLTK_Error'Identity,
+            "Label_Draw_Hook was handed Label with no back reference to Ada in registry");
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Label_Draw_Hook;
 
 
@@ -75,8 +80,12 @@ package body FLTK.Label_Draw_Marshal is
            (My_Label.all,
             Integer (W), Integer (H));
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "Label_Measure_Hook was handed Label with no back reference to Ada in registry";
+    when Chk.Assertion_Error =>
+        Hook_Exceptions.Save_New
+           (Internal_FLTK_Error'Identity,
+            "Label_Measure_Hook was handed Label with no back reference to Ada in registry");
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Label_Measure_Hook;
 
 

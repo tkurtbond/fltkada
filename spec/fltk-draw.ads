@@ -130,6 +130,8 @@ package FLTK.Draw is
 
     procedure Pop_Clip;
 
+    --  A clip pushed in a Draw that raises before Pop_Clip stays pushed,
+    --  so pop it in a handler there before re-raising (FLTK-issues.md F3).
     procedure Push_Clip
            (X, Y, W, H : in Integer);
 
@@ -307,6 +309,10 @@ package FLTK.Draw is
 
     --  Special Drawing  --
 
+    --  The name is copied and kept.  Raises Draw_Error if FLTK's symbol table is
+    --  full, or if the name is refused: one that is empty, holds an @ or a byte
+    --  outside ASCII, or starts the way a symbol's modifiers do (#, $, %, a digit,
+    --  or - or + then 1 to 9), since a label could never name it.
     procedure Add_Symbol
            (Text     : in String;
             Callback : in Symbol_Draw_Function;
@@ -359,6 +365,8 @@ package FLTK.Draw is
             Kind       : in Box_Kind;
             Hue        : in Color);
 
+    --  Raises Draw_Error if Name does not start with @, names no symbol, or holds
+    --  a byte outside ASCII (FLTK's symbol lookup misbehaves on those).
     procedure Draw_Symbol
            (X, Y, W, H : in Integer;
             Name       : in String;

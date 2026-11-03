@@ -8,10 +8,11 @@ with
 
     Ada.Assertions,
     Ada.Containers.Vectors,
+    FLTK.Box_Draw_Marshal,
+    FLTK.Hook_Exceptions,
+    FLTK.Label_Draw_Marshal,
     Interfaces.C.Strings,
     System.Address_To_Access_Conversions,
-    FLTK.Box_Draw_Marshal,
-    FLTK.Label_Draw_Marshal,
     FLTK.Static_Callback_Conversions;
 
 use type
@@ -318,11 +319,6 @@ package body FLTK.Static is
     pragma Import (C, fl_static_get_font_name, "fl_static_get_font_name");
     pragma Inline (fl_static_get_font_name);
 
-    procedure fl_static_set_font
-           (T, F : in Interfaces.C.int);
-    pragma Import (C, fl_static_set_font, "fl_static_set_font");
-    pragma Inline (fl_static_set_font);
-
     procedure fl_static_set_font2
            (T : in Interfaces.C.int;
             S : in Interfaces.C.Strings.chars_ptr);
@@ -608,12 +604,21 @@ package body FLTK.Static is
         I := I + Interfaces.C.int (Result);
         return Interfaces.C.int (Result);
     exception
-    when Constraint_Error => raise Internal_FLTK_Error with
-        "Args_Handler callback was supplied unexpected int i value of " &
-        Interfaces.C.int'Image (I);
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "Args_Handler callback was supplied irregular argc and argv values of " &
-        Interfaces.C.int'Image (C) & " and " & Storage.Integer_Address'Image (V);
+    when Constraint_Error =>
+        Hook_Exceptions.Save_New
+           (Internal_FLTK_Error'Identity,
+            "Args_Handler callback was supplied unexpected int i value of " &
+            Interfaces.C.int'Image (I));
+        return 0;
+    when Chk.Assertion_Error =>
+        Hook_Exceptions.Save_New
+           (Internal_FLTK_Error'Identity,
+            "Args_Handler callback was supplied irregular argc and argv values of " &
+            Interfaces.C.int'Image (C) & " and " & Storage.Integer_Address'Image (V));
+        return 0;
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return 0;
     end Args_Hook;
 
 
@@ -627,6 +632,9 @@ package body FLTK.Static is
         if U /= Null_Pointer then
             Conv.To_Awake_Access (U).all;
         end if;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Awake_Hook;
 
 
@@ -638,6 +646,9 @@ package body FLTK.Static is
            (U : in Storage.Integer_Address) is
     begin
         Conv.To_Timeout_Access (U).all;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Timeout_Hook;
 
 
@@ -669,9 +680,13 @@ package body FLTK.Static is
             Call.all (Buffer_Kind'Val (S));
         end loop;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "Clipboard_Notify_Hook was passed unexpected Buffer_Kind int value of " &
-        Interfaces.C.int'Image (S);
+    when Chk.Assertion_Error =>
+        Hook_Exceptions.Save_New
+           (Internal_FLTK_Error'Identity,
+            "Clipboard_Notify_Hook was passed unexpected Buffer_Kind int value of " &
+            Interfaces.C.int'Image (S));
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Clipboard_Notify_Hook;
 
 
@@ -685,6 +700,9 @@ package body FLTK.Static is
             U  : in Storage.Integer_Address) is
     begin
         Conv.To_File_Access (U).all (File_Descriptor (FD));
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end FD_Hook;
 
 
@@ -696,6 +714,9 @@ package body FLTK.Static is
            (U : in Storage.Integer_Address) is
     begin
         Conv.To_Idle_Access (U).all;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Idle_Hook;
 
 
@@ -1176,20 +1197,28 @@ package body FLTK.Static is
     end Font_Family_Image;
 
 
+    --  FLTK keeps the name pointer, and compares the next name with it
+    --  (Fl_Cairo_Graphics_Driver.cxx:1158), so the old copy is freed only
+    --  after FLTK holds the new one.  Copying a kind would share the
+    --  source's pointer (fl_set_font.cxx:71), which a later change of the
+    --  source frees, so the target gets its own copy of the name instead.
+
     procedure Set_Font_Kind
            (Target, Source : in Font_Kind) is
     begin
-        fl_static_set_font (Font_Kind'Pos (Target), Font_Kind'Pos (Source));
+        Set_Font_Kind (Target, Font_Image (Source));
     end Set_Font_Kind;
 
 
     procedure Set_Font_Kind
            (Target : in Font_Kind;
-            Source : in String) is
+            Source : in String)
+    is
+        Old : Interfaces.C.Strings.chars_ptr := Font_Overrides (Target);
     begin
-        Interfaces.C.Strings.Free (Font_Overrides (Target));
         Font_Overrides (Target) := Interfaces.C.Strings.New_String (Source);
         fl_static_set_font2 (Font_Kind'Pos (Target), Font_Overrides (Target));
+        Interfaces.C.Strings.Free (Old);
     end Set_Font_Kind;
 
 

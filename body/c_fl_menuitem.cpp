@@ -43,13 +43,15 @@ static void free_text_label(Fl_Menu_Item * mi) {
 //  Flattened C API
 
 void * null_fl_menu_item() {
-    Fl_Menu_Item *mi = new Fl_Menu_Item;
+    //  Value-initialised (the ()), so every field FLTK reads is 0, as in a
+    //  static Fl_Menu_Item array; plain new left them unset.
+    Fl_Menu_Item *mi = new Fl_Menu_Item();
     mi->label(0);
     return mi;
 }
 
 void * new_fl_menu_item(char * t, void * c, int s, int f) {
-    Fl_Menu_Item *mi = new Fl_Menu_Item;
+    Fl_Menu_Item *mi = new Fl_Menu_Item();
     mi->callback(c==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), c);
     mi->flags = static_cast<int>(f);
     mi->shortcut(static_cast<int>(s));

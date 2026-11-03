@@ -9,6 +9,7 @@ with
     Ada.Assertions,
     Ada.Characters.Latin_1,
     FLTK.Events,
+    FLTK.Hook_Exceptions,
     Interfaces.C;
 
 use type
@@ -511,9 +512,15 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
         end if;
         return Event_Outcome'Pos (Not_Handled);
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "Fl_Text_Editor C++ object had no user data reference back to the " &
-        "corresponding Ada object in the Key_Func hook";
+    when Chk.Assertion_Error =>
+        Hook_Exceptions.Save_New
+           (Internal_FLTK_Error'Identity,
+            "Fl_Text_Editor C++ object had no user data reference back to the " &
+            "corresponding Ada object in the Key_Func hook");
+        return 0;
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return 0;
     end Key_Func_Hook;
 
 

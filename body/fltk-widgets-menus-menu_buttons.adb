@@ -6,6 +6,7 @@
 
 with
 
+    FLTK.Hook_Exceptions,
     FLTK.Widgets.Groups,
     Interfaces.C.Strings;
 
@@ -135,6 +136,9 @@ package body FLTK.Widgets.Menus.Menu_Buttons is
             Integer (X), Integer (Y),
             Integer (W), Integer (H),
             Interfaces.C.Strings.Value (C_Str));
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end menu_button_extra_init_hook;
 
 
@@ -227,6 +231,7 @@ package body FLTK.Widgets.Menus.Menu_Buttons is
         use type Interfaces.C.int;
         Ptr : constant Storage.Integer_Address := fl_menu_button_popup (This.Void_Ptr);
     begin
+        Hook_Exceptions.Reraise;
         return Extended_Index (fl_menu_find_index2 (This.Void_Ptr, Ptr) + 1);
     end Popup;
 

@@ -223,9 +223,22 @@ package body FLTK.Widgets.Groups.Spinners is
     --  Destructors  --
     -------------------
 
+    --  Fl_Spinner's own format, a static string (Fl_Spinner.cxx:116)
+    Default_Format : aliased Interfaces.C.char_array := ('%', 'g', Interfaces.C.nul);
+
     procedure Extra_Final
            (This : in out Spinner) is
     begin
+        --  FLTK keeps the format string (format_ = f, Fl_Spinner.H:84), so
+        --  it is freed only once FLTK has the static one back.  A Spinner
+        --  this object doesn't own may outlive it, so its format is kept.
+        if This.Format_Str /= Interfaces.C.Strings.Null_Ptr
+            and This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc
+        then
+            fl_spinner_set_format
+               (This.Void_Ptr, Interfaces.C.Strings.To_Chars_Ptr (Default_Format'Access));
+            Interfaces.C.Strings.Free (This.Format_Str);
+        end if;
         Extra_Final (Group (This));
     end Extra_Final;
 
@@ -493,11 +506,13 @@ package body FLTK.Widgets.Groups.Spinners is
 
     procedure Set_Format
            (This : in out Spinner;
-            To   : in     String) is
+            To   : in     String)
+    is
+        Old : Interfaces.C.Strings.chars_ptr := This.Format_Str;
     begin
-        Interfaces.C.Strings.Free (This.Format_Str);
         This.Format_Str := Interfaces.C.Strings.New_String (To);
         fl_spinner_set_format (This.Void_Ptr, This.Format_Str);
+        Interfaces.C.Strings.Free (Old);
     end Set_Format;
 
 

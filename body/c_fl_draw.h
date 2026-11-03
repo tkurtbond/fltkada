@@ -17,10 +17,7 @@ extern "C" int fl_draw_can_do_alpha_blending();
 extern "C" const char * fl_draw_shortcut_label(unsigned int shortcut);
 
 
-extern "C" const char * fl_draw_latin1_to_local(const char *t, int n);
-extern "C" const char * fl_draw_local_to_latin1(const char *t, int n);
-extern "C" const char * fl_draw_mac_roman_to_local(const char *t, int n);
-extern "C" const char * fl_draw_local_to_mac_roman(const char *t, int n);
+extern "C" int fl_draw_recode(int kind, const char * from, char * to, int n);
 
 
 extern "C" int fl_draw_clip_box(int x, int y, int w, int h, int &bx, int &by, int &bw, int &bh);
@@ -86,7 +83,7 @@ extern "C" void fl_draw_measure(const char * str, int &w, int &h, int draw_symbo
 extern "C" void fl_draw_scroll(int x, int y, int w, int h, int dx, int dy,
                                void * func, void * data);
 extern "C" void fl_draw_text_extents(const char * t, int n, int &dx, int &dy, int &w, int &h);
-extern "C" const char * fl_draw_expand_text(const char * str, char * &buf, int maxbuf,
+extern "C" const char * fl_draw_expand_text(const char * str, char * buf, int maxbuf,
     double maxw, int &n, double &width, int wrap, int symbol);
 extern "C" double fl_draw_width(const char *txt, int n);
 extern "C" double fl_draw_width2(unsigned long c);

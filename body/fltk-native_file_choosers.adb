@@ -6,6 +6,7 @@
 
 with
 
+    FLTK.Hook_Exceptions,
     Interfaces.C.Strings;
 
 use type
@@ -533,6 +534,7 @@ package body FLTK.Native_File_Choosers is
     is
         Result : constant Interfaces.C.int := fl_native_file_chooser_show (This.Void_Ptr);
     begin
+        Hook_Exceptions.Reraise;
         case Result is
             when -1     => return Error;
             when 1      => return Cancelled;

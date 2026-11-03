@@ -10,6 +10,8 @@
 --    control_fail  one failing Check, so it prints FAIL and exits 1;
 --    control_leak  a Box that is never freed, so test/vg-check.sh must
 --                  report a leak on its valgrind log.
+--    control_string_leak  a C string made with New_String and never
+--                  freed, which test/vg-check.sh must report too.
 --
 --  The N12 experiment (PLAN.md, Phase 0): n12 CASE raises an Ada
 --  exception from one kind of hook FLTK calls and reports what state FLTK
@@ -38,6 +40,7 @@ project Controls is
     for Main use
        ("control_fail.adb",
         "control_leak.adb",
+        "control_string_leak.adb",
         "n12.adb");
 
     package Builder is

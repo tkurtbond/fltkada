@@ -117,7 +117,6 @@ package FLTK.Screen is
 private
 
 
-    pragma Import (C, Flush, "fl_screen_flush");
     pragma Import (C, Redraw, "fl_screen_redraw");
 
 

@@ -218,7 +218,7 @@ package body FLTK.Widgets.Groups is
     --  Destructors  --
     -------------------
 
-    procedure Extra_Final
+    procedure Remove_Ada_Children
            (This : in out Group)
     is
         function Is_Internal
@@ -238,12 +238,19 @@ package body FLTK.Widgets.Groups is
         --  Children with Ada objects are removed, as their Ada objects
         --  delete them, but the ones FLTK made are left for the C++
         --  destructor to delete.
+        for I in reverse 1 .. This.Number_Of_Children loop
+            if not Is_Internal (fl_group_child (This.Void_Ptr, Interfaces.C.int (I) - 1)) then
+                This.Remove (Index (I));
+            end if;
+        end loop;
+    end Remove_Ada_Children;
+
+
+    procedure Extra_Final
+           (This : in out Group) is
+    begin
         if This.Needs_Dealloc and This.Void_Ptr /= Null_Pointer then
-            for I in reverse 1 .. This.Number_Of_Children loop
-                if not Is_Internal (fl_group_child (This.Void_Ptr, Interfaces.C.int (I) - 1)) then
-                    This.Remove (Index (I));
-                end if;
-            end loop;
+            This.Remove_Ada_Children;
         end if;
         Free (This.Internal);
         Extra_Final (Widget (This));

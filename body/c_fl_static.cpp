@@ -7,6 +7,7 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Window.H>
+#include <cstring>
 #include "c_fl_static.h"
 
 
@@ -225,7 +226,7 @@ int fl_static_get_font_sizes(int f, int * &a) {
 }
 
 int fl_static_font_size_array_get(int * a, int i) {
-    return *(a+((i-1)*sizeof(int)));
+    return a[i-1];
 }
 
 int fl_static_set_fonts() {
@@ -294,8 +295,18 @@ void fl_static_selection(void * o, char * t, int l) {
     Fl::selection(ref, t, l);
 }
 
+//  FLTK's drivers tell the kinds apart by pointer, not by text: on Wayland
+//  always (fl_wayland_clipboard_dnd.cxx:51) and on X11 while this program owns
+//  the clipboard (Fl_x.cxx:724-725).  So a kind given as text is replaced by
+//  FLTK's own constant for it (FLTKAda-BUGS.md 38).
 int fl_static_clipboard_contains(const char * k) {
-    return Fl::clipboard_contains(k);
+    if (std::strcmp(k, Fl::clipboard_plain_text) == 0) {
+        return Fl::clipboard_contains(Fl::clipboard_plain_text);
+    } else if (std::strcmp(k, Fl::clipboard_image) == 0) {
+        return Fl::clipboard_contains(Fl::clipboard_image);
+    } else {
+        return Fl::clipboard_contains(k);
+    }
 }
 
 

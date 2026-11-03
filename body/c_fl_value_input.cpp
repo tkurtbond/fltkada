@@ -50,10 +50,28 @@ int My_Value_Input::handle(int e) {
 
 
 
+//  The input's callback
+
+//  FLTK's callback for the input finds the Fl_Value_Input through its data,
+//  the input's user_data (Fl_Value_Input.cxx:28, 120).  The binding keeps the
+//  input's Ada record there, so this passes the parent instead, which the
+//  input's parent() is (:119).  FLTKAda-BUGS.md 15, FLTK-issues.md F2.
+
+static Fl_Callback_p value_input_input_cb = 0;
+
+static void value_input_input_thunk(Fl_Widget * w, void *) {
+    value_input_input_cb(w, w->parent());
+}
+
+
+
+
 //  Flattened C API
 
 VALUEINPUT new_fl_value_input(int x, int y, int w, int h, char* label) {
     My_Value_Input *a = new My_Value_Input(x, y, w, h, label);
+    value_input_input_cb = a->input.callback();
+    a->input.callback(value_input_input_thunk);
     return a;
 }
 

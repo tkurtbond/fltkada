@@ -7,6 +7,7 @@
 with
 
     Ada.Assertions,
+    FLTK.Hook_Exceptions,
     Interfaces.C.Strings;
 
 use type
@@ -484,6 +485,10 @@ package body FLTK.Filenames is
             Interfaces.C.Strings.Value (filename_dname (DB, 0)));
     begin
         return Comparison'Pos (Result) - 1;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return 0;
     end Compare_Hook;
 
     function Get_Listing
@@ -497,6 +502,7 @@ package body FLTK.Filenames is
                (Interfaces.C.To_C (Name),
                 This.Void_Ptr,
                 Storage.To_Integer (Compare_Hook'Address));
+            Hook_Exceptions.Reraise;
         end return;
     end Get_Listing;
 

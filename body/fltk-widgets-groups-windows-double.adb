@@ -7,6 +7,7 @@
 with
 
     FLTK.Args_Marshal,
+    FLTK.Hook_Exceptions,
     Interfaces.C;
 
 
@@ -243,6 +244,7 @@ package body FLTK.Widgets.Groups.Windows.Double is
            (This : in out Double_Window) is
     begin
         fl_double_window_flush (This.Void_Ptr);
+        Hook_Exceptions.Reraise;
     end Flush;
 
 
@@ -250,6 +252,7 @@ package body FLTK.Widgets.Groups.Windows.Double is
            (This : in out Double_Window) is
     begin
         fl_double_window_flush2 (This.Void_Ptr, 1);
+        Hook_Exceptions.Reraise;
     end Flush_All;
 
 

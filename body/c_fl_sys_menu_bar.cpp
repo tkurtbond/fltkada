@@ -7,6 +7,7 @@
 #include <FL/Fl_Sys_Menu_Bar.H>
 #include <FL/Fl_Menu_Item.H>
 #include "c_fl_sys_menu_bar.h"
+#include "c_fl_menu.h"
 #include "c_fl.h"
 
 
@@ -88,8 +89,14 @@ int fl_sys_menu_bar_insert2(SYSMENUBAR m, int p, const char * t, const char * s,
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
 }
 
-void fl_sys_menu_bar_set_menu(SYSMENUBAR m, void * d) {
-    static_cast<Fl_Sys_Menu_Bar*>(m)->menu(static_cast<Fl_Menu_*>(d)->menu());
+//  Gives the bar its own copy of the donor's items, as fl_menu_set_menu
+//  does for any menu (FLTKAda-BUGS.md 38).  Fl_Sys_Menu_Bar::menu hides
+//  Fl_Menu_::menu, but off macOS its driver only calls Fl_Menu_Bar::menu
+//  (Fl_Sys_Menu_Bar_Driver.H:42); update() then tells any native bar.
+int fl_sys_menu_bar_set_menu(SYSMENUBAR m, void * d) {
+    int result = fl_menu_set_menu(m, d);
+    static_cast<Fl_Sys_Menu_Bar*>(m)->update();
+    return result;
 }
 
 void fl_sys_menu_bar_remove(SYSMENUBAR m, int p) {
@@ -118,8 +125,16 @@ void fl_sys_menu_bar_setonly(SYSMENUBAR m, void * mi) {
     static_cast<Fl_Sys_Menu_Bar*>(m)->setonly(static_cast<Fl_Menu_Item*>(mi));
 }
 
-void fl_sys_menu_bar_replace(SYSMENUBAR m, int i, const char * t) {
-    static_cast<Fl_Sys_Menu_Bar*>(m)->replace(i, t);
+//  As fl_menu_replace, in c_fl_menu.cpp.
+int fl_sys_menu_bar_replace(SYSMENUBAR m, int i, const char * t, const char ** o) {
+    Fl_Sys_Menu_Bar * bar = static_cast<Fl_Sys_Menu_Bar*>(m);
+    *o = 0;
+    if (i < 0 || i >= bar->size()) {
+        return 0;
+    }
+    *o = bar->menu()[i].text;
+    bar->replace(i, t);
+    return bar->menu()[i].text == t;
 }
 
 void fl_sys_menu_bar_shortcut(SYSMENUBAR m, int i, int s) {

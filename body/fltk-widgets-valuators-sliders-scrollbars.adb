@@ -6,6 +6,7 @@
 
 with
 
+    FLTK.Hook_Exceptions,
     FLTK.Widgets.Groups,
     Interfaces.C.Strings;
 
@@ -135,6 +136,9 @@ package body FLTK.Widgets.Valuators.Sliders.Scrollbars is
             Integer (X), Integer (Y),
             Integer (W), Integer (H),
             Interfaces.C.Strings.Value (C_Str));
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end scrollbar_extra_init_hook;
 
 

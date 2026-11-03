@@ -26,6 +26,12 @@
 
 </table>
 
+<p><b>Note:</b><br /><br />
+An exception raised in a Draw goes back to the program when control returns to Ada
+(from Wait, Check, Run and the like), but a clip that Draw pushed with Push_Clip or
+Push_No_Clip and didn't pop before raising stays pushed, and later redraws miss part
+of the window. Pop it in a handler in Draw, then re-raise.</p>
+
 
 
 <table class="type">
@@ -566,6 +572,7 @@ function Expand_Text
         Symbols   : in     Boolean := False)
     return String;
 </pre></td>
+<td>The binding supplies a buffer big enough for the whole expansion. Last is the index in Text of the last character used.</td>
   </tr>
 
   <tr>
@@ -701,6 +708,7 @@ function Local_To_Mac_Roman
        (From : in String)
     return String;
 </pre></td>
+<td>Converts every byte of From, NULs included. FLTK's own function writes only the first (pofltk 126).</td>
   </tr>
 
   <tr>
@@ -738,6 +746,7 @@ function Mac_Roman_To_Local
        (From : in String)
     return String;
 </pre></td>
+<td>Converts every byte of From, NULs included. FLTK's own function writes through a null pointer on its first call (pofltk 126).</td>
   </tr>
 
   <tr>

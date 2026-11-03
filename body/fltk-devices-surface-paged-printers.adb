@@ -6,6 +6,7 @@
 
 with
 
+    Ada.Unchecked_Deallocation,
     Interfaces.C;
 
 use type
@@ -14,6 +15,37 @@ use type
 
 
 package body FLTK.Devices.Surface.Paged.Printers is
+
+
+    --  FLTK's print panel is built once, the first time a job starts, from the
+    --  static label pointers, which its widgets keep (print_panel.cxx:249-503).
+    --  The panel is never deleted (Fl_Posix_Printer_Driver.cxx:282), so a
+    --  replaced label may be read until the program ends.  Its copy waits here,
+    --  and the final controller frees it.  This is a plain list, not a
+    --  container, since the body's objects are finalized before the spec's
+    --  Cleanup.
+    type Retired_Label;
+
+    type Retired_Label_Access is access Retired_Label;
+
+    type Retired_Label is record
+        Text : Interfaces.C.Strings.chars_ptr;
+        Next : Retired_Label_Access;
+    end record;
+
+    procedure Free is new Ada.Unchecked_Deallocation (Retired_Label, Retired_Label_Access);
+
+    Retired_Labels : Retired_Label_Access := null;
+
+    procedure Retire
+           (Text : in Interfaces.C.Strings.chars_ptr) is
+    begin
+        if Interfaces.C.Strings."/=" (Text, Interfaces.C.Strings.Null_Ptr) then
+            Retired_Labels := new Retired_Label'(Text => Text, Next => Retired_Labels);
+        end if;
+    end Retire;
+
+
 
 
     ------------------------
@@ -385,6 +417,15 @@ package body FLTK.Devices.Surface.Paged.Printers is
         Free (Property_Use);
         Free (Property_Save);
         Free (Property_Cancel);
+        while Retired_Labels /= null loop
+            declare
+                Next : constant Retired_Label_Access := Retired_Labels.Next;
+            begin
+                Free (Retired_Labels.Text);
+                Free (Retired_Labels);
+                Retired_Labels := Next;
+            end;
+        end loop;
     end Finalize;
 
 
@@ -423,11 +464,13 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
     procedure Set_Dialog_Title
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := Dialog_Title;
     begin
-        Interfaces.C.Strings.Free (Dialog_Title);
         Dialog_Title := Interfaces.C.Strings.New_String (Value);
         fl_printer_set_dialog_title (Dialog_Title);
+        Retire (Old);
     end Set_Dialog_Title;
 
 
@@ -439,11 +482,13 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
     procedure Set_Dialog_Printer
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := Dialog_Printer;
     begin
-        Interfaces.C.Strings.Free (Dialog_Printer);
         Dialog_Printer := Interfaces.C.Strings.New_String (Value);
         fl_printer_set_dialog_printer (Dialog_Printer);
+        Retire (Old);
     end Set_Dialog_Printer;
 
 
@@ -455,11 +500,13 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
     procedure Set_Dialog_Range
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := Dialog_Range;
     begin
-        Interfaces.C.Strings.Free (Dialog_Range);
         Dialog_Range := Interfaces.C.Strings.New_String (Value);
         fl_printer_set_dialog_range (Dialog_Range);
+        Retire (Old);
     end Set_Dialog_Range;
 
 
@@ -471,11 +518,13 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
     procedure Set_Dialog_Copies
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := Dialog_Copies;
     begin
-        Interfaces.C.Strings.Free (Dialog_Copies);
         Dialog_Copies := Interfaces.C.Strings.New_String (Value);
         fl_printer_set_dialog_copies (Dialog_Copies);
+        Retire (Old);
     end Set_Dialog_Copies;
 
 
@@ -487,11 +536,13 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
     procedure Set_Dialog_All
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := Dialog_All;
     begin
-        Interfaces.C.Strings.Free (Dialog_All);
         Dialog_All := Interfaces.C.Strings.New_String (Value);
         fl_printer_set_dialog_all (Dialog_All);
+        Retire (Old);
     end Set_Dialog_All;
 
 
@@ -503,11 +554,13 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
     procedure Set_Dialog_Pages
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := Dialog_Pages;
     begin
-        Interfaces.C.Strings.Free (Dialog_Pages);
         Dialog_Pages := Interfaces.C.Strings.New_String (Value);
         fl_printer_set_dialog_pages (Dialog_Pages);
+        Retire (Old);
     end Set_Dialog_Pages;
 
 
@@ -519,11 +572,13 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
     procedure Set_Dialog_From
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := Dialog_From;
     begin
-        Interfaces.C.Strings.Free (Dialog_From);
         Dialog_From := Interfaces.C.Strings.New_String (Value);
         fl_printer_set_dialog_from (Dialog_From);
+        Retire (Old);
     end Set_Dialog_From;
 
 
@@ -535,11 +590,13 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
     procedure Set_Dialog_To
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := Dialog_To;
     begin
-        Interfaces.C.Strings.Free (Dialog_To);
         Dialog_To := Interfaces.C.Strings.New_String (Value);
         fl_printer_set_dialog_to (Dialog_To);
+        Retire (Old);
     end Set_Dialog_To;
 
 
@@ -551,11 +608,13 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
     procedure Set_Dialog_Properties
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := Dialog_Properties;
     begin
-        Interfaces.C.Strings.Free (Dialog_Properties);
         Dialog_Properties := Interfaces.C.Strings.New_String (Value);
         fl_printer_set_dialog_properties (Dialog_Properties);
+        Retire (Old);
     end Set_Dialog_Properties;
 
 
@@ -567,11 +626,13 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
     procedure Set_Dialog_Number_Copies
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := Dialog_Copyno;
     begin
-        Interfaces.C.Strings.Free (Dialog_Copyno);
         Dialog_Copyno := Interfaces.C.Strings.New_String (Value);
         fl_printer_set_dialog_copyno (Dialog_Copyno);
+        Retire (Old);
     end Set_Dialog_Number_Copies;
 
 
@@ -583,11 +644,13 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
     procedure Set_Dialog_Print_Button
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := Dialog_Print_Button;
     begin
-        Interfaces.C.Strings.Free (Dialog_Print_Button);
         Dialog_Print_Button := Interfaces.C.Strings.New_String (Value);
         fl_printer_set_dialog_print_button (Dialog_Print_Button);
+        Retire (Old);
     end Set_Dialog_Print_Button;
 
 
@@ -599,11 +662,13 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
     procedure Set_Dialog_Cancel_Button
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := Dialog_Cancel_Button;
     begin
-        Interfaces.C.Strings.Free (Dialog_Cancel_Button);
         Dialog_Cancel_Button := Interfaces.C.Strings.New_String (Value);
         fl_printer_set_dialog_cancel_button (Dialog_Cancel_Button);
+        Retire (Old);
     end Set_Dialog_Cancel_Button;
 
 
@@ -615,11 +680,13 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
     procedure Set_Dialog_Print_To_File
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : Interfaces.C.Strings.chars_ptr := Dialog_Print_To_File;
     begin
-        Interfaces.C.Strings.Free (Dialog_Print_To_File);
         Dialog_Print_To_File := Interfaces.C.Strings.New_String (Value);
         fl_printer_set_dialog_print_to_file (Dialog_Print_To_File);
+        Interfaces.C.Strings.Free (Old);
     end Set_Dialog_Print_To_File;
 
 
@@ -631,11 +698,13 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
     procedure Set_Property_Title
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := Property_Title;
     begin
-        Interfaces.C.Strings.Free (Property_Title);
         Property_Title := Interfaces.C.Strings.New_String (Value);
         fl_printer_set_property_title (Property_Title);
+        Retire (Old);
     end Set_Property_Title;
 
 
@@ -647,11 +716,13 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
     procedure Set_Property_Page_Size
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := Property_Pagesize;
     begin
-        Interfaces.C.Strings.Free (Property_Pagesize);
         Property_Pagesize := Interfaces.C.Strings.New_String (Value);
         fl_printer_set_property_pagesize (Property_Pagesize);
+        Retire (Old);
     end Set_Property_Page_Size;
 
 
@@ -663,11 +734,13 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
     procedure Set_Property_Mode
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := Property_Mode;
     begin
-        Interfaces.C.Strings.Free (Property_Mode);
         Property_Mode := Interfaces.C.Strings.New_String (Value);
         fl_printer_set_property_mode (Property_Mode);
+        Retire (Old);
     end Set_Property_Mode;
 
 
@@ -679,11 +752,13 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
     procedure Set_Property_Use
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := Property_Use;
     begin
-        Interfaces.C.Strings.Free (Property_Use);
         Property_Use := Interfaces.C.Strings.New_String (Value);
         fl_printer_set_property_use (Property_Use);
+        Retire (Old);
     end Set_Property_Use;
 
 
@@ -695,11 +770,13 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
     procedure Set_Property_Save
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := Property_Save;
     begin
-        Interfaces.C.Strings.Free (Property_Save);
         Property_Save := Interfaces.C.Strings.New_String (Value);
         fl_printer_set_property_save (Property_Save);
+        Retire (Old);
     end Set_Property_Save;
 
 
@@ -711,11 +788,13 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
 
     procedure Set_Property_Cancel
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := Property_Cancel;
     begin
-        Interfaces.C.Strings.Free (Property_Cancel);
         Property_Cancel := Interfaces.C.Strings.New_String (Value);
         fl_printer_set_property_cancel (Property_Cancel);
+        Retire (Old);
     end Set_Property_Cancel;
 
 

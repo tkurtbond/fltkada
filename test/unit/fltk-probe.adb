@@ -8,6 +8,7 @@
 
 with
 
+    FLTK.Hook_Exceptions,
     Interfaces.C.Strings;
 
 use type
@@ -87,6 +88,10 @@ package body FLTK.Probe is
         return C.int;
     pragma Import (C, fl_probe_modal, "fl_probe_modal");
 
+    function fl_probe_grabbed
+        return C.int;
+    pragma Import (C, fl_probe_grabbed, "fl_probe_grabbed");
+
     function fl_probe_modal_title
         return CS.chars_ptr;
     pragma Import (C, fl_probe_modal_title, "fl_probe_modal_title");
@@ -96,6 +101,19 @@ package body FLTK.Probe is
             T    : in C.char_array)
         return C.int;
     pragma Import (C, fl_probe_modal_key, "fl_probe_modal_key");
+
+    function fl_probe_close_modal
+        return C.int;
+    pragma Import (C, fl_probe_close_modal, "fl_probe_close_modal");
+
+    function fl_probe_has_label
+           (T : in C.char_array)
+        return C.int;
+    pragma Import (C, fl_probe_has_label, "fl_probe_has_label");
+
+    procedure fl_probe_printer_uses_gtk
+           (On : in C.int);
+    pragma Import (C, fl_probe_printer_uses_gtk, "fl_probe_printer_uses_gtk");
 
     function fl_probe_configured
            (F : in C.int)
@@ -230,9 +248,13 @@ package body FLTK.Probe is
 
     function Capture
            (Item : in FLTK.Widgets.Widget'Class)
-        return Boolean is
+        return Boolean
+    is
+        Result : Boolean;
     begin
-        return fl_probe_capture (Ptr (Item)) /= 0;
+        Result := fl_probe_capture (Ptr (Item)) /= 0;
+        Hook_Exceptions.Reraise;
+        return Result;
     end Capture;
 
 
@@ -253,9 +275,13 @@ package body FLTK.Probe is
     function Shown_Pixel
            (Item : in FLTK.Widgets.Groups.Windows.Window'Class;
             X, Y : in Integer)
-        return RGB is
+        return RGB
+    is
+        Result : RGB;
     begin
-        return To_RGB (fl_probe_shown_pixel (Ptr (Item), C.int (X), C.int (Y)));
+        Result := To_RGB (fl_probe_shown_pixel (Ptr (Item), C.int (X), C.int (Y)));
+        Hook_Exceptions.Reraise;
+        return Result;
     end Shown_Pixel;
 
 
@@ -274,15 +300,18 @@ package body FLTK.Probe is
             Clicks : in Natural      := 0)
         return Boolean
     is
+        Result : Boolean;
         Bits : C.int := State_Bits (State);
     begin
         --  FLTK sets the button's state bit while it is down.
         if Event in Push | Drag and Button not in No_Button | Any_Button then
             Bits := Bits + C.int (To_C (Button));
         end if;
-        return fl_probe_mouse
+        Result := fl_probe_mouse
            (Ptr (Win), Event_Number (Event), C.int (X), C.int (Y),
             Button_Number (Button), Bits, C.int (Clicks)) /= 0;
+        Hook_Exceptions.Reraise;
+        return Result;
     end Mouse;
 
 
@@ -290,10 +319,14 @@ package body FLTK.Probe is
            (Win    : in FLTK.Widgets.Groups.Windows.Window'Class;
             X, Y   : in Integer;
             DX, DY : in Integer)
-        return Boolean is
+        return Boolean
+    is
+        Result : Boolean;
     begin
-        return fl_probe_wheel
+        Result := fl_probe_wheel
            (Ptr (Win), C.int (X), C.int (Y), C.int (DX), C.int (DY)) /= 0;
+        Hook_Exceptions.Reraise;
+        return Result;
     end Wheel;
 
 
@@ -302,10 +335,14 @@ package body FLTK.Probe is
             Code  : in Keypress;
             State : in Modifier := Mod_None;
             Text  : in String   := "")
-        return Boolean is
+        return Boolean
+    is
+        Result : Boolean;
     begin
-        return fl_probe_key
+        Result := fl_probe_key
            (Event_Number (Event), Key_Number (Code), State_Bits (State), C.To_C (Text)) /= 0;
+        Hook_Exceptions.Reraise;
+        return Result;
     end Key;
 
 
@@ -314,10 +351,14 @@ package body FLTK.Probe is
             Code  : in Keypress;
             State : in Modifier := Mod_None;
             Text  : in String   := "")
-        return Boolean is
+        return Boolean
+    is
+        Result : Boolean;
     begin
-        return fl_probe_shortcut
+        Result := fl_probe_shortcut
            (Ptr (Win), Key_Number (Code), State_Bits (State), C.To_C (Text)) /= 0;
+        Hook_Exceptions.Reraise;
+        return Result;
     end Shortcut;
 
 
@@ -327,11 +368,15 @@ package body FLTK.Probe is
             Code  : in Keypress;
             State : in Modifier := Mod_None;
             Text  : in String   := "")
-        return Boolean is
+        return Boolean
+    is
+        Result : Boolean;
     begin
-        return fl_probe_handle_key
+        Result := fl_probe_handle_key
            (Ptr (Win), Event_Number (Event), Key_Number (Code),
             State_Bits (State), C.To_C (Text)) /= 0;
+        Hook_Exceptions.Reraise;
+        return Result;
     end Handle_Key;
 
 
@@ -356,6 +401,13 @@ package body FLTK.Probe is
     end Modal;
 
 
+    function Grabbed
+        return Boolean is
+    begin
+        return fl_probe_grabbed /= 0;
+    end Grabbed;
+
+
     function Modal_Title
         return String is
     begin
@@ -367,10 +419,39 @@ package body FLTK.Probe is
            (Code  : in Keypress;
             State : in Modifier := Mod_None;
             Text  : in String   := "")
+        return Boolean
+    is
+        Result : Boolean;
+    begin
+        Result := fl_probe_modal_key (Key_Number (Code), State_Bits (State), C.To_C (Text)) /= 0;
+        Hook_Exceptions.Reraise;
+        return Result;
+    end Modal_Key;
+
+    function Close_Modal
+        return Boolean
+    is
+        Result : Boolean;
+    begin
+        Result := fl_probe_close_modal /= 0;
+        Hook_Exceptions.Reraise;
+        return Result;
+    end Close_Modal;
+
+
+    function Has_Label
+           (Text : in String)
         return Boolean is
     begin
-        return fl_probe_modal_key (Key_Number (Code), State_Bits (State), C.To_C (Text)) /= 0;
-    end Modal_Key;
+        return fl_probe_has_label (C.To_C (Text)) /= 0;
+    end Has_Label;
+
+
+    procedure Set_Printer_Uses_GTK
+           (On : in Boolean) is
+    begin
+        fl_probe_printer_uses_gtk (Boolean'Pos (On));
+    end Set_Printer_Uses_GTK;
 
 
 
@@ -405,6 +486,7 @@ package body FLTK.Probe is
            (Source : in Integer) is
     begin
         fl_probe_clipboard_notice (C.int (Source));
+        Hook_Exceptions.Reraise;
     end Clipboard_Notice;
 
 

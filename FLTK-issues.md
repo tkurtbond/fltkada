@@ -70,8 +70,10 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
   same applies to any other FLTK composite whose parts' callbacks take the
   parent as data. That is worth an audit: grep FLTK's `src/` for
   `callback(.*, this)` and `(void\*)this)`.
-- **Confirmed**: from FLTK's source (2026-11-03). Not yet shown by a
-  program; PLAN.md Phase 2 adds the test.
+- **Confirmed**: from FLTK's source (2026-11-03), and by
+  `test/unit/test_part_callbacks.adb`, which failed before FLTKAda's fix
+  (`Storage_Error` on typing into an `Input_Choice`). The audit found no
+  other wrapped part affected (PLAN.md, N8).
 
 ### F3. An exception that unwinds through FLTK leaves FLTK's state half-updated
 
@@ -133,8 +135,34 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
 - **Confirmed**: `test/controls/n12.adb` (one case per hook, release
   and debug builds, under Xvfb and headless sway, and valgrind on X11),
   and `test/unit/test_exceptions.adb`, which checks the recovery FLTKAda
-  promises and so fails until Phase 2. In the menu case valgrind shows
+  promises. It failed until Phase 2, and now passes (FLTKAda-BUGS.md
+  43). In the menu case valgrind shows
   invalid reads in `Fl::grab()`'s callers and `Fl_Tooltip::current`,
   then `Storage_Error` (release) or "terminate called without an active
   exception" and a segfault (debug). The image case loses 1,200 bytes
   allocated in `draw_image`. The other cases show no invalid accesses.
+
+### F4. `Fl_Tooltip::enter_area` keeps its old text after an empty one
+
+- **What happens**: `Fl_Tooltip::enter_area` with an empty or null text,
+  or with tooltips disabled, hides the tip but leaves FLTK's `tip`
+  pointing at the last text it was given. FLTK can read that text again
+  later. In `test_kept_strings` the read came from `tooltip_timeout`, and
+  `Fl_TooltipBox::layout` measured the old text while a dir chooser was
+  up. So a binding that keeps the tooltip's text can't free its copy on
+  an empty text. pofltk's `ofl_tooltip_enter_area` does free it there
+  (pofltk 75). Seen 2026-11-03, X11 under Xvfb.
+- **Cause**: `Fl_Tooltip.cxx:290-293` returns through `exit_(0)` without
+  touching `tip`. Only line 301 sets it, together with `widget_`. If
+  `widget_` is already null, `exit_` returns at once (line 251), without
+  removing a pending `tooltip_timeout`.
+- **Effect on FLTKAda**: `fl_tooltip_enter_area` (`body/c_fl_tooltip.cpp`)
+  frees its old copy only once `Fl_Tooltip::current()` is the widget it
+  passed, which is when FLTK took the new text. An empty text keeps the
+  copy, and a static destructor frees the last copy at exit.
+- **Confirmed**: `test/unit/test_kept_strings.adb` under valgrind, with the
+  shim freeing on an empty text the way pofltk does. There were 15
+  invalid reads of the freed 12-byte copy, in `tooltip_timeout`
+  (`Fl_Tooltip.cxx:165`) and `fl_measure`. With the fix there are none.
+  The source shows why; I haven't traced which call left `widget_` null
+  with the timeout armed.

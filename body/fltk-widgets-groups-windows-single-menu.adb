@@ -6,6 +6,7 @@
 
 with
 
+    FLTK.Hook_Exceptions,
     Interfaces.C;
 
 use type
@@ -241,6 +242,7 @@ package body FLTK.Widgets.Groups.Windows.Single.Menu is
            (This : in out Menu_Window) is
     begin
         fl_menu_window_flush (This.Void_Ptr);
+        Hook_Exceptions.Reraise;
     end Flush;
 
 

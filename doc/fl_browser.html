@@ -275,6 +275,8 @@ function Get_Icon
 void icon(int line, Fl_Image *icon);
 </pre></td>
 <td><pre>
+--  Keeps its own copy of Icon, which goes with the line
+--  when lines are inserted, removed, moved or swapped.
 procedure Set_Icon
        (This : in out Textline_Browser;
         Line : in     Positive;

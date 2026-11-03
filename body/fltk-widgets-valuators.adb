@@ -7,6 +7,7 @@
 with
 
     Ada.Assertions,
+    FLTK.Hook_Exceptions,
     FLTK.Widgets.Groups,
     Interfaces.C.Strings,
     System.Address_To_Access_Conversions;
@@ -222,8 +223,16 @@ package body FLTK.Widgets.Valuators is
             end if;
         end;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "Valuator::format callback hook was passed null userdata wrapper reference pointer";
+    when Chk.Assertion_Error =>
+        Hook_Exceptions.Save_New
+           (Internal_FLTK_Error'Identity,
+            "Valuator::format callback hook was passed null userdata wrapper reference pointer");
+        Interfaces.C.Strings.Update (Buffer, 0, Interfaces.C.To_C (""), False);
+        return 0;
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        Interfaces.C.Strings.Update (Buffer, 0, Interfaces.C.To_C (""), False);
+        return 0;
     end Valuator_Format_Hook;
 
 

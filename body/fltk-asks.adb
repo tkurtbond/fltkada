@@ -7,6 +7,7 @@
 with
 
     Ada.Assertions,
+    FLTK.Hook_Exceptions,
     Interfaces.C.Strings;
 
 use type
@@ -229,6 +230,9 @@ package body FLTK.Asks is
         if Chooser_Func /= null then
             Chooser_Func (Interfaces.C.Strings.Value (C_Str));
         end if;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end File_Chooser_Callback_Hook;
 
 
@@ -363,6 +367,7 @@ package body FLTK.Asks is
            (Message : String) is
     begin
         fl_ask_alert (Interfaces.C.To_C (Message));
+        Hook_Exceptions.Reraise;
     end Alert;
 
 
@@ -383,11 +388,14 @@ package body FLTK.Asks is
             Interfaces.C.Strings.Null_Ptr,
             Interfaces.C.Strings.Null_Ptr);
     begin
-        return Choice_Result'Val (Result);
-    exception
-    when Constraint_Error => raise Internal_FLTK_Error with
-        "fl_choice returned unexpected int value of " &
-        Interfaces.C.int'Image (Result);
+        Hook_Exceptions.Reraise;
+        begin
+            return Choice_Result'Val (Result);
+        exception
+        when Constraint_Error => raise Internal_FLTK_Error with
+            "fl_choice returned unexpected int value of " &
+            Interfaces.C.int'Image (Result);
+        end;
     end Choice;
 
 
@@ -402,11 +410,14 @@ package body FLTK.Asks is
             Interfaces.C.Strings.To_Chars_Ptr (Str2'Unchecked_Access),
             Interfaces.C.Strings.Null_Ptr);
     begin
-        return Choice_Result'Val (Result);
-    exception
-    when Constraint_Error => raise Internal_FLTK_Error with
-        "fl_choice returned unexpected int value of " &
-        Interfaces.C.int'Image (Result);
+        Hook_Exceptions.Reraise;
+        begin
+            return Choice_Result'Val (Result);
+        exception
+        when Constraint_Error => raise Internal_FLTK_Error with
+            "fl_choice returned unexpected int value of " &
+            Interfaces.C.int'Image (Result);
+        end;
     end Choice;
 
 
@@ -422,11 +433,14 @@ package body FLTK.Asks is
             Interfaces.C.Strings.To_Chars_Ptr (Str2'Unchecked_Access),
             Interfaces.C.Strings.To_Chars_Ptr (Str3'Unchecked_Access));
     begin
-        return Choice_Result'Val (Result);
-    exception
-    when Constraint_Error => raise Internal_FLTK_Error with
-        "fl_choice returned unexpected int value of " &
-        Interfaces.C.int'Image (Result);
+        Hook_Exceptions.Reraise;
+        begin
+            return Choice_Result'Val (Result);
+        exception
+        when Constraint_Error => raise Internal_FLTK_Error with
+            "fl_choice returned unexpected int value of " &
+            Interfaces.C.int'Image (Result);
+        end;
     end Choice;
 
 
@@ -440,12 +454,15 @@ package body FLTK.Asks is
             Interfaces.C.Strings.Null_Ptr,
             Interfaces.C.Strings.Null_Ptr);
     begin
-        pragma Assert (Result in -3 .. 2);
-        return Extended_Choice_Result'Val (Result mod 6);
-    exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "fl_choice_n returned unexpected int value of " &
-        Interfaces.C.int'Image (Result);
+        Hook_Exceptions.Reraise;
+        begin
+            pragma Assert (Result in -3 .. 2);
+            return Extended_Choice_Result'Val (Result mod 6);
+        exception
+        when Chk.Assertion_Error => raise Internal_FLTK_Error with
+            "fl_choice_n returned unexpected int value of " &
+            Interfaces.C.int'Image (Result);
+        end;
     end Extended_Choice;
 
 
@@ -460,12 +477,15 @@ package body FLTK.Asks is
             Interfaces.C.Strings.To_Chars_Ptr (Str2'Unchecked_Access),
             Interfaces.C.Strings.Null_Ptr);
     begin
-        pragma Assert (Result in -3 .. 2);
-        return Extended_Choice_Result'Val (Result mod 6);
-    exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "fl_choice_n returned unexpected int value of " &
-        Interfaces.C.int'Image (Result);
+        Hook_Exceptions.Reraise;
+        begin
+            pragma Assert (Result in -3 .. 2);
+            return Extended_Choice_Result'Val (Result mod 6);
+        exception
+        when Chk.Assertion_Error => raise Internal_FLTK_Error with
+            "fl_choice_n returned unexpected int value of " &
+            Interfaces.C.int'Image (Result);
+        end;
     end Extended_Choice;
 
 
@@ -481,12 +501,15 @@ package body FLTK.Asks is
             Interfaces.C.Strings.To_Chars_Ptr (Str2'Unchecked_Access),
             Interfaces.C.Strings.To_Chars_Ptr (Str3'Unchecked_Access));
     begin
-        pragma Assert (Result in -3 .. 2);
-        return Extended_Choice_Result'Val (Result mod 6);
-    exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "fl_choice_n returned unexpected int value of " &
-        Interfaces.C.int'Image (Result);
+        Hook_Exceptions.Reraise;
+        begin
+            pragma Assert (Result in -3 .. 2);
+            return Extended_Choice_Result'Val (Result mod 6);
+        exception
+        when Chk.Assertion_Error => raise Internal_FLTK_Error with
+            "fl_choice_n returned unexpected int value of " &
+            Interfaces.C.int'Image (Result);
+        end;
     end Extended_Choice;
 
 
@@ -499,6 +522,7 @@ package body FLTK.Asks is
                (Interfaces.C.To_C (Message),
                 Interfaces.C.To_C (Default));
     begin
+        Hook_Exceptions.Reraise;
         --  Result does not need dealloc
         if Result = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -512,6 +536,7 @@ package body FLTK.Asks is
            (Message : in String) is
     begin
         fl_ask_message (Interfaces.C.To_C (Message));
+        Hook_Exceptions.Reraise;
     end Message_Box;
 
 
@@ -524,6 +549,7 @@ package body FLTK.Asks is
                (Interfaces.C.To_C (Message),
                 Interfaces.C.To_C (Default));
     begin
+        Hook_Exceptions.Reraise;
         --  Result does not need dealloc
         if Result = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -551,19 +577,22 @@ package body FLTK.Asks is
         Result : constant Interfaces.C.int := fl_ask_color_chooser
             (Interfaces.C.To_C (Title), C_R, C_G, C_B, M);
     begin
-        if Result = 1 then
-            R := RGB_Float (C_R);
-            G := RGB_Float (C_G);
-            B := RGB_Float (C_B);
-            return Confirm;
-        else
-            pragma Assert (Result = 0);
-            return Cancel;
-        end if;
-    exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "fl_color_chooser returned unexpected int value of " &
-        Interfaces.C.int'Image (Result);
+        Hook_Exceptions.Reraise;
+        begin
+            if Result = 1 then
+                R := RGB_Float (C_R);
+                G := RGB_Float (C_G);
+                B := RGB_Float (C_B);
+                return Confirm;
+            else
+                pragma Assert (Result = 0);
+                return Cancel;
+            end if;
+        exception
+        when Chk.Assertion_Error => raise Internal_FLTK_Error with
+            "fl_color_chooser returned unexpected int value of " &
+            Interfaces.C.int'Image (Result);
+        end;
     end Color_Chooser;
 
 
@@ -581,27 +610,34 @@ package body FLTK.Asks is
         Result : constant Interfaces.C.int := fl_ask_color_chooser2
                (Interfaces.C.To_C (Title), C_R, C_G, C_B, M);
     begin
-        if Result = 1 then
-            R := RGB_Int (C_R);
-            G := RGB_Int (C_G);
-            B := RGB_Int (C_B);
-            return Confirm;
-        else
-            pragma Assert (Result = 0);
-            return Cancel;
-        end if;
-    exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "fl_color_chooser returned unexpected int value of " &
-        Interfaces.C.int'Image (Result);
+        Hook_Exceptions.Reraise;
+        begin
+            if Result = 1 then
+                R := RGB_Int (C_R);
+                G := RGB_Int (C_G);
+                B := RGB_Int (C_B);
+                return Confirm;
+            else
+                pragma Assert (Result = 0);
+                return Cancel;
+            end if;
+        exception
+        when Chk.Assertion_Error => raise Internal_FLTK_Error with
+            "fl_color_chooser returned unexpected int value of " &
+            Interfaces.C.int'Image (Result);
+        end;
     end Color_Chooser;
 
 
     function Show_Colormap
            (Old_Hue : in Color)
-        return Color is
+        return Color
+    is
+        Result : constant Color :=
+            Color (fl_ask_show_colormap (Interfaces.C.unsigned (Old_Hue)));
     begin
-        return Color (fl_ask_show_colormap (Interfaces.C.unsigned (Old_Hue)));
+        Hook_Exceptions.Reraise;
+        return Result;
     end Show_Colormap;
 
 
@@ -615,6 +651,7 @@ package body FLTK.Asks is
                 Interfaces.C.To_C (Default),
                 Boolean'Pos (Relative));
     begin
+        Hook_Exceptions.Reraise;
         --  Result does not need dealloc
         if Result = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -635,6 +672,7 @@ package body FLTK.Asks is
                 Interfaces.C.To_C (Default),
                 Boolean'Pos (Relative));
     begin
+        Hook_Exceptions.Reraise;
         --  Result does not need dealloc
         if Result = Interfaces.C.Strings.Null_Ptr then
             return "";

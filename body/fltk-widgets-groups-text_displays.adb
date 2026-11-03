@@ -9,6 +9,7 @@ with
     Ada.Assertions,
     Ada.Characters.Latin_1,
     Ada.Unchecked_Conversion,
+    FLTK.Hook_Exceptions,
     Interfaces.C.Strings;
 
 use type
@@ -839,6 +840,9 @@ package body FLTK.Widgets.Groups.Text_Displays is
         if Ada_Widget.Style_Callback /= null then
             Ada_Widget.Style_Callback (Character'Val (C), Text_Display (Ada_Widget.all));
         end if;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Style_Hook;
 
 

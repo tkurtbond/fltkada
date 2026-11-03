@@ -28,6 +28,13 @@
 # Without that, every leak from an Ada allocator or a new in FLTKAda
 # passed, as a negative control showed (PLAN.md, Phase 0).
 #
+# GNAT's run-time library allocates for its callers too: New_String
+# ("interfaces.c.strings.new_string (i-cstrin.adb:168)"), the pools and
+# the containers. Its frames (units Ada, System, Interfaces and GNAT, or
+# libgnat) are skipped as part of the allocator, so the allocator is the
+# first frame that called the run-time library. Without that, every
+# string FLTKAda leaked through New_String passed (FLTKAda-BUGS.md 37).
+#
 # One kind of FLTKAda's memory passes: a block still reachable at exit
 # that a unit's elaboration (fltk'Elab_Spec, fltk'Elab_Body) allocated.
 # That is a library-level object, made once and kept for the program's
@@ -39,6 +46,7 @@ awk '
   }
   inrec && /(at|by) 0x/ {
     if ($0 ~ /: <?(malloc|calloc|realloc|__gnat_malloc|__gnat_realloc)>? \(/ || $0 ~ /: <?(operator new|_Znw|_Zna)/) next
+    if ($0 ~ /: <?(ada|system|interfaces|gnat)\.[a-z_0-9.]+>? / || $0 ~ /\(in [^)]*libgnat[^)]*\)/) next
     if (!seen) {
       seen = 1
       if (reachable && $0 ~ /\047Elab_(Spec|Body) /) next

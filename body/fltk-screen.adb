@@ -6,6 +6,7 @@
 
 with
 
+    FLTK.Hook_Exceptions,
     Interfaces.C;
 
 use type
@@ -169,6 +170,10 @@ package body FLTK.Screen is
            (V : in Interfaces.C.int);
     pragma Import (C, fl_screen_set_damage, "fl_screen_set_damage");
     pragma Inline (fl_screen_set_damage);
+
+    procedure fl_screen_flush;
+    pragma Import (C, fl_screen_flush, "fl_screen_flush");
+    pragma Inline (fl_screen_flush);
 
 
 
@@ -397,6 +402,13 @@ package body FLTK.Screen is
     begin
         fl_screen_set_damage (Boolean'Pos (To));
     end Set_Damaged;
+
+
+    procedure Flush is
+    begin
+        fl_screen_flush;
+        Hook_Exceptions.Reraise;
+    end Flush;
 
 
 end FLTK.Screen;

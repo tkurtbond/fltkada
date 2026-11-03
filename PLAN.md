@@ -424,15 +424,17 @@ Everything after this phase is test-first. This phase adds:
   - consequence: an exception can't cut a modal dialog or a menu short.
     The dialog or menu stays up until it ends normally, and the
     exception comes out after. Only the first is kept if several are
-    raised before control returns; the rest are dropped (Phase 2 decides
-    whether to count them);
+    raised before control returns; the rest are dropped
+    (~~Phase 2 decides whether to count them~~: Phase 2 decided not
+    to; they are dropped uncounted);
   - a clip the user's own `Draw` pushed and didn't pop before raising
     stays pushed. That is the user's to fix with a handler. Document it
     (Phase 15), and perhaps add a controlled clip guard.
 
   This was recommended by the agent; the user can overturn it.
-  `test_exceptions` encodes it, so it fails until Phase 2 and is not in
-  `tests_unit.gpr`'s `Main` until then. On X11 its only failures now are
+  `test_exceptions` encodes it, so it failed until Phase 2 and was not
+  in `tests_unit.gpr`'s `Main` until then. (Phase 2 added it; it passes.
+  The failures below are from before.) On X11 its only failures now are
   the idle and GLUT cases, and the menu case, which is run last because
   it crashes. On Wayland they are the idle, first-frame and GLUT cases;
   the menu case is skipped, since pop-up menus close at once there.
@@ -463,6 +465,22 @@ Everything after this phase is test-first. This phase adds:
   elaboration allocated, and only that. A lost block from elaboration
   still fails.
 
+  Phase 2 found a third bug of the same kind, 2026-11-03.
+  - **The bug.** A string made with `New_String` is allocated by GNAT's
+    runtime: `__gnat_malloc`, called from
+    `interfaces.c.strings.new_string`. vg-check.sh took that runtime
+    frame for the allocator, so every FLTKAda leak through `New_String`
+    passed. It showed up as test_glut_strings passing despite its leaks
+    (FLTKAda-BUGS.md 37).
+  - **The fix.** vg-check.sh now skips the runtime's frames as part of
+    the allocator: units Ada, System, Interfaces and GNAT, or libgnat.
+  - **The control.** A third control, `control_string_leak`, leaks a
+    `New_String` copy from a unit named `FLTK.Control_Strings`. The old
+    vg-check.sh passes it and the new one fails it. The leaking procedure
+    has to do some work after the allocation. Otherwise GNAT compiles
+    both calls as tail calls, and valgrind shows no FLTKAda frame at
+    all. The binding's setters always call FLTK after `New_String`.
+
 Done when `make check-headless`, `make check-sway`, `make
 valgrind-headless` and `make smoke-headless` all pass, with
 `test_constants` and the folded-in programs as the first tests. All four
@@ -487,7 +505,7 @@ clean, and 74 programs in the smoke run.
   - The per-issue verdicts for pofltk's numbers stay in this plan. Don't
     copy pofltk's text: cite its numbers.
 
-### Phase 2: FLTKAda's own memory-safety bugs
+### Phase 2: FLTKAda's own memory-safety bugs [done, 2026-11-03]
 
 These come first because they are FLTKAda's own errors, not FLTK's.
 
@@ -527,6 +545,209 @@ These come first because they are FLTKAda's own errors, not FLTK's.
   `Value (ptr, len)`.
 
 Each item has a valgrind-clean test in `test/unit/`.
+
+Findings (2026-11-03):
+
+- **Strings FLTK keeps: done.** This is FLTKAda-BUGS.md 16. The test is
+  `test_kept_strings`, and the details are in its section. Two findings:
+  - **pofltk 75's fix is unsafe.** pofltk's shim frees its tooltip copy
+    on an empty text. FLTK still holds that copy, and a pending
+    `tooltip_timeout` reads it (FLTK-issues.md F4). Valgrind caught this
+    as the dir chooser below drew. FLTKAda's shim frees the old copy only
+    once `Fl_Tooltip::current()` is the widget again, which is when FLTK
+    holds the new one.
+  - **`Probe.Close_Modal`.** On headless sway, `Modal_Key (Escape)` on an
+    `Fl_File_Chooser` is handled by its focused `Fl_File_Input`, and the
+    chooser stays up. `Close_Modal` does what `Fl.cxx:1567-1570` does for
+    Escape, `modal->do_callback (FL_REASON_CANCELLED)`, so the test closes
+    the chooser on X11 and sway alike.
+- **The kept-pointers audit: done.** A subagent mapped every `To_C (` and
+  `New_String (` passed to the shim against FLTK's source. Each bug below
+  was spot-checked in FLTKAda's code. The full map was kept only in the
+  session scratchpad, so this list is the record:
+  - **`Static.Set_Font_Kind`** frees the old name before `Fl::set_font`
+    reads it, and the `Font_Kind` overload makes two kinds share one name
+    (pofltk 130). FLTKAda-BUGS.md 33, fixed.
+  - **`Menus.Set_Label` and `System_Menu_Bar.Set_Label`** pass a
+    temporary, which FLTK keeps after `Set_Items` or `Use_Same_Items`
+    (pofltk 5, 26). FLTKAda-BUGS.md 34, fixed.
+  - **The `File_Chooser` static label setters** free a label that
+    existing choosers show. FLTKAda-BUGS.md 35, fixed: the old copy
+    is kept until the program ends, since the ask functions' chooser is
+    never deleted.
+  - **The printer dialog's static setters** free strings that the kept
+    print panel shows. FLTKAda-BUGS.md 36, fixed the same way.
+  - **Found on the way: `FLTK.Static.Option` stops at `FNFC_Uses_GTK`.**
+    It lacks five of FLTK 1.4.5's options: `OPTION_FNFC_USES_ZENITY`,
+    `OPTION_FNFC_USES_KDIALOG`, `OPTION_PRINTER_USES_GTK`,
+    `OPTION_SHOW_SCALING` and `OPTION_SIMPLE_ZOOM_SHORTCUT`
+    (`FL/Fl.H:274-292`). `test_printer_labels` sets the printer one
+    through `FLTK.Probe`. Binding them is coverage work, for a later
+    phase.
+  - **Leaks:** the GLUT titles and menu entries (pofltk 112), and the
+    `Spinner` format (pofltk 13). FLTKAda-BUGS.md 37, fixed. GLUT's
+    copies are kept per menu item and per window and freed when GLUT
+    lets go. Checking or bounding GLUT's item and window numbers is
+    pofltk 112's other half, for Phase 4.
+  - **Not lifetime bugs:** `Menus.Set_Items` passes pointers where
+    `fl_menu_copy` expects structs, and `Static.Clipboard_Contains`
+    passes a copy where FLTK compares the pointer. FLTKAda-BUGS.md 38,
+    fixed. The shim copies the items and their texts, and makes the
+    menu own them.
+  - **Decided: `Use_Same_Items` copies.** FLTK's `menu(m)` shares the
+    donor's array, which the donor frees when it is deleted or outgrows
+    it, so the sharing menu then reads freed memory. FLTK gives the
+    sharing menu no way to know. So `Use_Same_Items` now gives the menu
+    its own copy of the donor's items and texts, like `Set_Items`. Later
+    changes to one menu no longer show in the other. They did so only
+    by accident before: the first `add` or `replace` on a sharing menu
+    already made it copy (`Fl_Menu_add.cxx:400, 474`). FLTKAda-BUGS.md 38.
+  - **Safe as bound, checked in FLTK's source:**
+    - **The widget-constructor labels.** The constructor stores the
+      `To_C` temporary, but `Extra_Init` replaces it at once with
+      `copy_label` (`fl_widget_set_label`, `body/c_fl_widget.cpp:279`),
+      or with null for an empty label.
+    - **`File_Browser.Load`'s directory.** FLTK keeps the pointer
+      (`directory_ = directory`, `Fl_File_Browser.cxx:422`), but reads
+      it only inside `load`. The class has no accessor for it.
+    - **The `File_Chooser` labels**, which FLTKAda keeps in its record.
+  - Every other call either copies the string or uses it only during the
+    call. That rests on the subagent's map.
+- **N1, N2, N3 and issue 126: done.** Each test failed before its fix
+  (126's and N3's by FLTK's behaviour, checked in a scratch C++ program
+  under Xvfb), and passes after it on Xvfb and sway, with valgrind clean.
+  - **N1** (`test_font_sizes`): the shim reads `a[i-1]`. A Cairo or Pango
+    FLTK lists one size, 0, for every font
+    (`Fl_Cairo_Graphics_Driver.cxx:1189-1201`), so `Font_Sizes` alone
+    can't show the bug. The test also calls the shim's accessor on an
+    array of its own, and failed at entries 2 to 8 before the fix.
+  - **N2** (`test_image_lines`): the line hook gives the Ada callback
+    `W * Depth` bytes, keeping the `Depth` its `Draw_Image` was given.
+    Before, the right of a colour image, and of a mono image of `Depth`
+    2, came out of whatever was in FLTK's buffer. Found on the way: this
+    FLTK draws with Cairo on X11 too, and Cairo draws a mono image of
+    `Depth` 3 or 4 as a colour one (`Fl_Cairo_Graphics_Driver.cxx:677-680`),
+    where Xlib draws its first byte as grey. So the test's mono case uses
+    `Depth` 2. That difference isn't checked on an Xlib FLTK, and isn't
+    yet in FLTK-issues.md.
+  - **N3** (`test_expand_text`): `Expand_Text` passes a buffer of
+    `8 * Length + 16` bytes. A character expands to at most 8 (a tab),
+    and FLTK stops 4 short of the end (`fl_draw.cxx:76, 133-145`), so the
+    text is never cut short. `Last` is now an index into `Text` whatever
+    its `'First`. The scratch program confirmed that with `maxbuf = 0`
+    the caller's `buf` stays null.
+  - **Issue 126** (`test_recode`): a new shim function, `fl_draw_recode`,
+    calls FLTK's conversion with `n = 0` first, then converts a byte at a
+    time, as pofltk does. All four conversions use it, and take and
+    return the text by length, so a NUL in it is kept. The scratch
+    program showed the first `fl_mac_roman_to_local ("ab", 2)` dying of
+    SIGSEGV, and `fl_local_to_mac_roman` of "a", 0xC4, "b" giving only
+    0x61 and then two bytes it never wrote.
+- **N8: done** (`test_part_callbacks`). The shim's constructors keep
+  FLTK's callback for each part (`Fl_Widget::callback()` returns it) and
+  install a thunk that calls it with `w->parent()` as the data. The
+  parts' `user_data` stays the Ada record, so nothing that finds the Ada
+  side through it changes. Before the fix, typing "7" into a
+  `Value_Input` left its value 0 with no callback, and typing into an
+  `Input_Choice` died with `Storage_Error`. The test picks the menu item
+  by its shortcut, through `Fl_Menu_::test_shortcut`, not with
+  `Probe.Mouse`, so it needs no pop-up and runs on sway as well. Valgrind
+  is clean. The audit F2 asked for found no other case: FLTKAda wraps
+  parts of `Fl_Browser_`, `Fl_Scroll`, `Fl_Table` and `Fl_File_Chooser`
+  too, but the browser and scroll scrollbars' callbacks ignore their
+  data (`Fl_Browser_.cxx:52-58`), `Table` already replaces its own, and
+  the file chooser's buttons find it through the window's `user_data`
+  (`Fl_File_Chooser.cxx:56, 89, 96`), which FLTKAda doesn't wrap.
+  `Fl_Spinner`, `Fl_Tree`, `Fl_Text_Display` and `Fl_Terminal` give
+  their parts the parent as data too, but FLTKAda doesn't wrap those
+  parts.
+- **N4 and issue 90: done** (`test_help_links`, with the pages
+  `test/unit/help_one.html` and `help_two.html`). Ported from pofltk's
+  `FlHelp.cpp`. The shim now installs its own link function in the
+  constructor and keeps the state beside the `Fl_Help_View`:
+  - a flag set around `load()`, and around `handle(FL_RELEASE)`, since a
+    release on a link loads it (`Fl_Help_View.cxx:3216-3220`). The next
+    question is what to load;
+  - the answer about what to load, kept till the next one, so it outlives
+    `free_data()`'s questions about the old page's images;
+  - each image's answer, asked of Ada once and kept for the view's life,
+    so drawing and freeing are answered without Ada and with the same
+    name, which FLTK releases (`:2788-2799, 2531`). A refused image is
+    answered `""`, a name with no file, so FLTK draws its broken image;
+  - `~My_Help_View` calls `value(0)` while the subclass still exists, and
+    `Extra_Final` stops asking Ada before the C++ object goes.
+  Ada's hook returns 1 or 0 and hands its answer to the shim, which copies
+  it, so `Hilda` is gone. `Load` and `Set_Content` raise `Program_Error`
+  when called while the callback is asked about an image: `format()` would
+  go on reading the freed page (pofltk 90; Architecture decisions 1).
+  Before the fix, with an image answer as long as the next page's name,
+  `Load ("help_two.html")` after a page with two images raised
+  `Load_Help_Error`, with FLTK's "Error" page shown, as load() opened the
+  image's name. The images were asked about again at each draw, and the
+  refused image killed the program. After it, all 14 checks pass on Xvfb
+  and sway, and valgrind is clean. pofltk 89 (a link followed after the
+  layout changed under a held button) is not part of this fix.
+- **N9 and issue 52: done** (`test_table_children`; FLTKAda-BUGS.md 39).
+  `Table.Extra_Final` now detaches the Ada widgets in the inner `Scroll`,
+  through `Group`'s detaching loop, now the private `Remove_Ada_Children`.
+  `Table` overrides `Remove (Place)`. The test found a third bug:
+  `Table.Find` of a widget not there gave an index past the end, as
+  `Fl_Table::find` counts the inner group's scrollbars. `Iterate`,
+  `Has_Child (Cursor)` and `Child (Cursor)` dispatch through the cursor's
+  container, so they already used `Table`'s. Before the fix, a table let
+  go before its cells' buttons gave invalid reads under valgrind, and
+  `Remove (1)` removed a scrollbar.
+- **N10 and issue 34: done** (`test_buffer_life`; FLTKAda-BUGS.md 40).
+  `Text_Buffer.Finalize` removes its modify and predelete hooks, through
+  two new shim functions. Before the fix, an edit through a display after
+  the Ada buffer was freed gave invalid reads in the predelete hook.
+  Reading the code found a neighbour, still open: `Text_Display.Get_Buffer`
+  keeps an access to the Ada buffer, which then dangles
+  (FLTKAda-BUGS.md 41).
+- **N11 and issue 56: done** (`test_browser_icons`; FLTKAda-BUGS.md 42).
+  `Set_Icon` gives FLTK a copy (`Image.Copy`) that the browser owns, so
+  the caller's image may go. The binding no longer keeps icons by line:
+  `Get_Icon` and `Has_Icon` ask FLTK which image the line shows
+  (`Fl_Browser::icon(line)`, Fl_Browser.cxx:922-925, through a new shim
+  getter) and find the copy with that pointer, so the icon follows its
+  line through `Insert`, `Move` and `Swap` with no bookkeeping. After
+  `Set_Icon`, `Remove_Icon`, `Remove`, `Clear` and `Load` (both
+  browsers'), copies no line shows any more are freed. Before the fix,
+  icons stayed with the line number, and valgrind reported 162 invalid
+  reads drawing freed images (in `fl_image_w`, `Fl_Browser::item_height`
+  and `item_draw`).
+- **N12: done** (`test_exceptions`, now in `tests_unit.gpr`'s `Main`;
+  FLTKAda-BUGS.md 43). A new private package, `FLTK.Hook_Exceptions`,
+  keeps the first saved occurrence; later ones are dropped and not
+  counted. Every hook FLTK calls catches everything (77 handlers in 30
+  bodies) and returns a harmless value, and 58 calls to `Reraise` follow
+  the C calls that can run hooks. Where a body's own handler for
+  `Constraint_Error` or `Assertion_Error` would otherwise catch the
+  re-raised exception, the old statements go in a nested block after
+  `Reraise`. `Run` is now `Fl::run`'s loop in Ada (`while Fl::wait ()`,
+  Fl.cxx:651-654), so it can re-raise between waits. `Screen.Flush` and
+  each window's `Flush` re-raise too. The fatal-error hook is left
+  alone, and the image-line hooks stop calling the user's function after
+  it raised once. Findings:
+  - The pop-up menu's grab is FLTK's own `menuwindow`
+    (Fl_Menu.cxx:1002), so `Events.Get_Grab` can't return it
+    (FLTKAda-BUGS.md 44, open). The test uses a new `Probe.Grabbed`.
+  - Several hooks' handlers for the binding's own checks also cover
+    the user's code, and relabel the user's exception as
+    `Internal_FLTK_Error` (FLTKAda-BUGS.md 45, open, from the code).
+  - The GLUT case's "redraw paints red" check read 0 0 because the GLUT
+    window covered the box on Xvfb, and `fl_read_image` reads the
+    screen. The test destroys the GLUT window first.
+  - A file-browser or `Get_Listing` sort comparator that raises returns
+    0, so `qsort` may see an inconsistent comparator for the rest of that
+    sort. The exception still comes out; the order is then unspecified.
+    From the code.
+  - Results: Xvfb, 67 ok (release and debug); headless sway, 61 ok and
+    the menu case skipped; valgrind, no invalid accesses and vg-check.sh
+    passes.
+- **Found by the full valgrind run at the end of Phase 2**: a new
+  `Menu_Item` left its label fields uninitialised (FLTKAda-BUGS.md 46,
+  fixed).
 
 ### Phase 3: The display, and the window FLTK needs
 

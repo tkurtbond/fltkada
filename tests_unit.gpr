@@ -29,7 +29,26 @@ project Tests_Unit is
 
     for Main use
        ("test_constants.adb",
-        "test_probe.adb");
+        "test_probe.adb",
+        "test_kept_strings.adb",
+        "test_font_kinds.adb",
+        "test_menu_labels.adb",
+        "test_chooser_labels.adb",
+        "test_printer_labels.adb",
+        "test_glut_strings.adb",
+        "test_spinner_format.adb",
+        "test_menu_items.adb",
+        "test_clipboard_kinds.adb",
+        "test_font_sizes.adb",
+        "test_image_lines.adb",
+        "test_expand_text.adb",
+        "test_recode.adb",
+        "test_part_callbacks.adb",
+        "test_help_links.adb",
+        "test_table_children.adb",
+        "test_buffer_life.adb",
+        "test_browser_icons.adb",
+        "test_exceptions.adb");
 
     package Builder is
         for Default_Switches ("Ada") use

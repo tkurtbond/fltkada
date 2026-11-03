@@ -14,6 +14,7 @@
 #include <FL/Fl.H>
 #include <FL/fl_config.h>
 #include <FL/platform.H>
+#include <FL/Fl_Group.H>
 #include <FL/Fl_Image_Surface.H>
 #include <FL/Fl_RGB_Image.H>
 #include <FL/Fl_Shared_Image.H>
@@ -186,6 +187,10 @@ extern "C" int fl_probe_modal() {
     return modal != 0 && modal->shown();
 }
 
+extern "C" int fl_probe_grabbed() {
+    return Fl::grab() != 0;
+}
+
 extern "C" const char * fl_probe_modal_title() {
     Fl_Window *modal = Fl::modal();
     if (modal == 0 || modal->label() == 0) {
@@ -200,6 +205,49 @@ extern "C" int fl_probe_modal_key(int key, int state, const char * s) {
         return 0;
     }
     return fl_probe_handle_key(modal, FL_KEYDOWN, key, state, s);
+}
+
+//  What Fl::handle does with an Escape no widget takes (Fl.cxx:1567-1570).
+extern "C" int fl_probe_close_modal() {
+    Fl_Window *modal = Fl::modal();
+    if (modal == 0) {
+        return 0;
+    }
+    modal->do_callback(FL_REASON_CANCELLED);
+    return 1;
+}
+
+static int has_text(Fl_Widget * w, const char * t) {
+    if ((w->label() != 0 && strcmp(w->label(), t) == 0)
+        || (w->tooltip() != 0 && strcmp(w->tooltip(), t) == 0)) {
+        return 1;
+    }
+    Fl_Group * g = w->as_group();
+    if (g != 0) {
+        for (int i = 0; i < g->children(); i++) {
+            if (has_text(g->child(i), t)) {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+//  Whether a widget in a shown window has t as its label or tooltip.
+extern "C" int fl_probe_has_label(const char * t) {
+    for (Fl_Window * w = Fl::first_window(); w != 0; w = Fl::next_window(w)) {
+        if (has_text(w, t)) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+//  Whether Fl_Printer uses GTK's dialog or FLTK's own print panel.  FLTKAda's
+//  Option type has no Printer_Uses_GTK.  FLTK reads the option once, when the
+//  first Fl_Printer is made (Fl_Posix_Printer_Driver.cxx:270).
+extern "C" void fl_probe_printer_uses_gtk(int on) {
+    Fl::option(Fl::OPTION_PRINTER_USES_GTK, on != 0);
 }
 
 

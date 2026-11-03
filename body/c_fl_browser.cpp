@@ -356,6 +356,10 @@ void fl_browser_remove_icon(BROWSER b, int l) {
     static_cast<Fl_Browser*>(b)->remove_icon(l);
 }
 
+void * fl_browser_get_icon(BROWSER b, int l) {
+    return static_cast<Fl_Browser*>(b)->icon(l);
+}
+
 
 
 

@@ -9,7 +9,7 @@ with
     Ada.Assertions,
     Ada.Unchecked_Deallocation,
     FLTK.Widgets.Groups,
-    Interfaces.C;
+    Interfaces.C.Strings;
 
 use type
 
@@ -97,8 +97,9 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
     pragma Import (C, fl_sys_menu_bar_insert2, "fl_sys_menu_bar_insert2");
     pragma Inline (fl_sys_menu_bar_insert2);
 
-    procedure fl_sys_menu_bar_set_menu
-           (M, D : in Storage.Integer_Address);
+    function fl_sys_menu_bar_set_menu
+           (M, D : in Storage.Integer_Address)
+        return Interfaces.C.int;
     pragma Import (C, fl_sys_menu_bar_set_menu, "fl_sys_menu_bar_set_menu");
     pragma Inline (fl_sys_menu_bar_set_menu);
 
@@ -142,10 +143,12 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
     pragma Import (C, fl_sys_menu_bar_setonly, "fl_sys_menu_bar_setonly");
     pragma Inline (fl_sys_menu_bar_setonly);
 
-    procedure fl_sys_menu_bar_replace
-           (M : in Storage.Integer_Address;
-            I : in Interfaces.C.int;
-            T : in Interfaces.C.char_array);
+    function fl_sys_menu_bar_replace
+           (M : in     Storage.Integer_Address;
+            I : in     Interfaces.C.int;
+            T : in     Interfaces.C.Strings.chars_ptr;
+            O :    out Interfaces.C.Strings.chars_ptr)
+        return Interfaces.C.int;
     pragma Import (C, fl_sys_menu_bar_replace, "fl_sys_menu_bar_replace");
     pragma Inline (fl_sys_menu_bar_replace);
 
@@ -492,8 +495,11 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
            (This  : in out System_Menu_Bar;
             Donor : in     Menu'Class) is
     begin
-        --  Donor menu() pointer will be obtained in C++
-        fl_sys_menu_bar_set_menu (This.Void_Ptr, Donor.Void_Ptr);
+        --  The shim gives this menu its own copy of the donor's items and
+        --  texts, since the donor frees its own (FLTKAda-BUGS.md 38)
+        if fl_sys_menu_bar_set_menu (This.Void_Ptr, Donor.Void_Ptr) /= 0 then
+            raise Storage_Error with "Fl_Menu_Item array could not be allocated";
+        end if;
         This.Adjust_Item_Store;
     end Use_Same_Items;
 
@@ -567,12 +573,16 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
     procedure Set_Label
            (This  : in out System_Menu_Bar;
             Place : in     Index;
-            Text  : in     String) is
-    begin
-        fl_sys_menu_bar_replace
+            Text  : in     String)
+    is
+        Copy : Interfaces.C.Strings.chars_ptr := Interfaces.C.Strings.New_String (Text);
+        Old  : Interfaces.C.Strings.chars_ptr;
+        Kept : constant Boolean := fl_sys_menu_bar_replace
            (This.Void_Ptr,
             Interfaces.C.int (Place) - 1,
-            Interfaces.C.To_C (Text));
+            Copy, Old) /= 0;
+    begin
+        This.Note_Label (Old, Copy, Kept);
     end Set_Label;
 
 

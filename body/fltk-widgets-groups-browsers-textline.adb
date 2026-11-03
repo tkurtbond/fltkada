@@ -7,6 +7,7 @@
 with
 
     Ada.Assertions,
+    Ada.Containers.Ordered_Sets,
     Ada.Unchecked_Deallocation,
     Interfaces.C.Strings;
 
@@ -308,6 +309,13 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
             L : in Interfaces.C.int);
     pragma Import (C, fl_browser_remove_icon, "fl_browser_remove_icon");
     pragma Inline (fl_browser_remove_icon);
+
+    function fl_browser_get_icon
+           (B : in Storage.Integer_Address;
+            L : in Interfaces.C.int)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_browser_get_icon, "fl_browser_get_icon");
+    pragma Inline (fl_browser_get_icon);
 
 
 
@@ -616,6 +624,7 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
         fl_browser_remove
            (This.Void_Ptr,
             Interfaces.C.int (Line));
+        This.Drop_Icons;
     end Remove;
 
 
@@ -623,6 +632,7 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
            (This : in out Textline_Browser) is
     begin
         fl_browser_clear (This.Void_Ptr);
+        This.Drop_Icons;
     end Clear;
 
 
@@ -646,6 +656,7 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
         Code : constant Interfaces.C.int :=
             fl_browser_load (This.Void_Ptr, Interfaces.C.To_C (File));
     begin
+        This.Drop_Icons;
         if Code = 0 then
             Msg := get_error_message;
             if Msg = Interfaces.C.Strings.Null_Ptr then
@@ -970,54 +981,113 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
     --  Icons  --
 
+    package Address_Sets is new Ada.Containers.Ordered_Sets
+       (Element_Type => Storage.Integer_Address,
+        "<"          => Storage."<");
+
+
+    --  The copy that line Line shows, or null.
+    function Line_Icon
+           (This : in Textline_Browser;
+            Line : in Positive)
+        return Image_Access
+    is
+        Ptr : Storage.Integer_Address;
+    begin
+        if Line > This.Number_Of_Lines then
+            return null;
+        end if;
+        Ptr := fl_browser_get_icon (This.Void_Ptr, Interfaces.C.int (Line));
+        if Ptr /= Null_Pointer then
+            for Icon of This.Icons loop
+                if Wrapper (Icon.all).Void_Ptr = Ptr then
+                    return Icon;
+                end if;
+            end loop;
+        end if;
+        return null;
+    end Line_Icon;
+
+
+    procedure Drop_Icons
+           (This : in out Textline_Browser)
+    is
+        Shown : Address_Sets.Set;
+        Kept  : Image_Vectors.Vector;
+        Ptr   : Storage.Integer_Address;
+        Gone  : Image_Access;
+    begin
+        if This.Icons.Is_Empty then
+            return;
+        end if;
+        for Line in 1 .. This.Number_Of_Lines loop
+            Ptr := fl_browser_get_icon (This.Void_Ptr, Interfaces.C.int (Line));
+            if Ptr /= Null_Pointer then
+                Shown.Include (Ptr);
+            end if;
+        end loop;
+        for Icon of This.Icons loop
+            if Shown.Contains (Wrapper (Icon.all).Void_Ptr) then
+                Kept.Append (Icon);
+            else
+                Gone := Icon;
+                Free (Gone);
+            end if;
+        end loop;
+        This.Icons.Move (Kept);
+    end Drop_Icons;
+
+
     function Has_Icon
            (This : in Textline_Browser;
             Line : in Positive)
         return Boolean is
     begin
-        return Line <= This.Icons.Last_Index and then This.Icons.Element (Line) /= null;
+        return Line_Icon (This, Line) /= null;
     end Has_Icon;
 
 
     function Get_Icon
            (This : in Textline_Browser;
             Line : in Positive)
-        return FLTK.Images.Image_Reference is
+        return FLTK.Images.Image_Reference
+    is
+        Icon : constant Image_Access := Line_Icon (This, Line);
     begin
-        return Ref : FLTK.Images.Image_Reference (Data => This.Icons.Element (Line));
+        if Icon = null then
+            raise Constraint_Error with "line" & Positive'Image (Line) & " has no icon";
+        end if;
+        return Ref : FLTK.Images.Image_Reference (Data => Icon);
     end Get_Icon;
 
 
     procedure Set_Icon
            (This : in out Textline_Browser;
             Line : in     Positive;
-            Icon : in     FLTK.Images.Image'Class) is
+            Icon : in     FLTK.Images.Image'Class)
+    is
+        Copied : Image_Access;
     begin
-        fl_browser_set_icon (This.Void_Ptr, Interfaces.C.int (Line), Wrapper (Icon).Void_Ptr);
-        if Line > This.Icons.Last_Index then
-            This.Icons.Append (null, Ada.Containers.Count_Type (Line - This.Icons.Last_Index - 1));
-            This.Icons.Append (new FLTK.Images.Image);
-            Wrapper (This.Icons.Element (Line).all).Needs_Dealloc := False;
-        elsif This.Icons.Element (Line) = null then
-            This.Icons.Replace_Element (Line, new FLTK.Images.Image);
-            Wrapper (This.Icons.Element (Line).all).Needs_Dealloc := False;
+        if Wrapper (Icon).Void_Ptr = Null_Pointer then
+            This.Remove_Icon (Line);
+        elsif Line <= This.Number_Of_Lines then
+            Copied := new FLTK.Images.Image'Class'(Icon.Copy);
+            This.Icons.Append (Copied);
+            fl_browser_set_icon
+               (This.Void_Ptr,
+                Interfaces.C.int (Line),
+                Wrapper (Copied.all).Void_Ptr);
+            This.Drop_Icons;
         end if;
-        Wrapper (This.Icons.Element (Line).all).Void_Ptr := Wrapper (Icon).Void_Ptr;
     end Set_Icon;
 
 
     procedure Remove_Icon
            (This : in out Textline_Browser;
-            Line : in     Positive)
-    is
-        Ptr : Image_Access;
+            Line : in     Positive) is
     begin
         fl_browser_remove_icon (This.Void_Ptr, Interfaces.C.int (Line));
-        if Line <= This.Icons.Last_Index then
-            Ptr := This.Icons.Element (Line);
-            Free (Ptr);
-            This.Icons.Replace_Element (Line, null);
-        end if;
+        This.Drop_Icons;
     end Remove_Icon;
 
 

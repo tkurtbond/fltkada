@@ -49,6 +49,16 @@ void fl_text_buffer_add_predelete_callback(TEXTBUFFER tb, void * cb, void * ud) 
         (reinterpret_cast<Fl_Text_Predelete_Cb>(cb), ud);
 }
 
+void fl_text_buffer_remove_modify_callback(TEXTBUFFER tb, void * cb, void * ud) {
+    static_cast<Fl_Text_Buffer*>(tb)->remove_modify_callback
+        (reinterpret_cast<Fl_Text_Modify_Cb>(cb), ud);
+}
+
+void fl_text_buffer_remove_predelete_callback(TEXTBUFFER tb, void * cb, void * ud) {
+    static_cast<Fl_Text_Buffer*>(tb)->remove_predelete_callback
+        (reinterpret_cast<Fl_Text_Predelete_Cb>(cb), ud);
+}
+
 void fl_text_buffer_call_modify_callbacks(TEXTBUFFER tb) {
     static_cast<Fl_Text_Buffer*>(tb)->call_modify_callbacks();
 }

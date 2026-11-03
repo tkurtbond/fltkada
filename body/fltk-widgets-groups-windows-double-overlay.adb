@@ -7,6 +7,7 @@
 with
 
     FLTK.Args_Marshal,
+    FLTK.Hook_Exceptions,
     Interfaces.C,
     System.Address_To_Access_Conversions;
 
@@ -129,6 +130,9 @@ package body FLTK.Widgets.Groups.Windows.Double.Overlay is
             Over_Convert.To_Pointer (Storage.To_Address (U));
     begin
         Overlay_Widget.Draw_Overlay;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Overlay_Window_Draw_Overlay_Hook;
 
 
@@ -275,6 +279,7 @@ package body FLTK.Widgets.Groups.Windows.Double.Overlay is
            (This : in out Overlay_Window) is
     begin
         fl_overlay_window_flush (This.Void_Ptr);
+        Hook_Exceptions.Reraise;
     end Flush;
 
 

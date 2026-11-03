@@ -4,11 +4,6 @@
 --  Released into the public domain
 
 
-private with
-
-    Interfaces.C.Strings;
-
-
 package FLTK.Widgets.Groups.Help_Views is
 
 
@@ -122,6 +117,13 @@ package FLTK.Widgets.Groups.Help_Views is
            (This  : in out Help_View;
             Value : in     String);
 
+    --  Func is asked what to load, as a page loads or a link is followed,
+    --  and where each image is, as a page is laid out.  Its answer is the
+    --  name to use, or "" to refuse: a refused page isn't loaded, and a
+    --  refused image is drawn as FLTK's broken image.  Each image is asked
+    --  about once in the view's life, and the answer is kept.  Load or
+    --  Set_Content called from Func while it is asked about an image raises
+    --  Program_Error.
     procedure Set_Link_Callback
            (This : in out Help_View;
             Func : in     Link_Callback);
@@ -194,7 +196,6 @@ private
 
     type Help_View is new Group with record
         Zelda : Link_Callback;
-        Hilda : Interfaces.C.Strings.chars_ptr;
     end record;
 
     overriding procedure Initialize

@@ -7,7 +7,8 @@
 with
 
     Ada.Assertions,
-    Interfaces.C,
+    FLTK.Hook_Exceptions,
+    Interfaces.C.Strings,
     System.Address_To_Access_Conversions;
 
 use type
@@ -141,10 +142,23 @@ package body FLTK.Widgets.Groups.Help_Views is
     pragma Import (C, fl_help_view_set_value, "fl_help_view_set_value");
     pragma Inline (fl_help_view_set_value);
 
-    procedure fl_help_view_link
-           (V, F : in Storage.Integer_Address);
-    pragma Import (C, fl_help_view_link, "fl_help_view_link");
-    pragma Inline (fl_help_view_link);
+    procedure fl_help_view_set_asks
+           (V : in Storage.Integer_Address;
+            A : in Interfaces.C.int);
+    pragma Import (C, fl_help_view_set_asks, "fl_help_view_set_asks");
+    pragma Inline (fl_help_view_set_asks);
+
+    procedure fl_help_view_set_answer
+           (V : in Storage.Integer_Address;
+            S : in Interfaces.C.char_array);
+    pragma Import (C, fl_help_view_set_answer, "fl_help_view_set_answer");
+    pragma Inline (fl_help_view_set_answer);
+
+    function fl_help_view_in_image
+           (V : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_help_view_in_image, "fl_help_view_in_image");
+    pragma Inline (fl_help_view_in_image);
 
 
 
@@ -243,39 +257,60 @@ package body FLTK.Widgets.Groups.Help_Views is
 
     package Help_View_Convert is new System.Address_To_Access_Conversions (Help_View'Class);
 
+    --  The shim asks this only while a link callback is set.  It returns 1
+    --  with the answer handed to the shim, which keeps a copy, or 0 for a
+    --  refusal.  The shim tells loads and images apart.
     function Link_Callback_Hook
-           (V : in Storage.Integer_Address;
+           (U : in Storage.Integer_Address;
             S : in Interfaces.C.Strings.chars_ptr)
-        return Interfaces.C.Strings.chars_ptr;
+        return Interfaces.C.int;
 
-    pragma Convention (C, Link_Callback_Hook);
+    pragma Export (C, Link_Callback_Hook, "help_view_link_hook");
 
     function Link_Callback_Hook
-           (V : in Storage.Integer_Address;
+           (U : in Storage.Integer_Address;
             S : in Interfaces.C.Strings.chars_ptr)
-        return Interfaces.C.Strings.chars_ptr
+        return Interfaces.C.int
     is
-        User_Data : constant Storage.Integer_Address := fl_widget_get_user_data (V);
         Ada_Help_View : access Help_View'Class;
     begin
-        pragma Assert (User_Data /= Null_Pointer);
-        Ada_Help_View := Help_View_Convert.To_Pointer (Storage.To_Address (User_Data));
-        if Ada_Help_View.Zelda = null then
-            return S;
-        end if;
-        Interfaces.C.Strings.Free (Ada_Help_View.Hilda);
-        Ada_Help_View.Hilda := Interfaces.C.Strings.New_String
-           (Ada_Help_View.Zelda (Ada_Help_View.all, Interfaces.C.Strings.Value (S)));
-        if Interfaces.C.Strings.Value (Ada_Help_View.Hilda) = "" then
-            return Interfaces.C.Strings.Null_Ptr;
-        else
-            return Ada_Help_View.Hilda;
-        end if;
+        pragma Assert (U /= Null_Pointer);
+        Ada_Help_View := Help_View_Convert.To_Pointer (Storage.To_Address (U));
+        pragma Assert (Ada_Help_View.Zelda /= null);
+        declare
+            Answer : constant String :=
+                Ada_Help_View.Zelda (Ada_Help_View.all, Interfaces.C.Strings.Value (S));
+        begin
+            if Answer = "" then
+                return 0;
+            end if;
+            fl_help_view_set_answer (Ada_Help_View.Void_Ptr, Interfaces.C.To_C (Answer));
+            return 1;
+        end;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "Fl_Help_View::link callback hook received Widget with no user_data reference " &
-        "back to Ada";
+    when Chk.Assertion_Error =>
+        Hook_Exceptions.Save_New
+           (Internal_FLTK_Error'Identity,
+            "Fl_Help_View::link callback hook received Widget with no user_data reference " &
+            "back to Ada");
+        return 0;
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return 0;
     end Link_Callback_Hook;
+
+
+    --  A page set while FLTK asks about an image would be freed under
+    --  FLTK's format(), which goes on reading it (pofltk 90).
+    procedure Check_Not_In_Image
+           (This : in Help_View;
+            What : in String) is
+    begin
+        if fl_help_view_in_image (This.Void_Ptr) /= 0 then
+            raise Program_Error with
+                What & " called in a Help_View's link callback about an image";
+        end if;
+    end Check_Not_In_Image;
 
 
 
@@ -287,7 +322,9 @@ package body FLTK.Widgets.Groups.Help_Views is
     procedure Extra_Final
            (This : in out Help_View) is
     begin
-        Interfaces.C.Strings.Free (This.Hilda);
+        if This.Void_Ptr /= Null_Pointer then
+            fl_help_view_set_asks (This.Void_Ptr, 0);
+        end if;
         Extra_Final (Group (This));
     end Extra_Final;
 
@@ -314,7 +351,6 @@ package body FLTK.Widgets.Groups.Help_Views is
             X, Y, W, H : in     Integer;
             Text       : in     String) is
     begin
-        fl_help_view_link (This.Void_Ptr, Storage.To_Integer (Link_Callback_Hook'Address));
         Extra_Init (Group (This), X, Y, W, H, Text);
     end Extra_Init;
 
@@ -463,9 +499,10 @@ package body FLTK.Widgets.Groups.Help_Views is
            (This : in out Help_View;
             Name : in     String)
     is
-        Code : constant Interfaces.C.int :=
-            fl_help_view_load (This.Void_Ptr, Interfaces.C.To_C (Name));
+        Code : Interfaces.C.int;
     begin
+        Check_Not_In_Image (This, "Load");
+        Code := fl_help_view_load (This.Void_Ptr, Interfaces.C.To_C (Name));
         if Code = -1 then
             raise Load_Help_Error;
         else
@@ -513,6 +550,7 @@ package body FLTK.Widgets.Groups.Help_Views is
            (This  : in out Help_View;
             Value : in     String) is
     begin
+        Check_Not_In_Image (This, "Set_Content");
         fl_help_view_set_value (This.Void_Ptr, Interfaces.C.To_C (Value));
     end Set_Content;
 
@@ -522,6 +560,7 @@ package body FLTK.Widgets.Groups.Help_Views is
             Func : in     Link_Callback) is
     begin
         This.Zelda := Func;
+        fl_help_view_set_asks (This.Void_Ptr, Boolean'Pos (Func /= null));
     end Set_Link_Callback;
 
 

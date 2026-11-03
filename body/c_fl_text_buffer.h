@@ -18,6 +18,8 @@ extern "C" void free_fl_text_buffer(TEXTBUFFER tb);
 
 extern "C" void fl_text_buffer_add_modify_callback(TEXTBUFFER tb, void * cb, void * ud);
 extern "C" void fl_text_buffer_add_predelete_callback(TEXTBUFFER tb, void * cb, void * ud);
+extern "C" void fl_text_buffer_remove_modify_callback(TEXTBUFFER tb, void * cb, void * ud);
+extern "C" void fl_text_buffer_remove_predelete_callback(TEXTBUFFER tb, void * cb, void * ud);
 extern "C" void fl_text_buffer_call_modify_callbacks(TEXTBUFFER tb);
 extern "C" void fl_text_buffer_call_predelete_callbacks(TEXTBUFFER tb);
 

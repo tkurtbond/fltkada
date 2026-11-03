@@ -6,6 +6,7 @@
 
 with
 
+    FLTK.Hook_Exceptions,
     FLTK.Widget_Callback_Conversions,
     Interfaces.C.Strings;
 
@@ -344,6 +345,7 @@ package body FLTK.Menu_Items is
             Widget : in out FLTK.Widgets.Widget'Class) is
     begin
         fl_menu_item_do_callback (This.Void_Ptr, Wrapper (Widget).Void_Ptr);
+        Hook_Exceptions.Reraise;
     end Do_Callback;
 
 

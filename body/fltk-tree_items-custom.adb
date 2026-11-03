@@ -7,6 +7,7 @@
 with
 
     Ada.Assertions,
+    FLTK.Hook_Exceptions,
     Interfaces.C,
     System.Address_To_Access_Conversions;
 
@@ -89,8 +90,14 @@ package body FLTK.Tree_Items.Custom is
         Ada_Item := Custom_Convert.To_Pointer (Storage.To_Address (UD));
         return Interfaces.C.int (Ada_Item.Draw_Item_Content (R /= 0));
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "User data null pointer passed to Fl_Tree_Item::draw_item_content override hook";
+    when Chk.Assertion_Error =>
+        Hook_Exceptions.Save_New
+           (Internal_FLTK_Error'Identity,
+            "User data null pointer passed to Fl_Tree_Item::draw_item_content override hook");
+        return 0;
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return 0;
     end Tree_Item_Draw_Content_Hook;
 
 
@@ -108,8 +115,12 @@ package body FLTK.Tree_Items.Custom is
         Ada_Item := Custom_Convert.To_Pointer (Storage.To_Address (UD));
         Ada_Item.Void_Ptr := Null_Pointer;
     exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "User data null pointer passed to Fl_Tree_Item destructor hook";
+    when Chk.Assertion_Error =>
+        Hook_Exceptions.Save_New
+           (Internal_FLTK_Error'Identity,
+            "User data null pointer passed to Fl_Tree_Item destructor hook");
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Tree_Item_Gone_Hook;
 
 

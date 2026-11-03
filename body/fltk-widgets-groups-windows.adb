@@ -7,7 +7,8 @@
 with
 
     Interfaces.C.Strings,
-    FLTK.Args_Marshal;
+    FLTK.Args_Marshal,
+    FLTK.Hook_Exceptions;
 
 use type
 
@@ -155,7 +156,7 @@ package body FLTK.Widgets.Groups.Windows is
 
     procedure fl_window_set_iconlabel
            (W : in Storage.Integer_Address;
-            S : in Interfaces.C.char_array);
+            S : in Interfaces.C.Strings.chars_ptr);
     pragma Import (C, fl_window_set_iconlabel, "fl_window_set_iconlabel");
     pragma Inline (fl_window_set_iconlabel);
 
@@ -395,6 +396,15 @@ package body FLTK.Widgets.Groups.Windows is
     procedure Extra_Final
            (This : in out Window) is
     begin
+        --  FLTK reads the icon label only when the window is shown or its
+        --  label changes, never while deleting it, so the copy can go
+        --  first.  A window FLTK goes on using is told to forget it.
+        if This.My_Icon_Label /= Interfaces.C.Strings.Null_Ptr then
+            if This.Void_Ptr /= Null_Pointer and not This.Needs_Dealloc then
+                fl_window_set_iconlabel (This.Void_Ptr, Interfaces.C.Strings.Null_Ptr);
+            end if;
+            Interfaces.C.Strings.Free (This.My_Icon_Label);
+        end if;
         Extra_Final (Group (This));
     end Extra_Final;
 
@@ -699,9 +709,14 @@ package body FLTK.Widgets.Groups.Windows is
 
     procedure Set_Icon_Label
            (This : in out Window;
-            To   : in     String) is
+            To   : in     String)
+    is
+        Old : Interfaces.C.Strings.chars_ptr := This.My_Icon_Label;
     begin
-        fl_window_set_iconlabel (This.Void_Ptr, Interfaces.C.To_C (To));
+        --  Free the old copy only once FLTK holds the new one.
+        This.My_Icon_Label := Interfaces.C.Strings.New_String (To);
+        fl_window_set_iconlabel (This.Void_Ptr, This.My_Icon_Label);
+        Interfaces.C.Strings.Free (Old);
     end Set_Icon_Label;
 
 
@@ -1074,6 +1089,7 @@ package body FLTK.Widgets.Groups.Windows is
            (This : in out Window) is
     begin
         fl_window_flush (This.Void_Ptr);
+        Hook_Exceptions.Reraise;
     end Flush;
 
 

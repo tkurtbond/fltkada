@@ -4,6 +4,7 @@
 //  Released into the public domain
 
 
+#include <string>
 #include <FL/fl_ask.H>
 #include <FL/fl_show_colormap.H>
 #include <FL/Fl_File_Chooser.H>
@@ -101,12 +102,30 @@ unsigned int fl_ask_show_colormap(unsigned int h) {
     return static_cast<unsigned int>(fl_show_colormap(static_cast<Fl_Color>(h)));
 }
 
+//  fl_dir_chooser and fl_file_chooser make one Fl_File_Chooser and keep it, and
+//  give it the title without copying it (fl_file_dir.cxx:116, 200).  So the title
+//  is kept here, in one copy both choosers share, until the next title.  Derived
+//  from pofltk's keep_title.
+static std::string chooser_title;
+
+static const char * keep_title(const char * m) {
+    if (m == 0) {
+        return 0;
+    }
+    try {
+        chooser_title = m;
+    } catch (...) {
+        chooser_title.clear();
+    }
+    return chooser_title.c_str();
+}
+
 char * fl_ask_dir_chooser(const char * m, const char * d, int r) {
-    return fl_dir_chooser(m, d, r);
+    return fl_dir_chooser(keep_title(m), d, r);
 }
 
 char * fl_ask_file_chooser(const char * m, const char * p, const char * d, int r) {
-    return fl_file_chooser(m, p, d, r);
+    return fl_file_chooser(keep_title(m), p, d, r);
 }
 
 void fl_ask_file_chooser_callback(void(*cb)(const char *)) {

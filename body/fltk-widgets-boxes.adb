@@ -6,6 +6,7 @@
 
 with
 
+    FLTK.Hook_Exceptions,
     FLTK.Widgets.Groups,
     Interfaces.C;
 
@@ -113,6 +114,9 @@ package body FLTK.Widgets.Boxes is
             Integer (X), Integer (Y),
             Integer (W), Integer (H),
             Interfaces.C.Strings.Value (C_Str));
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end box_extra_init_hook;
 
 

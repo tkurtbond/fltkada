@@ -8,6 +8,10 @@ with
 
     FLTK.Images.RGB;
 
+private with
+
+    Interfaces.C.Strings;
+
 
 package FLTK.Widgets.Groups.Windows is
 
@@ -311,7 +315,11 @@ package FLTK.Widgets.Groups.Windows is
 private
 
 
-    type Window is new Group with null record;
+    --  FLTK keeps the icon label's pointer without copying it, and has no
+    --  copy_iconlabel, so the record keeps the copy.
+    type Window is new Group with record
+        My_Icon_Label : Interfaces.C.Strings.chars_ptr := Interfaces.C.Strings.Null_Ptr;
+    end record;
 
     overriding procedure Initialize
            (This : in out Window);

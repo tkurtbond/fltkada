@@ -121,6 +121,11 @@ package FLTK.Probe is
     function Modal
         return Boolean;
 
+    --  True if a window has the grab (Fl::grab), even one FLTK made itself,
+    --  such as a pop-up menu's, which FLTK.Events.Get_Grab can't return.
+    function Grabbed
+        return Boolean;
+
     --  The title of the modal window shown, or "".
     function Modal_Title
         return String;
@@ -132,6 +137,23 @@ package FLTK.Probe is
             State : in Modifier := Mod_None;
             Text  : in String   := "")
         return Boolean;
+
+    --  Closes the modal window as an Escape no widget takes does, by its
+    --  callback; False if none is shown.  On a headless sway, Modal_Key
+    --  (Escape_Key) leaves a file chooser up though FLTK says it took the key.
+    function Close_Modal
+        return Boolean;
+
+    --  Whether a widget in a shown window has Text as its label or tooltip.
+    --  For a widget the binding doesn't expose, such as a chooser's parts.
+    function Has_Label
+           (Text : in String)
+        return Boolean;
+
+    --  Whether a Printer's Start_Job shows GTK's dialog (the default) or FLTK's
+    --  own print panel.  Call it before the first Printer is made.
+    procedure Set_Printer_Uses_GTK
+           (On : in Boolean);
 
 
 

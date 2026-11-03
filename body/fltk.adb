@@ -6,6 +6,7 @@
 
 with
 
+    FLTK.Hook_Exceptions,
     Interfaces.C;
 
 use type
@@ -201,11 +202,6 @@ package body FLTK is
         return Interfaces.C.double;
     pragma Import (C, fl_wait2, "fl_wait2");
     pragma Inline (fl_wait2);
-
-    function fl_run
-        return Interfaces.C.int;
-    pragma Import (C, fl_run, "fl_run");
-    pragma Inline (fl_run);
 
 
 
@@ -747,14 +743,16 @@ package body FLTK is
     is
         Ignore : Interfaces.C.int := fl_check;
     begin
-        null;
+        Hook_Exceptions.Reraise;
     end Check;
 
 
     function Check
         return Boolean is
+        Result : constant Boolean := fl_check /= 0;
     begin
-        return fl_check /= 0;
+        Hook_Exceptions.Reraise;
+        return Result;
     end Check;
 
 
@@ -767,23 +765,36 @@ package body FLTK is
 
     function Wait
         return Integer is
+        Result : constant Integer := Integer (fl_wait);
     begin
-        return Integer (fl_wait);
+        Hook_Exceptions.Reraise;
+        return Result;
     end Wait;
 
 
     function Wait
            (Seconds : in Long_Float)
         return Long_Float is
+        Result : constant Long_Float :=
+            Long_Float (fl_wait2 (Interfaces.C.double (Seconds)));
     begin
-        return Long_Float (fl_wait2 (Interfaces.C.double (Seconds)));
+        Hook_Exceptions.Reraise;
+        return Result;
     end Wait;
 
 
+    --  Fl::run is "while (Fl_X::first) wait(FOREVER); return 0;" (Fl.cxx:651-654),
+    --  and Fl::wait () returns Fl_X::first != 0 (Fl.cxx:672-676).  Run is that
+    --  loop here, so that an exception kept from a hook is raised again after
+    --  the wait it was raised in, not when the last window closes.
     function Run
         return Integer is
     begin
-        return Integer (fl_run);
+        while fl_wait /= 0 loop
+            Hook_Exceptions.Reraise;
+        end loop;
+        Hook_Exceptions.Reraise;
+        return 0;
     end Run;
 
 

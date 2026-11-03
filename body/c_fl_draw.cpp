@@ -4,6 +4,10 @@
 //  Released into the public domain
 
 
+#include <cstring>
+#include <new>
+#include <set>
+#include <string>
 #include <FL/fl_draw.H>
 #include <FL/Fl_Window.H>
 #include "c_fl_draw.h"
@@ -37,20 +41,30 @@ const char * fl_draw_shortcut_label(unsigned int shortcut) {
 
 
 
-const char * fl_draw_latin1_to_local(const char *t, int n) {
-    return fl_latin1_to_local(t, n);
-}
-
-const char * fl_draw_local_to_latin1(const char *t, int n) {
-    return fl_local_to_latin1(t, n);
-}
-
-const char * fl_draw_mac_roman_to_local(const char *t, int n) {
-    return fl_mac_roman_to_local(t, n);
-}
-
-const char * fl_draw_local_to_mac_roman(const char *t, int n) {
-    return fl_local_to_mac_roman(t, n);
+//  FLTK's Mac Roman conversions (fl_encoding_mac_roman.cxx:60-102) take
+//  their buffer to be big enough when it isn't, so the first call with n > 0
+//  writes through a null pointer, and local_to_mac_roman never moves on from
+//  the first byte.  Neither ends the result with a NUL (pofltk 126).  Both
+//  encodings have one byte a character, so this asks for one at a time,
+//  after a call with n = 0 has made the buffer.  It returns 1 if FLTK's
+//  malloc fails.
+int fl_draw_recode(int kind, const char * from, char * to, int n) {
+    typedef const char * (*Recode)(const char *, int);
+    static const Recode recode[] = {fl_latin1_to_local, fl_local_to_latin1,
+        fl_mac_roman_to_local, fl_local_to_mac_roman};
+    if (kind < 0 || kind > 3) {
+        return 1;
+    }
+    Recode f = recode[kind];
+    f(from, 0);
+    for (int i = 0; i < n; i++) {
+        const char * r = f(from + i, 1);
+        if (r == 0) {
+            return 1;
+        }
+        to[i] = r[0];
+    }
+    return 0;
 }
 
 
@@ -230,8 +244,43 @@ void * fl_draw_read_image(void * data, int x, int y, int w, int h, int alpha) {
 typedef void (sym_hook)(Fl_Color);
 typedef sym_hook* sym_hook_p;
 
+//  fl_symbols.cxx hashes a name's bytes as chars, and a byte from 0x80 on makes the
+//  index into its table negative where char is signed (pofltk 123).
+static bool symbol_name_ascii(const char *s) {
+    for (; *s; s++) {
+        if (static_cast<unsigned char>(*s) >= 0x80) {
+            return false;
+        }
+    }
+    return true;
+}
+
+//  fl_add_symbol keeps the name's pointer for good (fl_symbols.cxx), so the names
+//  are kept here.
+static std::set<std::string> symbol_names;
+
+//  0 if the name is refused or the table is full.  An empty name would replace the
+//  default symbol.  A name that starts the way fl_draw_symbol's modifiers do, or
+//  that holds an @, could never be found again.  Derived from pofltk's
+//  ofl_draw_add_symbol.
 int fl_draw_add_symbol(const char *name, void *func, int scalable) {
-    return fl_add_symbol(name, reinterpret_cast<sym_hook_p>(func), scalable);
+    char a = name[0];
+    if (a == '\0' || !symbol_name_ascii(name) || std::strchr(name, '@') != 0) {
+        return 0;
+    }
+    char b = name[1];
+    if (a == '#' || a == '$' || a == '%' || (a >= '0' && a <= '9')) {
+        return 0;
+    }
+    if ((a == '-' || a == '+') && b >= '1' && b <= '9') {
+        return 0;
+    }
+    try {
+        return fl_add_symbol(symbol_names.insert(name).first->c_str(),
+            reinterpret_cast<sym_hook_p>(func), scalable);
+    } catch (const std::bad_alloc &) {
+        return 0;
+    }
 }
 
 void fl_draw_draw_text(const char *str, int n, int x, int y) {
@@ -265,6 +314,9 @@ void fl_draw_draw_box(int bk, int x, int y, int w, int h, unsigned int c) {
 }
 
 int fl_draw_draw_symbol(const char *label, int x, int y, int w, int h, unsigned int c) {
+    if (!symbol_name_ascii(label)) {
+        return 0;
+    }
     return fl_draw_symbol(label, x, y, w, h, (Fl_Color)c);
 }
 
@@ -284,7 +336,7 @@ void fl_draw_text_extents(const char * t, int n, int &dx, int &dy, int &w, int &
     fl_text_extents(t, n, dx, dy, w, h);
 }
 
-const char * fl_draw_expand_text(const char * str, char * &buf, int maxbuf,
+const char * fl_draw_expand_text(const char * str, char * buf, int maxbuf,
     double maxw, int &n, double &width, int wrap, int symbol)
 {
     return fl_expand_text(str, buf, maxbuf, maxw, n, width, wrap, symbol);

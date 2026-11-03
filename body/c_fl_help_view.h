@@ -33,7 +33,9 @@ extern "C" int fl_help_view_load(HELPVIEW v, const char * f);
 extern "C" const char * fl_help_view_title(HELPVIEW v);
 extern "C" const char * fl_help_view_get_value(HELPVIEW v);
 extern "C" void fl_help_view_set_value(HELPVIEW v, const char * t);
-extern "C" void fl_help_view_link(HELPVIEW v, void * f);
+extern "C" void fl_help_view_set_asks(HELPVIEW v, int a);
+extern "C" void fl_help_view_set_answer(HELPVIEW v, const char * s);
+extern "C" int fl_help_view_in_image(HELPVIEW v);
 
 
 extern "C" int fl_help_view_get_scrollbar_size(HELPVIEW v);

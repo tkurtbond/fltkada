@@ -7,6 +7,7 @@
 with
 
     Ada.Assertions,
+    FLTK.Hook_Exceptions,
     Interfaces.C,
     System.Address_To_Access_Conversions;
 
@@ -370,6 +371,10 @@ package body FLTK.Widgets.Groups.Browsers is
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Interfaces.C.int (Ada_Object.Full_List_Width);
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return 0;
     end Full_Width_Hook;
 
 
@@ -386,6 +391,10 @@ package body FLTK.Widgets.Groups.Browsers is
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Interfaces.C.int (Ada_Object.Full_List_Height);
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return 0;
     end Full_Height_Hook;
 
 
@@ -402,6 +411,10 @@ package body FLTK.Widgets.Groups.Browsers is
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Interfaces.C.int (Ada_Object.Average_Item_Height);
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return 0;
     end Average_Item_Height_Hook;
 
 
@@ -418,6 +431,10 @@ package body FLTK.Widgets.Groups.Browsers is
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Interfaces.C.int (Ada_Object.Item_Quick_Height (Address_To_Cursor (Item_Ptr)));
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return 0;
     end Item_Quick_Height_Hook;
 
 
@@ -434,6 +451,10 @@ package body FLTK.Widgets.Groups.Browsers is
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Interfaces.C.int (Ada_Object.Item_Width (Address_To_Cursor (Item_Ptr)));
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return 0;
     end Item_Width_Hook;
 
 
@@ -450,6 +471,10 @@ package body FLTK.Widgets.Groups.Browsers is
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Interfaces.C.int (Ada_Object.Item_Height (Address_To_Cursor (Item_Ptr)));
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return 0;
     end Item_Height_Hook;
 
 
@@ -466,6 +491,10 @@ package body FLTK.Widgets.Groups.Browsers is
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Cursor_To_Address (Ada_Object.Item_First);
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return Null_Pointer;
     end Item_First_Hook;
 
 
@@ -482,6 +511,10 @@ package body FLTK.Widgets.Groups.Browsers is
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Cursor_To_Address (Ada_Object.Item_Last);
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return Null_Pointer;
     end Item_Last_Hook;
 
 
@@ -498,6 +531,10 @@ package body FLTK.Widgets.Groups.Browsers is
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Cursor_To_Address (Ada_Object.Item_Next (Address_To_Cursor (Item_Ptr)));
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return Null_Pointer;
     end Item_Next_Hook;
 
 
@@ -514,6 +551,10 @@ package body FLTK.Widgets.Groups.Browsers is
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Cursor_To_Address (Ada_Object.Item_Previous (Address_To_Cursor (Item_Ptr)));
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return Null_Pointer;
     end Item_Previous_Hook;
 
 
@@ -533,6 +574,10 @@ package body FLTK.Widgets.Groups.Browsers is
         use type Interfaces.C.int;
     begin
         return Cursor_To_Address (Ada_Object.Item_At (Positive (Index + 1)));
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return Null_Pointer;
     end Item_At_Hook;
 
 
@@ -552,6 +597,9 @@ package body FLTK.Widgets.Groups.Browsers is
         Ada_Object.Item_Select
            (Address_To_Cursor (Item_Ptr),
             Int_State /= 0);
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Item_Select_Hook;
 
 
@@ -568,6 +616,10 @@ package body FLTK.Widgets.Groups.Browsers is
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Boolean'Pos (Ada_Object.Item_Selected (Address_To_Cursor (Item_Ptr)));
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return 0;
     end Item_Selected_Hook;
 
 
@@ -582,6 +634,9 @@ package body FLTK.Widgets.Groups.Browsers is
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         Ada_Object.Item_Swap (Address_To_Cursor (A_Ptr), Address_To_Cursor (B_Ptr));
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Item_Swap_Hook;
 
 
@@ -596,6 +651,9 @@ package body FLTK.Widgets.Groups.Browsers is
     --  this does mean that the default implementation of Sort is not task safe.
 
     --  At the time of writing this I have no idea how task safe FLTK is anyway.
+
+    --  What Item_Text_Hook gives FLTK if Item_Text raised.
+    Empty_Text : aliased Interfaces.C.char_array := (0 => Interfaces.C.nul);
 
     function Item_Text_Hook
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address)
@@ -620,6 +678,10 @@ package body FLTK.Widgets.Groups.Browsers is
                 Ada_Object.Current := Ada_Object.Text_Store'First;
             end if;
         end return;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return Interfaces.C.Strings.To_Chars_Ptr (Empty_Text'Access);
     end Item_Text_Hook;
 
 
@@ -641,6 +703,9 @@ package body FLTK.Widgets.Groups.Browsers is
             Integer (Y),
             Integer (W),
             Integer (H));
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Item_Draw_Hook;
 
 

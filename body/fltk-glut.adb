@@ -7,7 +7,10 @@
 with
 
     Ada.Command_Line,
+    Ada.Containers.Vectors,
+    Ada.Finalization,
     Ada.Unchecked_Deallocation,
+    FLTK.Hook_Exceptions,
     Interfaces.C.Strings;
 
 use type
@@ -417,11 +420,52 @@ package body FLTK.GLUT is
     procedure Free is new Ada.Unchecked_Deallocation (Timer_Closure, Timer_Closure_Access);
 
 
-    --  glutInit keeps pointers into argv, so it lives for the whole program
+    --  glutInit keeps pointers to argv's strings (initargv,
+    --  glut_compatibility.cxx:204-206), so they live for the whole program
     type Argv_Access is access ICS.chars_ptr_array;
+
+    procedure Free is new Ada.Unchecked_Deallocation (ICS.chars_ptr_array, Argv_Access);
 
     The_Argv : Argv_Access;
     The_Argc : Interfaces.C.int;
+
+
+    --  GLUT keeps the texts of menu items (i->text = label,
+    --  glut_compatibility.cxx:350, 358, 367, 376) and a window's icon title
+    --  (iconlabel_ = mininame, Fl_Window.cxx:545) without copying them, and
+    --  never frees them.  So the copies are kept here, and each is freed once
+    --  GLUT has let go of it (FLTKAda-BUGS.md 37).
+
+    package Text_Vectors is new Ada.Containers.Vectors
+       (Index_Type   => Positive,
+        Element_Type => ICS.chars_ptr,
+        "="          => ICS."=");
+
+    --  One text for each item of each menu, in item order.  Menu 0 is the
+    --  one GLUT adds to before any menu is made.
+    Menu_Texts : array (Menu_Number) of Text_Vectors.Vector;
+
+    --  Texts given to Change_To_* for an item past the end of the menu.
+    --  GLUT writes them past its array (pofltk 112), so they can't be known
+    --  to be let go, and are freed at exit.
+    Stray_Texts : Text_Vectors.Vector;
+
+    --  The icon title each window was last given.
+    Icon_Titles : array (Valid_Window_Number) of ICS.chars_ptr := (others => ICS.Null_Ptr);
+
+    --  Every argv string Init has made.  glutInit takes FLTK's options out
+    --  of argv (:207-211), so The_Argv no longer holds them all.
+    Argv_Texts : Text_Vectors.Vector;
+
+
+    --  Frees the texts at exit.  It is declared after them, so it is
+    --  finalized before the vectors are.
+    type Text_Final_Controller is new Ada.Finalization.Limited_Controlled with null record;
+
+    overriding procedure Finalize
+           (This : in out Text_Final_Controller);
+
+    Text_Cleanup : Text_Final_Controller;
 
 
     Cursor_Codes : constant array (Cursor_Kind) of Interfaces.C.int :=
@@ -453,6 +497,65 @@ package body FLTK.GLUT is
 
 
     -------------
+    --  Texts  --
+    -------------
+
+    procedure Free_All
+           (Texts : in out Text_Vectors.Vector) is
+    begin
+        for Text of Texts loop
+            ICS.Free (Text);
+        end loop;
+        Texts.Clear;
+    end Free_All;
+
+
+    overriding procedure Finalize
+           (This : in out Text_Final_Controller)
+    is
+        pragma Unreferenced (This);
+    begin
+        for Texts of Menu_Texts loop
+            Free_All (Texts);
+        end loop;
+        Free_All (Stray_Texts);
+        for Title of Icon_Titles loop
+            ICS.Free (Title);
+        end loop;
+        Free_All (Argv_Texts);
+        Free (The_Argv);
+    end Finalize;
+
+
+    function Current_Menu
+        return Menu_Number is
+    begin
+        return Menu_Number (fl_glut_get_menu);
+    end Current_Menu;
+
+
+    --  Keeps Text as the text of item Item of the current menu, which GLUT
+    --  has just been given, and frees the text it replaced.
+    procedure Keep_Changed
+           (Item : in Positive;
+            Text : in ICS.chars_ptr)
+    is
+        Texts : Text_Vectors.Vector renames Menu_Texts (Current_Menu);
+        Old   : ICS.chars_ptr;
+    begin
+        if Item <= Texts.Last_Index then
+            Old := Texts (Item);
+            Texts.Replace_Element (Item, Text);
+            ICS.Free (Old);
+        else
+            Stray_Texts.Append (Text);
+        end if;
+    end Keep_Changed;
+
+
+
+
+    -------------
     --  Hooks  --
     -------------
 
@@ -479,6 +582,9 @@ package body FLTK.GLUT is
         if Number /= No_Window and then Window_Table (Number).Display /= null then
             Window_Table (Number).Display.all;
         end if;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Display_Hook;
 
 
@@ -492,6 +598,9 @@ package body FLTK.GLUT is
         if Number /= No_Window and then Window_Table (Number).Overlay_Display /= null then
             Window_Table (Number).Overlay_Display.all;
         end if;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Overlay_Display_Hook;
 
 
@@ -507,6 +616,9 @@ package body FLTK.GLUT is
         if Number /= No_Window and then Window_Table (Number).Reshape /= null then
             Window_Table (Number).Reshape (Integer (W), Integer (H));
         end if;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Reshape_Hook;
 
 
@@ -525,6 +637,9 @@ package body FLTK.GLUT is
             Window_Table (Number).Keyboard
                (Character'Val (Key), Integer (X), Integer (Y));
         end if;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Keyboard_Hook;
 
 
@@ -544,6 +659,9 @@ package body FLTK.GLUT is
             Window_Table (Number).Mouse
                (Mouse_Button_Index'Val (B), Button_State'Val (S), Integer (X), Integer (Y));
         end if;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Mouse_Hook;
 
 
@@ -559,6 +677,9 @@ package body FLTK.GLUT is
         if Number /= No_Window and then Window_Table (Number).Motion /= null then
             Window_Table (Number).Motion (Integer (X), Integer (Y));
         end if;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Motion_Hook;
 
 
@@ -574,6 +695,9 @@ package body FLTK.GLUT is
         if Number /= No_Window and then Window_Table (Number).Passive_Motion /= null then
             Window_Table (Number).Passive_Motion (Integer (X), Integer (Y));
         end if;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Passive_Motion_Hook;
 
 
@@ -591,6 +715,9 @@ package body FLTK.GLUT is
         then
             Window_Table (Number).Entering (Entry_State'Val (S));
         end if;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Entry_Hook;
 
 
@@ -608,6 +735,9 @@ package body FLTK.GLUT is
         then
             Window_Table (Number).Visibility (Visibility_State'Val (S));
         end if;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Visibility_Hook;
 
 
@@ -623,6 +753,9 @@ package body FLTK.GLUT is
         if Number /= No_Window and then Window_Table (Number).Special /= null then
             Window_Table (Number).Special (Special_Key (K), Integer (X), Integer (Y));
         end if;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Special_Hook;
 
 
@@ -634,6 +767,9 @@ package body FLTK.GLUT is
         if Idle_Callback /= null then
             Idle_Callback.all;
         end if;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Idle_Hook;
 
 
@@ -648,6 +784,9 @@ package body FLTK.GLUT is
     begin
         Closure.Func (Closure.Value);
         Free (Closure);
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Timer_Hook;
 
 
@@ -665,6 +804,9 @@ package body FLTK.GLUT is
         then
             Menu_Table (Menu_Number (Number)) (Integer (V));
         end if;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Menu_Hook;
 
 
@@ -678,6 +820,9 @@ package body FLTK.GLUT is
         if Menu_State_Callback /= null and then S in 0 .. 1 then
             Menu_State_Callback (Menu_State'Val (S));
         end if;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Menu_State_Hook;
 
 
@@ -691,6 +836,9 @@ package body FLTK.GLUT is
         if Menu_Status_Callback /= null and then S in 0 .. 1 then
             Menu_Status_Callback (Menu_State'Val (S), Integer (X), Integer (Y));
         end if;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Menu_Status_Hook;
 
 
@@ -715,12 +863,17 @@ package body FLTK.GLUT is
 
     procedure Init is
     begin
+        --  glutInit keeps the strings, not the array
+        Free (The_Argv);
         The_Argv := new ICS.chars_ptr_array (0 .. IntC.size_t (ACom.Argument_Count) + 1);
         The_Argv (0) := ICS.New_String (ACom.Command_Name);
         for Index in Integer range 1 .. ACom.Argument_Count loop
             The_Argv (IntC.size_t (Index)) := ICS.New_String (ACom.Argument (Index));
         end loop;
         The_Argv (The_Argv'Last) := ICS.Null_Ptr;
+        for Index in The_Argv'First .. The_Argv'Last - 1 loop
+            Argv_Texts.Append (The_Argv (Index));
+        end loop;
         The_Argc := Interfaces.C.int (ACom.Argument_Count) + 1;
         fl_glut_init (The_Argc, The_Argv (The_Argv'First)'Address);
     end Init;
@@ -773,6 +926,9 @@ package body FLTK.GLUT is
         Number : constant Valid_Window_Number :=
             Valid_Window_Number (fl_glut_create_window (Interfaces.C.To_C (Title)));
     begin
+        --  GLUT gives a new window only a number whose window is gone, such
+        --  as a subwindow deleted with its parent
+        ICS.Free (Icon_Titles (Number));
         Reset_Callbacks (Number);
         return Number;
     end Create_Window;
@@ -789,6 +945,7 @@ package body FLTK.GLUT is
                 Interfaces.C.int (X), Interfaces.C.int (Y),
                 Interfaces.C.int (W), Interfaces.C.int (H)));
     begin
+        ICS.Free (Icon_Titles (Number));
         Reset_Callbacks (Number);
         return Number;
     end Create_Sub_Window;
@@ -798,6 +955,7 @@ package body FLTK.GLUT is
            (Number : in Valid_Window_Number) is
     begin
         fl_glut_destroy_window (Interfaces.C.int (Number));
+        ICS.Free (Icon_Titles (Number));
         Reset_Callbacks (Number);
     end Destroy_Window;
 
@@ -849,10 +1007,21 @@ package body FLTK.GLUT is
 
 
     procedure Set_Icon_Title
-           (Text : in String) is
+           (Text : in String)
+    is
+        Window : constant Window_Number := Current_Window;
+        Title  : ICS.chars_ptr := ICS.New_String (Text);
+        Old    : ICS.chars_ptr;
     begin
-        --  FLTK keeps the pointer, so this string is never freed
-        fl_glut_set_icon_title (ICS.New_String (Text));
+        fl_glut_set_icon_title (Title);
+        if Window = No_Window then
+            --  GLUT ignores the title when there's no current window
+            ICS.Free (Title);
+        else
+            Old := Icon_Titles (Window);
+            Icon_Titles (Window) := Title;
+            ICS.Free (Old);
+        end if;
     end Set_Icon_Title;
 
 
@@ -970,7 +1139,7 @@ package body FLTK.GLUT is
     -------------
 
     --  glutAddMenuEntry and friends keep the label pointer without copying
-    --  it, so menu labels are allocated here and never freed.
+    --  it, so the labels are kept in Menu_Texts.
 
     function Create_Menu
            (Func : in not null Menu_Function)
@@ -988,6 +1157,7 @@ package body FLTK.GLUT is
            (Number : in Valid_Menu_Number) is
     begin
         fl_glut_destroy_menu (Interfaces.C.int (Number));
+        Free_All (Menu_Texts (Number));
         Menu_Table (Number) := null;
     end Destroy_Menu;
 
@@ -995,7 +1165,7 @@ package body FLTK.GLUT is
     function Get_Menu
         return Menu_Number is
     begin
-        return Menu_Number (fl_glut_get_menu);
+        return Current_Menu;
     end Get_Menu;
 
 
@@ -1008,44 +1178,63 @@ package body FLTK.GLUT is
 
     procedure Add_Menu_Entry
            (Label : in String;
-            Value : in Integer) is
+            Value : in Integer)
+    is
+        Text : constant ICS.chars_ptr := ICS.New_String (Label);
     begin
-        fl_glut_add_menu_entry (ICS.New_String (Label), Interfaces.C.int (Value));
+        fl_glut_add_menu_entry (Text, Interfaces.C.int (Value));
+        Menu_Texts (Current_Menu).Append (Text);
     end Add_Menu_Entry;
 
 
     procedure Add_Sub_Menu
            (Label   : in String;
-            Submenu : in Valid_Menu_Number) is
+            Submenu : in Valid_Menu_Number)
+    is
+        Text : constant ICS.chars_ptr := ICS.New_String (Label);
     begin
-        fl_glut_add_sub_menu (ICS.New_String (Label), Interfaces.C.int (Submenu));
+        fl_glut_add_sub_menu (Text, Interfaces.C.int (Submenu));
+        Menu_Texts (Current_Menu).Append (Text);
     end Add_Sub_Menu;
 
 
     procedure Change_To_Menu_Entry
            (Item  : in Positive;
             Label : in String;
-            Value : in Integer) is
+            Value : in Integer)
+    is
+        Text : constant ICS.chars_ptr := ICS.New_String (Label);
     begin
-        fl_glut_change_to_menu_entry
-           (Interfaces.C.int (Item), ICS.New_String (Label), Interfaces.C.int (Value));
+        fl_glut_change_to_menu_entry (Interfaces.C.int (Item), Text, Interfaces.C.int (Value));
+        Keep_Changed (Item, Text);
     end Change_To_Menu_Entry;
 
 
     procedure Change_To_Sub_Menu
            (Item    : in Positive;
             Label   : in String;
-            Submenu : in Valid_Menu_Number) is
+            Submenu : in Valid_Menu_Number)
+    is
+        Text : constant ICS.chars_ptr := ICS.New_String (Label);
     begin
-        fl_glut_change_to_sub_menu
-           (Interfaces.C.int (Item), ICS.New_String (Label), Interfaces.C.int (Submenu));
+        fl_glut_change_to_sub_menu (Interfaces.C.int (Item), Text, Interfaces.C.int (Submenu));
+        Keep_Changed (Item, Text);
     end Change_To_Sub_Menu;
 
 
     procedure Remove_Menu_Item
-           (Item : in Positive) is
+           (Item : in Positive)
+    is
+        Texts : Text_Vectors.Vector renames Menu_Texts (Current_Menu);
+        Old   : ICS.chars_ptr;
     begin
         fl_glut_remove_menu_item (Interfaces.C.int (Item));
+        --  GLUT ignores an item out of range (glut_compatibility.cxx:384)
+        if Item <= Texts.Last_Index then
+            Old := Texts (Item);
+            Texts.Delete (Item);
+            ICS.Free (Old);
+        end if;
     end Remove_Menu_Item;
 
 

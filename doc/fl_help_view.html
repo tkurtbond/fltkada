@@ -194,6 +194,7 @@ procedure Set_Link_Callback
        (This : in out Help_View;
         Func : in     Link_Callback);
 </pre></td>
+<td>Func is asked about loads and images alike. "" refuses: a refused image is FLTK's broken image (pofltk 90). Each image is asked about once, and its answer kept. Load or Set_Content while Func is asked about an image raises Program_Error.</td>
   </tr>
 
   <tr>

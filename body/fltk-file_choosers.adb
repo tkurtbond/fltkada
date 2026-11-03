@@ -7,6 +7,8 @@
 with
 
     Ada.Assertions,
+    Ada.Unchecked_Deallocation,
+    FLTK.Hook_Exceptions,
     Interfaces.C.Strings,
     System.Address_To_Access_Conversions;
 
@@ -23,6 +25,35 @@ package body FLTK.File_Choosers is
 
     package File_Chooser_Convert is new System.Address_To_Access_Conversions (File_Chooser'Class);
     package Widget_Convert       is new System.Address_To_Access_Conversions (Widgets.Widget'Class);
+
+
+    --  A chooser's constructor gives its widgets eight of the static labels
+    --  without copying them, for example showChoice->label(show_label)
+    --  (Fl_File_Chooser.cxx:181).  The ask functions' chooser is never deleted
+    --  (fl_file_dir.cxx:23), so a replaced label may be read until the program
+    --  ends.  Its copy waits here, and the final controller frees it.  This is
+    --  a plain list, not a container, since the body's objects are finalized
+    --  before the spec's Cleanup.
+    type Retired_Label;
+
+    type Retired_Label_Access is access Retired_Label;
+
+    type Retired_Label is record
+        Text : Interfaces.C.Strings.chars_ptr;
+        Next : Retired_Label_Access;
+    end record;
+
+    procedure Free is new Ada.Unchecked_Deallocation (Retired_Label, Retired_Label_Access);
+
+    Retired_Labels : Retired_Label_Access := null;
+
+    procedure Retire
+           (Text : in Interfaces.C.Strings.chars_ptr) is
+    begin
+        if Text /= Interfaces.C.Strings.Null_Ptr then
+            Retired_Labels := new Retired_Label'(Text => Text, Next => Retired_Labels);
+        end if;
+    end Retire;
 
 
 
@@ -72,7 +103,7 @@ package body FLTK.File_Choosers is
     function new_fl_file_chooser
            (N, P : in Interfaces.C.char_array;
             K    : in Interfaces.C.int;
-            T    : in Interfaces.C.char_array)
+            T    : in Interfaces.C.Strings.chars_ptr)
         return Storage.Integer_Address;
     pragma Import (C, new_fl_file_chooser, "new_fl_file_chooser");
     pragma Inline (new_fl_file_chooser);
@@ -510,6 +541,10 @@ package body FLTK.File_Choosers is
         return Filenames.Comparison'Pos (Sort_Method
            (Interfaces.C.Strings.Value (A),
             Interfaces.C.Strings.Value (B))) - 1;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return 0;
     end File_Chooser_Sort_Hook;
 
 
@@ -526,6 +561,9 @@ package body FLTK.File_Choosers is
         if Ada_Obj.My_Callback /= null then
             Ada_Obj.My_Callback (Ada_Obj.all);
         end if;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end File_Chooser_Callback_Hook;
 
 
@@ -575,6 +613,15 @@ package body FLTK.File_Choosers is
         Free (Preview_Label);
         Free (Save_Label);
         Free (Show_Label);
+        while Retired_Labels /= null loop
+            declare
+                Next : constant Retired_Label_Access := Retired_Labels.Next;
+            begin
+                Free (Retired_Labels.Text);
+                Free (Retired_Labels);
+                Retired_Labels := Next;
+            end;
+        end loop;
     end Finalize;
 
 
@@ -655,11 +702,14 @@ package body FLTK.File_Choosers is
             return File_Chooser is
         begin
             return This : File_Chooser do
+                --  FLTK keeps the title as its window's label, without
+                --  copying it, so the record keeps it as Set_Label does.
+                This.My_Label := Interfaces.C.Strings.New_String (Title);
                 This.Void_Ptr := new_fl_file_chooser
                    (Interfaces.C.To_C (Pathname),
                     Interfaces.C.To_C (Pattern),
                     Chooser_Kind'Pos (Kind),
-                    Interfaces.C.To_C (Title));
+                    This.My_Label);
                 Extra_Init (This);
             end return;
         end Create;
@@ -715,11 +765,13 @@ package body FLTK.File_Choosers is
 
 
     procedure Set_Add_Favorites_Label
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : Interfaces.C.Strings.chars_ptr := Add_Favorites_Label;
     begin
-        Interfaces.C.Strings.Free (Add_Favorites_Label);
         Add_Favorites_Label := Interfaces.C.Strings.New_String (Value);
         fl_file_chooser_set_add_favorites_label (Add_Favorites_Label);
+        Interfaces.C.Strings.Free (Old);
     end Set_Add_Favorites_Label;
 
 
@@ -731,11 +783,13 @@ package body FLTK.File_Choosers is
 
 
     procedure Set_All_Files_Label
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : Interfaces.C.Strings.chars_ptr := All_Files_Label;
     begin
-        Interfaces.C.Strings.Free (All_Files_Label);
         All_Files_Label := Interfaces.C.Strings.New_String (Value);
         fl_file_chooser_set_all_files_label (All_Files_Label);
+        Interfaces.C.Strings.Free (Old);
     end Set_All_Files_Label;
 
 
@@ -747,11 +801,13 @@ package body FLTK.File_Choosers is
 
 
     procedure Set_Custom_Filter_Label
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : Interfaces.C.Strings.chars_ptr := Custom_Filter_Label;
     begin
-        Interfaces.C.Strings.Free (Custom_Filter_Label);
         Custom_Filter_Label := Interfaces.C.Strings.New_String (Value);
         fl_file_chooser_set_custom_filter_label (Custom_Filter_Label);
+        Interfaces.C.Strings.Free (Old);
     end Set_Custom_Filter_Label;
 
 
@@ -763,11 +819,13 @@ package body FLTK.File_Choosers is
 
 
     procedure Set_Existing_File_Label
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : Interfaces.C.Strings.chars_ptr := Existing_File_Label;
     begin
-        Interfaces.C.Strings.Free (Existing_File_Label);
         Existing_File_Label := Interfaces.C.Strings.New_String (Value);
         fl_file_chooser_set_existing_file_label (Existing_File_Label);
+        Interfaces.C.Strings.Free (Old);
     end Set_Existing_File_Label;
 
 
@@ -779,11 +837,13 @@ package body FLTK.File_Choosers is
 
 
     procedure Set_Favorites_Label
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := Favorites_Label;
     begin
-        Interfaces.C.Strings.Free (Favorites_Label);
         Favorites_Label := Interfaces.C.Strings.New_String (Value);
         fl_file_chooser_set_favorites_label (Favorites_Label);
+        Retire (Old);
     end Set_Favorites_Label;
 
 
@@ -795,11 +855,13 @@ package body FLTK.File_Choosers is
 
 
     procedure Set_Filename_Label
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := Filename_Label;
     begin
-        Interfaces.C.Strings.Free (Filename_Label);
         Filename_Label := Interfaces.C.Strings.New_String (Value);
         fl_file_chooser_set_filename_label (Filename_Label);
+        Retire (Old);
     end Set_Filename_Label;
 
 
@@ -811,11 +873,13 @@ package body FLTK.File_Choosers is
 
 
     procedure Set_Filesystems_Label
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : Interfaces.C.Strings.chars_ptr := Filesystems_Label;
     begin
-        Interfaces.C.Strings.Free (Filesystems_Label);
         Filesystems_Label := Interfaces.C.Strings.New_String (Value);
         fl_file_chooser_set_filesystems_label (Filesystems_Label);
+        Interfaces.C.Strings.Free (Old);
     end Set_Filesystems_Label;
 
 
@@ -827,11 +891,13 @@ package body FLTK.File_Choosers is
 
 
     procedure Set_Hidden_Label
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := Hidden_Label;
     begin
-        Interfaces.C.Strings.Free (Hidden_Label);
         Hidden_Label := Interfaces.C.Strings.New_String (Value);
         fl_file_chooser_set_hidden_label (Hidden_Label);
+        Retire (Old);
     end Set_Hidden_Label;
 
 
@@ -843,11 +909,13 @@ package body FLTK.File_Choosers is
 
 
     procedure Set_Manage_Favorites_Label
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := Manage_Favorites_Label;
     begin
-        Interfaces.C.Strings.Free (Manage_Favorites_Label);
         Manage_Favorites_Label := Interfaces.C.Strings.New_String (Value);
         fl_file_chooser_set_manage_favorites_label (Manage_Favorites_Label);
+        Retire (Old);
     end Set_Manage_Favorites_Label;
 
 
@@ -859,11 +927,13 @@ package body FLTK.File_Choosers is
 
 
     procedure Set_New_Directory_Label
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : Interfaces.C.Strings.chars_ptr := New_Directory_Label;
     begin
-        Interfaces.C.Strings.Free (New_Directory_Label);
         New_Directory_Label := Interfaces.C.Strings.New_String (Value);
         fl_file_chooser_set_new_directory_label (New_Directory_Label);
+        Interfaces.C.Strings.Free (Old);
     end Set_New_Directory_Label;
 
 
@@ -875,11 +945,13 @@ package body FLTK.File_Choosers is
 
 
     procedure Set_New_Directory_Tooltip
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := New_Directory_Tooltip;
     begin
-        Interfaces.C.Strings.Free (New_Directory_Tooltip);
         New_Directory_Tooltip := Interfaces.C.Strings.New_String (Value);
         fl_file_chooser_set_new_directory_tooltip (New_Directory_Tooltip);
+        Retire (Old);
     end Set_New_Directory_Tooltip;
 
 
@@ -891,11 +963,13 @@ package body FLTK.File_Choosers is
 
 
     procedure Set_Preview_Label
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := Preview_Label;
     begin
-        Interfaces.C.Strings.Free (Preview_Label);
         Preview_Label := Interfaces.C.Strings.New_String (Value);
         fl_file_chooser_set_preview_label (Preview_Label);
+        Retire (Old);
     end Set_Preview_Label;
 
 
@@ -907,11 +981,13 @@ package body FLTK.File_Choosers is
 
 
     procedure Set_Save_Label
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := Save_Label;
     begin
-        Interfaces.C.Strings.Free (Save_Label);
         Save_Label := Interfaces.C.Strings.New_String (Value);
         fl_file_chooser_set_save_label (Save_Label);
+        Retire (Old);
     end Set_Save_Label;
 
 
@@ -922,11 +998,13 @@ package body FLTK.File_Choosers is
     end Get_Show_Label;
 
     procedure Set_Show_Label
-           (Value : in String) is
+           (Value : in String)
+    is
+        Old : constant Interfaces.C.Strings.chars_ptr := Show_Label;
     begin
-        Interfaces.C.Strings.Free (Show_Label);
         Show_Label := Interfaces.C.Strings.New_String (Value);
         fl_file_chooser_set_show_label (Show_Label);
+        Retire (Old);
     end Set_Show_Label;
 
 

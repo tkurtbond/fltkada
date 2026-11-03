@@ -240,6 +240,11 @@ private
     procedure Extra_Final
            (This : in out Group);
 
+    --  Removes the children with Ada objects, whose Ada objects delete
+    --  them, and leaves the ones FLTK made for the C++ destructor.
+    procedure Remove_Ada_Children
+           (This : in out Group);
+
 
     package Group_Convert is new System.Address_To_Access_Conversions (Group);
 

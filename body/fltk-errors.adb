@@ -6,6 +6,7 @@
 
 with
 
+    FLTK.Hook_Exceptions,
     Interfaces.C.Strings;
 
 
@@ -50,6 +51,9 @@ package body FLTK.Errors is
            (C_Mess : in Interfaces.C.Strings.chars_ptr) is
     begin
         Current_Warning (Interfaces.C.Strings.Value (C_Mess));
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Warning_Hook;
 
 
@@ -61,6 +65,9 @@ package body FLTK.Errors is
            (C_Mess : in Interfaces.C.Strings.chars_ptr) is
     begin
         Current_Error (Interfaces.C.Strings.Value (C_Mess));
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
     end Error_Hook;
 
 
