@@ -4,18 +4,75 @@
 //  Released into the public domain
 
 
+#include <FL/Fl.H>
+#include <FL/Fl_Window.H>
+#include <FL/platform.H>
 #include <FL/gl.h>
 #include "c_fl_gl.h"
 
 
 
 
-void fl_gl_start() {
-    gl_start();
+//  Whether c is a window now shown.  Fl_Window::current() stays set after
+//  hide(), and dangles after delete, so it is compared, never followed,
+//  until this says it is safe (pofltk 111).
+static bool is_shown(Fl_Window * c) {
+    if (c == 0) {
+        return false;
+    }
+    for (Fl_Window *w = Fl::first_window(); w != 0; w = Fl::next_window(w)) {
+        if (w == c) {
+            return true;
+        }
+    }
+    return false;
 }
 
-void fl_gl_finish() {
+//  Whether gl_start has run with no gl_finish yet.
+static bool started = false;
+
+//  gl_start uses the current window unchecked, and on Wayland crashes
+//  whatever it is: Fl_Gl_Window_Driver::global() there has no window
+//  (gl_start.cxx:64, pofltk 109).
+int fl_gl_can_start() {
+    fl_open_display();
+#if defined(FLTK_USE_WAYLAND)
+    return fl_wl_display() == 0;
+#else
+    return 1;
+#endif
+}
+
+//  Returns -1 on Wayland, 0 if started already or no shown window is current.
+int fl_gl_start() {
+    if (!fl_gl_can_start()) {
+        return -1;
+    }
+    if (started || !is_shown(Fl_Window::current())) {
+        return 0;
+    }
+    gl_start();
+    started = true;
+    return 1;
+}
+
+int fl_gl_finish() {
+    if (!started) {
+        return 0;
+    }
     gl_finish();
+    started = false;
+    return 1;
+}
+
+//  Whether FL/gl.h's text calls have a GL context: after gl_start, or with
+//  a shown GL window current.  They crash with none (pofltk 111).
+int fl_gl_ready() {
+    if (started) {
+        return 1;
+    }
+    Fl_Window *c = Fl_Window::current();
+    return is_shown(c) && c->as_gl_window() != 0;
 }
 
 

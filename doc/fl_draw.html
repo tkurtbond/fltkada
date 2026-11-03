@@ -32,6 +32,11 @@ An exception raised in a Draw goes back to the program when control returns to A
 Push_No_Clip and didn't pop before raising stays pushed, and later redraws miss part
 of the window. Pop it in a handler in Draw, then re-raise.</p>
 
+<p>Overlay_Rect and Overlay_Clear raise Program_Error unless a shown window is current and
+drawing goes to the screen. Scroll raises Program_Error with neither a surface nor a shown
+window current; on a surface such as an Image_Surface, it draws the whole area again with
+the callback, since there are no pixels to move.</p>
+
 
 
 <table class="type">

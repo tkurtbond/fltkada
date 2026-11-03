@@ -29,6 +29,13 @@
 
 </table>
 
+<p><b>Note:</b><br /><br />
+Each text call (Set_Font, Font_Height, Font_Descent, Width, Draw_Text, Measure) raises
+Program_Error unless a GL context is there: a shown GL_Window current, or between Start and
+Finish. Start raises Program_Error unless a shown window is current, and on Wayland raises
+FLTK.Unsupported_Error, since FLTK 1.4.5's gl_start crashes there whatever is current. Finish
+raises Program_Error with no Start before it.</p>
+
 
 
 <table class="function">

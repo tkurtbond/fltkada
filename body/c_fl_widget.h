@@ -13,6 +13,7 @@ typedef void* WIDGET;
 
 extern "C" WIDGET new_fl_widget(int x, int y, int w, int h, char* label);
 extern "C" void free_fl_widget(WIDGET w);
+extern "C" void fl_widget_forget(WIDGET w);
 
 
 extern "C" void * fl_widget_get_user_data(WIDGET w);

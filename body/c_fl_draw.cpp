@@ -8,9 +8,52 @@
 #include <new>
 #include <set>
 #include <string>
+#include <FL/Fl.H>
+#include <FL/Fl_Device.H>
 #include <FL/fl_draw.H>
+#include <FL/Fl_Graphics_Driver.H>
 #include <FL/Fl_Window.H>
 #include "c_fl_draw.h"
+
+
+
+
+//  Text before any font is set crashes FLTK 1.4.5: the drivers' draw() and
+//  descent() use font_descriptor() without checking it, and it is 0 until
+//  fl_font is called (pofltk 1).  Each text function sets FLTK's normal font
+//  first if there is none.  From pofltk's ensure_font.
+
+static void ensure_font() {
+    if (fl_graphics_driver->font_descriptor() == 0 && fl_size() <= 0) {
+        fl_font(FL_HELVETICA, FL_NORMAL_SIZE);
+    }
+}
+
+
+
+
+//  Overlays and scrolling work on the current window's pixels, and crash
+//  FLTK 1.4.5 with none (pofltk 124).  Fl_Window::current() stays set after
+//  that window is hidden and dangles after it is deleted (pofltk 111), so it
+//  is only compared with the windows shown, never followed.  From pofltk's
+//  on_window and on_surface.
+
+static bool on_window() {
+    Fl_Window *c = Fl_Window::current();
+    if (c == 0) {
+        return false;
+    }
+    for (Fl_Window *w = Fl::first_window(); w != 0; w = Fl::next_window(w)) {
+        if (w == c) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static bool on_surface() {
+    return Fl_Surface_Device::surface() != Fl_Display_Device::display_device();
+}
 
 
 
@@ -97,12 +140,20 @@ void fl_draw_restore_clip() {
 
 
 
-void fl_draw_overlay_clear() {
+int fl_draw_overlay_clear() {
+    if (!on_window() || on_surface()) {
+        return 0;
+    }
     fl_overlay_clear();
+    return 1;
 }
 
-void fl_draw_overlay_rect(int x, int y, int w, int h) {
+int fl_draw_overlay_rect(int x, int y, int w, int h) {
+    if (!on_window() || on_surface()) {
+        return 0;
+    }
     fl_overlay_rect(x, y, w, h);
+    return 1;
 }
 
 
@@ -129,10 +180,12 @@ void fl_draw_set_cursor2(int m, unsigned int f, unsigned int b) {
 }
 
 unsigned int fl_draw_get_font() {
+    ensure_font();
     return (unsigned int)fl_font();
 }
 
 int fl_draw_size() {
+    ensure_font();
     return fl_size();
 }
 
@@ -141,10 +194,12 @@ void fl_draw_set_font(unsigned int f, int s) {
 }
 
 int fl_draw_height() {
+    ensure_font();
     return fl_height();
 }
 
 int fl_draw_descent() {
+    ensure_font();
     return fl_descent();
 }
 
@@ -284,11 +339,13 @@ int fl_draw_add_symbol(const char *name, void *func, int scalable) {
 }
 
 void fl_draw_draw_text(const char *str, int n, int x, int y) {
+    ensure_font();
     fl_draw(str, n, x, y);
 }
 
 void fl_draw_draw_text2(const char *str, int x, int y, int w, int h,
                         unsigned align, void * img, int draw_symbols) {
+    ensure_font();
     fl_draw(str, x, y, w, h, (Fl_Align)align, (Fl_Image*)img, draw_symbols);
 }
 
@@ -297,15 +354,18 @@ typedef t_hook* t_hook_p;
 
 void fl_draw_draw_text3(const char *str, int x, int y, int w, int h,
                                    unsigned align, void * func, void * img, int draw_symbols) {
+    ensure_font();
     fl_draw(str, x, y, w, h, (Fl_Align)align,
         reinterpret_cast<t_hook_p>(func), (Fl_Image*)img, draw_symbols);
 }
 
 void fl_draw_draw_text4(int angle, const char *str, int n, int x, int y) {
+    ensure_font();
     fl_draw(angle, str, n, x, y);
 }
 
 void fl_draw_rtl_draw(const char *str, int n, int x, int y) {
+    ensure_font();
     fl_rtl_draw(str, n, x, y);
 }
 
@@ -321,32 +381,51 @@ int fl_draw_draw_symbol(const char *label, int x, int y, int w, int h, unsigned 
 }
 
 void fl_draw_measure(const char * str, int &w, int &h, int draw_symbols) {
+    ensure_font();
     fl_measure(str, w, h, draw_symbols);
 }
 
 typedef void (a_hook)(void *, int, int, int, int);
 typedef a_hook* a_hook_p;
 
-void fl_draw_scroll(int x, int y, int w, int h, int dx, int dy,
+//  fl_scroll moves pixels of the current window.  A surface has none of
+//  them, so there the whole area is drawn again.  Returns 0 if there is
+//  neither a surface nor a shown current window.
+int fl_draw_scroll(int x, int y, int w, int h, int dx, int dy,
                     void * func, void * data) {
+    if (dx == 0 && dy == 0) {
+        return on_surface() || on_window() ? 1 : 0;
+    }
+    if (on_surface()) {
+        reinterpret_cast<a_hook_p>(func)(data, x, y, w, h);
+        return 1;
+    }
+    if (!on_window()) {
+        return 0;
+    }
     fl_scroll(x, y, w, h, dx, dy, reinterpret_cast<a_hook_p>(func), data);
+    return 1;
 }
 
 void fl_draw_text_extents(const char * t, int n, int &dx, int &dy, int &w, int &h) {
+    ensure_font();
     fl_text_extents(t, n, dx, dy, w, h);
 }
 
 const char * fl_draw_expand_text(const char * str, char * buf, int maxbuf,
     double maxw, int &n, double &width, int wrap, int symbol)
 {
+    ensure_font();
     return fl_expand_text(str, buf, maxbuf, maxw, n, width, wrap, symbol);
 }
 
 double fl_draw_width(const char *txt, int n) {
+    ensure_font();
     return fl_width(txt, n);
 }
 
 double fl_draw_width2(unsigned long c) {
+    ensure_font();
     return fl_width(c);
 }
 

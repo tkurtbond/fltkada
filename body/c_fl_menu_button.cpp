@@ -4,7 +4,9 @@
 //  Released into the public domain
 
 
+#include <FL/Fl.H>
 #include <FL/Fl_Menu_Button.H>
+#include <FL/Fl_Window.H>
 #include "c_fl_menu_button.h"
 #include "c_fl.h"
 
@@ -72,7 +74,21 @@ void free_fl_menu_button(MENUBUTTON m) {
 
 
 
+//  A menu popped up over a window not yet on the screen ends the program
+//  under Wayland: "Fatal error no 1 in Wayland protocol: xdg_surface"
+//  (pofltk 28).  FLTK makes the pop-up against the menu widget's top window,
+//  or the first window if the widget is in none (Fl_Menu.cxx:987-996), and
+//  waits for the pop-up's own expose but not that one's.  This waits for it
+//  first, which returns at once once it is there, and on X11.
+static void wait_for_parent(Fl_Widget * w) {
+    Fl_Window * parent = (w != 0 && w->window() != 0) ? w->top_window() : Fl::first_window();
+    if (parent != 0 && parent->shown()) {
+        parent->wait_for_expose();
+    }
+}
+
 const void * fl_menu_button_popup(MENUBUTTON m) {
+    wait_for_parent(static_cast<Fl_Menu_Button*>(m));
     return static_cast<Fl_Menu_Button*>(m)->popup();
 }
 

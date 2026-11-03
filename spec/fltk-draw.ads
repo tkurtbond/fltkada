@@ -144,6 +144,9 @@ package FLTK.Draw is
 
     --  Overlay  --
 
+    --  These two raise Program_Error unless a shown window is current and no
+    --  other surface is: outside a window's Draw, or after Make_Current
+    --  (pofltk 124).
     procedure Overlay_Clear;
 
     procedure Overlay_Rect
@@ -378,6 +381,9 @@ package FLTK.Draw is
             Symbols : in     Boolean := True;
             Wrap    : in     Natural := 0);
 
+    --  On a surface other than the display, there are no pixels to move, so
+    --  Callback draws the whole area again.  Otherwise a shown window must be
+    --  current, as in its Draw, or Program_Error is raised (pofltk 124).
     procedure Scroll
            (X, Y, W, H : in Integer;
             DX, DY     : in Integer;
@@ -547,7 +553,6 @@ private
     pragma Import (C, Push_No_Clip,  "fl_draw_push_no_clip");
     pragma Import (C, Restore_Clip,  "fl_draw_restore_clip");
 
-    pragma Import (C, Overlay_Clear, "fl_draw_overlay_clear");
 
     pragma Import (C, Pop_Matrix,    "fl_draw_pop_matrix");
     pragma Import (C, Push_Matrix,   "fl_draw_push_matrix");

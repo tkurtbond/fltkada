@@ -109,8 +109,14 @@ package body FLTK.Draw is
 
     --  Overlay  --
 
-    procedure fl_draw_overlay_rect
-           (X, Y, W, H : in Interfaces.C.int);
+    function fl_draw_overlay_clear
+        return Interfaces.C.int;
+    pragma Import (C, fl_draw_overlay_clear, "fl_draw_overlay_clear");
+    pragma Inline (fl_draw_overlay_clear);
+
+    function fl_draw_overlay_rect
+           (X, Y, W, H : in Interfaces.C.int)
+        return Interfaces.C.int;
     pragma Import (C, fl_draw_overlay_rect, "fl_draw_overlay_rect");
     pragma Inline (fl_draw_overlay_rect);
 
@@ -369,10 +375,11 @@ package body FLTK.Draw is
     pragma Import (C, fl_draw_measure, "fl_draw_measure");
     pragma Inline (fl_draw_measure);
 
-    procedure fl_draw_scroll
+    function fl_draw_scroll
            (X, Y, W, H : in Interfaces.C.int;
             DX, DY     : in Interfaces.C.int;
-            Func, Data : in Storage.Integer_Address);
+            Func, Data : in Storage.Integer_Address)
+        return Interfaces.C.int;
     pragma Import (C, fl_draw_scroll, "fl_draw_scroll");
     pragma Inline (fl_draw_scroll);
 
@@ -762,14 +769,25 @@ package body FLTK.Draw is
 
     --  Overlay  --
 
+    procedure Overlay_Clear is
+    begin
+        if fl_draw_overlay_clear = 0 then
+            raise Program_Error with "Overlay_Clear needs a shown window to be current";
+        end if;
+    end Overlay_Clear;
+
+
     procedure Overlay_Rect
            (X, Y, W, H : in Integer) is
     begin
-        fl_draw_overlay_rect
+        if fl_draw_overlay_rect
            (Interfaces.C.int (X),
             Interfaces.C.int (Y),
             Interfaces.C.int (W),
-            Interfaces.C.int (H));
+            Interfaces.C.int (H)) = 0
+        then
+            raise Program_Error with "Overlay_Rect needs a shown window to be current";
+        end if;
     end Overlay_Rect;
 
 
@@ -1489,9 +1507,11 @@ package body FLTK.Draw is
     procedure Scroll
            (X, Y, W, H : in Integer;
             DX, DY     : in Integer;
-            Callback   : in Area_Draw_Function) is
+            Callback   : in Area_Draw_Function)
+    is
+        Done : Interfaces.C.int;
     begin
-        fl_draw_scroll
+        Done := fl_draw_scroll
            (Interfaces.C.int (X),
             Interfaces.C.int (Y),
             Interfaces.C.int (W),
@@ -1501,6 +1521,9 @@ package body FLTK.Draw is
             Storage.To_Integer (Scroll_Hook'Address),
             Storage.To_Integer (Callback.all'Address));
         Hook_Exceptions.Reraise;
+        if Done = 0 then
+            raise Program_Error with "Scroll needs a surface, or a shown window to be current";
+        end if;
     end Scroll;
 
 

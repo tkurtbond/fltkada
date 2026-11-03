@@ -116,6 +116,8 @@ package FLTK.Widgets.Groups.Windows.OpenGL is
            (This : in GL_Window)
         return Mode_Mask;
 
+    --  Raises Program_Error inside a GL_Window's Draw, where the new mode
+    --  would replace the context being drawn with (pofltk 111).
     procedure Set_Mode
            (This : in out GL_Window;
             Mask : in     Mode_Mask);
@@ -165,6 +167,7 @@ package FLTK.Widgets.Groups.Windows.OpenGL is
     procedure Invalidate
            (This : in out GL_Window);
 
+    --  Raises Program_Error if the window is not shown (pofltk 111).
     procedure Make_Current
            (This : in out GL_Window);
 

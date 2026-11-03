@@ -31,6 +31,10 @@ This Menu type should really be abstract but cannot be for technical binding rea
 If you try to use it directly you will get issues with the draw and handle methods.
 Either extend it and override those subprograms or use types already extended from it.</p>
 
+<p>Popup and Pulldown first wait for the menu's window to be exposed (or the first window,
+if the menu is in none). Under Wayland, a menu popped up over a window not yet on the screen
+ends the program with a protocol error.</p>
+
 
 
 <table class="type">

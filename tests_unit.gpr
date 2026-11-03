@@ -48,7 +48,11 @@ project Tests_Unit is
         "test_table_children.adb",
         "test_buffer_life.adb",
         "test_browser_icons.adb",
-        "test_exceptions.adb");
+        "test_exceptions.adb",
+        "test_first_calls.adb",
+        "test_wrong_state.adb",
+        "test_print_font.adb",
+        "test_popup_early.adb");
 
     package Builder is
         for Default_Switches ("Ada") use

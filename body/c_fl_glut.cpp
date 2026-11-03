@@ -6,6 +6,7 @@
 
 #include <FL/Fl.H>
 #include <FL/glut.H>
+#include <FL/platform.H>
 #include "c_fl_glut.h"
 
 
@@ -295,7 +296,12 @@ void fl_glut_menu_status_func(void * f) {
 
 //  Queries
 
+//  GLUT_DISPLAY_MODE_POSSIBLE is Fl_Gl_Window::can_do (glut_compatibility.cxx:410),
+//  which needs the display open (pofltk 110).
 int fl_glut_get(unsigned int t) {
+    if (t == GLUT_DISPLAY_MODE_POSSIBLE) {
+        fl_open_display();
+    }
     return glutGet(t);
 }
 

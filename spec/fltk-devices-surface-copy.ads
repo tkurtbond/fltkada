@@ -27,6 +27,11 @@ package FLTK.Devices.Surface.Copy is
 
 
 
+    --  Finalizing a Copy_Surface puts what was drawn on it on the clipboard,
+    --  as an image (Fl_Xlib_Copy_Surface_Driver.cxx:58-65,
+    --  Fl_Wayland_Copy_Surface_Driver.cxx:36-39).  Create opens the display
+    --  first (PLAN.md, decision 5).
+
     package Forge is
 
         function Create

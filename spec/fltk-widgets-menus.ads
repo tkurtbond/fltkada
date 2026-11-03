@@ -360,6 +360,9 @@ package FLTK.Widgets.Menus is
 
     --  Menu Item Methods  --
 
+    --  Popup and Pulldown wait for the menu's window, or the first window if
+    --  the menu is in none, to be exposed first: under Wayland, a menu popped
+    --  up over a window not yet on the screen ends the program.
     function Popup
            (This    : in Menu;
             X, Y    : in Integer;

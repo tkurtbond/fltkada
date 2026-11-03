@@ -122,8 +122,9 @@ package body FLTK.Events is
     pragma Import (C, fl_event_get_grab, "fl_event_get_grab");
     pragma Inline (fl_event_get_grab);
 
-    procedure fl_event_set_grab
-           (T : in Storage.Integer_Address);
+    function fl_event_set_grab
+           (T : in Storage.Integer_Address)
+        return Interfaces.C.int;
     pragma Import (C, fl_event_set_grab, "fl_event_set_grab");
     pragma Inline (fl_event_set_grab);
 
@@ -667,13 +668,17 @@ package body FLTK.Events is
     procedure Set_Grab
            (To : in FLTK.Widgets.Groups.Windows.Window'Class) is
     begin
-        fl_event_set_grab (Wrapper (To).Void_Ptr);
+        if fl_event_set_grab (Wrapper (To).Void_Ptr) = 0 then
+            raise Program_Error with "Set_Grab on a window not shown";
+        end if;
     end Set_Grab;
 
 
-    procedure Release_Grab is
+    procedure Release_Grab
+    is
+        Ignore : constant Interfaces.C.int := fl_event_set_grab (Null_Pointer);
     begin
-        fl_event_set_grab (Null_Pointer);
+        null;
     end Release_Grab;
 
 

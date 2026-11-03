@@ -83,8 +83,9 @@ package body FLTK.Widgets.Groups.Windows is
     pragma Import (C, fl_window_iconize, "fl_window_iconize");
     pragma Inline (fl_window_iconize);
 
-    procedure fl_window_make_current
-           (W : in Storage.Integer_Address);
+    function fl_window_make_current
+           (W : in Storage.Integer_Address)
+        return Interfaces.C.int;
     pragma Import (C, fl_window_make_current, "fl_window_make_current");
     pragma Inline (fl_window_make_current);
 
@@ -560,7 +561,9 @@ package body FLTK.Widgets.Groups.Windows is
     procedure Make_Current
            (This : in out Window) is
     begin
-        fl_window_make_current (This.Void_Ptr);
+        if fl_window_make_current (This.Void_Ptr) = 0 then
+            raise Program_Error with "Make_Current on a window not shown";
+        end if;
         Last_Current := This'Unchecked_Access;
     end Make_Current;
 

@@ -28,8 +28,8 @@ extern "C" void fl_draw_push_no_clip();
 extern "C" void fl_draw_restore_clip();
 
 
-extern "C" void fl_draw_overlay_clear();
-extern "C" void fl_draw_overlay_rect(int x, int y, int w, int h);
+extern "C" int fl_draw_overlay_clear();
+extern "C" int fl_draw_overlay_rect(int x, int y, int w, int h);
 
 
 extern "C" unsigned int fl_draw_get_color();
@@ -80,7 +80,7 @@ extern "C" void fl_draw_rtl_draw(const char *str, int n, int x, int y);
 extern "C" void fl_draw_draw_box(int bk, int x, int y, int w, int h, unsigned int c);
 extern "C" int fl_draw_draw_symbol(const char *label, int x, int y, int w, int h, unsigned int c);
 extern "C" void fl_draw_measure(const char * str, int &w, int &h, int draw_symbols);
-extern "C" void fl_draw_scroll(int x, int y, int w, int h, int dx, int dy,
+extern "C" int fl_draw_scroll(int x, int y, int w, int h, int dx, int dy,
                                void * func, void * data);
 extern "C" void fl_draw_text_extents(const char * t, int n, int &dx, int &dy, int &w, int &h);
 extern "C" const char * fl_draw_expand_text(const char * str, char * buf, int maxbuf,

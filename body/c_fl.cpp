@@ -7,6 +7,7 @@
 #include <FL/Enumerations.H>
 #include <FL/Fl.H>
 #include <FL/Fl_Widget.H>
+#include <FL/platform.H>
 #include "c_fl.h"
 
 
@@ -190,7 +191,9 @@ int fl_check() {
     return ret;
 }
 
+//  Fl::ready with no display open crashes FLTK 1.4.5 on X11 (pofltk 131).
 int fl_ready() {
+    fl_open_display();
     short temp = fl_inside_callback;
     fl_inside_callback = 1;
     int ret = Fl::ready();

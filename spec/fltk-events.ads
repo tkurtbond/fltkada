@@ -94,6 +94,8 @@ package FLTK.Events is
     function Get_Grab
         return access FLTK.Widgets.Groups.Windows.Window'Class;
 
+    --  Raises Program_Error if To is not shown (pofltk 129).  A window's
+    --  grab is released when the window is finalized.
     procedure Set_Grab
            (To : in FLTK.Widgets.Groups.Windows.Window'Class);
 

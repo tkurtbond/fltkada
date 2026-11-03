@@ -5,7 +5,9 @@
 
 
 #include <FL/Fl_Widget.H>
+#include <FL/Fl_Window.H>
 #include <FL/Fl_Image.H>
+#include <FL/platform.H>
 #include "c_fl_widget.h"
 #include "c_fl.h"
 
@@ -70,6 +72,20 @@ void free_fl_widget(WIDGET w) {
         fl_delete_widget(w);
     } else {
         delete static_cast<My_Widget*>(w);
+    }
+}
+
+//  ~Fl_Widget clears Fl::pushed, belowmouse and focus, but not Fl::grab or
+//  the selection owner, and the next event then reads the freed widget
+//  (Fl_Widget.cxx:166-185, Fl.cxx:1205-1219, pofltk 129).  Every widget's Finalize calls this, through
+//  Extra_Final, before it frees the widget.
+void fl_widget_forget(WIDGET w) {
+    Fl_Widget *wi = static_cast<Fl_Widget*>(w);
+    if (Fl::grab() != 0 && Fl::grab() == wi) {
+        Fl::grab(0);
+    }
+    if (Fl::selection_owner() == wi) {
+        Fl::selection_owner(0);
     }
 }
 
@@ -184,7 +200,10 @@ void fl_widget_clear_visible_focus(WIDGET w) {
     static_cast<Fl_Widget*>(w)->clear_visible_focus();
 }
 
+//  An input taking the focus before the display is open crashes FLTK 1.4.5
+//  on Wayland (pofltk 4).
 int fl_widget_take_focus(WIDGET w) {
+    fl_open_display();
     return static_cast<Fl_Widget*>(w)->take_focus();
 }
 

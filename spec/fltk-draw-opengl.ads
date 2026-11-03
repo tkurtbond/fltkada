@@ -13,6 +13,10 @@ package FLTK.Draw.OpenGL is
 
     --  Drawing into a Normal Window  --
 
+    --  Start raises Unsupported_Error on Wayland, where FLTK 1.4.5's gl_start
+    --  crashes (pofltk 109), and Program_Error unless a shown window is
+    --  current, as in its Draw, or if Start has run without Finish.  Finish
+    --  raises Program_Error without a Start.
     procedure Start;
 
     procedure Finish;
@@ -36,6 +40,9 @@ package FLTK.Draw.OpenGL is
 
     --  Fonts  --
 
+    --  The font and text subprograms raise Program_Error with no GL context:
+    --  they need a shown GL_Window current, as in its Draw or after its
+    --  Make_Current, or Start (pofltk 111).
     procedure Set_Font
            (Kind : in Font_Kind;
             Size : in Font_Size);

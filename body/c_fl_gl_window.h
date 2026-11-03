@@ -30,7 +30,7 @@ extern "C" void fl_gl_window_resize(GLWINDOW gw, int x, int y, int w, int h);
 
 
 extern "C" unsigned int fl_gl_window_get_mode(GLWINDOW w);
-extern "C" void fl_gl_window_set_mode(GLWINDOW w, unsigned int a);
+extern "C" int fl_gl_window_set_mode(GLWINDOW w, unsigned int a);
 extern "C" int fl_gl_window_static_can_do(unsigned int m);
 extern "C" int fl_gl_window_can_do(GLWINDOW w);
 extern "C" int fl_gl_window_can_do_overlay(GLWINDOW w);
@@ -43,7 +43,7 @@ extern "C" void fl_gl_window_set_context_valid(GLWINDOW w, char v);
 extern "C" char fl_gl_window_valid(GLWINDOW w);
 extern "C" void fl_gl_window_set_valid(GLWINDOW w, char v);
 extern "C" void fl_gl_window_invalidate(GLWINDOW w);
-extern "C" void fl_gl_window_make_current(GLWINDOW w);
+extern "C" int fl_gl_window_make_current(GLWINDOW w);
 extern "C" void fl_gl_window_make_overlay_current(GLWINDOW w);
 
 

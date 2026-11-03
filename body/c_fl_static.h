@@ -14,6 +14,9 @@ extern "C" void fl_static_box_draw_marshal(void * f, int x, int y, int w, int h,
 extern "C" const char * const fl_help_usage_string_ptr;
 
 
+extern "C" void fl_static_open_display();
+
+
 extern "C" int fl_static_arg(int c, void * v, int &i);
 extern "C" void fl_static_args(int c, void * v);
 extern "C" int fl_static_args2(int c, void * v, int &i, void * h);

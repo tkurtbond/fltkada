@@ -78,8 +78,13 @@ void fl_glut_window_set_menu(GLUTWINDOW w, int b, int m) {
     static_cast<Fl_Glut_Window*>(w)->menu[b] = m;
 }
 
-void fl_glut_window_make_current(GLUTWINDOW w) {
+//  As fl_gl_window_make_current: 0 if the window isn't shown (pofltk 111).
+int fl_glut_window_make_current(GLUTWINDOW w) {
+    if (!static_cast<Fl_Glut_Window*>(w)->shown()) {
+        return 0;
+    }
     static_cast<Fl_Glut_Window*>(w)->make_current();
+    return 1;
 }
 
 

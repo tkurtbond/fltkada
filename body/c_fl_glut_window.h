@@ -19,7 +19,7 @@ extern "C" void free_fl_glut_window(GLUTWINDOW w);
 extern "C" int fl_glut_window_get_number(GLUTWINDOW w);
 extern "C" int fl_glut_window_get_menu(GLUTWINDOW w, int b);
 extern "C" void fl_glut_window_set_menu(GLUTWINDOW w, int b, int m);
-extern "C" void fl_glut_window_make_current(GLUTWINDOW w);
+extern "C" int fl_glut_window_make_current(GLUTWINDOW w);
 
 
 extern "C" void fl_glut_window_draw(GLUTWINDOW n);

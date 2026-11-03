@@ -51,6 +51,8 @@ package FLTK.Widgets.Menus.Menu_Buttons is
            (This : in out Menu_Button;
             Kind : in     Popup_Buttons);
 
+    --  Waits for the button's window to be exposed first: under Wayland, a
+    --  menu popped up over a window not yet on the screen ends the program.
     function Popup
            (This : in out Menu_Button)
         return Extended_Index;

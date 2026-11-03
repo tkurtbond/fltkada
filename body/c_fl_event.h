@@ -20,7 +20,7 @@ extern "C" int fl_event_handle(int e, void * w);
 
 
 extern "C" void * fl_event_get_grab();
-extern "C" void fl_event_set_grab(void * w);
+extern "C" int fl_event_set_grab(void * w);
 extern "C" void * fl_event_get_pushed();
 extern "C" void fl_event_set_pushed(void * w);
 extern "C" void * fl_event_get_belowmouse();

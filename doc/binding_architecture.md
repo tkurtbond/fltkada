@@ -459,6 +459,33 @@ registration, library `Option`s — lives in `FLTK.Static`, matching
 method (e.g. anything from `Fl::`), it belongs here, not in a new
 package.
 
+**The display.** FLTKAda opens the display both lazily and on request
+(PLAN.md, decision 5). `FLTK.Static.Open_Display` binds
+`fl_open_display`, for a program that wants to choose when the
+connection is made, and so when FLTK exits if there is none. Nothing
+calls it at elaboration, so a program that only uses `FLTK.Filenames` or
+`FLTK.Environment` needs no display. Showing a window opens it, and so do
+the shim functions for the calls FLTK 1.4.5 would crash in with no
+display: `Ready`, the clipboard calls, `Enable_System_Input` and
+`Disable_System_Input`, `Set_Box_Color`, `Take_Focus`, `Set_Focus`,
+`GL_Window.Can_Do`, `GLUT.Get` and `Copy_Surface`'s constructor. Each
+one calls `fl_open_display()` first, which does nothing once the display
+is open. A new binding for a call that reaches the screen driver before
+any window is shown should do the same; pofltk's `fltk-issues.md` says
+which calls do.
+
+**Calls that need a window.** Some calls crash FLTK unless a shown
+window, a current window or a GL context is there: `Make_Current`,
+`Set_Grab`, `Overlay_Rect`, `Overlay_Clear`, `Scroll`, `FLTK.Draw.OpenGL`'s
+text and `Start`, and `GL_Window.Set_Mode` inside `Draw`. The shim checks,
+and returns a status, and the Ada side raises `Program_Error` (decision
+2). `FLTK.Draw.OpenGL.Start` raises `FLTK.Unsupported_Error` on Wayland,
+where FLTK 1.4.5's `gl_start` always crashes. `Fl_Window::current()` stays set after its window is hidden and
+dangles after it is deleted, so the shim only compares it with the shown
+windows (`Fl::first_window()`/`next_window()`), and never follows it
+until it is found there. `Widget`'s `Extra_Final` clears FLTK's grab and
+selection owner if they are the widget being freed.
+
 
 ## 4. Supporting machinery worth knowing about before you extend
 

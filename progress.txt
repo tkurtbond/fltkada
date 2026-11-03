@@ -281,6 +281,19 @@ is back in Ada, from Wait, Check, Run, the dialogs, menus and Do_Callback
 Menu_Item.Forge.Create left the item's label type, font, size and colour
 uninitialised (FLTKAda-BUGS.md 46)
 
+Calls made before the display was open, or with no window shown, crashed
+FLTK: the clipboard and selection, Ready, system input, a key or DND_LEAVE,
+and the font calls; the shim now opens the display first, as
+FLTK.Static.Open_Display does (PLAN.md Phase 3)
+
+Overlays, Scroll, Make_Current, GL text and Start, and Set_Grab crashed
+without the window or context they need; they now raise Program_Error, or
+Unsupported_Error for GL Start on Wayland, and a freed widget no longer
+stays the grab or the selection owner (PLAN.md Phase 3)
+
+A menu popped up straight after its window's Show killed the program on
+Wayland; Popup and Pulldown now wait for that window (PLAN.md Phase 3)
+
 
 
 Incomplete APIs:
@@ -293,7 +306,8 @@ FLTK.Static (Option lacks FNFC_Uses_Zenity, FNFC_Uses_Kdialog,
     Printer_Uses_GTK, Show_Scaling and Simple_Zoom_Shortcut)
 FLTK.Text_Buffers (a few functions, protected stuff, ensure buffer is 1-indexed)
 FLTK.Widgets.Groups.Text_Displays (ensure text buffer is 1-indexed)
-FLTK.GLUT (the GLUT bitmap/stroke fonts, the geometric models glutWire*/glutSolid*,
+FLTK.GLUT (no check yet that a GL context is ready for GLUT text, pofltk 112;
+    the GLUT bitmap/stroke fonts, the geometric models glutWire*/glutSolid*,
     and the glut_window/glut_menu globals; windows from Create_Window/
     Create_Sub_Window have no Ada object; menu labels and the icon title are
     kept by FLTK without copying, so their C strings are never freed)

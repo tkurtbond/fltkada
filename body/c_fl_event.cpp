@@ -7,6 +7,7 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Window.H>
+#include <FL/platform.H>
 #include <string>
 #include "c_fl_event.h"
 
@@ -36,11 +37,55 @@ void fl_event_set_dispatch(void * f) {
     Fl::event_dispatch(reinterpret_cast<Fl_Event_Dispatch>(f));
 }
 
+//  With no window shown, two events crash FLTK 1.4.5, since it calls through
+//  Fl::first_window(), which is then 0.  A key no widget uses is tried as a
+//  shortcut, and FL_SHORTCUT sends it to first_window() when the below-mouse
+//  widget is in another window (Fl.cxx:1556-1557, pofltk 3).  FL_DND_LEAVE
+//  reaches an Fl_Input below the mouse, which sets first_window()'s cursor
+//  (Fl_Input.cxx, pofltk 53).  Neither can come from the system then, so
+//  only a program that sends them itself gets here: a key goes to the focus
+//  widget and its parents and no further, as Fl::handle_ tries it first, and
+//  FL_DND_LEAVE is taken and does nothing.  Sets *r and returns true if it
+//  dealt with the event.
+static bool unshown_event(int e, int &r) {
+    if (Fl::first_window() != 0) {
+        return false;
+    }
+    switch (e) {
+    case FL_KEYBOARD:
+    case FL_SHORTCUT:
+        Fl::e_number = e;
+        r = 0;
+        for (Fl_Widget *wi = Fl::grab() ? Fl::grab() : Fl::focus(); wi != 0; wi = wi->parent()) {
+            if (wi->handle(e)) {
+                r = 1;
+                break;
+            }
+        }
+        return true;
+    case FL_DND_LEAVE:
+        r = 1;
+        return true;
+    default:
+        return false;
+    }
+}
+
+//  A dispatch function the program set sees the event, and passes it on
+//  through fl_event_handle.
 int fl_event_handle_dispatch(int e, void * w) {
+    int r;
+    if (Fl::event_dispatch() == 0 && unshown_event(e, r)) {
+        return r;
+    }
     return Fl::handle(e, static_cast<Fl_Window*>(w));
 }
 
 int fl_event_handle(int e, void * w) {
+    int r;
+    if (unshown_event(e, r)) {
+        return r;
+    }
     return Fl::handle_(e, static_cast<Fl_Window*>(w));
 }
 
@@ -51,8 +96,15 @@ void * fl_event_get_grab() {
     return Fl::grab();
 }
 
-void fl_event_set_grab(void * w) {
+//  Returns 0 for a window not shown.  On X11 Fl::grab then grabs the pointer
+//  for Fl::first_window(), and crashes in XGrabPointer if there is none
+//  (Fl_X11_Screen_Driver.cxx:460, pofltk 129).  A null w releases the grab.
+int fl_event_set_grab(void * w) {
+    if (w != 0 && !static_cast<Fl_Window*>(w)->shown()) {
+        return 0;
+    }
     Fl::grab(static_cast<Fl_Window*>(w));
+    return 1;
 }
 
 void * fl_event_get_pushed() {
@@ -75,7 +127,9 @@ void * fl_event_get_focus() {
     return Fl::focus();
 }
 
+//  As fl_widget_take_focus (pofltk 4).
 void fl_event_set_focus(void * w) {
+    fl_open_display();
     Fl::focus(static_cast<Fl_Widget*>(w));
 }
 

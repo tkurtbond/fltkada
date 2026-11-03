@@ -75,7 +75,8 @@ package FLTK.Widgets.Groups.Windows.OpenGL.GLUT is
 
     --  Drawing, Events  --
 
-    --  Also makes this the current GLUT window
+    --  Also makes this the current GLUT window.  Raises Program_Error if
+    --  the window is not shown (pofltk 111).
     procedure Make_Current
            (This : in out Glut_Window);
 

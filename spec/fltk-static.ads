@@ -93,6 +93,23 @@ package FLTK.Static is
 
 
 
+    --  Display  --
+
+    --  Connects to the display (fl_open_display).  Showing the first window
+    --  does this, and so do the calls FLTK 1.4.5 would crash in with no
+    --  display open, which call it themselves: Ready, Copy, Paste, Selection,
+    --  Clipboard_Contains, Enable_System_Input, Disable_System_Input,
+    --  Set_Box_Color, Widget.Take_Focus, Events.Set_Focus, GL_Window.Can_Do,
+    --  GLUT.Get and Copy_Surface's Forge.Create (PLAN.md, decision 5).  Call
+    --  it first to choose when the connection is made, and so when FLTK
+    --  stops the program if there is no display: it prints "Can't open
+    --  display" (X11) or "No Wayland connection" and exits.  Calling it
+    --  again does nothing.
+    procedure Open_Display;
+
+
+
+
     --  Command Line Arguments  --
 
     function Parse_Arg
@@ -493,6 +510,8 @@ private
 
     Font_Overrides : array (Font_Kind) of Interfaces.C.Strings.chars_ptr;
 
+
+    pragma Import (C, Open_Display, "fl_static_open_display");
 
     pragma Import (C, Lock, "fl_static_lock");
     pragma Import (C, Unlock, "fl_static_unlock");

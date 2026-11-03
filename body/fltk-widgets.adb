@@ -52,6 +52,11 @@ package body FLTK.Widgets is
     pragma Import (C, free_fl_widget, "free_fl_widget");
     pragma Inline (free_fl_widget);
 
+    procedure fl_widget_forget
+           (F : in Storage.Integer_Address);
+    pragma Import (C, fl_widget_forget, "fl_widget_forget");
+    pragma Inline (fl_widget_forget);
+
 
 
 
@@ -671,6 +676,10 @@ package body FLTK.Widgets is
         Maybe_Parent : access FLTK.Widgets.Groups.Group'Class;
     begin
         if This.Needs_Dealloc then
+            --  FLTK would keep a grab or selection naming it (pofltk 129).
+            if This.Void_Ptr /= Null_Pointer then
+                fl_widget_forget (This.Void_Ptr);
+            end if;
             Maybe_Parent := This.Parent;
             if Maybe_Parent /= null then
                 Maybe_Parent.Remove (This);

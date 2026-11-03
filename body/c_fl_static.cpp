@@ -7,6 +7,7 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Window.H>
+#include <FL/platform.H>
 #include <cstring>
 #include "c_fl_static.h"
 
@@ -21,6 +22,24 @@ void fl_static_box_draw_marshal(void * f, int x, int y, int w, int h, unsigned i
 
 
 const char * const fl_help_usage_string_ptr = Fl::help;
+
+
+
+
+void fl_static_open_display() {
+    fl_open_display();
+}
+
+//  True if the display, which this opens, is Wayland's.  An FLTK built
+//  without Wayland has no fl_wl_display.  From pofltk.
+static bool wayland() {
+    fl_open_display();
+#if defined(FLTK_USE_WAYLAND)
+    return fl_wl_display() != 0;
+#else
+    return false;
+#endif
+}
 
 
 
@@ -170,7 +189,12 @@ unsigned int fl_static_get_box_color(unsigned int t) {
     return Fl::box_color(static_cast<Fl_Color>(t));
 }
 
+//  The calls below that open the display first crash FLTK 1.4.5 when they
+//  come before it is open (pofltk 4, 49, 131), on X11, on Wayland, or both.
+//  fl_open_display does nothing once it is open.
+
 void fl_static_set_box_color(unsigned int t) {
+    fl_open_display();
     Fl::set_box_color(static_cast<Fl_Color>(t));
 }
 
@@ -282,15 +306,32 @@ void fl_static_set_labeltype(int k, void * d, void * m) {
 
 
 void fl_static_copy(const char * t, int l, int k) {
+    fl_open_display();
     Fl::copy(t, l, k);
 }
 
+#if defined(FLTK_USE_X11)
+extern char fl_i_own_selection[2];
+#endif
+
+//  Under X11, another program's data is asked for through Fl::first_window
+//  (Fl_x.cxx).  With no window shown FLTK asks with window 0 anyway, and the
+//  X server's BadWindow error is printed, so the paste does nothing, as it
+//  would have, unless this program owns what is pasted (pofltk 49).
 void fl_static_paste(void * r, int s) {
+#if defined(FLTK_USE_X11)
+    if (!wayland() && Fl::first_window() == 0 && !fl_i_own_selection[s ? 1 : 0]) {
+        return;
+    }
+#else
+    fl_open_display();
+#endif
     Fl_Widget &ref = *static_cast<Fl_Widget*>(r);
     Fl::paste(ref, s);
 }
 
 void fl_static_selection(void * o, char * t, int l) {
+    fl_open_display();
     Fl_Widget &ref = *static_cast<Fl_Widget*>(o);
     Fl::selection(ref, t, l);
 }
@@ -300,6 +341,7 @@ void fl_static_selection(void * o, char * t, int l) {
 //  the clipboard (Fl_x.cxx:724-725).  So a kind given as text is replaced by
 //  FLTK's own constant for it (FLTKAda-BUGS.md 38).
 int fl_static_clipboard_contains(const char * k) {
+    fl_open_display();
     if (std::strcmp(k, Fl::clipboard_plain_text) == 0) {
         return Fl::clipboard_contains(Fl::clipboard_plain_text);
     } else if (std::strcmp(k, Fl::clipboard_image) == 0) {
@@ -328,10 +370,12 @@ void fl_static_set_dnd_text_ops(int t) {
 
 
 void fl_static_enable_im() {
+    fl_open_display();
     Fl::enable_im();
 }
 
 void fl_static_disable_im() {
+    fl_open_display();
     Fl::disable_im();
 }
 

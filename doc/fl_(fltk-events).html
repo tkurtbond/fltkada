@@ -26,6 +26,11 @@
 
 </table>
 
+<p><b>Note:</b><br /><br />
+Set_Grab raises Program_Error for a window that is not shown: FLTK 1.4.5's X11 grab uses
+the first window's X window (Fl_X11_Screen_Driver.cxx:460). A window freed while it has the
+grab, or owns the selection, no longer does.</p>
+
 
 
 <table class="type">

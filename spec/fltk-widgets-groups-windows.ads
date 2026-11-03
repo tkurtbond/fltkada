@@ -76,6 +76,8 @@ package FLTK.Widgets.Groups.Windows is
     procedure Iconify
            (This : in out Window);
 
+    --  Raises Program_Error if the window is not shown, where FLTK would
+    --  end the program.
     procedure Make_Current
            (This : in out Window);
 

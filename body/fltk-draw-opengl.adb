@@ -8,6 +8,10 @@ with
 
     Interfaces.C;
 
+use type
+
+    Interfaces.C.int;
+
 
 package body FLTK.Draw.OpenGL is
 
@@ -16,13 +20,20 @@ package body FLTK.Draw.OpenGL is
     --  Functions From C  --
     ------------------------
 
-    procedure fl_gl_start;
+    function fl_gl_start
+        return Interfaces.C.int;
     pragma Import (C, fl_gl_start, "fl_gl_start");
     pragma Inline (fl_gl_start);
 
-    procedure fl_gl_finish;
+    function fl_gl_finish
+        return Interfaces.C.int;
     pragma Import (C, fl_gl_finish, "fl_gl_finish");
     pragma Inline (fl_gl_finish);
+
+    function fl_gl_ready
+        return Interfaces.C.int;
+    pragma Import (C, fl_gl_ready, "fl_gl_ready");
+    pragma Inline (fl_gl_ready);
 
 
 
@@ -143,17 +154,41 @@ package body FLTK.Draw.OpenGL is
     --  API Subprograms  --
     -----------------------
 
+    --  FL/gl.h's text calls crash with no GL context (pofltk 111).
+
+    procedure Check_Ready
+           (Name : in String) is
+    begin
+        if fl_gl_ready = 0 then
+            raise Program_Error with Name & " needs a GL context: a shown GL window "
+                & "current, or Start";
+        end if;
+    end Check_Ready;
+
+
+
+
     --  Drawing into a Normal Window  --
 
     procedure Start is
     begin
-        fl_gl_start;
+        case fl_gl_start is
+            when -1 =>
+                raise Unsupported_Error with "OpenGL.Start does not work on Wayland";
+            when 0 =>
+                raise Program_Error with "OpenGL.Start needs a shown window to be current, "
+                    & "and no Start without its Finish";
+            when others =>
+                null;
+        end case;
     end Start;
 
 
     procedure Finish is
     begin
-        fl_gl_finish;
+        if fl_gl_finish = 0 then
+            raise Program_Error with "OpenGL.Finish without OpenGL.Start";
+        end if;
     end Finish;
 
 
@@ -198,6 +233,7 @@ package body FLTK.Draw.OpenGL is
            (Kind : in Font_Kind;
             Size : in Font_Size) is
     begin
+        Check_Ready ("OpenGL.Set_Font");
         fl_gl_font (Font_Kind'Pos (Kind), Interfaces.C.int (Size));
     end Set_Font;
 
@@ -205,6 +241,7 @@ package body FLTK.Draw.OpenGL is
     function Font_Height
         return Integer is
     begin
+        Check_Ready ("OpenGL.Font_Height");
         return Integer (fl_gl_height);
     end Font_Height;
 
@@ -212,6 +249,7 @@ package body FLTK.Draw.OpenGL is
     function Font_Descent
         return Integer is
     begin
+        Check_Ready ("OpenGL.Font_Descent");
         return Integer (fl_gl_descent);
     end Font_Descent;
 
@@ -220,6 +258,7 @@ package body FLTK.Draw.OpenGL is
            (Text : in String)
         return Long_Float is
     begin
+        Check_Ready ("OpenGL.Width");
         return Long_Float (fl_gl_width (Interfaces.C.To_C (Text), Text'Length));
     end Width;
 
@@ -228,6 +267,7 @@ package body FLTK.Draw.OpenGL is
            (Glyph : in Character)
         return Long_Float is
     begin
+        Check_Ready ("OpenGL.Width");
         return Long_Float (fl_gl_width2 (Character'Pos (Glyph)));
     end Width;
 
@@ -239,6 +279,7 @@ package body FLTK.Draw.OpenGL is
     procedure Draw_Text
            (Text : in String) is
     begin
+        Check_Ready ("OpenGL.Draw_Text");
         fl_gl_draw (Interfaces.C.To_C (Text), Text'Length);
     end Draw_Text;
 
@@ -247,6 +288,7 @@ package body FLTK.Draw.OpenGL is
            (X, Y : in Integer;
             Text : in String) is
     begin
+        Check_Ready ("OpenGL.Draw_Text");
         fl_gl_draw2
            (Interfaces.C.To_C (Text),
             Text'Length,
@@ -259,6 +301,7 @@ package body FLTK.Draw.OpenGL is
            (X, Y : in Float;
             Text : in String) is
     begin
+        Check_Ready ("OpenGL.Draw_Text");
         fl_gl_draw3
            (Interfaces.C.To_C (Text),
             Text'Length,
@@ -272,6 +315,7 @@ package body FLTK.Draw.OpenGL is
             Text       : in String;
             Align      : in Alignment) is
     begin
+        Check_Ready ("OpenGL.Draw_Text");
         fl_gl_draw4
            (Interfaces.C.To_C (Text),
             Interfaces.C.int (X),
@@ -288,6 +332,7 @@ package body FLTK.Draw.OpenGL is
     is
         Result_W, Result_H : Interfaces.C.int := 0;
     begin
+        Check_Ready ("OpenGL.Measure");
         fl_gl_measure (Interfaces.C.To_C (Text), Result_W, Result_H);
         W := Natural (Result_W);
         H := Natural (Result_H);

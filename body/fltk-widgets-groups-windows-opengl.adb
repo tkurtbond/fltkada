@@ -117,9 +117,10 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
     pragma Import (C, fl_gl_window_get_mode, "fl_gl_window_get_mode");
     pragma Inline (fl_gl_window_get_mode);
 
-    procedure fl_gl_window_set_mode
+    function fl_gl_window_set_mode
            (S : in Storage.Integer_Address;
-            M : in Mode_Mask);
+            M : in Mode_Mask)
+        return Interfaces.C.int;
     pragma Import (C, fl_gl_window_set_mode, "fl_gl_window_set_mode");
     pragma Inline (fl_gl_window_set_mode);
 
@@ -187,8 +188,9 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
     pragma Import (C, fl_gl_window_invalidate, "fl_gl_window_invalidate");
     pragma Inline (fl_gl_window_invalidate);
 
-    procedure fl_gl_window_make_current
-           (S : in Storage.Integer_Address);
+    function fl_gl_window_make_current
+           (S : in Storage.Integer_Address)
+        return Interfaces.C.int;
     pragma Import (C, fl_gl_window_make_current, "fl_gl_window_make_current");
     pragma Inline (fl_gl_window_make_current);
 
@@ -441,7 +443,9 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
            (This : in out GL_Window;
             Mask : in     Mode_Mask) is
     begin
-        fl_gl_window_set_mode (This.Void_Ptr, Mask);
+        if fl_gl_window_set_mode (This.Void_Ptr, Mask) = 0 then
+            raise Program_Error with "Set_Mode inside a GL_Window's Draw";
+        end if;
     end Set_Mode;
 
 
@@ -533,7 +537,9 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
     procedure Make_Current
            (This : in out GL_Window) is
     begin
-        fl_gl_window_make_current (This.Void_Ptr);
+        if fl_gl_window_make_current (This.Void_Ptr) = 0 then
+            raise Program_Error with "Make_Current on a GL_Window not shown";
+        end if;
     end Make_Current;
 
 

@@ -749,7 +749,7 @@ Findings (2026-11-03):
   `Menu_Item` left its label fields uninitialised (FLTKAda-BUGS.md 46,
   fixed).
 
-### Phase 3: The display, and the window FLTK needs
+### Phase 3: The display, and the window FLTK needs [done, 2026-11-03]
 
 Calls that crash before the display is open, or without a shown or
 current window:
@@ -785,6 +785,154 @@ current window:
 Each case is tested twice, once on X11 (Xvfb) and once on Wayland (sway).
 The test is a program whose first call is the risky one, wrapped in
 `Raises` or expected to succeed.
+
+What was done. Three new unit tests cover it, each run on Xvfb and on a
+headless sway, each seen to fail before its fix:
+
+- `test_first_calls` runs itself once per case, so that each case is its
+  program's first call. It checks that each run exits 0 and prints no X
+  error.
+- `test_wrong_state` covers the calls that need a window or a context.
+- `test_print_font` covers issue 100, and `test_popup_early` issue 28.
+
+- **Before the fixes, `test_first_calls`:**
+  - **X11:** `Copy`, `Selection`, `Paste`, `Ready`, a key with no window
+    shown, `DND_LEAVE` with no window shown, `Font_Descent` and text in
+    a first `Draw` crashed (SIGSEGV, which GNAT reports as
+    `Storage_Error`).
+  - **Wayland:** `Copy`, `Disable_System_Input`, the key, `DND_LEAVE`,
+    `Font_Descent` and the text crashed, and `Take_Focus` returned False.
+  - **Neither crashed:** `Set_Box_Color`, `Clipboard_Contains`,
+    `Enable_System_Input`, `GL_Window.Can_Do`, `GLUT.Get` and
+    `Copy_Surface`. pofltk lists them, so they open the display anyway.
+- **`FLTK.Static.Open_Display`: done.** It binds `fl_open_display`, which
+  does nothing the second time (`Fl_Screen_Driver::open_display`, its
+  `been_here`). The lazy path calls `fl_open_display()` in the shim
+  functions for all the calls above that crash without a display, and
+  for the ones pofltk lists that didn't crash here. The comment on
+  `Open_Display`, `doc/fl_(fltk-static).html` and
+  `doc/binding_architecture.md` §3.5 list them. If no display can be
+  opened, FLTK exits: `Fl::fatal ("Can't open display: %s")` on X11
+  (Fl_x.cxx:550), and "No Wayland connection" on Wayland
+  (Fl_Wayland_Screen_Driver.cxx:1428).
+- **A finding on GL windows, from the code:** on a hybrid build, making
+  any window calls `attempt_wayland()`
+  (fl_wayland_platform_init.cxx:38-64), which connects to Wayland. So a
+  GL window made before the display is open still gets the Wayland GL
+  driver (Fl_Wayland_Gl_Window_Driver.cxx:86), and pofltk's open in the
+  constructor isn't needed. `GL_Window_Show` passed on sway before any
+  fix. The static `Fl_Gl_Window_Driver::global()` (Fl_Gl_Window.cxx:545),
+  made before any window is, is X11's: hence issue 109.
+- **Issue 1: AFFECTED, done.** `ensure_font` (pofltk's) is in every text
+  function in `c_fl_draw.cpp`: `Draw_Text`, `Width`, `Font_Height`,
+  `Font_Descent`, `Measure`, `Get_Font`, `Get_Font_Size` and the rest. It
+  sets FLTK's normal font when the current driver has no font descriptor
+  and `fl_size()` is 0 or less. Only `Font_Height (Font, Size)`, which
+  sets its own font, and `Draw_Symbol`, which draws no text, go without
+  it.
+- **Issues 3 and 53: AFFECTED, done.** With no window shown, the shim's
+  `unshown_event` handles a key itself: it goes to the grab or focus
+  widget and its parents, as `Fl::handle_` tries it first. `DND_LEAVE`
+  is taken and does nothing. Both crashed through
+  `Fl::first_window()` = 0 (Fl.cxx:1556-1557; `Fl_Input`'s cursor). A
+  dispatch function the program set still sees the event first.
+  - **A note on the test:** `FLTK.Widgets.Inputs.Input` binds `Fl_Input_`,
+    the base class, which takes no focus. `Fl_Input` is
+    `FLTK.Widgets.Inputs.Text`, so the tests use that.
+- **Issue 4: AFFECTED (Wayland), done.** `Take_Focus` and `Set_Focus` open
+  the display first.
+- **Issue 49: AFFECTED, done.** `Copy` and `Selection` open the display.
+  On X11, with no window shown, `Paste` does nothing unless this program
+  owns what is pasted (`fl_i_own_selection`), as pofltk's guard does.
+  FLTK would otherwise ask the X server with window 0, and print
+  BadWindow.
+- **Issue 131: AFFECTED, done.** `Ready`, `Enable_System_Input`,
+  `Disable_System_Input` and `Set_Box_Color` open the display.
+- **Issue 110: HANDLED here, guarded anyway.** `GL_Window.Can_Do` and
+  `GLUT.Get (Display_Mode_Possible)` open the display.
+  `GLUT_DISPLAY_MODE_POSSIBLE` is `Fl_Gl_Window::can_do (glut_mode)`
+  (glut_compatibility.cxx:410).
+- **Issue 138: HANDLED here, guarded anyway, done.** `Copy_Surface`'s
+  `Forge.Create` opens the display. Its spec now says that finalizing it
+  puts the drawing on the clipboard (Fl_Xlib_Copy_Surface_Driver.cxx:58-65,
+  Fl_Wayland_Copy_Surface_Driver.cxx:36-39).
+- **Issue 100: HANDLED, by issue 1's `ensure_font`.** No change to
+  `start_job` or `start_page` was needed. `begin_page` pushes the
+  PostScript surface (Fl_PostScript.cxx:1902), and
+  `Fl_PostScript_Graphics_Driver::font` also sets the display driver's
+  font (:191-194), whose Pango description `transformed_draw` uses
+  unchecked (:1571). `ensure_font` sees no font on the PostScript driver
+  and sets one. `test_print_font` passes on both back ends: text is the
+  first call on a page, the size is then 14, and the file is written. A
+  negative control, with `ensure_font` returning at once, crashed
+  (`Storage_Error`). pofltk's SVG bug, where `ensure_font` reset the SVG
+  surface's font on every call, can't happen here: FLTKAda binds no
+  SVG, EPS or PDF surface yet (Phase 11). `ensure_font` already asks
+  `fl_size()`, as pofltk's fixed version does.
+- **Issue 28: AFFECTED (Wayland), done.** `Menu_Button.Popup`,
+  `Menu.Popup` and `Menu.Pulldown` first call `wait_for_expose` on the
+  window FLTK puts the menu over: the menu widget's top window, or
+  `Fl::first_window()` if the widget is in none (Fl_Menu.cxx:987-996).
+  `wait_for_expose` returns at once when that window is already there,
+  and on X11. `test_popup_early` pops up a menu straight after `Show`,
+  on each of two windows. Before the fix, it ended with "Fatal error no 1
+  in Wayland protocol: xdg_surface" and exit 1 in three runs of three.
+  After it, three of three passed. The three Ada bodies already call
+  `Hook_Exceptions.Reraise` after the C call, which covers the event loop
+  that `wait_for_expose` runs.
+- **Issue 109: AFFECTED, done.** `OpenGL.Start` raises
+  `FLTK.Unsupported_Error` on Wayland, where `gl_start` uses
+  `Fl_Gl_Window_Driver::global()` and `Fl_Window::current()` unchecked
+  (gl_start.cxx:58-87). It crashed on sway with any window current.
+- **Issue 111: AFFECTED, done.** All of these raise `Program_Error`:
+  - `Make_Current` on a window that isn't shown, for `Window`, `GL_Window`
+    and `Glut_Window`. FLTK calls `fl_alert` and `Fl::fatal` there
+    (Fl_X11_Window_Driver.cxx:401-405, Fl_Wayland_Window_Driver.cxx:344-349).
+  - GL `Set_Font`, `Font_Height`, `Font_Descent`, `Width`, `Draw_Text` and
+    `Measure` with no GL context. A context is either a shown GL window
+    current (`Fl_Gl_Window::make_current` sets `current_`,
+    Fl_Gl_Window.cxx:133) or a `Start` not yet finished.
+  - `Start` with no shown window current, and `Finish` with no `Start`.
+  - `GL_Window.Set_Mode` inside that window's `Draw`.
+
+  `Fl_Window::current()` stays set after its window is hidden, and
+  dangles after it is freed. So the shim only compares it with the shown
+  windows, and `test_wrong_state` checks the calls again after the
+  current window was finalized. Before the fixes, `Set_Font` and `Start`
+  with no window crashed on X11. On sway, `Set_Font`, `Draw_Text` and
+  `Start` crashed. `Font_Height`, `Width` and `Finish` happened not to
+  crash, and are guarded anyway, as pofltk guards them.
+  - **Deferred:** pofltk's ready checks for GLUT bitmap and stroke text
+    (`FlGlut.Mod`). They go with issue 112, in Phase 13.
+- **Issue 124: AFFECTED, done.** pofltk's `on_window` and `on_surface`
+  are ported to `c_fl_draw.cpp`.
+  - `Overlay_Rect` and `Overlay_Clear` raise `Program_Error` unless a
+    shown window is current and drawing goes to the screen.
+  - `Scroll` by (0, 0) is allowed on a surface or a window.
+  - On a surface, `Scroll` calls the callback for the whole area, since
+    there are no pixels to move.
+  - With neither, `Scroll` raises.
+
+  Before the fix, `Overlay_Rect` and `Scroll (1, 0)` crashed on both back
+  ends. `Overlay_Clear` and a `Scroll` by (0, 0) didn't, and are guarded
+  anyway. In a `Draw`, all of them work.
+  - **A finding about the test:** the `Scroll` callback must be at
+    library level (`test/unit/scroll_areas.ads`). The binding calls it
+    through its bare address, and GNAT's `'Unrestricted_Access` of a
+    nested procedure is a trampoline on the stack, which crashed.
+- **Issue 129: AFFECTED, done.** `Set_Grab` on a window that isn't shown
+  raises `Program_Error`. On X11, `Fl::grab` grabs the pointer for
+  `fl_xid (Fl::first_window ())` (Fl_X11_Screen_Driver.cxx:460), and it
+  crashed with none. A new shim `fl_widget_forget`, called from
+  `Widget`'s `Extra_Final` for every widget the binding frees, clears
+  `Fl::grab` and `Fl::selection_owner` if they are that widget. FLTK's
+  own `~Fl_Widget` doesn't clear them: its `fl_throw_focus` clears
+  `pushed`, `belowmouse` and `focus` only (Fl_Widget.cxx:166-185,
+  Fl.cxx:1205-1219). A negative control
+  without the call gave "Invalid read of size 8" under valgrind, and
+  failed "a finalized window's grab is cleared".
+- **Results:** `test_first_calls`, `test_wrong_state` (33 checks),
+  `test_print_font` and `test_popup_early` pass on Xvfb and on sway.
 
 ### Phase 4: Objects FLTK keeps after Ada frees them
 

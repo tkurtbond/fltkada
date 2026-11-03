@@ -7,6 +7,7 @@
 #include <FL/Fl_Copy_Surface.H>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Window.H>
+#include <FL/platform.H>
 #include "c_fl_copy_surface.h"
 
 
@@ -14,7 +15,10 @@
 
 //  Flattened C API
 
+//  Deleting the surface copies it to the clipboard, and on X11 that needs the
+//  display open, as Fl::copy does (pofltk 49, 138).
 COPYSURFACE new_fl_copy_surface(int w, int h) {
+    fl_open_display();
     Fl_Copy_Surface *c = new Fl_Copy_Surface(w,h);
     return c;
 }

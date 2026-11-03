@@ -104,8 +104,14 @@ void fl_window_iconize(WINDOW n) {
     static_cast<Fl_Window*>(n)->iconize();
 }
 
-void fl_window_make_current(WINDOW n) {
+//  Returns 0 if the window isn't shown, where FLTK calls Fl::fatal
+//  (Fl_X11_Window_Driver.cxx:401-405, Fl_Wayland_Window_Driver.cxx:344-349).
+int fl_window_make_current(WINDOW n) {
+    if (!static_cast<Fl_Window*>(n)->shown()) {
+        return 0;
+    }
     static_cast<Fl_Window*>(n)->make_current();
+    return 1;
 }
 
 

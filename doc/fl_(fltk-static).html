@@ -26,6 +26,17 @@
 
 </table>
 
+<p><b>Note:</b><br /><br />
+FLTKAda never calls fl_open_display by itself at elaboration, so a program that only uses
+FLTK.Filenames or FLTK.Environment needs no display. Showing the first window opens the
+display, and so do the calls FLTK 1.4.5 would crash in with no display open, which call
+fl_open_display themselves: Ready, Copy, Paste, Selection, Clipboard_Contains,
+Enable_System_Input, Disable_System_Input, Set_Box_Color, Widget.Take_Focus,
+Events.Set_Focus, GL_Window.Can_Do, GLUT.Get and Copy_Surface's Forge.Create. A program may
+still call Open_Display first, to choose when the connection is made, and so when FLTK stops
+the program if there is no display ("Can't open display" on X11, "No Wayland connection" on
+Wayland). Calling it again does nothing.</p>
+
 
 
 <table class="type">
@@ -692,6 +703,15 @@ static void option(Fl_Option opt, bool val);
 procedure Set_Option
        (Opt : in Option;
         To  : in Boolean);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void fl_open_display();
+</pre></td>
+<td><pre>
+procedure Open_Display;
 </pre></td>
   </tr>
 

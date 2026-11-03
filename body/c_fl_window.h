@@ -22,7 +22,7 @@ extern "C" void fl_window_hide(WINDOW n);
 extern "C" int fl_window_shown(WINDOW n);
 extern "C" void fl_window_wait_for_expose(WINDOW n);
 extern "C" void fl_window_iconize(WINDOW n);
-extern "C" void fl_window_make_current(WINDOW n);
+extern "C" int fl_window_make_current(WINDOW n);
 
 
 extern "C" unsigned int fl_window_fullscreen_active(WINDOW n);

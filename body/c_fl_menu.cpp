@@ -4,7 +4,9 @@
 //  Released into the public domain
 
 
+#include <FL/Fl.H>
 #include <FL/Fl_Menu_.H>
+#include <FL/Fl_Window.H>
 #include <FL/Fl_Menu_Item.H>
 #include <cstdlib>
 #include <cstring>
@@ -380,10 +382,24 @@ int fl_menu_measure(MENU m, int i, int *h) {
 
 
 
+//  A menu popped up over a window not yet on the screen ends the program
+//  under Wayland: "Fatal error no 1 in Wayland protocol: xdg_surface"
+//  (pofltk 28).  FLTK makes the pop-up against the menu widget's top window,
+//  or the first window if the widget is in none (Fl_Menu.cxx:987-996), and
+//  waits for the pop-up's own expose but not that one's.  This waits for it
+//  first, which returns at once once it is there, and on X11.
+static void wait_for_parent(Fl_Widget * w) {
+    Fl_Window * parent = (w != 0 && w->window() != 0) ? w->top_window() : Fl::first_window();
+    if (parent != 0 && parent->shown()) {
+        parent->wait_for_expose();
+    }
+}
+
 const void * fl_menu_popup(MENU m, int x, int y, const char * t, int n) {
     //  method actually belongs to Fl_Menu_Item
     const Fl_Menu_Item * menuhead = static_cast<const Fl_Menu_Item*>(fl_menu_get_item(m, 0));
     const Fl_Menu_Item * initial  = n<0?0:static_cast<const Fl_Menu_Item*>(fl_menu_get_item(m, n));
+    wait_for_parent(static_cast<Fl_Menu_*>(m));
     return menuhead->popup(x, y, t, initial, static_cast<Fl_Menu_*>(m));
 }
 
@@ -391,6 +407,7 @@ const void * fl_menu_pulldown(MENU m, int x, int y, int w, int h, int n) {
     //  method actually belongs to Fl_Menu_Item
     const Fl_Menu_Item * menuhead = static_cast<const Fl_Menu_Item*>(fl_menu_get_item(m, 0));
     const Fl_Menu_Item * initial  = n<0?0:static_cast<const Fl_Menu_Item*>(fl_menu_get_item(m, n));
+    wait_for_parent(static_cast<Fl_Menu_*>(m));
     return menuhead->pulldown(x, y, w, h, initial, static_cast<Fl_Menu_*>(m));
 }
 

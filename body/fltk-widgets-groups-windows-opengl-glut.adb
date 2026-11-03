@@ -8,6 +8,10 @@ with
 
     Interfaces.C;
 
+use type
+
+    Interfaces.C.int;
+
 
 package body FLTK.Widgets.Groups.Windows.OpenGL.GLUT is
 
@@ -66,8 +70,9 @@ package body FLTK.Widgets.Groups.Windows.OpenGL.GLUT is
 
     --  Drawing, Events  --
 
-    procedure fl_glut_window_make_current
-           (W : in Storage.Integer_Address);
+    function fl_glut_window_make_current
+           (W : in Storage.Integer_Address)
+        return Interfaces.C.int;
     pragma Import (C, fl_glut_window_make_current, "fl_glut_window_make_current");
     pragma Inline (fl_glut_window_make_current);
 
@@ -239,7 +244,9 @@ package body FLTK.Widgets.Groups.Windows.OpenGL.GLUT is
     procedure Make_Current
            (This : in out Glut_Window) is
     begin
-        fl_glut_window_make_current (This.Void_Ptr);
+        if fl_glut_window_make_current (This.Void_Ptr) = 0 then
+            raise Program_Error with "Make_Current on a Glut_Window not shown";
+        end if;
     end Make_Current;
 
 

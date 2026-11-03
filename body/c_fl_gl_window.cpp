@@ -5,6 +5,7 @@
 
 
 #include <FL/Fl_Gl_Window.H>
+#include <FL/platform.H>
 #include "c_fl_gl_window.h"
 #include "c_fl.h"
 
@@ -32,8 +33,15 @@ public:
     int handle(int e);
 };
 
+//  How many GL windows are drawing now.  mode() inside a draw replaces the
+//  context the draw is using (pofltk 111).  widget_draw_hook catches the Ada
+//  side's exceptions, so the count always comes back down.
+static int drawing = 0;
+
 void My_Gl_Window::draw() {
+    drawing++;
     widget_draw_hook(this->user_data());
+    drawing--;
 }
 
 int My_Gl_Window::handle(int e) {
@@ -112,15 +120,27 @@ unsigned int fl_gl_window_get_mode(GLWINDOW w) {
     return static_cast<Fl_Gl_Window*>(w)->mode();
 }
 
-void fl_gl_window_set_mode(GLWINDOW w, unsigned int a) {
+//  Returns 0, and changes nothing, inside a GL window's draw.
+int fl_gl_window_set_mode(GLWINDOW w, unsigned int a) {
+    if (drawing != 0) {
+        return 0;
+    }
     static_cast<Fl_Gl_Window*>(w)->mode(a);
+    return 1;
 }
 
+//  Both ask Fl_Gl_Window_Driver::global() (Fl_Gl_Window.cxx:66), which uses
+//  the display's connection without opening it: a segmentation fault with no
+//  display open (pofltk 110).  Opening it first also makes global(), which is
+//  made once, a Wayland driver under Wayland: made before any window, it was
+//  X11's (Fl_Wayland_Gl_Window_Driver.cxx:86).
 int fl_gl_window_static_can_do(unsigned int m) {
+    fl_open_display();
     return Fl_Gl_Window::can_do(m);
 }
 
 int fl_gl_window_can_do(GLWINDOW w) {
+    fl_open_display();
     return static_cast<Fl_Gl_Window*>(w)->can_do();
 }
 
@@ -159,8 +179,14 @@ void fl_gl_window_invalidate(GLWINDOW w) {
     static_cast<Fl_Gl_Window*>(w)->invalidate();
 }
 
-void fl_gl_window_make_current(GLWINDOW w) {
+//  Returns 0 if the window isn't shown: on X11 there is then no window for
+//  the context, and make_current crashes (Fl_Gl_Window.cxx:117, pofltk 111).
+int fl_gl_window_make_current(GLWINDOW w) {
+    if (!static_cast<Fl_Gl_Window*>(w)->shown()) {
+        return 0;
+    }
     static_cast<Fl_Gl_Window*>(w)->make_current();
+    return 1;
 }
 
 void fl_gl_window_make_overlay_current(GLWINDOW w) {

@@ -8,8 +8,10 @@
 #define FL_GL_GUARD
 
 
-extern "C" void fl_gl_start();
-extern "C" void fl_gl_finish();
+extern "C" int fl_gl_can_start();
+extern "C" int fl_gl_start();
+extern "C" int fl_gl_finish();
+extern "C" int fl_gl_ready();
 
 
 extern "C" void fl_gl_color(unsigned int c);
