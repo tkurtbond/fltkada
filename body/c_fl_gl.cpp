@@ -7,6 +7,7 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include <FL/platform.H>
+#include <FL/fl_draw.H>
 #include <FL/gl.h>
 #include "c_fl_gl.h"
 
@@ -116,20 +117,41 @@ double fl_gl_width2(unsigned char c) {
 
 
 
+//  gl_draw makes a texture as wide as its text, and text with no width, as
+//  a line feed or a zero-width space, crashes in making it: an
+//  Fl_Image_Surface 0 wide (gl_draw.cxx, compute_texture and
+//  alpha_mask_for_string; pofltk 134).  So text is drawn only if it has a
+//  width.
+static void draw_some(const char * str, int n) {
+    if (gl_width(str, n) > 0) {
+        gl_draw(str, n);
+    }
+}
+
+//  gl_draw_invert in gl_draw.cxx, which the boxed gl_draw gives fl_draw
+//  for each line.
+static void draw_line(const char * str, int n, int x, int y) {
+    glRasterPos2i(x, -y);
+    draw_some(str, n);
+}
+
 void fl_gl_draw(const char * str, int n) {
-    gl_draw(str, n);
+    draw_some(str, n);
 }
 
 void fl_gl_draw2(const char * str, int n, int x, int y) {
-    gl_draw(str, n, x, y);
+    glRasterPos2i(x, y);
+    draw_some(str, n);
 }
 
 void fl_gl_draw3(const char * str, int n, float x, float y) {
-    gl_draw(str, n, x, y);
+    glRasterPos2f(x, y);
+    draw_some(str, n);
 }
 
 void fl_gl_draw4(const char * str, int x, int y, int w, int h, unsigned short a) {
-    gl_draw(str, x, y, w, h, static_cast<Fl_Align>(a));
+    //  As gl_draw (str, x, y, w, h, align) does.
+    fl_draw(str, x, -y - h, w, h, static_cast<Fl_Align>(a), draw_line, 0, 0);
 }
 
 void fl_gl_measure(const char * str, int &x, int &y) {

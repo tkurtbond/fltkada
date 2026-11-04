@@ -525,7 +525,15 @@ line buffer holds `W * abs (Depth)` bytes.
 refuse re-entry: a nested `Draw_Image` from the callback replaces the
 single global `Image_Func_Ptr` (pofltk 133).
 
-**Status.** Open; checked. PLAN.md Phase 2.
+**Fix.** The buffer is `W * Depth` long, keeping the `Depth` its
+`Draw_Image` was given (PLAN.md Phase 2, N2, `test_image_lines`). Each of
+the four `Draw_Image`s now raises `Draw_Error` inside an image-line
+function (PLAN.md Phase 5, Issue 133). Before that, `test_image_reentry`
+showed the replacement: a `Draw_Image` with lines inside another's line
+function ran the inner function 29 times, its own 20 lines and 9 of the
+outer image's, and the outer function once.
+
+**Status.** Fixed.
 
 
 ## 23. Expand_Text always fails
@@ -1477,3 +1485,182 @@ chooser's extra still misreads. A fix needs a way to know an Ada-made
 widget (for example, a shim-side mark on every `My_` class), which is
 the same decision Bug 44 needs.
 
+
+## 52. The sorts compared only a name's first 255 bytes
+
+**Symptom.** `Alpha_Sort`, `Case_Alpha_Sort`, `Numeric_Sort` and
+`Case_Numeric_Sort` found two names equal if they differed only after
+their first 255 bytes.
+
+**Cause.** The shim's `filename_alphasort` and the other three
+(`body/c_fl_filename.cpp`) copied each name into a `struct dirent` with
+`strncat (d_name, a, 255)`, to call FLTK's sort, which takes dirents.
+The rest of the name was dropped.
+
+**Found.** `test_numeric_sort` for pofltk 63 (PLAN.md Phase 5),
+2026-11-03: two 301-byte names that differ in their last byte compared
+`EQUAL` both ways.
+
+**Fix.** The four sorts are written in Ada (`body/fltk-filenames.adb`),
+which also fixes pofltk 63, and the shim's wrappers are gone. The
+numeric sorts fold case with FLTK's `fl_tolower`; the alphabetic ones
+compare bytes as `strcmp` and `strcasecmp` do.
+
+**Status.** Fixed.
+
+
+## 53. A failed GIF or XPM raised Constraint_Error
+
+**Symptom.** `GIF_Image` and `XPM_Image` `Create` of a file that can't
+be read, or isn't an image, raised `Constraint_Error` (a range check at
+`body/fltk-images.adb:369`), not `File_Access_Error` or `Format_Error`.
+
+**Cause.** `Raise_Fail_Errors` tested `Result = fl_image_err_no_image
+and This.Is_Empty` first. With `and`, `Is_Empty` was evaluated whatever
+the result, and it called `Get_W`, which converts the width to
+`Natural`. A failed `Fl_Pixmap` is -1 wide (`Fl_Pixmap.H:58-64`).
+
+**Found.** `test_image_crafted` for pofltk 88 (PLAN.md Phase 5),
+2026-11-03: every refused GIF raised `Constraint_Error`. A scratch
+program confirmed it for a GIF of no file.
+
+**Fix.** `Raise_Fail_Errors` tests the file and format errors first, and
+then the empty image with `and then`. `Is_Empty` reads the width and
+height from FLTK as `int`, and takes 0 or less as empty.
+
+**Status.** Fixed.
+
+
+## 54. Shared_Image Create of an unreadable file returned an image with no FLTK object
+
+**Symptom.** `Shared_Image` `Create (Filename, W, H)` of a file that
+doesn't exist returned normally. The first call on the image, such as
+`Get_W`, then crashed (Storage_Error, from a segmentation fault).
+
+**Cause.** `Fl_Shared_Image::get` returns `NULL` when it can't load the
+file (`Fl_Shared_Image.cxx:594-598`), and `Create` didn't check.
+
+**Found.** `test_image_crafted` for pofltk 87 and 88 (PLAN.md Phase 5),
+2026-11-03, with the null check removed: `Create ("/no/such.bmp")`
+returned, and `Get_W` crashed.
+
+**Fix.** `Create` raises `No_Image_Error` for a null image. It also
+raises it for an image FLTK took and couldn't load, which `get` shares
+0 wide (a PNG over `int'Last` bytes, for example). `Create (From)`
+raises `Storage_Error` for a null.
+
+**Status.** Fixed.
+
+
+## 55. A JPEG from memory was read past its end
+
+**Symptom.** `JPEG_Image` `Create (Name, Data)` of a JPEG cut short
+read past the end of `Data`. Valgrind found 22 invalid reads in libjpeg
+(`decode_mcu`, from `Fl_JPEG_Image.cxx:333`) for a 64 by 64 JPEG cut to
+half, and 4 blocks of 72 bytes definitely lost.
+
+**Cause.** The shim called `Fl_JPEG_Image (name, data)` without the
+length. FLTK then uses its unprotected source, which hands libjpeg 4096
+bytes at a time from wherever it has got to (`Fl_JPEG_Image.cxx:163-169`,
+`304-305`), and mallocs the source and never frees it (`:193-194`).
+
+**Found.** `test_image_crafted`, 2026-11-03, while checking the F7 JPEG
+from memory, whose valgrind log had the leak.
+
+**Fix.** The shim takes `Data'Length` and passes it, so FLTK uses
+libjpeg's `jpeg_mem_src`. The cut JPEG is refused with `Format_Error`,
+with no invalid reads and no leak. Negative control: with the length
+dropped again, the 22 invalid reads and the leak are back.
+
+**Status.** Fixed.
+
+## 56. A PNG, JPEG or SVG from memory left the shared pool pointing at it
+
+**Symptom.** After a `PNG_Image`, `JPEG_Image` or `SVG_Image` made from
+memory with a name went, `Shared_Image` `Find` of the name still found
+it, and using it read freed memory. A PNG or JPEG made with no name was
+put in the pool under `""`, each one a new entry.
+
+**Cause.** FLTK's issue F8 (FLTK-issues.md): the loader puts a named
+image in the pool, by an entry that doesn't own it. The PNG and JPEG
+shims passed Ada's default `""` on as a name. The SVG shim already
+passed it as `NULL`.
+
+**Found.** `test_image_names`, 2026-11-03: 10 of its checks failed, and
+valgrind found 44 invalid reads, in `Fl_Shared_Image::desaturate` of an
+entry whose image `fltk.images.rgb.png.finalize` had freed.
+
+**Fix.** The PNG and JPEG shims pass an empty name as `NULL`, as SVG
+did (`null_if_empty`, now in `c_fl_image_check.cpp`). The free
+functions for the three call `delete_unless_pooled`. If the pool has an
+entry for the image that doesn't own it, the entry is given the image
+and its loader's reference is released, so the image goes when the last
+`Shared_Image` found by its name does. Otherwise the image is deleted.
+Negative control: with the image always deleted, 9 checks fail and the
+44 invalid reads are back.
+
+**Status.** Fixed.
+
+## 57. A Shared_Image made from an RGB_Image shared that image, unowned
+
+**Symptom.** `Shared_Image` `Create (From)` followed by the `From`
+image going left the shared image pointing at freed memory.
+
+**Cause.** The shim called `Fl_Shared_Image::get (rgb, 0)`, which
+shares the image itself and doesn't own it
+(`Fl_Shared_Image.cxx:629-635`).
+
+**Found.** Reading FLTK's source for 56, 2026-11-03. pofltk shares a
+copy that the pool owns (`FlImages.cpp:1633`).
+
+**Fix.** The shim shares a copy, with `own_it` 1. `test_image_names`
+frees the PNG first and then uses the shared image. Negative control:
+with the image shared unowned again, valgrind finds 47 invalid reads.
+
+**Status.** Fixed.
+
+## 58. Read_Image returned an unset array when FLTK read nothing
+
+**Symptom.** `FLTK.Draw.Read_Image` returned an array of whatever its
+memory held when `fl_read_image` read nothing and returned `NULL`.
+
+**Cause.** The result was checked with `pragma Assert`, which release
+builds don't check (as in 28), so a `NULL` was let through.
+
+**Found.** Testing pofltk 127, 2026-11-03. With the shim passing every
+read straight to `fl_read_image`, as it did, a read outside any draw
+gets `NULL` from FLTK, and so, on X11, does one of the test's reads
+outside the window.
+
+**Fix.** `Read_Image` raises `Draw_Error` for a `NULL` result, with an
+explicit check, and `Internal_FLTK_Error` for one at another address.
+The shim also returns `NULL` when nothing is drawn on, as it now has to
+know the window's or surface's size to clip (pofltk 127).
+`test_read_outside` checks that a read outside any draw raises.
+
+**Status.** Fixed.
+
+## 59. Set_Line_Style kept its last dash pattern until exit
+
+**Symptom.** Valgrind reported 24 bytes still reachable at exit,
+allocated in `FLTK.Draw.Set_Line_Style`. Run with
+`--show-leak-kinds=all`, as `make valgrind-headless` does,
+`test_dashes` failed `vg-check.sh` on X11 and on sway.
+
+**Cause.** `Set_Line_Style` built the pattern on the heap and kept it
+in a package variable, freeing it only at the next call, so the last
+one was never freed. Nothing needed it kept: FLTK's Cairo and
+PostScript drivers copy the pattern into `linedash_`
+(Fl_Cairo_Graphics_Driver.cxx:317-319, Fl_PostScript.cxx:1016-1018),
+SVG duplicates it (Fl_SVG_File_Surface.cxx:240), Xlib uses it at once
+(Fl_Xlib_Graphics_Driver_line_style.cxx), and OpenGL ignores it.
+
+**Found.** `make valgrind-headless` and `make valgrind-sway` at the end
+of Phase 5, 2026-11-03. `test_dashes`, new in Phase 5, was the first
+test to call `Set_Line_Style` under valgrind, and the per-test runs
+then had left out still-reachable blocks.
+
+**Fix.** The pattern is built on the stack. `test_dashes` passes
+`vg-check.sh` on X11 and on sway.
+
+**Status.** Fixed.

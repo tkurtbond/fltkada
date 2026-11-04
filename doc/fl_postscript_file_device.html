@@ -133,7 +133,8 @@ void end_job(void);
 <td><pre>
 procedure End_Job
        (This : in out Postscript_File_Device);
-</pre></td>
+</pre>
+<p>For a job given a File_Type, raises File_Write_Error if the PostScript couldn't all be written. The job writes to the file through a stream of the binding's, so that FLTK, which under Pango closes the file it was given on a Cairo error and then writes to it, never touches the File_Type's file (pofltk 101).</p></td>
   </tr>
 
   <tr>
@@ -176,7 +177,8 @@ void origin(int x, int y);
 procedure Set_Origin
        (This : in out Postscript_File_Device;
         X, Y : in     Integer);
-</pre></td>
+</pre>
+<p>Raises Page_Error outside a page (Start_Page .. End_Page): under Pango it unbalances Cairo's saved states, and with no job FLTK uses a null Cairo context (pofltk 103).</p></td>
   </tr>
 
   <tr>
@@ -198,7 +200,8 @@ void rotate(float angle);
 procedure Rotate
        (This    : in out Postscript_File_Device;
         Degrees : in     Float);
-</pre></td>
+</pre>
+<p>Raises Constraint_Error for a NaN or an infinity, which Cairo refuses (pofltk 101). Raises Page_Error outside a page (pofltk 103).</p></td>
   </tr>
 
   <tr>
@@ -213,7 +216,8 @@ procedure Scale
 procedure Scale
        (This               : in out Postscript_File_Device;
         Factor_X, Factor_Y : in     Float);
-</pre></td>
+</pre>
+<p>Raises Constraint_Error for a NaN, an infinity, or an X factor of 0, which Cairo refuses. A Y factor of 0 means the same as X, as in FLTK (pofltk 101). Raises Page_Error outside a page (pofltk 103).</p></td>
   </tr>
 
   <tr>
@@ -228,9 +232,9 @@ procedure Start_Job
         Output : in     File_Type'Class;
         Count  : in     Natural := 0;
         Format : in     Page_Format := A4;
-        Layout : in     Page_Layout := Portrait)
-with Pre => Output.Is_Open;
-</pre></td>
+        Layout : in     Page_Layout := Portrait);
+</pre>
+<p>Raises File_Open_Error if Output isn't open, or if the binding's stream to the file can't be made. The file stays the program's to close, before or after End_Job (pofltk 101). Raises Constraint_Error for the Media format, which isn't a page size: FLTK would read past its table of them (pofltk 103).</p></td>
   </tr>
 
   <tr>
@@ -245,7 +249,8 @@ procedure Start_Job
         Count  : in     Natural := 0;
         Format : in     Page_Format := A4;
         Layout : in     Page_Layout := Portrait);
-</pre></td>
+</pre>
+<p>Raises Constraint_Error for the Media format, which isn't a page size (pofltk 103).</p></td>
   </tr>
 
   <tr>
@@ -282,7 +287,8 @@ void translate(int x, int y);
 procedure Translate
        (This             : in out Postscript_File_Device;
         Delta_X, Delta_Y : in     Integer);
-</pre></td>
+</pre>
+<p>Raises Page_Error outside a page (Start_Page .. End_Page): under Pango it unbalances Cairo's saved states, and with no job FLTK uses a null Cairo context (pofltk 103).</p></td>
   </tr>
 
   <tr>
@@ -292,7 +298,8 @@ void untranslate(void);
 <td><pre>
 procedure Untranslate
        (This : in out Postscript_File_Device);
-</pre></td>
+</pre>
+<p>Raises Constraint_Error unless a Translate on this page is still to be undone. Cairo refuses an untranslate too many (pofltk 101).</p></td>
   </tr>
 
 </table>

@@ -116,8 +116,9 @@ package body FLTK.Devices.Surface.Paged.Postscript is
     pragma Import (C, fl_postscript_file_device_start_job4, "fl_postscript_file_device_start_job4");
     pragma Inline (fl_postscript_file_device_start_job4);
 
-    procedure fl_postscript_file_device_end_job
-           (D : in Storage.Integer_Address);
+    function fl_postscript_file_device_end_job
+           (D : in Storage.Integer_Address)
+        return Interfaces.C.int;
     pragma Import (C, fl_postscript_file_device_end_job, "fl_postscript_file_device_end_job");
     pragma Inline (fl_postscript_file_device_end_job);
 
@@ -363,13 +364,21 @@ package body FLTK.Devices.Surface.Paged.Postscript is
             Format : in     Page_Format := A4;
             Layout : in     Page_Layout := Portrait)
     is
-        Code : constant Interfaces.C.int := fl_postscript_file_device_start_job3
+        Code : Interfaces.C.int;
+    begin
+        if not Output.Is_Open then
+            raise File_Open_Error with "the file isn't open";
+        end if;
+        Check_Format (Format);
+        Code := fl_postscript_file_device_start_job3
            (This.Void_Ptr,
             Output.C_File,
             Interfaces.C.int (Count),
             To_Cint (Format),
             To_Cint (Layout));
-    begin
+        if Code = 3 then
+            raise File_Open_Error with "no stream for the PostScript to go through";
+        end if;
         pragma Assert (Code = 0);
     exception
     when Chk.Assertion_Error => raise Internal_FLTK_Error with
@@ -384,12 +393,14 @@ package body FLTK.Devices.Surface.Paged.Postscript is
             Format : in     Page_Format := A4;
             Layout : in     Page_Layout := Portrait)
     is
-        Code : constant Interfaces.C.int := fl_postscript_file_device_start_job4
+        Code : Interfaces.C.int;
+    begin
+        Check_Format (Format);
+        Code := fl_postscript_file_device_start_job4
            (This.Void_Ptr,
             Interfaces.C.int (Count),
             To_Cint (Format),
             To_Cint (Layout));
-    begin
         case Code is
         when 1 => raise User_Cancel_Error;
         when 2 => raise File_Open_Error;
@@ -405,22 +416,32 @@ package body FLTK.Devices.Surface.Paged.Postscript is
     procedure End_Job
            (This : in out Postscript_File_Device) is
     begin
-        fl_postscript_file_device_end_job (This.Void_Ptr);
+        This.In_Page := False;
+        This.Shifts := 0;
+        case fl_postscript_file_device_end_job (This.Void_Ptr) is
+        when 0 => null;
+        when 1 => raise File_Write_Error with "the PostScript couldn't all be written";
+        when others => raise File_Write_Error with "Cairo refused the drawing";
+        end case;
     end End_Job;
 
 
     procedure Start_Page
            (This : in out Postscript_File_Device) is
     begin
+        This.Shifts := 0;
         if fl_postscript_file_device_start_page (This.Void_Ptr) /= 0 then
             raise Page_Error;
         end if;
+        This.In_Page := True;
     end Start_Page;
 
 
     procedure End_Page
            (This : in out Postscript_File_Device) is
     begin
+        This.In_Page := False;
+        This.Shifts := 0;
         if fl_postscript_file_device_end_page (This.Void_Ptr) /= 0 then
             raise Page_Error;
         end if;
@@ -471,6 +492,7 @@ package body FLTK.Devices.Surface.Paged.Postscript is
            (This : in out Postscript_File_Device;
             X, Y : in     Integer) is
     begin
+        Check_In_Page (This, "Set_Origin");
         fl_postscript_file_device_set_origin
            (This.Void_Ptr,
             Interfaces.C.int (X),
@@ -482,6 +504,8 @@ package body FLTK.Devices.Surface.Paged.Postscript is
            (This    : in out Postscript_File_Device;
             Degrees : in     Float) is
     begin
+        Check_Rotation (Degrees);
+        Check_In_Page (This, "Rotate");
         fl_postscript_file_device_rotate (This.Void_Ptr, Interfaces.C.C_float (Degrees));
     end Rotate;
 
@@ -490,6 +514,8 @@ package body FLTK.Devices.Surface.Paged.Postscript is
            (This   : in out Postscript_File_Device;
             Factor : in     Float) is
     begin
+        Check_Scale (Factor, 0.0);
+        Check_In_Page (This, "Scale");
         fl_postscript_file_device_scale (This.Void_Ptr, Interfaces.C.C_float (Factor), 0.0);
     end Scale;
 
@@ -498,6 +524,8 @@ package body FLTK.Devices.Surface.Paged.Postscript is
            (This               : in out Postscript_File_Device;
             Factor_X, Factor_Y : in     Float) is
     begin
+        Check_Scale (Factor_X, Factor_Y);
+        Check_In_Page (This, "Scale");
         fl_postscript_file_device_scale
            (This.Void_Ptr,
             Interfaces.C.C_float (Factor_X),
@@ -509,6 +537,8 @@ package body FLTK.Devices.Surface.Paged.Postscript is
            (This             : in out Postscript_File_Device;
             Delta_X, Delta_Y : in     Integer) is
     begin
+        Check_In_Page (This, "Translate");
+        This.Shifts := This.Shifts + 1;
         fl_postscript_file_device_translate
            (This.Void_Ptr,
             Interfaces.C.int (Delta_X),
@@ -519,6 +549,8 @@ package body FLTK.Devices.Surface.Paged.Postscript is
     procedure Untranslate
            (This : in out Postscript_File_Device) is
     begin
+        Check_Untranslate (This);
+        This.Shifts := This.Shifts - 1;
         fl_postscript_file_device_untranslate (This.Void_Ptr);
     end Untranslate;
 

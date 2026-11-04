@@ -11,8 +11,12 @@
 
 
 PNMIMAGE new_fl_pnm_image(const char * f) {
-    Fl_PNM_Image *p = new Fl_PNM_Image(f);
-    return p;
+    try {
+        Fl_PNM_Image *p = new Fl_PNM_Image(f);
+        return p;
+    } catch (...) {
+        return 0;
+    }
 }
 
 void free_fl_pnm_image(PNMIMAGE p) {

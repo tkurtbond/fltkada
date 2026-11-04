@@ -66,7 +66,8 @@ package FLTK.Widgets.Groups.Grids is
 
     --  Layout  --
 
-    --  A negative Margin or Gap leaves the current value unchanged
+    --  A negative Margin or Gap leaves the current value unchanged.  A
+    --  span that a smaller grid cuts through is cut to fit (FLTK-issues.md F5).
     procedure Set_Layout
            (This          : in out Grid;
             Rows, Columns : in     Natural;
@@ -136,7 +137,8 @@ package FLTK.Widgets.Groups.Grids is
             Row, Column : in     Positive;
             Align       : in     Grid_Alignment := Grid_Fill);
 
-    --  Returns False if Row or Column is out of range, or if Item is not a child
+    --  Returns False if Row or Column is out of range, or if Item is not a child.
+    --  The procedures do nothing then.
     function Set_Widget
            (This        : in out Grid;
             Item        : in     Widget'Class;
@@ -151,6 +153,8 @@ package FLTK.Widgets.Groups.Grids is
             Row_Span, Column_Span : in     Positive;
             Align                 : in     Grid_Alignment := Grid_Fill);
 
+    --  As above, and False too if the span goes past the grid's edge.
+    --  Set_Layout cuts a span to fit a grid made smaller, and it stays cut.
     function Set_Widget
            (This                  : in out Grid;
             Item                  : in     Widget'Class;

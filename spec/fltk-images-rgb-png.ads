@@ -21,6 +21,8 @@ package FLTK.Images.RGB.PNG is
                (Filename : in String)
             return PNG_Image;
 
+        --  A non-empty Name also shares the image under that name, while the
+        --  image lasts (FLTK-issues.md F8).
         function Create
                (Name : in String := "";
                 Data : in Color_Component_Array)

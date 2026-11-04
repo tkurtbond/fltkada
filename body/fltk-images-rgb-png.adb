@@ -69,6 +69,9 @@ package body FLTK.Images.RGB.PNG is
             return This : PNG_Image do
                 This.Void_Ptr := new_fl_png_image
                    (Interfaces.C.To_C (Filename));
+                if This.Void_Ptr = Null_Pointer then
+                    raise Storage_Error with "no memory for a PNG_Image";
+                end if;
                 Raise_Fail_Errors (This);
             end return;
         end Create;
@@ -86,6 +89,9 @@ package body FLTK.Images.RGB.PNG is
                      then Storage.To_Integer (Data (Data'First)'Address)
                      else Null_Pointer),
                     Data'Length);
+                if This.Void_Ptr = Null_Pointer then
+                    raise Storage_Error with "no memory for a PNG_Image";
+                end if;
                 Raise_Fail_Errors (This);
             end return;
         end Create;

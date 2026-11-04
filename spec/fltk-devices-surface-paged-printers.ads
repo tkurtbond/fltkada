@@ -212,6 +212,10 @@ package FLTK.Devices.Surface.Paged.Printers is
            (This : in out Printer;
             X, Y : in     Integer);
 
+    --  Rotate, Scale and Untranslate raise Constraint_Error as
+    --  Paged_Device's do (pofltk 101).  Set_Origin, Rotate, Scale and
+    --  Translate raise Page_Error outside a page, as Paged_Device's do
+    --  (pofltk 103).
     procedure Rotate
            (This    : in out Printer;
             Degrees : in     Float);

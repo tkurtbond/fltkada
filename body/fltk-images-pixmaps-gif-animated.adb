@@ -511,6 +511,9 @@ package body FLTK.Images.Pixmaps.GIF.Animated is
         begin
             return This : Animated_GIF_Image do
                 This.Void_Ptr := new_fl_anim_gif_image3;
+                if This.Void_Ptr = Null_Pointer then
+                    raise Storage_Error with "no memory for an Animated_GIF_Image";
+                end if;
             end return;
         end Create;
 
@@ -525,6 +528,9 @@ package body FLTK.Images.Pixmaps.GIF.Animated is
                    (Interfaces.C.To_C (Filename),
                     Null_Pointer,
                     To_C (Flags));
+                if This.Void_Ptr = Null_Pointer then
+                    raise Storage_Error with "no memory for an Animated_GIF_Image";
+                end if;
             end return;
         end Create;
 
@@ -540,6 +546,9 @@ package body FLTK.Images.Pixmaps.GIF.Animated is
                    (Interfaces.C.To_C (Filename),
                     Wrapper (Canvas).Void_Ptr,
                     To_C (Flags));
+                if This.Void_Ptr = Null_Pointer then
+                    raise Storage_Error with "no memory for an Animated_GIF_Image";
+                end if;
                 Attach_Canvas (This, Canvas, Flags);
             end return;
         end Create;
@@ -558,6 +567,9 @@ package body FLTK.Images.Pixmaps.GIF.Animated is
                     Interfaces.C.size_t (Data'Length),
                     Null_Pointer,
                     To_C (Flags));
+                if This.Void_Ptr = Null_Pointer then
+                    raise Storage_Error with "no memory for an Animated_GIF_Image";
+                end if;
             end return;
         end Create;
 
@@ -576,6 +588,9 @@ package body FLTK.Images.Pixmaps.GIF.Animated is
                     Interfaces.C.size_t (Data'Length),
                     Wrapper (Canvas).Void_Ptr,
                     To_C (Flags));
+                if This.Void_Ptr = Null_Pointer then
+                    raise Storage_Error with "no memory for an Animated_GIF_Image";
+                end if;
                 Attach_Canvas (This, Canvas, Flags);
             end return;
         end Create;
@@ -1040,6 +1055,9 @@ package body FLTK.Images.Pixmaps.GIF.Animated is
                (This.Void_Ptr,
                 Interfaces.C.int (Width),
                 Interfaces.C.int (Height));
+            if Copied.Void_Ptr = Null_Pointer then
+                raise Storage_Error with "no memory for an Animated_GIF_Image";
+            end if;
         end return;
     end Copy;
 
@@ -1050,6 +1068,9 @@ package body FLTK.Images.Pixmaps.GIF.Animated is
     begin
         return Copied : Animated_GIF_Image do
             Copied.Void_Ptr := fl_anim_gif_image_copy2 (This.Void_Ptr);
+            if Copied.Void_Ptr = Null_Pointer then
+                raise Storage_Error with "no memory for an Animated_GIF_Image";
+            end if;
         end return;
     end Copy;
 

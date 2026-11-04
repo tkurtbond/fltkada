@@ -61,6 +61,9 @@ package body FLTK.Images.Bitmaps.XBM is
             return This : XBM_Image do
                 This.Void_Ptr := new_fl_xbm_image
                        (Interfaces.C.To_C (Filename));
+                if This.Void_Ptr = Null_Pointer then
+                    raise Storage_Error with "no memory for an XBM_Image";
+                end if;
                 Raise_Fail_Errors (This);
             end return;
         end Create;

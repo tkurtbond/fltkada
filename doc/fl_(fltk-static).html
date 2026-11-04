@@ -575,7 +575,13 @@ static const char * get_font(Fl_Font);
 function Font_Image
        (Kind : in Font_Kind)
     return String;
-</pre></td>
+</pre>
+<p>Free_Font is past FLTK's table of built-in fonts until the table grows,
+and FLTK reads garbage there (pofltk 130).  The binding grows the table
+the first time Free_Font is used here, by Font_Family_Image, Font_Sizes,
+Set_Font_Kind, Setup_Fonts or FLTK.Draw, which opens the display.  Free_Font
+is then empty, and its image and family image are "".  A widget's font
+isn't checked: set Free_Font before a widget draws in it.</p></td>
   </tr>
 
   <tr>
@@ -995,7 +1001,10 @@ static void set_font(Fl_Font, const char *);
 procedure Set_Font_Kind
        (Target : in Font_Kind;
         Source : in String);
-</pre></td>
+</pre>
+<p>A name longer than 126 bytes is cut to 126, before any UTF-8 character
+that would cross that.  FLTK copies the name into 128 bytes and keeps the
+last for the font's type (pofltk 130).</p></td>
   </tr>
 
   <tr>

@@ -276,6 +276,29 @@ package body FLTK.Widgets.Charts is
 
     --  Data  --
 
+    --  Data_Label cut to the 18 bytes (FL_CHART_LABEL_MAX) an entry keeps.
+    --  FLTK cuts with strlcpy, which can leave the first bytes of a UTF-8
+    --  character whose last cross the 18th (Fl_Chart.cxx:394, 430, 453;
+    --  pofltk 65), so this cuts before that character.
+    function Entry_Label
+           (Data_Label : in String)
+        return String
+    is
+        Label_Max : constant := 18;
+        Kept      : Natural := Label_Max;
+    begin
+        if Data_Label'Length <= Label_Max then
+            return Data_Label;
+        end if;
+        while Kept > 0 and then
+            Character'Pos (Data_Label (Data_Label'First + Kept)) in 16#80# .. 16#BF#
+        loop
+            Kept := Kept - 1;
+        end loop;
+        return Data_Label (Data_Label'First .. Data_Label'First + Kept - 1);
+    end Entry_Label;
+
+
     procedure Add
            (This       : in out Chart;
             Data_Value : in     Long_Float;
@@ -285,7 +308,7 @@ package body FLTK.Widgets.Charts is
         fl_chart_add
            (This.Void_Ptr,
             Interfaces.C.double (Data_Value),
-            Interfaces.C.To_C (Data_Label),
+            Interfaces.C.To_C (Entry_Label (Data_Label)),
             Interfaces.C.unsigned (Data_Color));
     end Add;
 
@@ -301,7 +324,7 @@ package body FLTK.Widgets.Charts is
            (This.Void_Ptr,
             Interfaces.C.int (Position),
             Interfaces.C.double (Data_Value),
-            Interfaces.C.To_C (Data_Label),
+            Interfaces.C.To_C (Entry_Label (Data_Label)),
             Interfaces.C.unsigned (Data_Color));
     end Insert;
 
@@ -317,7 +340,7 @@ package body FLTK.Widgets.Charts is
            (This.Void_Ptr,
             Interfaces.C.int (Position),
             Interfaces.C.double (Data_Value),
-            Interfaces.C.To_C (Data_Label),
+            Interfaces.C.To_C (Entry_Label (Data_Label)),
             Interfaces.C.unsigned (Data_Color));
     end Replace;
 

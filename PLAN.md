@@ -1292,7 +1292,7 @@ sway, and under valgrind. Each test was seen to fail before its fix.
   - With `Extra_Final` not removing the widget, the 72 check fails, and
     the test raises `Storage_Error` with 3 invalid reads.
 
-### Phase 5: Overruns from bad input
+### Phase 5: Overruns from bad input [done, 2026-11-03]
 
 - **Issue 21:** `Grid.Set_Widget` row and column bounds.
 - **Issue 36:** text buffer case-matching search. Port
@@ -1333,6 +1333,374 @@ sway, and under valgrind. Each test was seen to fail before its fix.
   `draw_some`/`draw_line`.
 - **Issue 65:** `Chart` labels cut mid-UTF-8 character.
 - **Issue 127:** `Read_Image` partly outside the window. Clip it.
+
+What was done. Each item has a unit test, run on Xvfb and on a headless
+sway, and under valgrind. Each test was seen to fail before its fix.
+
+- **Issue 21** (`test_grid_range`): the `Set_Widget` functions return
+  False, as their spec already said, for a row or column past the grid,
+  and for a span that goes past its edge. The procedures then do
+  nothing. Exceptions were not used, because the functions already
+  report a refused cell. Before the fix, 5 of 12 checks failed, and
+  valgrind found 8 invalid reads and writes. While testing, a second
+  over-read turned up: a span that a smaller `Set_Layout` cuts through
+  (FLTK-issues.md F5). The shim now cuts every span to fit before the
+  grid shrinks. All 12 checks pass on X11 and sway, with no invalid reads
+  and no leak. Negative control: with the cut disabled, the checks pass
+  but valgrind finds 6 invalid reads in `Fl_Grid::layout ()`.
+- **Issue 36** (`test_text_search`): with `Match_Case`, `Search_Forward`
+  and `Search_Backward` now do the shim's own byte search through
+  `byte_at`, ported from pofltk's `ofl_buffer_search`. It keeps FLTK's
+  results for an empty string: found at the start, but not forward from
+  the end. Without `Match_Case`, FLTK's search is still called. The test
+  builds the buffer with its gap near the start, so that the text runs
+  to the end of its memory. Before the fix the test hung at a backward
+  search from past the end, a second FLTK problem (FLTK-issues.md F6),
+  and valgrind found invalid reads in FLTK's `memcmp`
+  (`Fl_Text_Buffer.cxx:1364`). The shim now clamps a backward search's
+  start to the length. All 21 checks pass on X11 and sway, with no
+  invalid reads and no leak. Negative control: with FLTK's search
+  matching case again, but the clamp kept, the checks pass but valgrind
+  finds 6 invalid reads, at `:1312` and `:1364`.
+- **Issue 63** (`test_numeric_sort`, with the empty files in
+  `test/unit/names/` copied from pofltk): `Numeric_Sort` and
+  `Case_Numeric_Sort` are written in Ada, from pofltk's
+  `numeric_compare`. `Get_Listing`, `File_Browser.Load` and
+  `File_Chooser` already called them through Ada. Case is folded with
+  FLTK's `fl_tolower`, not `Ada.Wide_Wide_Characters.Handling`, which
+  the release build's `-gnatn` inlined with 168 style complaints about
+  GNAT's own `s-utf_32.adb`. The test found that the shim's wrappers cut
+  names to 255 bytes to fit a `dirent` (FLTKAda-BUGS.md 52), so
+  `Alpha_Sort` and `Case_Alpha_Sort` are written in Ada too. Before the
+  fix, 11 of 32 checks failed: "ab12z" came before "ab12" in each
+  listing. Valgrind saw no invalid read, because the shim's copy sits in
+  a full-sized `dirent` on the stack. All 43 checks pass on X11 and
+  sway, with no invalid reads and no leak. Negative control: with the
+  sort ending in `Equal` whenever a name runs out, 2 checks fail.
+- **Issues 87 and 88** (`test_image_crafted`, with pofltk's crafted and
+  sound files in `test/images/`). `body/c_fl_image_check.cpp` ports
+  pofltk's `dib_ok`, `gif_ok` (here `gif_data_ok`), `lzw_ok` and the
+  frame-fits check. The BMP, GIF and animated GIF constructors, file and
+  memory, check first. A refused still image fails with `ERR_FORMAT`, set
+  through a subclass that reaches the protected `Fl_Image::ld`, and
+  `Create` raises `Format_Error`. A refused animation loads an empty GIF
+  instead, so it isn't loaded and its `Fail_Code` is -3, as FLTK leaves
+  it. `Frame_Count`, `Load` and `GIF.Is_Animated` refuse the same files.
+  ICO isn't bound, so an ICO is checked only as a shared image.
+  `Shared_Image` `Create` sniffs a GIF, BMP or ICO and checks it before
+  calling `get`, and `Reload` leaves the image as it is when its file has
+  gone bad. FLTK's own loading, in `Help_View` pages and the file
+  chooser's preview, doesn't come through the shim and isn't covered.
+  The test found two FLTKAda bugs: a refused GIF raised
+  `Constraint_Error` (FLTKAda-BUGS.md 53), and a shared image of no file
+  had no FLTK object (54). Every image constructor and copy in the shim
+  now catches C++ exceptions and returns null, and the Ada side raises
+  `Storage_Error` "no memory for ...". The `catch` was tested with a PNG
+  over `int'Last` bytes, which overflows FLTK's `int` size
+  (FLTK-issues.md F7). FLTKAda now caps `Max_Size` at `int'Last`, so that
+  FLTK refuses such a file itself, and a shared image that FLTK's loader
+  took and couldn't load raises `No_Image_Error`. Before the fix, the
+  test crashed with `Storage_Error` at `Fl_BMP_Image.cxx:260`, the first
+  crafted BMP. All 38 checks pass on X11 and sway, with no invalid reads
+  and no leak. Negative controls: with `dib_ok` and `gif_data_ok`
+  disabled, the crash at `:260`; with the GIF check alone disabled,
+  valgrind finds 10 invalid reads and writes (`memmove`, and
+  `lzw_decode` at `Fl_GIF_Image.cxx:345`), then `Storage_Error`; with the
+  `Max_Size` cap disabled, 5 checks fail with `Storage_Error`.
+- **Issue 81** (`test_image_crafted`, with pofltk's `rb.xbm`,
+  `not-xbm.h`, `short.xbm` and `huge.xbm`). Decided: the shim reads the
+  XBM itself, with pofltk's `parse_xbm` ported to
+  `body/c_fl_image_check.cpp`. That means `<name>_width` and
+  `<name>_height`, other `#define`s allowed, a `char` array, and every
+  byte of the bits, with the byte count also kept within an `int`. It
+  makes an empty `Fl_XBM_Image ("")`, which opens nothing
+  (`Fl_XBM_Image.cxx:45`), and gives it the bits with `alloc_array` set,
+  so `Fl_Bitmap` frees them. A refused file fails with `ERR_FORMAT`
+  (`Format_Error`), and one that can't be read fails with
+  `ERR_FILE_ACCESS` (`File_Access_Error`). `Shared_Image` `Create` refuses
+  a file starting `#define` that doesn't parse, and after `get` and
+  `Reload` it sets `alloc_array` on the `Fl_XBM_Image` that
+  `Fl_Shared_Image::reload` made (`Fl_Shared_Image.cxx:297`), so shared
+  XBMs no longer leak. A negative control used FLTK's loader for every
+  readable file and left shared XBMs unowned. 6 checks failed:
+  `not-xbm.h` loaded 1 wide, `short.xbm` 4 wide with a byte unset, and
+  `huge.xbm` 100000000 wide. 4 blocks were definitely lost at
+  `Fl_XBM_Image.cxx:77`. FLTK's own XBM loading, in `Help_View` and the
+  file chooser's preview, isn't covered. Its log also showed a JPEG from
+  memory leaking, which led to three FLTKAda bugs. A JPEG from memory was
+  read past its end, because the shim didn't pass the length
+  (FLTKAda-BUGS.md 55). A named PNG, JPEG or SVG from memory left a
+  dangling entry in the shared pool, and an unnamed PNG or JPEG was put
+  in it under `""` (56, FLTK-issues.md F8). `Shared_Image` `Create
+  (From)` shared the image itself, unowned (57). New test
+  `test_image_names`. All checks pass in both tests, 49 and 14, on X11
+  and sway, with no invalid reads and nothing definitely lost.
+- **Issues 120, 121 and 122** (new test `test_filenames`). The shim no
+  longer calls `fl_filename_expand`, `fl_filename_isdir` or
+  `fl_filename_match` as they are.
+  - 120: pofltk's `expand` is ported to `body/c_fl_filename.cpp`. It
+    works on a `std::string`, puts each value in once without rescanning
+    it, and copies the result out cut short to `Max_Path_Length - 1`
+    bytes, as FLTK cuts its own results. Before the fix, a value of
+    6144 bytes aborted the test (status 134, "buffer overflow
+    detected"). A negative control used FLTK's expand without that
+    check, and `SELF='$SELF'` never ended: `timeout 20` killed it
+    (rc 124). The empty value's `value[-1]` (`Fl_System_Driver.cxx:275`)
+    reads the `=` before a `getenv` value, so no run can show it. The
+    check that an empty value gives `x//b` passes either way.
+  - 121: the shim calls `stat` itself. Decided: `Is_Directory` takes any
+    `String`, not a `Path_String`. A `pragma Assertion_Policy` in the
+    caller didn't stop GNAT checking the predicate, so the overrun can't
+    be reached from a test built with `-gnata`. A release build doesn't
+    check the predicate, though, and a name longer than `FL_PATH_MAX` can
+    still name a directory. A negative control with `fl_filename_isdir`
+    aborted on a name of 3004 bytes (status 134, "buffer overflow
+    detected").
+  - 122: the shim matches copies with 16 NULs after them. A negative
+    control without the NULs failed the check that `"a"` matches `"[a"`.
+    Valgrind found nothing, because a `std::string` has room after its
+    NUL.
+
+  All 61 checks pass on X11 and sway, with no invalid reads and vg=0.
+- **Issue 130** (new test `test_free_font`, which must be the first in
+  its process to use `Free_Font`). Confirmed first by a scratch C++
+  program under Xvfb and valgrind. Before the table grows,
+  `Fl::get_font (FL_FREE_FONT)` returns 0xffffffffffffffff and reading it
+  crashes, and `get_font_name` returns garbage. A name of 150 bytes
+  aborts in `strcpy_chk`. `get_font_name` of an empty slot crashes on
+  NULL. With `Fl::set_font (FL_FREE_FONT, NULL)` first, the slot is empty
+  and a box labelled in it draws. Decided:
+  - The shim's `fl_static_grow_fonts` grows the table the first time a
+    font from `FL_FREE_FONT` on is used. That covers `Font_Image`,
+    `Font_Family_Image`, `Font_Sizes`, `Set_Font_Kind`, `Setup_Fonts`,
+    and `FLTK.Draw`'s `Set_Font` and `Font_Height`. It sets the
+    font to NULL, which is safe only while the slot is empty
+    (`Fl_Cairo_Graphics_Driver.cxx:1157-1158`), so `Setup_Fonts` calls it
+    before `Fl::set_fonts` fills the slot. FLTK calls neither function
+    itself. A built-in font doesn't grow the table, because growing it
+    opens the display (`Fl_Cairo_Graphics_Driver.cxx:1269`).
+  - For an empty slot the shim gives `""`, and doesn't call
+    `get_font_name`.
+  - `Set_Font_Kind` cuts a name to 126 bytes, before a UTF-8 character
+    that would cross that.
+  - `Set_Font_Kind (Target, Source)` already copied the name (bug 33).
+  - As in pofltk, a widget's font isn't checked. Drawing a box in
+    `FL_FREE_FONT` before the table grew didn't crash the scratch program,
+    but it reads past the table.
+
+  Before the fix, the test read garbage for `Free_Font` and then died
+  with `Storage_Error`. Negative controls: without the growth, the same;
+  without the cut, it aborted (status 134, "buffer overflow detected").
+  All 10 checks pass on X11 and sway, with no invalid reads and vg=0, and
+  `test_font_kinds`, `test_font_sizes` and `test_print_font` still pass.
+- **Issue 136** (new test `test_dashes`). `Set_Line_Style` passed any
+  number of pairs of lengths 1 to 255 to `fl_line_style`, which on Cairo
+  `strcpy`s them into `linedash_[256]`
+  (`Fl_Cairo_Graphics_Driver.cxx:317-319`). Decided, as in pofltk:
+  `Dash_Length` is now 1 to 127, so no length is negative as a signed
+  `char`, and `Set_Line_Style` raises `Constraint_Error` on more than
+  `Max_Dash_Gaps`, 127, pairs (254 chars and the NUL). Nothing in the
+  tree used a length over 127. Before the fix the test aborted at 150
+  pairs (status 134, "buffer overflow detected"). Negative control: with
+  the range back at 255, a dash of 200 doesn't raise. All 8 checks pass
+  on X11 and sway, with no invalid reads and vg=0; they check the dashes
+  drawn, by the pixels, for one pair, a dash of 127 and 127 pairs.
+- **Issues 96, 98 and 99** (new test `test_terminal_fit`). Decided, as
+  in pofltk:
+  - `My_Terminal::fit`, ported from pofltk's `Term::fit`, puts the cursor
+    and the place `ESC[s` saved back on the screen. It reaches the private
+    `escseq` by an explicit instantiation. The shim calls it after every
+    size, margin, font, box and scrollbar setter, and from an override of
+    `resize`.
+  - `Set_Error_Char` raises `Constraint_Error` unless it is given one
+    printable UTF-8 character of 1 to 4 bytes.
+  - `Set_Text_Size (0)`, `Set_Display_Columns (0)`, and more than 2**24
+    cells from a size setter or `Forge.Create` raise `Constraint_Error`.
+    `Forge.Create` also refuses fewer than 1 row or column, or a negative
+    history. FLTK makes that constructor's history 100 rows whatever it
+    is given (`Fl_Terminal.cxx:3450`), so it counts at least 100.
+
+  What FLTK 1.4.5 does here differs from pofltk's notes in places, from
+  the test's runs and `Fl_Terminal.cxx`.
+  - `refit_disp_to_screen` only ever enlarges the columns (:1338), so
+    neither a narrower widget nor `display_columns (20)` brings them below
+    what the width allows.
+  - A resize, margins and a larger text size kept the cursor on the
+    screen without `fit`.
+  - What `fit` fixes is `Set_Display_Rows`, which left the cursor at row
+    34 of 19, and a place saved before a shrink and restored after it, at
+    row 9 of 2.
+  - Those rows are inside the ring's block, so valgrind found no invalid
+    writes. The test checks the cursor.
+
+  Before the fix, 15 of 21 checks failed: nothing was refused, and the
+  program died with `Storage_Error`. The recursion of a control error
+  character is pofltk's finding (pofltk 98); the test doesn't try it.
+  Negative control: with `fit` disabled, the `Set_Display_Rows` and saved
+  place checks fail. All 21 checks pass on X11 and sway, with no invalid
+  reads and vg=0.
+- **Issue 101** (new test `test_ps_errors`). Decided, as in pofltk:
+  - A PostScript job given a `File_Type` writes through a `Sink`, ported
+    from pofltk: a stream of the shim's (`fopencookie`, or `funopen` off
+    Linux) that tells Cairo every write worked and remembers one that
+    failed. `End_Job` then raises the new `File_Write_Error`. The `Sink`
+    writes to its own `dup` of the file's descriptor, so FLTK never sees
+    the `File_Type`'s `FILE`, and the program can close it before or after
+    `End_Job`.
+  - `Rotate` and `Scale` raise `Constraint_Error` for a NaN or an
+    infinity, and `Scale` for an X factor of 0, on `Paged_Device`,
+    `Postscript_File_Device` and `Printer`. A Y factor of 0 is still the
+    X factor, as FLTK documents it. `Untranslate` raises unless a
+    `Translate` on the page is still to be undone. `Paged_Device` keeps
+    the count, which `Start_Page` resets.
+  - `Start_Job` with a `File_Type` raises `File_Open_Error` if the file
+    isn't open. That was a `Pre`, which release builds don't check.
+
+  Before the fix, `End_Job` to `/dev/full` wrote to the `FILE` it had
+  just closed (69 invalid reads at `Fl_PostScript.cxx:1957`), and the
+  `File_Type` closed it again, so the program died. An `Untranslate` with
+  no `Translate` did the same. Negative controls:
+  - The program's file given to FLTK instead of the `Sink`: the same 69
+    invalid reads and the death.
+  - No `Untranslate` check: Cairo refuses the drawing, and FLTK writes to
+    the `Sink`'s stream after closing it (42 invalid reads). There is no
+    double close, but the file is empty. So the `Sink` alone doesn't make
+    a Cairo error from drawing safe; the checks do.
+  - No scale or rotation checks: a scale of 0, of 0 across, of NaN, and a
+    rotation of NaN are each a Cairo error here. `Printer.Scale (0.0)`
+    with no job then died with `Storage_Error` (Issue 103's ground).
+
+  pofltk lists drawing through `fl_scale (0)` as still uncovered. Here a
+  scratch program's `FLTK.Draw.Scale (0.0)` on a page made no Cairo
+  error: `End_Job` raised nothing and valgrind found nothing. If any
+  other drawing does make one, `End_Job` raises `File_Write_Error`, but
+  FLTK will have written to the closed stream first.
+
+  Not covered: `Start_Job` without a file, which asks for one with FLTK's
+  file chooser. FLTK opens and closes that file itself, so a write that
+  fails there is still a Cairo error, and `end_job` closes the file
+  twice. That is from FLTK's source (`Fl_PostScript.cxx:1956-1980`); the
+  test can't answer the chooser, so it is untried.
+
+  All 17 checks pass on X11 and sway, with no invalid reads and vg=0.
+- **Issue 103** (new test `test_page_misuse`). Decided:
+  - `Set_Origin`, `Rotate`, `Scale` and `Translate` raise `Page_Error`
+    outside a page, on `Paged_Device`, `Postscript_File_Device` and
+    `Printer`. `Paged_Device` keeps an `In_Page` flag, which `Start_Page`
+    sets and `End_Page` and `End_Job` clear; they also zero the
+    `Translate` count. Under Pango, `scale`, `rotate` and `origin` restore
+    two Cairo states that `begin_page` saved, and `translate` saves two
+    (`Fl_PostScript.cxx:1852-1887`, `Fl_Cairo_Graphics_Driver.cxx:615-631`).
+    `Page_Error` was chosen over `Constraint_Error` because nothing is
+    wrong with the values; the device isn't ready for them. The value
+    checks from Issue 101 come first, so a NaN still raises
+    `Constraint_Error` anywhere. `Untranslate` needs no page check: its
+    count is 0 outside a page, so it raises `Constraint_Error` there.
+  - Both `Start_Job`s with a `Format` raise `Constraint_Error` for
+    `Media`. FLTK indexes `page_formats` (30 entries) with the format, and
+    `MEDIA` is `0x1000` (`Fl_PostScript.cxx:1530-1543`,
+    `Fl_Paged_Device.H:28, 76`).
+
+  Before the fix, 28 of 29 checks failed. In a job, each of the four
+  before the page, or after it, made a Cairo error (`Translate` didn't,
+  but it raised nothing), so `End_Job` raised `File_Write_Error`, the
+  file was empty, and FLTK wrote to the closed stream (41 invalid reads at
+  `Fl_PostScript.cxx:1957`). With no job, `Scale` died with
+  `Storage_Error`. `Start_Job` with `Media` raised nothing, and valgrind
+  can't see an overrun of static data, so that check rests on FLTK's
+  source. Negative control: with both checks disabled, the same 28
+  failures, 41 invalid reads and `Storage_Error`.
+
+  A second `Start_Job` before `End_Job` leaks the first job's Cairo
+  surface (FLTK-issues.md F9). It is a leak, not a memory error, and
+  FLTKAda doesn't refuse it yet.
+
+  All 29 checks pass on X11 and sway, with no invalid reads and vg=0, and
+  `test_ps_errors` still passes.
+- **Issue 133** (new test `test_image_reentry`): each of the four
+  `Draw_Image`s raises `Draw_Error` while an image-line function runs, as
+  pofltk halts on every back end. The line hooks set a flag around the
+  call to the function, and clear it if the function raises. The outer
+  `Draw_Image` raises the `Draw_Error` once FLTK returns, as for any
+  exception from a line function (N12). Other ways into `fl_draw_image`
+  from a line function, such as drawing an `RGB_Image`, aren't checked,
+  as in pofltk.
+
+  This FLTK draws with Cairo, where nesting doesn't spoil FLTK's buffer,
+  so the Xlib failure itself rests on pofltk's NetBSD and plain-X11
+  runs. But the binding had its own: the line function is kept in a
+  variable of the package, and a nested `Draw_Image` of the same kind
+  replaced it. Before the fix, 18 of 36 checks failed: nothing raised,
+  and the inner function ran 29 times (its 20 lines and 9 of the outer
+  image's) while the outer one ran once. That finishes FLTKAda-BUGS.md
+  22, whose line length was fixed in Phase 2 (N2). Negative control:
+  with the check disabled, the same 18 failures.
+
+  All 36 checks pass on X11 and sway, with no invalid reads and vg=0, and
+  `test_image_lines` and `test_exceptions` still pass.
+- **Issue 134** (new test `test_gl_text_width`): the shim draws GL text
+  only if `gl_width` gives it a width, as pofltk's `draw_some` does, and
+  the boxed `Draw_Text` gives `fl_draw` pofltk's `draw_line` in place of
+  `gl_draw_invert`, so each line is checked. The test draws a line
+  feed, a carriage return, a zero-width space and a soft hyphen, alone
+  and as the middle line of a box, with each of the four `Draw_Text`s.
+  The window must call `Ortho` first: otherwise the raster position is
+  outside the view, and FLTK draws nothing (`gl_draw.cxx:516`), which at
+  first hid the crash. Before the fix, the first one crashed in FLTK on
+  both X11 and sway, which GNAT reported as `Storage_Error`, and 5 of 9
+  checks failed. Negative control: with the width check disabled, the
+  same 5 failures. Ordinary text has a width (13 for "gl" at 14 points),
+  so it is drawn as before; the test doesn't read the pixels back.
+  The GLUT bitmap fonts aren't bound yet; Phase 13 needs the same check.
+
+  All 9 checks pass on X11 and sway, with no invalid reads and vg=0.
+- **Issue 65** (new test `test_chart_labels`): `Add`, `Insert` and
+  `Replace` cut a label longer than 18 bytes before the UTF-8 character
+  that would cross the 18th byte, as pofltk's `entry_label` does, so
+  FLTK's `strlcpy` gets whole characters. FLTK has no way to read a
+  label back, so the test draws a pie chart into an `Image_Surface` and
+  compares its pixels with a chart labelled as the cut should leave it,
+  for a two-, three- and four-byte character, by each of the three. A
+  first check makes sure the comparison sees a label's last character.
+  Before the fix, 9 of 19 checks failed: each character across the 18th
+  byte, by each way in. Negative control: with the cut disabled, the
+  same 9 failures.
+
+  All 19 checks pass on X11 and sway, with no invalid reads and vg=0.
+- **Issue 127** (new test `test_read_outside`): the shim clips
+  `Read_Image` to the window or surface drawn on, as pofltk does, reads
+  only the part inside, and puts it in its place in the result, which is
+  zeros elsewhere. pofltk returns a smaller image instead, but
+  `Read_Image` returns a bare array whose size its `Post` gives, so the
+  rectangle keeps its size. FLTK would have stretched what it read to
+  the size asked for (`fl_read_image.cxx:75`). Nothing drawn on raises
+  `Draw_Error`, which also fixes FLTKAda-BUGS.md 58. `fl_capture_window`,
+  pofltk's other way in, isn't bound.
+
+  Before the fix, on X11, 5 of 10 checks failed and valgrind found 3
+  invalid writes (`Fl_X11_Screen_Driver.cxx:1055-1057`). On sway, 6
+  failed, with 6 invalid reads (`Fl_Wayland_Screen_Driver.cxx:1758`).
+  Negative control, with the clip disabled: on sway, 5 failures and 6
+  invalid reads; on X11, FLTK returned `NULL` for one of the reads, and
+  `Draw_Error` ended the draw (2 failures).
+
+  All 11 checks pass on X11 and sway, with no invalid reads and vg=0.
+
+- **The phase-end valgrind runs** found FLTKAda-BUGS.md 59:
+  `Set_Line_Style` kept its last dash pattern on the heap until exit,
+  which `test_dashes` showed as a block still reachable. No FLTK driver
+  keeps the pointer, so the pattern is now built on the stack. The
+  per-test runs had missed it because they left out
+  `--show-leak-kinds=all`, which `make valgrind` passes; a single test's
+  run should pass it too.
+
+  After the fix, `make valgrind-headless` passed. `make valgrind-sway`
+  failed once, on `test_wrong_state`: 2 invalid writes and 1 invalid read
+  on the thread's own stack, in Rust's crossbeam-epoch, on thread
+  `gly-rayon-0` of glycin, GNOME's image loader. No FLTK or FLTKAda
+  frame was on the stack. Four reruns of that test under sway valgrind,
+  with `make`'s flags, were clean, so it is intermittent and outside
+  FLTKAda. It is noted here, not suppressed, in case it comes back.
 
 ### Phase 6: Wrong results
 

@@ -127,6 +127,9 @@ package body FLTK.Images.Pixmaps is
                 This.Loose_Ptr := Pixmap_Marshal.Marshal_Data (Values, Colors, Pixels);
                 This.Void_Ptr := new_fl_pixmap
                     (Storage.To_Integer (This.Loose_Ptr (This.Loose_Ptr'First)'Address));
+                if This.Void_Ptr = Null_Pointer then
+                    raise Storage_Error with "no memory for a Pixmap";
+                end if;
             end return;
         end Create;
 
@@ -151,6 +154,9 @@ package body FLTK.Images.Pixmaps is
                (This.Void_Ptr,
                 Interfaces.C.int (Width),
                 Interfaces.C.int (Height));
+            if Copied.Void_Ptr = Null_Pointer then
+                raise Storage_Error with "no memory for a Pixmap";
+            end if;
         end return;
     end Copy;
 
@@ -161,6 +167,9 @@ package body FLTK.Images.Pixmaps is
     begin
         return Copied : Pixmap do
             Copied.Void_Ptr := fl_pixmap_copy2 (This.Void_Ptr);
+            if Copied.Void_Ptr = Null_Pointer then
+                raise Storage_Error with "no memory for a Pixmap";
+            end if;
         end return;
     end Copy;
 

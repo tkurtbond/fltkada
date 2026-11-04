@@ -147,7 +147,9 @@ static void max_size(size_t size);
 <td><pre>
 procedure Set_Max_Size
        (Value : in Size_Type);
-</pre></td>
+</pre>At most Interfaces.C.int'Last, and that by default, since FLTK sizes an
+image as an int; a larger Value raises Constraint_Error (FLTK-issues.md
+F7).</td>
   </tr>
 
   <tr>

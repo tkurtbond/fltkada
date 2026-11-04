@@ -43,6 +43,12 @@ package body FLTK.Widgets.Groups.Terminals is
     pragma Import (C, new_fl_terminal2, "new_fl_terminal2");
     pragma Inline (new_fl_terminal2);
 
+    function fl_terminal_fits
+           (Rows, Hist, Cols : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_terminal_fits, "fl_terminal_fits");
+    pragma Inline (fl_terminal_fits);
+
     procedure free_fl_terminal
            (T : in Storage.Integer_Address);
     pragma Import (C, free_fl_terminal, "free_fl_terminal");
@@ -220,9 +226,10 @@ package body FLTK.Widgets.Groups.Terminals is
     pragma Import (C, fl_terminal_get_display_rows, "fl_terminal_get_display_rows");
     pragma Inline (fl_terminal_get_display_rows);
 
-    procedure fl_terminal_set_display_rows
+    function fl_terminal_set_display_rows
            (T : in Storage.Integer_Address;
-            R : in Interfaces.C.int);
+            R : in Interfaces.C.int)
+        return Interfaces.C.int;
     pragma Import (C, fl_terminal_set_display_rows, "fl_terminal_set_display_rows");
     pragma Inline (fl_terminal_set_display_rows);
 
@@ -232,9 +239,10 @@ package body FLTK.Widgets.Groups.Terminals is
     pragma Import (C, fl_terminal_get_display_columns, "fl_terminal_get_display_columns");
     pragma Inline (fl_terminal_get_display_columns);
 
-    procedure fl_terminal_set_display_columns
+    function fl_terminal_set_display_columns
            (T : in Storage.Integer_Address;
-            C : in Interfaces.C.int);
+            C : in Interfaces.C.int)
+        return Interfaces.C.int;
     pragma Import (C, fl_terminal_set_display_columns, "fl_terminal_set_display_columns");
     pragma Inline (fl_terminal_set_display_columns);
 
@@ -244,9 +252,10 @@ package body FLTK.Widgets.Groups.Terminals is
     pragma Import (C, fl_terminal_get_history_rows, "fl_terminal_get_history_rows");
     pragma Inline (fl_terminal_get_history_rows);
 
-    procedure fl_terminal_set_history_rows
+    function fl_terminal_set_history_rows
            (T : in Storage.Integer_Address;
-            R : in Interfaces.C.int);
+            R : in Interfaces.C.int)
+        return Interfaces.C.int;
     pragma Import (C, fl_terminal_set_history_rows, "fl_terminal_set_history_rows");
     pragma Inline (fl_terminal_set_history_rows);
 
@@ -256,9 +265,10 @@ package body FLTK.Widgets.Groups.Terminals is
     pragma Import (C, fl_terminal_get_history_lines, "fl_terminal_get_history_lines");
     pragma Inline (fl_terminal_get_history_lines);
 
-    procedure fl_terminal_set_history_lines
+    function fl_terminal_set_history_lines
            (T : in Storage.Integer_Address;
-            L : in Interfaces.C.int);
+            L : in Interfaces.C.int)
+        return Interfaces.C.int;
     pragma Import (C, fl_terminal_set_history_lines, "fl_terminal_set_history_lines");
     pragma Inline (fl_terminal_set_history_lines);
 
@@ -327,9 +337,10 @@ package body FLTK.Widgets.Groups.Terminals is
     pragma Import (C, fl_terminal_get_error_char, "fl_terminal_get_error_char");
     pragma Inline (fl_terminal_get_error_char);
 
-    procedure fl_terminal_set_error_char
+    function fl_terminal_set_error_char
            (T : in Storage.Integer_Address;
-            S : in Interfaces.C.char_array);
+            S : in Interfaces.C.char_array)
+        return Interfaces.C.int;
     pragma Import (C, fl_terminal_set_error_char, "fl_terminal_set_error_char");
     pragma Inline (fl_terminal_set_error_char);
 
@@ -368,9 +379,10 @@ package body FLTK.Widgets.Groups.Terminals is
     pragma Import (C, fl_terminal_get_textsize, "fl_terminal_get_textsize");
     pragma Inline (fl_terminal_get_textsize);
 
-    procedure fl_terminal_set_textsize
+    function fl_terminal_set_textsize
            (T : in Storage.Integer_Address;
-            S : in Interfaces.C.int);
+            S : in Interfaces.C.int)
+        return Interfaces.C.int;
     pragma Import (C, fl_terminal_set_textsize, "fl_terminal_set_textsize");
     pragma Inline (fl_terminal_set_textsize);
 
@@ -854,6 +866,17 @@ package body FLTK.Widgets.Groups.Terminals is
                 Text       : in String := "")
             return Terminal is
         begin
+            --  FLTK makes the history 100 rows whatever History says
+            --  (Fl_Terminal.cxx:3450), so that is checked too.
+            if Rows < 1 or else Columns < 1 or else History < 0
+                or else fl_terminal_fits
+                   (Interfaces.C.int (Rows),
+                    Interfaces.C.int (Integer'Max (History, 100)),
+                    Interfaces.C.int (Columns)) = 0
+            then
+                raise Constraint_Error with "a terminal of" & Integer'Image (Rows) & " by"
+                    & Integer'Image (Columns) & " with a history of" & Integer'Image (History);
+            end if;
             return This : Terminal do
                 This.Void_Ptr := new_fl_terminal2
                    (Interfaces.C.int (X),
@@ -1129,7 +1152,9 @@ package body FLTK.Widgets.Groups.Terminals is
            (This : in out Terminal;
             To   : in     Natural) is
     begin
-        fl_terminal_set_display_rows (This.Void_Ptr, Interfaces.C.int (To));
+        if fl_terminal_set_display_rows (This.Void_Ptr, Interfaces.C.int (To)) = 0 then
+            raise Constraint_Error with "too many cells for display rows of" & Natural'Image (To);
+        end if;
     end Set_Display_Rows;
 
 
@@ -1145,7 +1170,10 @@ package body FLTK.Widgets.Groups.Terminals is
            (This : in out Terminal;
             To   : in     Natural) is
     begin
-        fl_terminal_set_display_columns (This.Void_Ptr, Interfaces.C.int (To));
+        if fl_terminal_set_display_columns (This.Void_Ptr, Interfaces.C.int (To)) = 0 then
+            raise Constraint_Error with "too many cells, or none, for display columns of"
+                & Natural'Image (To);
+        end if;
     end Set_Display_Columns;
 
 
@@ -1161,7 +1189,9 @@ package body FLTK.Widgets.Groups.Terminals is
            (This : in out Terminal;
             To   : in     Natural) is
     begin
-        fl_terminal_set_history_rows (This.Void_Ptr, Interfaces.C.int (To));
+        if fl_terminal_set_history_rows (This.Void_Ptr, Interfaces.C.int (To)) = 0 then
+            raise Constraint_Error with "too many cells for history rows of" & Natural'Image (To);
+        end if;
     end Set_History_Rows;
 
 
@@ -1185,7 +1215,9 @@ package body FLTK.Widgets.Groups.Terminals is
            (This : in out Terminal;
             To   : in     Natural) is
     begin
-        fl_terminal_set_history_lines (This.Void_Ptr, Interfaces.C.int (To));
+        if fl_terminal_set_history_lines (This.Void_Ptr, Interfaces.C.int (To)) = 0 then
+            raise Constraint_Error with "too many cells for history lines of" & Natural'Image (To);
+        end if;
     end Set_History_Lines;
 
 
@@ -1281,7 +1313,9 @@ package body FLTK.Widgets.Groups.Terminals is
            (This : in out Terminal;
             To   : in     String) is
     begin
-        fl_terminal_set_error_char (This.Void_Ptr, Interfaces.C.To_C (To));
+        if fl_terminal_set_error_char (This.Void_Ptr, Interfaces.C.To_C (To)) = 0 then
+            raise Constraint_Error with "not one printable UTF-8 character: """ & To & """";
+        end if;
     end Set_Error_Char;
 
 
@@ -1339,7 +1373,9 @@ package body FLTK.Widgets.Groups.Terminals is
            (This : in out Terminal;
             To   : in     Font_Size) is
     begin
-        fl_terminal_set_textsize (This.Void_Ptr, Interfaces.C.int (To));
+        if fl_terminal_set_textsize (This.Void_Ptr, Interfaces.C.int (To)) = 0 then
+            raise Constraint_Error with "a text size of 0";
+        end if;
     end Set_Text_Size;
 
 

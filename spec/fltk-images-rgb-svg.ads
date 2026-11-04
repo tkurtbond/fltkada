@@ -22,7 +22,8 @@ package FLTK.Images.RGB.SVG is
             return SVG_Image;
 
         --  If a Name is given then the image is also made available
-        --  under that name as a Shared_Image. The SVG text is copied,
+        --  under that name as a Shared_Image, while the image lasts
+        --  (FLTK-issues.md F8). The SVG text is copied,
         --  so Data need not outlive the resulting SVG_Image.
 
         function Create

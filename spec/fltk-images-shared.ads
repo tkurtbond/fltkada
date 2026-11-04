@@ -22,11 +22,14 @@ package FLTK.Images.Shared is
 
     package Forge is
 
+        --  A file that can't be read, isn't an image, or that FLTK's loader
+        --  can't load raises No_Image_Error.
         function Create
                (Filename : in String;
                 W, H     : in Integer)
             return Shared_Image;
 
+        --  Shares a copy of From, which may then go.
         function Create
                (From : in FLTK.Images.RGB.RGB_Image'Class)
             return Shared_Image;

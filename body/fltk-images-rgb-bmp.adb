@@ -61,6 +61,9 @@ package body FLTK.Images.RGB.BMP is
             return This : BMP_Image do
                 This.Void_Ptr := new_fl_bmp_image
                    (Interfaces.C.To_C (Filename));
+                if This.Void_Ptr = Null_Pointer then
+                    raise Storage_Error with "no memory for a BMP_Image";
+                end if;
                 Raise_Fail_Errors (This);
             end return;
         end Create;

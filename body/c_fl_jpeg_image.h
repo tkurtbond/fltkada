@@ -12,7 +12,7 @@ typedef void* JPEGIMAGE;
 
 
 extern "C" JPEGIMAGE new_fl_jpeg_image(const char * f);
-extern "C" JPEGIMAGE new_fl_jpeg_image2(const char * n, void *data);
+extern "C" JPEGIMAGE new_fl_jpeg_image2(const char * n, void *data, int size);
 extern "C" void free_fl_jpeg_image(JPEGIMAGE j);
 
 

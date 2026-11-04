@@ -193,6 +193,12 @@ package body FLTK.Images.Shared is
                    (Interfaces.C.To_C (Filename),
                     Interfaces.C.int (W),
                     Interfaces.C.int (H));
+                --  FLTK's get returns null only when no loader takes the
+                --  file (Fl_Shared_Image.cxx:594-598).  An image a loader
+                --  took and couldn't load is shared 0 wide.
+                if This.Void_Ptr = Null_Pointer or else This.Is_Empty then
+                    raise No_Image_Error;
+                end if;
             end return;
         end Create;
 
@@ -203,6 +209,9 @@ package body FLTK.Images.Shared is
         begin
             return This : Shared_Image do
                 This.Void_Ptr := fl_shared_image_get2 (Wrapper (From).Void_Ptr);
+                if This.Void_Ptr = Null_Pointer then
+                    raise Storage_Error with "no memory for a Shared_Image";
+                end if;
             end return;
         end Create;
 
@@ -244,6 +253,9 @@ package body FLTK.Images.Shared is
                    (This.Void_Ptr,
                     Interfaces.C.int (Width),
                     Interfaces.C.int (Height));
+            if Copied.Void_Ptr = Null_Pointer then
+                raise Storage_Error with "no memory for a Shared_Image";
+            end if;
         end return;
     end Copy;
 
@@ -254,6 +266,9 @@ package body FLTK.Images.Shared is
     begin
         return Copied : Shared_Image do
             Copied.Void_Ptr := fl_shared_image_copy2 (This.Void_Ptr);
+            if Copied.Void_Ptr = Null_Pointer then
+                raise Storage_Error with "no memory for a Shared_Image";
+            end if;
         end return;
     end Copy;
 

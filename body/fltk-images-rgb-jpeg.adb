@@ -26,7 +26,8 @@ package body FLTK.Images.RGB.JPEG is
 
     function new_fl_jpeg_image2
            (N : in Interfaces.C.char_array;
-            D : in Storage.Integer_Address)
+            D : in Storage.Integer_Address;
+            S : in Interfaces.C.int)
         return Storage.Integer_Address;
     pragma Import (C, new_fl_jpeg_image2, "new_fl_jpeg_image2");
     pragma Inline (new_fl_jpeg_image2);
@@ -68,6 +69,9 @@ package body FLTK.Images.RGB.JPEG is
             return This : JPEG_Image do
                 This.Void_Ptr := new_fl_jpeg_image
                    (Interfaces.C.To_C (Filename));
+                if This.Void_Ptr = Null_Pointer then
+                    raise Storage_Error with "no memory for a JPEG_Image";
+                end if;
                 Raise_Fail_Errors (This);
             end return;
         end Create;
@@ -83,7 +87,11 @@ package body FLTK.Images.RGB.JPEG is
                    (Interfaces.C.To_C (Name),
                     (if Data'Length > 0
                      then Storage.To_Integer (Data (Data'First)'Address)
-                     else Null_Pointer));
+                     else Null_Pointer),
+                    Data'Length);
+                if This.Void_Ptr = Null_Pointer then
+                    raise Storage_Error with "no memory for a JPEG_Image";
+                end if;
                 Raise_Fail_Errors (This);
             end return;
         end Create;

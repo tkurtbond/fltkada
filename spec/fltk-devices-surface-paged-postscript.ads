@@ -43,6 +43,7 @@ package FLTK.Devices.Surface.Paged.Postscript is
     File_Open_Error   : exception;
 
     File_Close_Error  : exception;
+    File_Write_Error  : exception;
 
     User_Cancel_Error : exception;
 
@@ -106,8 +107,13 @@ package FLTK.Devices.Surface.Paged.Postscript is
             Output : in     File_Type'Class;
             Count  : in     Natural := 0;
             Format : in     Page_Format := A4;
-            Layout : in     Page_Layout := Portrait)
-    with Pre => Output.Is_Open;
+            Layout : in     Page_Layout := Portrait);
+    --  Raises File_Open_Error if Output isn't open, or if the stream to it
+    --  can't be made.  Output stays the program's to close, before or after
+    --  End_Job (pofltk 101).  Both Start_Jobs with a Format raise
+    --  Constraint_Error for Media, which isn't a page size: FLTK would read
+    --  past its table of them (pofltk 103).
+
 
     procedure Start_Job
            (This   : in out Postscript_File_Device;
@@ -115,6 +121,10 @@ package FLTK.Devices.Surface.Paged.Postscript is
             Format : in     Page_Format := A4;
             Layout : in     Page_Layout := Portrait);
 
+    --  For a job given a File_Type, raises File_Write_Error if the
+    --  PostScript couldn't all be written to it (pofltk 101).  A job's
+    --  PostScript goes to the file through a stream of the binding's, so
+    --  that FLTK never closes the file: the program closes it.
     procedure End_Job
            (This : in out Postscript_File_Device);
 
@@ -145,6 +155,10 @@ package FLTK.Devices.Surface.Paged.Postscript is
            (This : in out Postscript_File_Device;
             X, Y : in     Integer);
 
+    --  Rotate, Scale and Untranslate raise Constraint_Error as
+    --  Paged_Device's do (pofltk 101).  Set_Origin, Rotate, Scale and
+    --  Translate raise Page_Error outside a page, as Paged_Device's do
+    --  (pofltk 103).
     procedure Rotate
            (This    : in out Postscript_File_Device;
             Degrees : in     Float);

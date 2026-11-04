@@ -8,12 +8,20 @@
 #include <FL/Fl_Widget.H>
 #include <set>
 #include "c_fl_anim_gif_image.h"
+#include "c_fl_image_check.h"
 
 
 
 
-static const char * null_if_empty(const char * n) {
-    return (n == 0 || *n == '\0') ? 0 : n;
+//  A GIF of one empty screen and no image.  An animation that FLTK would
+//  read past what it has for (pofltk 88) loads this instead, which leaves
+//  it invalid, failed with ERR_FORMAT and cleared, as any bad file does
+//  (Fl_Anim_GIF_Image.cxx:1041-1080).
+static const unsigned char no_frames[] = {'G', 'I', 'F', '8', '9', 'a', 1, 0, 1, 0, 0, 0, 0, ';'};
+
+static bool anim_ok(const char * n, const void * d, size_t s) {
+    return d == 0 ? gif_file_ok(n, true) : gif_data_ok(static_cast<const unsigned char*>(d), s,
+                                                       true);
 }
 
 
@@ -74,23 +82,39 @@ void anim_gif_canvas_gone(const Fl_Widget * w) {
     }
 }
 
+//  An image too large to allocate is 0.
 ANIMGIFIMAGE new_fl_anim_gif_image(const char * f, void * c, unsigned short l) {
-    Fl_Anim_GIF_Image *a = new Fl_Anim_GIF_Image(f, static_cast<Fl_Widget*>(c), l);
-    note_canvas(a);
-    return a;
+    try {
+        Fl_Anim_GIF_Image *a = anim_ok(f, 0, 0)
+            ? new Fl_Anim_GIF_Image(f, static_cast<Fl_Widget*>(c), l)
+            : new Fl_Anim_GIF_Image(f, no_frames, sizeof no_frames, static_cast<Fl_Widget*>(c), l);
+        note_canvas(a);
+        return a;
+    } catch (...) {
+        return 0;
+    }
 }
 
 ANIMGIFIMAGE new_fl_anim_gif_image2(const char * n, void * d, size_t s,
     void * c, unsigned short l) {
-    Fl_Anim_GIF_Image *a = new Fl_Anim_GIF_Image(null_if_empty(n),
-        static_cast<const unsigned char*>(d), s, static_cast<Fl_Widget*>(c), l);
-    note_canvas(a);
-    return a;
+    try {
+        const bool ok = anim_ok(n, d, s);
+        Fl_Anim_GIF_Image *a = new Fl_Anim_GIF_Image(null_if_empty(n),
+            ok ? static_cast<const unsigned char*>(d) : no_frames, ok ? s : sizeof no_frames,
+            static_cast<Fl_Widget*>(c), l);
+        note_canvas(a);
+        return a;
+    } catch (...) {
+        return 0;
+    }
 }
 
 ANIMGIFIMAGE new_fl_anim_gif_image3() {
-    Fl_Anim_GIF_Image *a = new Fl_Anim_GIF_Image();
-    return a;
+    try {
+        return new Fl_Anim_GIF_Image();
+    } catch (...) {
+        return 0;
+    }
 }
 
 //  An animation that goes first leaves its canvas showing no image, rather
@@ -125,16 +149,33 @@ void fl_anim_gif_image_set_min_delay(double v) {
 }
 
 int fl_anim_gif_image_frame_count(const char * n, void * d, size_t s) {
-    return Fl_Anim_GIF_Image::frame_count(null_if_empty(n),
-        static_cast<const unsigned char*>(d), s);
+    try {
+        if (!anim_ok(n, d, s)) {
+            return 0;
+        }
+        return Fl_Anim_GIF_Image::frame_count(null_if_empty(n),
+            static_cast<const unsigned char*>(d), s);
+    } catch (...) {
+        return 0;
+    }
 }
 
 
 
 
+//  Memory short for a frame is a load that fails.
 int fl_anim_gif_image_load(ANIMGIFIMAGE a, const char * n, void * d, size_t s) {
-    return static_cast<Fl_Anim_GIF_Image*>(a)->load(null_if_empty(n),
-        static_cast<const unsigned char*>(d), s);
+    Fl_Anim_GIF_Image *an = static_cast<Fl_Anim_GIF_Image*>(a);
+    try {
+        if (!anim_ok(n, d, s)) {
+            an->load(null_if_empty(n), no_frames, sizeof no_frames);
+            return 0;
+        }
+        return an->load(null_if_empty(n), static_cast<const unsigned char*>(d), s);
+    } catch (...) {
+        an->load(null_if_empty(n), no_frames, sizeof no_frames);
+        return 0;
+    }
 }
 
 int fl_anim_gif_image_valid(ANIMGIFIMAGE a) {
@@ -270,11 +311,19 @@ void fl_anim_gif_image_resize2(ANIMGIFIMAGE a, double s) {
 
 
 ANIMGIFIMAGE fl_anim_gif_image_copy(ANIMGIFIMAGE a, int w, int h) {
-    return static_cast<Fl_Anim_GIF_Image*>(a)->copy(w, h);
+    try {
+        return static_cast<Fl_Anim_GIF_Image*>(a)->copy(w, h);
+    } catch (...) {
+        return 0;
+    }
 }
 
 ANIMGIFIMAGE fl_anim_gif_image_copy2(ANIMGIFIMAGE a) {
-    return static_cast<Fl_Anim_GIF_Image*>(a)->copy();
+    try {
+        return static_cast<Fl_Anim_GIF_Image*>(a)->copy();
+    } catch (...) {
+        return 0;
+    }
 }
 
 

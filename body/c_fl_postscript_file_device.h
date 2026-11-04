@@ -26,7 +26,7 @@ extern "C" int fl_postscript_file_device_start_job(POSTSCRIPTFILEDEVICE p, int c
 extern "C" int fl_postscript_file_device_start_job2(POSTSCRIPTFILEDEVICE p, int c, int * f, int * t);
 extern "C" int fl_postscript_file_device_start_job3(POSTSCRIPTFILEDEVICE p, void * o, int c, int f, int l);
 extern "C" int fl_postscript_file_device_start_job4(POSTSCRIPTFILEDEVICE p, int c, int f, int l);
-extern "C" void fl_postscript_file_device_end_job(POSTSCRIPTFILEDEVICE p);
+extern "C" int fl_postscript_file_device_end_job(POSTSCRIPTFILEDEVICE p);
 extern "C" int fl_postscript_file_device_start_page(POSTSCRIPTFILEDEVICE p);
 extern "C" int fl_postscript_file_device_end_page(POSTSCRIPTFILEDEVICE p);
 

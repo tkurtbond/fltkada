@@ -66,6 +66,10 @@ package FLTK.Draw.OpenGL is
 
     --  Text  --
 
+    --  Text that has no width in the current font, such as a line feed or a
+    --  zero-width space, is not drawn, nor is such a line of a box.  FLTK
+    --  makes a texture as wide as the text, and crashes making one 0 wide
+    --  (pofltk 134).
     procedure Draw_Text
            (Text : in String);
 

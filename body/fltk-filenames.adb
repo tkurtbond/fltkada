@@ -140,25 +140,11 @@ package body FLTK.Filenames is
 
     --  Sorting  --
 
-    function filename_alphasort
-           (A, B : in Interfaces.C.char_array)
+    function fl_tolower
+           (Code : in Interfaces.C.unsigned)
         return Interfaces.C.int;
-    pragma Import (C, filename_alphasort, "filename_alphasort");
-
-    function filename_casealphasort
-           (A, B : in Interfaces.C.char_array)
-        return Interfaces.C.int;
-    pragma Import (C, filename_casealphasort, "filename_casealphasort");
-
-    function filename_numericsort
-           (A, B : in Interfaces.C.char_array)
-        return Interfaces.C.int;
-    pragma Import (C, filename_numericsort, "filename_numericsort");
-
-    function filename_casenumericsort
-           (A, B : in Interfaces.C.char_array)
-        return Interfaces.C.int;
-    pragma Import (C, filename_casenumericsort, "filename_casenumericsort");
+    pragma Import (C, fl_tolower, "fl_tolower");
+    pragma Inline (fl_tolower);
 
 
 
@@ -169,71 +155,190 @@ package body FLTK.Filenames is
 
     --  Sorting  --
 
-    function Alpha_Sort
-           (A, B : in String)
+    --  The sorts are done here, not by FLTK's, since FLTK's take a dirent,
+    --  whose name holds 255 bytes, and fl_numericsort and
+    --  fl_casenumericsort sort wrongly (pofltk 63).
+
+    function Order
+           (Left, Right : in Integer)
+        return Comparison is
+    begin
+        if Left < Right then
+            return Lesser;
+        elsif Left > Right then
+            return Greater;
+        else
+            return Equal;
+        end if;
+    end Order;
+
+
+    --  What strcasecmp folds in the C locale: ASCII letters only.
+    function ASCII_Lower
+           (Item : in Character)
+        return Character is
+    begin
+        if Item in 'A' .. 'Z' then
+            return Character'Val (Character'Pos (Item) + 32);
+        else
+            return Item;
+        end if;
+    end ASCII_Lower;
+
+
+    --  As strcmp and strcasecmp compare: by bytes, unsigned.
+    function Byte_Compare
+           (A, B : in String;
+            Fold : in Boolean)
         return Comparison
     is
-        Result : constant Interfaces.C.int :=
-            filename_alphasort (Interfaces.C.To_C (A), Interfaces.C.To_C (B));
+        Left, Right : Character;
     begin
-        pragma Assert
-            (Result in Comparison'Pos (Comparison'First) .. Comparison'Pos (Comparison'Last));
-        return Comparison'Val (Result);
-    exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "Wrapper of fl_alphasort returned unexpected int value of " &
-        Interfaces.C.int'Image (Result);
+        for N in 0 .. Integer'Min (A'Length, B'Length) - 1 loop
+            Left := A (A'First + N);
+            Right := B (B'First + N);
+            if Fold then
+                Left := ASCII_Lower (Left);
+                Right := ASCII_Lower (Right);
+            end if;
+            if Left /= Right then
+                return Order (Character'Pos (Left), Character'Pos (Right));
+            end if;
+        end loop;
+        return Order (A'Length, B'Length);
+    end Byte_Compare;
+
+
+    --  The character at Place, as fl_utf8decode reads it, and Place moved
+    --  past it.  A byte that doesn't start a well-formed UTF-8 character
+    --  stands for itself (fl_utf8decode reads 16#80# .. 16#9F# as CP1252,
+    --  which only moves those bytes among themselves).
+    procedure Decode
+           (Text  : in     String;
+            Place : in out Positive;
+            Code  :    out Natural)
+    is
+        Lead : constant Natural := Character'Pos (Text (Place));
+        Size : Natural;
+        Low  : Natural;
+    begin
+        case Lead is
+        when 16#C2# .. 16#DF# => Size := 2; Low := 16#80#;
+        when 16#E0# .. 16#EF# => Size := 3; Low := 16#800#;
+        when 16#F0# .. 16#F4# => Size := 4; Low := 16#10000#;
+        when others           => Size := 1; Low := 0;
+        end case;
+        if Size > 1 and then Place + Size - 1 <= Text'Last then
+            Code := Lead mod (2 ** (7 - Size));
+            for N in 1 .. Size - 1 loop
+                if Character'Pos (Text (Place + N)) / 16#40# /= 2 then
+                    Size := 1;
+                    exit;
+                end if;
+                Code := Code * 16#40# + Character'Pos (Text (Place + N)) mod 16#40#;
+            end loop;
+            if Size > 1 and then Code >= Low and then Code <= 16#10FFFF# then
+                Place := Place + Size;
+                return;
+            end if;
+        end if;
+        Code := Lead;
+        Place := Place + 1;
+    end Decode;
+
+
+    --  As FLTK documents fl_numericsort: runs of digits compare as numbers,
+    --  leading zeros aside, then what follows them; other characters as
+    --  Unicode code points, case folded by fl_tolower if Fold; and a name
+    --  comes before a longer one it starts.  Ported from pofltk's
+    --  numeric_compare.
+    function Numeric_Compare
+           (A, B : in String;
+            Fold : in Boolean)
+        return Comparison
+    is
+        I : Positive := A'First;
+        J : Positive := B'First;
+
+        DA, DB : Positive;
+
+        Left, Right : Natural;
+
+        function Is_Digit
+               (Text  : in String;
+                Place : in Positive)
+            return Boolean is
+        begin
+            return Place <= Text'Last and then Text (Place) in '0' .. '9';
+        end Is_Digit;
+
+    begin
+        while I <= A'Last and J <= B'Last loop
+            if Is_Digit (A, I) and Is_Digit (B, J) then
+                while I <= A'Last and then A (I) = '0' loop
+                    I := I + 1;
+                end loop;
+                while J <= B'Last and then B (J) = '0' loop
+                    J := J + 1;
+                end loop;
+                DA := I;
+                DB := J;
+                while Is_Digit (A, I) loop
+                    I := I + 1;
+                end loop;
+                while Is_Digit (B, J) loop
+                    J := J + 1;
+                end loop;
+                if I - DA /= J - DB then
+                    return Order (I - DA, J - DB);
+                elsif A (DA .. I - 1) /= B (DB .. J - 1) then
+                    return (if A (DA .. I - 1) < B (DB .. J - 1) then Lesser else Greater);
+                end if;
+            else
+                Decode (A, I, Left);
+                Decode (B, J, Right);
+                if Fold then
+                    Left := Natural (fl_tolower (Interfaces.C.unsigned (Left)));
+                    Right := Natural (fl_tolower (Interfaces.C.unsigned (Right)));
+                end if;
+                if Left /= Right then
+                    return Order (Left, Right);
+                end if;
+            end if;
+        end loop;
+        return Order (Boolean'Pos (I <= A'Last), Boolean'Pos (J <= B'Last));
+    end Numeric_Compare;
+
+
+    function Alpha_Sort
+           (A, B : in String)
+        return Comparison is
+    begin
+        return Byte_Compare (A, B, False);
     end Alpha_Sort;
 
 
     function Case_Alpha_Sort
            (A, B : in String)
-        return Comparison
-    is
-        Result : constant Interfaces.C.int :=
-            filename_casealphasort (Interfaces.C.To_C (A), Interfaces.C.To_C (B));
+        return Comparison is
     begin
-        pragma Assert
-            (Result in Comparison'Pos (Comparison'First) .. Comparison'Pos (Comparison'Last));
-        return Comparison'Val (Result);
-    exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "Wrapper of fl_casealphasort returned unexpected int value of " &
-        Interfaces.C.int'Image (Result);
+        return Byte_Compare (A, B, True);
     end Case_Alpha_Sort;
 
 
     function Numeric_Sort
            (A, B : in String)
-        return Comparison
-    is
-        Result : constant Interfaces.C.int :=
-            filename_numericsort (Interfaces.C.To_C (A), Interfaces.C.To_C (B));
+        return Comparison is
     begin
-        pragma Assert
-            (Result in Comparison'Pos (Comparison'First) .. Comparison'Pos (Comparison'Last));
-        return Comparison'Val (Result);
-    exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "Wrapper of fl_numericsort returned unexpected int value of " &
-        Interfaces.C.int'Image (Result);
+        return Numeric_Compare (A, B, False);
     end Numeric_Sort;
 
 
     function Case_Numeric_Sort
            (A, B : in String)
-        return Comparison
-    is
-        Result : constant Interfaces.C.int :=
-            filename_casenumericsort (Interfaces.C.To_C (A), Interfaces.C.To_C (B));
+        return Comparison is
     begin
-        pragma Assert
-            (Result in Comparison'Pos (Comparison'First) .. Comparison'Pos (Comparison'Last));
-        return Comparison'Val (Result);
-    exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "Wrapper of fl_casenumericsort returned unexpected int value of " &
-        Interfaces.C.int'Image (Result);
+        return Numeric_Compare (A, B, True);
     end Case_Numeric_Sort;
 
 
@@ -461,7 +566,7 @@ package body FLTK.Filenames is
     --  Directories  --
 
     function Is_Directory
-           (Name : in Path_String)
+           (Name : in String)
         return Boolean is
     begin
         return filename_isdir (Interfaces.C.To_C (Name)) /= 0;

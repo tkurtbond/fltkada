@@ -166,3 +166,125 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
   (`Fl_Tooltip.cxx:165`) and `fl_measure`. With the fix there are none.
   The source shows why; I haven't traced which call left `widget_` null
   with the timeout armed.
+
+### F5. `Fl_Grid::layout (rows, cols)` keeps spans that no longer fit
+
+- **What happens**: a cell spanning rows or columns keeps its span when
+  `layout (rows, cols)` makes the grid smaller. The next
+  `Fl_Grid::layout ()`, which drawing and resizing call, then reads the
+  sizes and gaps of rows and columns past the end of the grid's arrays.
+  A cell the cut hides, in a column or row beyond the new size, keeps its
+  span too, and over-reads in the same way once the grid is made larger
+  again. pofltk checks a span only when it is placed (pofltk 21). Seen
+  2026-11-03, X11 under Xvfb.
+- **Cause**: `Fl_Grid::layout (int, int, int, int)` (`Fl_Grid.cxx:177-235`)
+  copies the old rows with their cells, and the old columns, into arrays
+  of the new size. It never looks at a cell's `rowspan_` or `colspan_`.
+  `Fl_Grid::layout ()` adds up `Cols_[c + i + 1]` and `Rows_[r + i + 1]`
+  for every column and row a cell spans (`Fl_Grid.cxx:470-478`).
+- **Effect on FLTKAda**: before `layout (rows, cols)` makes the grid
+  smaller, `fl_grid_set_layout` (`body/c_fl_grid.cpp`) cuts every cell's
+  span to fit, including the cells the cut hides. A cell outside the new
+  size gets a span of 1. The spans stay cut if the grid grows again.
+- **Confirmed**: a scratch C++ program put a box in a 3 by 3 grid with
+  a span of 3 by 3, cut the grid to 1 by 1, and called `layout ()`.
+  Valgrind found 4 invalid reads in `Fl_Grid::layout ()`
+  (`Fl_Grid.cxx:471-477`), just past the blocks that `layout (1, 1)`
+  allocated. `test/unit/test_grid_range.adb` gives 6 invalid reads, at
+  `:472` and `:477`, with the shim's cut disabled, and none with it. Its
+  value checks pass either way, because the bytes read happened to be
+  harmless.
+
+### F6. `Fl_Text_Buffer::search_backward` never returns from past the end
+
+- **What happens**: `search_backward` with a start past `length ()`
+  loops forever, matching case or not. Seen 2026-11-03.
+- **Cause**: `Fl_Text_Buffer::prev_char_clipped` (`Fl_Text_Buffer.cxx:2072-2091`)
+  reads back through `byte_at`, which gives `'\0'` past the end. The
+  string it builds is then empty, and it returns the position it was
+  given. `prev_char` (`:2102-2106`) passes that on, and
+  `search_backward` (`:1342-1392`) steps with `prev_char` until the
+  position is below 0. `findchar_backward` clamps its start to the
+  length first (`:1838-1839`), and so does not loop.
+- **Effect on FLTKAda**: `fl_text_buffer_search_backward`
+  (`body/c_fl_text_buffer.cpp`) clamps the start to `length ()`, and
+  its own search, matching case, starts no later than the last place
+  the string fits. `Prev_Char` itself still returns a position past the
+  end unchanged, as FLTK does.
+- **Confirmed**: a scratch C++ program on a 3-character buffer:
+  `prev_char (4)`, `(5)` and `(6)` return 4, 5 and 6, and
+  `search_backward (20, "a", ...)` timed out, with `matchCase` 0 and 1.
+  `word_start`, `line_start`, `rewind_lines` and `findchar_backward`
+  return from 20. `test/unit/test_text_search.adb` hung at its first
+  backward search from past the end before the clamp.
+
+
+### F7. The PNG, JPEG and PNM loaders size the image as an `int`
+
+- **What happens**: a PNG or JPEG whose header claims more than
+  `INT_MAX` bytes of image makes `new` throw out of the constructor.
+  Through `extern "C"` the C++ exception reached Ada as
+  `SYSTEM.EXCEPTIONS.FOREIGN_EXCEPTION`, after unwinding through
+  libpng's C frames. Seen 2026-11-03.
+- **Cause**: each loader checks the size against `max_size ()` as a
+  `size_t` (`Fl_PNG_Image.cxx:217`, `Fl_JPEG_Image.cxx:323`,
+  `Fl_PNM_Image.cxx:133`), then allocates `new uchar[w() * h() * d()]`, an
+  `int` product (`:218`, `:324`, `:139`). `max_size` is unlimited by
+  default (`Fl_Image.cxx:335`), so the check passes and the product
+  overflows. `Fl_BMP_Image.cxx:280-285` and `Fl_ICO_Image.cxx:193` have
+  the same shape.
+- **Effect on FLTKAda**: the root package's elaboration
+  (`body/fltk.adb`) sets `max_size` to `int'Last` if it is larger, so the
+  check refuses the file with `ERR_FORMAT`, and `Create` raises
+  `Format_Error`. `RGB.Set_Max_Size` raises `Constraint_Error` for a
+  value over `int'Last`. Every image constructor and copy in the shim also
+  catches C++ exceptions and returns null, which raises `Storage_Error`.
+- **Confirmed**: `test/images/huge.png` (65535 by 65535 RGBA) and
+  `huge.jpg` (an 8 by 8 JPEG with its frame header changed to 65500 by
+  65500), in `test_image_crafted`. A scratch program with HEAD's PNG
+  shim got `FOREIGN_EXCEPTION` for `huge.png`. That wasn't tried for the
+  JPEG. With the shim's `catch` but without the cap, both files, from a
+  file and from memory, raise `Storage_Error`. With the cap, FLTK prints
+  "too large or contains errors" and both raise `Format_Error`.
+
+### F8. An image read from memory with a name joins the shared pool, unowned
+
+- **What happens**: `Fl_PNG_Image`, `Fl_JPEG_Image` or `Fl_SVG_Image`
+  made from memory with a non-null name is put in the shared image pool
+  under that name. When the image is deleted, the pool's entry is left
+  pointing at it, and `Fl_Shared_Image::find` of the name returns an
+  entry whose image is freed. Seen 2026-11-03.
+- **Cause**: each loader does `new Fl_Shared_Image (name, this)` and
+  `add ()` (`Fl_PNG_Image.cxx:239-242`, `Fl_JPEG_Image.cxx:341-344`,
+  `Fl_SVG_Image.cxx:299-302`). That constructor sets `alloc_image_` to 0
+  (`Fl_Shared_Image.cxx:133-146`), so the entry never deletes the image,
+  and the image's destructor doesn't take itself out of the pool
+  (`Fl_Image.cxx:458-461`). The entry's reference is never released
+  either, so the entry lasts for the rest of the program.
+- **Effect on FLTKAda**: an empty `Name` is passed as `NULL`. For a
+  named image, the free function looks for an entry for it that doesn't
+  own it. If there is one, the entry is given the image and its
+  reference is released, so the image lasts while a `Shared_Image` found
+  by its name does (FLTKAda-BUGS.md 56).
+- **Confirmed**: `test_image_names` under valgrind. Before the fix, 44
+  invalid reads in `Fl_Shared_Image::desaturate` of an entry for a freed
+  PNG, and the pool grew by 2 for one unnamed PNG and one unnamed JPEG.
+  After it, none, and the pool is as it was once the images go.
+
+### F9. A second `begin_job` leaks the first job's Cairo surface
+
+- **What happens**: under Pango, `Fl_PostScript_File_Device::begin_job`
+  on a device whose job hasn't ended makes a new Cairo surface and
+  context, and the first job's are never freed. Seen 2026-11-03.
+- **Cause**: `start_postscript` sets `cairo_` from
+  `init_cairo_postscript` without looking at the one it replaces
+  (`Fl_PostScript.cxx:1537`). Only `end_job` destroys it.
+- **Effect on FLTKAda**: a leak of about 10 KB a time, not a memory
+  error. The shim's own stream for the first job is closed when the
+  second starts, and the leaked surface never writes to it again.
+  FLTKAda doesn't refuse a second `Start_Job` yet. pofltk 103 tried a
+  second job after the first ended, which is clean.
+- **Confirmed**: a scratch program calling `Start_Job` twice on one
+  `Postscript_File_Device`, under valgrind on Xvfb: 10,622 bytes
+  definitely lost from `_cairo_ps_surface_create_for_stream_internal`
+  through `start_postscript`, no invalid reads, and the file was written.

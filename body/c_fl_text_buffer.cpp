@@ -4,6 +4,7 @@
 //  Released into the public domain
 
 
+#include <cstring>
 #include <FL/Fl_Text_Buffer.H>
 #include "c_fl_text_buffer.h"
 
@@ -245,12 +246,57 @@ int fl_text_buffer_findchar_backward(TEXTBUFFER tb, int start, unsigned int item
     return static_cast<Fl_Text_Buffer*>(tb)->findchar_backward(start, item, found);
 }
 
-int fl_text_buffer_search_forward(TEXTBUFFER tb, int start, const char * item, int * found, int mcase) {
-    return static_cast<Fl_Text_Buffer*>(tb)->search_forward(start, item, found, mcase);
+//  With matchCase set, FLTK's search_forward and search_backward compare
+//  the needle with memcmp(sp, address(bp), l), and never check bp against
+//  length() (Fl_Text_Buffer.cxx:1312, 1364), so they read past the text
+//  (pofltk 36).  That search is done here instead, a byte at a time with
+//  byte_at.  A string of whole UTF-8 characters can only match at the start
+//  of a character, so this finds what FLTK's would.  Without matchCase FLTK
+//  reads through char_at, which checks.  Forward from length() FLTK finds
+//  nothing, not even an empty string, and so does this.
+
+static int search_exact(const Fl_Text_Buffer * tb, int start, const char * item, int * found,
+                        bool backward) {
+    int n = static_cast<int>(std::strlen(item));
+    int last = tb->length() - n;
+    int p = start;
+    if (backward) {
+        if (p > last) { p = last; }
+    } else if (p >= tb->length()) {
+        return 0;
+    }
+    for (; p >= 0 && p <= last; p += backward ? -1 : 1) {
+        int i = 0;
+        while (i < n && tb->byte_at(p + i) == item[i]) { ++i; }
+        if (i == n) {
+            *found = p;
+            return 1;
+        }
+    }
+    return 0;
 }
 
+int fl_text_buffer_search_forward(TEXTBUFFER tb, int start, const char * item, int * found, int mcase) {
+    Fl_Text_Buffer *buffer = static_cast<Fl_Text_Buffer*>(tb);
+    if (mcase) {
+        return search_exact(buffer, start, item, found, false);
+    }
+    return buffer->search_forward(start, item, found, 0);
+}
+
+//  From past length(), prev_char returns the position it is given
+//  (Fl_Text_Buffer.cxx:2072-2091), so FLTK's search_backward never ends
+//  there (FLTK-issues.md F6).  The start is clamped to length() first.
+
 int fl_text_buffer_search_backward(TEXTBUFFER tb, int start, const char * item, int * found, int mcase) {
-    return static_cast<Fl_Text_Buffer*>(tb)->search_backward(start, item, found, mcase);
+    Fl_Text_Buffer *buffer = static_cast<Fl_Text_Buffer*>(tb);
+    if (mcase) {
+        return search_exact(buffer, start, item, found, true);
+    }
+    if (start > buffer->length()) {
+        start = buffer->length();
+    }
+    return buffer->search_backward(start, item, found, 0);
 }
 
 

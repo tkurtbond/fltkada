@@ -11,8 +11,12 @@
 
 
 XPMIMAGE new_fl_xpm_image(const char * f) {
-    Fl_XPM_Image *j = new Fl_XPM_Image(f);
-    return j;
+    try {
+        Fl_XPM_Image *j = new Fl_XPM_Image(f);
+        return j;
+    } catch (...) {
+        return 0;
+    }
 }
 
 void free_fl_xpm_image(XPMIMAGE j) {

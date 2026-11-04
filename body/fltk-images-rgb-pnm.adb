@@ -61,6 +61,9 @@ package body FLTK.Images.RGB.PNM is
             return This : PNM_Image do
                 This.Void_Ptr := new_fl_pnm_image
                    (Interfaces.C.To_C (Filename));
+                if This.Void_Ptr = Null_Pointer then
+                    raise Storage_Error with "no memory for a PNM_Image";
+                end if;
                 Raise_Fail_Errors (This);
             end return;
         end Create;

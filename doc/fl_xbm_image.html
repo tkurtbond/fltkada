@@ -56,7 +56,9 @@ Fl_XBM_Image(const char *filename);
 function Create
        (Filename : in String)
     return XBM_Image;
-</pre></td>
+</pre>A file without a width and a height, or without every byte of the bits,
+raises Format_Error, and one that can't be read raises File_Access_Error
+(pofltk 81).</td>
   </tr>
 
 </table>

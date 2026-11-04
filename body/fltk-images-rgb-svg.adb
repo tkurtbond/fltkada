@@ -153,6 +153,9 @@ package body FLTK.Images.RGB.SVG is
             return This : SVG_Image do
                 This.Void_Ptr := new_fl_svg_image
                    (Interfaces.C.To_C (Filename));
+                if This.Void_Ptr = Null_Pointer then
+                    raise Storage_Error with "no memory for an SVG_Image";
+                end if;
                 Raise_Fail_Errors (This);
             end return;
         end Create;
@@ -167,6 +170,9 @@ package body FLTK.Images.RGB.SVG is
                 This.Void_Ptr := new_fl_svg_image2
                    (Interfaces.C.To_C (Name),
                     Interfaces.C.To_C (Data));
+                if This.Void_Ptr = Null_Pointer then
+                    raise Storage_Error with "no memory for an SVG_Image";
+                end if;
                 Raise_Fail_Errors (This);
             end return;
         end Create;
@@ -184,6 +190,9 @@ package body FLTK.Images.RGB.SVG is
                      then Storage.To_Integer (Data (Data'First)'Address)
                      else Null_Pointer),
                     Interfaces.C.size_t (Data'Length));
+                if This.Void_Ptr = Null_Pointer then
+                    raise Storage_Error with "no memory for an SVG_Image";
+                end if;
                 Raise_Fail_Errors (This);
             end return;
         end Create;
@@ -209,6 +218,9 @@ package body FLTK.Images.RGB.SVG is
                    (This.Void_Ptr,
                     Interfaces.C.int (Width),
                     Interfaces.C.int (Height));
+            if Copied.Void_Ptr = Null_Pointer then
+                raise Storage_Error with "no memory for an SVG_Image";
+            end if;
         end return;
     end Copy;
 
@@ -219,6 +231,9 @@ package body FLTK.Images.RGB.SVG is
     begin
         return Copied : SVG_Image do
             Copied.Void_Ptr := fl_svg_image_copy2 (This.Void_Ptr);
+            if Copied.Void_Ptr = Null_Pointer then
+                raise Storage_Error with "no memory for an SVG_Image";
+            end if;
         end return;
     end Copy;
 

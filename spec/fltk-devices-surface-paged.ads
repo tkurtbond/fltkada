@@ -132,6 +132,16 @@ package FLTK.Devices.Surface.Paged is
            (This             : in out Paged_Device;
             Delta_X, Delta_Y : in     Integer);
 
+    --  Rotate and Scale raise Constraint_Error for a NaN or an infinity, and
+    --  Scale for a Factor or Factor_X of 0; a Factor_Y of 0 is Factor_X, as
+    --  in FLTK.  Untranslate raises Constraint_Error unless there is a
+    --  Translate on this page it hasn't undone.  Cairo, which draws PostScript
+    --  and prints under Pango, refuses them, and FLTK's End_Job then uses a
+    --  file it has closed (pofltk 101).
+    --  Set_Origin, Rotate, Scale and Translate raise Page_Error outside a page
+    --  (Start_Page .. End_Page).  Under Pango they undo Cairo states that
+    --  Start_Page saves, and with no job FLTK uses a null Cairo context
+    --  (pofltk 103).
     procedure Untranslate
            (This : in out Paged_Device);
 
@@ -160,7 +170,29 @@ package FLTK.Devices.Surface.Paged is
 private
 
 
-    type Paged_Device is new Surface_Device with null record;
+    type Paged_Device is new Surface_Device with record
+        Shifts  : Natural := 0;      --  Translates on this page not undone
+        In_Page : Boolean := False;  --  Between Start_Page and End_Page
+    end record;
+
+    --  Raise Constraint_Error for what Cairo refuses (pofltk 101).
+    procedure Check_Rotation
+           (Degrees : in Float);
+
+    procedure Check_Scale
+           (Factor_X, Factor_Y : in Float);
+
+    procedure Check_Untranslate
+           (This : in Paged_Device'Class);
+
+    --  Raise Page_Error for Scale, Rotate, Set_Origin and Translate outside
+    --  a page, and Constraint_Error for the Media format (pofltk 103).
+    procedure Check_In_Page
+           (This : in Paged_Device'Class;
+            What : in String);
+
+    procedure Check_Format
+           (Format : in Page_Format);
 
     overriding procedure Finalize
            (This : in out Paged_Device);

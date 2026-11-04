@@ -13,7 +13,9 @@
 #include <FL/fl_draw.H>
 #include <FL/Fl_Graphics_Driver.H>
 #include <FL/Fl_Window.H>
+#include <FL/Fl_Widget_Surface.H>
 #include "c_fl_draw.h"
+#include "c_fl_static.h"
 
 
 
@@ -190,6 +192,7 @@ int fl_draw_size() {
 }
 
 void fl_draw_set_font(unsigned int f, int s) {
+    fl_static_grow_fonts(static_cast<int>(f));
     fl_font((Fl_Font)f, (Fl_Fontsize)s);
 }
 
@@ -204,6 +207,7 @@ int fl_draw_descent() {
 }
 
 int fl_draw_height2(unsigned int f, int s) {
+    fl_static_grow_fonts(static_cast<int>(f));
     return fl_height(f, s);
 }
 
@@ -289,8 +293,62 @@ int fl_draw_draw_pixmap(void * data, int x, int y, unsigned int h) {
     return fl_draw_pixmap(static_cast<char * const *>(data), x, y, static_cast<Fl_Color>(h));
 }
 
+//  The size of what is drawn on: a shown window that is current, or a
+//  surface such as an Fl_Image_Surface.  False if nothing is, or its size
+//  can't be told.
+static bool drawn_on(int &w, int &h) {
+    Fl_Surface_Device *d = Fl_Surface_Device::surface();
+    if (d != Fl_Display_Device::display_device()) {
+        Fl_Widget_Surface *s = dynamic_cast<Fl_Widget_Surface*>(d);
+        return s != 0 && s->printable_rect(&w, &h) == 0;
+    }
+    Fl_Window *c = Fl_Window::current();
+    for (Fl_Window *o = Fl::first_window(); c != 0 && o != 0; o = Fl::next_window(o)) {
+        if (o == c) {
+            w = c->w();
+            h = c->h();
+            return true;
+        }
+    }
+    return false;
+}
+
+//  fl_read_image doesn't clip: X11 writes past its image, and Wayland reads
+//  past its buffer, for a rectangle partly or wholly outside what is drawn
+//  on, and what is read is stretched to the size asked for (pofltk 127).
+//  So only the part inside is read, and put in its place in data, which is
+//  w * h pixels, all zero elsewhere.  0 if nothing is drawn on, or FLTK
+//  couldn't read it.
 void * fl_draw_read_image(void * data, int x, int y, int w, int h, int alpha) {
-    return fl_read_image(static_cast<uchar*>(data), x, y, w, h, alpha);
+    int sw, sh;
+    if (!drawn_on(sw, sh)) {
+        return 0;
+    }
+    uchar *out = static_cast<uchar*>(data);
+    int depth = alpha ? 4 : 3;
+    if (w <= 0 || h <= 0) {
+        return out;
+    }
+    std::memset(out, 0, static_cast<size_t>(w) * h * depth);
+    int left = x < 0 ? 0 : x;
+    int top = y < 0 ? 0 : y;
+    int right = x < sw - w ? x + w : sw;
+    int bottom = y < sh - h ? y + h : sh;
+    if (right <= left || bottom <= top) {
+        return out;
+    }
+    int cw = right - left, ch = bottom - top;
+    uchar *part = fl_read_image(0, left, top, cw, ch, alpha);
+    if (part == 0) {
+        return 0;
+    }
+    for (int r = 0; r < ch; r++) {
+        std::memcpy(out + ((static_cast<size_t>(top - y + r) * w) + (left - x)) * depth,
+            part + static_cast<size_t>(r) * cw * depth,
+            static_cast<size_t>(cw) * depth);
+    }
+    delete[] part;
+    return out;
 }
 
 

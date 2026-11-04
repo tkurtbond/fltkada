@@ -27,6 +27,10 @@ package FLTK.Images.RGB is
     function Get_Max_Size
         return Size_Type;
 
+    --  The largest image, in bytes, that FLTK's loaders accept; a larger
+    --  one fails with Format_Error.  At most Interfaces.C.int'Last, and
+    --  that by default, since FLTK sizes the image as an int
+    --  (FLTK-issues.md, F7).  A larger Value raises Constraint_Error.
     procedure Set_Max_Size
            (Value : in Size_Type);
 

@@ -38,8 +38,12 @@ RGBIMAGE new_fl_rgb_image(void *data, int w, int h, int d, int ld) {
 }
 
 RGBIMAGE new_fl_rgb_image2(void *pix, unsigned int c) {
-    Fl_RGB_Image *rgb = new Fl_RGB_Image(static_cast<Fl_Pixmap*>(pix), c);
-    return rgb;
+    try {
+        Fl_RGB_Image *rgb = new Fl_RGB_Image(static_cast<Fl_Pixmap*>(pix), c);
+        return rgb;
+    } catch (...) {
+        return 0;
+    }
 }
 
 void free_fl_rgb_image(RGBIMAGE i) {
@@ -55,12 +59,20 @@ void fl_rgb_image_set_max_size(size_t v) {
 }
 
 RGBIMAGE fl_rgb_image_copy(RGBIMAGE i, int w, int h) {
-    //  virtual so disable dispatch
-    return static_cast<Fl_RGB_Image*>(i)->Fl_RGB_Image::copy(w, h);
+    try {
+        //  virtual so disable dispatch
+        return static_cast<Fl_RGB_Image*>(i)->Fl_RGB_Image::copy(w, h);
+    } catch (...) {
+        return 0;
+    }
 }
 
 RGBIMAGE fl_rgb_image_copy2(RGBIMAGE i) {
-    return static_cast<Fl_RGB_Image*>(i)->copy();
+    try {
+        return static_cast<Fl_RGB_Image*>(i)->copy();
+    } catch (...) {
+        return 0;
+    }
 }
 
 

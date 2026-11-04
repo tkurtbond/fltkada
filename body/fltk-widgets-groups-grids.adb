@@ -601,6 +601,11 @@ package body FLTK.Widgets.Groups.Grids is
             Align       : in     Grid_Alignment := Grid_Fill)
         return Boolean is
     begin
+        --  Fl_Grid::widget makes a cell one past the last row or column
+        --  (Fl_Grid.cxx:834-842, pofltk 21).
+        if Row > This.Get_Rows or Column > This.Get_Columns then
+            return False;
+        end if;
         return fl_grid_set_widget
            (This.Void_Ptr,
             Item.Void_Ptr,
@@ -631,6 +636,14 @@ package body FLTK.Widgets.Groups.Grids is
             Align                 : in     Grid_Alignment := Grid_Fill)
         return Boolean is
     begin
+        --  Fl_Grid::layout reads the rows and columns a span covers
+        --  (Fl_Grid.cxx:470-478), so the span must fit as well (pofltk 21).
+        if Row > This.Get_Rows or Column > This.Get_Columns
+            or Row_Span > This.Get_Rows - Row + 1
+            or Column_Span > This.Get_Columns - Column + 1
+        then
+            return False;
+        end if;
         return fl_grid_set_widget2
            (This.Void_Ptr,
             Item.Void_Ptr,

@@ -32,8 +32,12 @@ public:
 //  Flattened C API
 
 IMAGE new_fl_image(int w, int h, int d) {
-    Fl_Image *i = new Fl_Image(w, h, d);
-    return i;
+    try {
+        Fl_Image *i = new Fl_Image(w, h, d);
+        return i;
+    } catch (...) {
+        return 0;
+    }
 }
 
 void free_fl_image(IMAGE i) {
@@ -60,12 +64,20 @@ void fl_image_set_scaling_algorithm(int t) {
 }
 
 IMAGE fl_image_copy(IMAGE i, int w, int h) {
-    //  virtual so disable dispatch
-    return static_cast<Fl_Image*>(i)->Fl_Image::copy(w, h);
+    try {
+        //  virtual so disable dispatch
+        return static_cast<Fl_Image*>(i)->Fl_Image::copy(w, h);
+    } catch (...) {
+        return 0;
+    }
 }
 
 IMAGE fl_image_copy2(IMAGE i) {
-    return static_cast<Fl_Image*>(i)->copy();
+    try {
+        return static_cast<Fl_Image*>(i)->copy();
+    } catch (...) {
+        return 0;
+    }
 }
 
 

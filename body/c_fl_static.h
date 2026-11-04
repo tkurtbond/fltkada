@@ -76,6 +76,7 @@ extern "C" void fl_static_set_color3(unsigned int c,
     unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 
 
+extern "C" void fl_static_grow_fonts(int f);
 extern "C" const char * fl_static_get_font(int f);
 extern "C" const char * fl_static_get_font_name(int f);
 extern "C" void fl_static_set_font(int t, int f);

@@ -7,7 +7,6 @@
 with
 
     Ada.Assertions,
-    Ada.Unchecked_Deallocation,
     FLTK.Hook_Exceptions,
     FLTK.Pixmap_Marshal,
     Interfaces.C.Pointers,
@@ -882,14 +881,6 @@ package body FLTK.Draw is
     end Font_Height;
 
 
-    type Char_Array_Access is access Interfaces.C.char_array;
-
-    procedure Free_Char_Array is new Ada.Unchecked_Deallocation
-       (Object => Interfaces.C.char_array,
-        Name   => Char_Array_Access);
-
-    Current_Dashes : Char_Array_Access;
-
     procedure Set_Line_Style
            (Line   : in Line_Kind      := Solid_Line;
             Cap    : in Cap_Kind       := Default_Cap;
@@ -897,20 +888,31 @@ package body FLTK.Draw is
             Width  : in Natural        := 0;
             Dashes : in Dash_Gap_Array := Empty_Dashes) is
     begin
-        Free_Char_Array (Current_Dashes);
-        Current_Dashes := new Interfaces.C.char_array (1 .. (Dashes'Length + 1) * 2);
-        for Index in Integer range 1 .. Dashes'Length loop
-            Current_Dashes (2 * Interfaces.C.size_t (Index) - 1) :=
-                Interfaces.C.char'Val (Integer (Dashes (Index).Solid));
-            Current_Dashes (2 * Interfaces.C.size_t (Index)) :=
-                Interfaces.C.char'Val (Integer (Dashes (Index).Blank));
-        end loop;
-        Current_Dashes (Current_Dashes'Last - 1) := Interfaces.C.char'Val (0);
-        Current_Dashes (Current_Dashes'Last) := Interfaces.C.char'Val (0);
-        fl_draw_line_style
-           (Line_Kind'Pos (Line) + Cap_Kind'Pos (Cap) * 16#100# + Join_Kind'Pos (Join) * 16#1000#,
-            Interfaces.C.int (Width),
-            Current_Dashes.all);
+        --  FLTK copies the pattern into linedash_[256], unchecked
+        --  (Fl_Cairo_Graphics_Driver.cxx:317-319; pofltk 136).
+        if Dashes'Length > Max_Dash_Gaps then
+            raise Constraint_Error with "more than" & Integer'Image (Max_Dash_Gaps)
+                & " dash gaps:" & Integer'Image (Dashes'Length);
+        end if;
+        --  No driver keeps the pointer: Cairo and PostScript copy the
+        --  pattern, SVG duplicates it, and Xlib uses it at once
+        --  (FLTKAda-BUGS.md 59), so it is built on the stack.
+        declare
+            Pattern : Interfaces.C.char_array (1 .. (Dashes'Length + 1) * 2) :=
+                (others => Interfaces.C.char'Val (0));
+        begin
+            for Index in Integer range 1 .. Dashes'Length loop
+                Pattern (2 * Interfaces.C.size_t (Index) - 1) :=
+                    Interfaces.C.char'Val (Integer (Dashes (Index).Solid));
+                Pattern (2 * Interfaces.C.size_t (Index)) :=
+                    Interfaces.C.char'Val (Integer (Dashes (Index).Blank));
+            end loop;
+            fl_draw_line_style
+               (Line_Kind'Pos (Line) + Cap_Kind'Pos (Cap) * 16#100#
+                    + Join_Kind'Pos (Join) * 16#1000#,
+                Interfaces.C.int (Width),
+                Pattern);
+        end;
     end Set_Line_Style;
 
 
@@ -1025,6 +1027,20 @@ package body FLTK.Draw is
 
     --  Image Drawing  --
 
+    --  True while an image-line function runs.  FLTK's Xlib drawing keeps
+    --  its image and buffer in statics, and the binding keeps the line
+    --  function in a variable, so no Draw_Image may run inside one
+    --  (pofltk 133).
+    In_Image_Line : Boolean := False;
+
+    procedure Check_Not_In_Image_Line is
+    begin
+        if In_Image_Line then
+            raise Draw_Error with "Draw_Image or Draw_Image_Mono inside an image-line function";
+        end if;
+    end Check_Not_In_Image_Line;
+
+
     procedure Draw_Image
            (X, Y, W, H      : in Integer;
             Data            : in Color_Component_Array;
@@ -1036,6 +1052,7 @@ package body FLTK.Draw is
         Real_Depth : Integer := Depth;
         Real_Line_Data : Integer := Line_Size;
     begin
+        Check_Not_In_Image_Line;
         if Flip_Horizontal then
             Real_Depth := Real_Depth * (-1);
         end if;
@@ -1087,10 +1104,13 @@ package body FLTK.Draw is
         if Line_Raised then
             Data_Buffer := (others => 0);
         else
+            In_Image_Line := True;
             Image_Func_Ptr (Integer (X), Integer (Y), Data_Buffer);
+            In_Image_Line := False;
         end if;
     exception
     when Occurrence : others =>
+        In_Image_Line := False;
         Line_Raised := True;
         Data_Buffer := (others => 0);
         Hook_Exceptions.Save (Occurrence);
@@ -1101,6 +1121,7 @@ package body FLTK.Draw is
             Callback   : in Image_Draw_Function;
             Depth      : in Positive := 3) is
     begin
+        Check_Not_In_Image_Line;
         Image_Func_Ptr := Callback;
         Image_Depth := Depth;
         Line_Raised := False;
@@ -1127,6 +1148,7 @@ package body FLTK.Draw is
         Real_Depth : Integer := Depth;
         Real_Line_Data : Integer := Line_Size;
     begin
+        Check_Not_In_Image_Line;
         if Flip_Horizontal then
             Real_Depth := Real_Depth * (-1);
         end if;
@@ -1172,10 +1194,13 @@ package body FLTK.Draw is
         if Line_Raised then
             Data_Buffer := (others => 0);
         else
+            In_Image_Line := True;
             Mono_Image_Func_Ptr (Integer (X), Integer (Y), Data_Buffer);
+            In_Image_Line := False;
         end if;
     exception
     when Occurrence : others =>
+        In_Image_Line := False;
         Line_Raised := True;
         Data_Buffer := (others => 0);
         Hook_Exceptions.Save (Occurrence);
@@ -1186,6 +1211,7 @@ package body FLTK.Draw is
             Callback   : in Image_Draw_Function;
             Depth      : in Positive := 1) is
     begin
+        Check_Not_In_Image_Line;
         Mono_Image_Func_Ptr := Callback;
         Mono_Image_Depth := Depth;
         Line_Raised := False;
@@ -1246,15 +1272,17 @@ package body FLTK.Draw is
             Interfaces.C.int (W),
             Interfaces.C.int (H),
             Interfaces.C.int (Alpha));
-        pragma Assert
-           ((if Result'Length > 0
-             then Buffer = Storage.To_Integer (Result (Result'First)'Address)
-             else Buffer = Null_Pointer));
+        if Result'Length = 0 then
+            return Result;
+        elsif Buffer = Null_Pointer then
+            raise Draw_Error with
+                "Read_Image with nothing drawn on, or that FLTK couldn't read";
+        elsif Buffer /= Storage.To_Integer (Result (Result'First)'Address) then
+            raise Internal_FLTK_Error with
+                "fl_read_image returned unexpected address value that did not " &
+                "correspond to supplied address value";
+        end if;
         return Result;
-    exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "fl_read_image returned unexpected address value that did not " &
-        "correspond to supplied address value";
     end Read_Image;
 
 

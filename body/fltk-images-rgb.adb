@@ -191,6 +191,9 @@ package body FLTK.Images.RGB is
                 This.Void_Ptr := new_fl_rgb_image2
                    (Wrapper (Data).Void_Ptr,
                     Interfaces.C.unsigned (Background));
+                if This.Void_Ptr = Null_Pointer then
+                    raise Storage_Error with "no memory for an RGB_Image";
+                end if;
             end return;
         end Create;
 
@@ -215,6 +218,9 @@ package body FLTK.Images.RGB is
     procedure Set_Max_Size
            (Value : in Size_Type) is
     begin
+        if Value > Size_Type (Interfaces.C.int'Last) then
+            raise Constraint_Error with "Max_Size over Integer'Last:" & Size_Type'Image (Value);
+        end if;
         fl_rgb_image_set_max_size (Interfaces.C.size_t (Value));
     end Set_Max_Size;
 
@@ -233,6 +239,9 @@ package body FLTK.Images.RGB is
                    (This.Void_Ptr,
                     Interfaces.C.int (Width),
                     Interfaces.C.int (Height));
+            if Copied.Void_Ptr = Null_Pointer then
+                raise Storage_Error with "no memory for an RGB_Image";
+            end if;
         end return;
     end Copy;
 
@@ -243,6 +252,9 @@ package body FLTK.Images.RGB is
     begin
         return Copied : RGB_Image do
             Copied.Void_Ptr := fl_rgb_image_copy2 (This.Void_Ptr);
+            if Copied.Void_Ptr = Null_Pointer then
+                raise Storage_Error with "no memory for an RGB_Image";
+            end if;
         end return;
     end Copy;
 

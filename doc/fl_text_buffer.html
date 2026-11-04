@@ -699,6 +699,8 @@ int search_backward(int startPos, const char *searchString,
     int *foundPos, int matchCase=0) const;
 </pre></td>
 <td><pre>
+--  Matching case, the binding searches.  A start past the end is
+--  taken as the end.
 function Search_Backward
        (This       : in     Text_Buffer;
         Start_At   : in     Position;
@@ -715,6 +717,7 @@ int search_forward(int startPos, const char *searchString,
     int *foundPos, int matchCase=0) const;
 </pre></td>
 <td><pre>
+--  Matching case, the binding searches.
 function Search_Forward
        (This       : in     Text_Buffer;
         Start_At   : in     Position;

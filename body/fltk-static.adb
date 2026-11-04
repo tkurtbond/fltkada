@@ -1183,7 +1183,7 @@ package body FLTK.Static is
            (Kind : in Font_Kind)
         return String is
     begin
-        --  should never get a null string in return since it's from an enum
+        --  The shim gives "" for an empty slot, never null.
         return Interfaces.C.Strings.Value (fl_static_get_font (Font_Kind'Pos (Kind)));
     end Font_Image;
 
@@ -1192,7 +1192,7 @@ package body FLTK.Static is
            (Kind : in Font_Kind)
         return String is
     begin
-        --  should never get a null string in return since it's from an enum
+        --  The shim gives "" for an empty slot, never null.
         return Interfaces.C.Strings.Value (fl_static_get_font_name (Font_Kind'Pos (Kind)));
     end Font_Family_Image;
 
@@ -1210,13 +1210,29 @@ package body FLTK.Static is
     end Set_Font_Kind;
 
 
+    --  FLTK copies a name into fontname[128], and keeps its last byte for
+    --  the font's type (Fl_Cairo_Graphics_Driver.cxx:1176-1182), so a name
+    --  is cut to 126 bytes, before a UTF-8 character that would cross that
+    --  (pofltk 130).
+    Longest_Font_Name : constant := 126;
+
     procedure Set_Font_Kind
            (Target : in Font_Kind;
             Source : in String)
     is
-        Old : Interfaces.C.Strings.chars_ptr := Font_Overrides (Target);
+        Old  : Interfaces.C.Strings.chars_ptr := Font_Overrides (Target);
+        Last : Natural := Source'Last;
     begin
-        Font_Overrides (Target) := Interfaces.C.Strings.New_String (Source);
+        if Source'Length > Longest_Font_Name then
+            Last := Source'First + Longest_Font_Name - 1;
+            while Last >= Source'First
+                and then Character'Pos (Source (Last + 1)) in 16#80# .. 16#BF#
+            loop
+                Last := Last - 1;
+            end loop;
+        end if;
+        Font_Overrides (Target) := Interfaces.C.Strings.New_String
+            (Source (Source'First .. Last));
         fl_static_set_font2 (Font_Kind'Pos (Target), Font_Overrides (Target));
         Interfaces.C.Strings.Free (Old);
     end Set_Font_Kind;

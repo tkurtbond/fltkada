@@ -80,8 +80,32 @@ void free_fl_grid(GRID g) {
 
 
 
+//  Fl_Grid::layout (int, int) keeps a cell's span when it cuts the grid
+//  smaller, and Fl_Grid::layout () then reads past the rows and columns
+//  (FLTK-issues.md F5).  Every cell, including those the cut hides, is cut
+//  to fit first.  Fl_Grid::cell finds only the cells inside the grid, which
+//  is all of them while every span fits.
 void fl_grid_set_layout(GRID g, int r, int c, int m, int p) {
-    static_cast<Fl_Grid*>(g)->layout(r, c, m, p);
+    Fl_Grid *grid = static_cast<Fl_Grid*>(g);
+    if (r > 0 && c > 0 && (r < grid->rows() || c < grid->cols())) {
+        for (int row = 0; row < grid->rows(); row++) {
+            for (int col = 0; col < grid->cols(); col++) {
+                Fl_Grid::Cell *cell = grid->cell(row, col);
+                if (cell == 0) {
+                    continue;
+                }
+                int rows_left = row < r ? r - row : 1;
+                int cols_left = col < c ? c - col : 1;
+                if (cell->rowspan() > rows_left) {
+                    cell->rowspan(static_cast<short>(rows_left));
+                }
+                if (cell->colspan() > cols_left) {
+                    cell->colspan(static_cast<short>(cols_left));
+                }
+            }
+        }
+    }
+    grid->layout(r, c, m, p);
 }
 
 void fl_grid_layout(GRID g) {

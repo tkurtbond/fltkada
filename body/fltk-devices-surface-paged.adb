@@ -389,6 +389,8 @@ package body FLTK.Devices.Surface.Paged is
     procedure End_Job
            (This : in out Paged_Device) is
     begin
+        This.In_Page := False;
+        This.Shifts := 0;
         fl_paged_device_end_job (This.Void_Ptr);
     end End_Job;
 
@@ -396,15 +398,19 @@ package body FLTK.Devices.Surface.Paged is
     procedure Start_Page
            (This : in out Paged_Device) is
     begin
+        This.Shifts := 0;
         if fl_paged_device_start_page (This.Void_Ptr) /= 0 then
             raise Page_Error;
         end if;
+        This.In_Page := True;
     end Start_Page;
 
 
     procedure End_Page
            (This : in out Paged_Device) is
     begin
+        This.In_Page := False;
+        This.Shifts := 0;
         if fl_paged_device_end_page (This.Void_Ptr) /= 0 then
             raise Page_Error;
         end if;
@@ -452,6 +458,7 @@ package body FLTK.Devices.Surface.Paged is
            (This : in out Paged_Device;
             X, Y : in     Integer) is
     begin
+        Check_In_Page (This, "Set_Origin");
         fl_paged_device_set_origin
            (This.Void_Ptr,
             Interfaces.C.int (X),
@@ -463,6 +470,8 @@ package body FLTK.Devices.Surface.Paged is
            (This    : in out Paged_Device;
             Degrees : in     Float) is
     begin
+        Check_Rotation (Degrees);
+        Check_In_Page (This, "Rotate");
         fl_paged_device_rotate (This.Void_Ptr, Interfaces.C.C_float (Degrees));
     end Rotate;
 
@@ -471,6 +480,8 @@ package body FLTK.Devices.Surface.Paged is
            (This   : in out Paged_Device;
             Factor : in     Float) is
     begin
+        Check_Scale (Factor, 0.0);
+        Check_In_Page (This, "Scale");
         fl_paged_device_scale (This.Void_Ptr, Interfaces.C.C_float (Factor), 0.0);
     end Scale;
 
@@ -479,6 +490,8 @@ package body FLTK.Devices.Surface.Paged is
            (This               : in out Paged_Device;
             Factor_X, Factor_Y : in     Float) is
     begin
+        Check_Scale (Factor_X, Factor_Y);
+        Check_In_Page (This, "Scale");
         fl_paged_device_scale
            (This.Void_Ptr,
             Interfaces.C.C_float (Factor_X),
@@ -490,6 +503,8 @@ package body FLTK.Devices.Surface.Paged is
            (This             : in out Paged_Device;
             Delta_X, Delta_Y : in     Integer) is
     begin
+        Check_In_Page (This, "Translate");
+        This.Shifts := This.Shifts + 1;
         fl_paged_device_translate
            (This.Void_Ptr,
             Interfaces.C.int (Delta_X),
@@ -500,6 +515,8 @@ package body FLTK.Devices.Surface.Paged is
     procedure Untranslate
            (This : in out Paged_Device) is
     begin
+        Check_Untranslate (This);
+        This.Shifts := This.Shifts - 1;
         fl_paged_device_untranslate (This.Void_Ptr);
     end Untranslate;
 
@@ -550,6 +567,58 @@ package body FLTK.Devices.Surface.Paged is
             Interfaces.C.int (Offset_X),
             Interfaces.C.int (Offset_Y));
     end Print_Window_Part;
+
+
+    --  Checks  --
+
+    procedure Check_Rotation
+           (Degrees : in Float) is
+    begin
+        if not Degrees'Valid then
+            raise Constraint_Error with "a rotation that isn't a number";
+        end if;
+    end Check_Rotation;
+
+
+    procedure Check_Scale
+           (Factor_X, Factor_Y : in Float) is
+    begin
+        if not Factor_X'Valid or not Factor_Y'Valid then
+            raise Constraint_Error with "a scale that isn't a number";
+        elsif Factor_X = 0.0 then
+            raise Constraint_Error with "a scale of 0";
+        end if;
+    end Check_Scale;
+
+
+    procedure Check_Untranslate
+           (This : in Paged_Device'Class) is
+    begin
+        if This.Shifts = 0 then
+            raise Constraint_Error with "Untranslate with no Translate on this page to undo";
+        end if;
+    end Check_Untranslate;
+
+
+    procedure Check_In_Page
+           (This : in Paged_Device'Class;
+            What : in String) is
+    begin
+        if not This.In_Page then
+            raise Page_Error with What & " outside a page (Start_Page .. End_Page)";
+        end if;
+    end Check_In_Page;
+
+
+    procedure Check_Format
+           (Format : in Page_Format) is
+    begin
+        if Format = Media then
+            raise Constraint_Error with "Media is not a page size";
+        end if;
+    end Check_Format;
+
+
 
 
 end FLTK.Devices.Surface.Paged;

@@ -309,6 +309,10 @@ package FLTK.Text_Buffers is
             Found_At :    out Position)
         return Boolean;
 
+    --  With Match_Case the binding does the search itself, since FLTK's
+    --  reads past the text.  Search_Backward takes a start past the end as
+    --  the end.
+
     function Search_Forward
            (This       : in     Text_Buffer;
             Start_At   : in     Position;

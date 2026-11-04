@@ -40,12 +40,20 @@ void free_fl_bitmap(BITMAP b) {
 }
 
 BITMAP fl_bitmap_copy(BITMAP b, int w, int h) {
-    //  virtual so disable dispatch
-    return static_cast<Fl_Bitmap*>(b)->Fl_Bitmap::copy(w, h);
+    try {
+        //  virtual so disable dispatch
+        return static_cast<Fl_Bitmap*>(b)->Fl_Bitmap::copy(w, h);
+    } catch (...) {
+        return 0;
+    }
 }
 
 BITMAP fl_bitmap_copy2(BITMAP b) {
-    return static_cast<Fl_Bitmap*>(b)->copy();
+    try {
+        return static_cast<Fl_Bitmap*>(b)->copy();
+    } catch (...) {
+        return 0;
+    }
 }
 
 

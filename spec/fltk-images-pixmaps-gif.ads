@@ -17,6 +17,8 @@ package FLTK.Images.Pixmaps.GIF is
 
     package Forge is
 
+        --  A GIF whose sizes or LZW codes FLTK would follow past its
+        --  buffers raises Format_Error, from a file or from memory.
         function Create
                (Filename : in String)
             return GIF_Image;

@@ -28,12 +28,6 @@ extern "C" char * filename_setext(char * to, int tolen, const char * ext);
 extern "C" int filename_open_uri(const char * uri, char * msg, int msglen);
 
 
-extern "C" int filename_alphasort(char * a, char * b);
-extern "C" int filename_casealphasort(char * a, char * b);
-extern "C" int filename_numericsort(char * a, char * b);
-extern "C" int filename_casenumericsort(char * a, char * b);
-
-
 #endif
 
 

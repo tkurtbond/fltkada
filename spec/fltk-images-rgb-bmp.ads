@@ -17,6 +17,8 @@ package FLTK.Images.RGB.BMP is
 
     package Forge is
 
+        --  A header FLTK would read or write past, with over 256 colors, a
+        --  depth that isn't one or an absurd size, raises Format_Error.
         function Create
                (Filename : in String)
             return BMP_Image;

@@ -5,16 +5,116 @@
 
 
 #include <FL/Fl_PostScript.H>
+#include <cerrno>
+#include <cstdio>
+#include <unistd.h>
 #include "c_fl_postscript_file_device.h"
 
 
 
 
-//  Making available protected methods
+//  A job given a file writes through a Sink.  Under Pango, on any error
+//  from Cairo, FLTK's end_job fcloses the stream it was given and then
+//  writes to it (Fl_PostScript.cxx:1956-1959; pofltk 101).  So FLTK gets a
+//  stream of the shim's, which tells Cairo every write worked, so that a
+//  failed write is no Cairo error, and remembers that one failed.  The Sink
+//  writes to its own copy of the file's descriptor, so the program's FILE
+//  is never touched, and can be closed before the job ends.
+//
+//  Derived from pofltk (BSD 3-Clause, copyright T. Kurt Bond), whose
+//  author releases this derived work into the public domain, as FLTKAda is.
 
-class My_PostScript_File_Device : Fl_PostScript_File_Device {
+struct Sink {
+    int fd;       //  the copy of the file's descriptor, or -1
+    bool failed;  //  a write failed
+    bool closed;  //  FLTK closed the stream: Cairo had an error
+};
+
+static size_t sink_put(Sink *s, const char *p, size_t n) {
+    size_t done = 0;
+    while (s->fd >= 0 && !s->failed && done < n) {
+        ssize_t w = write(s->fd, p + done, n - done);
+        if (w > 0) {
+            done += static_cast<size_t>(w);
+        } else if (w < 0 && errno == EINTR) {
+            continue;
+        } else {
+            s->failed = true;
+        }
+    }
+    return n;
+}
+
+#if defined(__linux__)
+
+static ssize_t sink_write(void *c, const char *p, size_t n) {
+    return static_cast<ssize_t>(sink_put(static_cast<Sink*>(c), p, n));
+}
+
+static int sink_close(void *c) {
+    static_cast<Sink*>(c)->closed = true;
+    return 0;
+}
+
+static FILE * sink_open(Sink *s) {
+    cookie_io_functions_t f = {0, sink_write, 0, sink_close};
+    return fopencookie(s, "w", f);
+}
+
+#else
+
+static int sink_write(void *c, const char *p, int n) {
+    return static_cast<int>(sink_put(static_cast<Sink*>(c), p, static_cast<size_t>(n)));
+}
+
+static int sink_close(void *c) {
+    static_cast<Sink*>(c)->closed = true;
+    return 0;
+}
+
+static FILE * sink_open(Sink *s) {
+    return funopen(s, 0, sink_write, 0, sink_close);
+}
+
+#endif
+
+
+
+
+//  Making available protected methods, and keeping the Sink
+
+class My_PostScript_File_Device : public Fl_PostScript_File_Device {
 public:
     using Fl_PostScript_File_Device::driver;
+
+    FILE *stream;  //  the Sink's stream, given to FLTK, or 0
+    Sink sink;
+
+    My_PostScript_File_Device() : stream(0) {
+        sink.fd = -1;
+        sink.failed = sink.closed = false;
+    }
+
+    //  Closes the stream and the Sink's descriptor, once.  0 if all was
+    //  written, 1 if a write failed, 2 if Cairo had an error.
+    int close_stream() {
+        bool by_fltk = sink.closed;
+        if (stream != 0 && !by_fltk) {
+            fclose(stream);
+        }
+        stream = 0;
+        if (sink.fd >= 0 && close(sink.fd) != 0) {
+            sink.failed = true;
+        }
+        sink.fd = -1;
+        int result = by_fltk ? 2 : sink.failed ? 1 : 0;
+        sink.failed = sink.closed = false;
+        return result;
+    }
+
+    ~My_PostScript_File_Device() {
+        close_stream();
+    }
 };
 
 
@@ -23,12 +123,12 @@ public:
 //  Flattened C API
 
 POSTSCRIPTFILEDEVICE new_fl_postscript_file_device(void) {
-    Fl_PostScript_File_Device *p = new Fl_PostScript_File_Device();
+    My_PostScript_File_Device *p = new My_PostScript_File_Device();
     return p;
 }
 
 void free_fl_postscript_file_device(POSTSCRIPTFILEDEVICE p) {
-    delete static_cast<Fl_PostScript_File_Device*>(p);
+    delete static_cast<My_PostScript_File_Device*>(p);
 }
 
 
@@ -46,7 +146,7 @@ void fl_postscript_file_device_set_file_chooser_title(const char * v) {
 
 
 void * fl_postscript_file_device_get_driver(POSTSCRIPTFILEDEVICE p) {
-    return (static_cast<Fl_PostScript_File_Device*>(p)->*(&My_PostScript_File_Device::driver))();
+    return static_cast<My_PostScript_File_Device*>(p)->driver();
 }
 
 
@@ -60,9 +160,21 @@ int fl_postscript_file_device_start_job2(POSTSCRIPTFILEDEVICE p, int c, int * f,
     return static_cast<Fl_PostScript_File_Device*>(p)->Fl_Paged_Device::start_job(c, f, t);
 }
 
+//  3 if the stream can't be made.
 int fl_postscript_file_device_start_job3(POSTSCRIPTFILEDEVICE p, void * o, int c, int f, int l) {
-    return static_cast<Fl_PostScript_File_Device*>(p)->start_job
-        (static_cast<FILE*>(o),
+    My_PostScript_File_Device *d = static_cast<My_PostScript_File_Device*>(p);
+    FILE *out = static_cast<FILE*>(o);
+    d->close_stream();
+    if (fflush(out) != 0 || (d->sink.fd = dup(fileno(out))) < 0) {
+        return 3;
+    }
+    d->stream = sink_open(&d->sink);
+    if (d->stream == 0) {
+        d->close_stream();
+        return 3;
+    }
+    return d->start_job
+        (d->stream,
          c,
          static_cast<Fl_Paged_Device::Page_Format>(f),
          static_cast<Fl_Paged_Device::Page_Layout>(l));
@@ -75,8 +187,11 @@ int fl_postscript_file_device_start_job4(POSTSCRIPTFILEDEVICE p, int c, int f, i
         static_cast<Fl_Paged_Device::Page_Layout>(l));
 }
 
-void fl_postscript_file_device_end_job(POSTSCRIPTFILEDEVICE p) {
-    static_cast<Fl_PostScript_File_Device*>(p)->end_job();
+//  For a job given a file, 1 if a write failed, 2 if Cairo had an error.
+int fl_postscript_file_device_end_job(POSTSCRIPTFILEDEVICE p) {
+    My_PostScript_File_Device *d = static_cast<My_PostScript_File_Device*>(p);
+    d->end_job();
+    return d->close_stream();
 }
 
 int fl_postscript_file_device_start_page(POSTSCRIPTFILEDEVICE p) {

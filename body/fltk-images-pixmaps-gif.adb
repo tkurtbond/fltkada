@@ -94,6 +94,9 @@ package body FLTK.Images.Pixmaps.GIF is
             return This : GIF_Image do
                 This.Void_Ptr := new_fl_gif_image
                    (Interfaces.C.To_C (Filename));
+                if This.Void_Ptr = Null_Pointer then
+                    raise Storage_Error with "no memory for a GIF_Image";
+                end if;
                 Raise_Fail_Errors (This);
             end return;
         end Create;
@@ -111,6 +114,9 @@ package body FLTK.Images.Pixmaps.GIF is
                      then Storage.To_Integer (Data (Data'First)'Address)
                      else Null_Pointer),
                     Interfaces.C.size_t (Data'Length));
+                if This.Void_Ptr = Null_Pointer then
+                    raise Storage_Error with "no memory for a GIF_Image";
+                end if;
                 Raise_Fail_Errors (This);
             end return;
         end Create;

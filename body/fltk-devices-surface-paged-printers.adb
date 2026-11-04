@@ -849,6 +849,8 @@ package body FLTK.Devices.Surface.Paged.Printers is
     procedure End_Job
            (This : in out Printer) is
     begin
+        This.In_Page := False;
+        This.Shifts := 0;
         fl_printer_end_job (This.Void_Ptr);
     end End_Job;
 
@@ -856,15 +858,19 @@ package body FLTK.Devices.Surface.Paged.Printers is
     procedure Start_Page
            (This : in out Printer) is
     begin
+        This.Shifts := 0;
         if fl_printer_start_page (This.Void_Ptr) /= 0 then
             raise Page_Error;
         end if;
+        This.In_Page := True;
     end Start_Page;
 
 
     procedure End_Page
            (This : in out Printer) is
     begin
+        This.In_Page := False;
+        This.Shifts := 0;
         if fl_printer_end_page (This.Void_Ptr) /= 0 then
             raise Page_Error;
         end if;
@@ -912,6 +918,7 @@ package body FLTK.Devices.Surface.Paged.Printers is
            (This : in out Printer;
             X, Y : in     Integer) is
     begin
+        Check_In_Page (This, "Set_Origin");
         fl_printer_set_origin
            (This.Void_Ptr,
             Interfaces.C.int (X),
@@ -923,6 +930,8 @@ package body FLTK.Devices.Surface.Paged.Printers is
            (This    : in out Printer;
             Degrees : in     Float) is
     begin
+        Check_Rotation (Degrees);
+        Check_In_Page (This, "Rotate");
         fl_printer_rotate (This.Void_Ptr, Interfaces.C.C_float (Degrees));
     end Rotate;
 
@@ -931,6 +940,8 @@ package body FLTK.Devices.Surface.Paged.Printers is
            (This   : in out Printer;
             Factor : in     Float) is
     begin
+        Check_Scale (Factor, 0.0);
+        Check_In_Page (This, "Scale");
         fl_printer_scale (This.Void_Ptr, Interfaces.C.C_float (Factor), 0.0);
     end Scale;
 
@@ -939,6 +950,8 @@ package body FLTK.Devices.Surface.Paged.Printers is
            (This               : in out Printer;
             Factor_X, Factor_Y : in     Float) is
     begin
+        Check_Scale (Factor_X, Factor_Y);
+        Check_In_Page (This, "Scale");
         fl_printer_scale
            (This.Void_Ptr,
             Interfaces.C.C_float (Factor_X),
@@ -950,6 +963,8 @@ package body FLTK.Devices.Surface.Paged.Printers is
            (This             : in out Printer;
             Delta_X, Delta_Y : in     Integer) is
     begin
+        Check_In_Page (This, "Translate");
+        This.Shifts := This.Shifts + 1;
         fl_printer_translate
            (This.Void_Ptr,
             Interfaces.C.int (Delta_X),
@@ -960,6 +975,8 @@ package body FLTK.Devices.Surface.Paged.Printers is
     procedure Untranslate
            (This : in out Printer) is
     begin
+        Check_Untranslate (This);
+        This.Shifts := This.Shifts - 1;
         fl_printer_untranslate (This.Void_Ptr);
     end Untranslate;
 

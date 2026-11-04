@@ -56,7 +56,8 @@ Fl_BMP_Image(const char *filename);
 function Create
        (Filename : in String)
     return BMP_Image;
-</pre></td>
+</pre>A header FLTK would read or write past, with over 256 colors, a depth
+that isn't one or an absurd size, raises Format_Error (pofltk 87).</td>
   </tr>
 
 </table>

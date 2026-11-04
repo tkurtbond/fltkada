@@ -432,7 +432,8 @@ procedure Draw_Image
 with Pre => (if Line_Size = 0
     then Data'Length >= Size_Type (W) * Size_Type (H) * Size_Type (Depth)
     else Data'Length >= Size_Type (Line_Size) * Size_Type (H));
-</pre></td>
+</pre>
+<p>Raises Draw_Error inside an image-line function: FLTK's Xlib drawing keeps its image and buffer in statics, which the inner image would spoil or free (pofltk 133).</p></td>
   </tr>
 
   <tr>
@@ -445,7 +446,8 @@ procedure Draw_Image
        (X, Y, W, H : in Integer;
         Callback   : in Image_Draw_Function;
         Depth      : in Positive := 3);
-</pre></td>
+</pre>
+<p>Raises Draw_Error inside an image-line function: FLTK's Xlib drawing keeps its image and buffer in statics, which the inner image would spoil or free (pofltk 133).</p></td>
   </tr>
 
   <tr>
@@ -464,7 +466,8 @@ procedure Draw_Image_Mono
 with Pre => (if Line_Size = 0
     then Data'Length >= Size_Type (W) * Size_Type (H) * Size_Type (Depth)
     else Data'Length >= Size_Type (Line_Size) * Size_Type (H));
-</pre></td>
+</pre>
+<p>Raises Draw_Error inside an image-line function: FLTK's Xlib drawing keeps its image and buffer in statics, which the inner image would spoil or free (pofltk 133).</p></td>
   </tr>
 
   <tr>
@@ -477,7 +480,8 @@ procedure Draw_Image_Mono
        (X, Y, W, H : in Integer;
         Callback   : in Image_Draw_Function;
         Depth      : in Positive := 1);
-</pre></td>
+</pre>
+<p>Raises Draw_Error inside an image-line function: FLTK's Xlib drawing keeps its image and buffer in statics, which the inner image would spoil or free (pofltk 133).</p></td>
   </tr>
 
   <tr>
@@ -690,7 +694,12 @@ procedure Set_Line_Style
         Join   : in Join_Kind      := Default_Join;
         Width  : in Natural        := 0;
         Dashes : in Dash_Gap_Array := Empty_Dashes);
-</pre></td>
+</pre>
+<p>A dash or gap is 1 to 127 pixels, and there may be at most
+Max_Dash_Gaps (127) pairs; more raise Constraint_Error.  FLTK copies
+the pattern into an array of 256 chars unchecked, and a char over 127
+is negative, which draws no line on Cairo (pofltk 136).  FLTK's OpenGL
+drawing ignores a pattern.</p></td>
   </tr>
 
   <tr>
@@ -932,7 +941,8 @@ with Post =>
    (if Alpha = 0
     then Read_Image'Result'Length = Size_Type (W) * Size_Type (H) * 3
     else Read_Image'Result'Length = Size_Type (W) * Size_Type (H) * 4);
-</pre></td>
+</pre>
+<p>Only the part inside the window or surface drawn on is read. The rest of the result is zeros, where FLTK would read or write outside its buffers (pofltk 127). Raises Draw_Error if nothing is drawn on, or FLTK couldn't read it.</p></td>
   </tr>
 
   <tr>

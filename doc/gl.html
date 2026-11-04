@@ -158,7 +158,8 @@ void gl_draw(const char *, int n);
 <td><pre>
 procedure Draw_Text
        (Text : in String);
-</pre></td>
+</pre>
+<p>Text with no width, such as a line feed or a zero-width space, is not drawn: FLTK would crash making a texture 0 wide (pofltk 134).</p></td>
   </tr>
 
   <tr>
@@ -170,7 +171,8 @@ void gl_draw(const char *, int n, int x, int y);
 procedure Draw_Text
        (X, Y : in Integer;
         Text : in String);
-</pre></td>
+</pre>
+<p>Text with no width, such as a line feed or a zero-width space, is not drawn: FLTK would crash making a texture 0 wide (pofltk 134).</p></td>
   </tr>
 
   <tr>
@@ -182,7 +184,8 @@ void gl_draw(const char *, int n, float x, float y);
 procedure Draw_Text
        (X, Y : in Float;
         Text : in String);
-</pre></td>
+</pre>
+<p>Text with no width, such as a line feed or a zero-width space, is not drawn: FLTK would crash making a texture 0 wide (pofltk 134).</p></td>
   </tr>
 
   <tr>
@@ -195,7 +198,8 @@ procedure Draw_Text
        (X, Y, W, H : in Integer;
         Text       : in String;
         Align      : in Alignment);
-</pre></td>
+</pre>
+<p>Text with no width, such as a line feed or a zero-width space, is not drawn: FLTK would crash making a texture 0 wide (pofltk 134).</p></td>
   </tr>
 
   <tr>

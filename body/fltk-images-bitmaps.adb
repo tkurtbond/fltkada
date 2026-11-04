@@ -169,6 +169,9 @@ package body FLTK.Images.Bitmaps is
                (This.Void_Ptr,
                 Interfaces.C.int (Width),
                 Interfaces.C.int (Height));
+            if Copied.Void_Ptr = Null_Pointer then
+                raise Storage_Error with "no memory for a Bitmap";
+            end if;
         end return;
     end Copy;
 
@@ -179,6 +182,9 @@ package body FLTK.Images.Bitmaps is
     begin
         return Copied : Bitmap do
             Copied.Void_Ptr := fl_bitmap_copy2 (This.Void_Ptr);
+            if Copied.Void_Ptr = Null_Pointer then
+                raise Storage_Error with "no memory for a Bitmap";
+            end if;
         end return;
     end Copy;
 

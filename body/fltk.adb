@@ -12,6 +12,7 @@ with
 use type
 
     Interfaces.C.int,
+    Interfaces.C.size_t,
     Interfaces.C.unsigned,
     Interfaces.C.unsigned_char;
 
@@ -797,6 +798,33 @@ package body FLTK is
         return 0;
     end Run;
 
+
+
+
+    -------------------
+    --  Elaboration  --
+    -------------------
+
+    function fl_rgb_image_get_max_size
+        return Interfaces.C.size_t;
+    pragma Import (C, fl_rgb_image_get_max_size, "fl_rgb_image_get_max_size");
+
+    procedure fl_rgb_image_set_max_size
+           (V : in Interfaces.C.size_t);
+    pragma Import (C, fl_rgb_image_set_max_size, "fl_rgb_image_set_max_size");
+
+
+begin
+
+    --  FLTK's loaders size an image's array as an int, w () * h () * d ()
+    --  (Fl_PNG_Image.cxx:218, Fl_JPEG_Image.cxx:324, Fl_PNM_Image.cxx:139,
+    --  Fl_BMP_Image.cxx:285), after checking the size against max_size, which
+    --  is unlimited by default (Fl_Image.cxx:335).  A file that claims more
+    --  than int'Last bytes overflows the product, and new throws.  With
+    --  max_size at most int'Last, the check refuses it (FLTK-issues.md, F7).
+    if fl_rgb_image_get_max_size > Interfaces.C.size_t (Interfaces.C.int'Last) then
+        fl_rgb_image_set_max_size (Interfaces.C.size_t (Interfaces.C.int'Last));
+    end if;
 
 end FLTK;
 

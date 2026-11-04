@@ -394,7 +394,8 @@ void origin(int x, int y);
 procedure Set_Origin
        (This : in out Printer;
         X, Y : in     Integer);
-</pre></td>
+</pre>
+<p>Raises Page_Error outside a page (Start_Page .. End_Page): under Pango it unbalances Cairo's saved states, and with no job FLTK uses a null Cairo context (pofltk 103).</p></td>
   </tr>
 
   <tr>
@@ -442,7 +443,8 @@ void rotate(float angle);
 procedure Rotate
        (This    : in out Printer;
         Degrees : in     Float);
-</pre></td>
+</pre>
+<p>Raises Constraint_Error for a NaN or an infinity, which Cairo refuses (pofltk 101). Raises Page_Error outside a page (pofltk 103).</p></td>
   </tr>
 
   <tr>
@@ -457,7 +459,8 @@ procedure Scale
 procedure Scale
        (This               : in out Printer;
         Factor_X, Factor_Y : in     Float);
-</pre></td>
+</pre>
+<p>Raises Constraint_Error for a NaN, an infinity, or an X factor of 0, which Cairo refuses. A Y factor of 0 means the same as X, as in FLTK (pofltk 101). Raises Page_Error outside a page (pofltk 103).</p></td>
   </tr>
 
   <tr>
@@ -504,7 +507,8 @@ void translate(int x, int y);
 procedure Translate
        (This             : in out Printer;
         Delta_X, Delta_Y : in     Integer);
-</pre></td>
+</pre>
+<p>Raises Page_Error outside a page (Start_Page .. End_Page): under Pango it unbalances Cairo's saved states, and with no job FLTK uses a null Cairo context (pofltk 103).</p></td>
   </tr>
 
   <tr>
@@ -514,7 +518,8 @@ void untranslate(void);
 <td><pre>
 procedure Untranslate
        (This : in out Printer);
-</pre></td>
+</pre>
+<p>Raises Constraint_Error unless a Translate on this page is still to be undone. Cairo refuses an untranslate too many (pofltk 101).</p></td>
   </tr>
 
 </table>

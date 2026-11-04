@@ -200,12 +200,12 @@ package body FLTK.Images is
     is
         Result : constant Interfaces.C.int := fl_image_fail (This.Void_Ptr);
     begin
-        if Result = fl_image_err_no_image and This.Is_Empty then
-            raise No_Image_Error;
-        elsif Result = fl_image_err_file_access then
+        if Result = fl_image_err_file_access then
             raise File_Access_Error;
         elsif Result = fl_image_err_format then
             raise Format_Error;
+        elsif Result = fl_image_err_no_image and then This.Is_Empty then
+            raise No_Image_Error;
         end if;
     end Raise_Fail_Errors;
 
@@ -243,6 +243,9 @@ package body FLTK.Images is
                    (Interfaces.C.int (Width),
                     Interfaces.C.int (Height),
                     Interfaces.C.int (Depth));
+                if This.Void_Ptr = Null_Pointer then
+                    raise Storage_Error with "no memory for an Image";
+                end if;
             end return;
         end Create;
 
@@ -295,6 +298,9 @@ package body FLTK.Images is
                (This.Void_Ptr,
                 Interfaces.C.int (Width),
                 Interfaces.C.int (Height));
+            if Copied.Void_Ptr = Null_Pointer then
+                raise Storage_Error with "no memory for an Image";
+            end if;
         end return;
     end Copy;
 
@@ -305,6 +311,9 @@ package body FLTK.Images is
     begin
         return Copied : Image do
             Copied.Void_Ptr := fl_image_copy2 (This.Void_Ptr);
+            if Copied.Void_Ptr = Null_Pointer then
+                raise Storage_Error with "no memory for an Image";
+            end if;
         end return;
     end Copy;
 
@@ -347,7 +356,10 @@ package body FLTK.Images is
            (This : in Image)
         return Boolean is
     begin
-        return fl_image_count (This.Void_Ptr) = 0 or This.Get_W = 0 or This.Get_H = 0;
+        --  A Pixmap that failed is -1 wide (Fl_Pixmap.H:58-64).
+        return fl_image_count (This.Void_Ptr) = 0
+            or else fl_image_w (This.Void_Ptr) <= 0
+            or else fl_image_h (This.Void_Ptr) <= 0;
     end Is_Empty;
 
 

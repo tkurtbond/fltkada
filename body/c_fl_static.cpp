@@ -229,23 +229,54 @@ void fl_static_set_color3(unsigned int c, unsigned char r, unsigned char g, unsi
 
 
 
+//  FLTK's font table holds its 16 built-in fonts until Fl::set_font or
+//  Fl::set_fonts grows it (fl_set_font.cxx:45-68), so FL_FREE_FONT is past
+//  its end, and Fl::get_font reads garbage (pofltk 130).  The first time a
+//  font from FL_FREE_FONT on is used, this grows the table, with
+//  FL_FREE_FONT empty, as a slot the table grows by is.  A font is set to
+//  NULL safely only while its slot is empty
+//  (Fl_Cairo_Graphics_Driver.cxx:1157-1158), so Fl::set_fonts, which fills
+//  it, calls this first.  FLTK itself calls neither.  Growing the table
+//  opens the display (Fl_Cairo_Graphics_Driver.cxx:1269).
+void fl_static_grow_fonts(int f) {
+    static bool grown = false;
+    if (!grown && f >= FL_FREE_FONT) {
+        grown = true;
+        Fl::set_font(FL_FREE_FONT, static_cast<const char *>(0));
+    }
+}
+
+//  An empty slot's name is NULL, and Fl_Cairo_Graphics_Driver::get_font_name
+//  copies it before it tests it (Fl_Cairo_Graphics_Driver.cxx:1176).
+
 const char * fl_static_get_font(int f) {
-    return Fl::get_font(f);
+    fl_static_grow_fonts(f);
+    const char * n = Fl::get_font(f);
+    return n ? n : "";
 }
 
 const char * fl_static_get_font_name(int f) {
+    fl_static_grow_fonts(f);
+    const char * n = Fl::get_font(f);
+    if (n == 0 || *n == 0) {
+        return "";
+    }
     return Fl::get_font_name(f);
 }
 
 void fl_static_set_font(int t, int f) {
+    fl_static_grow_fonts(t);
+    fl_static_grow_fonts(f);
     Fl::set_font(static_cast<Fl_Font>(t), static_cast<Fl_Font>(f));
 }
 
 void fl_static_set_font2(int t, char * s) {
+    fl_static_grow_fonts(t);
     Fl::set_font(static_cast<Fl_Font>(t), s);
 }
 
 int fl_static_get_font_sizes(int f, int * &a) {
+    fl_static_grow_fonts(f);
     return Fl::get_font_sizes(static_cast<Fl_Font>(f),a);
 }
 
@@ -254,6 +285,7 @@ int fl_static_font_size_array_get(int * a, int i) {
 }
 
 int fl_static_set_fonts() {
+    fl_static_grow_fonts(FL_FREE_FONT);
     return Fl::set_fonts();
 }
 

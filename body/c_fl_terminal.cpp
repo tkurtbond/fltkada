@@ -5,7 +5,9 @@
 
 
 #include <FL/Fl_Terminal.H>
+#include <FL/fl_utf8.h>
 #include <cstdlib>
+#include <cstring>
 #include <string>
 #include "c_fl_terminal.h"
 #include "c_fl.h"
@@ -21,11 +23,38 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 
 
+//  Reaching a private member: an explicit instantiation may name it
+//  (pofltk's FlTerminal.cpp does the same)
+
+template <class Tag, typename Tag::type M> struct Reach {
+    friend typename Tag::type member(Tag) { return M; }
+};
+
+//  More cells than this are refused: a failed allocation would throw
+//  through the shim (pofltk 99)
+static const long long max_cells = 1LL << 24;
+
+
+
+
 //  Attaching all relevant hooks and friends
 
 class My_Terminal : public Fl_Terminal {
 public:
     using Fl_Terminal::Fl_Terminal;
+
+    struct Seq {
+        typedef EscapeSeq Fl_Terminal::*type;
+        friend type member(Seq);
+    };
+
+    //  The size setters and resize leave the cursor, and the place ESC[s
+    //  saved, where they were, on a screen that may now be smaller, and
+    //  the next character is written outside its row (pofltk 96).  This
+    //  puts both back on the screen; cursor_row and cursor_col clamp.
+    void fit();
+
+    void resize(int x, int y, int w, int h);
 
     //  Fl_Terminal::error_char only stores the pointer it is given,
     //  so the string it points to is kept alive here.
@@ -43,6 +72,30 @@ public:
     int handle(int e);
 };
 
+template struct Reach<My_Terminal::Seq, &Fl_Terminal::escseq>;
+
+void My_Terminal::fit() {
+    cursor_row(cursor_row());
+    cursor_col(cursor_col());
+    EscapeSeq &seq = this->*member(Seq());
+    int row, col;
+    seq.restore_cursor(row, col);
+    if (row >= 0 || col >= 0) {
+        if (row >= display_rows()) {
+            row = display_rows() - 1;
+        }
+        if (col >= display_columns()) {
+            col = display_columns() - 1;
+        }
+        seq.save_cursor(row, col);
+    }
+}
+
+void My_Terminal::resize(int x, int y, int w, int h) {
+    Fl_Terminal::resize(x, y, w, h);
+    fit();
+}
+
 void My_Terminal::draw() {
     widget_draw_hook(this->user_data());
 }
@@ -55,6 +108,34 @@ int My_Terminal::handle(int e) {
 
 
 //  Flattened C API
+
+int fl_terminal_fits(int rows, int hist, int cols) {
+    return rows >= 1 && hist >= 0 && cols >= 1 &&
+        (static_cast<long long>(rows) + hist) * cols <= max_cells;
+}
+
+//  One printable UTF-8 character of at most 4 bytes, since FLTK copies
+//  the error character into a cell of 4 bytes unchecked, and prints it
+//  with print_char, which sends a control character back to
+//  handle_unknown_char without end (pofltk 98)
+static bool one_character(const char * s) {
+    size_t len = strlen(s);
+    if (len < 1 || len > 4) {
+        return false;
+    }
+    if (static_cast<unsigned char>(s[0]) < 0x20 || s[0] == 0x7f) {
+        return false;
+    }
+    if (fl_utf8len(s[0]) != static_cast<int>(len)) {
+        return false;
+    }
+    for (size_t i = 1; i < len; i++) {
+        if ((s[i] & 0xC0) != 0x80) {
+            return false;
+        }
+    }
+    return true;
+}
 
 TERMINAL new_fl_terminal(int x, int y, int w, int h, char * label) {
     My_Terminal *t = new My_Terminal(x, y, w, h, label);
@@ -179,32 +260,53 @@ int fl_terminal_get_display_rows(TERMINAL t) {
     return static_cast<Fl_Terminal*>(t)->display_rows();
 }
 
-void fl_terminal_set_display_rows(TERMINAL t, int r) {
-    static_cast<Fl_Terminal*>(t)->display_rows(r);
+//  display_rows of 0 or less snaps back to what the height allows
+int fl_terminal_set_display_rows(TERMINAL t, int r) {
+    My_Terminal *m = static_cast<My_Terminal*>(t);
+    if (r >= 1 && !fl_terminal_fits(r, m->history_rows(), m->display_columns())) {
+        return 0;
+    }
+    m->display_rows(r);
+    m->fit();
+    return 1;
 }
 
 int fl_terminal_get_display_columns(TERMINAL t) {
     return static_cast<Fl_Terminal*>(t)->display_columns();
 }
 
-void fl_terminal_set_display_columns(TERMINAL t, int c) {
-    static_cast<Fl_Terminal*>(t)->display_columns(c);
+//  FLTK takes display_columns of 0 (pofltk 99)
+int fl_terminal_set_display_columns(TERMINAL t, int c) {
+    My_Terminal *m = static_cast<My_Terminal*>(t);
+    if (!fl_terminal_fits(m->display_rows(), m->history_rows(), c)) {
+        return 0;
+    }
+    m->display_columns(c);
+    m->fit();
+    return 1;
 }
 
 int fl_terminal_get_history_rows(TERMINAL t) {
     return static_cast<Fl_Terminal*>(t)->history_rows();
 }
 
-void fl_terminal_set_history_rows(TERMINAL t, int r) {
-    static_cast<Fl_Terminal*>(t)->history_rows(r);
+int fl_terminal_set_history_rows(TERMINAL t, int r) {
+    My_Terminal *m = static_cast<My_Terminal*>(t);
+    if (!fl_terminal_fits(m->display_rows(), r, m->display_columns())) {
+        return 0;
+    }
+    m->history_rows(r);
+    m->fit();
+    return 1;
 }
 
 int fl_terminal_get_history_lines(TERMINAL t) {
     return static_cast<Fl_Terminal*>(t)->history_lines();
 }
 
-void fl_terminal_set_history_lines(TERMINAL t, int l) {
-    static_cast<Fl_Terminal*>(t)->history_lines(l);
+//  history_lines is history_rows (Fl_Terminal.cxx:4141)
+int fl_terminal_set_history_lines(TERMINAL t, int l) {
+    return fl_terminal_set_history_rows(t, l);
 }
 
 int fl_terminal_get_history_use(TERMINAL t) {
@@ -250,10 +352,14 @@ const char * fl_terminal_get_error_char(TERMINAL t) {
     return static_cast<Fl_Terminal*>(t)->error_char();
 }
 
-void fl_terminal_set_error_char(TERMINAL t, const char * s) {
+int fl_terminal_set_error_char(TERMINAL t, const char * s) {
+    if (!one_character(s)) {
+        return 0;
+    }
     My_Terminal *m = static_cast<My_Terminal*>(t);
     m->error_store = s;
     m->error_char(m->error_store.c_str());
+    return 1;
 }
 
 int fl_terminal_get_output_translate(TERMINAL t) {
@@ -272,15 +378,24 @@ int fl_terminal_get_textfont(TERMINAL t) {
 }
 
 void fl_terminal_set_textfont(TERMINAL t, int f) {
-    static_cast<Fl_Terminal*>(t)->textfont(static_cast<Fl_Font>(f));
+    My_Terminal *m = static_cast<My_Terminal*>(t);
+    m->textfont(static_cast<Fl_Font>(f));
+    m->fit();
 }
 
 int fl_terminal_get_textsize(TERMINAL t) {
     return static_cast<Fl_Terminal*>(t)->textsize();
 }
 
-void fl_terminal_set_textsize(TERMINAL t, int s) {
-    static_cast<Fl_Terminal*>(t)->textsize(static_cast<Fl_Fontsize>(s));
+//  A text size of 0 divides by zero (pofltk 99)
+int fl_terminal_set_textsize(TERMINAL t, int s) {
+    if (s < 1) {
+        return 0;
+    }
+    My_Terminal *m = static_cast<My_Terminal*>(t);
+    m->textsize(static_cast<Fl_Fontsize>(s));
+    m->fit();
+    return 1;
 }
 
 unsigned int fl_terminal_get_textcolor(TERMINAL t) {
@@ -359,7 +474,9 @@ void fl_terminal_set_selectionbgcolor(TERMINAL t, unsigned int c) {
 
 
 void fl_terminal_set_box(TERMINAL t, int b) {
-    static_cast<Fl_Terminal*>(t)->box(static_cast<Fl_Boxtype>(b));
+    My_Terminal *m = static_cast<My_Terminal*>(t);
+    m->box(static_cast<Fl_Boxtype>(b));
+    m->fit();
 }
 
 
@@ -370,7 +487,9 @@ int fl_terminal_get_margin_left(TERMINAL t) {
 }
 
 void fl_terminal_set_margin_left(TERMINAL t, int m) {
-    static_cast<Fl_Terminal*>(t)->margin_left(m);
+    My_Terminal *n = static_cast<My_Terminal*>(t);
+    n->margin_left(m);
+    n->fit();
 }
 
 int fl_terminal_get_margin_right(TERMINAL t) {
@@ -378,7 +497,9 @@ int fl_terminal_get_margin_right(TERMINAL t) {
 }
 
 void fl_terminal_set_margin_right(TERMINAL t, int m) {
-    static_cast<Fl_Terminal*>(t)->margin_right(m);
+    My_Terminal *n = static_cast<My_Terminal*>(t);
+    n->margin_right(m);
+    n->fit();
 }
 
 int fl_terminal_get_margin_top(TERMINAL t) {
@@ -386,7 +507,9 @@ int fl_terminal_get_margin_top(TERMINAL t) {
 }
 
 void fl_terminal_set_margin_top(TERMINAL t, int m) {
-    static_cast<Fl_Terminal*>(t)->margin_top(m);
+    My_Terminal *n = static_cast<My_Terminal*>(t);
+    n->margin_top(m);
+    n->fit();
 }
 
 int fl_terminal_get_margin_bottom(TERMINAL t) {
@@ -394,7 +517,9 @@ int fl_terminal_get_margin_bottom(TERMINAL t) {
 }
 
 void fl_terminal_set_margin_bottom(TERMINAL t, int m) {
-    static_cast<Fl_Terminal*>(t)->margin_bottom(m);
+    My_Terminal *n = static_cast<My_Terminal*>(t);
+    n->margin_bottom(m);
+    n->fit();
 }
 
 
@@ -405,7 +530,9 @@ int fl_terminal_get_scrollbar_size(TERMINAL t) {
 }
 
 void fl_terminal_set_scrollbar_size(TERMINAL t, int s) {
-    static_cast<Fl_Terminal*>(t)->scrollbar_size(s);
+    My_Terminal *m = static_cast<My_Terminal*>(t);
+    m->scrollbar_size(s);
+    m->fit();
 }
 
 int fl_terminal_get_scrollbar_actual_size(TERMINAL t) {
@@ -417,8 +544,9 @@ int fl_terminal_get_hscrollbar_style(TERMINAL t) {
 }
 
 void fl_terminal_set_hscrollbar_style(TERMINAL t, int s) {
-    static_cast<Fl_Terminal*>(t)->hscrollbar_style(
-        static_cast<Fl_Terminal::ScrollbarStyle>(s));
+    My_Terminal *m = static_cast<My_Terminal*>(t);
+    m->hscrollbar_style(static_cast<Fl_Terminal::ScrollbarStyle>(s));
+    m->fit();
 }
 
 

@@ -6,34 +6,44 @@
 
 #include <FL/Fl_SVG_Image.H>
 #include "c_fl_svg_image.h"
+#include "c_fl_image_check.h"
 
 
 
 
 //  A non-null sharedname makes FLTK also register the image as an
-//  Fl_Shared_Image, so an empty name from Ada is passed on as NULL.
-
-static const char * null_if_empty(const char * n) {
-    return (n == 0 || *n == '\0') ? 0 : n;
-}
+//  Fl_Shared_Image, so an empty name from Ada is passed on as NULL
+//  (null_if_empty, c_fl_image_check.h).
 
 SVGIMAGE new_fl_svg_image(const char * f) {
-    Fl_SVG_Image *s = new Fl_SVG_Image(f);
-    return s;
+    try {
+        Fl_SVG_Image *s = new Fl_SVG_Image(f);
+        return s;
+    } catch (...) {
+        return 0;
+    }
 }
 
 SVGIMAGE new_fl_svg_image2(const char * n, const char * d) {
-    Fl_SVG_Image *s = new Fl_SVG_Image(null_if_empty(n), d);
-    return s;
+    try {
+        Fl_SVG_Image *s = new Fl_SVG_Image(null_if_empty(n), d);
+        return s;
+    } catch (...) {
+        return 0;
+    }
 }
 
 SVGIMAGE new_fl_svg_image3(const char * n, void * d, size_t l) {
-    Fl_SVG_Image *s = new Fl_SVG_Image(null_if_empty(n), static_cast<const unsigned char*>(d), l);
-    return s;
+    try {
+        Fl_SVG_Image *s = new Fl_SVG_Image(null_if_empty(n), static_cast<const unsigned char*>(d), l);
+        return s;
+    } catch (...) {
+        return 0;
+    }
 }
 
 void free_fl_svg_image(SVGIMAGE s) {
-    delete static_cast<Fl_SVG_Image*>(s);
+    delete_unless_pooled(static_cast<Fl_SVG_Image*>(s));
 }
 
 
@@ -59,11 +69,19 @@ void fl_svg_image_normalize(SVGIMAGE s) {
 
 
 SVGIMAGE fl_svg_image_copy(SVGIMAGE s, int w, int h) {
-    return static_cast<Fl_SVG_Image*>(s)->copy(w, h);
+    try {
+        return static_cast<Fl_SVG_Image*>(s)->copy(w, h);
+    } catch (...) {
+        return 0;
+    }
 }
 
 SVGIMAGE fl_svg_image_copy2(SVGIMAGE s) {
-    return static_cast<Fl_SVG_Image*>(s)->copy();
+    try {
+        return static_cast<Fl_SVG_Image*>(s)->copy();
+    } catch (...) {
+        return 0;
+    }
 }
 
 

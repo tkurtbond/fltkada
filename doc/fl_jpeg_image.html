@@ -61,14 +61,17 @@ function Create
 
   <tr>
 <td><pre>
-Fl_JPEG_Image(const char *name, const unsigned char *data);
+Fl_JPEG_Image(const char *name, const unsigned char *data,
+    int data_length=-1);
 </pre></td>
 <td><pre>
 function Create
        (Name : in String := "";
         Data : in Color_Component_Array)
     return JPEG_Image;
-</pre></td>
+</pre>A non-empty Name also shares the image under that name, while the
+image lasts (FLTK-issues.md F8). FLTK is given Data'Length, and reads no further
+(FLTKAda-BUGS.md 55).</td>
   </tr>
 
 </table>

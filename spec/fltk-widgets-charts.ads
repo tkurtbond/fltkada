@@ -44,6 +44,9 @@ package FLTK.Widgets.Charts is
 
     --  Data  --
 
+    --  An entry keeps 18 bytes of its Data_Label.  A longer one is cut
+    --  before the UTF-8 character that would cross the 18th byte, where FLTK
+    --  would cut inside it (pofltk 65).
     procedure Add
            (This       : in out Chart;
             Data_Value : in     Long_Float;

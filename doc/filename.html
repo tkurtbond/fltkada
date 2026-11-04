@@ -91,6 +91,7 @@ Max_Path_Length : constant Natural;
 int fl_alphasort(struct dirent **, struct dirent **);
 </pre></td>
 <td><pre>
+--  Done in Ada, by bytes, as strcmp compares.
 function Alpha_Sort
        (A, B : in String)
     return Comparison;
@@ -102,6 +103,8 @@ function Alpha_Sort
 int fl_casealphasort(struct dirent **, struct dirent **);
 </pre></td>
 <td><pre>
+--  Done in Ada, by bytes with ASCII case folded, as strcasecmp
+--  compares.
 function Case_Alpha_Sort
        (A, B : in String)
     return Comparison;
@@ -113,6 +116,7 @@ function Case_Alpha_Sort
 int fl_casenumericsort(struct dirent **, struct dirent **);
 </pre></td>
 <td><pre>
+--  Done in Ada, as Numeric_Sort, with case folded by fl_tolower.
 function Case_Numeric_Sort
        (A, B : in String)
     return Comparison;
@@ -159,7 +163,11 @@ function Expand
        (Name    : in     Path_String;
         Changed :    out Boolean)
     return Path_String;
-</pre></td>
+</pre>
+<p>The binding expands the name itself.  fl_filename_expand aborts when a
+value doesn't fit, and never ends when a value names itself (pofltk 120).
+Each value goes in once, and the result is cut short to
+Max_Path_Length&nbsp;-&nbsp;1 characters.</p></td>
   </tr>
 
   <tr>
@@ -186,9 +194,13 @@ int fl_filename_isdir(const char *name);
 </pre></td>
 <td><pre>
 function Is_Directory
-       (Name : in Path_String)
+       (Name : in String)
     return Boolean;
-</pre></td>
+</pre>
+<p>Name may be longer than Max_Path_Length.  The binding calls
+<code>stat</code> itself: fl_filename_isdir copies a name ending in a
+slash into a buffer of FL_PATH_MAX bytes, which a longer name overruns
+(pofltk 121).</p></td>
   </tr>
 
   <tr>
@@ -233,7 +245,10 @@ int fl_filename_match(const char *name, const char *pattern);
 function Match
        (Input, Pattern : in String)
     return Boolean;
-</pre></td>
+</pre>
+<p>A pattern may leave a bracket or a brace open.  fl_filename_match
+would read past its end (pofltk 122), so the binding passes it copies
+with NULs after them.</p></td>
   </tr>
 
   <tr>
@@ -280,6 +295,8 @@ function Set_Extension
 int fl_numericsort(struct dirent **, struct dirent **);
 </pre></td>
 <td><pre>
+--  Done in Ada, since fl_numericsort skips the character after a
+--  number.
 function Numeric_Sort
        (A, B : in String)
     return Comparison;

@@ -33,7 +33,10 @@ package FLTK.Draw is
         Round_Join,
         Bevel_Join);
 
-    type Dash_Length is new Integer range 1 .. 255;
+    --  A dash or gap is in pixels, not in multiples of the line width as the
+    --  Line_Kind dashes are.  FLTK passes the lengths as a C char, which is
+    --  signed on x86, so a length over 127 would be negative (pofltk 136).
+    type Dash_Length is new Integer range 1 .. 127;
 
     type Dash_Gap is record
         Solid : Dash_Length;
@@ -43,6 +46,11 @@ package FLTK.Draw is
     type Dash_Gap_Array is array (Positive range <>) of Dash_Gap;
 
     Empty_Dashes : constant Dash_Gap_Array (1 .. 0) := (others => (1, 1));
+
+    --  Cairo and PostScript copy a pattern into an array of 256 chars, so
+    --  Set_Line_Style raises Constraint_Error on more pairs than this
+    --  (pofltk 136).  FLTK's OpenGL drawing ignores a pattern.
+    Max_Dash_Gaps : constant := 127;
 
     type Image_Draw_Function is access procedure
            (X, Y : in     Natural;
@@ -253,6 +261,11 @@ package FLTK.Draw is
 
     --  Image Drawing  --
 
+    --  Each Draw_Image and Draw_Image_Mono raises Draw_Error inside an
+    --  Image_Draw_Function.  FLTK's Xlib drawing keeps its image and buffer
+    --  in statics, which the inner image would spoil, or free while the
+    --  outer one writes to them (pofltk 133).  The outer Draw_Image then
+    --  raises it, once FLTK returns.
     procedure Draw_Image
            (X, Y, W, H      : in Integer;
             Data            : in Color_Component_Array;
@@ -298,6 +311,12 @@ package FLTK.Draw is
             Ada.Strings.Unbounded.Length (Definition.Name) = Values.Per_Pixel) and
         Pixels'Length (2) = Values.Width * Values.Per_Pixel;
 
+    --  Only the part of the rectangle inside the window or surface drawn on
+    --  is read, into its place in the result, and the rest is zeros: FLTK
+    --  doesn't clip, and reads or writes outside its buffers (pofltk 127).
+    --  Raises Draw_Error if nothing is drawn on (a shown window that is
+    --  current, as in its Draw, or a surface such as an Image_Surface), or
+    --  FLTK couldn't read it.
     function Read_Image
            (X, Y, W, H : in Integer;
             Alpha      : in Integer := 0)

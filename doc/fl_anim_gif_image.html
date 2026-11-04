@@ -197,7 +197,8 @@ function Create
         Canvas   : in out FLTK.Widgets.Widget'Class;
         Flags    : in     Animation_Flags := No_Animation_Flags)
     return Animated_GIF_Image;
-</pre></td>
+</pre>A GIF that FLTK would read past, or one with a frame off its screen,
+isn't loaded: Is_Loaded is False and Fail_Code is -3 (pofltk 88).</td>
   </tr>
 
   <tr>

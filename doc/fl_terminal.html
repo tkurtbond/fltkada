@@ -202,7 +202,8 @@ function Create
         History    : in Integer;
         Text       : in String := &quot;&quot;)
     return Terminal;
-</pre></td>
+</pre>
+<p>Rows and Columns must be at least 1, History at least 0, and there must be no more than 2**24 cells; otherwise Constraint_Error is raised, rather than a failed allocation throwing through the shim. FLTK makes the history 100 rows whatever History says, so the cells are counted with at least that (pofltk 99).</p></td>
   </tr>
 
   <tr>
@@ -440,7 +441,8 @@ void display_columns(int val);
 procedure Set_Display_Columns
        (This : in out Terminal;
         To   : in     Natural);
-</pre></td>
+</pre>
+<p>Raises Constraint_Error on 0 columns, which FLTK takes, or on more than 2**24 cells. The cursor, and the place ESC[s saved, are moved back onto the screen after this and every size setter, and after a resize (pofltk 96, 99).</p></td>
   </tr>
 
   <tr>
@@ -462,7 +464,8 @@ void display_rows(int val);
 procedure Set_Display_Rows
        (This : in out Terminal;
         To   : in     Natural);
-</pre></td>
+</pre>
+<p>Raises Constraint_Error on more than 2**24 cells. 0 snaps back to what the height allows. The cursor, and the place ESC[s saved, are moved back onto the screen; FLTK leaves them where they were (pofltk 96).</p></td>
   </tr>
 
   <tr>
@@ -484,7 +487,8 @@ void error_char(const char *val);
 procedure Set_Error_Char
        (This : in out Terminal;
         To   : in     String);
-</pre></td>
+</pre>
+<p>Raises Constraint_Error unless To is one printable UTF-8 character: FLTK copies it into a cell of 4 bytes unchecked, and a control character recurses without end (pofltk 98). The binding keeps a copy, since FLTK keeps the pointer.</p></td>
   </tr>
 
   <tr>
@@ -518,7 +522,8 @@ void history_lines(int val);
 procedure Set_History_Lines
        (This : in out Terminal;
         To   : in     Natural);
-</pre></td>
+</pre>
+<p>The same as Set_History_Rows.</p></td>
   </tr>
 
   <tr>
@@ -540,7 +545,8 @@ void history_rows(int val);
 procedure Set_History_Rows
        (This : in out Terminal;
         To   : in     Natural);
-</pre></td>
+</pre>
+<p>Raises Constraint_Error on more than 2**24 cells (pofltk 99).</p></td>
   </tr>
 
   <tr>
@@ -1128,7 +1134,8 @@ void textsize(Fl_Fontsize val);
 procedure Set_Text_Size
        (This : in out Terminal;
         To   : in     Font_Size);
-</pre></td>
+</pre>
+<p>Raises Constraint_Error on 0, which divides by zero in FLTK (pofltk 99).</p></td>
   </tr>
 
   <tr>

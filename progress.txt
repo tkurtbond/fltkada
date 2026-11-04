@@ -363,6 +363,67 @@ pack no resizable, as Fl_Pack::clear does (pofltk 23, FLTKAda-BUGS.md 27,
 PLAN.md Phase 4).  Spinner's Set_Colors and format are still open
 (FLTKAda-BUGS.md 27)
 
+Grid: Set_Widget refuses a row or column just past the grid, which FLTK
+placed past its rows, and a span past the grid's edge (pofltk 21);
+Set_Layout cuts spans to fit a grid made smaller (FLTK-issues.md F5,
+PLAN.md Phase 5)
+
+Text_Buffer: Search_Forward and Search_Backward with Match_Case search in
+the shim, since FLTK's reads past the text (pofltk 36); Search_Backward
+from past the end clamps its start, since FLTK's never returns
+(FLTK-issues.md F6, PLAN.md Phase 5)
+
+Filenames: the four sorts are written in Ada, since fl_numericsort sorts
+wrongly (pofltk 63) and the shim cut names to 255 bytes (FLTKAda-BUGS.md
+52, PLAN.md Phase 5); Expand, Is_Directory and Match are done in the shim,
+since FLTK's abort, loop for ever, or overrun (pofltk 120 to 122)
+
+Fonts: Free_Font and the fonts after it are empty until set, rather than
+read past the end of FLTK's table, and a font name is cut to 126 bytes, at
+a whole UTF-8 character (pofltk 130, PLAN.md Phase 5)
+
+Draw: a dash pattern's lengths are 1 to 127, and more than 127 pairs
+raise Constraint_Error, rather than overrun FLTK's copy (pofltk 136)
+
+Terminal: the cursor and the saved place are kept on the screen after a
+size setter or resize; the error character must be one printable UTF-8
+character; a text size of 0, no columns, or more than 2**24 cells raise
+Constraint_Error (pofltk 96, 98, 99)
+
+PostScript: a job given a File_Type writes through the binding's own stream,
+so that FLTK can't close the file twice, and End_Job raises File_Write_Error
+if the file couldn't be written; Rotate, Scale and Untranslate raise
+Constraint_Error for what Cairo refuses (pofltk 101); Set_Origin, Rotate,
+Scale and Translate raise Page_Error outside a page, and Start_Job refuses
+the Media format with Constraint_Error (pofltk 103)
+
+Drawing: Draw_Image and Draw_Image_Mono raise Draw_Error inside an
+image-line function (pofltk 133, FLTKAda-BUGS.md 22)
+
+OpenGL: Draw_Text doesn't draw text with no width, which crashes FLTK
+(pofltk 134)
+
+Chart: a label longer than 18 bytes is cut before a UTF-8 character
+rather than inside it (pofltk 65)
+
+Drawing: Read_Image reads only the part inside the window or surface,
+and gives zeros for the rest; it raises Draw_Error with nothing drawn on
+(pofltk 127, FLTKAda-BUGS.md 58)
+
+Images: a BMP, ICO or GIF that FLTK would read or write past is refused
+with Format_Error, and an animation of one isn't loaded (pofltk 87, 88); a
+failed GIF or XPM raised Constraint_Error (FLTKAda-BUGS.md 53); a shared
+image of an unreadable file had no FLTK object (FLTKAda-BUGS.md 54); a
+PNG or JPEG over int'Last bytes is refused, since Max_Size is capped there
+(FLTK-issues.md F7); no C++ exception from an image constructor or copy
+crosses the shim (PLAN.md Phase 5); an XBM is read by the shim, which
+refuses a bad one, and its bits are freed (pofltk 81); a JPEG from memory
+was read past its end (FLTKAda-BUGS.md 55); a named PNG, JPEG or SVG
+from memory left the shared pool pointing at it when it went, and an
+unnamed PNG or JPEG was shared under "" (FLTK-issues.md F8,
+FLTKAda-BUGS.md 56); a Shared_Image made from an RGB_Image shares a copy
+(FLTKAda-BUGS.md 57)
+
 
 
 Incomplete APIs:

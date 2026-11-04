@@ -79,6 +79,10 @@ package FLTK.Widgets.Groups.Terminals is
                 Text       : in     String := "")
             return Terminal;
 
+        --  Rows and Columns must be at least 1 and History at least 0, and
+        --  the cells fit as the size setters' must, with a history of at
+        --  least 100 rows, which FLTK uses whatever History says (pofltk
+        --  99).  Otherwise Constraint_Error is raised.
         function Create
                (X, Y, W, H : in Integer;
                 Rows       : in Integer;
@@ -216,6 +220,14 @@ package FLTK.Widgets.Groups.Terminals is
 
     --  Sizes  --
 
+    --  The size setters raise Constraint_Error on more than 2**24 cells,
+    --  rows on the screen and in the history by columns, or on no columns
+    --  (pofltk 99).  After each of them, and the margin, font, box and
+    --  scrollbar setters, and a resize, the cursor and the place ESC[s
+    --  saved are moved back onto the screen; FLTK leaves them where they
+    --  were (pofltk 96).  Set_Display_Rows of 0 snaps back to what the
+    --  height allows.
+
     function Get_Display_Rows
            (This : in Terminal)
         return Natural;
@@ -293,6 +305,9 @@ package FLTK.Widgets.Groups.Terminals is
            (This : in Terminal)
         return String;
 
+    --  To must be one printable UTF-8 character, or Constraint_Error is
+    --  raised: FLTK copies it into a cell of 4 bytes unchecked, and a
+    --  control character recurses without end (pofltk 98).
     procedure Set_Error_Char
            (This : in out Terminal;
             To   : in     String);
@@ -322,6 +337,7 @@ package FLTK.Widgets.Groups.Terminals is
            (This : in Terminal)
         return Font_Size;
 
+    --  Raises Constraint_Error on 0, which divides by zero (pofltk 99).
     procedure Set_Text_Size
            (This : in out Terminal;
             To   : in     Font_Size);

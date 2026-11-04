@@ -167,7 +167,9 @@ function Create
        (Filename : in String;
         W, H     : in Integer)
     return Shared_Image;
-</pre></td>
+</pre>A file that can't be read, isn't an image, or that FLTK's loader can't
+load raises No_Image_Error. A BMP, ICO or GIF that FLTK would read past
+is refused before it is loaded (pofltk 87, 88).</td>
   </tr>
 
   <tr>
@@ -178,7 +180,7 @@ static Fl_Shared_Image * get(Fl_RGB_Image *rgb, int own_it=1);
 function Create
        (From : in FLTK.Images.RGB.RGB_Image'Class)
     return Shared_Image;
-</pre></td>
+</pre>Shares a copy of From, which may then go (FLTKAda-BUGS.md 57).</td>
   </tr>
 
   <tr>

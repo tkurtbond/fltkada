@@ -17,6 +17,8 @@ package FLTK.Images.Bitmaps.XBM is
 
     package Forge is
 
+        --  A file without a width and a height, or without every byte of the
+        --  bits, raises Format_Error (pofltk 81).
         function Create
                (Filename : in String)
             return XBM_Image;

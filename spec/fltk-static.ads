@@ -287,6 +287,9 @@ package FLTK.Static is
 
     --  Custom Fonts  --
 
+    --  Free_Font is empty, and its images are "", until it is set.  Using
+    --  it here, or in FLTK.Draw, first opens the display.  A widget's font
+    --  isn't checked: set Free_Font before a widget draws in it (pofltk 130).
     function Font_Image
            (Kind : in Font_Kind)
         return String;
@@ -298,6 +301,8 @@ package FLTK.Static is
     procedure Set_Font_Kind
            (Target, Source : in Font_Kind);
 
+    --  Source is cut to 126 bytes, before any UTF-8 character that would
+    --  cross that (pofltk 130).
     procedure Set_Font_Kind
            (Target : in Font_Kind;
             Source : in String);

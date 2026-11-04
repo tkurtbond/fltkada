@@ -19,6 +19,14 @@ package FLTK.Filenames is
            (A, B : in String)
         return Comparison;
 
+    --  The sorts are done in Ada.  Alpha_Sort compares bytes, as strcmp
+    --  does, and Case_Alpha_Sort folds ASCII case, as strcasecmp does.
+    --  Numeric_Sort compares runs of digits as numbers, leading zeros
+    --  aside, then what follows them, and other characters as code points;
+    --  a name comes before a longer one it starts.  Case_Numeric_Sort folds
+    --  case with fl_tolower.  FLTK's fl_numericsort skips the character
+    --  after a number (pofltk 63).
+
     function Alpha_Sort
            (A, B : in String)
         return Comparison;
@@ -86,6 +94,9 @@ package FLTK.Filenames is
             Changed :    out Boolean)
         return Path_String;
 
+    --  Expand puts each value in once, so a value naming itself doesn't
+    --  loop, and cuts the result short to Max_Path_Length - 1 characters,
+    --  where FLTK aborted (pofltk 120).
     function Expand
            (Name : in Path_String)
         return Path_String;
@@ -118,8 +129,9 @@ package FLTK.Filenames is
 
     --  Directories  --
 
+    --  Name may be longer than Max_Path_Length (pofltk 121).
     function Is_Directory
-           (Name : in Path_String)
+           (Name : in String)
         return Boolean;
 
     function Get_Listing

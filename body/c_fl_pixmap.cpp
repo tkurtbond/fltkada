@@ -11,8 +11,12 @@
 
 
 PIXMAP new_fl_pixmap(void * d) {
-    Fl_Pixmap *p = new Fl_Pixmap(static_cast<char**>(d));
-    return p;
+    try {
+        Fl_Pixmap *p = new Fl_Pixmap(static_cast<char**>(d));
+        return p;
+    } catch (...) {
+        return 0;
+    }
 }
 
 void free_fl_pixmap(PIXMAP b) {
@@ -23,12 +27,20 @@ void free_fl_pixmap(PIXMAP b) {
 
 
 PIXMAP fl_pixmap_copy(PIXMAP b, int w, int h) {
-    //  virtual so disable dispatch
-    return static_cast<Fl_Pixmap*>(b)->Fl_Pixmap::copy(w, h);
+    try {
+        //  virtual so disable dispatch
+        return static_cast<Fl_Pixmap*>(b)->Fl_Pixmap::copy(w, h);
+    } catch (...) {
+        return 0;
+    }
 }
 
 PIXMAP fl_pixmap_copy2(PIXMAP b) {
-    return static_cast<Fl_Pixmap*>(b)->copy();
+    try {
+        return static_cast<Fl_Pixmap*>(b)->copy();
+    } catch (...) {
+        return 0;
+    }
 }
 
 

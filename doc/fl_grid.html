@@ -434,6 +434,7 @@ function Handle
 void layout(int rows, int cols, int margin = -1, int gap = -1);
 </pre></td>
 <td><pre>
+--  A span that a smaller grid cuts through is cut to fit.
 procedure Set_Layout
        (This          : in out Grid;
         Rows, Columns : in     Natural;
@@ -661,6 +662,7 @@ procedure Set_Widget
         Row, Column : in     Positive;
         Align       : in     Grid_Alignment := Grid_Fill);
 
+--  False for a row or column out of range, or Item not a child.
 function Set_Widget
        (This        : in out Grid;
         Item        : in     Widget'Class;
@@ -683,6 +685,7 @@ procedure Set_Widget
         Row_Span, Column_Span : in     Positive;
         Align                 : in     Grid_Alignment := Grid_Fill);
 
+--  False too for a span past the grid's edge.
 function Set_Widget
        (This                  : in out Grid;
         Item                  : in     Widget'Class;
