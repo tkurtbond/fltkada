@@ -145,9 +145,11 @@ package FLTK.Widgets.Groups.Browsers.Textline is
 
     --  Line Positions  --
 
+    --  0 when the browser has no lines.  Up to date before the browser is
+    --  first drawn, and after it scrolls (pofltk 38).
     function Get_Top_Line
            (This : in Textline_Browser)
-        return Positive;
+        return Natural;
 
     procedure Set_Top_Line
            (This : in out Textline_Browser;
@@ -205,6 +207,7 @@ package FLTK.Widgets.Groups.Browsers.Textline is
            (This : in out Textline_Browser;
             Line : in     Positive);
 
+    --  Up to date before the browser is first drawn (pofltk 38).
     function Is_Displayed
            (This : in Textline_Browser;
             Line : in Positive)

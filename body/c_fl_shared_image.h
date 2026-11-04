@@ -38,6 +38,7 @@ extern "C" void fl_shared_image_draw2(SHAREDIMAGE i, int x, int y);
 
 
 extern "C" void fl_shared_image_register_images();
+extern "C" void fl_shared_image_add_pnm_handler();
 
 
 #endif

@@ -119,6 +119,16 @@ procedure Set_Background_Color
   </tr>
 
   <tr>
+<td>(Fl_Widget::color(Fl_Color bg, Fl_Color sel), which would color the
+group behind the field)</td>
+<td><pre>
+procedure Set_Colors
+       (This      : in out Spinner;
+        Back, Sel : in     Color);
+</pre><p>Sets the input field's colors (pofltk 13).</p></td>
+  </tr>
+
+  <tr>
 <td><pre>
 Fl_Color color() const;
 </pre></td>
@@ -148,7 +158,9 @@ void format(const char *f);
 procedure Set_Format
        (This : in out Spinner;
         To   : in     String);
-</pre></td>
+</pre><p>FLTK gives the format to snprintf with a double, so a format
+with more than one conversion, or one that isn't a A e E f F g G, raises
+Constraint_Error; the spec has the details (pofltk 13).</p></td>
   </tr>
 
   <tr>

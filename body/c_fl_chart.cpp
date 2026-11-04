@@ -11,6 +11,23 @@
 
 
 
+//  Fl_Chart's private maxnumb, reached through an explicit instantiation,
+//  which may name a private member ([temp.explicit]).  From pofltk's Reach.
+
+template <class Tag, typename Tag::type M> struct Reach {
+    friend typename Tag::type member(Tag) { return M; }
+};
+
+struct Max_Numb {
+    typedef int Fl_Chart::*type;
+    friend type member(Max_Numb);
+};
+
+template struct Reach<Max_Numb, &Fl_Chart::maxnumb>;
+
+
+
+
 //  Exports from Ada
 
 extern "C" void widget_draw_hook(void * ud);
@@ -101,7 +118,13 @@ int fl_chart_get_maxsize(CHART b) {
 }
 
 void fl_chart_set_maxsize(CHART b, int m) {
-    static_cast<Fl_Chart*>(b)->maxsize(m);
+    //  maxsize (0) keeps the last 0 entries (Fl_Chart.cxx:480-492), though
+    //  add and insert take 0 as no limit (:387, 424).  pofltk 60.
+    if (m == 0) {
+        static_cast<Fl_Chart*>(b)->*member(Max_Numb()) = 0;
+    } else {
+        static_cast<Fl_Chart*>(b)->maxsize(m);
+    }
 }
 
 int fl_chart_size(CHART b) {

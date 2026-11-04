@@ -1256,8 +1256,10 @@ package body FLTK.Widgets is
             Kind : in     Label_Kind;
             Text : in     String) is
     begin
-        This.Set_Label_Kind (Kind);
-        This.Set_Label (Text);
+        --  Dispatching, so a window gets Fl_Window::copy_label, which isn't
+        --  virtual and also sets the title (Fl_Window.cxx:159-162).  pofltk 6.
+        Widget'Class (This).Set_Label_Kind (Kind);
+        Widget'Class (This).Set_Label (Text);
     end Set_Label;
 
 

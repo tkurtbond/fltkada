@@ -58,6 +58,12 @@ package FLTK.Widgets.Groups.Spinners is
            (This : in out Spinner;
             To   : in     Color);
 
+    --  The colors are the input field's, as with the two above, not the
+    --  group's behind it (pofltk 13).
+    overriding procedure Set_Colors
+           (This      : in out Spinner;
+            Back, Sel : in     Color);
+
     function Get_Text_Color
            (This : in Spinner)
         return Color;
@@ -136,6 +142,13 @@ package FLTK.Widgets.Groups.Spinners is
            (This : in Spinner)
         return String;
 
+    --  FLTK gives the format to snprintf with the value, a double, or with
+    --  the step's number of decimals and then the value when it starts with
+    --  "%.*" (Fl_Spinner.cxx:79-91).  So a format must have at most one
+    --  conversion, one of a A e E f F g G, with no length but l, and a
+    --  '*' only as that leading "%.*".  Its width and precision are at most
+    --  3 digits, and "%%" is a percent sign.  Any other format raises
+    --  Constraint_Error, and the one before is kept (pofltk 13).
     procedure Set_Format
            (This : in out Spinner;
             To   : in     String);
@@ -196,6 +209,7 @@ private
     pragma Inline (Set_Background_Color);
     pragma Inline (Get_Selection_Color);
     pragma Inline (Set_Selection_Color);
+    pragma Inline (Set_Colors);
     pragma Inline (Get_Text_Color);
     pragma Inline (Set_Text_Color);
     pragma Inline (Get_Text_Font);

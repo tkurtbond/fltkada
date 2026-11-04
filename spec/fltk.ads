@@ -287,6 +287,9 @@ package FLTK is
 
     --  Box Types  --
 
+    --  Every kind draws as itself.  FLTK draws the round, shadow, oval,
+    --  plastic, GTK+, gleam and oxy kinds as an up, border or flat box until
+    --  they are defined, and FLTKAda defines them when it starts (pofltk 8).
     type Box_Kind is
        (No_Box,
         Flat_Box,
@@ -404,6 +407,9 @@ package FLTK is
 
     --  Label Types  --
 
+    --  Shadow, Engraved and Embossed are defined when FLTKAda starts, and
+    --  draw as themselves (pofltk 8).  Multi, Icon and Image are not, and
+    --  draw nothing: for them FLTK reads the label text as a pointer.
     type Label_Kind is
        (Normal_Label,
         No_Label,

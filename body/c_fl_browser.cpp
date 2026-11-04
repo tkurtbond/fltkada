@@ -7,6 +7,7 @@
 #include <FL/Fl_Browser.H>
 #include <FL/Fl_Image.H>
 #include "c_fl_browser.h"
+#include "c_fl_browser_.h"
 #include "c_fl.h"
 
 
@@ -272,6 +273,7 @@ void fl_browser_set_format_char(BROWSER b, char c) {
 
 
 int fl_browser_get_topline(BROWSER b) {
+    browser_update_top(static_cast<Fl_Browser*>(b));
     return static_cast<Fl_Browser*>(b)->topline();
 }
 
@@ -319,6 +321,7 @@ void fl_browser_make_visible(BROWSER b, int l) {
 }
 
 int fl_browser_displayed(BROWSER b, int l) {
+    browser_update_top(static_cast<Fl_Browser*>(b));
     return static_cast<Fl_Browser*>(b)->displayed(l);
 }
 

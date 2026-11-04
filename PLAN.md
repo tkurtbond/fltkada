@@ -1702,7 +1702,7 @@ sway, and under valgrind. Each test was seen to fail before its fix.
   with `make`'s flags, were clean, so it is intermittent and outside
   FLTKAda. It is noted here, not suppressed, in case it comes back.
 
-### Phase 6: Wrong results
+### Phase 6: Wrong results [done, 2026-11-04]
 
 - **Issue 2:** `Clip_Box`. Zero the outputs, and compute "changed" in the
   shim.
@@ -1724,6 +1724,222 @@ sway, and under valgrind. Each test was seen to fail before its fix.
   string.
 - **Issue 128:** `Restore_Clip` on Cairo. Remove it from the spec, or
   document `Push_Clip`/`Pop_Clip` instead.
+
+What was done. Each item has a unit test, run on Xvfb and on a headless
+sway, and under valgrind. Each test was seen to fail before its fix.
+
+- **Issue 2** (new test `test_clip_box`): the shim zeroes `Clip_Box`'s
+  outputs, makes an empty result 0 by 0, and returns whether the result
+  differs from the box. FLTK 1.4.5 here is built with
+  `FLTK_USE_CAIRO`, so windows on X11 draw with Cairo too; its
+  `clip_box` (`Fl_Cairo_Graphics_Driver.cxx:693-726`) compares the box
+  with the clip, and returns at `W < 0` before setting `H`. Xlib's
+  (`Fl_Xlib_Graphics_Driver_rect.cxx:352-383`) is right, and gives
+  `W = H = 0` for a box outside, which the shim's result matches. The
+  test runs 7 boxes against a clip of (10, 10, 50, 50), on an image
+  surface and in a window's `Draw`. Before the fix, 6 of 16 checks
+  failed on X11 and on sway: a box inside said "changed", one around
+  the clip didn't, and one outside left `H` at 50, from the stack.
+  Negative control, zeroing the outputs but returning FLTK's result:
+  the 4 "changed" checks failed. All 16 pass on X11 and sway, with
+  vg=0.
+- **Issue 8** (new test `test_defined_types`): the shim's
+  `fl_define_box_and_label_types` calls pofltk's 14 `fl_define_FL_*`
+  functions (`ofl_register`, `src/Fl.cpp:253-269`): 11 box families and
+  the shadow, engraved and embossed labels. The plan said "on first use
+  of a box or label setter"; it is done in `FLTK`'s elaboration
+  instead, since the functions only fill tables
+  (`fl_internal_boxtype`, `fl_boxtype.cxx:424-430`;
+  `Fl::set_labeltype`, `fl_labeltype.cxx:75-78`) and need no display,
+  and a kind can reach FLTK through more than one setter. Multi, Icon
+  and Image labels are left undefined. Defined, FLTK casts the label
+  text to an `Fl_Multi_Label`, `Fl_File_Icon` or `Fl_Image` pointer
+  (`Fl_Multi_Label.cxx:28`, `Fl_File_Icon.cxx:425`, `Fl_Image.cxx:224`);
+  undefined, they draw as `fl_no_label` (`fl_labeltype.cxx:58-69`).
+  The test captures one box of each family and each label with
+  `Probe.Capture`, and compares it with its stand-in. Before the fix all
+  14 drew the same as their stand-in, on X11 and on sway. Negative
+  control, without the GTK+ and embossed defines: exactly those 2
+  checks failed. All 16 pass on X11 and sway, with vg=0. `bin/hello`'s
+  shadow label, screenshot under Xvfb, shows its shadow.
+- **Issue 26** (new test `test_menu_chosen`): the shim's `Keep_Chosen`,
+  pofltk's `KeepValue`, notes the chosen item's text before `add`,
+  `insert`, `remove` and `clear_submenu`, and finds it again after
+  (through `Fl_Choice::value` for a choice, for its redraw). It is
+  declared before `Item_Names`, so it is destroyed after the names are
+  swapped back. `add` is covered too, since it calls `insert (-1, ...)`
+  (`Fl_Menu_add.cxx:348-350`), which puts a path's item at the end of
+  its submenu, before later items; FLTK keeps only the chosen item's
+  offset (`Fl_Menu_add.cxx:419-423`). The test inserts and removes
+  around a choice's value, 40 times over so the array grows, removes
+  the value, and adds to and clears a submenu before it. Before the
+  fix, 7 of 11 checks failed on X11 and sway; after 40 removes the
+  offset lay past the array's end, and `Chosen_Index` read 0
+  (`Fl_Menu_.cxx:366-369`). Negative control, without it in `remove`
+  and `clear_submenu`: those 4 checks failed. All pass on X11 and sway,
+  with vg=0.
+- **Issue 38** (new test `test_browser_top`): the shim's
+  `browser_update_top` calls the protected `find_item (0)`, which runs
+  the private `update_top` first (`Fl_Browser_.cxx:582-583`), as
+  pofltk's `Top::update` does. It is called before `topline`,
+  `Fl_Browser::displayed`, `Fl_Browser_::displayed` and `top`, which
+  FLTKAda makes public (`Top_Item`). Clicks need nothing, as pofltk
+  says. The test checks a never-drawn browser's top line, its top item
+  and what it shows, as new, after `Set_Top_Line (20)` and after
+  `Make_Visible (40)`. Before the fix, `Get_Top_Line` raised
+  Constraint_Error at once, on X11 and on sway: FLTK's `topline` was 0,
+  and `Get_Top_Line` returned `Positive`. That is FLTKAda-BUGS.md 60:
+  an empty browser's top line is 0 even with the fix, so
+  `Get_Top_Line` now returns `Natural`, and the test checks an empty
+  browser. Negative control, with `browser_update_top` doing nothing:
+  8 of the 10 issue-38 checks failed (the two "doesn't show" checks
+  pass when nothing shows). All 11 pass on X11 and sway, with vg=0.
+- **Issue 45** (new test `test_pnm_maxval`): the shim's
+  `pnm_scale_samples`, after `new Fl_PNM_Image`, reads the header again
+  the way FLTK's constructor does (`Fl_PNM_Image.cxx:85-125`), and for
+  a P5 or P6 with a maxval from 1 to 254 scales each sample by
+  `255 * val / maxval`, clamped to 255, then uncaches. pofltk's
+  `scale_pnm` does the same, without the clamp. FLTK's `fread` of these
+  forms is at `Fl_PNM_Image.cxx:178-187`; the text forms are scaled
+  there already, and the test checks a P3 isn't scaled twice. A shared
+  image doesn't go through FLTKAda's constructor:
+  `fl_register_images`' handler `fl_check_images` makes the
+  `Fl_PNM_Image` (`fl_images_core.cxx:105-107`). So FLTKAda adds its
+  own handler for P5 and P6, at elaboration, ahead of `fl_check_images`
+  whoever calls `fl_register_images` first (FLTK does, in
+  `Fl_Help_Dialog.cxx:207` and `Fl_File_Icon2.cxx:651`), since
+  `Fl_Shared_Image::reload` tries handlers in the order they were added
+  (`Fl_Shared_Image.cxx:297-304`). It does nothing until
+  `Fl_Image::register_images_done` is set (`fl_images_core.cxx:63`), so
+  a PNM still needs `Register_Images`, as before. pofltk has its own
+  pool instead (`src/FlImages.cpp:765-800`). The files: pofltk's
+  `rb.ppm` (P6, maxval 1), and new `levels.pgm` (P5, maxval 3, with a
+  sample of 5) and `text.ppm` (P3, maxval 3). Before the fix, 3 of 6
+  checks failed on X11 and sway: rb.ppm read as 1, 0, 0, levels.pgm as
+  0 1 2 3 5, and the shared rb.ppm drew 16#010000#. Negative controls:
+  without the handler, the shared check failed; without the scaling in
+  the constructor and the `register_images_done` test, the two file
+  checks and the "needs Register_Images" check failed. All 6 pass on
+  X11 and sway, with vg=0. Not tested: a file cut short, whose unread
+  samples FLTK leaves uninitialized and the scaling then reads.
+- **Issue 57** (new test `test_parse_args`): the shim's
+  `fl_static_args2` decides from the word `Fl::args` stopped at, as
+  pofltk's `ofl_args` does: an option (a word starting with `-`, not `-`
+  alone, not `--...`, Fl::arg's own test at `Fl_arg.cxx:141`) means
+  unknown or missing its value, and `Parse_Args` raises Argument_Error.
+  `Fl::args`' own result is wrong once `return_i` is set
+  (`Fl_arg.cxx:141`, 281). The arguments are the process's own, so the
+  test, run with none, runs itself with `-o rest` (parsed with a handler
+  that takes `-o`, which stops at `rest`, then without it), with
+  `-bogus` and with `-title Hello`, and passes on their exit statuses.
+  Before the fix, `-o` unknown in the second call raised nothing, on
+  X11 and sway. `make valgrind` doesn't trace the children, so each was
+  run under valgrind by hand, which found FLTKAda-BUGS.md 61 (FLTK reads
+  `argv[argc]`, which FLTKAda's argv didn't have) and, reading what
+  `show (argc, argv)` does with the argv, 62 (a shown window's `-title`
+  label pointed into an argv freed after the show; with 8 strings of its
+  size made after, it read "World"). Now one argv, ending in a null,
+  lasts the program's life. Negative control, `Parse_Arg` without its
+  new range check: its check failed. All pass on X11 and sway, and each
+  of the four runs has vg=0 on both. The two-argument `Parse_Args` is
+  FLTK's `Fl::args (argc, argv)`, which prints the help for any word
+  that stops it (`Fl_arg.cxx:365-367`), as documented; it is left as
+  is.
+- **Issue 60** (new test `test_chart_maxsize`): `Set_Maximum_Size (0)`
+  sets the private `maxnumb` to 0 alone, reached through pofltk's
+  `Reach` explicit instantiation (as `c_fl_tree.cpp` reaches
+  `_lastselect`); other sizes still go through `maxsize`
+  (`Fl_Chart.cxx:479-492`), which drops the oldest entries. Before the
+  fix, 3 of 7 checks failed: the 3 entries were gone after the limit
+  went back to 0, and the two checks of the size after them failed with
+  them.
+  The fix is one branch, so that run is its control. Passes on X11 and
+  sway, with vg=0.
+- **Issue 64** (new test `test_anim_copy`): FLTK's `copy` starts the
+  copy when the original has a frame (`Fl_Anim_GIF_Image.cxx:764-765`),
+  and `start` moves it on a frame (`next_frame`). The shim's copies
+  stop a copy of a stopped animation and set it back to the original's
+  frame. The test copies, sized and whole, an animation never started,
+  one playing and one stopped after `Next`. Before the fix, 8 of 13
+  checks failed: the copies of both stopped ones played, on another frame.
+  Negative control, without setting the frame back: the 4 frame checks
+  failed. Passes on X11 and sway, with vg=0.
+- **Issue 76** (new test `test_clock_time`): the shim's `Set_Time` calls
+  `value (v)` twice, as pofltk does. The first stores the seconds past
+  midnight once the hands move (`Fl_Clock.cxx:125-146`); the second
+  finds the hands there, and keeps `v`. Before the fix, 2 of 3 checks
+  failed, the two whose hands moved; setting a time twice already read
+  back. The fix is one call, so that run is its control. A running
+  clock's `tick` (`:209-220`) calls `value` once a second, and isn't
+  changed; the spec says so. Passes on X11 and sway, with vg=0.
+- **Issue 83** (new test `test_shared_reload`): after `reload`, an
+  entry not the original whose data size changed gets a copy of the
+  reloaded image at its old size, put in through the protected
+  `image_`, `alloc_image_` and `update`, named through a derived class
+  (`Shared_Inside`). pofltk keeps its own pool; FLTKAda uses FLTK's, so
+  it mends the entry instead. The test gets `rb.png` at 8 by 4 and 20
+  by 10, reloads each, and finds both after each reload, and checks the
+  reloaded entry draws the same two corner pixels. Before the fix, 3 of
+  7 checks failed: each entry reloaded was no longer found, and after
+  both, neither. Negative control, the copy made and dropped: the same
+  3 failed. Passes on X11 and sway, with vg=0.
+- **Issue 94** (new test `test_filename_relative`): `Relative`'s
+  `Changed` is whether the result differs from the name, as pofltk's
+  is, since FLTK returns 0 for the current directory, which it makes
+  `.` (`filename_absolute.cxx:248-252`). Before the fix, 1 of 6 checks
+  failed, `Changed` for the current directory. The fix is one line, so
+  that run is its control. The spec says FLTK looks only at the text,
+  from pofltk 94; that part was not tested here. Passes on X11 and
+  sway, with vg=0.
+- **N7, issue 6** (FLTKAda-BUGS.md 63; new test `test_window_label`):
+  `Set_Label (This, Kind, Text)` now dispatches, so a window gets
+  `Fl_Window::copy_label`, which sets the title too
+  (`Fl_Window.cxx:159-162`). The test reads the title with a new probe,
+  `FLTK.Probe.X11_Title`, which calls `XFetchName` through `dlsym`, so
+  the probe needs no X11 library at link time; the probe is X11's,
+  so on Wayland the test skips. Before
+  the fix, 2 of 5 checks failed: the title stayed "Plain". The fix is
+  one change, so that run is its control. Passes on X11, with vg=0 on
+  both.
+- **Issue 13** (FLTKAda-BUGS.md 27, now fixed; new test
+  `test_spinner_colors`): `Spinner` overrides `Set_Colors`, which set
+  the group's colors and not its field's (`Fl_Spinner.H:179-196`).
+  `Set_Format` refuses a format that `snprintf` can't take with what
+  `Fl_Spinner::update` passes, a double, or an int and then a double
+  for a leading `%.*` (`Fl_Spinner.cxx:79-91`). It raises
+  `Constraint_Error` and keeps the format before. The rules, in the
+  spec: at most one conversion, `a A e E f F g G`, no length but `l`,
+  `*` only as the leading `%.*`, width and precision at most 3 digits,
+  and `%%`. The digit limit is FLTKAda's choice, to keep `snprintf`
+  from huge widths; it is not FLTK's. Before the fix, 20 of 36 checks
+  failed, and `%n` aborted the program from glibc's fortify check; that
+  run is the control. Passes on X11 and sway, with vg=0.
+  `test_spinner_format`'s formats are still taken.
+- **Issue 128** (new test `test_restore_clip`): documented, not fixed.
+  Cairo's `push_clip` keeps the clip in `clip_` and a `cairo_save`
+  (`Fl_Cairo_Graphics_Driver.cxx:583-594`), and `restore_clip` resets
+  Cairo's clip and applies only `rstack` (`:1456-1485`). Working
+  around it would mean reaching the driver's private `Clip` chain, and
+  the driver's header isn't installed. An Ada program has no use for
+  `Restore_Clip`, which is for code that changes the native clip behind
+  FLTK's back. It stays, for compatibility, and the spec and
+  `doc/fl_draw.html` say to use `Push_Clip` and `Pop_Clip`. This FLTK
+  is built with `FLTK_USE_CAIRO`, so X11 draws with Cairo too. The test
+  draws into a capture, clipped to 20 by 20. Pushed, and pushed again
+  after `Restore_Clip` and a pop, the outside stays white; after
+  `Restore_Clip` it is red, on X11 and on sway. The test checks that,
+  and skips where FLTK doesn't draw with Cairo, so a change in FLTK
+  fails it. A new probe, `Uses_Cairo`, gives `FLTK_USE_CAIRO`, since
+  `Has_Cairo` is `FLTK_HAVE_CAIRO`. vg=0 on both.
+- **Tooltip text** (FLTKAda-BUGS.md 64; `test_kept_strings`, made
+  deterministic): found by `make valgrind-sway`, not a pofltk issue.
+  The shim freed the text FLTK held when the tooltip window's hide, in
+  `enter_area`, cleared `widget_` (`Fl_Tooltip.cxx:252, 301, 305`,
+  `Fl.cxx:1215-1217`; seen in gdb). It now decides with
+  `Fl_Tooltip::enabled ()`. The test sets the hover delay to 0 so the
+  timeout that reads the text runs; with the old shim it failed
+  valgrind 6 runs of 6 on X11 and sway, and with the fix it passes 6
+  of 6.
 
 ### Phase 7: Documentation-only pitfalls and portability
 

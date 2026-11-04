@@ -15,6 +15,12 @@ extern "C" const int fl_sort_descending;
 typedef void* ABSTRACTBROWSER;
 
 
+class Fl_Browser_;
+
+//  Brings the browser's top line up to date with its scroll position.
+void browser_update_top(Fl_Browser_ * b);
+
+
 extern "C" ABSTRACTBROWSER new_fl_abstract_browser(int x, int y, int w, int h, char * label);
 extern "C" void free_fl_abstract_browser(ABSTRACTBROWSER b);
 

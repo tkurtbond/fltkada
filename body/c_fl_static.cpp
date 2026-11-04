@@ -52,8 +52,20 @@ void fl_static_args(int c, void * v) {
     Fl::args(c, static_cast<char**>(v));
 }
 
+//  Fl::args returns 0 when it stops at an option nobody knows, or one
+//  missing its value, but only until a call has stopped at a word that
+//  isn't an option: Fl::arg then sets the file-static return_i
+//  (Fl_arg.cxx:141), nothing clears it, and Fl::args returns i instead
+//  (Fl_arg.cxx:281) (pofltk 57).  So, as pofltk's ofl_args does, this
+//  decides from the word it stopped at, with Fl::arg's test of a word.
 int fl_static_args2(int c, void * v, int &i, void * h) {
-    return Fl::args(c, static_cast<char**>(v), i, reinterpret_cast<Fl_Args_Handler>(h));
+    char ** argv = static_cast<char**>(v);
+    int result = Fl::args(c, argv, i, reinterpret_cast<Fl_Args_Handler>(h));
+    const char * s = i < c ? argv[i] : 0;
+    if (s != 0 && s[0] == '-' && s[1] != '\0' && s[1] != '-') {
+        return 0;
+    }
+    return result;
 }
 
 

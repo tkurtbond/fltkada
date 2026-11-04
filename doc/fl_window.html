@@ -704,7 +704,8 @@ void show(int argc, char **argv);
 <td><pre>
 procedure Show_With_Args
        (This : in out Window);
-</pre></td>
+</pre>
+<p>FLTK keeps pointers into the argv it is given: <code>-title</code> becomes the window's label, and <code>-fg</code> and <code>-bg</code> are read again by every later show. FLTKAda's argv lasts the program's life, as C's does; it was freed after the show (FLTKAda-BUGS.md 62).</p></td>
   </tr>
 
   <tr>

@@ -813,6 +813,12 @@ package body FLTK is
            (V : in Interfaces.C.size_t);
     pragma Import (C, fl_rgb_image_set_max_size, "fl_rgb_image_set_max_size");
 
+    procedure fl_define_box_and_label_types;
+    pragma Import (C, fl_define_box_and_label_types, "fl_define_box_and_label_types");
+
+    procedure fl_shared_image_add_pnm_handler;
+    pragma Import (C, fl_shared_image_add_pnm_handler, "fl_shared_image_add_pnm_handler");
+
 
 begin
 
@@ -825,6 +831,16 @@ begin
     if fl_rgb_image_get_max_size > Interfaces.C.size_t (Interfaces.C.int'Last) then
         fl_rgb_image_set_max_size (Interfaces.C.size_t (Interfaces.C.int'Last));
     end if;
+
+    --  Box and label types such as Round_Up_Box and Shadow_Label draw as a
+    --  stand-in until FLTK's fl_define_FL_* functions are called for them
+    --  (pofltk 8).  Multi_Label, Icon_Label and Image_Label stay undefined,
+    --  since FLTK would read a plain text label as a pointer for them.
+    fl_define_box_and_label_types;
+
+    --  A shared image of a binary PNM with a maxval under 255 is scaled,
+    --  by a handler that comes before fl_register_images' (pofltk 45).
+    fl_shared_image_add_pnm_handler;
 
 end FLTK;
 

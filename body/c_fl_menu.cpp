@@ -5,6 +5,7 @@
 
 
 #include <FL/Fl.H>
+#include <FL/Fl_Choice.H>
 #include <FL/Fl_Menu_.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Menu_Item.H>
@@ -70,30 +71,74 @@ void free_fl_menu(MENU m) {
 
 
 
+//  Fl_Menu_ keeps the item chosen as a pointer into the array, and insert,
+//  remove and clear_submenu move the items after the change without moving
+//  it (Fl_Menu_add.cxx:419-423), so it named whichever item took its place
+//  (pofltk 26).  An item's text is its own, and neither moves nor is freed
+//  by the change unless the item goes, so the item chosen is found again by
+//  its text afterwards, or none is chosen once it is gone.  Declared before
+//  Item_Names, which swaps some texts for names while it lives.
+class Keep_Chosen {
+public:
+    explicit Keep_Chosen(Fl_Menu_ * m) : menu(m), text(m->mvalue() ? m->mvalue()->text : 0) {}
+    ~Keep_Chosen() {
+        if (text == 0) {
+            return;
+        }
+        const Fl_Menu_Item * items = menu->menu();
+        const Fl_Menu_Item * found = 0;
+        for (int i = 0; items != 0 && i < menu->size(); i++) {
+            if (items[i].text == text) {
+                found = items + i;
+                break;
+            }
+        }
+        if (menu->mvalue() == found) {
+            return;
+        }
+        //  Fl_Choice's value hides Fl_Menu_'s, and adds a redraw.
+        if (Fl_Choice * c = dynamic_cast<Fl_Choice*>(menu)) {
+            c->value(found);
+        } else {
+            menu->value(found);
+        }
+    }
+private:
+    Keep_Chosen(const Keep_Chosen &);
+    Keep_Chosen & operator=(const Keep_Chosen &);
+    Fl_Menu_ * menu;
+    const char * text;
+};
+
 int fl_menu_add(MENU m, const char * t) {
+    Keep_Chosen keep(static_cast<Fl_Menu_*>(m));
     Item_Names names(static_cast<Fl_Menu_*>(m));
     return static_cast<Fl_Menu_*>(m)->add(t);
 }
 
 int fl_menu_add2(MENU m, const char * t, unsigned long s, void * u, unsigned long f) {
+    Keep_Chosen keep(static_cast<Fl_Menu_*>(m));
     Item_Names names(static_cast<Fl_Menu_*>(m));
     return static_cast<Fl_Menu_*>(m)->add(t, s,
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
 }
 
 int fl_menu_add3(MENU m, const char * t, const char * s, void * u, unsigned long f) {
+    Keep_Chosen keep(static_cast<Fl_Menu_*>(m));
     Item_Names names(static_cast<Fl_Menu_*>(m));
     return static_cast<Fl_Menu_*>(m)->add(t, s,
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
 }
 
 int fl_menu_insert(MENU m, int p, const char * t, unsigned long s, void * u, unsigned long f) {
+    Keep_Chosen keep(static_cast<Fl_Menu_*>(m));
     Item_Names names(static_cast<Fl_Menu_*>(m));
     return static_cast<Fl_Menu_*>(m)->insert(p, t, s,
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
 }
 
 int fl_menu_insert2(MENU m, int p, const char * t, const char * s, void * u, unsigned long f) {
+    Keep_Chosen keep(static_cast<Fl_Menu_*>(m));
     Item_Names names(static_cast<Fl_Menu_*>(m));
     return static_cast<Fl_Menu_*>(m)->insert(p, t, s,
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
@@ -238,6 +283,7 @@ void fl_menu_plain_removed(MENU m, int i, int submenu) {
 }
 
 void fl_menu_remove(MENU m, int p) {
+    Keep_Chosen keep(static_cast<Fl_Menu_*>(m));
     fl_menu_plain_removed(m, p, 0);
     static_cast<Fl_Menu_*>(m)->remove(p);
 }
@@ -248,6 +294,7 @@ void fl_menu_clear(MENU m) {
 }
 
 int fl_menu_clear_submenu(MENU m, int i) {
+    Keep_Chosen keep(static_cast<Fl_Menu_*>(m));
     fl_menu_plain_removed(m, i, 1);
     return static_cast<Fl_Menu_*>(m)->clear_submenu(i);
 }

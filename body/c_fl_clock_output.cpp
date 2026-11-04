@@ -90,6 +90,10 @@ unsigned long fl_clock_output_get_value(CLOCKOUTPUT c) {
 }
 
 void fl_clock_output_set_value(CLOCKOUTPUT c, unsigned long v) {
+    //  value (v) stores v, then the hands, which store the seconds past
+    //  midnight in its place when they move (Fl_Clock.cxx:125-146).  The
+    //  second call finds them there, and keeps v.  pofltk 76.
+    static_cast<Fl_Clock_Output*>(c)->Fl_Clock_Output::value(v);
     static_cast<Fl_Clock_Output*>(c)->Fl_Clock_Output::value(v);
 }
 

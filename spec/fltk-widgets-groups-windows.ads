@@ -60,6 +60,9 @@ package FLTK.Widgets.Groups.Windows is
     procedure Show
            (This : in out Window);
 
+    --  Parses the program's arguments, if Parse_Args hasn't, and shows the
+    --  window with them: -title is its label, and -geometry its place and
+    --  size.
     procedure Show_With_Args
            (This : in out Window);
 

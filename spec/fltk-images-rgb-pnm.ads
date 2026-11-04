@@ -17,6 +17,9 @@ package FLTK.Images.RGB.PNM is
 
     package Forge is
 
+        --  The samples of a binary PNM (P5, P6) with a maxval under 255
+        --  are scaled to 0 .. 255, as FLTK scales the text forms, and a
+        --  sample over the maxval reads as 255 (pofltk 45).
         function Create
                (Filename : in String)
             return PNM_Image;

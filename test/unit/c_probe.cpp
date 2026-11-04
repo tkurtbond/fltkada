@@ -24,6 +24,10 @@
 #if FLTK_USE_WAYLAND
 #include <FL/wayland.H>
 #endif
+#if FLTK_USE_X11
+#include <FL/x11.H>
+#include <dlfcn.h>
+#endif
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -248,6 +252,37 @@ extern "C" int fl_probe_has_label(const char * t) {
     return 0;
 }
 
+//  A shown window's title as the X server has it (WM_NAME, which
+//  Fl_x.cxx:3208-3220 sets), copied to buf; 0 if not on X11 or not shown.
+//  XFetchName and XFree are found with dlsym, since libX11 is loaded by FLTK
+//  but not on the tests' link line.
+extern "C" int fl_probe_x11_title(void * w, char * buf, int n) {
+    buf[0] = 0;
+#if FLTK_USE_X11
+    Display *d = fl_x11_display();
+    Window x = d == 0 ? 0 : fl_x11_xid(static_cast<Fl_Window*>(w));
+    if (x == 0) {
+        return 0;
+    }
+    typedef int (*Fetch)(Display *, Window, char **);
+    typedef int (*Free)(void *);
+    Fetch fetch = reinterpret_cast<Fetch>(dlsym(RTLD_DEFAULT, "XFetchName"));
+    Free xfree = reinterpret_cast<Free>(dlsym(RTLD_DEFAULT, "XFree"));
+    char *name = 0;
+    if (fetch == 0 || xfree == 0 || fetch(d, x, &name) == 0 || name == 0) {
+        return 0;
+    }
+    strncpy(buf, name, n - 1);
+    buf[n - 1] = 0;
+    xfree(name);
+    return 1;
+#else
+    (void) w;
+    (void) n;
+    return 0;
+#endif
+}
+
 //  Whether Fl_Printer uses GTK's dialog or FLTK's own print panel.  FLTKAda's
 //  Option type has no Printer_Uses_GTK.  FLTK reads the option once, when the
 //  first Fl_Printer is made (Fl_Posix_Printer_Driver.cxx:270).
@@ -276,6 +311,9 @@ extern "C" int fl_probe_configured(int feature) {
 #endif
 #if FLTK_HAVE_FORMS
     case 4: return 1;
+#endif
+#if FLTK_USE_CAIRO
+    case 5: return 1;
 #endif
     default: return 0;
     }

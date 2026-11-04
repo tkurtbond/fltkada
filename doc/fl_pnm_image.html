@@ -56,7 +56,8 @@ Fl_PNM_Image(const char *filename);
 function Create
        (Filename : in String)
     return PNM_Image;
-</pre></td>
+</pre>
+<p>The samples of a binary PNM (P5, P6) with a maxval under 255 are scaled to 0 .. 255, as FLTK scales the text forms, and a sample over the maxval reads as 255. FLTK reads them as they are, so a P6 of pure red with maxval 1 was 1, 0, 0 (pofltk 45). A Shared_Image of one is scaled too, once Register_Images has been called.</p></td>
   </tr>
 
 </table>

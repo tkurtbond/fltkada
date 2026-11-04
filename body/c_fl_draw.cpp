@@ -115,8 +115,24 @@ int fl_draw_recode(int kind, const char * from, char * to, int n) {
 
 
 
+//  Cairo's clip_box compares the box with the clip, not the result with the
+//  box, so its result is the reverse of its documentation, and for a box
+//  wholly outside it returns before setting H (pofltk 2).  The outputs are
+//  zeroed first, an empty result is 0 by 0, and "changed" is worked out
+//  here.
 int fl_draw_clip_box(int x, int y, int w, int h, int &bx, int &by, int &bw, int &bh) {
-    return fl_clip_box(x, y, w, h, bx, by, bw, bh);
+    bx = 0;
+    by = 0;
+    bw = 0;
+    bh = 0;
+    fl_clip_box(x, y, w, h, bx, by, bw, bh);
+    if (bw <= 0 || bh <= 0) {
+        bx = 0;
+        by = 0;
+        bw = 0;
+        bh = 0;
+    }
+    return bx != x || by != y || bw != w || bh != h;
 }
 
 int fl_draw_not_clipped(int x, int y, int w, int h) {

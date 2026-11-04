@@ -127,6 +127,9 @@ package FLTK.Draw is
 
     --  Clipping  --
 
+    --  True exactly when BX, BY, BW, BH differ from X, Y, W, H.  A box
+    --  wholly outside the clip gives 0, 0, 0, 0.  FLTK's Cairo driver
+    --  says the reverse, and leaves BH unset for a box outside (pofltk 2).
     function Clip_Box
            (X, Y, W, H     : in     Integer;
             BX, BY, BW, BH :    out Integer)
@@ -145,6 +148,11 @@ package FLTK.Draw is
 
     procedure Push_No_Clip;
 
+    --  Not needed by Ada programs, which can't change the clip behind
+    --  FLTK's back; use Push_Clip and Pop_Clip.  Where FLTK draws with
+    --  Cairo (on Wayland, and on X11 in a build with FLTK_USE_CAIRO), it
+    --  drops any clip pushed with Push_Clip, so what follows is drawn
+    --  outside it until that clip is popped (pofltk 128).
     procedure Restore_Clip;
 
 

@@ -350,6 +350,16 @@ package body FLTK.Widgets.Groups.Spinners is
     end Set_Selection_Color;
 
 
+    --  Fl_Widget::color (bg, sel) would set the group's.
+    procedure Set_Colors
+           (This      : in out Spinner;
+            Back, Sel : in     Color) is
+    begin
+        fl_spinner_set_color (This.Void_Ptr, Interfaces.C.unsigned (Back));
+        fl_spinner_set_selection_color (This.Void_Ptr, Interfaces.C.unsigned (Sel));
+    end Set_Colors;
+
+
     function Get_Text_Color
            (This : in Spinner)
         return Color is
@@ -504,12 +514,94 @@ package body FLTK.Widgets.Groups.Spinners is
     end Get_Format;
 
 
+    --  Whether snprintf can take Format with the arguments Fl_Spinner gives
+    --  it (Fl_Spinner.cxx:79-91), as the spec says.
+    function Is_Safe_Format
+           (Format : in String)
+        return Boolean
+    is
+        Place : Natural := Format'First;
+        Conversions : Natural := 0;
+
+        --  Skips at most 3 digits, and says whether there were no more.
+        function Few_Digits
+            return Boolean
+        is
+            Count : Natural := 0;
+        begin
+            while Place <= Format'Last and then Format (Place) in '0' .. '9' loop
+                Count := Count + 1;
+                Place := Place + 1;
+            end loop;
+            return Count <= 3;
+        end Few_Digits;
+
+        function At_One_Of
+               (Set : in String)
+            return Boolean is
+        begin
+            for C of Set loop
+                if Place <= Format'Last and then Format (Place) = C then
+                    return True;
+                end if;
+            end loop;
+            return False;
+        end At_One_Of;
+    begin
+        while Place <= Format'Last loop
+            if Format (Place) = Character'Val (0) then
+                return False;
+            elsif Format (Place) /= '%' then
+                Place := Place + 1;
+            elsif Place < Format'Last and then Format (Place + 1) = '%' then
+                Place := Place + 2;
+            else
+                Conversions := Conversions + 1;
+                if Conversions > 1 then
+                    return False;
+                end if;
+                if Place = Format'First and then Format'Length >= 3
+                    and then Format (Place + 1 .. Place + 2) = ".*"
+                then
+                    Place := Place + 3;
+                else
+                    Place := Place + 1;
+                    while At_One_Of ("-+ #0") loop
+                        Place := Place + 1;
+                    end loop;
+                    if not Few_Digits then
+                        return False;
+                    end if;
+                    if At_One_Of (".") then
+                        Place := Place + 1;
+                        if not Few_Digits then
+                            return False;
+                        end if;
+                    end if;
+                end if;
+                if At_One_Of ("l") then
+                    Place := Place + 1;
+                end if;
+                if not At_One_Of ("aAeEfFgG") then
+                    return False;
+                end if;
+                Place := Place + 1;
+            end if;
+        end loop;
+        return True;
+    end Is_Safe_Format;
+
+
     procedure Set_Format
            (This : in out Spinner;
             To   : in     String)
     is
         Old : Interfaces.C.Strings.chars_ptr := This.Format_Str;
     begin
+        if not Is_Safe_Format (To) then
+            raise Constraint_Error with
+                "Spinner format """ & To & """ isn't one snprintf can take with a double";
+        end if;
         This.Format_Str := Interfaces.C.Strings.New_String (To);
         fl_spinner_set_format (This.Void_Ptr, This.Format_Str);
         Interfaces.C.Strings.Free (Old);

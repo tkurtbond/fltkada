@@ -266,6 +266,8 @@ package FLTK.Widgets is
            (This : in out Widget;
             Text : in     String);
 
+    --  Dispatches to Set_Label_Kind and Set_Label, so on a window it also
+    --  sets the title (pofltk 6).
     procedure Set_Label
            (This : in out Widget;
             Kind : in     Label_Kind;

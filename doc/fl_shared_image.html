@@ -375,7 +375,8 @@ void reload();
 <td><pre>
 procedure Reload
        (This : in out Shared_Image);
-</pre></td>
+</pre>
+<p>An image of another size than its file's keeps its data at that size, so Find still finds it, where FLTK puts in the file's size and leaves the pool out of order (pofltk 83).</p></td>
   </tr>
 
   <tr>

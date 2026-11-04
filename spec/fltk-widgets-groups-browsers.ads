@@ -122,6 +122,8 @@ package FLTK.Widgets.Groups.Browsers is
             Y_Pos : in Integer)
         return Item_Cursor;
 
+    --  Is_Displayed and Top_Item are up to date before the browser is first
+    --  drawn, and after it scrolls (pofltk 38).
     function Top_Item
            (This : in Browser)
         return Item_Cursor;

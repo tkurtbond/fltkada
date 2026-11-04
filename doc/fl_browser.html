@@ -513,8 +513,9 @@ int topline() const;
 <td><pre>
 function Get_Top_Line
        (This : in Textline_Browser)
-    return Positive;
-</pre></td>
+    return Natural;
+</pre>
+<p>0 when the browser has no lines (FLTKAda-BUGS.md 60). Up to date before the browser is first drawn, and after it scrolls: FLTK works out its top line only when it draws (pofltk 38).</p></td>
   </tr>
 
   <tr>

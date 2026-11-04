@@ -89,6 +89,9 @@ package FLTK.Filenames is
            (Name : in Path_String)
         return Path_String;
 
+    --  Changed is whether the result differs from Name, so True for the
+    --  current directory, which becomes "." (pofltk 94).  FLTK looks only
+    --  at the text: Name should have no "." or ".." or doubled "/" in it.
     function Relative
            (Name    : in     Path_String;
             Changed :    out Boolean)

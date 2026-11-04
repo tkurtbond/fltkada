@@ -112,6 +112,7 @@ package FLTK.Static is
 
     --  Command Line Arguments  --
 
+    --  Index past the last argument raises Constraint_Error.
     function Parse_Arg
            (Index : in Positive)
         return Natural;
@@ -119,6 +120,9 @@ package FLTK.Static is
     procedure Parse_Args;
 
     --  Not task safe, but you won't need to call this more than once anyway.
+    --  An option neither Func nor FLTK knows, or one missing its value,
+    --  raises Argument_Error, in every call: FLTK's Fl::args stops saying so
+    --  once a call has stopped at a word that isn't an option (pofltk 57).
     procedure Parse_Args
            (Count :    out Natural;
             Func  : in     Args_Handler := null);
@@ -485,9 +489,6 @@ package FLTK.Static is
 
 
 private
-
-
-    The_Argv : Interfaces.C.Strings.chars_ptr_array := FLTK.Args_Marshal.Create_Argv;
 
 
     for File_Mode use record

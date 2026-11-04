@@ -12,18 +12,28 @@ with
 private package FLTK.Args_Marshal is
 
 
-    function Create_Argv
-        return Interfaces.C.Strings.chars_ptr_array;
+    --  The program's argc and argv, for Fl::arg, Fl::args and
+    --  Fl_Window::show (argc, argv).  The argv is the program's name and
+    --  arguments, then a null pointer, as C's argv has: FLTK reads argv[i+1]
+    --  before checking i against argc (Fl_arg.cxx:177-178), so an option
+    --  last on the line read past the array without it (FLTKAda-BUGS.md 61).
+    --  It is made once and kept for the program's life, as C's is, since
+    --  FLTK keeps pointers into it: the title, which becomes a window's
+    --  label (Fl_arg.cxx:195, 313), and the colors (Fl_arg.cxx:200-207),
+    --  which every show (argc, argv) reads again (Fl_arg.cxx:290,
+    --  Fl_Screen_Driver.cxx:210-211) (FLTKAda-BUGS.md 62).
+    function Argc
+        return Interfaces.C.int;
 
-    procedure Free_Argv
-           (Argv : in out Interfaces.C.Strings.chars_ptr_array);
+    function Argv
+        return Storage.Integer_Address;
 
 
 
 
     --  Used for implementing show(argc,argv)
 
-    --  Dispatch marshalls the data, calls the function, then does cleanup
+    --  Dispatch calls Func with the program's argc and argv.
 
     type Show_With_Args_Func is access procedure
            (CObj : in Storage.Integer_Address;

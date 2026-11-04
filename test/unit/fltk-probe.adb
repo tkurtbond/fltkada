@@ -115,6 +115,13 @@ package body FLTK.Probe is
         return C.int;
     pragma Import (C, fl_probe_has_label, "fl_probe_has_label");
 
+    function fl_probe_x11_title
+           (W   : in     Storage.Integer_Address;
+            Buf :    out C.char_array;
+            N   : in     C.int)
+        return C.int;
+    pragma Import (C, fl_probe_x11_title, "fl_probe_x11_title");
+
     procedure fl_probe_printer_uses_gtk
            (On : in C.int);
     pragma Import (C, fl_probe_printer_uses_gtk, "fl_probe_printer_uses_gtk");
@@ -458,6 +465,20 @@ package body FLTK.Probe is
     end Has_Label;
 
 
+    function X11_Title
+           (Item : in FLTK.Widgets.Groups.Windows.Window'Class)
+        return String
+    is
+        Size : constant := 256;
+        Buf  : C.char_array (1 .. Size);
+    begin
+        if fl_probe_x11_title (Ptr (Item), Buf, Size) = 0 then
+            raise Probe_Error with "no X11 title";
+        end if;
+        return C.To_Ada (Buf);
+    end X11_Title;
+
+
     procedure Set_Printer_Uses_GTK
            (On : in Boolean) is
     begin
@@ -476,6 +497,7 @@ package body FLTK.Probe is
     function Has_X11 return Boolean is (fl_probe_configured (2) /= 0);
     function Has_Cairo return Boolean is (fl_probe_configured (3) /= 0);
     function Has_Forms return Boolean is (fl_probe_configured (4) /= 0);
+    function Uses_Cairo return Boolean is (fl_probe_configured (5) /= 0);
 
 
     function On_Wayland

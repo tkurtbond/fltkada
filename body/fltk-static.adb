@@ -7,6 +7,7 @@
 with
 
     Ada.Assertions,
+    Ada.Command_Line,
     Ada.Containers.Vectors,
     FLTK.Box_Draw_Marshal,
     FLTK.Hook_Exceptions,
@@ -729,7 +730,6 @@ package body FLTK.Static is
     procedure Finalize
            (This : in out FLTK_Static_Final_Controller) is
     begin
-        FLTK.Args_Marshal.Free_Argv (The_Argv);
         for Override of Font_Overrides loop
             Interfaces.C.Strings.Free (Override);
         end loop;
@@ -753,16 +753,24 @@ package body FLTK.Static is
     is
         Count : Interfaces.C.int := Interfaces.C.int (Index);
     begin
+        --  Fl::arg reads argv[i] unchecked (Fl_arg.cxx:132).
+        if Index > Ada.Command_Line.Argument_Count then
+            raise Constraint_Error with
+                "Parse_Arg of argument" & Integer'Image (Index) & " of" &
+                Integer'Image (Ada.Command_Line.Argument_Count);
+        end if;
         return Natural (fl_static_arg
-           (The_Argv'Length,
-            Storage.To_Integer (The_Argv (The_Argv'First)'Address),
+           (FLTK.Args_Marshal.Argc,
+            FLTK.Args_Marshal.Argv,
             Count));
     end Parse_Arg;
 
 
     procedure Parse_Args is
     begin
-        fl_static_args (The_Argv'Length, Storage.To_Integer (The_Argv (The_Argv'First)'Address));
+        fl_static_args
+           (FLTK.Args_Marshal.Argc,
+            FLTK.Args_Marshal.Argv);
     end Parse_Args;
 
 
@@ -775,8 +783,8 @@ package body FLTK.Static is
     begin
         Current_Args_Handler := Func;
         Result := fl_static_args2
-           (The_Argv'Length,
-            Storage.To_Integer (The_Argv (The_Argv'First)'Address),
+           (FLTK.Args_Marshal.Argc,
+            FLTK.Args_Marshal.Argv,
             My_Count,
             (if Func = null then Null_Pointer else Storage.To_Integer (Args_Hook'Address)));
         Count := Integer (My_Count) - 1;

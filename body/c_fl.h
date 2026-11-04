@@ -43,6 +43,9 @@ extern "C" const short fl_mod_command;
 extern "C" size_t c_pointer_size();
 
 
+extern "C" void fl_define_box_and_label_types();
+
+
 extern "C" const int fl_enum_num_red;
 extern "C" const int fl_enum_num_green;
 extern "C" const int fl_enum_num_blue;

@@ -790,9 +790,9 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
 
     function Get_Top_Line
            (This : in Textline_Browser)
-        return Positive is
+        return Natural is
     begin
-        return Positive (fl_browser_get_topline (This.Void_Ptr));
+        return Natural (fl_browser_get_topline (This.Void_Ptr));
     end Get_Top_Line;
 
 

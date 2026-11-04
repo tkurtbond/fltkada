@@ -261,7 +261,8 @@ static int arg(int argc, char **argv, int &i);
 function Parse_Arg
        (Index : in Positive)
     return Natural;
-</pre></td>
+</pre>
+<p>An Index past the last argument raises Constraint_Error: FLTK reads argv[i] unchecked (FLTKAda-BUGS.md 61).</p></td>
   </tr>
 
   <tr>
@@ -273,7 +274,8 @@ static int args(int argc, char **argv, int &i,
 procedure Parse_Args
        (Count :    out Natural;
         Func  : in     Args_Handler := null);
-</pre></td>
+</pre>
+<p>An option neither Func nor FLTK knows, or one missing its value, raises Argument_Error in every call. FLTK's Fl::args stops saying so once a call has stopped at a word that isn't an option, such as a file name (pofltk 57).</p></td>
   </tr>
 
   <tr>

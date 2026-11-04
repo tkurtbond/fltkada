@@ -63,6 +63,9 @@ package FLTK.Widgets.Clocks is
 
     --  Full Value  --
 
+    --  Get_Time gives back the time Set_Time set (pofltk 76).  A running
+    --  clock's own tick sets the time with FLTK's value, once a second, so
+    --  its Get_Time is then the seconds past midnight, local time.
     function Get_Time
            (This : in Clock)
         return Time_Value;

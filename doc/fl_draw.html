@@ -231,7 +231,8 @@ function Clip_Box
        (X, Y, W, H     : in     Integer;
         BX, BY, BW, BH :    out Integer)
     return Boolean;
-</pre></td>
+</pre>
+<p>Returns True exactly when the rectangle given differs from the box, as FLTK documents. A box wholly outside the clip gives 0, 0, 0, 0. FLTK's Cairo driver returns the reverse, and leaves H unset for a box outside (pofltk 2).</p></td>
   </tr>
 
   <tr>
@@ -1013,7 +1014,9 @@ void fl_restore_clip();
 </pre></td>
 <td><pre>
 procedure Restore_Clip;
-</pre></td>
+</pre><p>Where FLTK draws with Cairo, this drops any clip pushed with
+Push_Clip until that clip is popped. Use Push_Clip and Pop_Clip instead
+(pofltk 128).</p></td>
   </tr>
 
   <tr>

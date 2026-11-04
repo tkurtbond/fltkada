@@ -103,6 +103,7 @@ package FLTK.Widgets.Charts is
            (This : in Chart)
         return Natural;
 
+    --  0 is no limit, and keeps every entry (pofltk 60).
     procedure Set_Maximum_Size
            (This : in out Chart;
             To   : in     Natural);

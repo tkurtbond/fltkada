@@ -340,7 +340,8 @@ function Copy
        (This          : in Animated_GIF_Image;
         Width, Height : in Natural)
     return Animated_GIF_Image'Class;
-</pre></td>
+</pre>
+<p>A copy plays only if the original plays. A copy of a stopped animation is on the original's frame, where FLTK would start it (pofltk 64).</p></td>
   </tr>
 
   <tr>

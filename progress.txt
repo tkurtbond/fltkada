@@ -360,8 +360,10 @@ Parent of an extra widget still misreads the chooser's window
 Group.Clear: removes only the children Ada added, so a Spinner or
 Color_Chooser keeps the parts FLTK made, and Packed_Group.Clear leaves the
 pack no resizable, as Fl_Pack::clear does (pofltk 23, FLTKAda-BUGS.md 27,
-PLAN.md Phase 4).  Spinner's Set_Colors and format are still open
-(FLTKAda-BUGS.md 27)
+PLAN.md Phase 4).
+
+Spinner: Set_Colors sets the input field's colors, and Set_Format refuses
+a format snprintf can't take with a double (pofltk 13, FLTKAda-BUGS.md 27)
 
 Grid: Set_Widget refuses a row or column just past the grid, which FLTK
 placed past its rows, and a span past the grid's edge (pofltk 21);
@@ -381,6 +383,9 @@ since FLTK's abort, loop for ever, or overrun (pofltk 120 to 122)
 Fonts: Free_Font and the fonts after it are empty until set, rather than
 read past the end of FLTK's table, and a font name is cut to 126 bytes, at
 a whole UTF-8 character (pofltk 130, PLAN.md Phase 5)
+
+Draw: Restore_Clip is documented as dropping a pushed clip where FLTK
+draws with Cairo (pofltk 128); kept, not worked around
 
 Draw: a dash pattern's lengths are 1 to 127, and more than 127 pairs
 raise Constraint_Error, rather than overrun FLTK's copy (pofltk 136)
@@ -409,6 +414,44 @@ rather than inside it (pofltk 65)
 Drawing: Read_Image reads only the part inside the window or surface,
 and gives zeros for the rest; it raises Draw_Error with nothing drawn on
 (pofltk 127, FLTKAda-BUGS.md 58)
+
+Drawing: Clip_Box is True exactly when the rectangle changed, and gives
+0, 0, 0, 0 for a box wholly outside the clip (pofltk 2)
+
+Box and label kinds: FLTKAda defines the round, shadow, oval, plastic,
+GTK+, gleam and oxy boxes and the shadow, engraved and embossed labels
+when it starts, so they no longer draw as a stand-in; Multi, Icon and
+Image labels stay undefined (pofltk 8)
+
+Menus: Add, Insert, Remove and Clear_Submenu keep the same item chosen,
+or none once it is removed (pofltk 26)
+
+Browsers: Get_Top_Line, Is_Displayed and Top_Item are up to date before
+the browser is first drawn (pofltk 38); Get_Top_Line returns Natural,
+0 for an empty browser (FLTKAda-BUGS.md 60)
+
+Images: a binary PNM (P5, P6) with a maxval under 255 is scaled to
+0 .. 255, by PNM's Create and by a Shared_Image (pofltk 45)
+
+Arguments: Parse_Args raises Argument_Error for an unknown option in every
+call, not only until one has stopped at a word (pofltk 57); FLTK no longer
+reads past argv, nor Parse_Arg past the arguments (FLTKAda-BUGS.md 61);
+Show_With_Args' title no longer dangles (FLTKAda-BUGS.md 62)
+
+Chart: Set_Maximum_Size (0) keeps every entry, where FLTK drops them all
+(pofltk 60)
+
+Animated GIF: a copy of a stopped animation is stopped, on the original's
+frame, where FLTK starts it (pofltk 64)
+
+Clock: Get_Time gives back what Set_Time set (pofltk 76)
+
+Shared images: Reload keeps a scaled image at its size, so Find still
+finds it (pofltk 83)
+
+Filenames: Relative's Changed is True when the name became "." (pofltk 94)
+
+Widgets: Set_Label with a kind sets a shown window's title too (pofltk 6)
 
 Images: a BMP, ICO or GIF that FLTK would read or write past is refused
 with Format_Error, and an animation of one isn't loaded (pofltk 87, 88); a

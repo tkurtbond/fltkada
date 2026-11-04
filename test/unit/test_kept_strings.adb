@@ -229,6 +229,10 @@ begin
     --  Tooltip: shown at once, from a temporary.
     FLTK.Tooltips.Set_Enabled (True);
     FLTK.Tooltips.Set_Delay (0.0);
+    --  A text given while a tip is recently up is shown on the hover delay's
+    --  timeout, which then reads it; with no delay, the Pump below runs it.
+    --  FLTKAda-BUGS.md 64 freed that text, and only a timeout run showed it.
+    FLTK.Tooltips.Set_Hover_Delay (0.0);
     FLTK.Tooltips.Enter_Area (Symbol_Box, 0, 0, 40, 40, Fresh ("tip"));
     Scribble;
     Pump (10);

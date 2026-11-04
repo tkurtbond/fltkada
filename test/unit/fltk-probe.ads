@@ -157,6 +157,12 @@ package FLTK.Probe is
            (Text : in String)
         return Boolean;
 
+    --  A shown window's title as the X server has it.  Raises Probe_Error
+    --  if not on X11 or the window isn't shown.
+    function X11_Title
+           (Item : in FLTK.Widgets.Groups.Windows.Window'Class)
+        return String;
+
     --  Whether a Printer's Start_Job shows GTK's dialog (the default) or FLTK's
     --  own print panel.  Call it before the first Printer is made.
     procedure Set_Printer_Uses_GTK
@@ -173,6 +179,9 @@ package FLTK.Probe is
     function Has_X11 return Boolean;
     function Has_Cairo return Boolean;
     function Has_Forms return Boolean;
+
+    --  FLTK_USE_CAIRO: X11 draws with Cairo too, not only Wayland.
+    function Uses_Cairo return Boolean;
 
     --  Opens the display, and returns True if FLTK is using Wayland.
     function On_Wayland

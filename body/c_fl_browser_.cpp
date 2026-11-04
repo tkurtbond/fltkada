@@ -233,7 +233,17 @@ void fl_abstract_browser_display(ABSTRACTBROWSER b, void * i) {
 }
 
 int fl_abstract_browser_displayed(ABSTRACTBROWSER b, void * i) {
+    browser_update_top(static_cast<Fl_Browser_*>(b));
     return (static_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::displayed))(i);
+}
+
+//  Fl_Browser_ finds its top line from its scroll position only in the
+//  private update_top, which draw and find_item call
+//  (Fl_Browser_.cxx:132-184, 330, 583).  Until then top (), displayed () and
+//  Fl_Browser::topline () read the old top line, or none in a browser never
+//  drawn (pofltk 38).  find_item, which is protected, updates it first.
+void browser_update_top(Fl_Browser_ * b) {
+    (b->*(&Friend_Browser_::find_item))(0);
 }
 
 void * fl_abstract_browser_find_item(ABSTRACTBROWSER b, int y) {
@@ -241,6 +251,7 @@ void * fl_abstract_browser_find_item(ABSTRACTBROWSER b, int y) {
 }
 
 void * fl_abstract_browser_top(ABSTRACTBROWSER b) {
+    browser_update_top(static_cast<Fl_Browser_*>(b));
     return (static_cast<Fl_Browser_*>(b)->*(&Friend_Browser_::top))();
 }
 

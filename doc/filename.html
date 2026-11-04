@@ -275,7 +275,8 @@ function Relative
        (Name    : in     Path_String;
         Changed :    out Boolean)
     return Path_String;
-</pre></td>
+</pre>
+<p>Changed says whether the result differs from Name, so it is True for the current directory, which becomes ".", where FLTK returns 0, no change (pofltk 94).</p></td>
   </tr>
 
   <tr>

@@ -52,6 +52,32 @@ size_t c_pointer_size() {
 
 
 
+//  FL_ROUND_UP_BOX, FL_SHADOW_LABEL and the rest are macros that call these
+//  functions, which put the type's drawing code in FLTK's tables.  The Ada
+//  side names the types by their plain values, so without these calls the
+//  types draw as a stand-in (pofltk 8).  They only fill tables, and need no
+//  display.  FL_MULTI_LABEL, FL_ICON_LABEL and FL_IMAGE_LABEL are left out:
+//  defined, they read a plain text label as a pointer to an Fl_Multi_Label,
+//  Fl_File_Icon or Fl_Image.
+void fl_define_box_and_label_types() {
+    fl_define_FL_ROUND_UP_BOX();
+    fl_define_FL_SHADOW_BOX();
+    fl_define_FL_ROUNDED_BOX();
+    fl_define_FL_RFLAT_BOX();
+    fl_define_FL_RSHADOW_BOX();
+    fl_define_FL_DIAMOND_BOX();
+    fl_define_FL_OVAL_BOX();
+    fl_define_FL_PLASTIC_UP_BOX();
+    fl_define_FL_GTK_UP_BOX();
+    fl_define_FL_GLEAM_UP_BOX();
+    fl_define_FL_OXY_UP_BOX();
+    fl_define_FL_SHADOW_LABEL();
+    fl_define_FL_ENGRAVED_LABEL();
+    fl_define_FL_EMBOSSED_LABEL();
+}
+
+
+
 
 const int fl_enum_num_red   = FL_NUM_RED;
 const int fl_enum_num_green = FL_NUM_GREEN;

@@ -9,6 +9,8 @@
 #include "c_fl_shared_image.h"
 #include "c_fl_image_check.h"
 #include <FL/Fl_XBM_Image.H>
+#include <FL/Fl_PNM_Image.H>
+#include "c_fl_pnm_image.h"
 
 
 
@@ -125,13 +127,44 @@ int fl_shared_image_refcount(SHAREDIMAGE i) {
     return static_cast<Fl_Shared_Image*>(i)->refcount();
 }
 
-//  A file that has gone bad, as above, is left as it was.
+//  The protected image_, alloc_image_ and update, named through a derived
+//  class, as members of Fl_Shared_Image, which any Fl_Shared_Image has.
+struct Shared_Inside : Fl_Shared_Image {
+    static void put(Fl_Shared_Image * s, Fl_Image * i) {
+        Fl_Image * Fl_Shared_Image::*image = &Shared_Inside::image_;
+        int Fl_Shared_Image::*alloc = &Shared_Inside::alloc_image_;
+        void (Fl_Shared_Image::*sync)() = &Shared_Inside::update;
+        if (s->*alloc) {
+            delete (s->*image);
+        }
+        s->*image = i;
+        s->*alloc = 1;
+        (s->*sync)();
+    }
+};
+
+//  A file that has gone bad, as above, is left as it was.  reload puts the
+//  file's image, at the file's size, in an entry scaled from it
+//  (Fl_Shared_Image.cxx:277-321), but the pool is sorted and searched by
+//  data size (:95-105, 498-520), so the entry gets a copy at its own size
+//  back.  pofltk 83.
 void fl_shared_image_reload(SHAREDIMAGE i) {
     Fl_Shared_Image *s = static_cast<Fl_Shared_Image*>(i);
     try {
         if (shared_file_ok(s->name())) {
+            int dw = s->data_w(), dh = s->data_h();
             s->reload();
             own_xbm(s);
+            if (!s->original() && s->image() != 0
+                && (s->data_w() != dw || s->data_h() != dh))
+            {
+                Fl_Image *c = s->image()->copy(dw, dh);
+                if (c != 0 && c->data_w() == dw && c->data_h() == dh) {
+                    Shared_Inside::put(s, c);
+                } else {
+                    delete c;
+                }
+            }
         }
     } catch (...) {
     }
@@ -167,6 +200,34 @@ void fl_shared_image_draw2(SHAREDIMAGE i, int x, int y) {
 
 void fl_shared_image_register_images() {
     fl_register_images();
+}
+
+//  fl_register_images' handler, fl_check_images, loads a PNM with
+//  Fl_PNM_Image, which doesn't scale a binary one with a maxval under 255
+//  (pofltk 45).  This handler loads a P5 or P6 and scales it.  It is added
+//  at elaboration, so it comes before fl_check_images, which FLTK adds when
+//  fl_register_images is first called, by FLTKAda or by FLTK itself
+//  (Fl_Help_Dialog.cxx:207, Fl_File_Icon2.cxx:651), since Fl_Shared_Image
+//  tries its handlers in the order they were added
+//  (Fl_Shared_Image.cxx:297-304).  Until fl_register_images is called it
+//  loads nothing, as FLTK would.
+static Fl_Image * scaled_pnm_handler(const char * name, uchar * header, int headerlen) {
+    if (!Fl_Image::register_images_done || headerlen < 2 || header[0] != 'P'
+        || (header[1] != '5' && header[1] != '6'))
+    {
+        return 0;
+    }
+    try {
+        Fl_PNM_Image * p = new Fl_PNM_Image(name);
+        pnm_scale_samples(p, name);
+        return p;
+    } catch (...) {
+        return 0;
+    }
+}
+
+void fl_shared_image_add_pnm_handler() {
+    Fl_Shared_Image::add_handler(&scaled_pnm_handler);
 }
 
 

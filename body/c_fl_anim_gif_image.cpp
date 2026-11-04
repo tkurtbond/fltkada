@@ -310,9 +310,25 @@ void fl_anim_gif_image_resize2(ANIMGIFIMAGE a, double s) {
 
 
 
+//  copy starts the copy whenever the original has a frame
+//  (Fl_Anim_GIF_Image.cxx:764-765), which a stopped animation also has,
+//  and start moves it on a frame.  So a copy of a stopped animation is
+//  stopped again, and put back on the original's frame.  pofltk 64.
+static Fl_Image * stopped_like(const Fl_Anim_GIF_Image * a, Fl_Image * c) {
+    Fl_Anim_GIF_Image * g = dynamic_cast<Fl_Anim_GIF_Image*>(c);
+    if (g != 0 && !a->playing() && g->playing()) {
+        g->stop();
+        if (a->frame() >= 0 && a->frame() < g->frames()) {
+            g->frame(a->frame());
+        }
+    }
+    return c;
+}
+
 ANIMGIFIMAGE fl_anim_gif_image_copy(ANIMGIFIMAGE a, int w, int h) {
     try {
-        return static_cast<Fl_Anim_GIF_Image*>(a)->copy(w, h);
+        Fl_Anim_GIF_Image * g = static_cast<Fl_Anim_GIF_Image*>(a);
+        return stopped_like(g, g->copy(w, h));
     } catch (...) {
         return 0;
     }
@@ -320,7 +336,8 @@ ANIMGIFIMAGE fl_anim_gif_image_copy(ANIMGIFIMAGE a, int w, int h) {
 
 ANIMGIFIMAGE fl_anim_gif_image_copy2(ANIMGIFIMAGE a) {
     try {
-        return static_cast<Fl_Anim_GIF_Image*>(a)->copy();
+        Fl_Anim_GIF_Image * g = static_cast<Fl_Anim_GIF_Image*>(a);
+        return stopped_like(g, g->copy());
     } catch (...) {
         return 0;
     }

@@ -621,8 +621,21 @@ every group, so `Spinner` and `Color_Chooser` need no override of their
 own. `test_group_clear` failed before the fix, with 0 parts left in each,
 and passes after it.
 
-**Status.** Partly fixed. `Clear` is fixed. `Set_Colors` and the format
-are left for PLAN.md Phase 6.
+**Fix (Set_Colors and the format).** `Spinner` overrides `Set_Colors`
+with the field's `color` and `selection_color`, as its other color
+setters already were (Fl_Spinner.H:179-196). `Set_Format` refuses, with
+`Constraint_Error`, a format `snprintf` can't take with what
+`Fl_Spinner::update` gives it: one double, or an int and then a double
+when the format starts with `%.*` (Fl_Spinner.cxx:79-91). The format
+before is kept. The spec says which formats are taken.
+`test_spinner_colors` failed 20 of its 36 checks before the fix: both
+colors, and every bad format but `%n` and `%s` was taken; `%n` then
+aborted the program, from glibc's "%n in writable segments" check.
+After it, all pass under Xvfb and on sway, with vg=0 (PLAN.md Phase 6),
+2026-11-03.
+
+**Status.** Fixed. (Was "Partly fixed": `Clear` in Phase 4, the rest
+left for Phase 6.)
 
 
 ## 28. Guards written as Pre or predicates are off in release builds
@@ -1662,5 +1675,146 @@ then had left out still-reachable blocks.
 
 **Fix.** The pattern is built on the stack. `test_dashes` passes
 `vg-check.sh` on X11 and on sway.
+
+**Status.** Fixed.
+
+## 60. Get_Top_Line raised Constraint_Error for a browser with no top line
+
+**Symptom.** `Textline_Browser.Get_Top_Line` raised Constraint_Error
+(a range check at fltk-widgets-groups-browsers-textline.adb:795) on a
+browser with no lines, and on one with lines that had never been drawn.
+
+**Cause.** It returned `Positive`, but `Fl_Browser::topline ()` is
+`lineno (top ())` (Fl_Browser.cxx:645-647), which is 0 when there is no
+top item: always in an empty browser, and, before pofltk 38's fix, in a
+browser not yet drawn.
+
+**Found.** `test_browser_top`, written for pofltk 38 in Phase 6,
+2026-11-03: its first check raised before the fix for 38, and its
+empty-browser check raised after it.
+
+**Fix.** `Get_Top_Line` returns `Natural`, 0 when the browser has no
+lines. A caller that stores the result in a `Positive` still compiles.
+`test_browser_top` checks it.
+
+**Status.** Fixed.
+
+## 61. FLTK read past the end of FLTKAda's argv
+
+**Symptom.** Valgrind: an invalid read of 8 bytes at `Fl::arg`
+(Fl_arg.cxx:177), "0 bytes after a block of size 16" allocated in
+`fltk.static'Elab_Spec`, when `Parse_Args` met an option FLTK doesn't
+know, last on the command line (`test_parse_args -bogus`). `Parse_Arg`
+with an index past the arguments read past the array too.
+
+**Cause.** `Args_Marshal.Create_Argv` made argv the program's name and
+arguments, without the null pointer that ends C's argv (C11 5.1.2.2.1).
+FLTK relies on it: `Fl::arg` reads `argv[i+1]` before it checks `i`
+against `argc` (Fl_arg.cxx:177-178), for every option that isn't one of
+the single-word ones. And `Parse_Arg` passed its index to `Fl::arg`,
+which reads `argv[i]` unchecked (Fl_arg.cxx:132).
+
+**Found.** `test_parse_args`, written for pofltk 57 in Phase 6,
+2026-11-03, run under valgrind by hand: its child processes aren't
+traced by `make valgrind`.
+
+**Fix.** The argv ends in a null pointer, and argc doesn't count it.
+`Parse_Arg` raises Constraint_Error for an index past the last
+argument. `test_parse_args` checks both; with the fix valgrind finds
+nothing. Index `Argument_Count + 1` now reads the null, so valgrind
+can't show the second without the first fixed; the test checks the
+exception.
+
+**Status.** Fixed.
+
+## 62. A window shown with Show_With_Args kept a freed title
+
+**Symptom.** A window shown with `Show_With_Args` and the argument
+`-title Hello`, before any `Parse_Args`, had a label in freed memory:
+valgrind reported invalid reads in `Get_Label`, "inside a block of size
+6 free'd", and with 8 strings of that size made after the show, the
+label read "World".
+
+**Cause.** `Args_Marshal.Dispatch` made a new argv for each
+`show (argc, argv)` and freed it as soon as it returned. FLTK keeps
+pointers into it: `-title` and `-name` (Fl_arg.cxx:195, 198), the first
+then made the window's label with `label (title)`, which doesn't copy
+(Fl_arg.cxx:313); and `-fg` and `-bg` as `fl_fg` and `fl_bg`
+(Fl_arg.cxx:203-207), which every later `show (argc, argv)` reads
+again through `get_system_colors` (Fl_arg.cxx:290,
+Fl_Screen_Driver.cxx:210-211). `-name` is copied by `xclass`.
+
+**Found.** `test_parse_args`, while fixing 61, 2026-11-03, reading
+`Fl_Window::show (argc, argv)` (Fl_arg.cxx:287-330) to see what else
+used the argv.
+
+**Fix.** `Args_Marshal` keeps one argv for the program's life, as C's
+is, made at elaboration and never freed; `Parse_Arg`, `Parse_Args`
+and every `Show_With_Args` use it. It is a constrained array, so that
+valgrind sees a pointer to the start of its block and calls it still
+reachable, not possibly lost. `test_parse_args -title Hello` checks the
+label's value.
+
+**Status.** Fixed.
+
+## 63. Set_Label with a kind didn't set a shown window's title
+
+**Symptom.** `Set_Label (Win, Kind, "Kind")` on a shown window changed
+the label but left the title the window manager shows as it was: under
+Xvfb, `XFetchName` still gave the earlier title. `Set_Label (Win,
+"Plain")` did set it.
+
+**Cause.** The three-parameter `Widget.Set_Label` called the
+two-parameter one statically, as `Widget`'s, so a window got
+`Fl_Widget::copy_label`. `Fl_Window::copy_label` isn't virtual, and it
+is the one that also sets the title (Fl_Window.cxx:159-162). pofltk 6;
+PLAN.md's N7.
+
+**Found.** Reading the code against pofltk 6 (PLAN.md, "The issue
+triage"); confirmed with `test_window_label`, 2026-11-03.
+
+**Fix.** `Set_Label (This, Kind, Text)` dispatches, through
+`Widget'Class (This)`, for both the kind and the text.
+`test_window_label` reads the X11 title with `FLTK.Probe.X11_Title`
+after each way of setting the label; before the fix, 2 of its 5 checks
+failed.
+
+**Status.** Fixed.
+
+
+## 64. Enter_Area freed the tooltip text FLTK held
+
+**Symptom.** Under valgrind, `test_kept_strings` sometimes failed with
+invalid reads in `tooltip_timeout` (Fl_Tooltip.cxx:165) and
+`fl_measure`, of a block the shim's `fl_tooltip_enter_area` had
+allocated and freed. It showed in one `make valgrind-sway` run, and
+three reruns were clean.
+
+**Cause.** Section 16's fix keeps a copy of the text, and freed it
+unless `Fl_Tooltip::current () == wid` afterwards, taking that to mean
+FLTK hadn't taken the text. But `enter_area` sets `tip` and `widget_`
+(:301), and when a tip was recently up it then hides the tooltip
+window (:305). On X11 and on sway, the hide goes through
+`Fl_Window_Driver::hide_common` and `fl_throw_focus` (Fl.cxx:1215-1217)
+to `Fl_Tooltip::exit_`, which clears `widget_` and keeps `tip` (:252).
+So the shim freed the text FLTK held, and the hover delay's
+`tooltip_timeout` read it. The gdb backtrace showed that chain for the
+test's "other tip". The bad free happened on every run; valgrind saw
+the read only when the timeout (0.2 s by default) ran before the test
+went on.
+
+**Found.** `make valgrind-sway`, 2026-11-04; the cause by
+instrumenting the shim and with gdb.
+
+**Fix.** The shim decides with `Fl_Tooltip::enabled ()`. With a
+non-empty text and tooltips enabled, FLTK takes it (:291-301): a fresh
+copy can't be the pointer it holds, so the same-text test at :297
+can't refuse it. FLTK also refuses any text while its own
+`tooltip_timeout` runs (`recursion`, :162-163, 291), which the shim
+can't see. That would take an `Enter_Area` from a hook that runs
+inside it, and the comment in the shim says so. `test_kept_strings`
+now sets the hover delay to 0, so its `Pump` runs the timeout: with
+the old test the shim failed valgrind 6 runs of 6, 3 on X11 and 3 on
+sway, and with the fix it passes 6 of 6.
 
 **Status.** Fixed.

@@ -139,7 +139,8 @@ void value(ulong v);
 procedure Set_Time
        (This : in out Clock;
         To   : in     Time_Value);
-</pre></td>
+</pre>
+<p>Get_Time then gives back the time set, where FLTK gives the seconds past midnight once the hands have moved (pofltk 76). A running clock still sets its time with FLTK's value once a second.</p></td>
   </tr>
 
   <tr>

@@ -472,13 +472,16 @@ package body FLTK.Filenames is
     is
         Result : Interfaces.C.char_array (1 .. Interfaces.C.size_t (Max_Path_Length)) :=
            (others => Interfaces.C.char'Val (0));
-        Code : constant Interfaces.C.int := filename_relative
+        Ignore : constant Interfaces.C.int := filename_relative
            (Result,
             Interfaces.C.int (Max_Path_Length),
             Interfaces.C.To_C (Name));
+        Answer : constant String := Interfaces.C.To_Ada (Result);
     begin
-        Changed := Code /= 0;
-        return Interfaces.C.To_Ada (Result);
+        --  FLTK returns 0, no change, for the current directory, which it
+        --  makes "." (filename_absolute.cxx:248-252).  pofltk 94.
+        Changed := Answer /= Name;
+        return Answer;
     end Relative;
 
 

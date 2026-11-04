@@ -249,6 +249,8 @@ package FLTK.Widgets.Menus is
            (This : in Menu)
         return String;
 
+    --  Add, Insert, Remove and Clear_Submenu keep the same item chosen, at
+    --  its new index, or none once it is removed (pofltk 26).
     function Chosen_Index
            (This : in Menu)
         return Extended_Index;

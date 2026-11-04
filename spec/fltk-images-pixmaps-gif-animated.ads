@@ -331,6 +331,8 @@ package FLTK.Images.Pixmaps.GIF.Animated is
 
     --  Copying  --
 
+    --  A copy plays only if This plays; a copy of a stopped animation is
+    --  on This's frame (pofltk 64).
     function Copy
            (This          : in Animated_GIF_Image;
             Width, Height : in Natural)

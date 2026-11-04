@@ -39,6 +39,12 @@ void fl_tooltip_disable() {
 //  when it sets the current widget too (Fl_Tooltip.cxx:301); for an empty text, or
 //  with tooltips disabled, it keeps the old pointer (Fl_Tooltip.cxx:290-293) and
 //  may read it later.  So the old copy is freed only once FLTK holds the new one.
+//  Whether it does is Fl_Tooltip::enabled (), not current () == wid: enter_area
+//  sets tip and widget_ (:301) and may then hide the tooltip window, whose
+//  hide_common calls exit_, which clears widget_ and keeps tip (:252, seen in
+//  gdb).  FLTK also refuses a text while its own tooltip_timeout runs
+//  (:162-163, 291); the shim can't see that, and assumes no Enter_Area comes
+//  from inside it.  FLTKAda-BUGS.md 64.
 //  Derived from pofltk's ofl_tooltip_enter_area (pofltk 75), which freed the copy
 //  on an empty text (FLTK-issues.md, F4).
 //  The copy FLTK holds, freed at exit like the shim's other kept strings.
@@ -68,7 +74,7 @@ void fl_tooltip_enter_area(void * i, int x, int y, int w, int h, const char * t)
         }
         std::memcpy(copy, t, len);
         Fl_Tooltip::enter_area(wid, x, y, w, h, copy);
-        if (Fl_Tooltip::current() == wid) {
+        if (Fl_Tooltip::enabled()) {
             std::free(kept);
             kept = copy;
         } else {

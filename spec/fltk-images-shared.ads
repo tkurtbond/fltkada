@@ -88,6 +88,8 @@ package FLTK.Images.Shared is
            (This : in Shared_Image)
         return Natural;
 
+    --  An image of another size than its file's keeps that size, by which
+    --  Find finds it (pofltk 83).
     procedure Reload
            (This : in out Shared_Image);
 
@@ -124,6 +126,7 @@ package FLTK.Images.Shared is
 
     --  Registers handlers for all the image file formats FLTK supports,
     --  so that Shared_Image and the file chooser preview can load them.
+    --  A binary PNM is then scaled as PNM's Create scales it (pofltk 45).
     procedure Register_Images;
 
 
