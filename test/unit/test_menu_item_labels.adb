@@ -1,0 +1,155 @@
+
+
+
+--  Programmed by T. Kurt Bond and Claude Opus 5.5
+--  Released into the public domain
+--  Derived from pofltk (BSD 3-Clause, copyright T. Kurt Bond), whose
+--  author releases this derived work into the public domain, as FLTKAda is.
+
+
+--  PLAN.md, Phase 4, pofltk 54: an Fl_Menu_Item showing an image or a
+--  multi-label holds the Fl_Image or Fl_Multi_Label pointer in its text.
+--  Fl_Menu_::remove and replace free() that pointer (Fl_Menu_add.cxx), and
+--  item_pathname, find_index and insert read it as the item's text, so the
+--  item's path is not found.  Set_Image and Set_Multi_Label also freed the
+--  item's text, its name in the menu.
+
+
+with
+
+    Ada.Exceptions,
+    Checks,
+    FLTK.Images.RGB,
+    FLTK.Menu_Items,
+    FLTK.Multi_Labels,
+    FLTK.Widgets.Menus.Menu_Bars;
+
+use
+
+    Checks,
+    FLTK;
+
+
+procedure Test_Menu_Item_Labels is
+
+    package RGB renames FLTK.Images.RGB;
+    package MI  renames FLTK.Menu_Items;
+    package ML  renames FLTK.Multi_Labels;
+    package Mnu renames FLTK.Widgets.Menus;
+    package Bar renames FLTK.Widgets.Menus.Menu_Bars;
+
+    Pixels : constant FLTK.Color_Component_Array (1 .. 8 * 8 * 3) := (others => 100);
+    Icon   : RGB.RGB_Image := RGB.Forge.Create (Pixels, 8, 8);
+    Multi  : ML.Multi_Label := ML.Forge.Create;
+
+    Menu : Bar.Menu_Bar := Bar.Forge.Create (0, 0, 200, 25);
+
+    function Place
+           (Path : in String)
+        return Mnu.Index is
+    begin
+        return Mnu.Index (Menu.Find_Index (Path));
+    end Place;
+
+    function Path_Of
+           (Path : in String)
+        return String is
+    begin
+        return Menu.Item_Pathname (MI.Menu_Item (Menu.Item (Place (Path)).Data.all));
+    end Path_Of;
+
+begin
+
+    Multi.Set_First (Icon);
+    Multi.Set_Second ("multi");
+
+    Menu.Add ("File/New", Shortcut => No_Key);
+    Menu.Add ("File/Open", Shortcut => No_Key);
+    Menu.Add ("File/Save", Shortcut => No_Key);
+    Menu.Add ("Edit/Copy", Shortcut => No_Key);
+    Menu.Add ("Edit/Paste", Shortcut => No_Key);
+    Menu.Add ("Help", Shortcut => No_Key);
+
+    Menu.Item (Place ("File/New")).Set_Image (Icon);
+    Menu.Item (Place ("Edit/Copy")).Set_Multi_Label (Multi);
+    Menu.Item (Place ("File")).Set_Image (Icon);
+
+    --  The names still find the items.
+    Check (Menu.Find_Index ("File/New") > 0, "an item showing an image is found by its path");
+    Check (Menu.Find_Index ("Edit/Copy") > 0,
+        "an item showing a multi-label is found by its path");
+    Check (Menu.Find_Index ("File/Open") > 0, "an item below a title showing an image is found");
+    Check (Path_Of ("File/New") = "File/New", "an image item's path");
+    Check (Path_Of ("Edit/Copy") = "Edit/Copy", "a multi-label item's path");
+    Check (Menu.Item (Place ("File/New")).Get_Label = "New", "an image item's label is its name");
+    Check (Menu.Get_Label (Place ("Edit/Copy")) = "Copy", "a multi-label item's label");
+    Check (Menu.Item (Place ("File/New")).Get_Label_Kind = FLTK.Image_Label,
+        "an image item's label kind");
+    Check (Menu.Item (Place ("Edit/Copy")).Get_Label_Kind = FLTK.Multi_Label,
+        "a multi-label item's label kind");
+
+    --  An item added below a title showing an image goes in its submenu.
+    declare
+        Before : constant Natural := Menu.Number_Of_Items;
+    begin
+        Menu.Add ("File/Close", Shortcut => No_Key);
+        Check (Menu.Number_Of_Items = Before + 1,
+            "an item added below a title showing an image goes in its submenu");
+        Check (Path_Of ("File/Close") = "File/Close", "the added item's path");
+    end;
+
+    --  A copy of the menu, with its own labels.
+    declare
+        Other : Bar.Menu_Bar := Bar.Forge.Create (0, 0, 200, 25);
+    begin
+        Other.Use_Same_Items (Menu);
+        Check (Other.Find_Index ("File/New") > 0
+                and then Other.Item (Mnu.Index (Other.Find_Index ("File/New"))).Get_Label_Kind
+                    = FLTK.Image_Label,
+            "a copied menu's image item");
+        Other.Remove (Mnu.Index (Other.Find_Index ("File/New")));
+    end;
+    Check (Menu.Find_Index ("File/New") > 0, "the copy's items are its own");
+
+    --  An item relabelled, then removed, and a submenu cleared.
+    Menu.Set_Label (Place ("File/New"), "Renamed");
+    Check (Menu.Item (Place ("File/Renamed")).Get_Label_Kind = FLTK.Normal_Label,
+        "an image item relabelled shows text");
+    Menu.Item (Place ("File/Renamed")).Set_Image (Icon);
+    Menu.Remove (Place ("File/Renamed"));
+    Check (Menu.Find_Index ("File/Renamed") = 0, "an image item removed");
+    Menu.Item (Place ("File/Open")).Set_Image (Icon);
+    Menu.Clear_Submenu (Place ("File"));
+    Check (Menu.Find_Index ("File/Open") = 0, "a submenu with an image item cleared");
+    Check (Path_Of ("Edit/Copy") = "Edit/Copy", "the other submenu is still there");
+
+    --  A label given text again.
+    Menu.Item (Place ("Edit/Paste")).Set_Image (Icon);
+    Menu.Item (Place ("Edit/Paste")).Set_Label ("Paste2");
+    Check (Menu.Find_Index ("Edit/Paste2") > 0, "an image item given a text label");
+
+    --  A free-standing item.
+    declare
+        Item : MI.Menu_Item := MI.Forge.Create ("alone");
+    begin
+        Item.Set_Image (Icon);
+        Check (Item.Get_Label = "alone", "a free-standing image item keeps its name");
+        Item.Set_Multi_Label (Multi);
+        Check (Item.Get_Label = "alone", "and a multi-label item");
+    end;
+
+    --  The menu cleared, and finalized, with labels showing.
+    Menu.Item (Place ("Help")).Set_Image (Icon);
+    Menu.Clear;
+    Menu.Add ("Again", Shortcut => No_Key);
+    Menu.Item (Place ("Again")).Set_Image (Icon);
+
+    Summary;
+
+exception
+when Occurrence : others =>
+    Check (False, Ada.Exceptions.Exception_Information (Occurrence));
+    Summary;
+end Test_Menu_Item_Labels;
+
+

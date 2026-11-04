@@ -9,6 +9,7 @@ with
     Ada.Assertions,
     Ada.Characters.Latin_1,
     Ada.Unchecked_Conversion,
+    Ada.Unchecked_Deallocation,
     FLTK.Hook_Exceptions,
     Interfaces.C.Strings;
 
@@ -866,12 +867,27 @@ package body FLTK.Widgets.Groups.Text_Displays is
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_text_display (This.Void_Ptr);
             This.Void_Ptr := Null_Pointer;
-            if This.Raw_Buffer /= Null_Pointer then
-                free_fl_text_buffer (This.Raw_Buffer);  --  buffer is reference counted
-                This.Raw_Buffer := Null_Pointer;
-            end if;
+            Release_Kept (This);
         end if;
     end Finalize;
+
+
+    procedure Free_Table is new Ada.Unchecked_Deallocation
+        (Styles.Style_Array, Style_Array_Access);
+
+    procedure Release_Kept
+           (This : in out Text_Display'Class) is
+    begin
+        if This.Raw_Buffer /= Null_Pointer then
+            free_fl_text_buffer (This.Raw_Buffer);  --  buffer is reference counted
+            This.Raw_Buffer := Null_Pointer;
+        end if;
+        if This.Raw_Styles /= Null_Pointer then
+            free_fl_text_buffer (This.Raw_Styles);
+            This.Raw_Styles := Null_Pointer;
+        end if;
+        Free_Table (This.Style_Table);
+    end Release_Kept;
 
 
 
@@ -1005,18 +1021,54 @@ package body FLTK.Widgets.Groups.Text_Displays is
 
     --  Highlighting  --
 
+    --  Checks the table, and keeps a copy of it and a reference on the style
+    --  buffer, letting go of the ones kept before once FLTK has the new ones.
+    procedure Keep_Styles
+           (This  : in out Text_Display;
+            Buff  : in out FLTK.Text_Buffers.Text_Buffer;
+            Table : in     Styles.Style_Array;
+            Old   :    out Style_Array_Access;
+            Raw   :    out Storage.Integer_Address) is
+    begin
+        if Table'Length = 0 then
+            raise Constraint_Error with "Highlight_Data given an empty style table";
+        end if;
+        if Styles."/=" (Table'First, Styles.Style_Index'First) then
+            raise Constraint_Error with "Highlight_Data given a style table not starting at 'A'";
+        end if;
+        Old := This.Style_Table;
+        Raw := This.Raw_Styles;
+        This.Style_Table := new Styles.Style_Array'(Table);
+        This.Raw_Styles := Wrapper (Buff).Void_Ptr;
+        upref_fl_text_buffer (This.Raw_Styles);
+    end Keep_Styles;
+
+    procedure Let_Go
+           (Old : in out Style_Array_Access;
+            Raw : in     Storage.Integer_Address) is
+    begin
+        Free_Table (Old);
+        if Raw /= Null_Pointer then
+            free_fl_text_buffer (Raw);
+        end if;
+    end Let_Go;
+
+
     procedure Highlight_Data
            (This  : in out Text_Display;
             Buff  : in out FLTK.Text_Buffers.Text_Buffer;
-            Table : in     Styles.Style_Array) is
+            Table : in     Styles.Style_Array)
+    is
+        Old : Style_Array_Access;
+        Raw : Storage.Integer_Address;
     begin
+        Keep_Styles (This, Buff, Table, Old, Raw);
         fl_text_display_highlight_data
            (This.Void_Ptr,
-            Wrapper (Buff).Void_Ptr,
-            (if Table'Length > 0
-             then Storage.To_Integer (Table (Table'First)'Address)
-             else Null_Pointer),
-            Table'Length);
+            This.Raw_Styles,
+            Storage.To_Integer (This.Style_Table (This.Style_Table'First)'Address),
+            This.Style_Table'Length);
+        Let_Go (Old, Raw);
     end Highlight_Data;
 
 
@@ -1025,19 +1077,22 @@ package body FLTK.Widgets.Groups.Text_Displays is
             Buff       : in out FLTK.Text_Buffers.Text_Buffer;
             Table      : in     Styles.Style_Array;
             Unfinished : in     Character;
-            Callback   : in     Styles.Unfinished_Style_Callback) is
+            Callback   : in     Styles.Unfinished_Style_Callback)
+    is
+        Old : Style_Array_Access;
+        Raw : Storage.Integer_Address;
     begin
+        Keep_Styles (This, Buff, Table, Old, Raw);
         This.Style_Callback := Callback;
         fl_text_display_highlight_data2
            (This.Void_Ptr,
-            Wrapper (Buff).Void_Ptr,
-            (if Table'Length > 0
-             then Storage.To_Integer (Table (Table'First)'Address)
-             else Null_Pointer),
-            Table'Length,
+            This.Raw_Styles,
+            Storage.To_Integer (This.Style_Table (This.Style_Table'First)'Address),
+            This.Style_Table'Length,
             Interfaces.C.To_C (Unfinished),
             Storage.To_Integer (Style_Hook'Address),
             Storage.To_Integer (This'Address));
+        Let_Go (Old, Raw);
     end Highlight_Data;
 
 

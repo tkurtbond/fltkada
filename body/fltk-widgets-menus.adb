@@ -239,6 +239,11 @@ package body FLTK.Widgets.Menus is
     pragma Import (C, fl_menu_forget_text, "fl_menu_forget_text");
     pragma Inline (fl_menu_forget_text);
 
+    procedure fl_menu_forget_global
+           (M : in Storage.Integer_Address);
+    pragma Import (C, fl_menu_forget_global, "fl_menu_forget_global");
+    pragma Inline (fl_menu_forget_global);
+
     procedure fl_menu_shortcut
            (M : in Storage.Integer_Address;
             I : in Interfaces.C.int;
@@ -481,6 +486,9 @@ package body FLTK.Widgets.Menus is
             Interfaces.C.Strings.Free (Label);
         end loop;
         This.My_Labels.Clear;
+        if This.Void_Ptr /= Null_Pointer then
+            fl_menu_forget_global (This.Void_Ptr);
+        end if;
         Extra_Final (Widget (This));
     end Extra_Final;
 

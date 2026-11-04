@@ -26,15 +26,12 @@ package FLTK.Images.Bitmaps is
 
     package Forge is
 
-        --  Please note that input data should be some declared item
-        --  that lives at least as long as the resulting Bitmap.
-
+        --  The bitmap keeps a copy of Data.  Data shorter than Height
+        --  rows of Bytes_Needed (Width) bytes raises Constraint_Error.
         function Create
                (Data          : in Color_Component_Array;
                 Width, Height : in Natural)
-            return Bitmap
-        with Pre =>
-            Data'Length >= Size_Type (Bytes_Needed (Width)) * Size_Type (Height);
+            return Bitmap;
 
     end Forge;
 

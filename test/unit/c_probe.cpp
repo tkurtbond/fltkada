@@ -199,6 +199,11 @@ extern "C" const char * fl_probe_modal_title() {
     return modal->label();
 }
 
+extern "C" int fl_probe_modal_h() {
+    Fl_Window *modal = Fl::modal();
+    return modal == 0 ? 0 : modal->h();
+}
+
 extern "C" int fl_probe_modal_key(int key, int state, const char * s) {
     Fl_Window *modal = Fl::modal();
     if (modal == 0) {

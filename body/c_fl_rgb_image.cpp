@@ -6,13 +6,34 @@
 
 #include <FL/Fl_RGB_Image.H>
 #include <FL/Fl_Pixmap.H>
+#include <cstring>
+#include <new>
 #include "c_fl_rgb_image.h"
 
 
 
 
+//  Fl_RGB_Image keeps the pointer it is given (Fl_Image.cxx:374-384), so it
+//  is given a copy, which it owns (FLTKAda-BUGS.md 48).  The Ada side has
+//  checked that data holds h rows of ld, or w * d, bytes.  Returns null
+//  when out of memory.
 RGBIMAGE new_fl_rgb_image(void *data, int w, int h, int d, int ld) {
-    Fl_RGB_Image *rgb = new Fl_RGB_Image(static_cast<uchar*>(data), w, h, d, ld);
+    size_t row = ld ? static_cast<size_t>(ld) : static_cast<size_t>(w) * d;
+    size_t n = row * h;
+    uchar *copy = 0;
+    if (n > 0) {
+        copy = new (std::nothrow) uchar[n];
+        if (copy == 0) {
+            return 0;
+        }
+        std::memcpy(copy, data, n);
+    }
+    Fl_RGB_Image *rgb = new (std::nothrow) Fl_RGB_Image(copy, w, h, d, ld);
+    if (rgb == 0) {
+        delete[] copy;
+        return 0;
+    }
+    rgb->alloc_array = copy != 0;
     return rgb;
 }
 

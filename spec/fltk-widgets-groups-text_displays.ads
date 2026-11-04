@@ -177,6 +177,10 @@ package FLTK.Widgets.Groups.Text_Displays is
             Buff  : in out FLTK.Text_Buffers.Text_Buffer;
             Table : in     Styles.Style_Array);
 
+    --  Each Highlight_Data copies the table and keeps the style buffer, so
+    --  either may go first.  The table must start at 'A', which FLTK reads
+    --  as entry 0, and must not be empty, or Constraint_Error is raised
+    --  (pofltk 35).
     procedure Highlight_Data
            (This       : in out Text_Display;
             Buff       : in out FLTK.Text_Buffers.Text_Buffer;
@@ -727,11 +731,18 @@ package FLTK.Widgets.Groups.Text_Displays is
 private
 
 
+    type Style_Array_Access is access Styles.Style_Array;
+
+    --  FLTK keeps the style buffer and the style table it is given
+    --  (pofltk 35), so the display holds a reference on the one and a
+    --  copy of the other.
     type Text_Display is new Group with
         record
             Buffer         : access FLTK.Text_Buffers.Text_Buffer;
             Raw_Buffer     : Storage.Integer_Address := Null_Pointer;
             Style_Callback : Styles.Unfinished_Style_Callback;
+            Style_Table    : Style_Array_Access;
+            Raw_Styles     : Storage.Integer_Address := Null_Pointer;
         end record;
 
     overriding procedure Initialize
@@ -765,6 +776,11 @@ private
            (TB : in Storage.Integer_Address);
     pragma Import (C, free_fl_text_buffer, "free_fl_text_buffer");
     pragma Inline (free_fl_text_buffer);
+
+    --  Lets go of the buffers and the style table the display keeps, once
+    --  the C++ display is gone.
+    procedure Release_Kept
+           (This : in out Text_Display'Class);
 
 
     pragma Inline (Get_Buffer);

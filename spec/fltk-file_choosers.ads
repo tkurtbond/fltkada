@@ -163,6 +163,8 @@ package FLTK.File_Choosers is
 
     --  Callback and Extra  --
 
+    --  An extra widget finalized first leaves the chooser, with its room;
+    --  Eject_Extra then returns null for it.
     procedure Add_Extra
            (This : in out File_Chooser;
             Item : in out Widgets.Widget'Class);
@@ -175,6 +177,7 @@ package FLTK.File_Choosers is
             Item : in out Widgets.Widget'Class)
         return access Widgets.Widget'Class;
 
+    --  Func may free the chooser, which then goes once its callback is done.
     procedure Set_Callback
            (This : in out File_Chooser;
             Func : in     Chooser_Callback);

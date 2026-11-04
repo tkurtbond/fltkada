@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Anim_GIF_Image.H>
 #include <FL/Fl_Widget.H>
+#include <set>
 #include "c_fl_anim_gif_image.h"
 
 
@@ -15,8 +16,67 @@ static const char * null_if_empty(const char * n) {
     return (n == 0 || *n == '\0') ? 0 : n;
 }
 
+
+
+
+//  Animations that forget a canvas as it goes
+
+//  Fl_Anim_GIF_Image's private canvas_, reached through an explicit
+//  instantiation, which may name a private member ([temp.explicit]).
+//  From pofltk's Reach, as in c_fl_tree.cpp.
+
+namespace {
+
+template <class Tag, typename Tag::type M> struct Reach {
+    friend typename Tag::type member(Tag) { return M; }
+};
+
+struct Canvas_Of {
+    typedef Fl_Widget * Fl_Anim_GIF_Image::*type;
+    friend type member(Canvas_Of);
+};
+
+template struct Reach<Canvas_Of, &Fl_Anim_GIF_Image::canvas_>;
+
+//  The animations that have a canvas.
+typedef std::set<Fl_Anim_GIF_Image*> Anim_Set;
+
+Anim_Set & with_canvas() {
+    static Anim_Set anims;
+    return anims;
+}
+
+void note_canvas(Fl_Anim_GIF_Image * a) {
+    if (a->canvas() != 0) {
+        with_canvas().insert(a);
+    } else {
+        with_canvas().erase(a);
+    }
+}
+
+}
+
+//  An animation keeps its canvas's pointer, and its timer sets the frame
+//  and redraws the canvas (Fl_Anim_GIF_Image.cxx:1195-1205), so a canvas
+//  that goes first would be used after it is freed (pofltk 62).  A widget
+//  about to be freed calls this, from fl_widget_forget, and every
+//  animation showing in it forgets it.  canvas(0) would clear the image of
+//  the widget, which is going anyway.
+void anim_gif_canvas_gone(const Fl_Widget * w) {
+    Anim_Set & anims = with_canvas();
+    for (Anim_Set::iterator it = anims.begin(); it != anims.end(); ) {
+        if ((*it)->canvas() == w) {
+            (*it)->*member(Canvas_Of()) = 0;
+            anims.erase(it++);
+        } else {
+            ++it;
+        }
+    }
+}
+
 ANIMGIFIMAGE new_fl_anim_gif_image(const char * f, void * c, unsigned short l) {
     Fl_Anim_GIF_Image *a = new Fl_Anim_GIF_Image(f, static_cast<Fl_Widget*>(c), l);
+    note_canvas(a);
     return a;
 }
 
@@ -24,6 +84,7 @@ ANIMGIFIMAGE new_fl_anim_gif_image2(const char * n, void * d, size_t s,
     void * c, unsigned short l) {
     Fl_Anim_GIF_Image *a = new Fl_Anim_GIF_Image(null_if_empty(n),
         static_cast<const unsigned char*>(d), s, static_cast<Fl_Widget*>(c), l);
+    note_canvas(a);
     return a;
 }
 
@@ -32,8 +93,16 @@ ANIMGIFIMAGE new_fl_anim_gif_image3() {
     return a;
 }
 
+//  An animation that goes first leaves its canvas showing no image, rather
+//  than the freed animation.
 void free_fl_anim_gif_image(ANIMGIFIMAGE a) {
-    delete static_cast<Fl_Anim_GIF_Image*>(a);
+    Fl_Anim_GIF_Image *an = static_cast<Fl_Anim_GIF_Image*>(a);
+    Fl_Widget *c = an->canvas();
+    if (c != 0 && c->image() == an) {
+        c->image(0);
+    }
+    with_canvas().erase(an);
+    delete an;
 }
 
 
@@ -85,6 +154,7 @@ void * fl_anim_gif_image_get_canvas(ANIMGIFIMAGE a) {
 
 void fl_anim_gif_image_set_canvas(ANIMGIFIMAGE a, void * c, unsigned short l) {
     static_cast<Fl_Anim_GIF_Image*>(a)->canvas(static_cast<Fl_Widget*>(c), l);
+    note_canvas(static_cast<Fl_Anim_GIF_Image*>(a));
 }
 
 int fl_anim_gif_image_canvas_w(ANIMGIFIMAGE a) {

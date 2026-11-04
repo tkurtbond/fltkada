@@ -9,6 +9,8 @@
 #include <FL/Fl_Image.H>
 #include <FL/platform.H>
 #include "c_fl_widget.h"
+#include "c_fl_anim_gif_image.h"
+#include "c_fl_file_chooser.h"
 #include "c_fl.h"
 
 
@@ -78,9 +80,13 @@ void free_fl_widget(WIDGET w) {
 //  ~Fl_Widget clears Fl::pushed, belowmouse and focus, but not Fl::grab or
 //  the selection owner, and the next event then reads the freed widget
 //  (Fl_Widget.cxx:166-185, Fl.cxx:1205-1219, pofltk 129).  Every widget's Finalize calls this, through
-//  Extra_Final, before it frees the widget.
+//  Extra_Final, before it frees the widget.  An animation showing in the
+//  widget forgets it too (pofltk 62), and a file chooser whose extra widget
+//  it is lets it go (pofltk 92).
 void fl_widget_forget(WIDGET w) {
     Fl_Widget *wi = static_cast<Fl_Widget*>(w);
+    anim_gif_canvas_gone(wi);
+    file_chooser_extra_gone(wi);
     if (Fl::grab() != 0 && Fl::grab() == wi) {
         Fl::grab(0);
     }

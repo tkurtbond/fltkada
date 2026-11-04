@@ -347,6 +347,8 @@ package FLTK.Widgets.Menus is
            (This : in out Menu;
             To   : in     Box_Kind);
 
+    --  Unlike FLTK's global(), the menu may be finalized: its shortcuts then
+    --  stop working (pofltk 27).
     procedure Make_Global
            (This : in out Menu);
 

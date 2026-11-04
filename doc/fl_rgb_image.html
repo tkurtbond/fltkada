@@ -116,11 +116,9 @@ function Create
         Depth         : in Natural := 3;
         Line_Size     : in Natural := 0)
     return RGB_Image
-with Pre => (if Line_Size = 0
-    then Data'Length >= Size_Type (Width) * Size_Type (Height) * Size_Type (Depth)
-    else Data'Length >= Size_Type (Line_Size) * Size_Type (Height))
-    and Data'Length <= Get_Max_Size;
-</pre></td>
+with Pre => Data'Length <= Get_Max_Size;
+</pre>The image keeps a copy of Data; FLTK keeps the pointer it is given.
+Data too short for the size raises Constraint_Error.</td>
   </tr>
 
   <tr>

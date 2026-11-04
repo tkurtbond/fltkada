@@ -35,6 +35,9 @@ Either extend it and override those subprograms or use types already extended fr
 if the menu is in none). Under Wayland, a menu popped up over a window not yet on the screen
 ends the program with a protocol error.</p>
 
+<p>Make_Global uses the binding's own handler rather than FLTK's, so a global menu may be
+finalized: its shortcuts then stop working. FLTK's own global() menu must never be deleted.</p>
+
 
 
 <table class="type">
@@ -475,7 +478,10 @@ function Item
   </tr>
 
   <tr>
-<td><pre>
+<td>An item showing an image or a multi-label is named by its text, as are
+those Find_Index, Add and Insert look for; FLTK alone would use the image
+pointer (pofltk 54).
+<pre>
 int item_pathname(char *name, int namelen,
     const Fl_Menu_Item *finditem=0) const;
 </pre></td>

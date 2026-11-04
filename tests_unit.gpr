@@ -36,6 +36,8 @@ project Tests_Unit is
         "test_chooser_labels.adb",
         "test_printer_labels.adb",
         "test_glut_strings.adb",
+        "test_glut_live.adb",
+        "test_group_clear.adb",
         "test_spinner_format.adb",
         "test_menu_items.adb",
         "test_clipboard_kinds.adb",
@@ -45,6 +47,9 @@ project Tests_Unit is
         "test_recode.adb",
         "test_part_callbacks.adb",
         "test_help_links.adb",
+        "test_help_held.adb",
+        "test_chooser_close.adb",
+        "test_chooser_extra.adb",
         "test_table_children.adb",
         "test_buffer_life.adb",
         "test_browser_icons.adb",
@@ -52,7 +57,18 @@ project Tests_Unit is
         "test_first_calls.adb",
         "test_wrong_state.adb",
         "test_print_font.adb",
-        "test_popup_early.adb");
+        "test_popup_early.adb",
+        "test_menu_global.adb",
+        "test_highlight_data.adb",
+        "test_tree_remove.adb",
+        "test_tree_widgets.adb",
+        "test_tree_icons.adb",
+        "test_pref_groups.adb",
+        "test_menu_item_labels.adb",
+        "test_window_shape.adb",
+        "test_image_data.adb",
+        "test_anim_canvas.adb",
+        "test_tiled_tile.adb");
 
     package Builder is
         for Default_Switches ("Ada") use

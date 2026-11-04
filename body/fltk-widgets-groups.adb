@@ -393,10 +393,10 @@ package body FLTK.Widgets.Groups is
            (This : in out Group) is
     begin
         --  We don't use the actual clear method here because
-        --  that would delete the children from memory.
-        for I in reverse 1 .. This.Number_Of_Children loop
-            This.Remove (Index (I));
-        end loop;
+        --  that would delete the children from memory.  The children FLTK
+        --  made, such as a spinner's field and buttons, are part of the
+        --  group and stay (pofltk 23).
+        This.Remove_Ada_Children;
     end Clear;
 
 

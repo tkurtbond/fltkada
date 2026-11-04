@@ -6,6 +6,7 @@
 
 with
 
+    FLTK.Tree_Icons,
     Interfaces.C,
     Interfaces.C.Strings;
 
@@ -430,6 +431,7 @@ package body FLTK.Widgets.Groups.Trees is
         Extra_Final (This);
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_tree (This.Void_Ptr);
+            FLTK.Tree_Icons.Drop_All (This.Void_Ptr);
             This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;
@@ -561,6 +563,7 @@ package body FLTK.Widgets.Groups.Trees is
             Item : in     FLTK.Tree_Items.Tree_Item) is
     begin
         fl_tree_remove (This.Void_Ptr, Storage.To_Integer (FLTK.Tree_Items.Address_Of (Item)));
+        FLTK.Tree_Icons.Drop_Unused (This.Void_Ptr);
     end Remove;
 
 
@@ -568,6 +571,7 @@ package body FLTK.Widgets.Groups.Trees is
            (This : in out Tree) is
     begin
         fl_tree_clear (This.Void_Ptr);
+        FLTK.Tree_Icons.Drop_Unused (This.Void_Ptr);
     end Clear;
 
 
@@ -578,6 +582,7 @@ package body FLTK.Widgets.Groups.Trees is
         fl_tree_clear_children
            (This.Void_Ptr,
             Storage.To_Integer (FLTK.Tree_Items.Address_Of (Item)));
+        FLTK.Tree_Icons.Drop_Unused (This.Void_Ptr);
     end Clear_Children;
 
 

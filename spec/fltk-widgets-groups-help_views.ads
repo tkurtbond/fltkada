@@ -113,6 +113,8 @@ package FLTK.Widgets.Groups.Help_Views is
            (This : in Help_View)
         return String;
 
+    --  A link held down while the page is set, a page is loaded or the view
+    --  is resized is not followed when the mouse is released.
     procedure Set_Content
            (This  : in out Help_View;
             Value : in     String);

@@ -75,8 +75,9 @@ package body FLTK.GLUT is
     pragma Import (C, fl_glut_create_sub_window, "fl_glut_create_sub_window");
     pragma Inline (fl_glut_create_sub_window);
 
-    procedure fl_glut_destroy_window
-           (Win : in Interfaces.C.int);
+    function fl_glut_destroy_window
+           (Win : in Interfaces.C.int)
+        return Interfaces.C.int;
     pragma Import (C, fl_glut_destroy_window, "fl_glut_destroy_window");
     pragma Inline (fl_glut_destroy_window);
 
@@ -92,6 +93,23 @@ package body FLTK.GLUT is
     procedure fl_glut_swap_buffers;
     pragma Import (C, fl_glut_swap_buffers, "fl_glut_swap_buffers");
     pragma Inline (fl_glut_swap_buffers);
+
+    function fl_glut_window_alive
+           (Win : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_glut_window_alive, "fl_glut_window_alive");
+    pragma Inline (fl_glut_window_alive);
+
+    function fl_glut_window_ada
+           (Win : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_glut_window_ada, "fl_glut_window_ada");
+    pragma Inline (fl_glut_window_ada);
+
+    function fl_glut_has_room
+        return Interfaces.C.int;
+    pragma Import (C, fl_glut_has_room, "fl_glut_has_room");
+    pragma Inline (fl_glut_has_room);
 
     function fl_glut_get_window
         return Interfaces.C.int;
@@ -114,7 +132,7 @@ package body FLTK.GLUT is
     pragma Inline (fl_glut_set_window_title);
 
     procedure fl_glut_set_icon_title
-           (T : in ICS.chars_ptr);
+           (T : in Interfaces.C.char_array);
     pragma Import (C, fl_glut_set_icon_title, "fl_glut_set_icon_title");
     pragma Inline (fl_glut_set_icon_title);
 
@@ -167,7 +185,8 @@ package body FLTK.GLUT is
 
     --  Overlays  --
 
-    procedure fl_glut_establish_overlay;
+    function fl_glut_establish_overlay
+        return Interfaces.C.int;
     pragma Import (C, fl_glut_establish_overlay, "fl_glut_establish_overlay");
     pragma Inline (fl_glut_establish_overlay);
 
@@ -175,8 +194,9 @@ package body FLTK.GLUT is
     pragma Import (C, fl_glut_remove_overlay, "fl_glut_remove_overlay");
     pragma Inline (fl_glut_remove_overlay);
 
-    procedure fl_glut_use_layer
-           (L : in Interfaces.C.unsigned);
+    function fl_glut_use_layer
+           (L : in Interfaces.C.unsigned)
+        return Interfaces.C.int;
     pragma Import (C, fl_glut_use_layer, "fl_glut_use_layer");
     pragma Inline (fl_glut_use_layer);
 
@@ -208,6 +228,29 @@ package body FLTK.GLUT is
     pragma Import (C, fl_glut_destroy_menu, "fl_glut_destroy_menu");
     pragma Inline (fl_glut_destroy_menu);
 
+    function fl_glut_menu_exists
+           (Menu : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_glut_menu_exists, "fl_glut_menu_exists");
+    pragma Inline (fl_glut_menu_exists);
+
+    function fl_glut_menu_room
+        return Interfaces.C.int;
+    pragma Import (C, fl_glut_menu_room, "fl_glut_menu_room");
+    pragma Inline (fl_glut_menu_room);
+
+    function fl_glut_menu_items
+           (Menu : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_glut_menu_items, "fl_glut_menu_items");
+    pragma Inline (fl_glut_menu_items);
+
+    function fl_glut_menu_used
+           (Menu : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_glut_menu_used, "fl_glut_menu_used");
+    pragma Inline (fl_glut_menu_used);
+
     function fl_glut_get_menu
         return Interfaces.C.int;
     pragma Import (C, fl_glut_get_menu, "fl_glut_get_menu");
@@ -219,27 +262,27 @@ package body FLTK.GLUT is
     pragma Inline (fl_glut_set_menu);
 
     procedure fl_glut_add_menu_entry
-           (T : in ICS.chars_ptr;
+           (T : in Interfaces.C.char_array;
             V : in Interfaces.C.int);
     pragma Import (C, fl_glut_add_menu_entry, "fl_glut_add_menu_entry");
     pragma Inline (fl_glut_add_menu_entry);
 
     procedure fl_glut_add_sub_menu
-           (T : in ICS.chars_ptr;
+           (T : in Interfaces.C.char_array;
             S : in Interfaces.C.int);
     pragma Import (C, fl_glut_add_sub_menu, "fl_glut_add_sub_menu");
     pragma Inline (fl_glut_add_sub_menu);
 
     procedure fl_glut_change_to_menu_entry
            (I : in Interfaces.C.int;
-            T : in ICS.chars_ptr;
+            T : in Interfaces.C.char_array;
             V : in Interfaces.C.int);
     pragma Import (C, fl_glut_change_to_menu_entry, "fl_glut_change_to_menu_entry");
     pragma Inline (fl_glut_change_to_menu_entry);
 
     procedure fl_glut_change_to_sub_menu
            (I : in Interfaces.C.int;
-            T : in ICS.chars_ptr;
+            T : in Interfaces.C.char_array;
             S : in Interfaces.C.int);
     pragma Import (C, fl_glut_change_to_sub_menu, "fl_glut_change_to_sub_menu");
     pragma Inline (fl_glut_change_to_sub_menu);
@@ -432,26 +475,13 @@ package body FLTK.GLUT is
 
     --  GLUT keeps the texts of menu items (i->text = label,
     --  glut_compatibility.cxx:350, 358, 367, 376) and a window's icon title
-    --  (iconlabel_ = mininame, Fl_Window.cxx:545) without copying them, and
-    --  never frees them.  So the copies are kept here, and each is freed once
-    --  GLUT has let go of it (FLTKAda-BUGS.md 37).
+    --  (iconlabel_ = mininame, Fl_Window.cxx:545) without copying them.  The
+    --  shim keeps the copies (FLTKAda-BUGS.md 37, pofltk 112).
 
     package Text_Vectors is new Ada.Containers.Vectors
        (Index_Type   => Positive,
         Element_Type => ICS.chars_ptr,
         "="          => ICS."=");
-
-    --  One text for each item of each menu, in item order.  Menu 0 is the
-    --  one GLUT adds to before any menu is made.
-    Menu_Texts : array (Menu_Number) of Text_Vectors.Vector;
-
-    --  Texts given to Change_To_* for an item past the end of the menu.
-    --  GLUT writes them past its array (pofltk 112), so they can't be known
-    --  to be let go, and are freed at exit.
-    Stray_Texts : Text_Vectors.Vector;
-
-    --  The icon title each window was last given.
-    Icon_Titles : array (Valid_Window_Number) of ICS.chars_ptr := (others => ICS.Null_Ptr);
 
     --  Every argv string Init has made.  glutInit takes FLTK's options out
     --  of argv (:207-211), so The_Argv no longer holds them all.
@@ -515,13 +545,6 @@ package body FLTK.GLUT is
     is
         pragma Unreferenced (This);
     begin
-        for Texts of Menu_Texts loop
-            Free_All (Texts);
-        end loop;
-        Free_All (Stray_Texts);
-        for Title of Icon_Titles loop
-            ICS.Free (Title);
-        end loop;
         Free_All (Argv_Texts);
         Free (The_Argv);
     end Finalize;
@@ -534,23 +557,92 @@ package body FLTK.GLUT is
     end Current_Menu;
 
 
-    --  Keeps Text as the text of item Item of the current menu, which GLUT
-    --  has just been given, and frees the text it replaced.
-    procedure Keep_Changed
-           (Item : in Positive;
-            Text : in ICS.chars_ptr)
-    is
-        Texts : Text_Vectors.Vector renames Menu_Texts (Current_Menu);
-        Old   : ICS.chars_ptr;
+    --  pofltk 112: GLUT follows a window or menu number without a look, so
+    --  these check it first.
+
+    procedure Check_Window
+           (Number : in Valid_Window_Number) is
     begin
-        if Item <= Texts.Last_Index then
-            Old := Texts (Item);
-            Texts.Replace_Element (Item, Text);
-            ICS.Free (Old);
-        else
-            Stray_Texts.Append (Text);
+        if fl_glut_window_alive (Interfaces.C.int (Number)) = 0 then
+            raise Constraint_Error with "no GLUT window" & Window_Number'Image (Number);
         end if;
-    end Keep_Changed;
+    end Check_Window;
+
+
+    --  The 32nd window would get the 31st's number (glut_compatibility.cxx:168).
+    procedure Check_Window_Room is
+    begin
+        if fl_glut_has_room = 0 then
+            raise Unsupported_Error with "GLUT has no window numbers left";
+        end if;
+    end Check_Window_Room;
+
+
+    procedure Check_Menu
+           (Number : in Menu_Number) is
+    begin
+        if fl_glut_menu_exists (Interfaces.C.int (Number)) = 0 then
+            raise Constraint_Error with "no GLUT menu" & Menu_Number'Image (Number);
+        end if;
+    end Check_Menu;
+
+
+    function Items_Of
+           (Number : in Valid_Menu_Number)
+        return Natural is
+    begin
+        return Natural (fl_glut_menu_items (Interfaces.C.int (Number)));
+    end Items_Of;
+
+
+    function Current_Valid_Menu
+        return Valid_Menu_Number
+    is
+        Number : constant Menu_Number := Current_Menu;
+    begin
+        if Number = No_Menu then
+            raise Program_Error with "no current GLUT menu";
+        end if;
+        return Number;
+    end Current_Valid_Menu;
+
+
+    --  A submenu item points at its submenu's array of items
+    --  (glut_compatibility.cxx:359), which adding to the submenu, removing
+    --  from it or destroying it frees.  Nor can a menu used as a submenu
+    --  take a submenu, so that no menu is its own submenu, however deep.
+    procedure Check_Unused
+           (Number : in Valid_Menu_Number;
+            Doing  : in String) is
+    begin
+        if fl_glut_menu_used (Interfaces.C.int (Number)) /= 0 then
+            raise Program_Error with Doing & " a GLUT menu used as a submenu";
+        end if;
+    end Check_Unused;
+
+
+    procedure Check_Submenu
+           (Menu, Submenu : in Valid_Menu_Number) is
+    begin
+        Check_Menu (Submenu);
+        if Submenu = Menu then
+            raise Program_Error with "a GLUT menu as its own submenu";
+        elsif Items_Of (Submenu) = 0 then
+            --  An empty menu has no array, so the item would point at null
+            raise Program_Error with "an empty GLUT menu as a submenu";
+        end if;
+    end Check_Submenu;
+
+
+    procedure Check_Item
+           (Menu : in Valid_Menu_Number;
+            Item : in Positive) is
+    begin
+        if Item > Items_Of (Menu) then
+            raise Constraint_Error with "GLUT menu" & Menu_Number'Image (Menu)
+                & " has no item" & Integer'Image (Item);
+        end if;
+    end Check_Item;
 
 
 
@@ -923,12 +1015,12 @@ package body FLTK.GLUT is
            (Title : in String)
         return Valid_Window_Number
     is
-        Number : constant Valid_Window_Number :=
-            Valid_Window_Number (fl_glut_create_window (Interfaces.C.To_C (Title)));
+        Number : Valid_Window_Number;
     begin
+        Check_Window_Room;
+        Number := Valid_Window_Number (fl_glut_create_window (Interfaces.C.To_C (Title)));
         --  GLUT gives a new window only a number whose window is gone, such
         --  as a subwindow deleted with its parent
-        ICS.Free (Icon_Titles (Number));
         Reset_Callbacks (Number);
         return Number;
     end Create_Window;
@@ -939,13 +1031,15 @@ package body FLTK.GLUT is
             X, Y, W, H : in Integer)
         return Valid_Window_Number
     is
-        Number : constant Valid_Window_Number := Valid_Window_Number
+        Number : Valid_Window_Number;
+    begin
+        Check_Window (Parent);
+        Check_Window_Room;
+        Number := Valid_Window_Number
            (fl_glut_create_sub_window
                (Interfaces.C.int (Parent),
                 Interfaces.C.int (X), Interfaces.C.int (Y),
                 Interfaces.C.int (W), Interfaces.C.int (H)));
-    begin
-        ICS.Free (Icon_Titles (Number));
         Reset_Callbacks (Number);
         return Number;
     end Create_Sub_Window;
@@ -954,9 +1048,18 @@ package body FLTK.GLUT is
     procedure Destroy_Window
            (Number : in Valid_Window_Number) is
     begin
-        fl_glut_destroy_window (Interfaces.C.int (Number));
-        ICS.Free (Icon_Titles (Number));
-        Reset_Callbacks (Number);
+        Check_Window (Number);
+        if fl_glut_window_ada (Interfaces.C.int (Number)) /= 0 then
+            raise Program_Error with "Destroy_Window of a Glut_Window, which goes when finalized";
+        elsif fl_glut_destroy_window (Interfaces.C.int (Number)) = 0 then
+            raise Program_Error with "Destroy_Window of a window with a Glut_Window in it";
+        end if;
+        --  With its subwindows
+        for Gone in Valid_Window_Number loop
+            if fl_glut_window_alive (Interfaces.C.int (Gone)) = 0 then
+                Reset_Callbacks (Gone);
+            end if;
+        end loop;
     end Destroy_Window;
 
 
@@ -969,6 +1072,7 @@ package body FLTK.GLUT is
     procedure Post_Window_Redisplay
            (Number : in Valid_Window_Number) is
     begin
+        Check_Window (Number);
         fl_glut_post_window_redisplay (Interfaces.C.int (Number));
     end Post_Window_Redisplay;
 
@@ -986,9 +1090,18 @@ package body FLTK.GLUT is
     end Get_Window;
 
 
+    function Window_Exists
+           (Number : in Window_Number)
+        return Boolean is
+    begin
+        return fl_glut_window_alive (Interfaces.C.int (Number)) /= 0;
+    end Window_Exists;
+
+
     procedure Set_Window
            (Number : in Valid_Window_Number) is
     begin
+        Check_Window (Number);
         fl_glut_set_window (Interfaces.C.int (Number));
     end Set_Window;
 
@@ -1007,21 +1120,9 @@ package body FLTK.GLUT is
 
 
     procedure Set_Icon_Title
-           (Text : in String)
-    is
-        Window : constant Window_Number := Current_Window;
-        Title  : ICS.chars_ptr := ICS.New_String (Text);
-        Old    : ICS.chars_ptr;
+           (Text : in String) is
     begin
-        fl_glut_set_icon_title (Title);
-        if Window = No_Window then
-            --  GLUT ignores the title when there's no current window
-            ICS.Free (Title);
-        else
-            Old := Icon_Titles (Window);
-            Icon_Titles (Window) := Title;
-            ICS.Free (Old);
-        end if;
+        fl_glut_set_icon_title (Interfaces.C.To_C (Text));
     end Set_Icon_Title;
 
 
@@ -1097,7 +1198,9 @@ package body FLTK.GLUT is
 
     procedure Establish_Overlay is
     begin
-        fl_glut_establish_overlay;
+        if fl_glut_establish_overlay = 0 then
+            raise Program_Error with "Establish_Overlay on a GLUT window not shown";
+        end if;
     end Establish_Overlay;
 
 
@@ -1110,7 +1213,9 @@ package body FLTK.GLUT is
     procedure Use_Layer
            (Layer : in Layer_Kind) is
     begin
-        fl_glut_use_layer (Layer_Kind'Pos (Layer));
+        if fl_glut_use_layer (Layer_Kind'Pos (Layer)) = 0 then
+            raise Program_Error with "Use_Layer (Overlay) on a GLUT window not shown";
+        end if;
     end Use_Layer;
 
 
@@ -1138,16 +1243,17 @@ package body FLTK.GLUT is
     --  Menus  --
     -------------
 
-    --  glutAddMenuEntry and friends keep the label pointer without copying
-    --  it, so the labels are kept in Menu_Texts.
-
     function Create_Menu
            (Func : in not null Menu_Function)
         return Valid_Menu_Number
     is
-        Number : constant Valid_Menu_Number :=
-            Valid_Menu_Number (fl_glut_create_menu (Menu_Hook'Address));
+        Number : Valid_Menu_Number;
     begin
+        --  The 32nd menu would get the 31st's number (glut_compatibility.cxx:308)
+        if fl_glut_menu_room = 0 then
+            raise Unsupported_Error with "GLUT has no menu numbers left";
+        end if;
+        Number := Valid_Menu_Number (fl_glut_create_menu (Menu_Hook'Address));
         Menu_Table (Number) := Func;
         return Number;
     end Create_Menu;
@@ -1156,8 +1262,9 @@ package body FLTK.GLUT is
     procedure Destroy_Menu
            (Number : in Valid_Menu_Number) is
     begin
+        Check_Menu (Number);
+        Check_Unused (Number, "Destroy_Menu of");
         fl_glut_destroy_menu (Interfaces.C.int (Number));
-        Free_All (Menu_Texts (Number));
         Menu_Table (Number) := null;
     end Destroy_Menu;
 
@@ -1169,9 +1276,18 @@ package body FLTK.GLUT is
     end Get_Menu;
 
 
+    function Menu_Exists
+           (Number : in Menu_Number)
+        return Boolean is
+    begin
+        return fl_glut_menu_exists (Interfaces.C.int (Number)) /= 0;
+    end Menu_Exists;
+
+
     procedure Set_Menu
            (Number : in Valid_Menu_Number) is
     begin
+        Check_Menu (Number);
         fl_glut_set_menu (Interfaces.C.int (Number));
     end Set_Menu;
 
@@ -1180,10 +1296,10 @@ package body FLTK.GLUT is
            (Label : in String;
             Value : in Integer)
     is
-        Text : constant ICS.chars_ptr := ICS.New_String (Label);
+        Menu : constant Valid_Menu_Number := Current_Valid_Menu;
     begin
-        fl_glut_add_menu_entry (Text, Interfaces.C.int (Value));
-        Menu_Texts (Current_Menu).Append (Text);
+        Check_Unused (Menu, "Add_Menu_Entry to");
+        fl_glut_add_menu_entry (Interfaces.C.To_C (Label), Interfaces.C.int (Value));
     end Add_Menu_Entry;
 
 
@@ -1191,10 +1307,11 @@ package body FLTK.GLUT is
            (Label   : in String;
             Submenu : in Valid_Menu_Number)
     is
-        Text : constant ICS.chars_ptr := ICS.New_String (Label);
+        Menu : constant Valid_Menu_Number := Current_Valid_Menu;
     begin
-        fl_glut_add_sub_menu (Text, Interfaces.C.int (Submenu));
-        Menu_Texts (Current_Menu).Append (Text);
+        Check_Unused (Menu, "Add_Sub_Menu to");
+        Check_Submenu (Menu, Submenu);
+        fl_glut_add_sub_menu (Interfaces.C.To_C (Label), Interfaces.C.int (Submenu));
     end Add_Sub_Menu;
 
 
@@ -1203,10 +1320,11 @@ package body FLTK.GLUT is
             Label : in String;
             Value : in Integer)
     is
-        Text : constant ICS.chars_ptr := ICS.New_String (Label);
+        Menu : constant Valid_Menu_Number := Current_Valid_Menu;
     begin
-        fl_glut_change_to_menu_entry (Interfaces.C.int (Item), Text, Interfaces.C.int (Value));
-        Keep_Changed (Item, Text);
+        Check_Item (Menu, Item);
+        fl_glut_change_to_menu_entry
+           (Interfaces.C.int (Item), Interfaces.C.To_C (Label), Interfaces.C.int (Value));
     end Change_To_Menu_Entry;
 
 
@@ -1215,32 +1333,34 @@ package body FLTK.GLUT is
             Label   : in String;
             Submenu : in Valid_Menu_Number)
     is
-        Text : constant ICS.chars_ptr := ICS.New_String (Label);
+        Menu : constant Valid_Menu_Number := Current_Valid_Menu;
     begin
-        fl_glut_change_to_sub_menu (Interfaces.C.int (Item), Text, Interfaces.C.int (Submenu));
-        Keep_Changed (Item, Text);
+        Check_Item (Menu, Item);
+        Check_Unused (Menu, "Change_To_Sub_Menu in");
+        Check_Submenu (Menu, Submenu);
+        fl_glut_change_to_sub_menu
+           (Interfaces.C.int (Item), Interfaces.C.To_C (Label), Interfaces.C.int (Submenu));
     end Change_To_Sub_Menu;
 
 
     procedure Remove_Menu_Item
            (Item : in Positive)
     is
-        Texts : Text_Vectors.Vector renames Menu_Texts (Current_Menu);
-        Old   : ICS.chars_ptr;
+        Menu : constant Valid_Menu_Number := Current_Valid_Menu;
     begin
+        Check_Unused (Menu, "Remove_Menu_Item from");
+        Check_Item (Menu, Item);
         fl_glut_remove_menu_item (Interfaces.C.int (Item));
-        --  GLUT ignores an item out of range (glut_compatibility.cxx:384)
-        if Item <= Texts.Last_Index then
-            Old := Texts (Item);
-            Texts.Delete (Item);
-            ICS.Free (Old);
-        end if;
     end Remove_Menu_Item;
 
 
     procedure Attach_Menu
            (Button : in Menu_Button) is
     begin
+        --  An empty menu has no array to pop up (domenu, glut_compatibility.cxx:298)
+        if Items_Of (Current_Valid_Menu) = 0 then
+            raise Program_Error with "Attach_Menu of an empty GLUT menu";
+        end if;
         fl_glut_attach_menu (Mouse_Button_Index'Pos (Button));
     end Attach_Menu;
 

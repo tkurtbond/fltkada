@@ -126,7 +126,7 @@ is
     --  A tiny 8x8 checkerboard, used as a per-item user icon below.
     Icon_Data : constant FLTK.Color_Component_Array (1 .. 8) :=
         (16#AA#, 16#55#, 16#AA#, 16#55#, 16#AA#, 16#55#, 16#AA#, 16#55#);
-    Icon : Bmp.Bitmap := Bmp.Forge.Create (Icon_Data, 8, 8);
+    Icon : constant Bmp.Bitmap := Bmp.Forge.Create (Icon_Data, 8, 8);
 
     Status : Bx.Box := Bx.Forge.Create (The_Window, 10, 350, 600, 25);
 

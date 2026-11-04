@@ -43,6 +43,8 @@ extern "C" void fl_tree_item_set_usericon(TREEITEM ti, void * img);
 extern "C" void * fl_tree_item_get_usericon(TREEITEM ti);
 extern "C" void fl_tree_item_set_userdeicon(TREEITEM ti, void * img);
 extern "C" void * fl_tree_item_get_userdeicon(TREEITEM ti);
+extern "C" void * fl_tree_item_tree(TREEITEM ti);
+extern "C" int fl_tree_item_in_tree(TREEITEM ti);
 
 
 extern "C" int fl_tree_item_move_above(TREEITEM ti, TREEITEM item);

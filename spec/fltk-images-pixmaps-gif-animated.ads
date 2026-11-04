@@ -101,9 +101,10 @@ package FLTK.Images.Pixmaps.GIF.Animated is
                 Flags    : in Animation_Flags := No_Animation_Flags)
             return Animated_GIF_Image;
 
-        --  The Canvas is the widget that shows the animation. It
-        --  must live longer than the animation, or be detached from
-        --  it with Clear_Canvas first.
+        --  The Canvas is the widget that shows the animation. Either
+        --  may be finalized first: a canvas that goes is no longer the
+        --  animation's (pofltk 62), and an animation that goes is no
+        --  longer its canvas's image.
         function Create
                (Filename : in     String;
                 Canvas   : in out FLTK.Widgets.Widget'Class;
@@ -171,12 +172,14 @@ package FLTK.Images.Pixmaps.GIF.Animated is
 
     --  Canvas  --
 
+    --  Null once the canvas has been finalized.
     function Get_Canvas
            (This : in Animated_GIF_Image)
         return access FLTK.Widgets.Widget'Class;
 
     --  Unless Dont_Set_As_Image is given, the animation is also set as the
     --  image of the Canvas, so it is returned by the Canvas's Get_Image.
+    --  The canvas it had before is left with no image, as FLTK leaves it.
     procedure Set_Canvas
            (This   : in out Animated_GIF_Image;
             Canvas : in out FLTK.Widgets.Widget'Class;

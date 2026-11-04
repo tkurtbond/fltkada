@@ -21,6 +21,10 @@ in progress.txt for exactly what's left out, and
 doc/binding_architecture.md for the design notes. Fl_Tree_Item is
 covered separately in fl_tree_item.html.</p>
 
+<p>Remove, Clear, Clear_Children and Tree_Items.Replace also make the tree forget the
+items going as its callback item and its last item clicked, which FLTK keeps, so
+Callback_Item is null once its item has been removed, even in the callback.</p>
+
 
 <table class="package">
   <tr><th colspan="2">Package name</th></tr>

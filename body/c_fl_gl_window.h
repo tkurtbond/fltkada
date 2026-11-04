@@ -11,6 +11,10 @@
 typedef void* GLWINDOW;
 
 
+//  How many GL windows are drawing now, for c_fl_glut.cpp.
+extern int gl_window_drawing;
+
+
 extern "C" GLWINDOW new_fl_gl_window(int x, int y, int w, int h, char* label);
 extern "C" GLWINDOW new_fl_gl_window2(int w, int h, char* label);
 extern "C" void free_fl_gl_window(GLWINDOW w);

@@ -268,8 +268,9 @@ package body FLTK.Widgets.Groups.Windows is
     pragma Import (C, fl_window_hotspot2, "fl_window_hotspot2");
     pragma Inline (fl_window_hotspot2);
 
-    procedure fl_window_shape
-           (W, P : in Storage.Integer_Address);
+    function fl_window_shape
+           (W, P : in Storage.Integer_Address)
+        return Interfaces.C.int;
     pragma Import (C, fl_window_shape, "fl_window_shape");
     pragma Inline (fl_window_shape);
 
@@ -920,9 +921,19 @@ package body FLTK.Widgets.Groups.Windows is
 
     procedure Shape
            (This : in out Window;
-            Pic  : in     FLTK.Images.Image'Class) is
+            Pic  : in     FLTK.Images.Image'Class)
+    is
+        Result : Interfaces.C.int;
     begin
-        fl_window_shape (This.Void_Ptr, Wrapper (Pic).Void_Ptr);
+        if This.Void_Ptr = Null_Pointer or else Wrapper (Pic).Void_Ptr = Null_Pointer then
+            raise Constraint_Error with "Shape of a window or image that was never made";
+        end if;
+        Result := fl_window_shape (This.Void_Ptr, Wrapper (Pic).Void_Ptr);
+        if Result = 0 then
+            raise Storage_Error with "no memory to copy the window's shape";
+        elsif Result < 0 then
+            raise Constraint_Error with "Shape of an image with no data";
+        end if;
     end Shape;
 
 

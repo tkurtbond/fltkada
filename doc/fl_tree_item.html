@@ -452,8 +452,9 @@ function Replace
   </tr>
 
   <tr>
-<td>The tree does not take ownership of the widget -- it must outlive
-the item, or be detached with another Set_Widget call first.
+<td>The tree does not take ownership of the widget. When the item is removed,
+its widget is taken out of the tree; when the widget is finalized, or added to
+another group, the item has no widget any more.
 <pre>
 void widget(Fl_Widget *val);
 </pre></td>
@@ -493,7 +494,7 @@ void usericon(Fl_Image *val);
 <td><pre>
 procedure Set_User_Icon
        (This : in Tree_Item;
-        Pic  : in out FLTK.Images.Image'Class);
+        Pic  : in     FLTK.Images.Image'Class);
 </pre></td>
   </tr>
 
@@ -515,9 +516,10 @@ procedure Clear_User_Icon
   </tr>
 
   <tr>
-<td>Unlike Get_Widget, backed by a small internal table (Fl_Image has
-no spare pointer to recover the Ada object from) -- see the
-FLTK.Tree_Items note in progress.txt.
+<td>FLTK keeps the image's pointer, so the item is given a copy of the
+image, which the binding holds until no item of the tree shows it, or the
+tree goes; the caller's image may go at any time. Get_User_Icon returns
+the copy.
 <pre>
 Fl_Image *usericon() const;
 </pre></td>
@@ -529,8 +531,8 @@ function Get_User_Icon
   </tr>
 
   <tr>
-<td>The icon shown when the item is deactivated. Same caveats as the
-user icon above.
+<td>The icon shown when the item is deactivated, copied and held in the
+same way as the user icon above.
 <pre>
 void userdeicon(Fl_Image* val);
 Fl_Image* userdeicon() const;
@@ -538,7 +540,7 @@ Fl_Image* userdeicon() const;
 <td><pre>
 procedure Set_User_Deicon
        (This : in Tree_Item;
-        Pic  : in out FLTK.Images.Image'Class);
+        Pic  : in     FLTK.Images.Image'Class);
 
 function Has_User_Deicon
        (This : in Tree_Item)

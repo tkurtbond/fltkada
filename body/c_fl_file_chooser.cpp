@@ -4,9 +4,18 @@
 //  Released into the public domain
 
 
+#include <FL/Fl.H>
 #include <FL/Fl_File_Chooser.H>
 #include <FL/Fl_Widget.H>
+#include <set>
 #include "c_fl_file_chooser.h"
+
+
+
+
+//  Exports from C++
+
+extern short fl_inside_callback;
 
 
 
@@ -31,26 +40,116 @@ void file_chooser_setup_sort_hook() {
 
 
 
+//  Fl_File_Chooser::fileNameCB calls the chooser's callback, then hides the
+//  chooser's window (Fl_File_Chooser2.cxx:820-823).  A callback that frees
+//  the chooser leaves FLTK reading it (pofltk 91).  So the chooser's callback
+//  goes through Call, which counts the calls under way, and a chooser freed
+//  from the event loop is hidden and cut off from Ada at once, and deleted
+//  by a timeout once no call of its callback is under way.
+//
+//  A chooser keeps its extra widget's pointer, and reads it in add_extra
+//  and its destructor (Fl_File_Chooser.cxx:330, 487-493).  So the shim
+//  keeps the extra widget beside it, and a widget about to be freed is
+//  taken out of every chooser that has it (pofltk 92).
+
+typedef void (*Chooser_Callback)(Fl_File_Chooser *, void *);
+
+class My_File_Chooser : public Fl_File_Chooser {
+public:
+    using Fl_File_Chooser::Fl_File_Chooser;
+    Chooser_Callback ada_callback = 0;
+    void * ada_data = 0;
+    int calling = 0;
+    bool closing = false;
+    Fl_Widget * extra = 0;
+    ~My_File_Chooser();
+    static void Call(Fl_File_Chooser * f, void * d);
+    static void Close_Later(void * d);
+};
+
+namespace {
+
+std::set<My_File_Chooser*> & live() {
+    static std::set<My_File_Chooser*> choosers;
+    return choosers;
+}
+
+}
+
+My_File_Chooser::~My_File_Chooser() {
+    live().erase(this);
+}
+
+//  Called from fl_widget_forget, while the widget is still there for
+//  add_extra to read and remove.
+void file_chooser_extra_gone(const Fl_Widget * w) {
+    for (std::set<My_File_Chooser*>::iterator it = live().begin(); it != live().end(); ++it) {
+        if ((*it)->extra == w) {
+            (*it)->add_extra(0);
+            (*it)->extra = 0;
+        }
+    }
+}
+
+void My_File_Chooser::Call(Fl_File_Chooser *, void * d) {
+    My_File_Chooser *c = static_cast<My_File_Chooser*>(d);
+    if (c->closing || c->ada_callback == 0) {
+        return;
+    }
+    ++c->calling;
+    (*c->ada_callback)(c, c->ada_data);
+    --c->calling;
+}
+
+void My_File_Chooser::Close_Later(void * d) {
+    My_File_Chooser *c = static_cast<My_File_Chooser*>(d);
+    if (c->calling > 0) {
+        Fl::add_timeout(0.05, &My_File_Chooser::Close_Later, d);
+    } else {
+        delete c;
+    }
+}
+
+
+
+
 //  Flattened C API begins here
 
 FILECHOOSER new_fl_file_chooser(const char * n, const char * p, int k, const char * t) {
-    Fl_File_Chooser *f = new Fl_File_Chooser(n, p, k, t);
+    My_File_Chooser *f = new My_File_Chooser(n, p, k, t);
+    f->Fl_File_Chooser::callback(&My_File_Chooser::Call, f);
+    live().insert(f);
     return f;
 }
 
 void free_fl_file_chooser(FILECHOOSER f) {
-    delete static_cast<Fl_File_Chooser*>(f);
+    My_File_Chooser *c = static_cast<My_File_Chooser*>(f);
+    if (c->calling > 0 || fl_inside_callback) {
+        //  The Ada object, its labels and its extra widget go now.  The OK
+        //  button keeps its freed label until the delete, hidden and unread
+        //  (okButton is private, and ok_label (0) measures the old label).
+        c->closing = true;
+        c->ada_callback = 0;
+        c->ada_data = 0;
+        c->hide();
+        c->add_extra(0);
+        c->extra = 0;
+        c->label(0);
+        Fl::add_timeout(0, &My_File_Chooser::Close_Later, c);
+    } else {
+        delete c;
+    }
 }
 
 
 
 
 void * fl_file_chooser_get_user_data(FILECHOOSER f) {
-    return static_cast<Fl_File_Chooser*>(f)->user_data();
+    return static_cast<My_File_Chooser*>(f)->ada_data;
 }
 
 void fl_file_chooser_set_user_data(FILECHOOSER f, void * ud) {
-    static_cast<Fl_File_Chooser*>(f)->user_data(ud);
+    static_cast<My_File_Chooser*>(f)->ada_data = ud;
 }
 
 
@@ -187,13 +286,15 @@ void fl_file_chooser_set_show_label(const char * s) {
 
 
 void * fl_file_chooser_add_extra(FILECHOOSER f, void * w) {
-    return static_cast<Fl_File_Chooser*>(f)->add_extra(static_cast<Fl_Widget*>(w));
+    My_File_Chooser *c = static_cast<My_File_Chooser*>(f);
+    c->extra = static_cast<Fl_Widget*>(w);
+    return c->add_extra(c->extra);
 }
 
-typedef void (*Chooser_Callback)(Fl_File_Chooser *, void *);
-
 void fl_file_chooser_callback(FILECHOOSER f, void * c, void * u) {
-    static_cast<Fl_File_Chooser*>(f)->callback(reinterpret_cast<Chooser_Callback>(c), u);
+    My_File_Chooser *m = static_cast<My_File_Chooser*>(f);
+    m->ada_callback = reinterpret_cast<Chooser_Callback>(c);
+    m->ada_data = u;
 }
 
 

@@ -350,7 +350,8 @@ function Eject_Extra
        (This : in out File_Chooser;
         Item : in out Widgets.Widget'Class)
     return access Widgets.Widget'Class;
-</pre></td>
+</pre>An extra widget finalized first leaves the chooser and takes its room
+with it, and Eject_Extra then returns null for it (pofltk 92).</td>
   </tr>
 
   <tr>
@@ -361,7 +362,8 @@ void callback(void(*cb)(Fl_File_Chooser *, void *), void *d=0);
 procedure Set_Callback
        (This : in out File_Chooser;
         Func : in     Chooser_Callback);
-</pre></td>
+</pre>The callback may free the chooser, which FLTK deletes once the
+callback is done (pofltk 91).</td>
   </tr>
 
   <tr>

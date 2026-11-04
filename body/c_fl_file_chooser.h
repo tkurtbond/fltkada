@@ -100,6 +100,11 @@ extern "C" int fl_file_chooser_shown(FILECHOOSER f);
 extern "C" int fl_file_chooser_visible(FILECHOOSER f);
 
 
+//  C++ linkage, for c_fl_widget.cpp.
+class Fl_Widget;
+void file_chooser_extra_gone(const Fl_Widget * w);
+
+
 #endif
 
 

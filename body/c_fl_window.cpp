@@ -6,6 +6,9 @@
 
 #include <FL/Fl_Window.H>
 #include <FL/Fl_RGB_Image.H>
+#include <FL/Fl_Shared_Image.H>
+#include <map>
+#include <utility>
 #include "c_fl_window.h"
 #include "c_fl.h"
 
@@ -39,6 +42,8 @@ public:
 
     friend void fl_window_draw(WINDOW n);
     friend int fl_window_handle(WINDOW n, int e);
+
+    ~My_Window() { window_shape_gone(this); }
 
     void draw();
     int handle(int e);
@@ -238,8 +243,78 @@ void fl_window_hotspot2(WINDOW n, void * i, int s) {
     static_cast<Fl_Window*>(n)->hotspot(static_cast<Fl_Widget*>(i),s);
 }
 
-void fl_window_shape(WINDOW n, void * p) {
-    static_cast<Fl_Window*>(n)->shape(static_cast<Fl_Image*>(p));
+//  pofltk 61: FLTK keeps the image it is given as the window's shape, and
+//  on X11 copies it again each time a bitmap-shaped window changes size
+//  (Fl_X11_Window_Driver.cxx:146-152, 301-302).  For an image with alpha
+//  it reads w() by h() pixels of data(), which holds data_w() by data_h()
+//  (shape_alpha_).  So FLTK is given a copy made at the image's drawn
+//  size, which lasts until the window is shaped again or deleted.  A
+//  shared image can't be deleted, so the copy is made of its image().
+//  The copy is held by a Shape_Copy made here, so that valgrind names
+//  FLTKAda as the allocator of a copy that is never freed: the image's
+//  own copy() is in FLTK.
+
+namespace {
+
+struct Shape_Copy {
+    Fl_Image * image;
+    explicit Shape_Copy(Fl_Image * i) : image(i) {}
+    ~Shape_Copy() { delete image; }
+private:
+    Shape_Copy(const Shape_Copy &);
+    Shape_Copy & operator=(const Shape_Copy &);
+};
+
+typedef std::map<const Fl_Window*, Shape_Copy*> Shape_Map;
+
+Shape_Map & shape_copies() {
+    static Shape_Map copies;
+    return copies;
+}
+
+}
+
+void window_shape_gone(const Fl_Window * w) {
+    Shape_Map::iterator it = shape_copies().find(w);
+    if (it != shape_copies().end()) {
+        delete it->second;
+        shape_copies().erase(it);
+    }
+}
+
+//  Returns 1 when shaped, 0 when out of memory, and -1 for an image with
+//  nothing to copy.
+int fl_window_shape(WINDOW n, void * p) {
+    Fl_Window * w = static_cast<Fl_Window*>(n);
+    Fl_Image * img = static_cast<Fl_Image*>(p);
+    Fl_Shared_Image * shared = dynamic_cast<Fl_Shared_Image*>(img);
+    const Fl_Image * from = shared ? shared->image() : img;
+    if (from == 0 || img->w() <= 0 || img->h() <= 0 || from->data_w() <= 0) {
+        return -1;
+    }
+    Fl_Image * image = 0;
+    Shape_Copy * copy = 0;
+    Shape_Map::iterator it;
+    try {
+        image = from->copy(img->w(), img->h());
+        if (image == 0) {
+            return 0;
+        }
+        copy = new Shape_Copy(image);
+        it = shape_copies().insert(std::make_pair(w, static_cast<Shape_Copy*>(0))).first;
+    } catch (...) {
+        if (copy != 0) {
+            delete copy;
+        } else {
+            delete image;
+        }
+        return 0;
+    }
+    w->shape(copy->image);
+    Shape_Copy * old = it->second;
+    it->second = copy;
+    delete old;
+    return 1;
 }
 
 

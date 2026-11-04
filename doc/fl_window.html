@@ -683,7 +683,8 @@ void shape(const Fl_Image &b);
 procedure Shape
        (This : in out Window;
         Pic  : in     FLTK.Images.Image'Class);
-</pre></td>
+</pre>The window keeps a copy of Pic at its drawn size, so Pic need not
+outlast the window (pofltk 61).</td>
   </tr>
 
   <tr>

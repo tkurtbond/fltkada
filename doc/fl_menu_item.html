@@ -355,7 +355,10 @@ function Get_Image
   </tr>
 
   <tr>
-<td><pre>
+<td>The item keeps its name, which Get_Label returns and the menu's paths
+use; FLTK alone would read the image pointer as the item's text. The image
+is not copied, so it must last as long as the item shows it.
+<pre>
 void image(Fl_Image *a);
 
 void image(Fl_Image &a);
@@ -507,7 +510,8 @@ int measure(int *h, const Fl_Menu_ *) const;
   <tr>
 <td>Equivalent to label(FL_MULTI_LABEL, (const char *)ml), or the
 deprecated Fl_Multi_Label::label(Fl_Menu_Item *). The Multi_Label is not
-copied, so it must last as long as the item does.
+copied, so it must last as long as the item does. The item keeps its
+name, as with Set_Image.
 <pre>
 void multi_label(const Fl_Multi_Label *ml);
 </pre></td>

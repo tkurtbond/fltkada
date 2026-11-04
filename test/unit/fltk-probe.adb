@@ -96,6 +96,10 @@ package body FLTK.Probe is
         return CS.chars_ptr;
     pragma Import (C, fl_probe_modal_title, "fl_probe_modal_title");
 
+    function fl_probe_modal_h
+        return C.int;
+    pragma Import (C, fl_probe_modal_h, "fl_probe_modal_h");
+
     function fl_probe_modal_key
            (K, S : in C.int;
             T    : in C.char_array)
@@ -413,6 +417,13 @@ package body FLTK.Probe is
     begin
         return CS.Value (fl_probe_modal_title);
     end Modal_Title;
+
+
+    function Modal_H
+        return Natural is
+    begin
+        return Natural (fl_probe_modal_h);
+    end Modal_H;
 
 
     function Modal_Key

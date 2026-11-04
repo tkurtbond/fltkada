@@ -24,6 +24,7 @@ extern "C" int fl_menu_insert2(MENU m, int p, const char * t,
     const char * s, void * u, unsigned long f);
 extern "C" int fl_menu_set_items(MENU m, void * const * i, int n);
 extern "C" int fl_menu_set_menu(MENU m, MENU d);
+extern "C" void fl_menu_plain_removed(MENU m, int i, int submenu);
 extern "C" void fl_menu_remove(MENU m, int p);
 extern "C" void fl_menu_clear(MENU m);
 extern "C" int fl_menu_clear_submenu(MENU m, int i);
@@ -49,6 +50,7 @@ extern "C" void fl_menu_setonly(MENU m, void * mi);
 extern "C" const char * fl_menu_text2(MENU m, int i);
 extern "C" int fl_menu_replace(MENU m, int i, const char * t, const char ** o);
 extern "C" void fl_menu_forget_text(MENU m, const char * t);
+extern "C" void fl_menu_forget_global(MENU m);
 extern "C" void fl_menu_shortcut(MENU m, int i, unsigned long s);
 extern "C" unsigned long fl_menu_get_mode(MENU m, int i);
 extern "C" void fl_menu_set_mode(MENU m, int i, unsigned long f);

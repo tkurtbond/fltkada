@@ -136,7 +136,11 @@ function From_Filesystem
   </tr>
 
   <tr>
-<td><pre>
+<td>A Pref_Group keeps no Fl_Preferences, whose node a Delete_Group,
+Delete_All_Groups or Clear above it would free: it is kept as its database
+or memory group and its path, and once it is deleted, using it raises
+Preference_Error.
+<pre>
 Fl_Preferences(Fl_Preferences &parent, const char *group);
 
 Fl_Preferences(Fl_Preferences *parent, const char *group);

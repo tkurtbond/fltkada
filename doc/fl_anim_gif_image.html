@@ -280,7 +280,9 @@ procedure Set_Canvas
 
 procedure Clear_Canvas
        (This : in out Animated_GIF_Image);
-</pre></td>
+</pre>The canvas left has no image, on the Ada side too. A canvas
+finalized first is no longer the animation's, and an animation finalized
+first is no longer its canvas's image.</td>
   </tr>
 
   <tr>
@@ -291,7 +293,7 @@ Fl_Widget * canvas() const;
 function Get_Canvas
        (This : in Animated_GIF_Image)
     return access FLTK.Widgets.Widget'Class;
-</pre></td>
+</pre>Null once the canvas has been finalized.</td>
   </tr>
 
   <tr>

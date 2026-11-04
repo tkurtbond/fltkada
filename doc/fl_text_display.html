@@ -27,6 +27,11 @@
 </table>
 
 
+<p>Highlight_Data copies the style table, and keeps the style buffer until the display is
+finalized or given another, so either may go after the call. FLTK indexes the table from 'A',
+so a table that is empty or does not start at 'A' raises Constraint_Error.</p>
+
+
 
 <table class="type">
   <tr><th colspan="2">Types</th></tr>

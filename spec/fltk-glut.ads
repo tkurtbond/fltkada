@@ -23,7 +23,14 @@ package FLTK.GLUT is
 
 
     --  GLUT windows and menus are referred to by number, as in C. Zero
-    --  means no window or menu.
+    --  means no window or menu.  FLTK indexes its tables by these numbers
+    --  without checking them (pofltk 112), so every subprogram given a
+    --  number that is not a live window or menu raises Constraint_Error.
+    --  GLUT has 31 window numbers and 31 menu numbers to give: FLTK gives
+    --  the 32nd the number the 31st has (glut_compatibility.cxx:168, 308),
+    --  so making a 32nd raises FLTK.Unsupported_Error.  A
+    --  Glut_Window from FLTK.Widgets.Groups.Windows.OpenGL.GLUT.Forge takes
+    --  a window number too.
 
     type Window_Number is range 0 .. 32;
     subtype Valid_Window_Number is Window_Number range 1 .. Window_Number'Last;
@@ -235,6 +242,9 @@ package FLTK.GLUT is
 
     --  Windows  --
 
+    --  Create_Window and Create_Sub_Window raise FLTK.Unsupported_Error when
+    --  the 31 window numbers are used, and Create_Sub_Window raises
+    --  Constraint_Error for a Parent that is not a live window.
     function Create_Window
            (Title : in String)
         return Valid_Window_Number;
@@ -244,6 +254,11 @@ package FLTK.GLUT is
             X, Y, W, H : in Integer)
         return Valid_Window_Number;
 
+    --  The window and the windows in it are gone at once, as Window_Exists
+    --  says, but FLTK deletes them from the event loop, so that a window can
+    --  be destroyed in its own display or other callback.  Raises
+    --  Program_Error for a Glut_Window made by a Forge, or one with such a
+    --  window in it, which goes when the Ada object is finalized.
     procedure Destroy_Window
            (Number : in Valid_Window_Number);
 
@@ -256,6 +271,12 @@ package FLTK.GLUT is
 
     function Get_Window
         return Window_Number;
+
+    --  Whether Number is a window that exists: made, and neither destroyed
+    --  nor finalized.
+    function Window_Exists
+           (Number : in Window_Number)
+        return Boolean;
 
     procedure Set_Window
            (Number : in Valid_Window_Number);
@@ -285,6 +306,8 @@ package FLTK.GLUT is
 
     procedure Show_Window;
 
+    --  Hidden from the event loop if called while a window is drawn, since
+    --  FLTK would hide a window in the middle of drawing it.
     procedure Hide_Window;
 
     procedure Full_Screen;
@@ -300,6 +323,8 @@ package FLTK.GLUT is
 
     --  Overlays  --
 
+    --  Establish_Overlay and Use_Layer raise Program_Error when the current
+    --  window is not shown, since FLTK's overlay needs a shown window.
     procedure Establish_Overlay;
 
     procedure Remove_Overlay;
@@ -318,6 +343,16 @@ package FLTK.GLUT is
 
     --  Menus  --
 
+    --  Create_Menu raises FLTK.Unsupported_Error when the 31 menu numbers are
+    --  used.  A menu used as a submenu can't be destroyed or changed, which
+    --  also keeps menus from holding themselves; each such call raises
+    --  Program_Error.  A submenu must be a live menu other than the current
+    --  one, with an entry (Constraint_Error if it is dead, Program_Error
+    --  otherwise).  Change_To_* and Remove_Menu_Item raise Constraint_Error
+    --  for an Item past the menu's last.  Attach_Menu raises Program_Error
+    --  for an empty menu, which FLTK would pop up as an unterminated array.
+    --  The subprograms that work on the current menu raise Program_Error
+    --  when there is none.
     function Create_Menu
            (Func : in not null Menu_Function)
         return Valid_Menu_Number;
@@ -327,6 +362,11 @@ package FLTK.GLUT is
 
     function Get_Menu
         return Menu_Number;
+
+    --  Whether Number is a menu that was made and not destroyed.
+    function Menu_Exists
+           (Number : in Menu_Number)
+        return Boolean;
 
     procedure Set_Menu
            (Number : in Valid_Menu_Number);
@@ -417,6 +457,8 @@ package FLTK.GLUT is
 
     --  State Queries  --
 
+    --  Window_Parent is 0 for a window whose parent is not a GLUT window.
+    --  A GL query, or the buffer size, with no current window is 0.
     function Get
            (Query : in State_Query)
         return Integer;

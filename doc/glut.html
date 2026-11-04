@@ -37,6 +37,20 @@
 <p><b>Note:</b><br /><br />
 Glut_Window's Make_Current raises Program_Error if the window is not shown.</p>
 
+<p><b>Note:</b><br /><br />
+FLTK indexes its window and menu tables without checking (pofltk 112), so
+every subprogram given a window or menu number that isn't live raises
+Constraint_Error. Window_Exists and Menu_Exists say which are. GLUT has 31
+window numbers and 31 menu numbers. Making a 32nd window, Glut_Window or menu
+raises FLTK.Unsupported_Error, since FLTK would give it the 31st's number.
+Destroy_Window raises Program_Error for a Glut_Window made by a Forge, or one
+holding such a window. It deletes the windows from the event loop, so a window
+can destroy itself in its display function, and Hide_Window called while
+drawing is put off the same way. A menu used as a submenu can't be destroyed
+or changed. Establish_Overlay and Use_Layer raise Program_Error when the
+current window isn't shown, and Attach_Menu does for an empty menu.
+Get (Window_Parent) is 0 when the parent isn't a GLUT window.</p>
+
 
 
 <table class="type">

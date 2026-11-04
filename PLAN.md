@@ -934,7 +934,7 @@ headless sway, each seen to fail before its fix:
 - **Results:** `test_first_calls`, `test_wrong_state` (33 checks),
   `test_print_font` and `test_popup_early` pass on Xvfb and on sway.
 
-### Phase 4: Objects FLTK keeps after Ada frees them
+### Phase 4: Objects FLTK keeps after Ada frees them [done, 2026-11-03]
 
 - **Issue 27:** a `global()` menu. Use FLTKAda's own handler, cleared in
   `Finalize`.
@@ -966,6 +966,331 @@ headless sway, each seen to fail before its fix:
   - Handle the 32-window collision and `Get (Window_Parent)`.
 - **Issue 72 (Table) and issue 23 (gaps):** `Spinner` and `Color_Chooser`
   `Clear`, and `Pack` resizable.
+
+What was done. Each item has a unit test, run on Xvfb and on a headless
+sway, and under valgrind. Each test was seen to fail before its fix.
+
+- **Issue 27** (`test_menu_global`): the shim keeps its own global menu
+  and handler. The handler does what FLTK's does (Fl_Menu_global.cxx:23-28):
+  it skips the shortcut while a modal window is up, and otherwise sends it
+  to the menu, with its window as `Fl::first_window`. `Menu.Extra_Final`
+  clears the menu if it is the global one. Before the fix, a finalized
+  global menu's shortcut raised `Storage_Error`. After it, all 6 checks
+  pass.
+- **Issue 35** (`test_highlight_data`): `Highlight_Data` copies the
+  table into the Ada record and takes a reference on the style buffer;
+  both are let go when another is given and in `Finalize`. A table that is
+  empty or does not start at 'A' raises `Constraint_Error`. FLTK indexes
+  the table from 'A' (Fl_Text_Display.cxx:2725-2731), which FLTKAda had
+  ignored; that is FLTKAda-BUGS.md 47. Before the fix, a table changed
+  after the call changed the layout, and freeing the style buffer then
+  raised `Storage_Error` (valgrind: an invalid read in
+  `Fl_Text_Buffer::byte_at`). After it, all 7 checks pass and valgrind is
+  clean. `textdisplay-with-colors` and `texteditor-with-dynamic-colors`,
+  whose tables start at 'A', still run.
+- **Issues 41, 42 and 59** (`test_tree_remove`). Decided: the shim
+  reaches `_lastselect` through pofltk's `Reach`, so it doesn't need to
+  remove descendants last-first, as pofltk does. `fl_tree_forget` runs
+  before every call that deletes items: `Remove`, `Clear`,
+  `Clear_Children` and `Tree_Items.Replace`. It clears `_lastselect` and
+  the callback item when either is among the items going, and counts the
+  removal. `fl_tree_handle`, through which every `Handle` reaches
+  `Fl_Tree::handle`, then does what pofltk's `Tr::handle` does. After an
+  event in which items were removed, it clears `_lastselect` unless that
+  is still in the tree. Before the fix, 5 of 9 checks failed:
+  - a Shift-click after the last item clicked was removed with its
+    parent, cleared from it or replaced (41);
+  - `Callback_Item` after its item was removed in the callback, or after
+    `Clear` (42).
+
+  Valgrind found two invalid reads in the drag after an item was removed
+  as it was pushed (59): Fl_Tree.cxx:531 and `Fl_Tree_Item::move`. After
+  the fix, all 9 pass and valgrind is clean. With only the check after
+  the event disabled, valgrind finds 3 invalid reads again.
+- **Issue 58** (`test_tree_widgets`). Decided: an item's widget belongs
+  to the Ada program, so when the item goes, `fl_tree_forget` takes the
+  widget out of the tree rather than deleting it, as pofltk does. The
+  other way round, `My_Tree::on_remove` clears the widget from its item
+  when it leaves the tree, finalized or added to another group. This is
+  pofltk's `Tr::on_remove`, but it walks the items rather than keeping a
+  map. Before the fix, a removed item's button still took a click where
+  it had been, and was still in the tree. Drawing an item whose widget had
+  been finalized read freed memory (Fl_Tree_Item.cxx:1038 and 1049; 13
+  invalid reads) and raised `Storage_Error`. After the fix, all 6 checks
+  pass, on X11 and Wayland, and valgrind is clean.
+- **Issue 78** (`test_tree_icons`). Decided: an item's user icon and
+  deicon are copies the binding owns (`Image.Copy`), as for the Browser
+  icons (FLTKAda-BUGS.md 42), held for the item's tree by a new private
+  package, `FLTK.Tree_Icons`. A copy is freed once no item of its tree
+  shows it (shim `fl_tree_shows_icon`, walking `first()`/`next()`, as
+  pofltk's `drop_tree_icons` does), checked after an icon is set or
+  cleared and after `Remove`, `Clear`, `Clear_Children` and `Replace`;
+  the rest are freed when the tree is. A copy set on a custom item no tree
+  has taken yet is kept until the tree goes, since the walk can't see the
+  item. `Get_User_Icon` now finds the copy by the pointer FLTK shows,
+  rather than by the item's address, which a later item could reuse.
+  `Set_User_Icon`'s image is now `in`, so a temporary will do. The
+  tree-wide icons are still not bound. Before the fix the test crashed
+  with a segmentation fault. After it, all 6 checks pass on X11 and
+  Wayland, and valgrind is clean. Negative controls: with every copy
+  treated as unused, the custom item's check fails and valgrind finds 31
+  invalid reads; without freeing at the tree's end, `vg-check.sh` fails on
+  leaks allocated in `fltk.images.copy`.
+- **Issue 51** (`test_pref_groups`). Decided as planned, after pofltk: the
+  shim keeps no `Fl_Preferences` for a group, only its base (the database,
+  or the memory group's own `Fl_Preferences`) and its path from the base,
+  and opens a short-lived `Fl_Preferences(base, path)` for each call
+  (shim class `Opened`). The Ada side checks `fl_pref_group_exists`
+  (`group_exists(path)`, which searches below the base,
+  Fl_Preferences.cxx:643, 1816) before every call on a group, through
+  `Group_Ptr`, and raises `Preference_Error` ("the group was deleted"),
+  since `Fl_Preferences(parent, path)` would make the group again
+  (Fl_Preferences.cxx:484-495). The reference counting moved into the
+  shim: every group holds one reference to its base, so `Root_Ptr` and
+  `My_Root_Group` are gone, and a memory group's groups now keep it. A
+  group deleted and later made again by its path is the new group, as in
+  pofltk. Before the fix 7 of the 16 checks failed and valgrind found 43
+  invalid reads, then the test died with `Storage_Error`. After it, all
+  pass and valgrind is clean, and so is `preferences`. Negative control:
+  with `fl_pref_group_exists` always true, 8 checks fail.
+- **Issue 54** (`test_menu_item_labels`). Decided as planned, after
+  pofltk: an item showing an image or a multi-label shows an `Item_Label`
+  instead (body/c_fl_menuitem.cpp), a multi-label of the item's own whose
+  first part is the image or the user's multi-label, with the item's name
+  kept beside it. `Get_Label` gives the name, and `Get_Label_Kind` the kind
+  of the first part. Before `Remove`, `Clear_Submenu`, `Set_Label` (FLTK's
+  `replace`), `Clear` and finalization the shim gives the items FLTK frees
+  their names as text (`plain_items`); during `Add`, `Insert`,
+  `Find_Index` and `Item_Pathname` it swaps the names in (`Item_Names`);
+  `Text` returns the name. Unlike pofltk, whose menus keep their item
+  labels, each `Item_Label` belongs to one item, found in a set of live
+  ones: `Use_Same_Items` and `Set_Items` copy it, as they copy texts
+  (FLTKAda-BUGS.md 38), and a free-standing `Menu_Item` has one too.
+  `Set_Image` and `Set_Multi_Label` no longer free the item's text. Giving
+  such an item `Set_Label_Kind` of another kind shows its name; giving it
+  `Image_Label` or `Multi_Label` changes nothing. Before the fix 3 of the
+  checks failed (an item showing an image or a multi-label was not found
+  by its path) and the test died with `Constraint_Error`. After it, all 20
+  pass on X11 and Wayland, and valgrind is clean. Negative controls:
+  without the names swapped in for `Find_Index`, the same 3 checks fail;
+  without `plain_items` before `Remove` and `Clear_Submenu`, valgrind
+  finds 3 mismatched `free()`s of an `Item_Label` in Fl_Menu_::remove
+  (Fl_Menu_add.cxx:502) and the names leak. `vg-check.sh` judges only
+  leaks, and these names are FLTK's allocations, so it passes that
+  control; `make valgrind-headless` fails it through `--error-exitcode`.
+- **Issue 61** (`test_window_shape`). Decided as planned, after pofltk:
+  `fl_window_shape` gives FLTK a copy of the image made at its drawn size,
+  `copy(w(), h())`, and of a shared image's `image()`, since a shared
+  image is released, not deleted. Confirmed in FLTK's source: X11 keeps
+  the pointer as `shape_` and, for a bitmap, `combine_mask` copies it
+  again whenever the window's size changes (Fl_X11_Window_Driver.cxx:
+  146-152, 301-302), and `shape_alpha_` reads w() by h() pixels of a
+  data_w() by data_h() image. Only the driver's destructor frees, and
+  only `effective_bitmap_` (:64-66); neither driver reads the old shape
+  when given a new one (X11 :258-275, Wayland :266-290). Unlike pofltk,
+  whose window record holds the copy, the shim keeps it in a map from
+  window to copy, freed when the window is shaped again and from each
+  window shim's `My_` destructor (all eight kinds), so a window FLTK
+  deletes as a child frees it too. `Shape` raises `Constraint_Error` for
+  an image with no data, and `Storage_Error` if the copy can't be made.
+  Before the fix the checks passed but valgrind found 5002 invalid reads:
+  `shape_alpha_` (:232, :238) past the end of a 10x10 RGBA image scaled
+  to 100x100, and `combine_mask` (:301) reading a bitmap freed before its
+  window was resized. After it, valgrind is clean on Xvfb, and on headless
+  sway it finds no invalid reads (its 54 errors are Wayland's and
+  libdecor's leaks, which `vg-check.sh` passes). Negative control: without
+  the destructor in `My_Double_Window`, the copy leaks. At first valgrind
+  named FLTK's `Fl_Bitmap::copy` as its allocator, which `vg-check.sh`
+  passes, so the copy is now held by a `Shape_Copy` the shim allocates:
+  the control then fails `vg-check.sh`, with 8 bytes lost in
+  `fl_window_shape`.
+- **FLTKAda-BUGS.md 48** (`test_image_data`), found while writing
+  `test_window_shape`. Not on pofltk's list, since pofltk copies:
+  `RGB_Image` and `Bitmap` `Create` gave FLTK the caller's array, which
+  `Fl_RGB_Image` and `Fl_Bitmap` keep. Decided: the shim copies the data
+  and sets `alloc_array`, as pofltk's `ofl_image_rgb` and `new_bitmap`
+  do, and the length check is an explicit `Constraint_Error`, not `Pre`.
+  `RGB_Image`'s `Pre` keeps only `Data'Length <= Get_Max_Size`, which
+  guards no memory. No program in test/ or examples/ changed its array
+  after `Create`, so none relied on the image seeing the change. Details
+  and controls are in FLTKAda-BUGS.md.
+- **Issue 62** (`test_anim_canvas`). Decided: as in pofltk, an animation
+  forgets a canvas that goes, so either may go first. The shim keeps the
+  set of animations that have a canvas. `fl_widget_forget`, which every
+  widget's `Extra_Final` already calls, clears `canvas_` in those whose
+  canvas is going. `canvas_` is private, so the shim reaches it with
+  `Reach`, as for `Fl_Tree::_lastselect`. It doesn't call `canvas(0)`,
+  which would set the freed widget's image. FLTK's timer then
+  runs on with no canvas (Fl_Anim_GIF_Image.cxx:1195 checks for one).
+  `Get_Canvas` returns null once FLTK has no canvas, rather than the Ada
+  access, which may be dangling. Before the fix, finalizing a playing
+  animation's canvas and running the timer for a second gave 129 invalid
+  reads, and `Get_Canvas` still returned the freed canvas. After it,
+  all 7 checks pass and there are no invalid reads, on X11 and Wayland.
+  The timer keeps advancing frames. Negative control: without the
+  call in `fl_widget_forget`, 126 errors, 17 of them invalid reads,
+  and `Finalize` raised. An animation finalized with its timer pending
+  was already safe, since `~Fl_Anim_GIF_Image` removes its timeout
+  (:620). The test also found FLTKAda-BUGS.md 49: a canvas the animation
+  left still returned it from `Get_Image`.
+- **Issue 84** (`test_tiled_tile`). Decided: as in pofltk's `unpooled`,
+  `new_fl_tiled_image` tiles a private copy of a shared image's inner
+  image, scaled to the shared image's size, and the tiled image owns it
+  (`alloc_image_`, protected, set through a derived class). Other tiles
+  are kept as FLTK keeps them, since `examples/animgifimage` tiles a live
+  animation. A copy of a tiled image that owns its tile gets its own copy
+  of it too, since `Fl_Tiled_Image::copy` shares the tile (:83) and the
+  original deletes it (:72). The shim returns 0 if a copy can't be made,
+  and the binding raises `Storage_Error`. Before the fix, 4 checks failed:
+  `Desaturate` turned the pool's image grey, tiling took a pool
+  reference (2), and the tiled image's destructor deleted the pool's
+  entry, which was then read (2854 errors, 41 invalid-read contexts).
+  After it, all 7 checks pass with no invalid reads, on X11 and Wayland.
+  Negative controls: without the shared-tile copy, the same 4 checks
+  fail with the same errors. Without the copy's own tile, the check
+  still passes, because the freed tile still holds its pixels, but
+  valgrind reports 29 invalid reads, so `make valgrind-headless` catches
+  it. The test also found FLTKAda-BUGS.md 50: `Tile` returned the tile
+  from before the colours changed.
+- **Issue 89** (`test_help_held`). Decided: as in pofltk, the shim's
+  `My_Help_View` counts layout changes (`Set_Content`, `Load`, and its
+  `resize` override, which `Resize`, `Set_Size` and a parent's resize all
+  reach). A release after a change since the push is no longer a click
+  (`Fl::event_is_click(0)`), so FLTK drops the link it kept
+  (Fl_Help_View.cxx:3218-3223). Before the fix, 3 checks failed: a link
+  held while the page was set, a page loaded, or the view resized was
+  followed. Setting the page gave 14 invalid reads, all in `follow_link`
+  (:2860-2895) from `handle` (:3220). After it, all 5 checks pass with no
+  invalid reads, on X11 and Wayland, and `test_help_links` still passes.
+  Negative control: without the `event_is_click(0)` call, the same 3
+  checks fail with the same 14 invalid reads.
+- **Issue 91** (`test_chooser_close`). Decided: as in pofltk, the shim's
+  `My_File_Chooser` takes the chooser's callback and calls the Ada one
+  through `Call`, which counts the calls under way. `free_fl_file_chooser`,
+  called while one is under way or from the event loop
+  (`fl_inside_callback`), hides the chooser, cuts it off from Ada (the
+  callback, its data, the extra widget, the window's label) and leaves the
+  delete to a timeout. The timeout waits while a call is still under way.
+  The chooser's user data is kept beside it in the shim, since FLTK's
+  `data_` now points the callback at the shim object. Before the fix,
+  `fileNameCB` hid the window (Fl_File_Chooser2.cxx:823) after its
+  callback (:820) had freed the chooser: valgrind showed 5 invalid reads,
+  though all 5 checks passed. After it, all 5 checks pass with no invalid
+  reads and no leak, on X11 and Wayland. `test_chooser_labels` still
+  passes. Negative control: with every free immediate, the checks pass
+  and valgrind shows 6 invalid reads, the first from `fileNameCB` (:820).
+  So valgrind, not the checks, is what catches this bug.
+
+  Found on the way: on Wayland, a synthetic Enter with no text never
+  reaches an input's Enter handling. `Fl_Wayland_Screen_Driver::compose`
+  returns 0 only for a control character, so for a key with empty text it
+  returns 1, and `Fl_Input::handle_key` takes the key as typed text
+  (Fl_Wayland_Screen_Driver.cxx:707-711, Fl_Input.cxx:358). A real Enter
+  carries "\r". This was checked with a scratch C++ chooser under sway
+  and Xvfb: with empty text the callback ran on X11 only, and with "\r" it
+  ran on both. A test gives `FLTK.Probe.Modal_Key` the key's text, and
+  its spec says so. This is a test pitfall, not a fault in FLTK, which
+  never sends such an event.
+- **Issue 92** (`test_chooser_extra`). Decided: the shim keeps each live
+  `My_File_Chooser` in a set, with the extra widget it was given.
+  `fl_widget_forget`, which every widget's `Extra_Final` calls before it
+  frees the widget, calls `file_chooser_extra_gone`, and every chooser
+  holding the widget calls `add_extra(0)` while the widget is still
+  there. That shrinks the window by the widget's height plus 4 and clears
+  `ext_group` (Fl_File_Chooser.cxx:487-493), so the next `Add_Extra` and
+  the destructor (:330) don't read it, and `Eject_Extra` returns null.
+  The `Modal_H` probe function was added for the test. Before the fix,
+  finalizing the extra widget raised `Program_Error` from an invalid read
+  in `Widgets.Extra_Final`: `Parent` took the chooser window's
+  `user_data`, the `Fl_File_Chooser`, as an Ada group. That is
+  FLTKAda-BUGS.md 51, left open in general. After the fix, all 6 checks
+  pass with no invalid reads and no leak, on X11 and Wayland, and
+  `test_chooser_close` and `test_chooser_labels` still pass. Negative
+  controls: without the hook, the same `Program_Error`. With a hook that
+  only takes the widget out of the window, 2 checks fail (the room stays,
+  and `Eject_Extra` returns the freed widget), with 2 invalid reads, one
+  in `add_extra` (:488).
+- **Issue 112** (`test_glut_live`). Decided: as in pofltk, the shim
+  keeps its own table of GLUT's windows and menus, and the Ada side
+  checks every number against it before FLTK indexes its own tables
+  unchecked (glut_compatibility.cxx:279 and the window and menu calls).
+  - **Windows.** The shim watches each window with
+    `Fl::watch_widget_pointer`, so a window deleted with its parent, or a
+    finalized `Glut_Window`, drops out. A dead number raises
+    `Constraint_Error`, and `Window_Exists` says which are live.
+    `Destroy_Window` marks the window and those in it dead at once and
+    deletes them from a timeout, so a display function can destroy its
+    own window. `Hide_Window` while a GL window draws is put off the same
+    way, through `gl_window_drawing`, now shared by `Gl_Window` and
+    `Glut_Window`'s `draw`. Destroying a `Glut_Window` made by a Forge, or
+    a window holding one, raises `Program_Error`: its Ada object owns it.
+    The display and overlay functions are kept per window in the shim,
+    and are skipped for a dead window.
+  - **32 windows or menus.** FLTK gives the 32nd the 31st's number
+    (:168, :308). `Create_Window`, `Create_Sub_Window`, `Create_Menu` and
+    a `Glut_Window`'s Forge raise `FLTK.Unsupported_Error` instead.
+  - **Menus.** The shim keeps each menu's labels (`std::deque` of
+    `std::string`) and submenus, and its array size, mirroring `additem`
+    (:331-346). `seal` terminates the array after every change, since
+    `additem` sets only the new terminator's text. `glutRemoveMenuItem`'s
+    copy past the end (:384) is padded. An item past the last raises
+    `Constraint_Error`. A menu used as a submenu can't be destroyed or
+    changed (`Program_Error`), since FLTK holds its array (:359); that
+    also rules out a menu that holds itself. `Destroy_Menu` takes the menu
+    off every window's buttons. `Attach_Menu` and a `Glut_Window`'s
+    `Set_Menu` refuse an empty menu, which `domenu` (:298) would pop up
+    unterminated. The texts that FLTKAda-BUGS.md 37 kept in
+    `body/fltk-glut.adb` are now kept here.
+  - **Queries.** `gl_int` starts from 0, so a query GL doesn't take gives
+    0 rather than stack garbage (:430). `Window_Buffer_Size` adds the bit
+    counts, since FLTK's asks `glutGet(GL_RGBA)` (:421). A query of 100 or
+    more goes to GL. `Window_Parent` uses `dynamic_cast`, which fixes
+    FLTKAda-BUGS.md 30. `Display_Mode_Possible` opens the display first.
+  - **Overlays.** `Establish_Overlay` and `Use_Layer` raise
+    `Program_Error` for a window not shown.
+
+  Before the fix, the test failed 10 checks. Every call with a dead
+  number raised `Storage_Error` from FLTK's freed window, or nothing at
+  all: `Set_Window`, `Post_Window_Redisplay`, `Create_Sub_Window`,
+  `Destroy_Window` twice, `Set_Menu` and `Add_Menu_Entry` with no menu.
+  After it, all 50 checks pass on X11 with no invalid reads and no leak.
+  On sway 48 pass, and the pop-up menu checks are skipped, because the
+  compositor closes pop-ups. Negative controls:
+  - With `Check_Window` disabled, 8 checks fail, mostly with
+    `Storage_Error`.
+  - With FLTK's own `glutGet (GLUT_WINDOW_PARENT)`, the checks pass, but
+    valgrind reports 2 invalid reads in `glutGet` (:400).
+
+  The test first failed at the 31 windows. The test's own `Glut_Window`
+  already held number 1, so the 31st raised `Unsupported_Error`, as it
+  should. The test now makes 30 more.
+- **Issue 23 (gaps) and issue 72** (`test_group_clear`). `Group.Clear`
+  removed every child, including the ones FLTK made as members of the
+  C++ object: a `Spinner`'s field and two buttons, and a
+  `Color_Chooser`'s seven parts. It now removes only the children Ada
+  added (`Remove_Ada_Children`), as `Finalize` already did, and keeps
+  the ones recorded in `Internal` at `Extra_Init`. `Scroll` already kept
+  its scrollbars. `Packed_Group.Clear` also clears the resizable, as
+  `Fl_Pack::clear` does (FL/Fl_Pack.H:98). Without that the pack is left
+  its own resizable, because `Fl_Group::remove` sets that when it takes
+  out the resizable child (Fl_Group.cxx:591). Before the fix, 3 of 7
+  checks failed: the spinner had 0 parts, the chooser had 0 parts, and
+  the pack's resizable was not null.
+
+  Issue 72: the triage's "Table only" isn't reproduced. Since Phase 2,
+  `Widget.Extra_Final` takes a widget out of its parent before
+  `Fl::delete_widget` queues it, and for a table that parent is the
+  inner `Playing_Area`. So no group or table deletes a queued widget
+  again. The test frees a box in a `Table` and one in a `Group` from a
+  timeout, then deletes the table and the group before the queue runs.
+  FLTK runs the queue at the start of the next wait
+  (Fl_System_Driver.cxx:357). Both groups are empty, and valgrind is
+  clean. All 8 checks pass on X11 and sway, with no invalid reads and no
+  leak. Negative controls:
+  - With the old `Group.Clear` and no `Clear_Resizable`, the 3 checks
+    fail.
+  - With `Extra_Final` not removing the widget, the 72 check fails, and
+    the test raises `Storage_Error` with 3 invalid reads.
 
 ### Phase 5: Overruns from bad input
 

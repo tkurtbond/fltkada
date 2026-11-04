@@ -5,13 +5,33 @@
 
 
 #include <FL/Fl_Bitmap.H>
+#include <cstring>
+#include <new>
 #include "c_fl_bitmap.h"
 
 
 
 
+//  Fl_Bitmap keeps the pointer it is given (Fl_Bitmap.H:48-49), so it is
+//  given a copy, which it owns (FLTKAda-BUGS.md 48).  The Ada side has
+//  checked that data holds h rows of (w + 7) / 8 bytes.  Returns null when
+//  out of memory.
 BITMAP new_fl_bitmap(void *data, int w, int h) {
-    Fl_Bitmap *b = new Fl_Bitmap(static_cast<uchar*>(data), w, h);
+    size_t n = static_cast<size_t>((w + 7) / 8) * h;
+    uchar *copy = 0;
+    if (n > 0) {
+        copy = new (std::nothrow) uchar[n];
+        if (copy == 0) {
+            return 0;
+        }
+        std::memcpy(copy, data, n);
+    }
+    Fl_Bitmap *b = new (std::nothrow) Fl_Bitmap(copy, w, h);
+    if (b == 0) {
+        delete[] copy;
+        return 0;
+    }
+    b->alloc_array = copy != 0;
     return b;
 }
 

@@ -21,6 +21,11 @@ package FLTK.Environment is
     type Database_Reference (Data : not null access Database'Class) is
         limited null record with Implicit_Dereference => Data;
 
+    --  A group is kept as the database or memory group it is in, and its
+    --  path from there.  A group that was deleted, by Delete_Group,
+    --  Delete_All_Groups or Clear of it or a group above it, raises
+    --  Preference_Error when it is used.  A group keeps its database, and
+    --  its memory group, for as long as it is there itself.
     type Pref_Group is new Wrapper with private;
 
     type Pref_Group_Reference (Data : not null access Pref_Group'Class) is
@@ -309,9 +314,7 @@ private
            (This : in out Database);
 
 
-    type Pref_Group is new Wrapper with record
-        Root_Ptr : Storage.Integer_Address := Null_Pointer;
-    end record;
+    type Pref_Group is new Wrapper with null record;
 
     overriding procedure Finalize
            (This : in out Pref_Group);

@@ -30,6 +30,7 @@ extern "C" PREFS new_fl_pref_group_memory(char * n);
 extern "C" PREFS new_fl_pref_group_name(PREFS e, char * n);
 extern "C" PREFS new_fl_pref_group_index(PREFS e, int i);
 extern "C" void free_fl_pref_group(PREFS e);
+extern "C" int fl_pref_group_exists(PREFS e);
 
 
 extern "C" int fl_preferences_flush(PREFS e);

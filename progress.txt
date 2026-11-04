@@ -225,7 +225,10 @@ menu's: it gives null, or Internal_FLTK_Error under -gnata (FLTKAda-BUGS.md 44)
 
 Menu_Item Set_Label (Kind => Image_Label or Multi_Label, Text) is meaningless,
 since FLTK treats the label text as a pointer to an image or Fl_Multi_Label;
-use Set_Image / Set_Multi_Label instead
+use Set_Image / Set_Multi_Label instead.  An item showing an image or a
+multi-label keeps its name, which Get_Label returns and paths use; FLTK
+read the pointer as the item's text, and Remove, Clear_Submenu and
+Set_Label freed it (pofltk 54, PLAN.md Phase 4)
 
 FLTK's glut.H declares glutExtensionSupported as taking char*, but its
 definition takes const char* (see body/c_fl_glut.cpp)
@@ -294,6 +297,72 @@ stays the grab or the selection owner (PLAN.md Phase 3)
 A menu popped up straight after its window's Show killed the program on
 Wayland; Popup and Pulldown now wait for that window (PLAN.md Phase 3)
 
+A global menu that was finalized was still used for the next shortcut; the
+binding now keeps its own global menu, cleared when it goes (PLAN.md Phase 4)
+
+Highlight_Data kept pointers to the Ada style table and style buffer, and
+ignored where the table started; it now copies the table, keeps the
+buffer, and refuses an empty table or one not starting at 'A'
+(FLTKAda-BUGS.md 47, PLAN.md Phase 4)
+
+A tree kept removed items as its last item clicked and its callback item,
+and a drag could move an item its callback removed; the tree now forgets
+them (PLAN.md Phase 4)
+
+A tree item's widget stayed in the tree, taking clicks, after its item was
+removed, and a finalized widget was still drawn as its item's; the widget
+now leaves the tree with its item, and its item when it goes (PLAN.md
+Phase 4)
+
+A tree item's user icon and deicon were the caller's image, drawn after it
+was freed, and Get_User_Icon looked the image up by the item's address,
+which a later item could reuse; the item now shows a copy the binding
+holds for its tree (PLAN.md Phase 4)
+
+A Pref_Group kept an Fl_Preferences pointing to its node, which deleting
+the group, or a group above it, freed; the shim now keeps a group as its
+database or memory group and its path, and a group that was deleted raises
+Preference_Error (PLAN.md Phase 4)
+
+Window.Shape gave FLTK the caller's image, which X11 reads again when a
+bitmap-shaped window is resized, and read an image scaled larger past the
+end of its data; the window is now shaped by a copy at the image's drawn
+size, kept until it is shaped again or deleted (pofltk 61, PLAN.md Phase 4)
+
+RGB_Image and Bitmap Create gave FLTK the caller's array, which the image
+read for as long as it lived, and checked its length only with Pre; they
+now copy it, and data too short raises Constraint_Error (FLTKAda-BUGS.md
+48, PLAN.md Phase 4)
+
+Animated_GIF_Image: a canvas finalized first is forgotten by its animation,
+whose timer used it from freed memory (pofltk 62), and a canvas the
+animation leaves, or that outlives it, no longer returns it from Get_Image
+(FLTKAda-BUGS.md 49, PLAN.md Phase 4)
+
+Tiled_Image: a shared image is tiled as a private copy, which Color_Average
+and Desaturate had changed and deleted while it was still in the pool
+(pofltk 84); a copy of a tiled image whose colours changed owns a copy of
+its tile; Tile returns the tile as it is now (FLTKAda-BUGS.md 50, PLAN.md
+Phase 4)
+
+Help_View: a link held down while the page is set, loaded or resized is
+not followed at the release, which read it from freed memory (pofltk 89,
+PLAN.md Phase 4)
+
+File_Chooser: a chooser freed in its own callback, or in any callback
+from the event loop, is hidden at once and deleted by a timeout once its
+callback is done; FLTK hid it from freed memory (pofltk 91, PLAN.md
+Phase 4); an extra widget finalized first leaves the chooser, which read
+its height and removed it from freed memory (pofltk 92, PLAN.md Phase 4).
+Parent of an extra widget still misreads the chooser's window
+(FLTKAda-BUGS.md 51)
+
+Group.Clear: removes only the children Ada added, so a Spinner or
+Color_Chooser keeps the parts FLTK made, and Packed_Group.Clear leaves the
+pack no resizable, as Fl_Pack::clear does (pofltk 23, FLTKAda-BUGS.md 27,
+PLAN.md Phase 4).  Spinner's Set_Colors and format are still open
+(FLTKAda-BUGS.md 27)
+
 
 
 Incomplete APIs:
@@ -309,8 +378,7 @@ FLTK.Widgets.Groups.Text_Displays (ensure text buffer is 1-indexed)
 FLTK.GLUT (no check yet that a GL context is ready for GLUT text, pofltk 112;
     the GLUT bitmap/stroke fonts, the geometric models glutWire*/glutSolid*,
     and the glut_window/glut_menu globals; windows from Create_Window/
-    Create_Sub_Window have no Ada object; menu labels and the icon title are
-    kept by FLTK without copying, so their C strings are never freed)
+    Create_Sub_Window have no Ada object)
 FLTK.Images.Pixmaps.GIF.Animated (Fail_Code clamps a positive ld() to 0)
 FLTK.Multi_Labels (only usable on menu items: there is no way yet to put a
     Multi_Label on a widget, Fl_Multi_Label::label(Fl_Widget*))
@@ -360,12 +428,10 @@ common ~60% of the Fl_Tree / Fl_Tree_Item API rather than full parity
     embeds a live FLTK.Widgets.Groups.Tables.Table this way.
   - per-item icons (usericon/userdeicon) ARE bound
     (Tree_Items.Set/Has/Clear/Get_User_Icon and the _Deicon equivalents).
-    Get_User_Icon/Get_User_Deicon can't recover the Ada object the way
-    Get_Widget does (Fl_Image has no spare pointer to piggyback on like
-    Fl_Widget's user_data()), so they're backed by a small internal
-    table in FLTK.Tree_Items keyed by the *item's* address -- stale if
-    that address is later reused for an unrelated item, same caveat
-    FLTK.Registry's Label_Store already carries. The tree-wide default
+    The item is given a copy of the image, held for its tree by the
+    private package FLTK.Tree_Icons, which frees a copy once no item of
+    the tree shows it, or the tree goes (pofltk 78). Get_User_Icon and
+    Get_User_Deicon return that copy. The tree-wide default
     icons (Fl_Tree::usericon/openicon/closeicon, as opposed to a
     specific item's) are still not bound.
   - overriding draw_item_content() IS bound, through the separate

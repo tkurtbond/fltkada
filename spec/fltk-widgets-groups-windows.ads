@@ -227,6 +227,9 @@ package FLTK.Widgets.Groups.Windows is
             Item      : in     Widget'Class;
             Offscreen : in     Boolean := False);
 
+    --  The window is shaped by a copy of Pic at its drawn size, which the
+    --  window keeps, so Pic can go at once (pofltk 61).  An image with no
+    --  data raises Constraint_Error.
     procedure Shape
            (This : in out Window;
             Pic  : in     FLTK.Images.Image'Class);

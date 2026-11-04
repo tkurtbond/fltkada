@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Choice.H>
 #include "c_fl_choice.h"
+#include "c_fl_menuitem.h"
 #include "c_fl.h"
 
 
@@ -51,6 +52,7 @@ CHOICE new_fl_choice(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_choice(CHOICE b) {
+    plain_menu(static_cast<Fl_Menu_*>(b));
     if (fl_inside_callback) {
         fl_delete_widget(b);
     } else {

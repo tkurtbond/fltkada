@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <cstring>
 #include "c_fl_menu.h"
+#include "c_fl_menuitem.h"
 #include "c_fl.h"
 
 
@@ -58,6 +59,7 @@ MENU new_fl_menu(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_menu(MENU m) {
+    plain_menu(static_cast<Fl_Menu_*>(m));
     if (fl_inside_callback) {
         fl_delete_widget(m);
     } else {
@@ -69,25 +71,30 @@ void free_fl_menu(MENU m) {
 
 
 int fl_menu_add(MENU m, const char * t) {
+    Item_Names names(static_cast<Fl_Menu_*>(m));
     return static_cast<Fl_Menu_*>(m)->add(t);
 }
 
 int fl_menu_add2(MENU m, const char * t, unsigned long s, void * u, unsigned long f) {
+    Item_Names names(static_cast<Fl_Menu_*>(m));
     return static_cast<Fl_Menu_*>(m)->add(t, s,
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
 }
 
 int fl_menu_add3(MENU m, const char * t, const char * s, void * u, unsigned long f) {
+    Item_Names names(static_cast<Fl_Menu_*>(m));
     return static_cast<Fl_Menu_*>(m)->add(t, s,
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
 }
 
 int fl_menu_insert(MENU m, int p, const char * t, unsigned long s, void * u, unsigned long f) {
+    Item_Names names(static_cast<Fl_Menu_*>(m));
     return static_cast<Fl_Menu_*>(m)->insert(p, t, s,
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
 }
 
 int fl_menu_insert2(MENU m, int p, const char * t, const char * s, void * u, unsigned long f) {
+    Item_Names names(static_cast<Fl_Menu_*>(m));
     return static_cast<Fl_Menu_*>(m)->insert(p, t, s,
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
 }
@@ -111,7 +118,8 @@ static bool owns_text(const Fl_Menu_Item & item) {
 }
 
 //  Returns a copy of the n items that i points to, with copies of their
-//  texts, or 0 when out of memory.  The copy ends where Fl_Menu_Item::size
+//  texts and of the Item_Labels of those showing an image or a multi-label
+//  (c_fl_menuitem.cpp), or 0 when out of memory.  The copy ends where Fl_Menu_Item::size
 //  would end it (Fl_Menu.cxx:58-70), and terminators are added for any
 //  submenu left open.
 static Fl_Menu_Item * copy_items(const Fl_Menu_Item * const * i, int n) {
@@ -143,17 +151,19 @@ static Fl_Menu_Item * copy_items(const Fl_Menu_Item * const * i, int n) {
     std::memset(static_cast<void*>(items), 0, count * sizeof(Fl_Menu_Item));
     for (int k = 0; k < copied; k++) {
         items[k] = *i[k];
+        bool copied_text = true;
         if (owns_text(items[k])) {
             items[k].text = strdup(items[k].text);
-            if (items[k].text == 0) {
-                for (int j = 0; j < k; j++) {
-                    if (owns_text(items[j])) {
-                        std::free(const_cast<char*>(items[j].text));
-                    }
-                }
-                delete[] items;
-                return 0;
+            copied_text = items[k].text != 0;
+        } else {
+            copied_text = copy_item_label(items[k]);
+        }
+        if (!copied_text) {
+            for (int j = 0; j < k; j++) {
+                free_item_label(items[j]);
             }
+            delete[] items;
+            return 0;
         }
     }
     return items;
@@ -209,15 +219,36 @@ int fl_menu_set_menu(MENU m, MENU d) {
 }
 
 
+//  Fl_Menu_::remove, clear_submenu and replace free() an item's text whatever
+//  its type (Fl_Menu_add.cxx:472-506, pofltk 54), and Fl_Menu_::clear frees
+//  no image or multi-label item's (Fl_Menu_.cxx:576-587).  So the items they
+//  free are given their names as text first (c_fl_menuitem.cpp).
+
+//  The items that removing item i, or clearing its submenu, frees.
+void fl_menu_plain_removed(MENU m, int i, int submenu) {
+    Fl_Menu_ * menu = static_cast<Fl_Menu_*>(m);
+    if (i < 0 || i >= menu->size() || menu->menu() == 0) {
+        return;
+    }
+    if (submenu && !menu->menu()[i].submenu()) {
+        return;
+    }
+    plain_items(const_cast<Fl_Menu_Item*>(menu->menu()), submenu ? i + 1 : i,
+        item_after(menu, i));
+}
+
 void fl_menu_remove(MENU m, int p) {
+    fl_menu_plain_removed(m, p, 0);
     static_cast<Fl_Menu_*>(m)->remove(p);
 }
 
 void fl_menu_clear(MENU m) {
+    plain_menu(static_cast<Fl_Menu_*>(m));
     static_cast<Fl_Menu_*>(m)->clear();
 }
 
 int fl_menu_clear_submenu(MENU m, int i) {
+    fl_menu_plain_removed(m, i, 1);
     return static_cast<Fl_Menu_*>(m)->clear_submenu(i);
 }
 
@@ -232,6 +263,7 @@ const void * fl_menu_get_item(MENU m, int i) {
 //  since we need to get the index for the Ada side anyway.
 
 int fl_menu_find_index(MENU m, const char * t) {
+    Item_Names names(static_cast<Fl_Menu_*>(m));
     return static_cast<Fl_Menu_*>(m)->find_index(t);
 }
 
@@ -250,6 +282,7 @@ int fl_menu_find_index3(MENU m, void * cb) {
 }
 
 int fl_menu_item_pathname(MENU m, char * buf, int len, void * mi) {
+    Item_Names names(static_cast<Fl_Menu_*>(m));
     return static_cast<Fl_Menu_*>(m)->item_pathname(buf, len, static_cast<Fl_Menu_Item*>(mi));
 }
 
@@ -264,7 +297,8 @@ int fl_menu_size(MENU m) {
 //  the Ada side anyway.
 
 const char * fl_menu_text(MENU m) {
-    return static_cast<Fl_Menu_*>(m)->text();
+    const Fl_Menu_Item * item = static_cast<Fl_Menu_*>(m)->mvalue();
+    return item == 0 ? 0 : item_name(item);
 }
 
 int fl_menu_value(MENU m) {
@@ -287,7 +321,8 @@ void fl_menu_setonly(MENU m, void * mi) {
 }
 
 const char * fl_menu_text2(MENU m, int i) {
-    return static_cast<Fl_Menu_*>(m)->text(i);
+    Fl_Menu_ * menu = static_cast<Fl_Menu_*>(m);
+    return i < 0 || menu->menu() == 0 ? 0 : item_name(menu->menu() + i);
 }
 
 //  Fl_Menu_::replace copies t only when the menu owns its strings (alloc > 1,
@@ -300,6 +335,7 @@ int fl_menu_replace(MENU m, int i, const char * t, const char ** o) {
     if (i < 0 || i >= menu->size()) {
         return 0;
     }
+    plain_items(const_cast<Fl_Menu_Item*>(menu->menu()), i, i + 1);
     *o = menu->menu()[i].text;
     menu->replace(i, t);
     return menu->menu()[i].text == t;
@@ -369,8 +405,32 @@ void fl_menu_set_down_box(MENU m, int t) {
     static_cast<Fl_Menu_*>(m)->down_box(static_cast<Fl_Boxtype>(t));
 }
 
+//  The menu whose shortcuts work in every window.  FLTK's own global()
+//  keeps a pointer that nothing clears, so a finalized menu is used by the
+//  next shortcut (Fl_Menu_global.cxx:23-28, pofltk 27).  The binding keeps
+//  its own, which the menu's Extra_Final clears.
+static Fl_Menu_ * global_menu = 0;
+
+static int global_handler(int e) {
+    if (e != FL_SHORTCUT || global_menu == 0 || Fl::modal()) {
+        return 0;
+    }
+    Fl::first_window(global_menu->window());
+    return global_menu->handle(e);
+}
+
 void fl_menu_global(MENU m) {
-    static_cast<Fl_Menu_*>(m)->global();
+    if (global_menu == 0) {
+        Fl::remove_handler(global_handler);
+        Fl::add_handler(global_handler);
+    }
+    global_menu = static_cast<Fl_Menu_*>(m);
+}
+
+void fl_menu_forget_global(MENU m) {
+    if (global_menu == static_cast<Fl_Menu_*>(m)) {
+        global_menu = 0;
+    }
 }
 
 int fl_menu_measure(MENU m, int i, int *h) {

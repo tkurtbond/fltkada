@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Single_Window.H>
 #include "c_fl_single_window.h"
+#include "c_fl_window.h"
 #include "c_fl.h"
 
 
@@ -24,6 +25,8 @@ extern "C" int widget_handle_hook(void * ud, int e);
 class My_Single_Window : public Fl_Single_Window {
 public:
     using Fl_Single_Window::Fl_Single_Window;
+
+    ~My_Single_Window() { window_shape_gone(this); }
 
     friend void fl_single_window_draw(SINGLEWINDOW n);
     friend int fl_single_window_handle(SINGLEWINDOW n, int e);

@@ -6,7 +6,7 @@
 
 with
 
-    Ada.Containers.Ordered_Maps,
+    FLTK.Tree_Icons,
     Interfaces.C.Strings;
 
 use type
@@ -16,24 +16,6 @@ use type
 
 
 package body FLTK.Tree_Items is
-
-
-    --  Fl_Image has no spare pointer of its own to stash an Ada
-    --  back-reference in (unlike Fl_Widget's user_data(), which
-    --  Get_Widget relies on), so Get_User_Icon/Get_User_Deicon look
-    --  the Ada object up here instead, keyed by the *item's* address.
-    --  Stale if a Tree_Item's underlying pointer is later reused for
-    --  an unrelated item (the same caveat FLTK.Registry's Label_Store
-    --  already carries for labels).
-
-    type Image_Access is access all FLTK.Images.Image'Class;
-
-    package Icon_Maps is new Ada.Containers.Ordered_Maps
-       (Key_Type     => Storage.Integer_Address,
-        Element_Type => Image_Access);
-
-    User_Icon_Store   : Icon_Maps.Map;
-    User_Deicon_Store : Icon_Maps.Map;
 
 
     ------------------------
@@ -274,6 +256,18 @@ package body FLTK.Tree_Items is
         return Storage.Integer_Address;
     pragma Import (C, fl_tree_item_get_userdeicon, "fl_tree_item_get_userdeicon");
     pragma Inline (fl_tree_item_get_userdeicon);
+
+    function fl_tree_item_tree
+           (TI : in Storage.Integer_Address)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_tree_item_tree, "fl_tree_item_tree");
+    pragma Inline (fl_tree_item_tree);
+
+    function fl_tree_item_in_tree
+           (TI : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_item_in_tree, "fl_tree_item_in_tree");
+    pragma Inline (fl_tree_item_in_tree);
 
 
 
@@ -606,9 +600,16 @@ package body FLTK.Tree_Items is
     function Replace
            (This     : in Tree_Item;
             New_Item : in Tree_Item)
-        return Tree_Item is
+        return Tree_Item
+    is
+        Tree   : constant Storage.Integer_Address := fl_tree_item_tree (This.Void_Ptr);
+        Result : constant Tree_Item :=
+           (Void_Ptr => fl_tree_item_replace (This.Void_Ptr, New_Item.Void_Ptr));
     begin
-        return (Void_Ptr => fl_tree_item_replace (This.Void_Ptr, New_Item.Void_Ptr));
+        if Tree /= Null_Pointer then
+            FLTK.Tree_Icons.Drop_Unused (Tree);
+        end if;
+        return Result;
     end Replace;
 
 
@@ -652,14 +653,54 @@ package body FLTK.Tree_Items is
 
     --  Icons  --
 
+    --  pofltk 78: FLTK keeps the image's pointer, so it is given a copy,
+    --  held for the item's tree (FLTK.Tree_Icons).
+    procedure Set_Icon
+           (This   : in Tree_Item;
+            Pic    : in FLTK.Images.Image'Class;
+            Deicon : in Boolean)
+    is
+        Tree : constant Storage.Integer_Address := fl_tree_item_tree (This.Void_Ptr);
+        Ptr  : Storage.Integer_Address := Null_Pointer;
+    begin
+        if Tree = Null_Pointer then
+            raise Program_Error with "a tree item that belongs to no tree";
+        end if;
+        if Wrapper (Pic).Void_Ptr /= Null_Pointer then
+            Ptr := FLTK.Tree_Icons.Hold
+               (Tree, Pic, Kept => fl_tree_item_in_tree (This.Void_Ptr) = 0);
+        end if;
+        if Deicon then
+            fl_tree_item_set_userdeicon (This.Void_Ptr, Ptr);
+        else
+            fl_tree_item_set_usericon (This.Void_Ptr, Ptr);
+        end if;
+        FLTK.Tree_Icons.Drop_Unused (Tree);
+    end Set_Icon;
+
+
+    procedure Clear_Icon
+           (This   : in Tree_Item;
+            Deicon : in Boolean)
+    is
+        Tree : constant Storage.Integer_Address := fl_tree_item_tree (This.Void_Ptr);
+    begin
+        if Deicon then
+            fl_tree_item_set_userdeicon (This.Void_Ptr, Null_Pointer);
+        else
+            fl_tree_item_set_usericon (This.Void_Ptr, Null_Pointer);
+        end if;
+        if Tree /= Null_Pointer then
+            FLTK.Tree_Icons.Drop_Unused (Tree);
+        end if;
+    end Clear_Icon;
+
+
     procedure Set_User_Icon
            (This : in Tree_Item;
-            Pic  : in out FLTK.Images.Image'Class) is
+            Pic  : in FLTK.Images.Image'Class) is
     begin
-        User_Icon_Store.Include (This.Void_Ptr, Pic'Unchecked_Access);
-        fl_tree_item_set_usericon
-           (This.Void_Ptr,
-            Storage.To_Integer (FLTK.Images.Address_Of (Pic)));
+        Set_Icon (This, Pic, Deicon => False);
     end Set_User_Icon;
 
 
@@ -674,33 +715,24 @@ package body FLTK.Tree_Items is
     procedure Clear_User_Icon
            (This : in Tree_Item) is
     begin
-        User_Icon_Store.Exclude (This.Void_Ptr);
-        fl_tree_item_set_usericon (This.Void_Ptr, Null_Pointer);
+        Clear_Icon (This, Deicon => False);
     end Clear_User_Icon;
 
 
     function Get_User_Icon
            (This : in Tree_Item)
-        return access FLTK.Images.Image'Class
-    is
-        Place : constant Icon_Maps.Cursor := User_Icon_Store.Find (This.Void_Ptr);
+        return access FLTK.Images.Image'Class is
     begin
-        if Icon_Maps.Has_Element (Place) then
-            return Icon_Maps.Element (Place);
-        else
-            return null;
-        end if;
+        return FLTK.Tree_Icons.Find
+           (fl_tree_item_tree (This.Void_Ptr), fl_tree_item_get_usericon (This.Void_Ptr));
     end Get_User_Icon;
 
 
     procedure Set_User_Deicon
            (This : in Tree_Item;
-            Pic  : in out FLTK.Images.Image'Class) is
+            Pic  : in FLTK.Images.Image'Class) is
     begin
-        User_Deicon_Store.Include (This.Void_Ptr, Pic'Unchecked_Access);
-        fl_tree_item_set_userdeicon
-           (This.Void_Ptr,
-            Storage.To_Integer (FLTK.Images.Address_Of (Pic)));
+        Set_Icon (This, Pic, Deicon => True);
     end Set_User_Deicon;
 
 
@@ -715,22 +747,16 @@ package body FLTK.Tree_Items is
     procedure Clear_User_Deicon
            (This : in Tree_Item) is
     begin
-        User_Deicon_Store.Exclude (This.Void_Ptr);
-        fl_tree_item_set_userdeicon (This.Void_Ptr, Null_Pointer);
+        Clear_Icon (This, Deicon => True);
     end Clear_User_Deicon;
 
 
     function Get_User_Deicon
            (This : in Tree_Item)
-        return access FLTK.Images.Image'Class
-    is
-        Place : constant Icon_Maps.Cursor := User_Deicon_Store.Find (This.Void_Ptr);
+        return access FLTK.Images.Image'Class is
     begin
-        if Icon_Maps.Has_Element (Place) then
-            return Icon_Maps.Element (Place);
-        else
-            return null;
-        end if;
+        return FLTK.Tree_Icons.Find
+           (fl_tree_item_tree (This.Void_Ptr), fl_tree_item_get_userdeicon (This.Void_Ptr));
     end Get_User_Deicon;
 
 

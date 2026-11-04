@@ -7,6 +7,7 @@
 #include <FL/Fl_Gl_Window.H>
 #include <FL/platform.H>
 #include "c_fl_gl_window.h"
+#include "c_fl_window.h"
 #include "c_fl.h"
 
 
@@ -26,6 +27,8 @@ class My_Gl_Window : public Fl_Gl_Window {
 public:
     using Fl_Gl_Window::Fl_Gl_Window;
 
+    ~My_Gl_Window() { window_shape_gone(this); }
+
     friend void fl_gl_window_draw(GLWINDOW n);
     friend int fl_gl_window_handle(GLWINDOW n, int e);
 
@@ -36,12 +39,12 @@ public:
 //  How many GL windows are drawing now.  mode() inside a draw replaces the
 //  context the draw is using (pofltk 111).  widget_draw_hook catches the Ada
 //  side's exceptions, so the count always comes back down.
-static int drawing = 0;
+int gl_window_drawing = 0;
 
 void My_Gl_Window::draw() {
-    drawing++;
+    gl_window_drawing++;
     widget_draw_hook(this->user_data());
-    drawing--;
+    gl_window_drawing--;
 }
 
 int My_Gl_Window::handle(int e) {
@@ -122,7 +125,7 @@ unsigned int fl_gl_window_get_mode(GLWINDOW w) {
 
 //  Returns 0, and changes nothing, inside a GL window's draw.
 int fl_gl_window_set_mode(GLWINDOW w, unsigned int a) {
-    if (drawing != 0) {
+    if (gl_window_drawing != 0) {
         return 0;
     }
     static_cast<Fl_Gl_Window*>(w)->mode(a);

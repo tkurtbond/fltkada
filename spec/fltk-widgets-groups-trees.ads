@@ -113,6 +113,7 @@ package FLTK.Widgets.Groups.Trees is
 
     --  Inside the tree's callback, the item that caused the callback
     --  and why. The item can be null, so check with Tree_Items.Is_Null.
+    --  It is null once the item has been removed, in the callback or not.
     function Callback_Item
            (This : in Tree)
         return FLTK.Tree_Items.Tree_Item;

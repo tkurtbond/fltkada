@@ -155,8 +155,17 @@ package body FLTK.Images.RGB is
                 Width, Height : in Natural;
                 Depth         : in Natural := 3;
                 Line_Size     : in Natural := 0)
-            return RGB_Image is
+            return RGB_Image
+        is
+            Needed : constant Size_Type :=
+                (if Line_Size = 0
+                 then Size_Type (Width) * Size_Type (Height) * Size_Type (Depth)
+                 else Size_Type (Line_Size) * Size_Type (Height));
         begin
+            if Data'Length < Needed then
+                raise Constraint_Error with "RGB_Image Create with" & Size_Type'Image (Data'Length)
+                    & " bytes, needing" & Size_Type'Image (Needed);
+            end if;
             return This : RGB_Image do
                 This.Void_Ptr := new_fl_rgb_image
                    ((if Data'Length > 0
@@ -166,6 +175,9 @@ package body FLTK.Images.RGB is
                     Interfaces.C.int (Height),
                     Interfaces.C.int (Depth),
                     Interfaces.C.int (Line_Size));
+                if This.Void_Ptr = Null_Pointer then
+                    raise Storage_Error with "no memory for an RGB_Image";
+                end if;
             end return;
         end Create;
 

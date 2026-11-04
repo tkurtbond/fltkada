@@ -7,6 +7,7 @@
 #include <FL/Fl_Sys_Menu_Bar.H>
 #include <FL/Fl_Menu_Item.H>
 #include "c_fl_sys_menu_bar.h"
+#include "c_fl_menuitem.h"
 #include "c_fl_menu.h"
 #include "c_fl.h"
 
@@ -55,6 +56,7 @@ SYSMENUBAR new_fl_sys_menu_bar(int x, int y, int w, int h, char* label) {
 }
 
 void free_fl_sys_menu_bar(SYSMENUBAR m) {
+    plain_menu(static_cast<Fl_Menu_*>(m));
     if (fl_inside_callback) {
         fl_delete_widget(m);
     } else {
@@ -66,25 +68,30 @@ void free_fl_sys_menu_bar(SYSMENUBAR m) {
 
 
 int fl_sys_menu_bar_add(SYSMENUBAR m, const char * t) {
+    Item_Names names(static_cast<Fl_Menu_*>(m));
     return static_cast<Fl_Sys_Menu_Bar*>(m)->add(t);
 }
 
 int fl_sys_menu_bar_add2(SYSMENUBAR m, const char * t, int s, void * u, int f) {
+    Item_Names names(static_cast<Fl_Menu_*>(m));
     return static_cast<Fl_Sys_Menu_Bar*>(m)->add(t, s,
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
 }
 
 int fl_sys_menu_bar_add3(SYSMENUBAR m, const char * t, const char * s, void * u, int f) {
+    Item_Names names(static_cast<Fl_Menu_*>(m));
     return static_cast<Fl_Sys_Menu_Bar*>(m)->add(t, s,
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
 }
 
 int fl_sys_menu_bar_insert(SYSMENUBAR m, int p, const char * t, int s, void * u, int f) {
+    Item_Names names(static_cast<Fl_Menu_*>(m));
     return static_cast<Fl_Sys_Menu_Bar*>(m)->insert(p, t, s,
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
 }
 
 int fl_sys_menu_bar_insert2(SYSMENUBAR m, int p, const char * t, const char * s, void * u, int f) {
+    Item_Names names(static_cast<Fl_Menu_*>(m));
     return static_cast<Fl_Sys_Menu_Bar*>(m)->insert(p, t, s,
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
 }
@@ -99,15 +106,19 @@ int fl_sys_menu_bar_set_menu(SYSMENUBAR m, void * d) {
     return result;
 }
 
+//  As fl_menu_remove, fl_menu_clear and fl_menu_clear_submenu, in c_fl_menu.cpp.
 void fl_sys_menu_bar_remove(SYSMENUBAR m, int p) {
+    fl_menu_plain_removed(m, p, 0);
     static_cast<Fl_Sys_Menu_Bar*>(m)->remove(p);
 }
 
 void fl_sys_menu_bar_clear(SYSMENUBAR m) {
+    plain_menu(static_cast<Fl_Menu_*>(m));
     static_cast<Fl_Sys_Menu_Bar*>(m)->clear();
 }
 
 int fl_sys_menu_bar_clear_submenu(SYSMENUBAR m, int i) {
+    fl_menu_plain_removed(m, i, 1);
     return static_cast<Fl_Sys_Menu_Bar*>(m)->clear_submenu(i);
 }
 
@@ -132,6 +143,7 @@ int fl_sys_menu_bar_replace(SYSMENUBAR m, int i, const char * t, const char ** o
     if (i < 0 || i >= bar->size()) {
         return 0;
     }
+    plain_items(const_cast<Fl_Menu_Item*>(bar->menu()), i, i + 1);
     *o = bar->menu()[i].text;
     bar->replace(i, t);
     return bar->menu()[i].text == t;

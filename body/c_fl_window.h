@@ -59,7 +59,7 @@ extern "C" const char * fl_window_get_label(WINDOW n);
 extern "C" void fl_window_copy_label(WINDOW n, char* text);
 extern "C" void fl_window_hotspot(WINDOW n, int x, int y, int s);
 extern "C" void fl_window_hotspot2(WINDOW n, void * i, int s);
-extern "C" void fl_window_shape(WINDOW n, void * p);
+extern "C" int fl_window_shape(WINDOW n, void * p);
 
 
 extern "C" void fl_window_size_range(WINDOW n, int lw, int lh, int hw, int hh, int dw, int dh, int a);
@@ -83,6 +83,17 @@ extern "C" unsigned int fl_window_tooltip_window(WINDOW n);
 extern "C" void fl_window_draw(WINDOW n);
 extern "C" void fl_window_flush(WINDOW n);
 extern "C" int fl_window_handle(WINDOW n, int e);
+
+
+
+
+//  C++ linkage, for the other window shims
+
+class Fl_Window;
+
+//  Frees the copy of the shape image kept for a window.  Each window
+//  shim's My_ class calls it from its destructor.
+void window_shape_gone(const Fl_Window * w);
 
 
 #endif

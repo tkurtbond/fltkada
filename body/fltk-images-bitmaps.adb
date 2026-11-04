@@ -114,8 +114,14 @@ package body FLTK.Images.Bitmaps is
         function Create
                (Data          : in Color_Component_Array;
                 Width, Height : in Natural)
-            return Bitmap is
+            return Bitmap
+        is
+            Needed : constant Size_Type := Size_Type (Bytes_Needed (Width)) * Size_Type (Height);
         begin
+            if Data'Length < Needed then
+                raise Constraint_Error with "Bitmap Create with" & Size_Type'Image (Data'Length)
+                    & " bytes, needing" & Size_Type'Image (Needed);
+            end if;
             return This : Bitmap do
                 This.Void_Ptr := new_fl_bitmap
                    ((if Data'Length > 0
@@ -123,6 +129,9 @@ package body FLTK.Images.Bitmaps is
                      else Null_Pointer),
                     Interfaces.C.int (Width),
                     Interfaces.C.int (Height));
+                if This.Void_Ptr = Null_Pointer then
+                    raise Storage_Error with "no memory for a Bitmap";
+                end if;
             end return;
         end Create;
 

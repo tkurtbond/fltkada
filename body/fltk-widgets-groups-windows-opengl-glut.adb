@@ -65,6 +65,23 @@ package body FLTK.Widgets.Groups.Windows.OpenGL.GLUT is
     pragma Import (C, fl_glut_window_set_menu, "fl_glut_window_set_menu");
     pragma Inline (fl_glut_window_set_menu);
 
+    function fl_glut_has_room
+        return Interfaces.C.int;
+    pragma Import (C, fl_glut_has_room, "fl_glut_has_room");
+    pragma Inline (fl_glut_has_room);
+
+    function fl_glut_menu_exists
+           (Menu : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_glut_menu_exists, "fl_glut_menu_exists");
+    pragma Inline (fl_glut_menu_exists);
+
+    function fl_glut_menu_items
+           (Menu : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_glut_menu_items, "fl_glut_menu_items");
+    pragma Inline (fl_glut_menu_items);
+
 
 
 
@@ -136,6 +153,16 @@ package body FLTK.Widgets.Groups.Windows.OpenGL.GLUT is
     end Initialize;
 
 
+    --  The 32nd window would get the 31st's number (glut_compatibility.cxx:168,
+    --  pofltk 112).
+    procedure Check_Room is
+    begin
+        if fl_glut_has_room = 0 then
+            raise Unsupported_Error with "GLUT has no window numbers left";
+        end if;
+    end Check_Room;
+
+
     package body Forge is
 
         function Create
@@ -143,6 +170,7 @@ package body FLTK.Widgets.Groups.Windows.OpenGL.GLUT is
                 Text       : in String := "")
             return Glut_Window is
         begin
+            Check_Room;
             return This : Glut_Window do
                 This.Void_Ptr := new_fl_glut_window
                    (Interfaces.C.int (X),
@@ -175,6 +203,7 @@ package body FLTK.Widgets.Groups.Windows.OpenGL.GLUT is
                 Text : in String := "")
             return Glut_Window is
         begin
+            Check_Room;
             return This : Glut_Window do
                 This.Void_Ptr := new_fl_glut_window2
                    (Interfaces.C.int (W),
@@ -228,8 +257,19 @@ package body FLTK.Widgets.Groups.Windows.OpenGL.GLUT is
     procedure Set_Menu
            (This   : in out Glut_Window;
             Button : in     FLTK.GLUT.Menu_Button;
-            Menu   : in     FLTK.GLUT.Menu_Number) is
+            Menu   : in     FLTK.GLUT.Menu_Number)
+    is
+        use type FLTK.GLUT.Menu_Number;
     begin
+        --  A button on a menu that doesn't exist, or has no items, pops up a
+        --  null pointer (domenu, glut_compatibility.cxx:298, pofltk 112)
+        if Menu /= FLTK.GLUT.No_Menu then
+            if fl_glut_menu_exists (Interfaces.C.int (Menu)) = 0 then
+                raise Constraint_Error with "no GLUT menu" & FLTK.GLUT.Menu_Number'Image (Menu);
+            elsif fl_glut_menu_items (Interfaces.C.int (Menu)) = 0 then
+                raise Program_Error with "Set_Menu of an empty GLUT menu";
+            end if;
+        end if;
         fl_glut_window_set_menu
            (This.Void_Ptr,
             FLTK.GLUT.Mouse_Button_Index'Pos (Button),

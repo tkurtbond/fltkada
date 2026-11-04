@@ -130,8 +130,15 @@ package FLTK.Probe is
     function Modal_Title
         return String;
 
+    --  The height of the modal window shown, or 0.
+    function Modal_H
+        return Natural;
+
     --  A key sent to the modal window as if from the window system; False
-    --  if none is shown.
+    --  if none is shown.  Give a key the text the window system gives it:
+    --  on Wayland, a key with no text is typed text to an input
+    --  (Fl_Wayland_Screen_Driver::compose, Fl_Wayland_Screen_Driver.cxx:
+    --  707-711), so an Enter with Text "" doesn't reach its callback there.
     function Modal_Key
            (Code  : in Keypress;
             State : in Modifier := Mod_None;

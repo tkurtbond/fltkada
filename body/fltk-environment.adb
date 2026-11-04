@@ -68,11 +68,6 @@ package body FLTK.Environment is
     pragma Import (C, new_fl_pref_database_scope, "new_fl_pref_database_scope");
     pragma Inline (new_fl_pref_database_scope);
 
-    procedure upref_fl_pref_database
-           (P : in Storage.Integer_Address);
-    pragma Import (C, upref_fl_pref_database, "upref_fl_pref_database");
-    pragma Inline (upref_fl_pref_database);
-
     procedure free_fl_pref_database
            (E : in Storage.Integer_Address);
     pragma Import (C, free_fl_pref_database, "free_fl_pref_database");
@@ -113,6 +108,12 @@ package body FLTK.Environment is
            (G : in Storage.Integer_Address);
     pragma Import (C, free_fl_pref_group, "free_fl_pref_group");
     pragma Inline (free_fl_pref_group);
+
+    function fl_pref_group_exists
+           (G : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_pref_group_exists, "fl_pref_group_exists");
+    pragma Inline (fl_pref_group_exists);
 
 
 
@@ -416,6 +417,19 @@ package body FLTK.Environment is
     when Chk.Assertion_Error => raise Constraint_Error;
     end To_Scope;
 
+    --  The group's pointer, for a call.  The shim keeps a group as its base
+    --  and its path, so a group deleted from above is one that is missing
+    --  (pofltk 51).
+    function Group_Ptr
+           (This : in Pref_Group'Class)
+        return Storage.Integer_Address is
+    begin
+        if fl_pref_group_exists (This.Void_Ptr) = 0 then
+            raise Preference_Error with "the group was deleted";
+        end if;
+        return This.Void_Ptr;
+    end Group_Ptr;
+
 
 
 
@@ -439,9 +453,6 @@ package body FLTK.Environment is
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_pref_group (This.Void_Ptr);
             This.Void_Ptr := Null_Pointer;
-            if This.Root_Ptr /= Null_Pointer then
-                free_fl_pref_database (This.Root_Ptr);
-            end if;
         end if;
     end Finalize;
 
@@ -488,8 +499,6 @@ package body FLTK.Environment is
         begin
             return Result : Pref_Group do
                 Result.Void_Ptr := new_fl_pref_group_copy (From.Void_Ptr);
-                Result.Root_Ptr := From.Void_Ptr;
-                upref_fl_pref_database (Result.Root_Ptr);
             end return;
         end Root;
 
@@ -500,7 +509,6 @@ package body FLTK.Environment is
         begin
             return Result : Pref_Group do
                 Result.Void_Ptr := new_fl_pref_group_memory (Interfaces.C.To_C (Name));
-                Result.Root_Ptr := Null_Pointer;
             end return;
         end In_Memory;
 
@@ -512,12 +520,8 @@ package body FLTK.Environment is
         begin
             return Result : Pref_Group do
                 Result.Void_Ptr := new_fl_pref_group_name
-                   (From.Void_Ptr,
+                   (Group_Ptr (From),
                     Interfaces.C.To_C (Name));
-                Result.Root_Ptr := From.Root_Ptr;
-                if Result.Root_Ptr /= Null_Pointer then
-                    upref_fl_pref_database (Result.Root_Ptr);
-                end if;
             end return;
         end By_Name;
 
@@ -529,12 +533,8 @@ package body FLTK.Environment is
         begin
             return Result : Pref_Group do
                 Result.Void_Ptr := new_fl_pref_group_index
-                   (From.Void_Ptr,
+                   (Group_Ptr (From),
                     Interfaces.C.int (Index - 1));
-                Result.Root_Ptr := From.Root_Ptr;
-                if Result.Root_Ptr /= Null_Pointer then
-                    upref_fl_pref_database (Result.Root_Ptr);
-                end if;
             end return;
         end By_Index;
 
@@ -600,7 +600,7 @@ package body FLTK.Environment is
            (This : in out Pref_Group;
             Key  : in     String) is
     begin
-        if fl_preferences_deleteentry (This.Void_Ptr, Interfaces.C.To_C (Key)) = 0 then
+        if fl_preferences_deleteentry (Group_Ptr (This), Interfaces.C.To_C (Key)) = 0 then
             raise Preference_Error;
         end if;
     end Delete_Entry;
@@ -609,7 +609,7 @@ package body FLTK.Environment is
     procedure Delete_All_Entries
            (This : in out Pref_Group) is
     begin
-        if fl_preferences_deleteallentries (This.Void_Ptr) = 0 then
+        if fl_preferences_deleteallentries (Group_Ptr (This)) = 0 then
             raise Preference_Error;
         end if;
     end Delete_All_Entries;
@@ -619,7 +619,7 @@ package body FLTK.Environment is
            (This : in out Pref_Group;
             Name : in     String) is
     begin
-        if fl_preferences_deletegroup (This.Void_Ptr, Interfaces.C.To_C (Name)) = 0 then
+        if fl_preferences_deletegroup (Group_Ptr (This), Interfaces.C.To_C (Name)) = 0 then
             raise Preference_Error;
         end if;
     end Delete_Group;
@@ -628,7 +628,7 @@ package body FLTK.Environment is
     procedure Delete_All_Groups
            (This : in out Pref_Group) is
     begin
-        if fl_preferences_deleteallgroups (This.Void_Ptr) = 0 then
+        if fl_preferences_deleteallgroups (Group_Ptr (This)) = 0 then
             raise Preference_Error;
         end if;
     end Delete_All_Groups;
@@ -637,7 +637,7 @@ package body FLTK.Environment is
     procedure Clear
            (This : in out Pref_Group) is
     begin
-        if fl_preferences_clear (This.Void_Ptr) = 0 then
+        if fl_preferences_clear (Group_Ptr (This)) = 0 then
             raise Preference_Error;
         end if;
     end Clear;
@@ -651,7 +651,7 @@ package body FLTK.Environment is
            (This : in Pref_Group)
         return Natural is
     begin
-        return Natural (fl_preferences_entries (This.Void_Ptr));
+        return Natural (fl_preferences_entries (Group_Ptr (This)));
     end Number_Of_Entries;
 
 
@@ -661,7 +661,7 @@ package body FLTK.Environment is
         return String
     is
         Key : constant Interfaces.C.Strings.chars_ptr :=
-            fl_preferences_entry (This.Void_Ptr, Interfaces.C.int (Index) - 1);
+            fl_preferences_entry (Group_Ptr (This), Interfaces.C.int (Index) - 1);
     begin
         --  no need for dealloc?
         if Key = Interfaces.C.Strings.Null_Ptr then
@@ -677,7 +677,7 @@ package body FLTK.Environment is
             Key  : in String)
         return Boolean is
     begin
-        return fl_preferences_entryexists (This.Void_Ptr, Interfaces.C.To_C (Key)) /= 0;
+        return fl_preferences_entryexists (Group_Ptr (This), Interfaces.C.To_C (Key)) /= 0;
     end Key_Exists;
 
 
@@ -686,7 +686,7 @@ package body FLTK.Environment is
             Key  : in String)
         return Natural is
     begin
-        return Natural (fl_preferences_size (This.Void_Ptr, Interfaces.C.To_C (Key)));
+        return Natural (fl_preferences_size (Group_Ptr (This), Interfaces.C.To_C (Key)));
     end Value_Size;
 
 
@@ -698,7 +698,7 @@ package body FLTK.Environment is
            (This : in Pref_Group)
         return Natural is
     begin
-        return Natural (fl_preferences_groups (This.Void_Ptr));
+        return Natural (fl_preferences_groups (Group_Ptr (This)));
     end Number_Of_Groups;
 
 
@@ -708,7 +708,7 @@ package body FLTK.Environment is
         return String
     is
         Name : constant Interfaces.C.Strings.chars_ptr :=
-            fl_preferences_group (This.Void_Ptr, Interfaces.C.int (Index) - 1);
+            fl_preferences_group (Group_Ptr (This), Interfaces.C.int (Index) - 1);
     begin
         --  no need for dealloc?
         if Name = Interfaces.C.Strings.Null_Ptr then
@@ -724,7 +724,7 @@ package body FLTK.Environment is
             Name : in String)
         return Boolean is
     begin
-        return fl_preferences_groupexists (This.Void_Ptr, Interfaces.C.To_C (Name)) /= 0;
+        return fl_preferences_groupexists (Group_Ptr (This), Interfaces.C.To_C (Name)) /= 0;
     end Group_Exists;
 
 
@@ -736,7 +736,7 @@ package body FLTK.Environment is
            (This : in Pref_Group)
         return String
     is
-        Text : constant Interfaces.C.Strings.chars_ptr := fl_preferences_name (This.Void_Ptr);
+        Text : constant Interfaces.C.Strings.chars_ptr := fl_preferences_name (Group_Ptr (This));
     begin
         if Text = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -750,7 +750,7 @@ package body FLTK.Environment is
            (This : in Pref_Group)
         return String
     is
-        Text : constant Interfaces.C.Strings.chars_ptr := fl_preferences_path (This.Void_Ptr);
+        Text : constant Interfaces.C.Strings.chars_ptr := fl_preferences_path (Group_Ptr (This));
     begin
         if Text = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -772,7 +772,7 @@ package body FLTK.Environment is
         Value : Interfaces.C.int;
     begin
         if fl_preferences_get_int
-           (This.Void_Ptr,
+           (Group_Ptr (This),
             Interfaces.C.To_C (Key),
             Value, 0) = 0
         then
@@ -791,7 +791,7 @@ package body FLTK.Environment is
         Value, Ignore : Interfaces.C.int;
     begin
         Ignore := fl_preferences_get_int
-           (This.Void_Ptr,
+           (Group_Ptr (This),
             Interfaces.C.To_C (Key),
             Value,
             Interfaces.C.int (Default));
@@ -807,7 +807,7 @@ package body FLTK.Environment is
         Value : Interfaces.C.C_float;
     begin
         if fl_preferences_get_float
-           (This.Void_Ptr,
+           (Group_Ptr (This),
             Interfaces.C.To_C (Key),
             Value, 0.0) = 0
         then
@@ -827,7 +827,7 @@ package body FLTK.Environment is
         Ignore : Interfaces.C.int;
     begin
         Ignore := fl_preferences_get_float
-           (This.Void_Ptr,
+           (Group_Ptr (This),
             Interfaces.C.To_C (Key),
             Value,
             Interfaces.C.C_float (Default));
@@ -843,7 +843,7 @@ package body FLTK.Environment is
         Value : Interfaces.C.double;
     begin
         if fl_preferences_get_double
-           (This.Void_Ptr,
+           (Group_Ptr (This),
             Interfaces.C.To_C (Key),
             Value, 0.0) = 0
         then
@@ -863,7 +863,7 @@ package body FLTK.Environment is
         Ignore : Interfaces.C.int;
     begin
         Ignore := fl_preferences_get_double
-           (This.Void_Ptr,
+           (Group_Ptr (This),
             Interfaces.C.To_C (Key),
             Value,
             Interfaces.C.double (Default));
@@ -878,7 +878,7 @@ package body FLTK.Environment is
     is
         Text : Interfaces.C.Strings.chars_ptr;
         Check : constant Interfaces.C.int := fl_preferences_get_str
-           (This.Void_Ptr,
+           (Group_Ptr (This),
             Interfaces.C.To_C (Key),
             Text,
             Interfaces.C.To_C ("default"));
@@ -903,7 +903,7 @@ package body FLTK.Environment is
     is
         Text : Interfaces.C.Strings.chars_ptr;
         Ignore : Interfaces.C.int := fl_preferences_get_str
-           (This.Void_Ptr,
+           (Group_Ptr (This),
             Interfaces.C.To_C (Key),
             Text,
             Interfaces.C.To_C (Default));
@@ -926,7 +926,7 @@ package body FLTK.Environment is
     is
         Text : Interfaces.C.char_array := (1 .. Interfaces.C.size_t (Max_Length + 1) => ' ');
         Check : constant Interfaces.C.int := fl_preferences_get_str_limit
-           (This.Void_Ptr,
+           (Group_Ptr (This),
             Interfaces.C.To_C (Key),
             Text,
             Interfaces.C.To_C (Default),
@@ -948,7 +948,7 @@ package body FLTK.Environment is
         Thing : Storage.Integer_Address;
         Dummy : Interfaces.C.int := 42;
         Check : constant Interfaces.C.int := fl_preferences_get_void
-           (This.Void_Ptr,
+           (Group_Ptr (This),
             Interfaces.C.To_C (Key),
             Thing,
             Storage.To_Integer (Dummy'Address),
@@ -979,7 +979,7 @@ package body FLTK.Environment is
     is
         Thing  : Storage.Integer_Address;
         Ignore : Interfaces.C.int := fl_preferences_get_void
-           (This.Void_Ptr,
+           (Group_Ptr (This),
             Interfaces.C.To_C (Key),
             Thing,
             Storage.To_Integer (Default'Address),
@@ -1004,7 +1004,7 @@ package body FLTK.Environment is
     is
         Actual : Binary_Data (1 .. Max_Length);
         Ignore : Interfaces.C.int := fl_preferences_get_void_limit
-           (This.Void_Ptr,
+           (Group_Ptr (This),
             Interfaces.C.To_C (Key),
             Storage.To_Integer (Actual'Address),
             Storage.To_Integer (Default'Address),
@@ -1026,7 +1026,7 @@ package body FLTK.Environment is
             Value : in     Integer) is
     begin
         if fl_preferences_set_int
-           (This.Void_Ptr,
+           (Group_Ptr (This),
             Interfaces.C.To_C (Key),
             Interfaces.C.int (Value)) = 0
         then
@@ -1041,7 +1041,7 @@ package body FLTK.Environment is
             Value : in     Float) is
     begin
         if fl_preferences_set_float
-           (This.Void_Ptr,
+           (Group_Ptr (This),
             Interfaces.C.To_C (Key),
             Interfaces.C.C_float (Value)) = 0
         then
@@ -1057,7 +1057,7 @@ package body FLTK.Environment is
             Precision : in     Natural) is
     begin
         if fl_preferences_set_float_prec
-           (This.Void_Ptr,
+           (Group_Ptr (This),
             Interfaces.C.To_C (Key),
             Interfaces.C.C_float (Value),
             Interfaces.C.int (Precision)) = 0
@@ -1073,7 +1073,7 @@ package body FLTK.Environment is
             Value : in     Long_Float) is
     begin
         if fl_preferences_set_double
-           (This.Void_Ptr,
+           (Group_Ptr (This),
             Interfaces.C.To_C (Key),
             Interfaces.C.double (Value)) = 0
         then
@@ -1089,7 +1089,7 @@ package body FLTK.Environment is
             Precision : in     Natural) is
     begin
         if fl_preferences_set_double_prec
-           (This.Void_Ptr,
+           (Group_Ptr (This),
             Interfaces.C.To_C (Key),
             Interfaces.C.double (Value),
             Interfaces.C.int (Precision)) = 0
@@ -1105,7 +1105,7 @@ package body FLTK.Environment is
             Value : in     String) is
     begin
         if fl_preferences_set_str
-           (This.Void_Ptr,
+           (Group_Ptr (This),
             Interfaces.C.To_C (Key),
             Interfaces.C.To_C (Value)) = 0
         then
@@ -1120,7 +1120,7 @@ package body FLTK.Environment is
             Value : in     Binary_Data) is
     begin
         if fl_preferences_set_void
-           (This.Void_Ptr,
+           (Group_Ptr (This),
             Interfaces.C.To_C (Key),
             Storage.To_Integer (Value'Address),
             Value'Length / Interfaces.C.int (c_pointer_size)) = 0

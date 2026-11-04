@@ -19,6 +19,81 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 
 
+//  Items the tree forgets as they go
+
+//  Fl_Tree's private _lastselect, the last item clicked, reached through
+//  an explicit instantiation, which may name a private member
+//  ([temp.explicit]).  From pofltk's Reach.
+
+template <class Tag, typename Tag::type M> struct Reach {
+    friend typename Tag::type member(Tag) { return M; }
+};
+
+struct Last_Select {
+    typedef Fl_Tree_Item * Fl_Tree::*type;
+    friend type member(Last_Select);
+};
+
+template struct Reach<Last_Select, &Fl_Tree::_lastselect>;
+
+//  How many times items have been removed, by any tree.
+static unsigned long removals = 0;
+
+//  Whether p is top, or below top when below is set.
+static bool under(Fl_Tree_Item * p, Fl_Tree_Item * top, bool below) {
+    if (below && p != 0) {
+        p = p->parent();
+    }
+    for (; p != 0; p = p->parent()) {
+        if (p == top) {
+            return true;
+        }
+    }
+    return false;
+}
+
+//  An item's widget is a child of the tree, which FLTK leaves there when
+//  the item goes, still taking events where it was last drawn (pofltk
+//  58).  The widget belongs to the Ada program, so it is taken out of the
+//  tree rather than deleted.
+static void drop_widgets(Fl_Tree * tr, Fl_Tree_Item * it, bool self) {
+    for (int i = it->children(); i-- > 0;) {
+        drop_widgets(tr, it->child(i), true);
+    }
+    Fl_Widget * w = it->widget();
+    if (self && w != 0) {
+        it->widget(0);
+        if (w->parent() == tr) {
+            tr->Fl_Group::remove(w);
+        }
+    }
+}
+
+//  Fl_Tree::remove forgets only the item it is given as the last one
+//  clicked, and replace and clear_children forget nothing; none of them
+//  forgets the callback item (pofltk 41 and 42).  So before items go,
+//  the tree forgets either of them that is among them, and their widgets
+//  leave the tree.
+void fl_tree_forget(TREE t, TREEITEM item, int below) {
+    Fl_Tree * tr = static_cast<Fl_Tree*>(t);
+    Fl_Tree_Item * top = static_cast<Fl_Tree_Item*>(item);
+    if (tr == 0 || top == 0) {
+        return;
+    }
+    Fl_Tree_Item *& last = tr->*member(Last_Select());
+    if (under(last, top, below != 0)) {
+        last = 0;
+    }
+    if (under(tr->callback_item(), top, below != 0)) {
+        tr->callback_item(0);
+    }
+    drop_widgets(tr, top, below == 0);
+    ++removals;
+}
+
+
+
+
 //  Attaching all relevant hooks and friends
 
 class My_Tree : public Fl_Tree {
@@ -30,6 +105,9 @@ public:
 
     void draw();
     int handle(int e);
+
+protected:
+    void on_remove(int index);
 };
 
 void My_Tree::draw() {
@@ -38,6 +116,21 @@ void My_Tree::draw() {
 
 int My_Tree::handle(int e) {
     return widget_handle_hook(this->user_data(), e);
+}
+
+//  A widget leaving the tree, finalized or added to another group, is no
+//  longer its item's, which FLTK would otherwise go on drawing (pofltk
+//  58).
+void My_Tree::on_remove(int index) {
+    Fl_Widget * w = child(index);
+    for (Fl_Tree_Item * i = first(); i != 0; i = next(i)) {
+        if (i->widget() == w) {
+            i->widget(0);
+            recalc_tree();
+            break;
+        }
+    }
+    Fl_Tree::on_remove(index);
 }
 
 
@@ -77,15 +170,30 @@ TREEITEM fl_tree_insert_above(TREE t, TREEITEM above, const char * name) {
     return static_cast<Fl_Tree*>(t)->insert_above(static_cast<Fl_Tree_Item*>(above), name);
 }
 
+//  Whether an item of tree t shows img as its user icon, or as the one it
+//  shows while inactive (pofltk 78).
+int fl_tree_shows_icon(TREE t, void * img) {
+    Fl_Tree * tr = static_cast<Fl_Tree*>(t);
+    for (Fl_Tree_Item * it = tr->first(); it != 0; it = it->next()) {
+        if (it->usericon() == img || it->userdeicon() == img) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
 void fl_tree_remove(TREE t, TREEITEM item) {
+    fl_tree_forget(t, item, 0);
     static_cast<Fl_Tree*>(t)->remove(static_cast<Fl_Tree_Item*>(item));
 }
 
 void fl_tree_clear(TREE t) {
+    fl_tree_forget(t, static_cast<Fl_Tree*>(t)->root(), 0);
     static_cast<Fl_Tree*>(t)->clear();
 }
 
 void fl_tree_clear_children(TREE t, TREEITEM item) {
+    fl_tree_forget(t, item, 1);
     static_cast<Fl_Tree*>(t)->clear_children(static_cast<Fl_Tree_Item*>(item));
 }
 
@@ -306,8 +414,25 @@ void fl_tree_draw(TREE n) {
     static_cast<My_Tree*>(n)->Fl_Tree::draw();
 }
 
+//  Fl_Tree::handle makes the item pushed the last one clicked after the
+//  callback, which may have removed it, and a drag then moves it (pofltk
+//  59).  So after an event in which items were removed, the last one
+//  clicked is forgotten unless it is still in the tree.
 int fl_tree_handle(TREE n, int e) {
-    return static_cast<My_Tree*>(n)->Fl_Tree::handle(e);
+    unsigned long before = removals;
+    My_Tree * t = static_cast<My_Tree*>(n);
+    int r = t->Fl_Tree::handle(e);
+    if (removals != before) {
+        Fl_Tree_Item *& last = t->*member(Last_Select());
+        Fl_Tree_Item * i = t->first();
+        while (i != 0 && i != last) {
+            i = t->next(i);
+        }
+        if (i == 0) {
+            last = 0;
+        }
+    }
+    return r;
 }
 
 

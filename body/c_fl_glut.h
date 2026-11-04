@@ -8,6 +8,12 @@
 #define FL_GLUT_GUARD
 
 
+class Fl_Glut_Window;
+
+//  For c_fl_glut_window.cpp: GLUT has made window w, which Ada made if ada.
+void glut_window_made(Fl_Glut_Window * w, bool ada);
+
+
 extern "C" void fl_glut_init(int * argc, void * argv);
 extern "C" void fl_glut_init_display_mode(unsigned int m);
 extern "C" void fl_glut_init_window_position(int x, int y);
@@ -17,11 +23,14 @@ extern "C" void fl_glut_main_loop();
 
 extern "C" int fl_glut_create_window(const char * t);
 extern "C" int fl_glut_create_sub_window(int win, int x, int y, int w, int h);
-extern "C" void fl_glut_destroy_window(int win);
+extern "C" int fl_glut_destroy_window(int win);
 extern "C" void fl_glut_post_redisplay();
 extern "C" void fl_glut_post_window_redisplay(int win);
 extern "C" void fl_glut_swap_buffers();
 extern "C" int fl_glut_get_window();
+extern "C" int fl_glut_window_alive(int n);
+extern "C" int fl_glut_window_ada(int n);
+extern "C" int fl_glut_has_room();
 extern "C" void fl_glut_set_window(int win);
 
 
@@ -39,9 +48,9 @@ extern "C" void fl_glut_set_cursor(int c);
 extern "C" void fl_glut_warp_pointer(int x, int y);
 
 
-extern "C" void fl_glut_establish_overlay();
+extern "C" int fl_glut_establish_overlay();
 extern "C" void fl_glut_remove_overlay();
-extern "C" void fl_glut_use_layer(unsigned int l);
+extern "C" int fl_glut_use_layer(unsigned int l);
 extern "C" void fl_glut_post_overlay_redisplay();
 extern "C" void fl_glut_show_overlay();
 extern "C" void fl_glut_hide_overlay();
@@ -50,6 +59,10 @@ extern "C" void fl_glut_hide_overlay();
 extern "C" int fl_glut_create_menu(void * f);
 extern "C" void fl_glut_destroy_menu(int m);
 extern "C" int fl_glut_get_menu();
+extern "C" int fl_glut_menu_exists(int m);
+extern "C" int fl_glut_menu_room();
+extern "C" int fl_glut_menu_items(int m);
+extern "C" int fl_glut_menu_used(int m);
 extern "C" void fl_glut_set_menu(int m);
 extern "C" void fl_glut_add_menu_entry(const char * t, int v);
 extern "C" void fl_glut_add_sub_menu(const char * t, int s);

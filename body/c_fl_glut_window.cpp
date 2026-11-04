@@ -6,6 +6,9 @@
 
 #include <FL/glut.H>
 #include "c_fl_glut_window.h"
+#include "c_fl_glut.h"
+#include "c_fl_gl_window.h"
+#include "c_fl_window.h"
 #include "c_fl.h"
 
 
@@ -25,6 +28,8 @@ class My_Glut_Window : public Fl_Glut_Window {
 public:
     using Fl_Glut_Window::Fl_Glut_Window;
 
+    ~My_Glut_Window() { window_shape_gone(this); }
+
     friend void fl_glut_window_draw(GLUTWINDOW n);
     friend int fl_glut_window_handle(GLUTWINDOW n, int e);
 
@@ -32,8 +37,11 @@ public:
     int handle(int e);
 };
 
+//  Counted as a GL window drawing, which GLUT's hiding waits for (pofltk 112).
 void My_Glut_Window::draw() {
+    gl_window_drawing++;
     widget_draw_hook(this->user_data());
+    gl_window_drawing--;
 }
 
 int My_Glut_Window::handle(int e) {
@@ -47,11 +55,13 @@ int My_Glut_Window::handle(int e) {
 
 GLUTWINDOW new_fl_glut_window(int x, int y, int w, int h, char* label) {
     My_Glut_Window *gw = new My_Glut_Window(x, y, w, h, label);
+    glut_window_made(gw, true);
     return gw;
 }
 
 GLUTWINDOW new_fl_glut_window2(int w, int h, char* label) {
     My_Glut_Window *gw = new My_Glut_Window(w, h, label);
+    glut_window_made(gw, true);
     return gw;
 }
 

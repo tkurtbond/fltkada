@@ -27,6 +27,8 @@ extern "C" TREEITEM fl_tree_add_item(TREE t, const char * path, TREEITEM item);
 extern "C" TREEITEM fl_tree_insert(TREE t, TREEITEM under, const char * name, int pos);
 extern "C" TREEITEM fl_tree_insert_above(TREE t, TREEITEM above, const char * name);
 extern "C" void fl_tree_remove(TREE t, TREEITEM item);
+extern "C" void fl_tree_forget(TREE t, TREEITEM item, int below);
+extern "C" int fl_tree_shows_icon(TREE t, void * img);
 extern "C" void fl_tree_clear(TREE t);
 extern "C" void fl_tree_clear_children(TREE t, TREEITEM item);
 extern "C" TREEITEM fl_tree_find_item(TREE t, const char * path);

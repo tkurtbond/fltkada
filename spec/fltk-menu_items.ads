@@ -169,12 +169,16 @@ package FLTK.Menu_Items is
            (This : in Menu_Item)
         return access FLTK.Images.Image'Class;
 
+    --  The item shows the image in place of its text, and keeps the text as
+    --  its name, which Get_Label returns and a menu's paths use.  The image
+    --  is not copied, so it must last as long as the item shows it.
     procedure Set_Image
            (This : in out Menu_Item;
             Pict : in out FLTK.Images.Image'Class);
 
     --  Replaces the label with one that can combine text and images.  The
     --  Multi_Label is not copied, so it must last as long as the item does.
+    --  The item keeps its name, as with Set_Image.
     procedure Set_Multi_Label
            (This  : in out Menu_Item;
             Label : in out FLTK.Multi_Labels.Multi_Label'Class);

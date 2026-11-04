@@ -78,7 +78,8 @@ function Create
        (From : in out Image'Class;
         W, H : in     Integer := 0)
     return Tiled_Image;
-</pre></td>
+</pre>A shared image is tiled as a private copy, so that changing the tiled
+image's colours leaves the shared image, and the pool, alone.</td>
   </tr>
 
 </table>
@@ -120,7 +121,9 @@ function Copy
        (This          : in Tiled_Image;
         Width, Height : in Natural)
     return Tiled_Image'Class;
-</pre></td>
+</pre>A copy of a tiled image whose colours have changed has its own copy
+of the tile, so it outlives the original. Otherwise the copy shares the
+tile, as in FLTK.</td>
   </tr>
 
   <tr>
@@ -164,7 +167,8 @@ Fl_Image * image();
 function Tile
        (This : in out Tiled_Image)
     return Image_Reference;
-</pre></td>
+</pre>The tile as it is now, which after <code>Color_Average</code> or
+<code>Desaturate</code> is the tiled image's own copy.</td>
   </tr>
 
 </table>

@@ -4,6 +4,7 @@
 //  Released into the public domain
 
 
+#include <FL/Fl.H>
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Help_View.H>
 #include <FL/Enumerations.H>
@@ -51,12 +52,21 @@ public:
 
     void draw();
     int handle(int e);
+    void resize(int x, int y, int w, int h);
 
     std::map<std::string, std::string> images;
     std::string answer;
     bool asks = false;
     bool loading = false;
     bool in_image = false;
+
+    //  A link pushed is kept till the release, which follows it
+    //  (Fl_Help_View.cxx:3150, 3190, 3218-3220), but setting the page frees
+    //  the links (:2554-2560) and a resize lays them out again.  So the
+    //  layout's changes are counted, and a link pushed before one isn't
+    //  followed (pofltk 89).
+    unsigned changes = 0;
+    unsigned at_push = 0;
 };
 
 void My_Help_View::draw() {
@@ -65,6 +75,11 @@ void My_Help_View::draw() {
 
 int My_Help_View::handle(int e) {
     return widget_handle_hook(this->user_data(), e);
+}
+
+void My_Help_View::resize(int x, int y, int w, int h) {
+    ++changes;
+    Fl_Help_View::resize(x, y, w, h);
 }
 
 
@@ -162,6 +177,7 @@ const char * fl_help_view_filename(HELPVIEW v) {
 
 int fl_help_view_load(HELPVIEW v, const char * f) {
     My_Help_View * h = static_cast<My_Help_View*>(v);
+    ++h->changes;
     h->loading = true;
     int r = h->load(f);
     h->loading = false;
@@ -177,7 +193,9 @@ const char * fl_help_view_get_value(HELPVIEW v) {
 }
 
 void fl_help_view_set_value(HELPVIEW v, const char * t) {
-    static_cast<Fl_Help_View*>(v)->value(t);
+    My_Help_View * h = static_cast<My_Help_View*>(v);
+    ++h->changes;
+    h->value(t);
 }
 
 void fl_help_view_set_asks(HELPVIEW v, int a) {
@@ -254,6 +272,11 @@ int fl_help_view_handle(HELPVIEW v, int e) {
 #if FL_ABI_VERSION >= 10303
     //  A release on a link loads it (Fl_Help_View.cxx:3216-3220).
     My_Help_View * h = static_cast<My_Help_View*>(v);
+    if (e == FL_PUSH) {
+        h->at_push = h->changes;
+    } else if (e == FL_RELEASE && h->changes != h->at_push) {
+        Fl::event_is_click(0);
+    }
     h->loading = e == FL_RELEASE;
     int r = h->Fl_Help_View::handle(e);
     h->loading = false;

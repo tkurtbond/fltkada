@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Overlay_Window.H>
 #include "c_fl_overlay_window.h"
+#include "c_fl_window.h"
 #include "c_fl.h"
 
 
@@ -26,6 +27,8 @@ extern "C" void overlay_window_draw_overlay_hook(void * ud);
 class My_Overlay_Window : public Fl_Overlay_Window {
 public:
     using Fl_Overlay_Window::Fl_Overlay_Window;
+
+    ~My_Overlay_Window() { window_shape_gone(this); }
 
     friend OVERLAYWINDOW new_fl_overlay_window(int x, int y, int w, int h, char *label);
     friend OVERLAYWINDOW new_fl_overlay_window2(int w, int h, char *label);

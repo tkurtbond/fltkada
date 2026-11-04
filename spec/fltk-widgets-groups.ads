@@ -77,6 +77,8 @@ package FLTK.Widgets.Groups is
            (This  : in out Group;
             Place : in     Index);
 
+    --  Removes the children Ada added, without deleting them.  Children
+    --  FLTK made, such as a spinner's field and buttons, stay.
     procedure Clear
            (This : in out Group);
 

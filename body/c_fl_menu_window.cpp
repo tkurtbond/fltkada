@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Menu_Window.H>
 #include "c_fl_menu_window.h"
+#include "c_fl_window.h"
 #include "c_fl.h"
 
 
@@ -24,6 +25,8 @@ extern "C" int widget_handle_hook(void * ud, int e);
 class My_Menu_Window : public Fl_Menu_Window {
 public:
     using Fl_Menu_Window::Fl_Menu_Window;
+
+    ~My_Menu_Window() { window_shape_gone(this); }
 
     friend void fl_menu_window_draw(MENUWINDOW n);
     friend int fl_menu_window_handle(MENUWINDOW n, int e);

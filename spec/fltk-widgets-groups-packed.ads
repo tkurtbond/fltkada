@@ -35,6 +35,15 @@ package FLTK.Widgets.Groups.Packed is
 
 
 
+    --  Contents Modification  --
+
+    --  Also leaves the pack no resizable, as Fl_Pack::clear does.
+    procedure Clear
+           (This : in out Packed_Group);
+
+
+
+
     --  Settings  --
 
     function Get_Spacing

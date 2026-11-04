@@ -17,6 +17,8 @@ package FLTK.Images.Tiled is
 
     package Forge is
 
+        --  A shared image is tiled as a private copy, so that changing the
+        --  tiled image's colours leaves the shared image, and the pool, alone.
         function Create
                (From : in out Image'Class;
                 W, H : in     Integer := 0)
@@ -29,6 +31,9 @@ package FLTK.Images.Tiled is
 
     --  Copying  --
 
+    --  A copy of a tiled image whose colours have changed has its own copy
+    --  of the tile, so it outlives the original.  Otherwise the copy shares
+    --  the tile, as in FLTK.
     function Copy
            (This          : in Tiled_Image;
             Width, Height : in Natural)
@@ -46,6 +51,8 @@ package FLTK.Images.Tiled is
     procedure Inactive
            (This : in out Tiled_Image);
 
+    --  The tile as it is now, which after Color_Average or Desaturate is the
+    --  tiled image's own copy.
     function Tile
            (This : in out Tiled_Image)
         return Image_Reference;

@@ -35,19 +35,16 @@ package FLTK.Images.RGB is
 
     package Forge is
 
-        --  Please note that input data should be some declared item
-        --  that lives at least as long as the resulting RGB_Image.
-
+        --  The image keeps a copy of Data.  Data shorter than Height
+        --  lines of Line_Size, or of Width * Depth, bytes raises
+        --  Constraint_Error.
         function Create
                (Data          : in Color_Component_Array;
                 Width, Height : in Natural;
                 Depth         : in Natural := 3;
                 Line_Size     : in Natural := 0)
             return RGB_Image
-        with Pre => (if Line_Size = 0
-            then Data'Length >= Size_Type (Width) * Size_Type (Height) * Size_Type (Depth)
-            else Data'Length >= Size_Type (Line_Size) * Size_Type (Height))
-            and Data'Length <= Get_Max_Size;
+        with Pre => Data'Length <= Get_Max_Size;
 
         function Create
                (Data       : in FLTK.Images.Pixmaps.Pixmap'Class;

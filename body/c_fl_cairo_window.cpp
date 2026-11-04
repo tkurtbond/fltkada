@@ -7,6 +7,7 @@
 #include <FL/Fl_Cairo_Window.H>
 #include <FL/Fl_Double_Window.H>
 #include "c_fl_cairo_window.h"
+#include "c_fl_window.h"
 #include "c_fl.h"
 
 
@@ -35,6 +36,8 @@ public:
 #else
     using Fl_Double_Window::Fl_Double_Window;
 #endif
+
+    ~My_Cairo_Window() { window_shape_gone(this); }
 
     friend void fl_cairo_window_draw(CAIROWINDOW w);
 

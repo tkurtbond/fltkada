@@ -81,6 +81,11 @@ extern "C" void fl_anim_gif_image_draw(ANIMGIFIMAGE a, int x, int y, int w, int 
     int cx, int cy);
 
 
+//  C++ linkage, for c_fl_widget.cpp.
+class Fl_Widget;
+void anim_gif_canvas_gone(const Fl_Widget * w);
+
+
 #endif
 
 

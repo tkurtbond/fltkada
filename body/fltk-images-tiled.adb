@@ -129,6 +129,9 @@ package body FLTK.Images.Tiled is
                    (From.Void_Ptr,
                     Interfaces.C.int (W),
                     Interfaces.C.int (H));
+                if This.Void_Ptr = Null_Pointer then
+                    raise Storage_Error with "no memory for a Tiled_Image";
+                end if;
                 This.Dummy.Void_Ptr := fl_tiled_image_get_image (This.Void_Ptr);
                 This.Dummy.Needs_Dealloc := False;
             end return;
@@ -155,6 +158,9 @@ package body FLTK.Images.Tiled is
                (This.Void_Ptr,
                 Interfaces.C.int (Width),
                 Interfaces.C.int (Height));
+            if Copied.Void_Ptr = Null_Pointer then
+                raise Storage_Error with "no memory for a Tiled_Image";
+            end if;
             Copied.Dummy.Void_Ptr := fl_tiled_image_get_image (Copied.Void_Ptr);
             Copied.Dummy.Needs_Dealloc := False;
         end return;
@@ -167,6 +173,9 @@ package body FLTK.Images.Tiled is
     begin
         return Copied : Tiled_Image do
             Copied.Void_Ptr := fl_tiled_image_copy2 (This.Void_Ptr);
+            if Copied.Void_Ptr = Null_Pointer then
+                raise Storage_Error with "no memory for a Tiled_Image";
+            end if;
             Copied.Dummy.Void_Ptr := fl_tiled_image_get_image (Copied.Void_Ptr);
             Copied.Dummy.Needs_Dealloc := False;
         end return;
@@ -190,6 +199,9 @@ package body FLTK.Images.Tiled is
            (This : in out Tiled_Image)
         return Image_Reference is
     begin
+        --  Color_Average and Desaturate change the tile for a copy.
+        This.Dummy.Void_Ptr := fl_tiled_image_get_image (This.Void_Ptr);
+        This.Dummy.Needs_Dealloc := False;
         return (Data => This.Dummy'Unchecked_Access);
     end Tile;
 
@@ -203,21 +215,21 @@ package body FLTK.Images.Tiled is
             Hue    : in     Color;
             Amount : in     Blend) is
     begin
-        This.Dummy.Void_Ptr := fl_tiled_image_get_image (This.Void_Ptr);
-        This.Dummy.Needs_Dealloc := False;
         fl_tiled_image_color_average
            (This.Void_Ptr,
             Interfaces.C.int (Hue),
             Interfaces.C.C_float (Amount));
+        This.Dummy.Void_Ptr := fl_tiled_image_get_image (This.Void_Ptr);
+        This.Dummy.Needs_Dealloc := False;
     end Color_Average;
 
 
     procedure Desaturate
            (This : in out Tiled_Image) is
     begin
+        fl_tiled_image_desaturate (This.Void_Ptr);
         This.Dummy.Void_Ptr := fl_tiled_image_get_image (This.Void_Ptr);
         This.Dummy.Needs_Dealloc := False;
-        fl_tiled_image_desaturate (This.Void_Ptr);
     end Desaturate;
 
 

@@ -132,6 +132,12 @@ package body FLTK.Images.Pixmaps.GIF.Animated is
 
     --  Canvas  --
 
+    function fl_anim_gif_image_get_canvas
+           (A : in Storage.Integer_Address)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_anim_gif_image_get_canvas, "fl_anim_gif_image_get_canvas");
+    pragma Inline (fl_anim_gif_image_get_canvas);
+
     procedure fl_anim_gif_image_set_canvas
            (A : in Storage.Integer_Address;
             C : in Storage.Integer_Address;
@@ -395,6 +401,41 @@ package body FLTK.Images.Pixmaps.GIF.Animated is
     end Attach_Canvas;
 
 
+    --  Whether the canvas the Ada side knows is still there.  FLTK's canvas
+    --  is cleared as a widget is finalized (pofltk 62), so a Canvas_Ptr
+    --  FLTK no longer has may be dangling, and is not used.
+    function Has_Live_Canvas
+           (This : in Animated_GIF_Image'Class)
+        return Boolean is
+    begin
+        return This.Canvas_Ptr /= null and then This.Void_Ptr /= Null_Pointer
+            and then fl_anim_gif_image_get_canvas (This.Void_Ptr) /= Null_Pointer;
+    end Has_Live_Canvas;
+
+
+    --  The Ada side of a canvas the animation leaves follows what FLTK does
+    --  to it.  Fl_Anim_GIF_Image::canvas takes the image away from the
+    --  canvas it leaves, whatever the image (Fl_Anim_GIF_Image.cxx:640-641);
+    --  free_fl_anim_gif_image does so only if the canvas shows the animation.
+    procedure Detach_Canvas
+           (This          : in out Animated_GIF_Image'Class;
+            Only_If_Shown : in     Boolean) is
+    begin
+        if Has_Live_Canvas (This) and not Only_If_Shown then
+            This.Canvas_Ptr.Clear_Image;
+        elsif Has_Live_Canvas (This) then
+            declare
+                Shown : constant access FLTK.Images.Image'Class := This.Canvas_Ptr.Get_Image;
+            begin
+                if Shown /= null and then Wrapper (Shown.all).Void_Ptr = This.Void_Ptr then
+                    This.Canvas_Ptr.Clear_Image;
+                end if;
+            end;
+        end if;
+        This.Canvas_Ptr := null;
+    end Detach_Canvas;
+
+
     procedure Free_Frame_Wrappers
            (This : in out Animated_GIF_Image) is
     begin
@@ -450,6 +491,7 @@ package body FLTK.Images.Pixmaps.GIF.Animated is
     begin
         Free_Frame_Wrappers (This);
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
+            Detach_Canvas (This, Only_If_Shown => True);
             free_fl_anim_gif_image (This.Void_Ptr);
             This.Void_Ptr := Null_Pointer;
         end if;
@@ -692,7 +734,11 @@ package body FLTK.Images.Pixmaps.GIF.Animated is
            (This : in Animated_GIF_Image)
         return access FLTK.Widgets.Widget'Class is
     begin
-        return This.Canvas_Ptr;
+        if Has_Live_Canvas (This) then
+            return This.Canvas_Ptr;
+        else
+            return null;
+        end if;
     end Get_Canvas;
 
 
@@ -701,6 +747,7 @@ package body FLTK.Images.Pixmaps.GIF.Animated is
             Canvas : in out FLTK.Widgets.Widget'Class;
             Flags  : in     Animation_Flags := No_Animation_Flags) is
     begin
+        Detach_Canvas (This, Only_If_Shown => False);
         fl_anim_gif_image_set_canvas (This.Void_Ptr, Wrapper (Canvas).Void_Ptr, To_C (Flags));
         Attach_Canvas (This, Canvas, Flags);
     end Set_Canvas;
@@ -709,8 +756,8 @@ package body FLTK.Images.Pixmaps.GIF.Animated is
     procedure Clear_Canvas
            (This : in out Animated_GIF_Image) is
     begin
+        Detach_Canvas (This, Only_If_Shown => False);
         fl_anim_gif_image_set_canvas (This.Void_Ptr, Null_Pointer, 0);
-        This.Canvas_Ptr := null;
     end Clear_Canvas;
 
 

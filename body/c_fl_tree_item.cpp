@@ -9,6 +9,7 @@
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Image.H>
 #include "c_fl_tree_item.h"
+#include "c_fl_tree.h"
 
 
 
@@ -147,6 +148,21 @@ void * fl_tree_item_get_userdeicon(TREEITEM ti) {
     return static_cast<Fl_Tree_Item*>(ti)->userdeicon();
 }
 
+//  The tree item ti belongs to, and whether ti is in it: a custom item
+//  isn't until a tree takes it.
+void * fl_tree_item_tree(TREEITEM ti) {
+    return static_cast<Fl_Tree_Item*>(ti)->tree();
+}
+
+int fl_tree_item_in_tree(TREEITEM ti) {
+    Fl_Tree_Item * it = static_cast<Fl_Tree_Item*>(ti);
+    Fl_Tree * tr = it->tree();
+    while (it->parent() != 0) {
+        it = it->parent();
+    }
+    return tr != 0 && tr->root() == it;
+}
+
 
 
 
@@ -181,7 +197,11 @@ void fl_tree_item_swap_children2(TREEITEM ti, int a, int b) {
 
 
 
+//  Replacing deletes the item, so the tree forgets it first (pofltk 41
+//  and 42).
 TREEITEM fl_tree_item_replace(TREEITEM ti, TREEITEM n) {
+    Fl_Tree_Item * old = static_cast<Fl_Tree_Item*>(ti);
+    fl_tree_forget(old->tree(), old, 0);
     return static_cast<Fl_Tree_Item*>(ti)->replace(static_cast<Fl_Tree_Item*>(n));
 }
 

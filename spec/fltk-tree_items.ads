@@ -265,8 +265,10 @@ package FLTK.Tree_Items is
     --  its height; see FLTK.Widgets.Groups.Trees.Set_Item_Draw_Mode to
     --  have the widget's own height control the item's height instead.
     --  The widget's lifetime is still the caller's responsibility --
-    --  the tree does not take ownership of it, so it must outlive the
-    --  item (or be detached with Set_Widget again before it doesn't).
+    --  the tree does not take ownership of it.  The widget should be a
+    --  child of the tree.  When the item is removed, its widget is taken
+    --  out of the tree; when the widget is finalized, or added to another
+    --  group, the item has no widget any more (pofltk 58).
     procedure Set_Widget
            (This : in Tree_Item;
             W    : in out FLTK.Widgets.Widget'Class);
@@ -287,13 +289,14 @@ package FLTK.Tree_Items is
 
     --  Icons  --
 
-    --  A per-item icon shown in place of the tree's default one (see
-    --  FLTK.Widgets.Groups.Trees for the tree-wide default icons). As
-    --  with Set_Widget, the image's lifetime remains the caller's
-    --  responsibility.
+    --  A per-item icon shown in place of the tree's default one.  The
+    --  item is given a copy of Pic, which the binding holds until no item
+    --  of the tree shows it, or the tree goes, so Pic itself may go at any
+    --  time (pofltk 78).  An item that belongs to no tree raises
+    --  Program_Error.
     procedure Set_User_Icon
            (This : in Tree_Item;
-            Pic  : in out FLTK.Images.Image'Class);
+            Pic  : in     FLTK.Images.Image'Class);
 
     function Has_User_Icon
            (This : in Tree_Item)
@@ -302,22 +305,17 @@ package FLTK.Tree_Items is
     procedure Clear_User_Icon
            (This : in Tree_Item);
 
-    --  Returns null if no icon is assigned, or if the assigned icon
-    --  has no Ada twin. Unlike Get_Widget, this can't be recovered via
-    --  a spare pointer FLTK already tracks (Fl_Image has none), so it
-    --  relies on a small internal table populated by Set_User_Icon;
-    --  looking up an icon assigned from outside this binding, or one
-    --  whose Tree_Item slot was since reused by an unrelated item,
-    --  will also return null.
+    --  The copy the item shows, which belongs to the binding; null if the
+    --  item has no icon.
     function Get_User_Icon
            (This : in Tree_Item)
         return access FLTK.Images.Image'Class;
 
-    --  The icon shown when the item is Is_Active = False. Same caveats
-    --  as the user icon above.
+    --  The icon shown when the item is Is_Active = False, copied and
+    --  held in the same way as the user icon above.
     procedure Set_User_Deicon
            (This : in Tree_Item;
-            Pic  : in out FLTK.Images.Image'Class);
+            Pic  : in     FLTK.Images.Image'Class);
 
     function Has_User_Deicon
            (This : in Tree_Item)

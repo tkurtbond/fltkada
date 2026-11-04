@@ -151,6 +151,21 @@ package body FLTK.Widgets.Groups.Packed is
     --  API Subprograms  --
     -----------------------
 
+    --  Contents Modification  --
+
+    --  Fl_Group::remove makes the pack its own resizable when it removes
+    --  the resizable child (Fl_Group.cxx:591), and Fl_Pack::clear sets it
+    --  to none after (FL/Fl_Pack.H:98).
+    procedure Clear
+           (This : in out Packed_Group) is
+    begin
+        Group (This).Clear;
+        This.Clear_Resizable;
+    end Clear;
+
+
+
+
     --  Settings  --
 
     function Get_Spacing

@@ -607,7 +607,14 @@ FLTKAda's override (pofltk 6).
 
 **Planned fix.** Override them, and validate the format.
 
-**Status.** Open. PLAN.md Phases 4 and 6.
+**Fix (Clear).** `Group.Clear` removes only the children Ada added, and
+keeps the ones FLTK made (PLAN.md Phase 4, pofltk 23). It does this for
+every group, so `Spinner` and `Color_Chooser` need no override of their
+own. `test_group_clear` failed before the fix, with 0 parts left in each,
+and passes after it.
+
+**Status.** Partly fixed. `Clear` is fixed. `Set_Colors` and the format
+are left for PLAN.md Phase 6.
 
 
 ## 28. Guards written as Pre or predicates are off in release builds
@@ -651,10 +658,18 @@ an `Fl_Glut_Window`.
 casts the parent to `Fl_Glut_Window`. Related GLUT liveness problems are
 pofltk 112.
 
-**Planned fix.** Require a `Glut_Window` parent, or make `Get` refuse
-otherwise.
+**Fix.** With pofltk 112 (PLAN.md Phase 4), `fl_glut_get` answers
+`Window_Parent` itself: it takes the parent with `dynamic_cast` and gives
+0 when the parent isn't an `Fl_Glut_Window`. A `Glut_Window` may still
+have any group as parent, as in C++.
 
-**Status.** Open. PLAN.md Phase 4.
+**Verified.** 2026-11-03. `test_glut_live` checks that a `Glut_Window` in
+a plain window has parent 0 and that a subwindow's parent is its GLUT
+window, with no invalid reads on Xvfb and sway. Negative control: with
+FLTK's own `glutGet` the check happens to pass, but valgrind reports 2
+invalid reads in `glutGet` (`glut_compatibility.cxx:400`).
+
+**Status.** Fixed.
 
 
 ## 31. Box_Kind lacks FLTK 1.4's Oxy box types, so Free_Box is wrong
@@ -938,6 +953,15 @@ each once GLUT has let go of it:
   every string it made, not just what argv holds afterwards.
 
 `Spinner.Set_Format` now frees the old copy after FLTK has the new one.
+
+**Later change.** For pofltk 112 (PLAN.md Phase 4) the GLUT texts moved
+from `body/fltk-glut.adb` into the shim, `body/c_fl_glut.cpp`. It keeps
+each menu's labels as `std::string`s in a `std::deque` beside the menu,
+and each window's icon title, so they are freed with the menu or window
+and at exit. `Menu_Texts`, `Icon_Titles` and the per-menu bookkeeping
+above are gone. A `Change_To_*` past the end of the menu now raises
+`Constraint_Error`, so no text is kept for it. `Init`'s argv is still
+freed by the controller in `body/fltk-glut.adb`.
 `Extra_Final` gives FLTK a static `"%g"`, Fl_Spinner's own default
 (`Fl_Spinner.cxx:116`), and then frees the copy. It does this only for a
 Spinner the object owns (`Needs_Dealloc`), because one it doesn't own may
@@ -1313,3 +1337,143 @@ colour, as in a static array (Fl_Menu.cxx:270, where a `labelsize_` of
 
 **Verified.** `test_menu_items` under valgrind: 20 errors from 11
 contexts before the fix and 0 after. All 17 checks pass in both runs.
+
+
+## 47. Highlight_Data ignored where the style table starts
+
+**Symptom.** A style table whose first index is not 'A', such as
+`('B' => ...)`, was used as if it started at 'A': text styled 'A' got
+the 'B' entry, and text styled 'B' got whatever was clamped to the last
+entry. Nothing was raised. An empty table made FLTK read the entry
+before the table.
+
+**Cause.** Both `Highlight_Data` bodies passed `Table'Address` and
+`Table'Length` to `highlight_data`. FLTK indexes the table with
+`style - 'A'`, clamped to `nStyles - 1` (Fl_Text_Display.cxx:2725-2731),
+so the Ada array's own index was lost, and with `nStyles` 0 the clamp
+gives -1. `Style_Index` runs from '~' up, so Ada allows both tables.
+
+**Found.** Reading FLTK's source for pofltk 35 (Phase 4), 2026-11-03.
+
+**Fix.** `Highlight_Data` raises Constraint_Error for an empty table or
+one whose `'First` is not 'A'. It now also copies the table and keeps
+the style buffer (pofltk 35).
+
+**Verified.** `test_highlight_data`. With the 'A' guard disabled, the
+check that a table starting at 'B' is refused fails, and the rest pass.
+(The unfixed binding stopped earlier, with Storage_Error from pofltk 35.)
+With the guard, all 7 checks pass on Xvfb and sway, and valgrind reports
+no errors.
+
+
+## 48. RGB_Image and Bitmap kept the caller's pixels
+
+**Symptom.** An `RGB_Image` or `Bitmap` made from an array read the array
+for as long as it lived: one made from an array that was then freed, or
+from a temporary, read freed or dead memory, and `Set_Datum` and
+`Overwrite` wrote into the caller's array, even a constant. Data too
+short for the size was read past its end in a release build.
+
+**Cause.** Both `Create`s passed FLTK the address of the caller's array,
+and `Fl_RGB_Image(const uchar *, ...)` and `Fl_Bitmap(const uchar *, ...)`
+keep that pointer, with `alloc_array` 0 (Fl_Image.cxx:374-384,
+Fl_Bitmap.H:48-49). The spec asked for data that outlives the image. The
+length was checked only by `Pre`, which release builds don't check
+(PLAN.md, "Architecture decisions", 1).
+
+**Found.** Writing `test_window_shape` for pofltk 61 (Phase 4),
+2026-11-03. pofltk copies the pixels (`ofl_image_rgb`, `new_bitmap` in
+src/FlImages.cpp).
+
+**Fix.** The shim gives FLTK a copy, made with `new (std::nothrow)`, and
+sets `alloc_array`, so the image frees it (Fl_Image.cxx:460,
+Fl_Bitmap.cxx:104). `Create` raises `Constraint_Error` for data too short,
+and `Storage_Error` if the copy can't be made.
+
+**Verified.** `test_image_data`. Before the fix, 4 of its 8 checks failed
+(a pixel set changed the caller's array, and none of the 3 short-data
+`Create`s raised), and valgrind found 24 reads of the freed arrays. After
+it, all 8 pass and valgrind is clean. Negative control: without
+`alloc_array` set for an RGB image, its 3 copies leak, and `vg-check.sh`
+fails.
+
+
+## 49. An animation's canvas kept it as its image
+
+**Symptom.** After `Clear_Canvas`, or `Set_Canvas` to another widget, the
+canvas the animation left still returned the animation from `Get_Image`,
+though FLTK showed no image in it; once the animation was finalized,
+`Get_Image` returned a dangling access. An animation finalized while its
+canvas showed it left FLTK's canvas drawing the freed animation.
+
+**Cause.** `Fl_Anim_GIF_Image::canvas` sets the old canvas's image to 0
+(Fl_Anim_GIF_Image.cxx:640-641), but the binding changed only FLTK's side,
+not the widget's `Current_Image`. `~Fl_Anim_GIF_Image` leaves the canvas's
+image alone (:619-623).
+
+**Found.** Writing `test_anim_canvas` for pofltk 62 (Phase 4),
+2026-11-03: its last check, that a cleared canvas shows no image, failed.
+
+**Fix.** `Clear_Canvas` and `Set_Canvas` clear the old canvas's image on
+the Ada side too, if the canvas is still there. When an animation is
+finalized, `free_fl_anim_gif_image` clears its canvas's image if the
+canvas shows it, and `Finalize` does the same on the Ada side.
+
+**Verified.** `test_anim_canvas`. Before the fix, its check that a
+cleared canvas shows no image failed. After it, that check and one that
+a canvas whose animation was finalized shows no image both pass, on X11
+and Wayland, and valgrind is clean. Negative control: without the
+finalize side of the fix, in the shim and in `Finalize`, the second check
+fails, and redrawing the canvas gives 103 valgrind errors, 70 of them
+invalid reads of the freed animation.
+
+
+## 50. A tiled image's Tile was the tile from before its colours changed
+
+**Symptom.** After `Color_Average` or `Desaturate`, `Tile` returned the
+image the tiled image was made from, not the changed tile it draws.
+
+**Cause.** `Fl_Tiled_Image::color_average` and `desaturate` change the
+tile, the first time, for a copy they own (Fl_Tiled_Image.cxx:94-98,
+:111-115). The binding set the Ada tile's pointer just before calling
+them, so it kept the old one.
+
+**Found.** Writing `test_tiled_tile` for pofltk 84 (Phase 4),
+2026-11-03.
+
+**Fix.** `Color_Average` and `Desaturate` set the Ada tile's pointer
+after the call, and `Tile` sets it again before returning it.
+
+**Verified.** `test_tiled_tile` shows the tile in a box after
+`Color_Average` with blue at 0.5. With the old body, the box showed the
+red original (16711680); with the fix, the blend (8323199), on X11 and
+Wayland.
+
+
+## 51. Parent of a widget in a group FLTK made reads that group's user data as Ada
+
+**Symptom.** Finalizing a `File_Chooser`'s extra widget while it was the
+chooser's extra raised `Program_Error` ("finalize/adjust raised
+exception"), after an invalid read in `FLTK.Widgets.Extra_Final`.
+
+**Cause.** `Widgets.Parent` (`body/fltk-widgets.adb`) converts the
+parent's `user_data` to an Ada group whenever it isn't null. A file
+chooser's window is made by FLTK, and its `user_data` is the
+`Fl_File_Chooser` (Fl_File_Chooser.cxx:114 reads it back), not an Ada
+object. `Extra_Final` calls `Parent` and then `Remove` on what it got.
+The same holds for any widget the program puts in a group FLTK made,
+and for Bug 44's question in general: the binding can't tell an
+Ada-made widget from a C++-made one.
+
+**Found.** The negative control of `test_chooser_extra` for pofltk 92
+(Phase 4), 2026-11-03: with the shim no longer taking a finalized extra
+widget out of its chooser, the test raised `Program_Error` with one
+invalid read in `fltk.widgets.extra_final`.
+
+**Status.** Open, in general. The pofltk 92 fix takes the extra widget out
+of the chooser's window before `Extra_Final` asks for its parent, so
+finalizing it is safe. `Parent` called while the widget is the
+chooser's extra still misreads. A fix needs a way to know an Ada-made
+widget (for example, a shim-side mark on every `My_` class), which is
+the same decision Bug 44 needs.
+

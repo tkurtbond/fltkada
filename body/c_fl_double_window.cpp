@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Double_Window.H>
 #include "c_fl_double_window.h"
+#include "c_fl_window.h"
 #include "c_fl.h"
 
 
@@ -24,6 +25,8 @@ extern "C" int widget_handle_hook(void * ud, int e);
 class My_Double_Window : public Fl_Double_Window {
 public:
     using Fl_Double_Window::Fl_Double_Window;
+
+    ~My_Double_Window() { window_shape_gone(this); }
 
     friend void fl_double_window_draw(DOUBLEWINDOW n);
     friend int fl_double_window_handle(DOUBLEWINDOW n, int e);
