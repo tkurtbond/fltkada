@@ -7,6 +7,7 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Window.H>
+#include <FL/Fl_RGB_Image.H>
 #include <FL/platform.H>
 #include <string>
 #include "c_fl_event.h"
@@ -144,12 +145,60 @@ void fl_event_set_visible_focus(int f) {
 
 
 
+//  FLTK never puts text in Fl::event_clipboard; a pasted text is in
+//  Fl::event_text (Fl.H:852-855, Fl_x.cxx:698-700).
 const char * fl_event_clipboard_text() {
-    return static_cast<const char*>(Fl::event_clipboard());
+    if (Fl::e_clipboard_type == Fl::clipboard_image || Fl::e_text == 0) {
+        return "";
+    }
+    return Fl::e_text;
 }
 
+int fl_event_clipboard_length() {
+    if (Fl::e_clipboard_type == Fl::clipboard_image || Fl::e_text == 0) {
+        return 0;
+    }
+    return Fl::e_length;
+}
+
+//  Pasting this program's own text doesn't set Fl::e_clipboard_type
+//  (Fl_x.cxx:694-702, fl_wayland_clipboard_dnd.cxx:620-625).  It is "" until
+//  the first paste of another kind (Fl.cxx:68), and fl_event_end_paste sets
+//  it back to text after each (FLTK-issues.md F13).
 const char * fl_event_clipboard_type() {
-    return Fl::event_clipboard_type();
+    if (Fl::e_clipboard_type == 0 || Fl::e_clipboard_type[0] == '\0') {
+        return Fl::clipboard_plain_text;
+    }
+    return Fl::e_clipboard_type;
+}
+
+//  In a Paste event that carries an image, Fl::event_clipboard is a new
+//  Fl_RGB_Image (Fl.H:852-855).  The receiver owns it if its handle returns
+//  1; FLTK deletes it if handle returns 0, except under Wayland for an image
+//  this program copied, which it never deletes
+//  (fl_wayland_clipboard_dnd.cxx:620-629, pofltk 48).  So FLTKAda deletes
+//  it itself after the Ada Handle, unless Forge.Pasted took it, and FLTK
+//  then finds none to delete.  fl_event_end_paste also sets the type back
+//  to text (F13 above).
+int fl_event_has_clipboard_image() {
+    return Fl::e_clipboard_type == Fl::clipboard_image && Fl::e_clipboard_data != 0;
+}
+
+void * fl_event_take_clipboard_image() {
+    if (!fl_event_has_clipboard_image()) {
+        return 0;
+    }
+    void * m = Fl::e_clipboard_data;
+    Fl::e_clipboard_data = 0;
+    return m;
+}
+
+void fl_event_end_paste() {
+    if (fl_event_has_clipboard_image()) {
+        delete static_cast<Fl_RGB_Image*>(Fl::e_clipboard_data);
+        Fl::e_clipboard_data = 0;
+    }
+    Fl::e_clipboard_type = Fl::clipboard_plain_text;
 }
 
 

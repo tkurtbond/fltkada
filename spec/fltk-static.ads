@@ -75,6 +75,28 @@ package FLTK.Static is
             W, H :    out Integer);
 
 
+    --  Called when the user closes a window that has no callback of its
+    --  own, in place of FLTK's default, which hides the window
+    --  (Fl::set_atclose; Fl_Window.cxx:172-181).
+    type Window_Close_Handler is access procedure
+           (Item : in out FLTK.Widgets.Groups.Windows.Window'Class);
+
+
+    --  When FLTK.Contrast is in Custom_Contrast mode it calls this.  Context
+    --  and Size are what the caller of Contrast passed.
+    type Contrast_Function is access function
+           (Fore, Back    : in Color;
+            Context, Size : in Integer)
+        return Color;
+
+    subtype Contrast_Level is Integer range 0 .. 100;
+
+
+    --  A moment, for measuring time between events.  FLTK says it is not the
+    --  time of day (Fl_Timeout.cxx); use Ada.Calendar for that.
+    type Timestamp is private;
+
+
     type Option is
        (Arrow_Focus,
         Visible_Focus,
@@ -106,6 +128,63 @@ package FLTK.Static is
     --  display" (X11) or "No Wayland connection" and exits.  Calling it
     --  again does nothing.
     procedure Open_Display;
+
+
+
+
+    --  Shutdown  --
+
+    --  Set by FLTK on macOS when the user chooses Quit from the application
+    --  menu and every window has closed (Fl.H:457-460, Fl_cocoa.mm:1624).
+    --  A program can set it too, for a quit command of its own.
+    function Get_Program_Should_Quit
+        return Boolean;
+
+    procedure Set_Program_Should_Quit
+           (To : in Boolean);
+
+    --  Hides every shown window.  An exception from a widget's Handle that
+    --  this runs is raised again here.
+    procedure Hide_All_Windows;
+
+    --  Runs the Add_Check handlers once, and the idle handlers once.  An
+    --  exception from one is raised again here.
+    procedure Run_Checks;
+
+    procedure Run_Idle;
+
+    --  Null restores FLTK's default.  An exception from the handler is
+    --  raised again from the event loop call it ran in.
+    procedure Set_Window_Close_Handler
+           (Func : in Window_Close_Handler);
+
+
+
+
+    --  Timestamps  --
+
+    --  Seconds are fractional; Offset is added to the moment.
+    function Now
+           (Offset : in Long_Float := 0.0)
+        return Timestamp;
+
+    function Seconds_Since
+           (Moment : in Timestamp)
+        return Long_Float;
+
+    --  Later minus Earlier.
+    function Seconds_Between
+           (Earlier, Later : in Timestamp)
+        return Long_Float;
+
+    --  In sixtieths of a second (Fl_Timeout.cxx).
+    function Ticks_Since
+           (Moment : in Timestamp)
+        return Long_Integer;
+
+    function Ticks_Between
+           (Earlier, Later : in Timestamp)
+        return Long_Integer;
 
 
 
@@ -278,6 +357,39 @@ package FLTK.Static is
 
     procedure System_Colors;
 
+    --  How FLTK.Contrast chooses.  CIELAB_Contrast is the default.
+    function Get_Contrast_Mode
+        return Contrast_Mode;
+
+    procedure Set_Contrast_Mode
+           (To : in Contrast_Mode);
+
+    --  How strongly FLTK.Contrast prefers black or white.  Each mode keeps
+    --  its own level: Legacy_Contrast 50 and CIELAB_Contrast 39 to start
+    --  (fl_contrast.cxx:37-43), so set the mode first.
+    function Get_Contrast_Level
+        return Contrast_Level;
+
+    procedure Set_Contrast_Level
+           (To : in Contrast_Level);
+
+    --  Null takes the function away.  Custom_Contrast then uses CIELAB's
+    --  method, but with Custom_Contrast's own level, which is 0 to start:
+    --  Contrast returns Fore until that level is set (FLTK-issues.md F12).
+    --  An exception from Func is raised again from the
+    --  next event loop call, and Contrast returns Fore meanwhile.
+    procedure Set_Contrast_Function
+           (Func : in Contrast_Function);
+
+    --  Reads a colour given as #rgb, #rrggbb, #rrrgggbbb or #rrrrggggbbbb (the
+    --  # can be left out), or under X11 as a name the X server knows, such
+    --  as "red".  Wayland reads hexadecimal alone (pofltk 47).  Returns
+    --  whether it could; R, G and B are unchanged if not.
+    function Parse_Color
+           (Name    : in     String;
+            R, G, B : in out Color_Component)
+        return Boolean;
+
     procedure Get_Color
            (From       : in     Color;
             R, G, B, A :    out Color_Component);
@@ -349,6 +461,21 @@ package FLTK.Static is
            (Kind : in Box_Kind)
         return Box_Draw_Function;
 
+    --  The largest corner radius of the rounded box kinds, at least 5
+    --  (Fl.H:188).
+    function Get_Box_Border_Radius_Max
+        return Integer;
+
+    procedure Set_Box_Border_Radius_Max
+           (To : in Integer);
+
+    --  The width of the shadow box kinds' shadow, at least 1 (Fl.H:170).
+    function Get_Box_Shadow_Width
+        return Integer;
+
+    procedure Set_Box_Shadow_Width
+           (To : in Integer);
+
     procedure Set_Box_Draw_Function
            (Kind               : in Box_Kind;
             Func               : in Box_Draw_Function;
@@ -385,6 +512,13 @@ package FLTK.Static is
            (Receiver : in FLTK.Widgets.Widget'Class;
             Source   : in Buffer_Kind);
 
+    --  Sends Receiver a Paste event carrying the image on the clipboard, if
+    --  there is one: at once if this program copied it, else later or
+    --  never, as for Paste.  Its Handle takes the image with
+    --  FLTK.Images.RGB.Forge.Pasted.
+    procedure Paste_Image
+           (Receiver : in FLTK.Widgets.Widget'Class);
+
     --  The widget that owned the selection before is not sent
     --  Selection_Clear: FLTK never sends it (pofltk 132).
     procedure Selection
@@ -394,6 +528,26 @@ package FLTK.Static is
     function Clipboard_Contains
            (Kind : in String)
         return Boolean;
+
+    --  The widget that owns the selection: the last one given to Selection
+    --  or to Set_Selection_Owner.  Null if none is, or if the owner isn't
+    --  an FLTKAda widget.  FLTKAda clears it when the owner is deleted
+    --  (pofltk 129).
+    function Get_Selection_Owner
+        return access FLTK.Widgets.Widget'Class;
+
+    --  Only records the owner (Fl.cxx:1639); Selection also copies the text.
+    procedure Set_Selection_Owner
+           (To : in FLTK.Widgets.Widget'Class);
+
+    procedure Clear_Selection_Owner;
+
+    --  Whether text copied to the selection is copied to the clipboard too.
+    function Get_Selection_To_Clipboard
+        return Boolean;
+
+    procedure Set_Selection_To_Clipboard
+           (To : in Boolean);
 
 
 
@@ -441,6 +595,29 @@ package FLTK.Static is
 
 
 
+    --  Callback Reasons  --
+
+    --  Why the callback that is running was called.  FLTK sets it before a
+    --  widget's callback, and leaves it set after.  Do_Callback calls the
+    --  Ada callback directly, and so leaves it as it was.
+    function Get_Callback_Reason
+        return Callback_Reason;
+
+
+
+
+    --  Menus  --
+
+    --  The space between menu items, in pixels; 4 by default (Fl.cxx:64).
+    function Get_Menu_Line_Spacing
+        return Integer;
+
+    procedure Set_Menu_Line_Spacing
+           (To : in Integer);
+
+
+
+
     --  Queue  --
 
     function Read_Queue
@@ -462,6 +639,26 @@ package FLTK.Static is
         return Boolean;
 
     procedure Reload_Scheme;
+
+    --  The schemes Set_Scheme knows, numbered from 1: "base", "plastic",
+    --  "gtk+", "gleam" and "oxy", then any Add_Scheme_Name added
+    --  (Fl_Scheme.cxx).
+    function Scheme_Count
+        return Natural;
+
+    --  Index outside 1 .. Scheme_Count raises Constraint_Error.
+    function Scheme_Name
+           (Index : in Positive)
+        return String;
+
+    --  Adds a name to the list, for a scheme a program draws itself.  Names
+    --  are up to 12 characters of a .. z, 0 .. 9, $, +, _ and "."; another
+    --  raises Constraint_Error.  Returns False if the name is already
+    --  there.  FLTK keeps a copy of the name until the program ends
+    --  (Fl_Scheme.cxx:106-153).
+    function Add_Scheme_Name
+           (Name : in String)
+        return Boolean;
 
 
 
@@ -495,6 +692,12 @@ package FLTK.Static is
 
 
 private
+
+
+    type Timestamp is record
+        Sec  : Long_Long_Integer := 0;
+        Usec : Interfaces.C.int  := 0;
+    end record;
 
 
     for File_Mode use record

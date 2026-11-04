@@ -2070,7 +2070,7 @@ and under valgrind. Each fix's test was seen to fail before it.
   and `Set_Cairo_Draw` raised `Unsupported_Error`, and the checks that
   this FLTK has the feature failed.
 
-### Phase 8: Core statics
+### Phase 8: Core statics [done, 2026-11-04]
 
 These go in `FLTK.Static`, `FLTK.Events`, `FLTK.Screen` and `FLTK.Draw`,
 as the coverage comparison found.
@@ -2099,6 +2099,97 @@ as the coverage comparison found.
 - **`Fl_Widget_Tracker`,** as `FLTK.Widget_Trackers`. §7.2 calls it "not
   worth binding", but pofltk's `Trackers` example shows a use: callbacks
   that may delete their own widget. Revisit the §7.2 note.
+
+What was done. Each item has a unit test, run on Xvfb and on a headless
+sway, and under valgrind on both.
+
+- **Shutdown, timestamps, colour, boxes and menus, callback reasons,
+  selections, schemes and scaling** (new test `test_statics_core`, from
+  pofltk's `TestStatics`). All in `FLTK.Static`, except scaling, in
+  `FLTK.Screen`, and `Contrast`, `Lightness`, `Luminance`,
+  `Contrast_Mode` and `Callback_Reason`, in `FLTK`.
+  - `Timestamp` is private: `Fl_Timestamp` isn't the time of day
+    (`Fl_Timeout.cxx`), so neither `Ada.Calendar` nor `Ada.Real_Time`
+    fits. `Seconds_Since` a moment still to come is negative.
+  - `set_abort` is the existing `FLTK.Errors.Current_Fatal`.
+    `set_atclose` is `Set_Window_Close_Handler`.
+  - An exception from a check, an idle handler, a contrast function or
+    the close handler is raised again from `Run_Checks`, `Run_Idle` or
+    the next event loop call, as the Phase 2 hooks are.
+  - `Callback_Reason` is an integer type with named constants, since
+    FLTK passes any value from `FL_REASON_USER` up.
+  - `Add_Scheme_Name` raises `Constraint_Error` for a name FLTK would
+    refuse (`Fl_Scheme.cxx:106-153`), and returns False for one already
+    there.
+  - `Set_Keyboard_Scaling (True)` works only if it was on when the
+    display opened (`Fl_Screen_Driver.cxx:478, 611-614`); the spec says
+    so.
+  - Found FLTK-issues.md F12: Custom contrast with no function uses
+    CIELAB at Custom's level, 0, and so returns Fore.
+- **`set_abort`** (new test `test_fatal_handler`): found FLTKAda-BUGS.md
+  66, a fatal handler that returned let FLTK go on and crash
+  (`Fl_x.cxx:550-551`). The program now ends with status 1 when it
+  returns, and a handler may raise instead.
+- **Clipboard images, issue 48: AFFECTED on Wayland, done** (new test
+  `test_paste_image`). `FLTK.Static.Paste_Image` asks for the image;
+  the Paste event's `Handle` checks `FLTK.Events.Has_Clipboard_Image`
+  and takes it with `FLTK.Images.RGB.Forge.Pasted`, which raises if
+  there is none. When the outermost Paste `Handle` returns, the shim
+  deletes an image not taken and clears FLTK's pointer. FLTK reads
+  `Fl::e_clipboard_data` after `handle` returns on every path, and
+  deletes it on all but the Wayland one for the program's own image
+  (`Fl_x.cxx:707-711, 1501-1505`; `fl_wayland_clipboard_dnd.cxx:620-629,
+  648-654`), so clearing it there is safe. A negative control, with the
+  delete taken out: valgrind on sway reported the image leaked
+  (`own_bmp_to_RGB`), and on X11 nothing, since FLTK deleted it. The
+  test found FLTKAda-BUGS.md 67, `Clipboard_Text` always "" or an
+  image read as text, and FLTK-issues.md F13, pasting the program's own
+  text leaves `Fl::event_clipboard_type` as it was; `Clipboard_Kind`
+  now says "text/plain" for it.
+- **`FLTK.Draw`** (new test `test_draw_shapes`): `Rounded_Rect`,
+  `Rounded_Rect_Fill`, `Draw_Check`, `Draw_Radio`, `Draw_Arrow` (with
+  `Arrow_Kind` and `Orientation_Kind`, in `gen-constants.py`),
+  `Focus_Rect`, `Frame2`, `Draw_Box_Focus`, `Load_Identity`,
+  `Load_Matrix`, `Get_Antialias`/`Set_Antialias` and
+  `Override_Scale`/`Restore_Scale`. Each shape is drawn by a box's
+  `Draw`, captured, and checked pixel by pixel; `Frame2`'s check tells
+  its side order (bottom, right, top, left, `fl_boxtype.cxx:136`) from
+  `Frame`'s. `fl_draw_box_focus` draws only when `Fl::visible_focus()`
+  is on (`fl_boxtype.cxx:483-484`), its default unless the user's FLTK
+  options turn it off (`Fl.cxx:2060, 2090`), so the test turns it on.
+  - **Issue 124: AFFECTED, done**, for antialias and, newly found, the
+    scale overrides. A scratch C++ program with no window current
+    crashed in `fl_antialias` (get and set) on X11 and sway, and in
+    `fl_override_scale` when the screen's scale isn't 1: the Cairo
+    driver's `cairo_` is null (`Fl_Cairo_Graphics_Driver.cxx:1493-1518`).
+    At scale 1 `override_scale` didn't crash, nor did `load_identity`
+    or `load_matrix`. The four calls use the issue 124 guard and raise
+    `Program_Error` with nothing to draw on. The test checks that at
+    scale 2, before any window is shown. A negative control, with the
+    guards taken out: all four crashed on both back ends.
+  - The same program crashed for every other drawing call with no
+    window, `fl_rectf` included. As before, FLTKAda guards only the
+    state calls, as pofltk does; drawing outside `Draw` or a surface is
+    the program's mistake.
+- **`Fl_Widget_Tracker`**, as `FLTK.Widget_Trackers` (new test
+  `test_widget_trackers`, from pofltk's `TestTracker`). The §7.2 note
+  was wrong to dismiss it, as pofltk's `Trackers` example shows: a
+  callback that may free its own widget, or a call that may free a
+  widget it was given, can't tell otherwise. The shim keeps the C++
+  tracker on the heap, since FLTK watches the address of its pointer
+  (`Fl.cxx:2157-2171`). FLTK clears a tracker in `~Fl_Widget`
+  (`Fl_Widget.cxx:167`), but a widget freed in a callback is deleted
+  only later (`Fl::delete_widget`), and its Ada object is gone at once.
+  So `fl_widget_forget` now calls `Fl::clear_widget_pointer`, and a
+  tracker says the widget is deleted as soon as its Ada object is
+  finalized. FLTK's own trackers, such as the one in
+  `Fl_Widget::do_callback` (`Fl_Widget.cxx:382-384`), then stop using
+  the widget at once too. A negative control, without the clear: the
+  check of a widget freed in a timeout inside `Wait` failed on both
+  back ends. `Item` returns the Ada object the tracker was given, or
+  null. The test found
+  FLTKAda-BUGS.md 68: finalizing a widget declared without
+  `Forge.Create` read through a null pointer.
 
 ### Phase 9: Offscreens, capture, and UTF-8
 

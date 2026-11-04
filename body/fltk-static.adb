@@ -425,6 +425,11 @@ package body FLTK.Static is
     pragma Import (C, fl_static_paste, "fl_static_paste");
     pragma Inline (fl_static_paste);
 
+    procedure fl_static_paste_image
+           (R : in Storage.Integer_Address);
+    pragma Import (C, fl_static_paste_image, "fl_static_paste_image");
+    pragma Inline (fl_static_paste_image);
+
     procedure fl_static_selection
            (O : in Storage.Integer_Address;
             T : in Interfaces.C.char_array;
@@ -560,6 +565,197 @@ package body FLTK.Static is
            (S : in Interfaces.C.int);
     pragma Import (C, fl_static_set_scrollbar_size, "fl_static_set_scrollbar_size");
     pragma Inline (fl_static_set_scrollbar_size);
+
+
+
+
+    --  Shutdown  --
+
+    function fl_static_get_program_should_quit
+        return Interfaces.C.int;
+    pragma Import (C, fl_static_get_program_should_quit, "fl_static_get_program_should_quit");
+    pragma Inline (fl_static_get_program_should_quit);
+
+    procedure fl_static_set_program_should_quit
+           (Q : in Interfaces.C.int);
+    pragma Import (C, fl_static_set_program_should_quit, "fl_static_set_program_should_quit");
+    pragma Inline (fl_static_set_program_should_quit);
+
+    procedure fl_static_hide_all_windows;
+    pragma Import (C, fl_static_hide_all_windows, "fl_static_hide_all_windows");
+    pragma Inline (fl_static_hide_all_windows);
+
+    procedure fl_static_run_checks;
+    pragma Import (C, fl_static_run_checks, "fl_static_run_checks");
+    pragma Inline (fl_static_run_checks);
+
+    procedure fl_static_run_idle;
+    pragma Import (C, fl_static_run_idle, "fl_static_run_idle");
+    pragma Inline (fl_static_run_idle);
+
+    procedure fl_static_set_atclose
+           (H : in Storage.Integer_Address);
+    pragma Import (C, fl_static_set_atclose, "fl_static_set_atclose");
+    pragma Inline (fl_static_set_atclose);
+
+
+
+
+    --  Timestamps  --
+
+    procedure fl_static_now
+           (O : in     Interfaces.C.double;
+            S :    out Interfaces.C.long_long;
+            U :    out Interfaces.C.int);
+    pragma Import (C, fl_static_now, "fl_static_now");
+    pragma Inline (fl_static_now);
+
+    function fl_static_seconds_between
+           (S1 : in Interfaces.C.long_long;
+            U1 : in Interfaces.C.int;
+            S2 : in Interfaces.C.long_long;
+            U2 : in Interfaces.C.int)
+        return Interfaces.C.double;
+    pragma Import (C, fl_static_seconds_between, "fl_static_seconds_between");
+    pragma Inline (fl_static_seconds_between);
+
+    function fl_static_ticks_between
+           (S1 : in Interfaces.C.long_long;
+            U1 : in Interfaces.C.int;
+            S2 : in Interfaces.C.long_long;
+            U2 : in Interfaces.C.int)
+        return Interfaces.C.long;
+    pragma Import (C, fl_static_ticks_between, "fl_static_ticks_between");
+    pragma Inline (fl_static_ticks_between);
+
+
+
+
+    --  Contrast  --
+
+    function fl_static_get_contrast_mode
+        return Interfaces.C.int;
+    pragma Import (C, fl_static_get_contrast_mode, "fl_static_get_contrast_mode");
+    pragma Inline (fl_static_get_contrast_mode);
+
+    procedure fl_static_set_contrast_mode
+           (M : in Interfaces.C.int);
+    pragma Import (C, fl_static_set_contrast_mode, "fl_static_set_contrast_mode");
+    pragma Inline (fl_static_set_contrast_mode);
+
+    function fl_static_get_contrast_level
+        return Interfaces.C.int;
+    pragma Import (C, fl_static_get_contrast_level, "fl_static_get_contrast_level");
+    pragma Inline (fl_static_get_contrast_level);
+
+    procedure fl_static_set_contrast_level
+           (L : in Interfaces.C.int);
+    pragma Import (C, fl_static_set_contrast_level, "fl_static_set_contrast_level");
+    pragma Inline (fl_static_set_contrast_level);
+
+    procedure fl_static_set_contrast_function
+           (F : in Storage.Integer_Address);
+    pragma Import (C, fl_static_set_contrast_function, "fl_static_set_contrast_function");
+    pragma Inline (fl_static_set_contrast_function);
+
+    function fl_static_parse_color
+           (N       : in     Interfaces.C.char_array;
+            R, G, B :    out Interfaces.C.unsigned_char)
+        return Interfaces.C.int;
+    pragma Import (C, fl_static_parse_color, "fl_static_parse_color");
+    pragma Inline (fl_static_parse_color);
+
+
+
+
+    --  Box and Menu Settings  --
+
+    function fl_static_get_box_border_radius_max
+        return Interfaces.C.int;
+    pragma Import (C, fl_static_get_box_border_radius_max, "fl_static_get_box_border_radius_max");
+    pragma Inline (fl_static_get_box_border_radius_max);
+
+    procedure fl_static_set_box_border_radius_max
+           (R : in Interfaces.C.int);
+    pragma Import (C, fl_static_set_box_border_radius_max, "fl_static_set_box_border_radius_max");
+    pragma Inline (fl_static_set_box_border_radius_max);
+
+    function fl_static_get_box_shadow_width
+        return Interfaces.C.int;
+    pragma Import (C, fl_static_get_box_shadow_width, "fl_static_get_box_shadow_width");
+    pragma Inline (fl_static_get_box_shadow_width);
+
+    procedure fl_static_set_box_shadow_width
+           (W : in Interfaces.C.int);
+    pragma Import (C, fl_static_set_box_shadow_width, "fl_static_set_box_shadow_width");
+    pragma Inline (fl_static_set_box_shadow_width);
+
+    function fl_static_get_menu_linespacing
+        return Interfaces.C.int;
+    pragma Import (C, fl_static_get_menu_linespacing, "fl_static_get_menu_linespacing");
+    pragma Inline (fl_static_get_menu_linespacing);
+
+    procedure fl_static_set_menu_linespacing
+           (H : in Interfaces.C.int);
+    pragma Import (C, fl_static_set_menu_linespacing, "fl_static_set_menu_linespacing");
+    pragma Inline (fl_static_set_menu_linespacing);
+
+
+
+
+    --  Callback Reasons  --
+
+    function fl_static_callback_reason
+        return Interfaces.C.int;
+    pragma Import (C, fl_static_callback_reason, "fl_static_callback_reason");
+    pragma Inline (fl_static_callback_reason);
+
+
+
+
+    --  Selection Owner  --
+
+    function fl_static_get_selection_owner
+        return Storage.Integer_Address;
+    pragma Import (C, fl_static_get_selection_owner, "fl_static_get_selection_owner");
+    pragma Inline (fl_static_get_selection_owner);
+
+    procedure fl_static_set_selection_owner
+           (W : in Storage.Integer_Address);
+    pragma Import (C, fl_static_set_selection_owner, "fl_static_set_selection_owner");
+    pragma Inline (fl_static_set_selection_owner);
+
+    function fl_static_get_selection_to_clipboard
+        return Interfaces.C.int;
+    pragma Import (C, fl_static_get_selection_to_clipboard, "fl_static_get_selection_to_clipboard");
+    pragma Inline (fl_static_get_selection_to_clipboard);
+
+    procedure fl_static_set_selection_to_clipboard
+           (M : in Interfaces.C.int);
+    pragma Import (C, fl_static_set_selection_to_clipboard, "fl_static_set_selection_to_clipboard");
+    pragma Inline (fl_static_set_selection_to_clipboard);
+
+
+
+
+    --  Scheme List  --
+
+    function fl_static_scheme_count
+        return Interfaces.C.int;
+    pragma Import (C, fl_static_scheme_count, "fl_static_scheme_count");
+    pragma Inline (fl_static_scheme_count);
+
+    function fl_static_scheme_name
+           (I : in Interfaces.C.int)
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_static_scheme_name, "fl_static_scheme_name");
+    pragma Inline (fl_static_scheme_name);
+
+    function fl_static_add_scheme_name
+           (N : in Interfaces.C.char_array)
+        return Interfaces.C.int;
+    pragma Import (C, fl_static_add_scheme_name, "fl_static_add_scheme_name");
+    pragma Inline (fl_static_add_scheme_name);
 
 
 
@@ -721,6 +917,53 @@ package body FLTK.Static is
     end Idle_Hook;
 
 
+    Current_Window_Close : Window_Close_Handler;
+
+    --  Fl::atclose's handler while Current_Window_Close is set.  A window
+    --  that isn't FLTKAda's gets FLTK's default.
+    procedure Window_Close_Hook
+           (W, U : in Storage.Integer_Address);
+    pragma Convention (C, Window_Close_Hook);
+
+    procedure Window_Close_Hook
+           (W, U : in Storage.Integer_Address)
+    is
+        Ada_Ptr : constant Storage.Integer_Address :=
+            (if W = Null_Pointer then Null_Pointer else fl_widget_get_user_data (W));
+    begin
+        if Ada_Ptr = Null_Pointer or Current_Window_Close = null then
+            fl_static_default_atclose (W, U);
+        else
+            Current_Window_Close (Window_Convert.To_Pointer (Storage.To_Address (Ada_Ptr)).all);
+        end if;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+    end Window_Close_Hook;
+
+
+    Current_Contrast : Contrast_Function;
+
+    function Contrast_Hook
+           (F, B : in Interfaces.C.unsigned;
+            C, S : in Interfaces.C.int)
+        return Interfaces.C.unsigned;
+    pragma Convention (C, Contrast_Hook);
+
+    function Contrast_Hook
+           (F, B : in Interfaces.C.unsigned;
+            C, S : in Interfaces.C.int)
+        return Interfaces.C.unsigned is
+    begin
+        return Interfaces.C.unsigned (Current_Contrast
+           (Color (F), Color (B), Integer (C), Integer (S)));
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return F;
+    end Contrast_Hook;
+
+
 
 
     -------------------
@@ -735,6 +978,12 @@ package body FLTK.Static is
         end loop;
         if not Current_Clip_Notes.Is_Empty then
             fl_static_remove_clipboard_notify (Storage.To_Integer (Clipboard_Notify_Hook'Address));
+        end if;
+        if Current_Window_Close /= null then
+            fl_static_set_atclose (Null_Pointer);
+        end if;
+        if Current_Contrast /= null then
+            fl_static_set_contrast_function (Null_Pointer);
         end if;
     end Finalize;
 
@@ -1399,6 +1648,16 @@ package body FLTK.Static is
     end Paste;
 
 
+    procedure Paste_Image
+           (Receiver : in FLTK.Widgets.Widget'Class) is
+    begin
+        if Wrapper (Receiver).Void_Ptr = Null_Pointer then
+            raise Program_Error with "Paste_Image to a widget that doesn't exist";
+        end if;
+        fl_static_paste_image (Wrapper (Receiver).Void_Ptr);
+    end Paste_Image;
+
+
     procedure Selection
            (Owner : in FLTK.Widgets.Widget'Class;
             Text  : in String) is
@@ -1639,6 +1898,338 @@ package body FLTK.Static is
     begin
         fl_static_set_scrollbar_size (Interfaces.C.int (To));
     end Set_Default_Scrollbar_Size;
+
+
+
+
+    --  Shutdown  --
+
+    function Get_Program_Should_Quit
+        return Boolean is
+    begin
+        return fl_static_get_program_should_quit /= 0;
+    end Get_Program_Should_Quit;
+
+
+    procedure Set_Program_Should_Quit
+           (To : in Boolean) is
+    begin
+        fl_static_set_program_should_quit (Boolean'Pos (To));
+    end Set_Program_Should_Quit;
+
+
+    procedure Hide_All_Windows is
+    begin
+        fl_static_hide_all_windows;
+        Hook_Exceptions.Reraise;
+    end Hide_All_Windows;
+
+
+    procedure Run_Checks is
+    begin
+        fl_static_run_checks;
+        Hook_Exceptions.Reraise;
+    end Run_Checks;
+
+
+    procedure Run_Idle is
+    begin
+        fl_static_run_idle;
+        Hook_Exceptions.Reraise;
+    end Run_Idle;
+
+
+    procedure Set_Window_Close_Handler
+           (Func : in Window_Close_Handler) is
+    begin
+        Current_Window_Close := Func;
+        fl_static_set_atclose
+           (if Func = null
+            then Null_Pointer
+            else Storage.To_Integer (Window_Close_Hook'Address));
+    end Set_Window_Close_Handler;
+
+
+
+
+    --  Timestamps  --
+
+    function Now
+           (Offset : in Long_Float := 0.0)
+        return Timestamp
+    is
+        S : Interfaces.C.long_long;
+        U : Interfaces.C.int;
+    begin
+        fl_static_now (Interfaces.C.double (Offset), S, U);
+        return (Sec => Long_Long_Integer (S), Usec => U);
+    end Now;
+
+
+    function Seconds_Between
+           (Earlier, Later : in Timestamp)
+        return Long_Float is
+    begin
+        --  Fl::seconds_between (back, further_back) is back - further_back
+        --  (Fl_Timeout.cxx:126-128).
+        return Long_Float (fl_static_seconds_between
+           (Interfaces.C.long_long (Later.Sec), Later.Usec,
+            Interfaces.C.long_long (Earlier.Sec), Earlier.Usec));
+    end Seconds_Between;
+
+
+    function Seconds_Since
+           (Moment : in Timestamp)
+        return Long_Float is
+    begin
+        return Seconds_Between (Moment, Now);
+    end Seconds_Since;
+
+
+    function Ticks_Between
+           (Earlier, Later : in Timestamp)
+        return Long_Integer is
+    begin
+        return Long_Integer (fl_static_ticks_between
+           (Interfaces.C.long_long (Later.Sec), Later.Usec,
+            Interfaces.C.long_long (Earlier.Sec), Earlier.Usec));
+    end Ticks_Between;
+
+
+    function Ticks_Since
+           (Moment : in Timestamp)
+        return Long_Integer is
+    begin
+        return Ticks_Between (Moment, Now);
+    end Ticks_Since;
+
+
+
+
+    --  Contrast  --
+
+    function Get_Contrast_Mode
+        return Contrast_Mode
+    is
+        Result : constant Interfaces.C.int := fl_static_get_contrast_mode;
+    begin
+        return Contrast_Mode'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "fl_contrast_mode returned unexpected int value of " & Interfaces.C.int'Image (Result);
+    end Get_Contrast_Mode;
+
+
+    procedure Set_Contrast_Mode
+           (To : in Contrast_Mode) is
+    begin
+        fl_static_set_contrast_mode (Contrast_Mode'Pos (To));
+    end Set_Contrast_Mode;
+
+
+    function Get_Contrast_Level
+        return Contrast_Level
+    is
+        Result : constant Interfaces.C.int := fl_static_get_contrast_level;
+    begin
+        return Contrast_Level (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "fl_contrast_level returned unexpected int value of " & Interfaces.C.int'Image (Result);
+    end Get_Contrast_Level;
+
+
+    procedure Set_Contrast_Level
+           (To : in Contrast_Level) is
+    begin
+        fl_static_set_contrast_level (Interfaces.C.int (To));
+    end Set_Contrast_Level;
+
+
+    procedure Set_Contrast_Function
+           (Func : in Contrast_Function) is
+    begin
+        Current_Contrast := Func;
+        fl_static_set_contrast_function
+           (if Func = null
+            then Null_Pointer
+            else Storage.To_Integer (Contrast_Hook'Address));
+    end Set_Contrast_Function;
+
+
+    function Parse_Color
+           (Name    : in     String;
+            R, G, B : in out Color_Component)
+        return Boolean
+    is
+        CR, CG, CB : Interfaces.C.unsigned_char := 0;
+    begin
+        if fl_static_parse_color (Interfaces.C.To_C (Name), CR, CG, CB) = 0 then
+            return False;
+        end if;
+        R := Color_Component (CR);
+        G := Color_Component (CG);
+        B := Color_Component (CB);
+        return True;
+    end Parse_Color;
+
+
+
+
+    --  Box and Menu Settings  --
+
+    function Get_Box_Border_Radius_Max
+        return Integer is
+    begin
+        return Integer (fl_static_get_box_border_radius_max);
+    end Get_Box_Border_Radius_Max;
+
+
+    procedure Set_Box_Border_Radius_Max
+           (To : in Integer) is
+    begin
+        fl_static_set_box_border_radius_max (Interfaces.C.int (To));
+    end Set_Box_Border_Radius_Max;
+
+
+    function Get_Box_Shadow_Width
+        return Integer is
+    begin
+        return Integer (fl_static_get_box_shadow_width);
+    end Get_Box_Shadow_Width;
+
+
+    procedure Set_Box_Shadow_Width
+           (To : in Integer) is
+    begin
+        fl_static_set_box_shadow_width (Interfaces.C.int (To));
+    end Set_Box_Shadow_Width;
+
+
+    function Get_Menu_Line_Spacing
+        return Integer is
+    begin
+        return Integer (fl_static_get_menu_linespacing);
+    end Get_Menu_Line_Spacing;
+
+
+    procedure Set_Menu_Line_Spacing
+           (To : in Integer) is
+    begin
+        fl_static_set_menu_linespacing (Interfaces.C.int (To));
+    end Set_Menu_Line_Spacing;
+
+
+
+
+    --  Callback Reasons  --
+
+    function Get_Callback_Reason
+        return Callback_Reason
+    is
+        Result : constant Interfaces.C.int := fl_static_callback_reason;
+    begin
+        return Callback_Reason (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl::callback_reason returned unexpected int value of " & Interfaces.C.int'Image (Result);
+    end Get_Callback_Reason;
+
+
+
+
+    --  Selection Owner  --
+
+    function Get_Selection_Owner
+        return access FLTK.Widgets.Widget'Class
+    is
+        Owner_Ptr : Storage.Integer_Address := fl_static_get_selection_owner;
+    begin
+        if Owner_Ptr = Null_Pointer then
+            return null;
+        end if;
+        Owner_Ptr := fl_widget_get_user_data (Owner_Ptr);
+        if Owner_Ptr = Null_Pointer then
+            return null;
+        end if;
+        return Widget_Convert.To_Pointer (Storage.To_Address (Owner_Ptr));
+    end Get_Selection_Owner;
+
+
+    procedure Set_Selection_Owner
+           (To : in FLTK.Widgets.Widget'Class) is
+    begin
+        if Wrapper (To).Void_Ptr = Null_Pointer then
+            raise Program_Error with "Set_Selection_Owner of a widget that doesn't exist";
+        end if;
+        fl_static_set_selection_owner (Wrapper (To).Void_Ptr);
+    end Set_Selection_Owner;
+
+
+    procedure Clear_Selection_Owner is
+    begin
+        fl_static_set_selection_owner (Null_Pointer);
+    end Clear_Selection_Owner;
+
+
+    function Get_Selection_To_Clipboard
+        return Boolean is
+    begin
+        return fl_static_get_selection_to_clipboard /= 0;
+    end Get_Selection_To_Clipboard;
+
+
+    procedure Set_Selection_To_Clipboard
+           (To : in Boolean) is
+    begin
+        fl_static_set_selection_to_clipboard (Boolean'Pos (To));
+    end Set_Selection_To_Clipboard;
+
+
+
+
+    --  Scheme List  --
+
+    function Scheme_Count
+        return Natural is
+    begin
+        return Natural (fl_static_scheme_count);
+    end Scheme_Count;
+
+
+    function Scheme_Name
+           (Index : in Positive)
+        return String is
+    begin
+        if Index > Scheme_Count then
+            raise Constraint_Error with
+                "Scheme_Name" & Integer'Image (Index) & " of" & Integer'Image (Scheme_Count);
+        end if;
+        return Interfaces.C.Strings.Value (fl_static_scheme_name (Interfaces.C.int (Index) - 1));
+    end Scheme_Name;
+
+
+    function Add_Scheme_Name
+           (Name : in String)
+        return Boolean
+    is
+        Result : constant Interfaces.C.int := fl_static_add_scheme_name (Interfaces.C.To_C (Name));
+    begin
+        case Result is
+        when 0 => return False;
+        when -1 => raise Constraint_Error with
+            "Add_Scheme_Name """ & Name & """ has a character other than a-z, 0-9, $, +, _ or .";
+        when -2 => raise Constraint_Error with
+            "Add_Scheme_Name """ & Name & """ is longer than 12 characters";
+        when others =>
+            if Result < 0 then
+                raise Internal_FLTK_Error with
+                    "Fl_Scheme::add_scheme_name returned unexpected int value of " &
+                    Interfaces.C.int'Image (Result);
+            end if;
+            return True;
+        end case;
+    end Add_Scheme_Name;
 
 
 end FLTK.Static;

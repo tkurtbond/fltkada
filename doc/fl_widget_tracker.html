@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Widget_Tracker Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Widget_Tracker Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Widget_Tracker</td>
+    <td>FLTK.Widget_Trackers</td>
+  </tr>
+
+</table>
+
+<p><b>Note:</b><br /><br />
+A widget stops existing, for its trackers, when its Ada object is finalized, even inside a
+callback, where FLTK deletes the C++ widget only later with Fl::delete_widget. It also stops
+existing when FLTK deletes the C++ widget itself, as a group does a child with no Ada
+object. FLTK registers the address of the tracker's pointer, so the C++ tracker is kept on
+the heap, where it doesn't move when the Ada object is copied.</p>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Widget_Tracker</td>
+    <td>Widget_Tracker</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td>&nbsp;</td>
+<td><pre>
+function Create
+    return Widget_Tracker;
+</pre>Tracks nothing, until Track.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Widget_Tracker(Fl_Widget *wi);
+</pre></td>
+<td><pre>
+function Create
+       (Item : in out FLTK.Widgets.Widget'Class)
+    return Widget_Tracker;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+int deleted();
+</pre></td>
+<td><pre>
+function Deleted
+       (This : in Widget_Tracker)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int exists();
+</pre></td>
+<td><pre>
+function Exists
+       (This : in Widget_Tracker)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>&nbsp;</td>
+<td><pre>
+procedure Track
+       (This : in out Widget_Tracker;
+        Item : in out FLTK.Widgets.Widget'Class);
+</pre>Tracks Item instead of whatever was tracked before. Raises Program_Error if Item has
+no FLTK widget.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Widget *widget();
+</pre></td>
+<td><pre>
+function Item
+       (This : in Widget_Tracker)
+    return access FLTK.Widgets.Widget'Class;
+</pre>The Ada object the tracker was given, or null if it was deleted or none is tracked.</td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>

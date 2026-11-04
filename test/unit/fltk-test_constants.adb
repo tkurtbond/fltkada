@@ -13,13 +13,15 @@
 
 with
 
-    Checks;
+    Checks,
+    FLTK.Draw,
+    FLTK.Screen;
 
 
 procedure FLTK.Test_Constants is
 
 
-    type Value_Array is array (1 .. 260) of Long_Long_Integer;
+    type Value_Array is array (1 .. 293) of Long_Long_Integer;
     pragma Convention (C, Value_Array);
 
     FLTK_Values : Value_Array;
@@ -773,5 +775,148 @@ begin
        (Long_Long_Integer (Mask_To_UChar (Damage_Full)),
         260,
         "Long_Long_Integer (Mask_To_UChar (Damage_Full)) = FL_DAMAGE_ALL");
+
+    --  Contrast modes (fl_contrast_mode)
+    Same
+       (Contrast_Mode'Pos (No_Contrast),
+        261,
+        "Contrast_Mode'Pos (No_Contrast) = FL_CONTRAST_NONE");
+    Same
+       (Contrast_Mode'Pos (Legacy_Contrast),
+        262,
+        "Contrast_Mode'Pos (Legacy_Contrast) = FL_CONTRAST_LEGACY");
+    Same
+       (Contrast_Mode'Pos (CIELAB_Contrast),
+        263,
+        "Contrast_Mode'Pos (CIELAB_Contrast) = FL_CONTRAST_CIELAB");
+    Same
+       (Contrast_Mode'Pos (Custom_Contrast),
+        264,
+        "Contrast_Mode'Pos (Custom_Contrast) = FL_CONTRAST_CUSTOM");
+
+    --  Callback reasons (Fl_Callback_Reason)
+    Same
+       (Long_Long_Integer (Reason_Unknown),
+        265,
+        "Long_Long_Integer (Reason_Unknown) = FL_REASON_UNKNOWN");
+    Same
+       (Long_Long_Integer (Reason_Selected),
+        266,
+        "Long_Long_Integer (Reason_Selected) = FL_REASON_SELECTED");
+    Same
+       (Long_Long_Integer (Reason_Deselected),
+        267,
+        "Long_Long_Integer (Reason_Deselected) = FL_REASON_DESELECTED");
+    Same
+       (Long_Long_Integer (Reason_Reselected),
+        268,
+        "Long_Long_Integer (Reason_Reselected) = FL_REASON_RESELECTED");
+    Same
+       (Long_Long_Integer (Reason_Opened),
+        269,
+        "Long_Long_Integer (Reason_Opened) = FL_REASON_OPENED");
+    Same
+       (Long_Long_Integer (Reason_Closed),
+        270,
+        "Long_Long_Integer (Reason_Closed) = FL_REASON_CLOSED");
+    Same
+       (Long_Long_Integer (Reason_Dragged),
+        271,
+        "Long_Long_Integer (Reason_Dragged) = FL_REASON_DRAGGED");
+    Same
+       (Long_Long_Integer (Reason_Cancelled),
+        272,
+        "Long_Long_Integer (Reason_Cancelled) = FL_REASON_CANCELLED");
+    Same
+       (Long_Long_Integer (Reason_Changed),
+        273,
+        "Long_Long_Integer (Reason_Changed) = FL_REASON_CHANGED");
+    Same
+       (Long_Long_Integer (Reason_Got_Focus),
+        274,
+        "Long_Long_Integer (Reason_Got_Focus) = FL_REASON_GOT_FOCUS");
+    Same
+       (Long_Long_Integer (Reason_Lost_Focus),
+        275,
+        "Long_Long_Integer (Reason_Lost_Focus) = FL_REASON_LOST_FOCUS");
+    Same
+       (Long_Long_Integer (Reason_Released),
+        276,
+        "Long_Long_Integer (Reason_Released) = FL_REASON_RELEASED");
+    Same
+       (Long_Long_Integer (Reason_Enter_Key),
+        277,
+        "Long_Long_Integer (Reason_Enter_Key) = FL_REASON_ENTER_KEY");
+    Same
+       (Long_Long_Integer (Reason_User),
+        278,
+        "Long_Long_Integer (Reason_User) = FL_REASON_USER");
+
+    --  Screen scaling support (Fl::screen_scaling_supported); FLTK's enum is
+    --  private to Fl_Screen_Driver, so these are its values (Fl_Screen_Driver.H:228-231)
+    Same
+       (Screen.Scaling_Kind'Pos (Screen.No_Scaling),
+        279,
+        "Screen.Scaling_Kind'Pos (Screen.No_Scaling) = 0");
+    Same
+       (Screen.Scaling_Kind'Pos (Screen.Systemwide_Scaling),
+        280,
+        "Screen.Scaling_Kind'Pos (Screen.Systemwide_Scaling) = 1");
+    Same
+       (Screen.Scaling_Kind'Pos (Screen.Per_Screen_Scaling),
+        281,
+        "Screen.Scaling_Kind'Pos (Screen.Per_Screen_Scaling) = 2");
+
+    --  Arrow types (Fl_Arrow_Type); FLTK.Draw passes Pos + 1
+    Same
+       (Long_Long_Integer (Draw.Arrow_Kind'Pos (Draw.Single_Arrow) + 1),
+        282,
+        "Long_Long_Integer (Draw.Arrow_Kind'Pos (Draw.Single_Arrow) + 1) = FL_ARROW_SINGLE");
+    Same
+       (Long_Long_Integer (Draw.Arrow_Kind'Pos (Draw.Double_Arrow) + 1),
+        283,
+        "Long_Long_Integer (Draw.Arrow_Kind'Pos (Draw.Double_Arrow) + 1) = FL_ARROW_DOUBLE");
+    Same
+       (Long_Long_Integer (Draw.Arrow_Kind'Pos (Draw.Choice_Arrow) + 1),
+        284,
+        "Long_Long_Integer (Draw.Arrow_Kind'Pos (Draw.Choice_Arrow) + 1) = FL_ARROW_CHOICE");
+    Same
+       (Long_Long_Integer (Draw.Arrow_Kind'Pos (Draw.Return_Arrow) + 1),
+        285,
+        "Long_Long_Integer (Draw.Arrow_Kind'Pos (Draw.Return_Arrow) + 1) = FL_ARROW_RETURN");
+
+    --  Orientations (Fl_Orientation)
+    Same
+       (Draw.Orientation_Kind'Pos (Draw.Orient_Right),
+        286,
+        "Draw.Orientation_Kind'Pos (Draw.Orient_Right) = FL_ORIENT_RIGHT");
+    Same
+       (Draw.Orientation_Kind'Pos (Draw.Orient_NE),
+        287,
+        "Draw.Orientation_Kind'Pos (Draw.Orient_NE) = FL_ORIENT_NE");
+    Same
+       (Draw.Orientation_Kind'Pos (Draw.Orient_Up),
+        288,
+        "Draw.Orientation_Kind'Pos (Draw.Orient_Up) = FL_ORIENT_UP");
+    Same
+       (Draw.Orientation_Kind'Pos (Draw.Orient_NW),
+        289,
+        "Draw.Orientation_Kind'Pos (Draw.Orient_NW) = FL_ORIENT_NW");
+    Same
+       (Draw.Orientation_Kind'Pos (Draw.Orient_Left),
+        290,
+        "Draw.Orientation_Kind'Pos (Draw.Orient_Left) = FL_ORIENT_LEFT");
+    Same
+       (Draw.Orientation_Kind'Pos (Draw.Orient_SW),
+        291,
+        "Draw.Orientation_Kind'Pos (Draw.Orient_SW) = FL_ORIENT_SW");
+    Same
+       (Draw.Orientation_Kind'Pos (Draw.Orient_Down),
+        292,
+        "Draw.Orientation_Kind'Pos (Draw.Orient_Down) = FL_ORIENT_DOWN");
+    Same
+       (Draw.Orientation_Kind'Pos (Draw.Orient_SE),
+        293,
+        "Draw.Orientation_Kind'Pos (Draw.Orient_SE) = FL_ORIENT_SE");
 
 end FLTK.Test_Constants;

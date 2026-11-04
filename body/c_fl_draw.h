@@ -30,6 +30,10 @@ extern "C" void fl_draw_restore_clip();
 
 extern "C" int fl_draw_overlay_clear();
 extern "C" int fl_draw_overlay_rect(int x, int y, int w, int h);
+extern "C" int fl_draw_get_antialias(int &a);
+extern "C" int fl_draw_set_antialias(int a);
+extern "C" int fl_draw_override_scale(float &s);
+extern "C" int fl_draw_restore_scale(float s);
 
 
 extern "C" unsigned int fl_draw_get_color();
@@ -47,6 +51,8 @@ extern "C" void fl_draw_line_style(int style, int width, char * dashes);
 
 
 extern "C" void fl_draw_mult_matrix(double a, double b, double c, double d, double x, double y);
+extern "C" void fl_draw_load_identity();
+extern "C" void fl_draw_load_matrix(double a, double b, double c, double d, double x, double y);
 extern "C" void fl_draw_pop_matrix();
 extern "C" void fl_draw_push_matrix();
 extern "C" void fl_draw_rotate(double d);
@@ -103,6 +109,15 @@ extern "C" void fl_draw_circle(double x, double y, double r);
 extern "C" void fl_draw_curve(double x0, double y0, double x1, double y1,
                               double x2, double y2, double x3, double y3);
 extern "C" void fl_draw_frame(const char *s, int x, int y, int w, int h);
+extern "C" void fl_draw_frame2(const char *s, int x, int y, int w, int h);
+extern "C" void fl_draw_rounded_rect(int x, int y, int w, int h, int r);
+extern "C" void fl_draw_rounded_rectf(int x, int y, int w, int h, int r);
+extern "C" void fl_draw_focus_rect(int x, int y, int w, int h);
+extern "C" void fl_draw_draw_box_focus(int bk, int x, int y, int w, int h,
+    unsigned int fg, unsigned int bg);
+extern "C" void fl_draw_draw_check(int x, int y, int w, int h, unsigned int c);
+extern "C" void fl_draw_draw_radio(int x, int y, int d, unsigned int c);
+extern "C" void fl_draw_draw_arrow(int x, int y, int w, int h, int t, int o, unsigned int c);
 extern "C" void fl_draw_gap();
 extern "C" void fl_draw_line(int x0, int y0, int x1, int y1);
 extern "C" void fl_draw_line2(int x0, int y0, int x1, int y1, int x2, int y2);

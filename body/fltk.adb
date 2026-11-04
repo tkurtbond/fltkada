@@ -109,10 +109,23 @@ package body FLTK is
     pragma Inline (fl_enum_lighter);
 
     function fl_enum_contrast
-           (F, B : in Interfaces.C.unsigned)
+           (F, B : in Interfaces.C.unsigned;
+            C, S : in Interfaces.C.int)
         return Interfaces.C.unsigned;
     pragma Import (C, fl_enum_contrast, "fl_enum_contrast");
     pragma Inline (fl_enum_contrast);
+
+    function fl_enum_lightness
+           (T : in Interfaces.C.unsigned)
+        return Interfaces.C.double;
+    pragma Import (C, fl_enum_lightness, "fl_enum_lightness");
+    pragma Inline (fl_enum_lightness);
+
+    function fl_enum_luminance
+           (T : in Interfaces.C.unsigned)
+        return Interfaces.C.double;
+    pragma Import (C, fl_enum_luminance, "fl_enum_luminance");
+    pragma Inline (fl_enum_luminance);
 
     function fl_enum_inactive
            (T : in Interfaces.C.unsigned)
@@ -301,13 +314,32 @@ package body FLTK is
 
 
     function Contrast
-           (Fore, Back : in Color)
+           (Fore, Back    : in Color;
+            Context, Size : in Integer := 0)
         return Color is
     begin
         return Color (fl_enum_contrast
            (Interfaces.C.unsigned (Fore),
-            Interfaces.C.unsigned (Back)));
+            Interfaces.C.unsigned (Back),
+            Interfaces.C.int (Context),
+            Interfaces.C.int (Size)));
     end Contrast;
+
+
+    function Lightness
+           (Tone : in Color)
+        return Long_Float is
+    begin
+        return Long_Float (fl_enum_lightness (Interfaces.C.unsigned (Tone)));
+    end Lightness;
+
+
+    function Luminance
+           (Tone : in Color)
+        return Long_Float is
+    begin
+        return Long_Float (fl_enum_luminance (Interfaces.C.unsigned (Tone)));
+    end Luminance;
 
 
     function Inactive

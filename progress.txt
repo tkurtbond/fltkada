@@ -53,6 +53,7 @@ FLTK.Text_Buffers
 FLTK.Tooltips
 FLTK.Tree_Items
 FLTK.Tree_Items.Custom
+FLTK.Widget_Trackers
 FLTK.Widgets
 FLTK.Widgets.Boxes
 FLTK.Widgets.Buttons

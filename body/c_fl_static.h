@@ -17,6 +17,19 @@ extern "C" const char * const fl_help_usage_string_ptr;
 extern "C" void fl_static_open_display();
 
 
+extern "C" int fl_static_get_program_should_quit();
+extern "C" void fl_static_set_program_should_quit(int q);
+extern "C" void fl_static_hide_all_windows();
+extern "C" void fl_static_run_checks();
+extern "C" void fl_static_run_idle();
+extern "C" void fl_static_set_atclose(void * h);
+
+
+extern "C" void fl_static_now(double o, long long &s, int &u);
+extern "C" double fl_static_seconds_between(long long s1, int u1, long long s2, int u2);
+extern "C" long fl_static_ticks_between(long long s1, int u1, long long s2, int u2);
+
+
 extern "C" int fl_static_arg(int c, void * v, int &i);
 extern "C" void fl_static_args(int c, void * v);
 extern "C" int fl_static_args2(int c, void * v, int &i, void * h);
@@ -102,6 +115,7 @@ extern "C" void fl_static_set_labeltype(int k, void * d, void * m);
 
 extern "C" void fl_static_copy(const char * t, int l, int k);
 extern "C" void fl_static_paste(void * r, int s);
+extern "C" void fl_static_paste_image(void * r);
 extern "C" void fl_static_selection(void * o, char * t, int l);
 extern "C" int fl_static_clipboard_contains(const char * k);
 
@@ -129,6 +143,9 @@ extern "C" const char * fl_static_get_scheme();
 extern "C" void fl_static_set_scheme(const char *n);
 extern "C" int fl_static_is_scheme(const char *n);
 extern "C" void fl_static_reload_scheme();
+extern "C" int fl_static_scheme_count();
+extern "C" const char * fl_static_scheme_name(int i);
+extern "C" int fl_static_add_scheme_name(const char * n);
 
 
 extern "C" int fl_static_get_option(int o);
@@ -139,6 +156,32 @@ extern "C" void fl_static_set_use_high_res_gl(int v);
 
 extern "C" int fl_static_get_scrollbar_size();
 extern "C" void fl_static_set_scrollbar_size(int s);
+
+
+extern "C" int fl_static_get_contrast_mode();
+extern "C" void fl_static_set_contrast_mode(int m);
+extern "C" int fl_static_get_contrast_level();
+extern "C" void fl_static_set_contrast_level(int l);
+extern "C" void fl_static_set_contrast_function(void * f);
+extern "C" int fl_static_parse_color(const char * n, unsigned char &r,
+    unsigned char &g, unsigned char &b);
+
+
+extern "C" int fl_static_get_box_border_radius_max();
+extern "C" void fl_static_set_box_border_radius_max(int r);
+extern "C" int fl_static_get_box_shadow_width();
+extern "C" void fl_static_set_box_shadow_width(int w);
+extern "C" int fl_static_get_menu_linespacing();
+extern "C" void fl_static_set_menu_linespacing(int h);
+
+
+extern "C" int fl_static_callback_reason();
+
+
+extern "C" void * fl_static_get_selection_owner();
+extern "C" void fl_static_set_selection_owner(void * w);
+extern "C" int fl_static_get_selection_to_clipboard();
+extern "C" void fl_static_set_selection_to_clipboard(int m);
 
 
 #endif

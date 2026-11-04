@@ -92,9 +92,32 @@ package FLTK is
            (Tone : in Color)
         return Color;
 
+    --  A colour that reads well on Back: Fore if it already does, else
+    --  black or white. How it chooses depends on FLTK.Static's
+    --  Contrast_Mode and contrast level. Context and Size are passed to a
+    --  custom contrast function; FLTK's own modes ignore them
+    --  (fl_contrast.cxx).
     function Contrast
-           (Fore, Back : in Color)
+           (Fore, Back    : in Color;
+            Context, Size : in Integer := 0)
         return Color;
+
+    --  The perceived lightness of Tone, 0.0 (black) to 100.0 (white),
+    --  as CIELAB's L* (fl_contrast.cxx).
+    function Lightness
+           (Tone : in Color)
+        return Long_Float;
+
+    --  The relative luminance of Tone, 0.0 (black) to 1.0 (white).
+    function Luminance
+           (Tone : in Color)
+        return Long_Float;
+
+    --  How Contrast chooses (fl_contrast_mode; see FLTK.Static).
+    --  No_Contrast returns Fore unchanged.  Custom_Contrast calls the
+    --  function given to FLTK.Static.Set_Contrast_Function, and behaves as
+    --  CIELAB_Contrast until one is given (fl_contrast.cxx:513-519).
+    type Contrast_Mode is (No_Contrast, Legacy_Contrast, CIELAB_Contrast, Custom_Contrast);
 
     function Inactive
            (Tone : in Color)
@@ -459,6 +482,31 @@ package FLTK is
         Zoom_Event);
 
     type Event_Outcome is (Not_Handled, Handled);
+
+
+
+
+    --  Callback Reasons  --
+
+    --  Why FLTK called a callback (Fl::callback_reason; see FLTK.Static).
+    --  An integer, not an enumeration, because FLTK passes any value from
+    --  Reason_User up for a program's own reasons.
+    type Callback_Reason is new Natural;
+
+    Reason_Unknown     : constant Callback_Reason := 0;
+    Reason_Selected    : constant Callback_Reason := 1;
+    Reason_Deselected  : constant Callback_Reason := 2;
+    Reason_Reselected  : constant Callback_Reason := 3;
+    Reason_Opened      : constant Callback_Reason := 4;
+    Reason_Closed      : constant Callback_Reason := 5;
+    Reason_Dragged     : constant Callback_Reason := 6;
+    Reason_Cancelled   : constant Callback_Reason := 7;
+    Reason_Changed     : constant Callback_Reason := 8;
+    Reason_Got_Focus   : constant Callback_Reason := 9;
+    Reason_Lost_Focus  : constant Callback_Reason := 10;
+    Reason_Released    : constant Callback_Reason := 11;
+    Reason_Enter_Key   : constant Callback_Reason := 12;
+    Reason_User        : constant Callback_Reason := 32;
 
 
 

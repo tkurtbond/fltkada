@@ -44,7 +44,7 @@ Wayland). Calling it again does nothing.</p>
 
   <tr>
     <td>Fl_Abort_Handler</td>
-    <td>&nbsp;</td>
+    <td>FLTK.Errors.Error_Function</td>
   </tr>
 
   <tr>
@@ -54,7 +54,7 @@ Wayland). Calling it again does nothing.</p>
 
   <tr>
     <td>Fl_Atclose_Handler</td>
-    <td>&nbsp;</td>
+    <td>Window_Close_Handler</td>
   </tr>
 
   <tr>
@@ -120,6 +120,21 @@ Wayland). Calling it again does nothing.</p>
   <tr>
     <td>Fl_Label_Measure_F</td>
     <td>Label_Measure_Function</td>
+  </tr>
+
+  <tr>
+    <td>Fl_Contrast_Function</td>
+    <td>Contrast_Function</td>
+  </tr>
+
+  <tr>
+    <td>int</td>
+    <td>Contrast_Level</td>
+  </tr>
+
+  <tr>
+    <td>Fl_Timestamp</td>
+    <td>Timestamp</td>
   </tr>
 
   <tr>
@@ -243,6 +258,17 @@ procedure Add_Idle
 
   <tr>
 <td><pre>
+static int Fl_Scheme::add_scheme_name(const char *name);
+</pre></td>
+<td><pre>
+function Add_Scheme_Name
+       (Name : in String)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 static void add_timeout(double t, Fl_Timeout_Handler,
     void *=0);
 </pre></td>
@@ -328,6 +354,26 @@ procedure Set_Alt_Background
 
   <tr>
 <td><pre>
+static int box_border_radius_max();
+</pre></td>
+<td><pre>
+function Get_Box_Border_Radius_Max
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void box_border_radius_max(int R);
+</pre></td>
+<td><pre>
+procedure Set_Box_Border_Radius_Max
+       (To : in Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 static Fl_Color box_color(Fl_Color);
 </pre></td>
 <td><pre>
@@ -383,6 +429,36 @@ function Get_Box_Y_Offset
 
   <tr>
 <td><pre>
+static int box_shadow_width();
+</pre></td>
+<td><pre>
+function Get_Box_Shadow_Width
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void box_shadow_width(int W);
+</pre></td>
+<td><pre>
+procedure Set_Box_Shadow_Width
+       (To : in Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static Fl_Callback_Reason callback_reason();
+</pre></td>
+<td><pre>
+function Get_Callback_Reason
+    return Callback_Reason;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 static int clipboard_contains(const char *type);
 </pre></td>
 <td><pre>
@@ -403,6 +479,56 @@ procedure Copy
        (Text : in String;
         Dest : in Buffer_Kind);
 </pre><p>Wayland has no selection buffer: copying to and pasting from Selection do nothing useful there (pofltk 50).</p></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void fl_contrast_function(Fl_Contrast_Function *f);
+</pre></td>
+<td><pre>
+procedure Set_Contrast_Function
+       (Func : in Contrast_Function);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fl_contrast_level();
+</pre></td>
+<td><pre>
+function Get_Contrast_Level
+    return Contrast_Level;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void fl_contrast_level(int level);
+</pre></td>
+<td><pre>
+procedure Set_Contrast_Level
+       (To : in Contrast_Level);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fl_contrast_mode();
+</pre></td>
+<td><pre>
+function Get_Contrast_Mode
+    return Contrast_Mode;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void fl_contrast_mode(int mode);
+</pre></td>
+<td><pre>
+procedure Set_Contrast_Mode
+       (To : in Contrast_Mode);
+</pre></td>
   </tr>
 
   <tr>
@@ -653,6 +779,15 @@ function Has_Timeout
 
   <tr>
 <td><pre>
+static void hide_all_windows();
+</pre></td>
+<td><pre>
+procedure Hide_All_Windows;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 static int is_scheme(const char *name);
 </pre></td>
 <td><pre>
@@ -673,11 +808,42 @@ procedure Lock;
 
   <tr>
 <td><pre>
+static int menu_linespacing();
+</pre></td>
+<td><pre>
+function Get_Menu_Line_Spacing
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void menu_linespacing(int H);
+</pre></td>
+<td><pre>
+procedure Set_Menu_Line_Spacing
+       (To : in Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 static Fl_Window * modal();
 </pre></td>
 <td><pre>
 function Get_Top_Modal
     return access FLTK.Widgets.Groups.Windows.Window'Class;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char **Fl_Scheme::names();
+</pre></td>
+<td><pre>
+function Scheme_Name
+       (Index : in Positive)
+    return String;
 </pre></td>
   </tr>
 
@@ -689,6 +855,27 @@ static Fl_Window * next_window(const Fl_Window *);
 function Get_Next_Window
        (From : in FLTK.Widgets.Groups.Windows.Window'Class)
     return access FLTK.Widgets.Groups.Windows.Window'Class;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static Fl_Timestamp now(double offset = 0);
+</pre></td>
+<td><pre>
+function Now
+       (Offset : in Long_Float := 0.0)
+    return Timestamp;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int Fl_Scheme::num_schemes();
+</pre></td>
+<td><pre>
+function Scheme_Count
+    return Natural;
 </pre></td>
   </tr>
 
@@ -734,6 +921,18 @@ procedure Own_Colormap;
 
   <tr>
 <td><pre>
+int fl_parse_color(const char *p, uchar &r, uchar &g, uchar &b);
+</pre></td>
+<td><pre>
+function Parse_Color
+       (Name    : in     String;
+        R, G, B : in out Color_Component)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 static void paste(Fl_Widget &receiver);
 </pre></td>
 <td>Marked as backwards compatibility only.</td>
@@ -749,7 +948,30 @@ static void paste
 procedure Paste
        (Receiver : in FLTK.Widgets.Widget'Class;
         Source   : in Buffer_Kind);
-</pre><p>Wayland has no selection buffer: copying to and pasting from Selection do nothing useful there (pofltk 50).</p></td>
+
+procedure Paste_Image
+       (Receiver : in FLTK.Widgets.Widget'Class);
+</pre><p>Paste_Image passes source 1 and Fl::clipboard_image.</p><p>Wayland has no selection buffer: copying to and pasting from Selection do nothing useful there (pofltk 50).</p></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int program_should_quit();
+</pre></td>
+<td><pre>
+function Get_Program_Should_Quit
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void program_should_quit(int should_i);
+</pre></td>
+<td><pre>
+procedure Set_Program_Should_Quit
+       (To : in Boolean);
+</pre></td>
   </tr>
 
   <tr>
@@ -849,6 +1071,24 @@ procedure Repeat_Timeout
 
   <tr>
 <td><pre>
+static void run_checks();
+</pre></td>
+<td><pre>
+procedure Run_Checks;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void run_idle();
+</pre></td>
+<td><pre>
+procedure Run_Idle;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 static const char * scheme();
 </pre></td>
 <td><pre>
@@ -889,6 +1129,29 @@ procedure Set_Default_Scrollbar_Size
 
   <tr>
 <td><pre>
+static double seconds_between(Fl_Timestamp &back,
+    Fl_Timestamp &further_back);
+</pre></td>
+<td><pre>
+function Seconds_Between
+       (Earlier, Later : in Timestamp)
+    return Long_Float;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static double seconds_since(Fl_Timestamp &then);
+</pre></td>
+<td><pre>
+function Seconds_Since
+       (Moment : in Timestamp)
+    return Long_Float;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 static void selection(Fl_Widget &owner, const char *,
     int len);
 </pre></td>
@@ -903,28 +1166,61 @@ procedure Selection
 <td><pre>
 static Fl_Widget * selection_owner();
 </pre></td>
-<td>Marked as backwards compatibility only.</td>
+<td><pre>
+function Get_Selection_Owner
+    return access FLTK.Widgets.Widget'Class;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 static void selection_owner(Fl_Widget *);
 </pre></td>
-<td>Marked as backwards compatibility only.</td>
+<td><pre>
+procedure Set_Selection_Owner
+       (To : in FLTK.Widgets.Widget'Class);
+
+procedure Clear_Selection_Owner;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int selection_to_clipboard();
+</pre></td>
+<td><pre>
+function Get_Selection_To_Clipboard
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void selection_to_clipboard(int mode);
+</pre></td>
+<td><pre>
+procedure Set_Selection_To_Clipboard
+       (To : in Boolean);
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 static void set_abort(Fl_Abort_Handler f);
 </pre></td>
-<td>Marked as backwards compatibility only.</td>
+<td><pre>
+FLTK.Errors.Current_Fatal : Error_Function;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 static void set_atclose(Fl_Atclose_Handler f);
 </pre></td>
-<td>Marked as backwards compatibility only.</td>
+<td><pre>
+procedure Set_Window_Close_Handler
+       (Func : in Window_Close_Handler);
+</pre>Null restores Fl::default_atclose.</td>
   </tr>
 
   <tr>
@@ -1064,6 +1360,29 @@ procedure Set_Label_Kind
 static void * thread_message();
 </pre></td>
 <td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static long ticks_between(Fl_Timestamp &back,
+    Fl_Timestamp &further_back);
+</pre></td>
+<td><pre>
+function Ticks_Between
+       (Earlier, Later : in Timestamp)
+    return Long_Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static long ticks_since(Fl_Timestamp &then);
+</pre></td>
+<td><pre>
+function Ticks_Since
+       (Moment : in Timestamp)
+    return Long_Integer;
+</pre></td>
   </tr>
 
   <tr>

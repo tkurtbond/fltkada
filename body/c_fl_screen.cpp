@@ -5,6 +5,7 @@
 
 
 #include <FL/Fl.H>
+#include <FL/platform.H>
 #include "c_fl_screen.h"
 
 
@@ -54,6 +55,29 @@ int fl_screen_count() {
 
 void fl_screen_dpi(float &h, float &v, int n) {
     Fl::screen_dpi(h, v, n);
+}
+
+
+
+
+int fl_screen_scaling_supported() {
+    return Fl::screen_scaling_supported();
+}
+
+float fl_screen_get_scale(int n) {
+    return Fl::screen_scale(n);
+}
+
+//  The display is opened first, as pofltk does: opening it applies the
+//  desktop's factor and FLTK_SCALING_FACTOR (Fl_Screen_Driver.cxx:582-597,
+//  610), which would replace a factor set before.
+void fl_screen_set_scale(int n, float f) {
+    fl_open_display();
+    Fl::screen_scale(n, f);
+}
+
+void fl_screen_keyboard_scaling(int v) {
+    Fl::keyboard_screen_scaling(v);
 }
 
 

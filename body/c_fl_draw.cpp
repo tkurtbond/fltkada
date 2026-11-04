@@ -12,6 +12,7 @@
 #include <FL/Fl_Device.H>
 #include <FL/fl_draw.H>
 #include <FL/Fl_Graphics_Driver.H>
+#include <FL/Fl_Rect.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Widget_Surface.H>
 #include "c_fl_draw.h"
@@ -174,6 +175,42 @@ int fl_draw_overlay_rect(int x, int y, int w, int h) {
     return 1;
 }
 
+//  These use the graphics driver's Cairo context, which is null with
+//  nothing to draw on: fl_antialias always crashes then (pofltk 124), and
+//  fl_override_scale and fl_restore_scale do when the scale isn't 1
+//  (Fl_Cairo_Graphics_Driver.cxx:1493-1518).  Each returns 0 then.
+int fl_draw_get_antialias(int &a) {
+    if (!on_window() && !on_surface()) {
+        return 0;
+    }
+    a = fl_antialias();
+    return 1;
+}
+
+int fl_draw_set_antialias(int a) {
+    if (!on_window() && !on_surface()) {
+        return 0;
+    }
+    fl_antialias(a);
+    return 1;
+}
+
+int fl_draw_override_scale(float &s) {
+    if (!on_window() && !on_surface()) {
+        return 0;
+    }
+    s = fl_override_scale();
+    return 1;
+}
+
+int fl_draw_restore_scale(float s) {
+    if (!on_window() && !on_surface()) {
+        return 0;
+    }
+    fl_restore_scale(s);
+    return 1;
+}
+
 
 
 
@@ -236,6 +273,14 @@ void fl_draw_line_style(int style, int width, char * dashes) {
 
 void fl_draw_mult_matrix(double a, double b, double c, double d, double x, double y) {
     fl_mult_matrix(a, b, c, d, x, y);
+}
+
+void fl_draw_load_identity() {
+    fl_load_identity();
+}
+
+void fl_draw_load_matrix(double a, double b, double c, double d, double x, double y) {
+    fl_load_matrix(a, b, c, d, x, y);
 }
 
 void fl_draw_pop_matrix() {
@@ -554,6 +599,39 @@ void fl_draw_curve(double x0, double y0, double x1, double y1,
 
 void fl_draw_frame(const char *s, int x, int y, int w, int h) {
     fl_frame(s, x, y, w, h);
+}
+
+void fl_draw_frame2(const char *s, int x, int y, int w, int h) {
+    fl_frame2(s, x, y, w, h);
+}
+
+void fl_draw_rounded_rect(int x, int y, int w, int h, int r) {
+    fl_rounded_rect(x, y, w, h, r);
+}
+
+void fl_draw_rounded_rectf(int x, int y, int w, int h, int r) {
+    fl_rounded_rectf(x, y, w, h, r);
+}
+
+void fl_draw_focus_rect(int x, int y, int w, int h) {
+    fl_focus_rect(x, y, w, h);
+}
+
+void fl_draw_draw_box_focus(int bk, int x, int y, int w, int h, unsigned int fg, unsigned int bg) {
+    fl_draw_box_focus(static_cast<Fl_Boxtype>(bk), x, y, w, h, fg, bg);
+}
+
+void fl_draw_draw_check(int x, int y, int w, int h, unsigned int c) {
+    fl_draw_check(Fl_Rect(x, y, w, h), c);
+}
+
+void fl_draw_draw_radio(int x, int y, int d, unsigned int c) {
+    fl_draw_radio(x, y, d, c);
+}
+
+void fl_draw_draw_arrow(int x, int y, int w, int h, int t, int o, unsigned int c) {
+    fl_draw_arrow(Fl_Rect(x, y, w, h), static_cast<Fl_Arrow_Type>(t),
+        static_cast<Fl_Orientation>(o), c);
 }
 
 void fl_draw_gap() {

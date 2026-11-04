@@ -130,11 +130,20 @@ package FLTK.Events is
 
     --  Clipboard  --
 
+    --  In a Paste event, the text pasted, or "" if it is an image.
     function Clipboard_Text
         return String;
 
+    --  In a Paste event, "text/plain" or "image".
     function Clipboard_Kind
         return String;
+
+    --  In a Paste event, whether it carries an image, which
+    --  FLTK.Images.RGB.Forge.Pasted takes.  An image not taken is deleted
+    --  when the Handle that FLTK called returns, whatever it returned
+    --  (pofltk 48).
+    function Has_Clipboard_Image
+        return Boolean;
 
 
 
@@ -335,6 +344,7 @@ private
 
     pragma Inline (Clipboard_Text);
     pragma Inline (Clipboard_Kind);
+    pragma Inline (Has_Clipboard_Image);
 
     pragma Inline (Compose);
     pragma Inline (Compose_Reset);

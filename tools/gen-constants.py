@@ -174,6 +174,29 @@ for a, c in [("None", "0"), ("Child", "CHILD"), ("Expose", "EXPOSE"), ("Scroll",
              ("Full", "ALL")]:
     add(f"Long_Long_Integer (Mask_To_UChar (Damage_{a}))", c if c == "0" else "FL_DAMAGE_" + c)
 
+section("Contrast modes (fl_contrast_mode)")
+enum("Contrast_Mode", [("No_Contrast", "FL_CONTRAST_NONE"), ("Legacy_Contrast", "FL_CONTRAST_LEGACY"),
+                       ("CIELAB_Contrast", "FL_CONTRAST_CIELAB"),
+                       ("Custom_Contrast", "FL_CONTRAST_CUSTOM")])
+
+section("Callback reasons (Fl_Callback_Reason)")
+for a in """Unknown Selected Deselected Reselected Opened Closed Dragged Cancelled Changed
+            Got_Focus Lost_Focus Released Enter_Key User""".split():
+    add(f"Long_Long_Integer (Reason_{a})", "FL_REASON_" + a.upper())
+
+section("Screen scaling support (Fl::screen_scaling_supported); FLTK's enum is\n"
+        "--  private to Fl_Screen_Driver, so these are its values (Fl_Screen_Driver.H:228-231)")
+enum("Screen.Scaling_Kind", [("Screen.No_Scaling", "0"), ("Screen.Systemwide_Scaling", "1"),
+                             ("Screen.Per_Screen_Scaling", "2")])
+
+section("Arrow types (Fl_Arrow_Type); FLTK.Draw passes Pos + 1")
+for a in "Single Double Choice Return".split():
+    add(f"Long_Long_Integer (Draw.Arrow_Kind'Pos (Draw.{a}_Arrow) + 1)", "FL_ARROW_" + a.upper())
+
+section("Orientations (Fl_Orientation)")
+enum("Draw.Orientation_Kind", [(f"Draw.Orient_{a}", "FL_ORIENT_" + a.upper())
+                               for a in "Right NE Up NW Left SW Down SE".split()])
+
 
 HEADER = """{c}  Programmed by T. Kurt Bond and Claude Opus 5.5
 {c}  Released into the public domain
@@ -212,7 +235,7 @@ def ada():
            "--  Checks each of FLTKAda's constants against FLTK's value, from",
            "--  c_constants.cpp.  A child of FLTK, so it can see the private",
            "--  conversions.  Run by test_constants.adb.", "", "",
-           "with", "", "    Checks;", "", "",
+           "with", "", "    Checks,", "    FLTK.Draw,", "    FLTK.Screen;", "", "",
            "procedure FLTK.Test_Constants is", "", "",
            f"    type Value_Array is array (1 .. {count}) of Long_Long_Integer;",
            "    pragma Convention (C, Value_Array);", "",

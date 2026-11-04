@@ -36,6 +36,11 @@
     <td>Visual_Mode</td>
   </tr>
 
+  <tr>
+    <td>int</td>
+    <td>Scaling_Kind</td>
+  </tr>
+
 </table>
 
 
@@ -94,6 +99,16 @@ function Get_H
 
   <tr>
 <td><pre>
+static void keyboard_screen_scaling(int value);
+</pre></td>
+<td><pre>
+procedure Set_Keyboard_Scaling
+       (To : in Boolean);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 static void redraw();
 </pre></td>
 <td><pre>
@@ -141,6 +156,38 @@ static int screen_num(int x, int y, int w, int h);
 function Containing
        (X, Y, W, H : in Integer)
     return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static float screen_scale(int n);
+</pre></td>
+<td><pre>
+function Get_Scale
+       (Screen_Number : in Integer := 1)
+    return Float;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void screen_scale(int n, float factor);
+</pre></td>
+<td><pre>
+procedure Set_Scale
+       (Factor        : in Float;
+        Screen_Number : in Integer := 1);
+</pre>Screen numbers start at 1, as elsewhere in FLTK.Screen; FLTK's start at 0.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int screen_scaling_supported();
+</pre></td>
+<td><pre>
+function Scaling_Support
+    return Scaling_Kind;
 </pre></td>
   </tr>
 

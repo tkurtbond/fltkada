@@ -37,6 +37,11 @@ package body FLTK.Images.RGB is
     pragma Import (C, free_fl_rgb_image, "free_fl_rgb_image");
     pragma Inline (free_fl_rgb_image);
 
+    function fl_event_take_clipboard_image
+        return Storage.Integer_Address;
+    pragma Import (C, fl_event_take_clipboard_image, "fl_event_take_clipboard_image");
+    pragma Inline (fl_event_take_clipboard_image);
+
 
 
 
@@ -149,6 +154,18 @@ package body FLTK.Images.RGB is
     --------------------
 
     package body Forge is
+
+        function Pasted
+            return RGB_Image is
+        begin
+            return Result : RGB_Image do
+                Result.Void_Ptr := fl_event_take_clipboard_image;
+                if Result.Void_Ptr = Null_Pointer then
+                    raise Program_Error with "no pasted image to take";
+                end if;
+            end return;
+        end Pasted;
+
 
         function Create
                (Data          : in Color_Component_Array;

@@ -32,7 +32,11 @@ extern "C" void fl_event_set_visible_focus(int f);
 
 
 extern "C" const char * fl_event_clipboard_text();
+extern "C" int fl_event_clipboard_length();
 extern "C" const char * fl_event_clipboard_type();
+extern "C" int fl_event_has_clipboard_image();
+extern "C" void * fl_event_take_clipboard_image();
+extern "C" void fl_event_end_paste();
 
 
 extern "C" int fl_event_compose(int &d);

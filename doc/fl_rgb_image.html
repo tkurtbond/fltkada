@@ -133,6 +133,16 @@ function Create
 </pre></td>
   </tr>
 
+  <tr>
+<td>(Fl_RGB_Image *) Fl::event_clipboard(), in a paste event
+whose Fl::event_clipboard_type() is Fl::clipboard_image</td>
+<td><pre>
+function Pasted
+    return RGB_Image;
+</pre>The program then owns the image. Raises Program_Error if the event
+carries no image, or it was taken already.</td>
+  </tr>
+
 </table>
 
 

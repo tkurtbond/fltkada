@@ -286,7 +286,11 @@ static const char * event_clipboard_type();
 <td><pre>
 function Clipboard_Kind
     return String;
-</pre></td>
+
+function Has_Clipboard_Image
+    return Boolean;
+</pre><p>Clipboard_Text is "" when the Paste event carries an image, which
+FLTK.Images.RGB.Forge.Pasted takes (pofltk 48).</p></td>
   </tr>
 
   <tr>

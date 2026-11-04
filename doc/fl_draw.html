@@ -83,6 +83,16 @@ the callback, since there are no pixels to move.</p>
   </tr>
 
   <tr>
+    <td>Fl_Arrow_Type</td>
+    <td>Arrow_Kind</td>
+  </tr>
+
+  <tr>
+    <td>Fl_Orientation</td>
+    <td>Orientation_Kind</td>
+  </tr>
+
+  <tr>
     <td>void(*callthis)(const char *, int, int, int)</td>
     <td>Text_Draw_Function</td>
   </tr>
@@ -121,6 +131,21 @@ procedure Add_Symbol
        (Text     : in String;
         Func     : in Symbol_Draw_Function;
         Scalable : in Boolean);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fl_antialias();
+
+void fl_antialias(int state);
+</pre></td>
+<td><pre>
+function Get_Antialias
+    return Boolean;
+
+procedure Set_Antialias
+       (To : in Boolean);
 </pre></td>
   </tr>
 
@@ -407,12 +432,50 @@ procedure Draw_Text
 
   <tr>
 <td><pre>
+void fl_draw_arrow(Fl_Rect bb, Fl_Arrow_Type t,
+    Fl_Orientation o, Fl_Color color);
+</pre></td>
+<td><pre>
+procedure Draw_Arrow
+       (X, Y, W, H : in Integer;
+        Kind       : in Arrow_Kind;
+        Direction  : in Orientation_Kind;
+        Hue        : in Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 void fl_draw_box(Fl_Boxtype, int x, int y, int w, int h, Fl_Color);
 </pre></td>
 <td><pre>
 procedure Draw_Box
        (X, Y, W, H : in Integer;
         Kind       : in Box_Kind;
+        Hue        : in Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void fl_draw_box_focus(Fl_Boxtype, int x, int y, int w, int h,
+    Fl_Color, Fl_Color);
+</pre></td>
+<td><pre>
+procedure Draw_Box_Focus
+       (X, Y, W, H : in Integer;
+        Kind       : in Box_Kind;
+        Fore, Back : in Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void fl_draw_check(Fl_Rect bb, Fl_Color col);
+</pre></td>
+<td><pre>
+procedure Draw_Check
+       (X, Y, W, H : in Integer;
         Hue        : in Color);
 </pre></td>
   </tr>
@@ -511,6 +574,17 @@ with Pre =>
 
   <tr>
 <td><pre>
+void fl_draw_radio(int x, int y, int d, Fl_Color color);
+</pre></td>
+<td><pre>
+procedure Draw_Radio
+       (X, Y, D : in Integer;
+        Hue     : in Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 int fl_draw_symbol(const char *label, int x, int y,
     int w, int h, Fl_Color);
 </pre></td>
@@ -587,6 +661,16 @@ function Expand_Text
 
   <tr>
 <td><pre>
+void fl_focus_rect(int x, int y, int w, int h);
+</pre></td>
+<td><pre>
+procedure Focus_Rect
+       (X, Y, W, H : in Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 Fl_Font fl_font();
 </pre></td>
 <td><pre>
@@ -609,13 +693,22 @@ procedure Set_Font
   <tr>
 <td><pre>
 void fl_frame(const char *s, int x, int y, int w, int h);
-
-void fl_frame2(const char *s, int x, int y, int w, int h);
 </pre></td>
 <td><pre>
 procedure Frame
        (X, Y, W, H               : in Integer;
         Top, Left, Bottom, Right : in Greyscale);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void fl_frame2(const char *s, int x, int y, int w, int h);
+</pre></td>
+<td><pre>
+procedure Frame2
+       (X, Y, W, H               : in Integer;
+        Bottom, Right, Top, Left : in Greyscale);
 </pre></td>
   </tr>
 
@@ -701,6 +794,26 @@ Max_Dash_Gaps (127) pairs; more raise Constraint_Error.  FLTK copies
 the pattern into an array of 256 chars unchecked, and a char over 127
 is negative, which draws no line on Cairo (pofltk 136).  FLTK's OpenGL
 drawing ignores a pattern.</p></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void fl_load_identity();
+</pre></td>
+<td><pre>
+procedure Load_Identity;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void fl_load_matrix(double a, double b, double c, double d,
+    double x, double y);
+</pre></td>
+<td><pre>
+procedure Load_Matrix
+       (A, B, C, D, X, Y : in Long_Float);
+</pre></td>
   </tr>
 
   <tr>
@@ -832,6 +945,16 @@ void fl_overlay_rect(int x, int y, int w, int h);
 <td><pre>
 procedure Overlay_Rect
        (X, Y, W, H : in Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+float fl_override_scale();
+</pre></td>
+<td><pre>
+function Override_Scale
+    return Float;
 </pre></td>
   </tr>
 
@@ -1021,11 +1144,41 @@ Push_Clip until that clip is popped. Use Push_Clip and Pop_Clip instead
 
   <tr>
 <td><pre>
+void fl_restore_scale(float s);
+</pre></td>
+<td><pre>
+procedure Restore_Scale
+       (Factor : in Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 void fl_rotate(double d);
 </pre></td>
 <td><pre>
 procedure Rotate
        (Angle : in Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void fl_rounded_rect(int x, int y, int w, int h, int r);
+</pre></td>
+<td><pre>
+procedure Rounded_Rect
+       (X, Y, W, H, R : in Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void fl_rounded_rectf(int x, int y, int w, int h, int r);
+</pre></td>
+<td><pre>
+procedure Rounded_Rect_Fill
+       (X, Y, W, H, R : in Integer);
 </pre></td>
   </tr>
 

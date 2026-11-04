@@ -97,6 +97,33 @@ package body FLTK.Screen is
 
 
 
+    --  Scaling  --
+
+    function fl_screen_scaling_supported
+        return Interfaces.C.int;
+    pragma Import (C, fl_screen_scaling_supported, "fl_screen_scaling_supported");
+    pragma Inline (fl_screen_scaling_supported);
+
+    function fl_screen_get_scale
+           (N : in Interfaces.C.int)
+        return Interfaces.C.C_float;
+    pragma Import (C, fl_screen_get_scale, "fl_screen_get_scale");
+    pragma Inline (fl_screen_get_scale);
+
+    procedure fl_screen_set_scale
+           (N : in Interfaces.C.int;
+            F : in Interfaces.C.C_float);
+    pragma Import (C, fl_screen_set_scale, "fl_screen_set_scale");
+    pragma Inline (fl_screen_set_scale);
+
+    procedure fl_screen_keyboard_scaling
+           (V : in Interfaces.C.int);
+    pragma Import (C, fl_screen_keyboard_scaling, "fl_screen_keyboard_scaling");
+    pragma Inline (fl_screen_keyboard_scaling);
+
+
+
+
     --  Position Lookup  --
 
     function fl_screen_num
@@ -262,6 +289,58 @@ package body FLTK.Screen is
             Interfaces.C.C_float (Vertical),
             Interfaces.C.int (Screen_Number) - 1);
     end DPI;
+
+
+
+
+    --  Scaling  --
+
+    function Scaling_Support
+        return Scaling_Kind
+    is
+        Result : constant Interfaces.C.int := fl_screen_scaling_supported;
+    begin
+        return Scaling_Kind'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl::screen_scaling_supported returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Scaling_Support;
+
+
+    procedure Check_Screen
+           (Screen_Number : in Integer) is
+    begin
+        if Screen_Number not in 1 .. Count then
+            raise Constraint_Error with
+                "screen" & Integer'Image (Screen_Number) & " of" & Integer'Image (Count);
+        end if;
+    end Check_Screen;
+
+
+    function Get_Scale
+           (Screen_Number : in Integer := 1)
+        return Float is
+    begin
+        Check_Screen (Screen_Number);
+        return Float (fl_screen_get_scale (Interfaces.C.int (Screen_Number) - 1));
+    end Get_Scale;
+
+
+    procedure Set_Scale
+           (Factor        : in Float;
+            Screen_Number : in Integer := 1) is
+    begin
+        Check_Screen (Screen_Number);
+        fl_screen_set_scale (Interfaces.C.int (Screen_Number) - 1, Interfaces.C.C_float (Factor));
+    end Set_Scale;
+
+
+    procedure Set_Keyboard_Scaling
+           (To : in Boolean) is
+    begin
+        fl_screen_keyboard_scaling (Boolean'Pos (To));
+    end Set_Keyboard_Scaling;
 
 
 

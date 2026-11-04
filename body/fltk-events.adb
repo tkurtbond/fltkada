@@ -183,6 +183,16 @@ package body FLTK.Events is
     pragma Import (C, fl_event_clipboard_type, "fl_event_clipboard_type");
     pragma Inline (fl_event_clipboard_type);
 
+    function fl_event_clipboard_length
+        return Interfaces.C.int;
+    pragma Import (C, fl_event_clipboard_length, "fl_event_clipboard_length");
+    pragma Inline (fl_event_clipboard_length);
+
+    function fl_event_has_clipboard_image
+        return Interfaces.C.int;
+    pragma Import (C, fl_event_has_clipboard_image, "fl_event_has_clipboard_image");
+    pragma Inline (fl_event_has_clipboard_image);
+
 
 
 
@@ -783,7 +793,8 @@ package body FLTK.Events is
         if Text_Ptr = Interfaces.C.Strings.Null_Ptr then
             return "";
         else
-            return Interfaces.C.Strings.Value (Text_Ptr);
+            return Interfaces.C.Strings.Value
+                (Text_Ptr, Interfaces.C.size_t (fl_event_clipboard_length));
         end if;
     end Clipboard_Text;
 
@@ -799,6 +810,13 @@ package body FLTK.Events is
             return Interfaces.C.Strings.Value (Text_Ptr);
         end if;
     end Clipboard_Kind;
+
+
+    function Has_Clipboard_Image
+        return Boolean is
+    begin
+        return fl_event_has_clipboard_image /= 0;
+    end Has_Clipboard_Image;
 
 
 

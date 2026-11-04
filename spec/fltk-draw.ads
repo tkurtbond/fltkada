@@ -33,6 +33,25 @@ package FLTK.Draw is
         Round_Join,
         Bevel_Join);
 
+    --  Fl_Arrow_Type, FL_ARROW_SINGLE .. FL_ARROW_RETURN (1 .. 4).
+    type Arrow_Kind is
+       (Single_Arrow,
+        Double_Arrow,
+        Choice_Arrow,
+        Return_Arrow);
+
+    --  Fl_Orientation: the direction an arrow points, 45 degrees apart
+    --  anticlockwise from Right.
+    type Orientation_Kind is
+       (Orient_Right,
+        Orient_NE,
+        Orient_Up,
+        Orient_NW,
+        Orient_Left,
+        Orient_SW,
+        Orient_Down,
+        Orient_SE);
+
     --  A dash or gap is in pixels, not in multiples of the line width as the
     --  Line_Kind dashes are.  FLTK passes the lengths as a C char, which is
     --  signed on x86, so a length over 127 would be negative (pofltk 136).
@@ -218,10 +237,37 @@ package FLTK.Draw is
             Width  : in Natural        := 0;
             Dashes : in Dash_Gap_Array := Empty_Dashes);
 
+    --  Whether lines are drawn antialiased.  Only FLTK's Cairo drawing
+    --  (X11 with Cairo, and Wayland) can change it.  Raises Program_Error
+    --  with nothing to draw on, neither a shown window current nor a
+    --  surface (pofltk 124).
+    function Get_Antialias
+        return Boolean;
+
+    procedure Set_Antialias
+           (To : in Boolean);
+
+    --  Draws at the scale of the screen's pixels until Restore_Scale, and
+    --  returns the scale that was in effect, to pass to Restore_Scale.
+    --  Both raise Program_Error with nothing to draw on: FLTK crashes when
+    --  the scale isn't 1 (Fl_Cairo_Graphics_Driver.cxx:1493-1508).
+    function Override_Scale
+        return Float;
+
+    procedure Restore_Scale
+           (Factor : in Float);
+
 
 
 
     --  Matrix Operations  --
+
+    --  Load_Identity and Load_Matrix replace the current matrix, where
+    --  Mult_Matrix multiplies it.
+    procedure Load_Identity;
+
+    procedure Load_Matrix
+           (A, B, C, D, X, Y : in Long_Float);
 
     procedure Mult_Matrix
            (A, B, C, D, X, Y : in Long_Float);
@@ -395,6 +441,28 @@ package FLTK.Draw is
             Kind       : in Box_Kind;
             Hue        : in Color);
 
+    --  The focus frame Kind draws inside a box, if Visible_Focus is on.
+    procedure Draw_Box_Focus
+           (X, Y, W, H : in Integer;
+            Kind       : in Box_Kind;
+            Fore, Back : in Color);
+
+    --  A check mark, centred in the box.
+    procedure Draw_Check
+           (X, Y, W, H : in Integer;
+            Hue        : in Color);
+
+    --  A radio button of diameter D, as the scheme draws it.
+    procedure Draw_Radio
+           (X, Y, D : in Integer;
+            Hue     : in Color);
+
+    procedure Draw_Arrow
+           (X, Y, W, H : in Integer;
+            Kind       : in Arrow_Kind;
+            Direction  : in Orientation_Kind;
+            Hue        : in Color);
+
     --  Raises Draw_Error if Name does not start with @, names no symbol, or holds
     --  a byte outside ASCII (FLTK's symbol lookup misbehaves on those).
     procedure Draw_Symbol
@@ -485,6 +553,14 @@ package FLTK.Draw is
            (X, Y, W, H               : in Integer;
             Top, Left, Bottom, Right : in Greyscale);
 
+    --  Frame, with the sides drawn in the other order.
+    procedure Frame2
+           (X, Y, W, H               : in Integer;
+            Bottom, Right, Top, Left : in Greyscale);
+
+    procedure Focus_Rect
+           (X, Y, W, H : in Integer);
+
     procedure Gap;
 
     procedure Line
@@ -542,6 +618,12 @@ package FLTK.Draw is
     procedure Rect_Fill
            (X, Y, W, H : in Integer;
             R, G, B    : in Color_Component);
+
+    procedure Rounded_Rect
+           (X, Y, W, H, R : in Integer);
+
+    procedure Rounded_Rect_Fill
+           (X, Y, W, H, R : in Integer);
 
     procedure Ecks_Why_Line
            (X0, Y0, X1 : in Integer);
@@ -629,6 +711,8 @@ private
     pragma Inline (Font_Descent);
     pragma Inline (Font_Height);
 
+    pragma Inline (Load_Identity);
+    pragma Inline (Load_Matrix);
     pragma Inline (Mult_Matrix);
     pragma Inline (Pop_Matrix);
     pragma Inline (Push_Matrix);
@@ -663,6 +747,14 @@ private
     pragma Inline (Circle);
     pragma Inline (Curve);
     pragma Inline (Frame);
+    pragma Inline (Frame2);
+    pragma Inline (Focus_Rect);
+    pragma Inline (Rounded_Rect);
+    pragma Inline (Rounded_Rect_Fill);
+    pragma Inline (Draw_Box_Focus);
+    pragma Inline (Draw_Check);
+    pragma Inline (Draw_Radio);
+    pragma Inline (Draw_Arrow);
     pragma Inline (Gap);
     pragma Inline (Line);
     pragma Inline (Outline);

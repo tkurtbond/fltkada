@@ -142,9 +142,17 @@ unsigned int fl_enum_lighter(unsigned int c) {
     return static_cast<unsigned int>(fl_lighter(static_cast<Fl_Color>(c)));
 }
 
-unsigned int fl_enum_contrast(unsigned int f, unsigned int b) {
+unsigned int fl_enum_contrast(unsigned int f, unsigned int b, int c, int s) {
     return static_cast<unsigned int>(fl_contrast
-        (static_cast<Fl_Color>(f), static_cast<Fl_Color>(b)));
+        (static_cast<Fl_Color>(f), static_cast<Fl_Color>(b), c, s));
+}
+
+double fl_enum_lightness(unsigned int c) {
+    return fl_lightness(static_cast<Fl_Color>(c));
+}
+
+double fl_enum_luminance(unsigned int c) {
+    return fl_luminance(static_cast<Fl_Color>(c));
 }
 
 unsigned int fl_enum_inactive(unsigned int c) {

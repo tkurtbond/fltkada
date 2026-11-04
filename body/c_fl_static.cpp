@@ -5,6 +5,7 @@
 
 
 #include <FL/Fl.H>
+#include <FL/Fl_Scheme.H>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Window.H>
 #include <FL/platform.H>
@@ -28,6 +29,63 @@ const char * const fl_help_usage_string_ptr = Fl::help;
 
 void fl_static_open_display() {
     fl_open_display();
+}
+
+
+
+
+int fl_static_get_program_should_quit() {
+    return Fl::program_should_quit();
+}
+
+void fl_static_set_program_should_quit(int q) {
+    Fl::program_should_quit(q);
+}
+
+void fl_static_hide_all_windows() {
+    Fl::hide_all_windows();
+}
+
+void fl_static_run_checks() {
+    Fl::run_checks();
+}
+
+void fl_static_run_idle() {
+    Fl::run_idle();
+}
+
+//  The handler for a window with FLTK's default callback, or FLTK's own if
+//  h is null.
+void fl_static_set_atclose(void * h) {
+    Fl::set_atclose(h == 0 ? Fl::default_atclose : reinterpret_cast<Fl_Atclose_Handler>(h));
+}
+
+
+
+
+//  Fl_Timestamp's sec is a time_t, carried as a long long, so it fits on
+//  every host.
+void fl_static_now(double o, long long &s, int &u) {
+    Fl_Timestamp t = Fl::now(o);
+    s = static_cast<long long>(t.sec);
+    u = t.usec;
+}
+
+static Fl_Timestamp stamp(long long s, int u) {
+    Fl_Timestamp t;
+    t.sec = static_cast<time_t>(s);
+    t.usec = u;
+    return t;
+}
+
+double fl_static_seconds_between(long long s1, int u1, long long s2, int u2) {
+    Fl_Timestamp t1 = stamp(s1, u1), t2 = stamp(s2, u2);
+    return Fl::seconds_between(t1, t2);
+}
+
+long fl_static_ticks_between(long long s1, int u1, long long s2, int u2) {
+    Fl_Timestamp t1 = stamp(s1, u1), t2 = stamp(s2, u2);
+    return Fl::ticks_between(t1, t2);
 }
 
 //  True if the display, which this opens, is Wayland's.  An FLTK built
@@ -374,6 +432,18 @@ void fl_static_paste(void * r, int s) {
     Fl::paste(ref, s);
 }
 
+void fl_static_paste_image(void * r) {
+#if defined(FLTK_USE_X11)
+    if (!wayland() && Fl::first_window() == 0 && !fl_i_own_selection[1]) {
+        return;
+    }
+#else
+    fl_open_display();
+#endif
+    Fl_Widget &ref = *static_cast<Fl_Widget*>(r);
+    Fl::paste(ref, 1, Fl::clipboard_image);
+}
+
 void fl_static_selection(void * o, char * t, int l) {
     fl_open_display();
     Fl_Widget &ref = *static_cast<Fl_Widget*>(o);
@@ -473,6 +543,20 @@ void fl_static_reload_scheme() {
     Fl::reload_scheme();
 }
 
+int fl_static_scheme_count() {
+    return Fl_Scheme::num_schemes();
+}
+
+//  FLTK keeps the names; the list moves when a name is added.
+const char * fl_static_scheme_name(int i) {
+    return Fl_Scheme::names()[i];
+}
+
+//  FLTK copies the name (Fl_Scheme.cxx:155).
+int fl_static_add_scheme_name(const char * n) {
+    return Fl_Scheme::add_scheme_name(n);
+}
+
 
 
 
@@ -501,6 +585,91 @@ int fl_static_get_scrollbar_size() {
 
 void fl_static_set_scrollbar_size(int s) {
     Fl::scrollbar_size(s);
+}
+
+
+
+
+int fl_static_get_contrast_mode() {
+    return fl_contrast_mode();
+}
+
+void fl_static_set_contrast_mode(int m) {
+    fl_contrast_mode(m);
+}
+
+int fl_static_get_contrast_level() {
+    return fl_contrast_level();
+}
+
+void fl_static_set_contrast_level(int l) {
+    fl_contrast_level(l);
+}
+
+void fl_static_set_contrast_function(void * f) {
+    fl_contrast_function(reinterpret_cast<Fl_Contrast_Function*>(f));
+}
+
+//  The X11 driver opens the display itself to look up a name
+//  (Fl_X11_Screen_Driver.cxx:511-513); Wayland's reads hexadecimal alone
+//  (pofltk 47).
+int fl_static_parse_color(const char * n, unsigned char &r,
+    unsigned char &g, unsigned char &b)
+{
+    return fl_parse_color(n, r, g, b);
+}
+
+
+
+
+int fl_static_get_box_border_radius_max() {
+    return Fl::box_border_radius_max();
+}
+
+void fl_static_set_box_border_radius_max(int r) {
+    Fl::box_border_radius_max(r);
+}
+
+int fl_static_get_box_shadow_width() {
+    return Fl::box_shadow_width();
+}
+
+void fl_static_set_box_shadow_width(int w) {
+    Fl::box_shadow_width(w);
+}
+
+int fl_static_get_menu_linespacing() {
+    return Fl::menu_linespacing();
+}
+
+void fl_static_set_menu_linespacing(int h) {
+    Fl::menu_linespacing(h);
+}
+
+
+
+
+int fl_static_callback_reason() {
+    return Fl::callback_reason();
+}
+
+
+
+
+void * fl_static_get_selection_owner() {
+    return Fl::selection_owner();
+}
+
+void fl_static_set_selection_owner(void * w) {
+    Fl::selection_owner(static_cast<Fl_Widget*>(w));
+}
+
+int fl_static_get_selection_to_clipboard() {
+    return Fl::selection_to_clipboard();
+}
+
+void fl_static_set_selection_to_clipboard(int m) {
+    Fl::selection_to_clipboard(m);
 }
 
 

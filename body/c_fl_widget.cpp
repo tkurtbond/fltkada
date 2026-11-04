@@ -93,6 +93,9 @@ void fl_widget_forget(WIDGET w) {
     if (Fl::selection_owner() == wi) {
         Fl::selection_owner(0);
     }
+    //  A widget freed in a callback is deleted later (Fl::delete_widget),
+    //  but its Ada object is gone now, so its trackers say so now.
+    Fl::clear_widget_pointer(wi);
 }
 
 

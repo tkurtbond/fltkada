@@ -149,6 +149,16 @@
     <td>Version_Number</td>
   </tr>
 
+  <tr>
+    <td>Fl_Callback_Reason</td>
+    <td>Callback_Reason</td>
+  </tr>
+
+  <tr>
+    <td>enum Fl_Contrast_Mode</td>
+    <td>Contrast_Mode</td>
+  </tr>
+
 </table>
 
 
@@ -192,11 +202,13 @@ function Color_Cube
 
   <tr>
 <td><pre>
-Fl_Color fl_contrast(Fl_Color fg, Fl_Color bg);
+Fl_Color fl_contrast(Fl_Color fg, Fl_Color bg,
+    int context = 0, int size = 0);
 </pre></td>
 <td><pre>
 function Contrast
-       (Fore, Back : in Color)
+       (Fore, Back    : in Color;
+        Context, Size : in Integer := 0)
     return Color;
 </pre></td>
   </tr>
@@ -268,6 +280,28 @@ inline Fl_Color fl_lighter(Fl_Color c);
 function Lighter
        (Tone : in Color)
     return Color;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+double fl_lightness(Fl_Color color);
+</pre></td>
+<td><pre>
+function Lightness
+       (Tone : in Color)
+    return Long_Float;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+double fl_luminance(Fl_Color color);
+</pre></td>
+<td><pre>
+function Luminance
+       (Tone : in Color)
+    return Long_Float;
 </pre></td>
   </tr>
 

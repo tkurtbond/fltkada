@@ -604,6 +604,13 @@ package body FLTK.Widgets is
 
 
 
+    procedure fl_event_end_paste;
+    pragma Import (C, fl_event_end_paste, "fl_event_end_paste");
+    pragma Inline (fl_event_end_paste);
+
+
+
+
     ----------------------
     --  Exported Hooks  --
     ----------------------
@@ -634,6 +641,11 @@ package body FLTK.Widgets is
     end Draw_Hook;
 
 
+    --  How many Handles of a Paste event are running.  As the outermost
+    --  returns, a pasted image not taken is deleted (pofltk 48), and the
+    --  clipboard type is set back to text (FLTK-issues.md F13; c_fl_event.cpp).
+    Paste_Depth : Natural := 0;
+
     function Handle_Hook
            (U : in Storage.Integer_Address;
             E : in Interfaces.C.int)
@@ -641,12 +653,26 @@ package body FLTK.Widgets is
     is
         Ada_Widget : constant access Widget'Class :=
             Widget_Convert.To_Pointer (Storage.To_Address (U));
+        Is_Paste   : constant Boolean := E = Event_Kind'Pos (Paste);
+        Result     : Event_Outcome := Not_Handled;
     begin
-        return Event_Outcome'Pos (Ada_Widget.Handle (Event_Kind'Val (E)));
-    exception
-    when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
-        return Event_Outcome'Pos (Not_Handled);
+        if Is_Paste then
+            Paste_Depth := Paste_Depth + 1;
+        end if;
+        begin
+            Result := Ada_Widget.Handle (Event_Kind'Val (E));
+        exception
+        when Occurrence : others =>
+            Hook_Exceptions.Save (Occurrence);
+            Result := Not_Handled;
+        end;
+        if Is_Paste then
+            Paste_Depth := Paste_Depth - 1;
+            if Paste_Depth = 0 then
+                fl_event_end_paste;
+            end if;
+        end if;
+        return Event_Outcome'Pos (Result);
     end Handle_Hook;
 
 
@@ -675,11 +701,11 @@ package body FLTK.Widgets is
     is
         Maybe_Parent : access FLTK.Widgets.Groups.Group'Class;
     begin
-        if This.Needs_Dealloc then
+        --  A widget declared without Forge.Create has no FLTK widget, nor a
+        --  parent to ask for (FLTKAda-BUGS.md 68).
+        if This.Needs_Dealloc and This.Void_Ptr /= Null_Pointer then
             --  FLTK would keep a grab or selection naming it (pofltk 129).
-            if This.Void_Ptr /= Null_Pointer then
-                fl_widget_forget (This.Void_Ptr);
-            end if;
+            fl_widget_forget (This.Void_Ptr);
             Maybe_Parent := This.Parent;
             if Maybe_Parent /= null then
                 Maybe_Parent.Remove (This);

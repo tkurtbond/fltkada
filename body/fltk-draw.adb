@@ -119,6 +119,30 @@ package body FLTK.Draw is
     pragma Import (C, fl_draw_overlay_rect, "fl_draw_overlay_rect");
     pragma Inline (fl_draw_overlay_rect);
 
+    function fl_draw_get_antialias
+           (A : out Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_draw_get_antialias, "fl_draw_get_antialias");
+    pragma Inline (fl_draw_get_antialias);
+
+    function fl_draw_set_antialias
+           (A : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_draw_set_antialias, "fl_draw_set_antialias");
+    pragma Inline (fl_draw_set_antialias);
+
+    function fl_draw_override_scale
+           (S : out Interfaces.C.C_float)
+        return Interfaces.C.int;
+    pragma Import (C, fl_draw_override_scale, "fl_draw_override_scale");
+    pragma Inline (fl_draw_override_scale);
+
+    function fl_draw_restore_scale
+           (S : in Interfaces.C.C_float)
+        return Interfaces.C.int;
+    pragma Import (C, fl_draw_restore_scale, "fl_draw_restore_scale");
+    pragma Inline (fl_draw_restore_scale);
+
 
 
 
@@ -199,6 +223,15 @@ package body FLTK.Draw is
            (A, B, C, D, X, Y : in Interfaces.C.double);
     pragma Import (C, fl_draw_mult_matrix, "fl_draw_mult_matrix");
     pragma Inline (fl_draw_mult_matrix);
+
+    procedure fl_draw_load_identity;
+    pragma Import (C, fl_draw_load_identity, "fl_draw_load_identity");
+    pragma Inline (fl_draw_load_identity);
+
+    procedure fl_draw_load_matrix
+           (A, B, C, D, X, Y : in Interfaces.C.double);
+    pragma Import (C, fl_draw_load_matrix, "fl_draw_load_matrix");
+    pragma Inline (fl_draw_load_matrix);
 
     procedure fl_draw_rotate
            (D : in Interfaces.C.double);
@@ -456,6 +489,53 @@ package body FLTK.Draw is
             X, Y, W, H : in Interfaces.C.int);
     pragma Import (C, fl_draw_frame, "fl_draw_frame");
     pragma Inline (fl_draw_frame);
+
+    procedure fl_draw_frame2
+           (S          : in Interfaces.C.char_array;
+            X, Y, W, H : in Interfaces.C.int);
+    pragma Import (C, fl_draw_frame2, "fl_draw_frame2");
+    pragma Inline (fl_draw_frame2);
+
+    procedure fl_draw_focus_rect
+           (X, Y, W, H : in Interfaces.C.int);
+    pragma Import (C, fl_draw_focus_rect, "fl_draw_focus_rect");
+    pragma Inline (fl_draw_focus_rect);
+
+    procedure fl_draw_rounded_rect
+           (X, Y, W, H, R : in Interfaces.C.int);
+    pragma Import (C, fl_draw_rounded_rect, "fl_draw_rounded_rect");
+    pragma Inline (fl_draw_rounded_rect);
+
+    procedure fl_draw_rounded_rectf
+           (X, Y, W, H, R : in Interfaces.C.int);
+    pragma Import (C, fl_draw_rounded_rectf, "fl_draw_rounded_rectf");
+    pragma Inline (fl_draw_rounded_rectf);
+
+    procedure fl_draw_draw_box_focus
+           (K          : in Interfaces.C.int;
+            X, Y, W, H : in Interfaces.C.int;
+            F, B       : in Interfaces.C.unsigned);
+    pragma Import (C, fl_draw_draw_box_focus, "fl_draw_draw_box_focus");
+    pragma Inline (fl_draw_draw_box_focus);
+
+    procedure fl_draw_draw_check
+           (X, Y, W, H : in Interfaces.C.int;
+            C          : in Interfaces.C.unsigned);
+    pragma Import (C, fl_draw_draw_check, "fl_draw_draw_check");
+    pragma Inline (fl_draw_draw_check);
+
+    procedure fl_draw_draw_radio
+           (X, Y, D : in Interfaces.C.int;
+            C       : in Interfaces.C.unsigned);
+    pragma Import (C, fl_draw_draw_radio, "fl_draw_draw_radio");
+    pragma Inline (fl_draw_draw_radio);
+
+    procedure fl_draw_draw_arrow
+           (X, Y, W, H : in Interfaces.C.int;
+            T, O       : in Interfaces.C.int;
+            C          : in Interfaces.C.unsigned);
+    pragma Import (C, fl_draw_draw_arrow, "fl_draw_draw_arrow");
+    pragma Inline (fl_draw_draw_arrow);
 
     procedure fl_draw_line
            (X0, Y0 : in Interfaces.C.int;
@@ -916,6 +996,52 @@ package body FLTK.Draw is
     end Set_Line_Style;
 
 
+    function Get_Antialias
+        return Boolean
+    is
+        A : Interfaces.C.int := 0;
+    begin
+        if fl_draw_get_antialias (A) = 0 then
+            raise Program_Error with
+                "Get_Antialias needs a surface, or a shown window to be current";
+        end if;
+        return A /= 0;
+    end Get_Antialias;
+
+
+    procedure Set_Antialias
+           (To : in Boolean) is
+    begin
+        if fl_draw_set_antialias (Boolean'Pos (To)) = 0 then
+            raise Program_Error with
+                "Set_Antialias needs a surface, or a shown window to be current";
+        end if;
+    end Set_Antialias;
+
+
+    function Override_Scale
+        return Float
+    is
+        S : Interfaces.C.C_float := 1.0;
+    begin
+        if fl_draw_override_scale (S) = 0 then
+            raise Program_Error with
+                "Override_Scale needs a surface, or a shown window to be current";
+        end if;
+        return Float (S);
+    end Override_Scale;
+
+
+    procedure Restore_Scale
+           (Factor : in Float) is
+    begin
+        if fl_draw_restore_scale (Interfaces.C.C_float (Factor)) = 0 then
+            raise Program_Error with
+                "Restore_Scale needs a surface, or a shown window to be current";
+        end if;
+    end Restore_Scale;
+
+
 
 
     --  Matrix Operations  --
@@ -931,6 +1057,25 @@ package body FLTK.Draw is
             Interfaces.C.double (X),
             Interfaces.C.double (Y));
     end Mult_Matrix;
+
+
+    procedure Load_Identity is
+    begin
+        fl_draw_load_identity;
+    end Load_Identity;
+
+
+    procedure Load_Matrix
+           (A, B, C, D, X, Y : in Long_Float) is
+    begin
+        fl_draw_load_matrix
+           (Interfaces.C.double (A),
+            Interfaces.C.double (B),
+            Interfaces.C.double (C),
+            Interfaces.C.double (D),
+            Interfaces.C.double (X),
+            Interfaces.C.double (Y));
+    end Load_Matrix;
 
 
     procedure Rotate
@@ -1468,6 +1613,65 @@ package body FLTK.Draw is
     end Draw_Box;
 
 
+    procedure Draw_Box_Focus
+           (X, Y, W, H : in Integer;
+            Kind       : in Box_Kind;
+            Fore, Back : in Color) is
+    begin
+        fl_draw_draw_box_focus
+           (Box_Kind'Pos (Kind),
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H),
+            Interfaces.C.unsigned (Fore),
+            Interfaces.C.unsigned (Back));
+    end Draw_Box_Focus;
+
+
+    procedure Draw_Check
+           (X, Y, W, H : in Integer;
+            Hue        : in Color) is
+    begin
+        fl_draw_draw_check
+           (Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H),
+            Interfaces.C.unsigned (Hue));
+    end Draw_Check;
+
+
+    procedure Draw_Radio
+           (X, Y, D : in Integer;
+            Hue     : in Color) is
+    begin
+        fl_draw_draw_radio
+           (Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (D),
+            Interfaces.C.unsigned (Hue));
+    end Draw_Radio;
+
+
+    procedure Draw_Arrow
+           (X, Y, W, H : in Integer;
+            Kind       : in Arrow_Kind;
+            Direction  : in Orientation_Kind;
+            Hue        : in Color) is
+    begin
+        --  FL_ARROW_SINGLE is 1.
+        fl_draw_draw_arrow
+           (Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H),
+            Arrow_Kind'Pos (Kind) + 1,
+            Orientation_Kind'Pos (Direction),
+            Interfaces.C.unsigned (Hue));
+    end Draw_Arrow;
+
+
     procedure Draw_Symbol
            (X, Y, W, H : in Integer;
             Name       : in String;
@@ -1722,6 +1926,55 @@ package body FLTK.Draw is
             Interfaces.C.int (W),
             Interfaces.C.int (H));
     end Frame;
+
+
+    procedure Frame2
+           (X, Y, W, H               : in Integer;
+            Bottom, Right, Top, Left : in Greyscale) is
+    begin
+        fl_draw_frame2
+           (Interfaces.C.To_C
+               (Character (Bottom) & Character (Right) & Character (Top) & Character (Left)),
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H));
+    end Frame2;
+
+
+    procedure Focus_Rect
+           (X, Y, W, H : in Integer) is
+    begin
+        fl_draw_focus_rect
+           (Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H));
+    end Focus_Rect;
+
+
+    procedure Rounded_Rect
+           (X, Y, W, H, R : in Integer) is
+    begin
+        fl_draw_rounded_rect
+           (Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H),
+            Interfaces.C.int (R));
+    end Rounded_Rect;
+
+
+    procedure Rounded_Rect_Fill
+           (X, Y, W, H, R : in Integer) is
+    begin
+        fl_draw_rounded_rectf
+           (Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H),
+            Interfaces.C.int (R));
+    end Rounded_Rect_Fill;
 
 
     procedure Line

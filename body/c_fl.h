@@ -73,7 +73,9 @@ extern "C" unsigned int fl_enum_color_cube(int r, int g, int b);
 extern "C" unsigned int fl_enum_gray_ramp(int l);
 extern "C" unsigned int fl_enum_darker(unsigned int c);
 extern "C" unsigned int fl_enum_lighter(unsigned int c);
-extern "C" unsigned int fl_enum_contrast(unsigned int f, unsigned int b);
+extern "C" unsigned int fl_enum_contrast(unsigned int f, unsigned int b, int c, int s);
+extern "C" double fl_enum_lightness(unsigned int c);
+extern "C" double fl_enum_luminance(unsigned int c);
 extern "C" unsigned int fl_enum_inactive(unsigned int c);
 extern "C" unsigned int fl_enum_color_average(unsigned int c1, unsigned int c2, float w);
 

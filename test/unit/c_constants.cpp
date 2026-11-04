@@ -292,5 +292,44 @@ extern "C" const long long c_constants[] =
     FL_DAMAGE_OVERLAY,
     FL_DAMAGE_USER1,
     FL_DAMAGE_USER2,
-    FL_DAMAGE_ALL
+    FL_DAMAGE_ALL,
+    //  Contrast modes (fl_contrast_mode)
+    FL_CONTRAST_NONE,
+    FL_CONTRAST_LEGACY,
+    FL_CONTRAST_CIELAB,
+    FL_CONTRAST_CUSTOM,
+    //  Callback reasons (Fl_Callback_Reason)
+    FL_REASON_UNKNOWN,
+    FL_REASON_SELECTED,
+    FL_REASON_DESELECTED,
+    FL_REASON_RESELECTED,
+    FL_REASON_OPENED,
+    FL_REASON_CLOSED,
+    FL_REASON_DRAGGED,
+    FL_REASON_CANCELLED,
+    FL_REASON_CHANGED,
+    FL_REASON_GOT_FOCUS,
+    FL_REASON_LOST_FOCUS,
+    FL_REASON_RELEASED,
+    FL_REASON_ENTER_KEY,
+    FL_REASON_USER,
+    //  Screen scaling support (Fl::screen_scaling_supported); FLTK's enum is
+    //  private to Fl_Screen_Driver, so these are its values (Fl_Screen_Driver.H:228-231)
+    0,
+    1,
+    2,
+    //  Arrow types (Fl_Arrow_Type); FLTK.Draw passes Pos + 1
+    FL_ARROW_SINGLE,
+    FL_ARROW_DOUBLE,
+    FL_ARROW_CHOICE,
+    FL_ARROW_RETURN,
+    //  Orientations (Fl_Orientation)
+    FL_ORIENT_RIGHT,
+    FL_ORIENT_NE,
+    FL_ORIENT_UP,
+    FL_ORIENT_NW,
+    FL_ORIENT_LEFT,
+    FL_ORIENT_SW,
+    FL_ORIENT_DOWN,
+    FL_ORIENT_SE
 };

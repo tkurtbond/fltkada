@@ -314,3 +314,41 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
 - **Effect on FLTKAda**: none it can fix short of splitting the text
   itself. The spec of `Add_Items` says so.
 - **Confirmed**: `test_menu_add_items`, on X11 and on sway.
+
+### F12. `FL_CONTRAST_CUSTOM` with no function uses CIELAB at level 0
+
+- **What happens**: in Custom mode with no contrast function set,
+  `fl_contrast` returns the foreground colour unchanged, even white on
+  white. The docs say it falls back to CIELAB, but it doesn't contrast
+  as CIELAB mode does. Seen 2026-11-04.
+- **Cause**: the fallback falls through to `fl_contrast_cielab`
+  (`fl_contrast.cxx:513-519`), which reads the threshold from
+  `fl_contrast_level()`, the *current* mode's level (400, 202). Custom's
+  level is 0 to start (37-43), and every pair of colours passes a
+  threshold of 0 (410).
+- **Effect on FLTKAda**: none to fix. The spec of
+  `FLTK.Static.Set_Contrast_Function` says so: set a level in Custom
+  mode to get CIELAB's behaviour.
+- **Confirmed**: `test_statics_core`, on X11 and on sway: white on white
+  gives white at Custom's level 0, and black after
+  `Set_Contrast_Level (39)` in Custom mode.
+
+### F13. Pasting the program's own text leaves `Fl::event_clipboard_type` as it was
+
+- **What happens**: in the `FL_PASTE` of text this program copied,
+  `Fl::event_clipboard_type()` is `""` if nothing else has been pasted,
+  and `"image"` if an image was pasted before. A handler that tests the
+  type to tell text from an image takes the text for an image. Seen
+  2026-11-04.
+- **Cause**: the quick paths for the program's own selection set
+  `e_text` and `e_length` for text, but only set `e_clipboard_type` for
+  an image (X11 `Fl_x.cxx:694-706`, Wayland
+  `fl_wayland_clipboard_dnd.cxx:620-628`). The type starts as `""`
+  (`Fl.cxx:68`), and nothing sets it back after a paste.
+- **Effect on FLTKAda**: worked around. `FLTK.Events.Clipboard_Kind`
+  reports `"text/plain"` for an empty type, and the widget Handle hook
+  sets the type back to text when the outermost Paste Handle returns
+  (`fl_event_end_paste`, `body/c_fl_event.cpp`).
+- **Confirmed**: `test_paste_image`, on X11 and on sway. Without the
+  workaround, its first text paste gave `""` and its text paste after an
+  image gave `"image"`.

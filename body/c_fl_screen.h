@@ -28,6 +28,12 @@ extern "C" int fl_screen_count();
 extern "C" void fl_screen_dpi(float &h, float &v, int n);
 
 
+extern "C" int fl_screen_scaling_supported();
+extern "C" float fl_screen_get_scale(int n);
+extern "C" void fl_screen_set_scale(int n, float f);
+extern "C" void fl_screen_keyboard_scaling(int v);
+
+
 extern "C" int fl_screen_num(int x, int y);
 extern "C" int fl_screen_num2(int x, int y, int w, int h);
 

@@ -55,6 +55,13 @@ package FLTK.Images.RGB is
                 Background : in Color := Background_Color)
             return RGB_Image;
 
+        --  In the Handle of a Paste event that carries an image
+        --  (FLTK.Events.Has_Clipboard_Image), the image, now the
+        --  program's.  Raises Program_Error if the event carries none, or
+        --  if it was taken already.
+        function Pasted
+            return RGB_Image;
+
     end Forge;
 
 

@@ -1849,3 +1849,77 @@ a part over 1022 bytes (FLTK-issues.md F11); passes on X11 and sway,
 with vg=0.
 
 **Status.** Fixed.
+
+## 66. A fatal handler that returned crashed FLTK
+
+**Symptom.** Setting `FLTK.Errors.Current_Fatal` to a procedure that
+returns, then failing to open the display, ended the program with
+"raised STORAGE_ERROR : s-intman.adb:136 explicit raise", a segfault,
+after the handler had printed its message.
+
+**Cause.** `Fl::fatal` must not return (Fl.H:557-559). The shim's
+`fatal_hook_prep` called the Ada handler and returned, and FLTK went on
+as if the display were open: `Fl_X11_Screen_Driver::open_display_platform`
+returns after the `Fl::fatal` (Fl_x.cxx:550-551), and the next use of
+`fl_display` crashes. A handler that raises was always fine: the
+exception passes through FLTK's frames to the Ada handler that catches
+it.
+
+**Found.** Phase 8, binding `set_abort`, which is `Current_Fatal`;
+2026-11-04, with two scratch programs, one returning and one raising,
+run with `FLTK_BACKEND=x11` and `DISPLAY=:987`.
+
+**Fix.** `fatal_hook_prep` calls `exit (1)` when the handler returns,
+as FLTK's own fatal handler does. The comment on `Current_Fatal` says
+so. The new test `test_fatal_handler` runs itself once with each kind
+of handler: the returning one exits 1 with no exception, and the raising
+one is caught. Without the fix its "doesn't crash" check fails. Passes
+on X11 and sway.
+
+**Status.** Fixed.
+
+## 67. `FLTK.Events.Clipboard_Text` was always "", or read an image as text
+
+**Symptom.** In a Paste event of text, `Clipboard_Text` returned `""`
+instead of the text. In a Paste event of an image, it returned the bytes
+of the `Fl_RGB_Image` object up to the first nul.
+
+**Cause.** The shim returned `Fl::event_clipboard()` cast to
+`const char *`. FLTK never stores text there: it is the pasted
+`Fl_RGB_Image *` in an image paste (Fl.H:852-855), and the text is in
+`Fl::event_text` (Fl_x.cxx:698-700). Outside an image paste the pointer
+was null, so the result was `""`.
+
+**Found.** Phase 8, binding pasted images (pofltk 48), 2026-11-04: the
+new `test_paste_image` copied and pasted "hello, paste" and got `""`, on
+X11 and on sway.
+
+**Fix.** `fl_event_clipboard_text` returns `Fl::event_text` with
+`Fl::event_length`, or `""` when the paste is an image. The spec of
+`Clipboard_Text` says what it returns. `test_paste_image` checks the
+text of a paste before and after an image paste, and that an image
+paste gives `""`. Passes on X11 and sway.
+
+**Status.** Fixed.
+
+## 68. Finalizing a widget declared without `Forge.Create` read through null
+
+**Symptom.** A widget object declared but never made, such as
+`Blank : FLTK.Widgets.Boxes.Box;`, raised Program_Error ("finalize/adjust
+raised exception") when it went out of scope. Valgrind showed an invalid
+read at address 8 in `fl_widget_get_parent`, called from
+`fltk.widgets.extra_final`.
+
+**Cause.** `Extra_Final` for `Widget` guarded `fl_widget_forget` against a
+null `Void_Ptr`, but then called `This.Parent`, which passes `Void_Ptr` to
+`fl_widget_get_parent` whatever it is.
+
+**Found.** Phase 8, testing `FLTK.Widget_Trackers`, 2026-11-04: the check
+that tracking such a widget raises passed, but the run under valgrind
+failed with the invalid read.
+
+**Fix.** `Extra_Final` does nothing for a widget with no FLTK widget.
+`test_widget_trackers` checks that one finalizes without raising; before
+the fix it raised. Passes on X11 and sway, and valgrind is clean on both.
+
+**Status.** Fixed.

@@ -40,7 +40,7 @@ Where findings go:
 
 - **FLTKAda-BUGS.md**: bugs in FLTKAda's own code. Sections 1–14 are
   fixed; 17–21, 23–26, 28, 29, 41, 44, 45 and 51 are open;
-  22, 27, 30 to 40, 42, 43, 46 to 50 and 52 to 65 are fixed.
+  22, 27, 30 to 40, 42, 43, 46 to 50 and 52 to 68 are fixed.
 - **FLTK-issues.md**: FLTK issues pofltk's list doesn't have (F1, F2, …).
 - **PLAN.md**: FLTKAda's verdict on each of pofltk's numbered issues, and
   every decision.

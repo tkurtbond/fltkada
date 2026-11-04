@@ -6,6 +6,7 @@
 
 #include <FL/Fl.H>
 #include <errno.h>
+#include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
 #include "c_fl_error.h"
@@ -53,6 +54,10 @@ void error_hook_prep(const char * m, ...) {
     error_error_hook(buf);
 }
 
+//  Fl::fatal must not return (Fl.H:557-559): its callers go on as if it
+//  had not, and crash (Fl_x.cxx:550-551).  A handler may leave by raising
+//  an exception; one that returns ends the program here, with status 1 as
+//  FLTK's own does (FLTKAda-BUGS.md 66).
 void fatal_hook_prep(const char * m, ...) {
     va_list args;
     char buf[error_bsize];
@@ -60,6 +65,7 @@ void fatal_hook_prep(const char * m, ...) {
     vsnprintf(buf, error_bsize, m, args);
     va_end(args);
     error_fatal_hook(buf);
+    exit(1);
 }
 
 
