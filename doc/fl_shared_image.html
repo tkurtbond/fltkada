@@ -187,7 +187,10 @@ function Create
 <td><pre>
 static Fl_Shared_Image ** images();
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Pool_Images
+    return Shared_Image_Array;
+</pre>Each element has a reference of its own.</td>
   </tr>
 
 </table>
@@ -201,7 +204,12 @@ static Fl_Shared_Image ** images();
 <td><pre>
 static void add_handler(Fl_Shared_Handler f);
 </pre></td>
-<td>Documentation lacking, claims to be a test function yet used for adding extra formats?</td>
+<td><pre>
+procedure Add_Handler
+       (Handler : in not null Image_Handler);
+</pre>An Image_Handler is an Ada function of the name and the first Max_Header
+bytes. The pool gets a copy of its image, and its exceptions reach the
+load (pofltk 95).</td>
   </tr>
 
   <tr>
@@ -230,7 +238,10 @@ function Number_Of_Images
 <td><pre>
 static void remove_handler(Fl_Shared_Handler f);
 </pre></td>
-<td>Documentation lacking, claims to be a test function yet used for adding extra formats?</td>
+<td><pre>
+procedure Remove_Handler
+       (Handler : in not null Image_Handler);
+</pre></td>
   </tr>
 
   <tr>

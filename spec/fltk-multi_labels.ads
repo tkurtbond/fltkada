@@ -6,7 +6,8 @@
 
 with
 
-    FLTK.Images;
+    FLTK.Images,
+    FLTK.Widgets;
 
 private with
 
@@ -67,6 +68,19 @@ package FLTK.Multi_Labels is
             Next : in out Multi_Label'Class);
 
 
+
+
+    --  Widgets  --
+
+    --  Item shows Label, which must last as long as Item does or until Item
+    --  is given another label.  Text set with Set_Label replaces it, as a
+    --  Normal_Label; Get_Label is "" while it shows; Set_Label_Kind changes
+    --  nothing, since its parts have kinds of their own.  pofltk 55.
+    procedure Set_Multi_Label
+           (Item  : in out FLTK.Widgets.Widget'Class;
+            Label : in out Multi_Label'Class);
+
+
 private
 
 
@@ -80,6 +94,8 @@ private
 
     pragma Inline (Set_First);
     pragma Inline (Set_Second);
+
+    pragma Inline (Set_Multi_Label);
 
 
 end FLTK.Multi_Labels;

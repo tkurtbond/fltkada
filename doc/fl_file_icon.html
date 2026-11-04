@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_File_Icon Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_File_Icon Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_File_Icon</td>
+    <td>FLTK.Images.File_Icons</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_File_Icon</td>
+    <td>File_Icon</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>File_Icon_Access</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>File_Icon_Array</td>
+  </tr>
+
+  <tr>
+    <td>enum { ANY, PLAIN, FIFO, DEVICE, LINK, DIRECTORY }</td>
+    <td>File_Kind</td>
+  </tr>
+
+  <tr>
+    <td>enum { END, COLOR, LINE, CLOSEDLINE, POLYGON,
+    OUTLINEPOLYGON, VERTEX }</td>
+    <td>Not exposed: each Add_ procedure adds a whole part.</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Vertex</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Vertex_Array</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_File_Icon(const char *p, int t, int nd = 0, short *d = 0);
+</pre></td>
+<td><pre>
+function Create
+       (Pattern : in String;
+        Kind    : in File_Kind := Any_File)
+    return File_Icon;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+short *add(short d);
+short *add_vertex(int x, int y);
+short *add_vertex(float x, float y);
+</pre></td>
+<td><pre>
+procedure Add_Line
+       (This   : in out File_Icon;
+        Points : in     Vertex_Array);
+
+procedure Add_Closed_Line
+       (This   : in out File_Icon;
+        Points : in     Vertex_Array);
+
+procedure Add_Polygon
+       (This   : in out File_Icon;
+        Points : in     Vertex_Array);
+
+procedure Add_Outline_Polygon
+       (This    : in out File_Icon;
+        Outline : in     Color;
+        Points  : in     Vertex_Array);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+short *add_color(Fl_Color c);
+</pre></td>
+<td><pre>
+procedure Add_Color
+       (This  : in out File_Icon;
+        Value : in     Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void clear();
+</pre></td>
+<td><pre>
+procedure Clear
+       (This : in out File_Icon);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw(int x, int y, int w, int h, Fl_Color ic, int active = 1);
+</pre></td>
+<td><pre>
+procedure Draw
+       (This       : in out File_Icon;
+        X, Y, W, H : in     Integer;
+        Tint       : in     Color;
+        Active     : in     Boolean := True);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void label(Fl_Widget *w);
+</pre></td>
+<td><pre>
+procedure Set_Icon_Label
+       (Item : in out FLTK.Widgets.Widget'Class;
+        Icon : in out File_Icon'Class);
+</pre>Text set later replaces the icon as a Normal_Label (pofltk 85).<pre>
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void labeltype(const Fl_Label *o, int x, int y,
+    int w, int h, Fl_Align a);
+</pre></td>
+<td><pre>
+Used by Set_Icon_Label.
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void load(const char *f);
+int load_fti(const char *fti);
+int load_image(const char *i);
+</pre></td>
+<td><pre>
+procedure Load
+       (This : in out File_Icon;
+        Name : in     String);
+</pre>Images are read through FLTK.Images.Shared, so most formats need
+Register_Images first. A bad file raises, and leaves the icon empty (pofltk 86).<pre>
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char *pattern();
+</pre></td>
+<td><pre>
+function Get_Pattern
+       (This : in File_Icon)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int size();
+</pre></td>
+<td><pre>
+function Size
+       (This : in File_Icon)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int type();
+</pre></td>
+<td><pre>
+function Get_Kind
+       (This : in File_Icon)
+    return File_Kind;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+short *value();
+</pre></td>
+<td><pre>
+Not bound: the Add_ procedures build it.
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Browser::data(int line, void *d);
+(as Fl_File_Browser draws it)
+</pre></td>
+<td><pre>
+procedure Add_File
+       (Browser : in out FLTK.Widgets.Groups.Browsers.Textline.File.File_Browser'Class;
+        Text    : in     String;
+        Icon    : in     File_Icon_Access);
+
+procedure Set_File_Icon
+       (Browser : in out FLTK.Widgets.Groups.Browsers.Textline.File.File_Browser'Class;
+        Line    : in     Positive;
+        Icon    : in     File_Icon_Access);
+
+function Get_File_Icon
+       (Browser : in FLTK.Widgets.Groups.Browsers.Textline.File.File_Browser'Class;
+        Line    : in Positive)
+    return File_Icon_Access;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+static Fl_File_Icon *find(const char *filename, int filetype = ANY);
+</pre></td>
+<td><pre>
+function Find
+       (Name : in String;
+        Kind : in File_Kind := Any_File)
+    return File_Icon_Access;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static Fl_File_Icon *first();
+Fl_File_Icon *next();
+</pre></td>
+<td><pre>
+function Icons
+    return File_Icon_Array;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void load_system_icons(void);
+</pre></td>
+<td><pre>
+procedure Load_System_Icons;
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>

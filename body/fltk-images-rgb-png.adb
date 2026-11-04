@@ -40,6 +40,18 @@ package body FLTK.Images.RGB.PNG is
 
 
 
+    --  Writing  --
+
+    function fl_png_image_write
+           (N : in Interfaces.C.char_array;
+            I : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_png_image_write, "fl_png_image_write");
+    pragma Inline (fl_png_image_write);
+
+
+
+
     -------------------
     --  Destructors  --
     -------------------
@@ -97,6 +109,35 @@ package body FLTK.Images.RGB.PNG is
         end Create;
 
     end Forge;
+
+
+
+
+    -----------------------
+    --  API Subprograms  --
+    -----------------------
+
+    procedure Write_PNG
+           (Item     : in RGB_Image'Class;
+            Filename : in String)
+    is
+        use type Interfaces.C.int;
+        Result : Interfaces.C.int;
+    begin
+        if Item.Void_Ptr = Null_Pointer then
+            raise No_Image_Error with "Write_PNG of an image that was never created";
+        end if;
+        Result := fl_png_image_write (Interfaces.C.To_C (Filename), Item.Void_Ptr);
+        case Result is
+            when 0 => null;
+            when -1 => raise FLTK.Unsupported_Error with "FLTK was built without libpng";
+            when -2 => raise File_Access_Error with "Write_PNG can't open " & Filename;
+            when -3 => raise No_Image_Error with "Write_PNG of an image with no pixels";
+            when others =>
+                raise Internal_FLTK_Error with
+                    "fl_write_png gave" & Interfaces.C.int'Image (Result);
+        end case;
+    end Write_PNG;
 
 
 end FLTK.Images.RGB.PNG;

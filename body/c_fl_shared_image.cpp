@@ -141,6 +141,11 @@ struct Shared_Inside : Fl_Shared_Image {
         s->*alloc = 1;
         (s->*sync)();
     }
+    //  One more reference to s, which release gives back.
+    static void take(Fl_Shared_Image * s) {
+        int Fl_Shared_Image::*count = &Shared_Inside::refcount_;
+        ++(s->*count);
+    }
 };
 
 //  A file that has gone bad, as above, is left as it was.  reload puts the
@@ -228,6 +233,58 @@ static Fl_Image * scaled_pnm_handler(const char * name, uchar * header, int head
 
 void fl_shared_image_add_pnm_handler() {
     Fl_Shared_Image::add_handler(&scaled_pnm_handler);
+}
+
+//  FLTK.Images.Shared.Add_Handler's list, in Ada, which answers with the
+//  Fl_Image of an Ada image, or 0.  pofltk 95.
+extern "C" void * shared_image_ask_hook(const char * name, const unsigned char * header, int n);
+
+//  The program's handlers, which are one handler to FLTK.  The pool gets a
+//  copy of the image a handler gives, at its size, so that stays the
+//  program's: FLTK deletes what a handler returns with the pool's entry
+//  (Fl_Shared_Image.cxx:306-316).  A shared image is copied from its
+//  image, since a copy of a Fl_Shared_Image is another of the pool's
+//  entries (:374-379).
+static Fl_Image * ada_handler(const char * name, uchar * header, int headerlen) {
+    Fl_Image *given = static_cast<Fl_Image*>(shared_image_ask_hook(name, header, headerlen));
+    if (given == 0) {
+        return 0;
+    }
+    try {
+        const Fl_Image *from = given;
+        if (Fl_Shared_Image *s = dynamic_cast<Fl_Shared_Image*>(given)) {
+            from = s->image();
+        }
+        if (from == 0) {
+            return 0;
+        }
+        Fl_Image *c = from->copy();
+        if (c != 0) {
+            c->scale(given->w(), given->h(), 0, 1);
+        }
+        return c;
+    } catch (...) {
+        return 0;
+    }
+}
+
+//  FLTK ignores a handler it has already (Fl_Shared_Image.cxx:656-659).
+void fl_shared_image_add_ada_handler() {
+    Fl_Shared_Image::add_handler(&ada_handler);
+}
+
+int fl_shared_image_pool_count() {
+    return Fl_Shared_Image::num_images();
+}
+
+//  The pool's entry k, with a reference for the caller.
+SHAREDIMAGE fl_shared_image_pool_take(int k) {
+    if (k < 0 || k >= Fl_Shared_Image::num_images()) {
+        return 0;
+    }
+    Fl_Shared_Image *s = Fl_Shared_Image::images()[k];
+    Shared_Inside::take(s);
+    return s;
 }
 
 

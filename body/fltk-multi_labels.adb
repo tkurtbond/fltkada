@@ -49,6 +49,14 @@ package body FLTK.Multi_Labels is
 
 
 
+    procedure fl_multi_label_widget
+           (W, L : in Storage.Integer_Address);
+    pragma Import (C, fl_multi_label_widget, "fl_multi_label_widget");
+    pragma Inline (fl_multi_label_widget);
+
+
+
+
     -------------------
     --  Destructors  --
     -------------------
@@ -161,6 +169,18 @@ package body FLTK.Multi_Labels is
            (This.Void_Ptr, Label_Kind'Pos (FLTK.Multi_Label), Wrapper (Next).Void_Ptr);
         ICS.Free (This.My_Text_B);
     end Set_Second;
+
+
+
+
+    --  Widgets  --
+
+    procedure Set_Multi_Label
+           (Item  : in out FLTK.Widgets.Widget'Class;
+            Label : in out Multi_Label'Class) is
+    begin
+        fl_multi_label_widget (Wrapper (Item).Void_Ptr, Label.Void_Ptr);
+    end Set_Multi_Label;
 
 
 end FLTK.Multi_Labels;

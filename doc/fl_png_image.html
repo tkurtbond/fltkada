@@ -76,6 +76,25 @@ image lasts (FLTK-issues.md F8).</td>
 </table>
 
 
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+int fl_write_png(const char *filename, Fl_RGB_Image *img);
+</pre></td>
+<td><pre>
+procedure Write_PNG
+       (Item     : in RGB_Image'Class;
+        Filename : in String);
+</pre>An image with no pixels raises No_Image_Error, where FLTK aborts
+(FLTK-issues.md F17).</td>
+  </tr>
+
+</table>
+
+
   </body>
 </html>
 

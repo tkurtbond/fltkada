@@ -152,6 +152,18 @@ package body FLTK.Images is
     pragma Import (C, fl_image_d, "fl_image_d");
     pragma Inline (fl_image_d);
 
+    function fl_image_data_w
+           (I : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_image_data_w, "fl_image_data_w");
+    pragma Inline (fl_image_data_w);
+
+    function fl_image_data_h
+           (I : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_image_data_h, "fl_image_data_h");
+    pragma Inline (fl_image_data_h);
+
     function fl_image_ld
            (I : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -404,6 +416,22 @@ package body FLTK.Images is
     begin
         return Natural (fl_image_ld (This.Void_Ptr));
     end Get_Line_Size;
+
+
+    function Get_Data_W
+           (This : in Image)
+        return Natural is
+    begin
+        return Natural (fl_image_data_w (This.Void_Ptr));
+    end Get_Data_W;
+
+
+    function Get_Data_H
+           (This : in Image)
+        return Natural is
+    begin
+        return Natural (fl_image_data_h (This.Void_Ptr));
+    end Get_Data_H;
 
 
     procedure Scale

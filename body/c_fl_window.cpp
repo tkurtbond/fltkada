@@ -10,6 +10,7 @@
 #include <map>
 #include <utility>
 #include "c_fl_window.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -228,10 +229,11 @@ void fl_window_set_non_modal(WINDOW n) {
 
 
 const char * fl_window_get_label(WINDOW n) {
-    return static_cast<Fl_Window*>(n)->label();
+    return fl_widget_get_label(n);
 }
 
 void fl_window_copy_label(WINDOW n, char* text) {
+    fl_widget_plain_label(n);
     static_cast<Fl_Window*>(n)->copy_label(text);
 }
 

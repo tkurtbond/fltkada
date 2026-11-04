@@ -197,6 +197,13 @@ section("Orientations (Fl_Orientation)")
 enum("Draw.Orientation_Kind", [(f"Draw.Orient_{a}", "FL_ORIENT_" + a.upper())
                                for a in "Right NE Up NW Left SW Down SE".split()])
 
+section("File icons (Fl_File_Icon)")
+enum("Images.File_Icons.File_Kind",
+     [(f"Images.File_Icons.{a}_File", "Fl_File_Icon::" + c) for a, c in
+      [("Any", "ANY"), ("Plain", "PLAIN"), ("Fifo", "FIFO"), ("Device", "DEVICE"),
+       ("Link", "LINK"), ("Directory", "DIRECTORY")]])
+add("Long_Long_Integer (Images.File_Icons.Icon_Color)", "FL_ICON_COLOR")
+
 
 HEADER = """{c}  Programmed by T. Kurt Bond and Claude Opus 5.5
 {c}  Released into the public domain
@@ -216,7 +223,8 @@ def cpp():
     out = [HEADER.format(c="//"), "",
            "//  FLTK's value of each constant the Ada test, fltk-test_constants.adb,",
            "//  checks, in the same order.", "", "",
-           "#include <FL/Enumerations.H>", "#include <FL/Fl_Menu_Item.H>", "", "",
+           "#include <FL/Enumerations.H>", "#include <FL/Fl_File_Icon.H>",
+           "#include <FL/Fl_Menu_Item.H>", "", "",
            'extern "C" const long long c_constants[];', "",
            'extern "C" const long long c_constants[] =', "{"]
     for item in CHECKS:
@@ -235,7 +243,7 @@ def ada():
            "--  Checks each of FLTKAda's constants against FLTK's value, from",
            "--  c_constants.cpp.  A child of FLTK, so it can see the private",
            "--  conversions.  Run by test_constants.adb.", "", "",
-           "with", "", "    Checks,", "    FLTK.Draw,", "    FLTK.Screen;", "", "",
+           "with", "", "    Checks,", "    FLTK.Draw,", "    FLTK.Images.File_Icons,", "    FLTK.Screen;", "", "",
            "procedure FLTK.Test_Constants is", "", "",
            f"    type Value_Array is array (1 .. {count}) of Long_Long_Integer;",
            "    pragma Convention (C, Value_Array);", "",
@@ -268,8 +276,10 @@ def ada():
             ada_expr, c_expr = item
             call = f'    Same ({ada_expr}, {index}, "{ada_expr} = {c_expr}");'
             if len(call) > 99:
-                call = (f"    Same\n       ({ada_expr},\n        {index},\n"
-                        f'        "{ada_expr} = {c_expr}");')
+                label = f'        "{ada_expr} = {c_expr}");'
+                if len(label) > 100:
+                    label = f'        "{ada_expr}" &\n        " = {c_expr}");'
+                call = f"    Same\n       ({ada_expr},\n        {index},\n{label}"
             out.append(call)
     out += ["", "end FLTK.Test_Constants;", ""]
     write("test/unit/fltk-test_constants.adb", "\n".join(out))

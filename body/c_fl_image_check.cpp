@@ -13,6 +13,7 @@
 #include <FL/Fl_Shared_Image.H>
 #include <cstdio>
 #include <cstring>
+#include <new>
 #include <stdint.h>
 #include <vector>
 
@@ -311,6 +312,22 @@ bool gif_data_ok(const unsigned char * data, std::size_t n, bool anim) {
 
 
 //  Files
+
+bool ico_dib_ok(const unsigned char * p, std::size_t n) {
+    return dib_ok(p, n, true);
+}
+
+int ico_largest(const Fl_ICO_Image & dir) {
+    return ico_pick(dir);
+}
+
+bool read_image_file(const char * name, std::vector<unsigned char> & into) {
+    Read_Result got = read_file(name, into, 0);
+    if (got == read_short_of_memory) {
+        throw std::bad_alloc();
+    }
+    return got == read_ok;
+}
 
 bool bmp_file_ok(const char * name) {
     std::vector<unsigned char> head;

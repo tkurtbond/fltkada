@@ -32,12 +32,14 @@ FLTK.Help_Dialogs
 FLTK.Images
 FLTK.Images.Bitmaps
 FLTK.Images.Bitmaps.XBM
+FLTK.Images.File_Icons
 FLTK.Images.Pixmaps
 FLTK.Images.Pixmaps.GIF
 FLTK.Images.Pixmaps.GIF.Animated
 FLTK.Images.Pixmaps.XPM
 FLTK.Images.RGB
 FLTK.Images.RGB.BMP
+FLTK.Images.RGB.BMP.ICO
 FLTK.Images.RGB.JPEG
 FLTK.Images.RGB.PNG
 FLTK.Images.RGB.PNM
@@ -67,6 +69,7 @@ FLTK.Widgets.Buttons.Light.Round
 FLTK.Widgets.Buttons.Light.Round.Radio
 FLTK.Widgets.Buttons.Radio
 FLTK.Widgets.Buttons.Repeat
+FLTK.Widgets.Buttons.Shortcut
 FLTK.Widgets.Buttons.Toggle
 FLTK.Widgets.Charts
 FLTK.Widgets.Clocks
@@ -476,6 +479,16 @@ unnamed PNG or JPEG was shared under "" (FLTK-issues.md F8,
 FLTKAda-BUGS.md 56); a Shared_Image made from an RGB_Image shares a copy
 (FLTKAda-BUGS.md 57)
 
+Images, Phase 10: an ICO's PNG entry loads from memory too (pofltk 82); a
+file icon's label is replaced by text and its kind kept (pofltk 85); a bad
+icon file is refused and leaves the icon empty (pofltk 86); handlers can be
+removed and own their images (pofltk 95); Write_PNG of an empty image
+raises, where FLTK aborts (FLTK-issues.md F17); RGB_Image refuses a bad
+depth or line size (FLTKAda-BUGS.md 71); a shortcut with a key reads back
+(FLTKAda-BUGS.md 72); a pointer label is never read as text, nor text as
+one (FLTKAda-BUGS.md 73, pofltk 55); Measure_Label no longer wraps at a
+random width (FLTKAda-BUGS.md 74)
+
 
 
 Incomplete APIs:
@@ -483,7 +496,7 @@ Incomplete APIs:
 FLTK
 FLTK.Devices.Graphics
 FLTK.Images.Pixmaps (unmarshall data access?)
-FLTK.Images.Shared (images(), compare)
+FLTK.Images.Shared (compare)
 FLTK.Static (Option lacks FNFC_Uses_Zenity, FNFC_Uses_Kdialog,
     Printer_Uses_GTK, Show_Scaling and Simple_Zoom_Shortcut)
 FLTK.Text_Buffers (a few functions, protected stuff, ensure buffer is 1-indexed)
@@ -493,8 +506,6 @@ FLTK.GLUT (no check yet that a GL context is ready for GLUT text, pofltk 112;
     and the glut_window/glut_menu globals; windows from Create_Window/
     Create_Sub_Window have no Ada object)
 FLTK.Images.Pixmaps.GIF.Animated (Fail_Code clamps a positive ld() to 0)
-FLTK.Multi_Labels (only usable on menu items: there is no way yet to put a
-    Multi_Label on a widget, Fl_Multi_Label::label(Fl_Widget*))
 FLTK.Images.Tiled (Tile returns a non-owning view of the tiled image)
 FLTK.Widgets.Groups.Flex (protected init, alloc_size, on_remove)
 FLTK.Widgets.Groups.Grids (Fl_Grid::Cell and cell(row,col) / cell(widget);

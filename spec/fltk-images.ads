@@ -113,6 +113,16 @@ package FLTK.Images is
            (This : in Image)
         return Natural;
 
+    --  The size of the image's data, in pixels.  Get_W and Get_H are the
+    --  size it is drawn at, which Scale changes and these don't.
+    function Get_Data_W
+           (This : in Image)
+        return Natural;
+
+    function Get_Data_H
+           (This : in Image)
+        return Natural;
+
     procedure Scale
            (This         : in out Image;
             W, H         : in     Integer;
@@ -192,6 +202,8 @@ private
     pragma Inline (Get_H);
     pragma Inline (Get_D);
     pragma Inline (Get_Line_Size);
+    pragma Inline (Get_Data_W);
+    pragma Inline (Get_Data_H);
     pragma Inline (Scale);
 
     pragma Inline (Draw);

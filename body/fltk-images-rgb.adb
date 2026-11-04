@@ -179,6 +179,15 @@ package body FLTK.Images.RGB is
                  then Size_Type (Width) * Size_Type (Height) * Size_Type (Depth)
                  else Size_Type (Line_Size) * Size_Type (Height));
         begin
+            if Depth not in 1 .. 4 then
+                raise Constraint_Error with "RGB_Image Create with depth" & Natural'Image (Depth);
+            end if;
+            if Line_Size /= 0 and then
+                Size_Type (Line_Size) < Size_Type (Width) * Size_Type (Depth)
+            then
+                raise Constraint_Error with "RGB_Image Create with line size"
+                    & Natural'Image (Line_Size) & ", less than width times depth";
+            end if;
             if Data'Length < Needed then
                 raise Constraint_Error with "RGB_Image Create with" & Size_Type'Image (Data'Length)
                     & " bytes, needing" & Size_Type'Image (Needed);

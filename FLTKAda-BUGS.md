@@ -1964,3 +1964,91 @@ begun, and a surface buried under another, then draws and pops. Passes
 on X11 and sway, and valgrind is clean on both.
 
 **Status.** Fixed.
+
+## 71. `RGB_Image` took a depth outside 1 to 4, and a line size shorter than a row
+
+**Symptom.** `FLTK.Images.RGB.Forge.Create` made an image of depth 0 or
+5, or with a non-zero line size less than the width times the depth.
+FLTK then read past the pixels: a C++ program writing such images with
+`fl_write_png` under valgrind gave invalid reads at
+`fl_write_png.cxx:161`, for depth 0 and for a line size of 2 with width
+4 and depth 3.
+
+**Cause.** `Create` checked only that `Data` was long enough for the
+size it computed from the line size, so a short line size made a short
+buffer pass. FLTK's `Fl_RGB_Image` checks neither the depth nor the line
+size, and its drawing and `fl_write_png` step through the data by both.
+
+**Found.** Phase 10, 2026-11-04, writing `Write_PNG`.
+
+**Fix.** `Create` raises Constraint_Error for a depth outside 1 .. 4 and
+for a non-zero line size below width times depth, as the spec now says.
+`test_write_png` checks depths 0 and 5 and a line size of 2. Passes on
+X11 and sway.
+
+**Status.** Fixed.
+
+## 72. Reading back a shortcut with a key raised Constraint_Error
+
+**Symptom.** `Get_Shortcut` of any widget, and `Get_Value` of a
+`Shortcut_Button`, raised Constraint_Error for a shortcut such as
+`Mod_Ctrl + 'w'`. Only `No_Key` and a bare mouse button read back.
+
+**Cause.** `To_Ada` for a `Key_Combo` (`body/fltk.adb`) passed the whole
+value to the `Mouse_Button` conversion, which raises for anything but
+exactly a button's code. The key and modifier bits made every shortcut
+with a key fail.
+
+**Found.** Phase 10, 2026-11-04, testing `Shortcut_Button`.
+
+**Fix.** The conversion is given only FLTK's mouse button bits,
+`FL_BUTTONS` (16#1F00_0000#). `test_shortcut_button` reads back a
+widget's own shortcut and one with a mouse button. Passes on X11 and
+sway.
+
+**Status.** Fixed.
+
+## 73. A text label could be read as a pointer, and a pointer label as text
+
+**Symptom.** `Set_Label_Kind` of `Multi_Label` or `Icon_Label` on a
+widget with a text label made FLTK read the text as a multi-label:
+valgrind gave an invalid read in `multi_labeltype`
+(`Fl_Multi_Label.cxx:31`). And `Get_Label` of a widget showing a
+multi-label, an icon or an image label read that pointer as text.
+
+**Cause.** The shim passed both straight to FLTK, whose label is a
+`const char *` that these label types use for a pointer to their object
+(`Fl_Multi_Label.cxx:28`, `Fl_File_Icon.cxx:425`, `Fl_Image.cxx:224`).
+
+**Found.** Phase 10, 2026-11-04, by control 2 of
+`test_widget_multi_label`.
+
+**Fix.** In `c_fl_widget.cpp` and `c_fl_window.cpp`, setting a label
+type does nothing if the widget shows such a pointer or the type is one
+of these. `Get_Label` gives "" for one, and `Set_Label` first makes the
+label plain text, so FLTK doesn't free the pointer (pofltk 55).
+`test_widget_multi_label` checks each case. Passes on X11 and sway, and
+valgrind is clean on both.
+
+**Status.** Fixed.
+
+## 74. `Measure_Label` and `Labels.Measure` gave FLTK an uninitialized wrap width
+
+**Symptom.** Valgrind reported "Conditional jump or move depends on
+uninitialised value(s)" in `expand_text_` (`fl_draw.cxx:96`), from
+`fl_measure` (521) and `fl_normal_measure` (`fl_labeltype.cxx:41`). A
+label could be measured as if wrapped at whatever width the stack held.
+
+**Cause.** The imports of `fl_widget_measure_label` and
+`fl_label_measure` declared W and H as `out`, so the shim was given
+uninitialized variables. FLTK reads W as the width to wrap the text at,
+0 for none (`fl_draw.cxx:520-521`).
+
+**Found.** Phase 10, 2026-11-04, adding a measure check to
+`test_file_icons` under valgrind.
+
+**Fix.** Both are `in out` and are given 0. `FLTK.Draw.Measure` and
+the OpenGL `Measure` already did this. `test_file_icons` measures one
+line of text against a longer one. Valgrind is clean on X11.
+
+**Status.** Fixed.

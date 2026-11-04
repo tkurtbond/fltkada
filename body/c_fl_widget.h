@@ -77,6 +77,8 @@ extern "C" void fl_widget_copy_tooltip(WIDGET w, const char * t);
 
 extern "C" const char* fl_widget_get_label(WIDGET w);
 extern "C" void fl_widget_set_label(WIDGET w, const char* t);
+extern "C" int fl_widget_label_is_pointer(WIDGET w);
+extern "C" void fl_widget_plain_label(WIDGET w);
 extern "C" unsigned int fl_widget_get_labelcolor(WIDGET w);
 extern "C" void fl_widget_set_labelcolor(WIDGET w, unsigned int v);
 extern "C" int fl_widget_get_labelfont(WIDGET w);

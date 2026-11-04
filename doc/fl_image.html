@@ -223,6 +223,28 @@ function Get_D
 
   <tr>
 <td><pre>
+int data_h() const;
+</pre></td>
+<td><pre>
+function Get_Data_H
+       (This : in Image)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int data_w() const;
+</pre></td>
+<td><pre>
+function Get_Data_W
+       (This : in Image)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 const char * const * data() const;
 </pre></td>
 <td>See Data_Size, Get_Datum, Set_Datum, Slice, Overwrite, All_Data subprograms

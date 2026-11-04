@@ -19,6 +19,9 @@ extern "C" void fl_multi_label_set_a(MULTILABEL ml, int k, const char * v);
 extern "C" void fl_multi_label_set_b(MULTILABEL ml, int k, const char * v);
 
 
+extern "C" void fl_multi_label_widget(void * w, MULTILABEL ml);
+
+
 #endif
 
 

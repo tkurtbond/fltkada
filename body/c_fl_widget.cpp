@@ -300,11 +300,33 @@ void fl_widget_copy_tooltip(WIDGET w, const char * t) {
 
 
 
+//  The label of a multi-label, a file icon or an image label is a pointer
+//  to it, not text (Fl_Multi_Label.cxx:28, Fl_File_Icon.cxx:425,
+//  Fl_Image.cxx:224).
+int fl_widget_label_is_pointer(WIDGET w) {
+    const Fl_Labeltype t = static_cast<Fl_Widget*>(w)->labeltype();
+    return t == _FL_MULTI_LABEL || t == _FL_ICON_LABEL || t == _FL_IMAGE_LABEL;
+}
+
+//  Text set on a widget showing such a label replaces it, as text of
+//  FL_NORMAL_LABEL: copy_label keeps the type, and FLTK would read the text
+//  as the pointer (pofltk 55).  The pointer isn't the widget's to free,
+//  since FLTKAda clears the copied label before setting one.
+void fl_widget_plain_label(WIDGET w) {
+    if (fl_widget_label_is_pointer(w)) {
+        static_cast<Fl_Widget*>(w)->label(FL_NORMAL_LABEL, 0);
+    }
+}
+
 const char* fl_widget_get_label(WIDGET w) {
+    if (fl_widget_label_is_pointer(w)) {
+        return 0;
+    }
     return static_cast<Fl_Widget*>(w)->label();
 }
 
 void fl_widget_set_label(WIDGET w, const char* t) {
+    fl_widget_plain_label(w);
     static_cast<Fl_Widget*>(w)->copy_label(t);
 }
 
@@ -336,7 +358,15 @@ int fl_widget_get_labeltype(WIDGET w) {
     return static_cast<Fl_Widget*>(w)->labeltype();
 }
 
+//  A widget showing a multi-label or a file icon keeps it, since a
+//  multi-label's parts have kinds of their own, and none of those kinds is
+//  given to text, which FLTK would read as the pointer.
 void fl_widget_set_labeltype(WIDGET w, int l) {
+    if (fl_widget_label_is_pointer(w)
+        || l == _FL_MULTI_LABEL || l == _FL_ICON_LABEL || l == _FL_IMAGE_LABEL)
+    {
+        return;
+    }
     static_cast<Fl_Widget*>(w)->labeltype(static_cast<Fl_Labeltype>(l));
 }
 

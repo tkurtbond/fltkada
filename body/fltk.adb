@@ -525,7 +525,8 @@ package body FLTK is
         return Result : Key_Combo do
             Result.Modcode := To_Ada (Key);
             Result.Keycode := To_Ada (Key);
-            Result.Mousecode := To_Ada (Key);
+            --  Only the mouse button bits, FL_BUTTONS (FLTKAda-BUGS.md 72).
+            Result.Mousecode := To_Ada (Key and 16#1F00_0000#);
         end return;
     end To_Ada;
 

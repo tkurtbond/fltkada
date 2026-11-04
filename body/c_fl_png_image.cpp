@@ -34,3 +34,17 @@ void free_fl_png_image(PNGIMAGE p) {
 }
 
 
+
+
+//  fl_write_png's own result, or -3 for an image with no pixels.  FLTK sets
+//  libpng no error handler, so an empty image aborts the program
+//  (FLTK-issues.md F17).
+int fl_png_image_write(const char *name, void *rgb) {
+    Fl_RGB_Image *m = static_cast<Fl_RGB_Image*>(rgb);
+    if (m->data_w() <= 0 || m->data_h() <= 0 || m->count() < 1 || m->data()[0] == 0) {
+        return -3;
+    }
+    return fl_write_png(name, m);
+}
+
+

@@ -41,6 +41,8 @@ extern "C" int fl_image_w(IMAGE i);
 extern "C" int fl_image_h(IMAGE i);
 extern "C" int fl_image_d(IMAGE i);
 extern "C" int fl_image_ld(IMAGE i);
+extern "C" int fl_image_data_w(IMAGE i);
+extern "C" int fl_image_data_h(IMAGE i);
 extern "C" void fl_image_scale(IMAGE i, int w, int h, int p, int e);
 
 

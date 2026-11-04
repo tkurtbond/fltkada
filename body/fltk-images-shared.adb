@@ -6,7 +6,10 @@
 
 with
 
-    Interfaces.C.Strings;
+    Ada.Containers.Vectors,
+    FLTK.Hook_Exceptions,
+    Interfaces.C.Strings,
+    System;
 
 use type
 
@@ -93,6 +96,17 @@ package body FLTK.Images.Shared is
     pragma Import (C, fl_shared_image_num_images, "fl_shared_image_num_images");
     pragma Inline (fl_shared_image_num_images);
 
+    function fl_shared_image_pool_count
+        return Interfaces.C.int;
+    pragma Import (C, fl_shared_image_pool_count, "fl_shared_image_pool_count");
+    pragma Inline (fl_shared_image_pool_count);
+
+    function fl_shared_image_pool_take
+           (K : in Interfaces.C.int)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_shared_image_pool_take, "fl_shared_image_pool_take");
+    pragma Inline (fl_shared_image_pool_take);
+
     function fl_shared_image_name
            (I : in Storage.Integer_Address)
         return Interfaces.C.Strings.chars_ptr;
@@ -158,6 +172,67 @@ package body FLTK.Images.Shared is
     pragma Import (C, fl_shared_image_register_images, "fl_shared_image_register_images");
     pragma Inline (fl_shared_image_register_images);
 
+    procedure fl_shared_image_add_ada_handler;
+    pragma Import (C, fl_shared_image_add_ada_handler, "fl_shared_image_add_ada_handler");
+    pragma Inline (fl_shared_image_add_ada_handler);
+
+
+
+
+    ----------------
+    --  Handlers  --
+    ----------------
+
+    package Handler_Vectors is new Ada.Containers.Vectors
+       (Index_Type   => Positive,
+        Element_Type => Image_Handler);
+
+    Handlers : Handler_Vectors.Vector;
+
+    --  FLTK's call, through the shim's one handler: asks each handler in
+    --  turn about Name, whose first N bytes are at Header.
+    function Ask_Hook
+           (Name   : in Interfaces.C.Strings.chars_ptr;
+            Header : in System.Address;
+            N      : in Interfaces.C.int)
+        return Storage.Integer_Address;
+    pragma Export (C, Ask_Hook, "shared_image_ask_hook");
+
+    function Ask_Hook
+           (Name   : in Interfaces.C.Strings.chars_ptr;
+            Header : in System.Address;
+            N      : in Interfaces.C.int)
+        return Storage.Integer_Address
+    is
+        Length : constant Size_Type := Size_Type (Interfaces.C.int'Max (0, N));
+        Bytes  : Color_Component_Array (1 .. Length);
+        for Bytes'Address use Header;
+        pragma Import (Ada, Bytes);
+        Asked  : constant Handler_Vectors.Vector := Handlers;
+        Text   : constant String := Interfaces.C.Strings.Value (Name);
+    begin
+        for Handler of Asked loop
+            --  One an earlier handler removed isn't asked.
+            if Handlers.Contains (Handler) then
+                declare
+                    Made : constant access constant Image'Class := Handler (Text, Bytes);
+                begin
+                    if Made /= null then
+                        if Wrapper (Made.all).Void_Ptr = Null_Pointer or else Made.Is_Empty then
+                            raise No_Image_Error with "an image handler gave no image";
+                        end if;
+                        return Wrapper (Made.all).Void_Ptr;
+                    end if;
+                end;
+            end if;
+        end loop;
+        return Null_Pointer;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+        return Null_Pointer;
+    end Ask_Hook;
+
 
 
 
@@ -193,6 +268,7 @@ package body FLTK.Images.Shared is
                    (Interfaces.C.To_C (Filename),
                     Interfaces.C.int (W),
                     Interfaces.C.int (H));
+                Hook_Exceptions.Reraise;
                 --  FLTK's get returns null only when no loader takes the
                 --  file (Fl_Shared_Image.cxx:594-598).  An image a loader
                 --  took and couldn't load is shared 0 wide.
@@ -307,6 +383,18 @@ package body FLTK.Images.Shared is
     end Number_Of_Images;
 
 
+    function Pool_Images
+        return Shared_Image_Array is
+    begin
+        return Result : Shared_Image_Array (1 .. Natural (fl_shared_image_pool_count)) do
+            for Index in Result'Range loop
+                Result (Index).Void_Ptr := fl_shared_image_pool_take
+                    (Interfaces.C.int (Index - 1));
+            end loop;
+        end return;
+    end Pool_Images;
+
+
     function Name
            (This : in Shared_Image)
         return String
@@ -341,6 +429,7 @@ package body FLTK.Images.Shared is
            (This : in out Shared_Image) is
     begin
         fl_shared_image_reload (This.Void_Ptr);
+        Hook_Exceptions.Reraise;
     end Reload;
 
 
@@ -412,6 +501,27 @@ package body FLTK.Images.Shared is
     begin
         fl_shared_image_register_images;
     end Register_Images;
+
+
+    procedure Add_Handler
+           (Handler : in not null Image_Handler) is
+    begin
+        if not Handlers.Contains (Handler) then
+            Handlers.Append (Handler);
+        end if;
+        fl_shared_image_add_ada_handler;
+    end Add_Handler;
+
+
+    procedure Remove_Handler
+           (Handler : in not null Image_Handler)
+    is
+        Place : constant Handler_Vectors.Extended_Index := Handlers.Find_Index (Handler);
+    begin
+        if Place /= Handler_Vectors.No_Index then
+            Handlers.Delete (Place);
+        end if;
+    end Remove_Handler;
 
 
 end FLTK.Images.Shared;

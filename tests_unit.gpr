@@ -114,6 +114,12 @@ project Tests_Unit is
         "test_menu_item_labels.adb",
         "test_window_shape.adb",
         "test_image_data.adb",
+        "test_write_png.adb",
+        "test_shortcut_button.adb",
+        "test_ico_image.adb",
+        "test_image_handlers.adb",
+        "test_widget_multi_label.adb",
+        "test_file_icons.adb",
         "test_anim_canvas.adb",
         "test_tiled_tile.adb");
 

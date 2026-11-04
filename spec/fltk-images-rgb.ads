@@ -41,7 +41,8 @@ package FLTK.Images.RGB is
 
         --  The image keeps a copy of Data.  Data shorter than Height
         --  lines of Line_Size, or of Width * Depth, bytes raises
-        --  Constraint_Error.
+        --  Constraint_Error, as do a Depth outside 1 .. 4 and a non-zero
+        --  Line_Size less than Width * Depth (FLTKAda-BUGS.md 71).
         function Create
                (Data          : in Color_Component_Array;
                 Width, Height : in Natural;

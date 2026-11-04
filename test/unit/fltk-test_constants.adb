@@ -15,13 +15,14 @@ with
 
     Checks,
     FLTK.Draw,
+    FLTK.Images.File_Icons,
     FLTK.Screen;
 
 
 procedure FLTK.Test_Constants is
 
 
-    type Value_Array is array (1 .. 293) of Long_Long_Integer;
+    type Value_Array is array (1 .. 300) of Long_Long_Integer;
     pragma Convention (C, Value_Array);
 
     FLTK_Values : Value_Array;
@@ -918,5 +919,36 @@ begin
        (Draw.Orientation_Kind'Pos (Draw.Orient_SE),
         293,
         "Draw.Orientation_Kind'Pos (Draw.Orient_SE) = FL_ORIENT_SE");
+
+    --  File icons (Fl_File_Icon)
+    Same
+       (Images.File_Icons.File_Kind'Pos (Images.File_Icons.Any_File),
+        294,
+        "Images.File_Icons.File_Kind'Pos (Images.File_Icons.Any_File) = Fl_File_Icon::ANY");
+    Same
+       (Images.File_Icons.File_Kind'Pos (Images.File_Icons.Plain_File),
+        295,
+        "Images.File_Icons.File_Kind'Pos (Images.File_Icons.Plain_File) = Fl_File_Icon::PLAIN");
+    Same
+       (Images.File_Icons.File_Kind'Pos (Images.File_Icons.Fifo_File),
+        296,
+        "Images.File_Icons.File_Kind'Pos (Images.File_Icons.Fifo_File) = Fl_File_Icon::FIFO");
+    Same
+       (Images.File_Icons.File_Kind'Pos (Images.File_Icons.Device_File),
+        297,
+        "Images.File_Icons.File_Kind'Pos (Images.File_Icons.Device_File) = Fl_File_Icon::DEVICE");
+    Same
+       (Images.File_Icons.File_Kind'Pos (Images.File_Icons.Link_File),
+        298,
+        "Images.File_Icons.File_Kind'Pos (Images.File_Icons.Link_File) = Fl_File_Icon::LINK");
+    Same
+       (Images.File_Icons.File_Kind'Pos (Images.File_Icons.Directory_File),
+        299,
+        "Images.File_Icons.File_Kind'Pos (Images.File_Icons.Directory_File)" &
+        " = Fl_File_Icon::DIRECTORY");
+    Same
+       (Long_Long_Integer (Images.File_Icons.Icon_Color),
+        300,
+        "Long_Long_Integer (Images.File_Icons.Icon_Color) = FL_ICON_COLOR");
 
 end FLTK.Test_Constants;

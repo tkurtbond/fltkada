@@ -400,3 +400,24 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
   raise Program_Error while the surface is current or pushed.
 - **Confirmed**: a C++ program under valgrind on Xvfb and sway (invalid
   read at address 4 in `cairo_rectangle`), and `test_offscreens`.
+
+### F17. `fl_write_png` of an image with no pixels aborts the program
+
+- **What happens**: `fl_write_png` of an `Fl_RGB_Image` of width or
+  height 0, or of an `Fl_PNG_Image` that failed to load, prints
+  "libpng error: Invalid IHDR data" and the program dies of SIGABRT.
+  Seen 2026-11-04.
+- **Cause**: `fl_write_png` (`fl_write_png.cxx:120-175`) creates the
+  libpng write struct with no error handler and no `setjmp`, so libpng's
+  default error handler aborts when `png_set_IHDR` rejects the size. The
+  reader, `Fl_PNG_Image.cxx:164`, has the `setjmp`. Nothing checks the
+  depth or the line size either. They are only used to step through the
+  data.
+- **Effect on FLTKAda**: `Write_PNG` raises No_Image_Error for an image
+  with no data, a size below 1 or no pixels, and never calls
+  `fl_write_png` for it. `RGB_Image` refuses a bad depth or line size
+  (FLTKAda-BUGS.md 71).
+- **Confirmed**: a C++ program under Xvfb: width 0 and a failed load
+  abort, and a 4x4 image writes. Under valgrind, depth 0 and a short
+  line size read past the data at `fl_write_png.cxx:161`.
+  `test_write_png` checks that `Write_PNG` raises.

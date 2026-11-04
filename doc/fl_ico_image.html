@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_ICO_Image Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_ICO_Image Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_ICO_Image</td>
+    <td>FLTK.Images.RGB.BMP.ICO</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_ICO_Image</td>
+    <td>ICO_Image</td>
+  </tr>
+
+  <tr>
+    <td>IconDirEntry</td>
+    <td>Icon_Entry</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Icon_Entry_Array</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_ICO_Image(const char *filename, int id = -1,
+    const unsigned char *data = 0, const size_t datasize = 0);
+</pre></td>
+<td><pre>
+function Create
+       (Filename : in String;
+        Id       : in Integer := -1)
+    return ICO_Image;
+
+function Create
+       (Data : in Color_Component_Array;
+        Id   : in Integer := -1)
+    return ICO_Image;
+</pre>A file is read whole and decoded as data, and a PNG entry from its offset, so it
+loads from memory too (pofltk 82). A bitmap entry FLTK would read past raises
+Format_Error (pofltk 87).<pre>
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+const IconDirEntry * icondirentry() const;
+</pre></td>
+<td><pre>
+function Entries
+       (This : in ICO_Image)
+    return Icon_Entry_Array;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int idcount() const;
+</pre></td>
+<td><pre>
+function ICO_Count
+       (Filename : in String)
+    return Natural;
+
+function ICO_Count
+       (Data : in Color_Component_Array)
+    return Natural;
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>

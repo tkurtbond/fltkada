@@ -17,6 +17,21 @@ package FLTK.Images.Shared is
     type Shared_Image_Reference (Data : not null access Shared_Image'Class) is
         limited null record with Implicit_Dereference => Data;
 
+    type Shared_Image_Array is array (Positive range <>) of Shared_Image;
+
+    --  The most of a file an Image_Handler is shown.
+    Max_Header : constant := 64;
+
+    --  Makes an image of the file Name, whose first bytes, at most
+    --  Max_Header, are Header, or returns null for the next handler to try.
+    --  The pool gets a copy, at the image's size, and the image stays the
+    --  handler's.  An exception the handler raises is raised again by the
+    --  call that loaded the file.
+    type Image_Handler is access function
+           (Name   : in String;
+            Header : in Color_Component_Array)
+        return access constant Image'Class;
+
 
 
 
@@ -76,6 +91,10 @@ package FLTK.Images.Shared is
     function Number_Of_Images
         return Natural;
 
+    --  Every image in the pool, each with a reference of its own.
+    function Pool_Images
+        return Shared_Image_Array;
+
     function Name
            (This : in Shared_Image)
         return String;
@@ -129,6 +148,18 @@ package FLTK.Images.Shared is
     --  A binary PNM is then scaled as PNM's Create scales it (pofltk 45).
     procedure Register_Images;
 
+    --  Adds Handler after those added before, unless it is there already.
+    --  FLTK asks the handlers about any file but an XBM or XPM that no
+    --  handler before them could load, the handlers Register_Images adds
+    --  among them if it ran first.  A handler must not load the same
+    --  file as a shared image: that asks it again.  pofltk 95.
+    procedure Add_Handler
+           (Handler : in not null Image_Handler);
+
+    --  Removes Handler, if it was added.  A handler may remove itself.
+    procedure Remove_Handler
+           (Handler : in not null Image_Handler);
+
 
 private
 
@@ -145,6 +176,7 @@ private
     pragma Inline (Desaturate);
 
     pragma Inline (Number_Of_Images);
+    pragma Inline (Pool_Images);
     pragma Inline (Name);
     pragma Inline (Original);
     pragma Inline (Reference_Count);

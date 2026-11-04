@@ -2281,7 +2281,7 @@ Verdicts:
 - **Results:** `test_offscreens` and `test_utf8` pass on X11 and sway,
   with no invalid reads, and `vg-check.sh` passes on both.
 
-### Phase 10: Widgets and images
+### Phase 10: Widgets and images [done, 2026-11-04]
 
 - **`FLTK.Widgets.Buttons.Shortcut`** (`Fl_Shortcut_Button`).
 - **`FLTK.Images.RGB.BMP.ICO`** (`Fl_ICO_Image`).
@@ -2298,6 +2298,82 @@ Verdicts:
 - **`fl_write_png`,** as `Write_PNG`.
 - **`Image.Data_W`/`Data_H`.**
 - **Multi-label on a widget,** in `FLTK.Multi_Labels`. Issue 55 applies.
+
+Decisions and findings:
+
+- **ICO files are read whole and decoded as data,** so that a file and
+  the same bytes in memory load alike. The shim decodes a PNG entry from
+  its offset itself, since `Fl_ICO_Image` reads one by its file's name
+  (issue 82). `ICO_Count` and `Entries` read the directory. Test:
+  `test_ico_image`.
+- **Image handlers.** `Fl_Shared_Image::add_handler` takes a function
+  with no data, and FLTK deletes the image a handler returns along with
+  the pool's entry. So FLTK is given one handler, which asks the Ada
+  list in order. The pool gets a copy at the image's size, and the
+  handler keeps its own image. An exception a handler raises is raised
+  again by the load that asked it. `Pool_Images` returns a plain array,
+  each element with a reference of its own. Test: `test_image_handlers`.
+- **`Write_PNG`** is in `FLTK.Images.RGB.PNG`. It raises No_Image_Error
+  for an image with no pixels (F17), File_Access_Error for a file it
+  can't open, and Unsupported_Error without libpng. `RGB_Image` now
+  refuses a bad depth or line size (FLTKAda-BUGS.md 71).
+  `Get_Data_W`/`Get_Data_H` are on `Image`. Test: `test_write_png`.
+- **Shortcuts read back.** `Shortcut_Button` showed that no shortcut with
+  a key could be read back from any widget (FLTKAda-BUGS.md 72). Test:
+  `test_shortcut_button`.
+- **Pointer labels.** A multi-label, a file icon and an image label are
+  pointers in FLTK's `label`. The shim refuses to give text one of their
+  kinds, `Get_Label` is "" for one, and `Set_Label` makes the label
+  plain text first (FLTKAda-BUGS.md 73). `Set_Multi_Label` and
+  `Set_Icon_Label` are not primitives of `Widget`. They live in
+  `FLTK.Multi_Labels` and `FLTK.Images.File_Icons`. Test:
+  `test_widget_multi_label`.
+- **File icons.**
+  - `Load` goes through `FLTK.Images.Shared`, as FLTK's own `load_image`
+    does, where pofltk used a loader of its own. So BMP, GIF, ICO and SVG
+    load only after `Register_Images`, and XPM and XBM load without it,
+    as `test_file_icons` checks.
+  - An SVG has no pixels until it is drawn or normalized
+    (`Fl_SVG_Image.cxx:411-413`). Before `Load` normalized it, the shim
+    read through a null array. A scratch C++ program under Xvfb showed
+    the null array.
+  - A file browser shows an icon only as the line's data, so `Add_File`,
+    `Set_File_Icon` and `Get_File_Icon` take a `File_Browser`. The icon
+    is not copied, so it must outlive the widgets and browsers that show
+    it, as the spec says.
+  - `Measure_Label` gave FLTK an uninitialized wrap width
+    (FLTKAda-BUGS.md 74), found by the icon label's measure check.
+  - Test: `test_file_icons`.
+
+Verdicts:
+
+- **Issue 55:** FIXED. `Set_Multi_Label` clears the copied label first,
+  so FLTK never frees the multi-label. Without that, the negative control
+  gave a mismatched free (`Fl_Widget.cxx:294`) and an invalid free.
+- **Issue 82:** CONFIRMED and WORKED AROUND. The same bytes that load
+  from the file give `fail()` -2 from memory in FLTK. `ICO_Image`
+  decodes them, as above.
+- **Issue 85:** FIXED. `Set_Icon_Label` sets the icon through the shim's
+  label guards, so text replaces it as a `Normal_Label`, and
+  `Set_Label_Kind` can't make FLTK read the text as an icon. The icon
+  label measures as the icon: without `measure_icon`, the check that it
+  measures as none fails.
+- **Issue 86:** FIXED. A bad `.fti` leaves the icon empty and raises
+  Format_Error. A file that can't be read raises File_Access_Error. An
+  image with no pixels, an animated GIF without frames and an SVG before
+  normalizing are refused or normalized in the shim, so FLTK never reads
+  a null array.
+- **Issue 87,** for the new `ICO_Image`: REFUSED, as Phase 5 refused
+  it for BMP. A bitmap entry that FLTK would read past, like
+  `colors.ico`, raises Format_Error from a file and from memory. The
+  shim checks the entry's header before FLTK decodes it.
+- **Issue 95:** FIXED, as above. A handler may remove itself, a handler
+  added twice is asked once, and the header it is shown is at most
+  `Max_Header` bytes.
+- **New:** FLTK-issues.md F17, and FLTKAda-BUGS.md 71 to 74.
+- **Results:** `test_shortcut_button`, `test_ico_image`,
+  `test_image_handlers`, `test_write_png`, `test_widget_multi_label` and
+  `test_file_icons` pass on X11 and sway. Valgrind finds no errors.
 
 ### Phase 11: File surfaces
 

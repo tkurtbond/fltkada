@@ -31,6 +31,16 @@ package FLTK.Images.RGB.PNG is
     end Forge;
 
 
+
+
+    --  Writes Item's data, at its data size, to Filename as a PNG.  An image
+    --  with no pixels raises No_Image_Error, a file that can't be opened
+    --  File_Access_Error, and a FLTK built without libpng Unsupported_Error.
+    procedure Write_PNG
+           (Item     : in RGB_Image'Class;
+            Filename : in String);
+
+
 private
 
 

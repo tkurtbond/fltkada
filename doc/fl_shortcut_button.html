@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Shortcut_Button Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Shortcut_Button Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Shortcut_Button</td>
+    <td>FLTK.Widgets.Buttons.Shortcut</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Shortcut_Button</td>
+    <td>Shortcut_Button</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Shortcut_Button_Reference</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Shortcut_Button(int X, int Y, int W, int H, const char* l = 0);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return Shortcut_Button;
+
+function Create
+       (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+        X, Y, W, H : in     Integer;
+        Text       : in     String := "")
+    return Shortcut_Button;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void default_clear();
+</pre></td>
+<td><pre>
+Not bound, as in pofltk.
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void default_value(Fl_Shortcut shortcut);
+</pre></td>
+<td><pre>
+Not bound, as in pofltk.
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre></td>
+<td>Inherited from Button.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int handle(int);
+</pre></td>
+<td><pre>
+function Handle
+       (This  : in out Shortcut_Button;
+        Event : in     Event_Kind)
+    return Event_Outcome;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Shortcut value();
+</pre></td>
+<td><pre>
+function Get_Value
+       (This : in Shortcut_Button)
+    return Key_Combo;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void value(Fl_Shortcut shortcut);
+</pre></td>
+<td><pre>
+procedure Set_Value
+       (This : in out Shortcut_Button;
+        To   : in     Key_Combo);
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>

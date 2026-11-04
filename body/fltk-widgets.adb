@@ -392,7 +392,7 @@ package body FLTK.Widgets is
 
     procedure fl_widget_measure_label
            (W    : in     Storage.Integer_Address;
-            D, H :    out Interfaces.C.int);
+            D, H : in out Interfaces.C.int);
     pragma Import (C, fl_widget_measure_label, "fl_widget_measure_label");
     pragma Inline (fl_widget_measure_label);
 
@@ -1359,14 +1359,17 @@ package body FLTK.Widgets is
     end Set_Label_Kind;
 
 
+    --  FLTK reads W as the width to wrap the text at, 0 for none
+    --  (fl_draw.cxx:520-521), so it is given 0, not what W held.
     procedure Measure_Label
            (This : in     Widget;
-            W, H :    out Integer) is
+            W, H :    out Integer)
+    is
+        Result_W, Result_H : Interfaces.C.int := 0;
     begin
-        fl_widget_measure_label
-           (This.Void_Ptr,
-            Interfaces.C.int (W),
-            Interfaces.C.int (H));
+        fl_widget_measure_label (This.Void_Ptr, Result_W, Result_H);
+        W := Integer (Result_W);
+        H := Integer (Result_H);
     end Measure_Label;
 
 

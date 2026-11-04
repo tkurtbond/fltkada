@@ -23,6 +23,18 @@ bool bmp_file_ok(const char * name);
 bool gif_file_ok(const char * name, bool anim);
 bool gif_data_ok(const unsigned char * data, std::size_t n, bool anim);
 
+//  An ICO's entry, a BMP information header, n bytes at p.
+bool ico_dib_ok(const unsigned char * p, std::size_t n);
+
+//  The entry of an ICO's directory that Fl_ICO_Image shows for id -1, the
+//  largest; -1 if there is none.
+class Fl_ICO_Image;
+int ico_largest(const Fl_ICO_Image & dir);
+
+//  All of file name, in into; false if it can't be read.  Throws
+//  std::bad_alloc if it doesn't fit in memory.
+bool read_image_file(const char * name, std::vector<unsigned char> & into);
+
 //  A file of any kind that Fl_Shared_Image reads by its contents: a GIF,
 //  read as an animation if Fl_GIF_Image::animate is set, a BMP, an ICO or
 //  an XBM.

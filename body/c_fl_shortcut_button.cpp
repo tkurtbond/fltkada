@@ -1,0 +1,85 @@
+
+
+//  Programmed by T. Kurt Bond and Claude Opus 5.5
+//  Released into the public domain
+
+
+#include <FL/Fl_Shortcut_Button.H>
+#include "c_fl_shortcut_button.h"
+#include "c_fl.h"
+
+
+
+
+//  Exports from Ada
+
+extern "C" void widget_draw_hook(void * ud);
+extern "C" int widget_handle_hook(void * ud, int e);
+
+
+
+
+//  Attaching all relevant hooks and friends
+
+class My_Shortcut_Button : public Fl_Shortcut_Button {
+public:
+    using Fl_Shortcut_Button::Fl_Shortcut_Button;
+
+    friend void fl_shortcut_button_draw(SHORTCUTBUTTON b);
+    friend int fl_shortcut_button_handle(SHORTCUTBUTTON b, int e);
+
+    void draw();
+    int handle(int e);
+};
+
+void My_Shortcut_Button::draw() {
+    widget_draw_hook(this->user_data());
+}
+
+int My_Shortcut_Button::handle(int e) {
+    return widget_handle_hook(this->user_data(), e);
+}
+
+
+
+
+//  Flattened C API
+
+SHORTCUTBUTTON new_fl_shortcut_button(int x, int y, int w, int h, char* label) {
+    My_Shortcut_Button *b = new My_Shortcut_Button(x, y, w, h, label);
+    return b;
+}
+
+void free_fl_shortcut_button(SHORTCUTBUTTON b) {
+    if (fl_inside_callback) {
+        fl_delete_widget(b);
+    } else {
+        delete static_cast<My_Shortcut_Button*>(b);
+    }
+}
+
+
+
+
+//  Fl_Shortcut_Button::value hides Fl_Button's, so these call it as itself.
+
+unsigned int fl_shortcut_button_get_value(SHORTCUTBUTTON b) {
+    return static_cast<Fl_Shortcut_Button*>(b)->value();
+}
+
+void fl_shortcut_button_set_value(SHORTCUTBUTTON b, unsigned int s) {
+    static_cast<Fl_Shortcut_Button*>(b)->value(s);
+}
+
+
+
+
+void fl_shortcut_button_draw(SHORTCUTBUTTON b) {
+    static_cast<My_Shortcut_Button*>(b)->Fl_Shortcut_Button::draw();
+}
+
+int fl_shortcut_button_handle(SHORTCUTBUTTON b, int e) {
+    return static_cast<My_Shortcut_Button*>(b)->Fl_Shortcut_Button::handle(e);
+}
+
+

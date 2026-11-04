@@ -6,6 +6,7 @@
 
 #include <FL/Enumerations.H>
 #include <FL/Fl_Multi_Label.H>
+#include <FL/Fl_Widget.H>
 #include "c_fl_multi_label.h"
 
 
@@ -64,6 +65,20 @@ void fl_multi_label_set_a(MULTILABEL ml, int k, const char * v) {
 void fl_multi_label_set_b(MULTILABEL ml, int k, const char * v) {
     static_cast<Fl_Multi_Label*>(ml)->typeb = defined_labeltype(k);
     static_cast<Fl_Multi_Label*>(ml)->labelb = v;
+}
+
+
+
+
+//  Fl_Multi_Label::label(Fl_Widget *) sets the type and the pointer, and
+//  leaves a label copy_label made marked as the widget's to free: the text
+//  leaks, and the widget frees the multi-label (pofltk 55).  label(0)
+//  frees the text and clears the mark first.
+void fl_multi_label_widget(void * w, MULTILABEL ml) {
+    Fl_Widget *wd = static_cast<Fl_Widget*>(w);
+    wd->label(static_cast<const char *>(0));
+    static_cast<Fl_Multi_Label*>(ml)->label(wd);
+    wd->redraw();
 }
 
 

@@ -11,6 +11,7 @@
 
 
 #include <FL/Enumerations.H>
+#include <FL/Fl_File_Icon.H>
 #include <FL/Fl_Menu_Item.H>
 
 
@@ -331,5 +332,13 @@ extern "C" const long long c_constants[] =
     FL_ORIENT_LEFT,
     FL_ORIENT_SW,
     FL_ORIENT_DOWN,
-    FL_ORIENT_SE
+    FL_ORIENT_SE,
+    //  File icons (Fl_File_Icon)
+    Fl_File_Icon::ANY,
+    Fl_File_Icon::PLAIN,
+    Fl_File_Icon::FIFO,
+    Fl_File_Icon::DEVICE,
+    Fl_File_Icon::LINK,
+    Fl_File_Icon::DIRECTORY,
+    FL_ICON_COLOR
 };

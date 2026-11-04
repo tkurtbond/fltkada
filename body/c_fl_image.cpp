@@ -128,6 +128,14 @@ int fl_image_ld(IMAGE i) {
     return static_cast<Fl_Image*>(i)->ld();
 }
 
+int fl_image_data_w(IMAGE i) {
+    return static_cast<Fl_Image*>(i)->data_w();
+}
+
+int fl_image_data_h(IMAGE i) {
+    return static_cast<Fl_Image*>(i)->data_h();
+}
+
 void fl_image_scale(IMAGE i, int w, int h, int p, int e) {
     static_cast<Fl_Image*>(i)->scale(w, h, p, e);
 }
