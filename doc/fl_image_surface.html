@@ -137,6 +137,27 @@ function Get_Image
 
   <tr>
 <td><pre>
+void mask(const Fl_RGB_Image *mask);
+</pre></td>
+<td><pre>
+procedure Mask
+       (This : in out Image_Surface;
+        Item : in     FLTK.Images.RGB.RGB_Image'Class);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void rescale();
+</pre></td>
+<td><pre>
+procedure Rescale
+       (This : in out Image_Surface);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 void set_current();
 </pre></td>
 <td><pre>

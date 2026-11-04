@@ -29,6 +29,8 @@ project Tests_Unit is
 
     for Main use
        ("test_constants.adb",
+        "test_utf8.adb",
+        "test_offscreens.adb",
         "test_probe.adb",
         "test_kept_strings.adb",
         "test_font_kinds.adb",

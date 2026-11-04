@@ -387,7 +387,9 @@ package body FLTK.Devices.Surface.Paged.Printers is
            (This : in out Printer) is
     begin
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
-            free_fl_printer (This.Void_Ptr);
+            if Release_Current (This) then
+                free_fl_printer (This.Void_Ptr);
+            end if;
             This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;

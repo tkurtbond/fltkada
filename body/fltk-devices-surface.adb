@@ -4,6 +4,13 @@
 --  Released into the public domain
 
 
+with
+
+    Ada.Unchecked_Deallocation,
+    Interfaces.C,
+    System;
+
+
 package body FLTK.Devices.Surface is
 
 
@@ -23,6 +30,11 @@ package body FLTK.Devices.Surface is
            (S : in Storage.Integer_Address);
     pragma Import (C, free_fl_surface_device, "free_fl_surface_device");
     pragma Inline (free_fl_surface_device);
+
+    procedure free_fl_surface_device_any
+           (S : in Storage.Integer_Address);
+    pragma Import (C, free_fl_surface_device_any, "free_fl_surface_device_any");
+    pragma Inline (free_fl_surface_device_any);
 
 
 
@@ -47,6 +59,12 @@ package body FLTK.Devices.Surface is
     procedure fl_surface_device_pop_current;
     pragma Import (C, fl_surface_device_pop_current, "fl_surface_device_pop_current");
     pragma Inline (fl_surface_device_pop_current);
+
+    function fl_surface_device_is_current
+           (S : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_surface_device_is_current, "fl_surface_device_is_current");
+    pragma Inline (fl_surface_device_is_current);
 
 
 
@@ -75,7 +93,9 @@ package body FLTK.Devices.Surface is
            (This : in out Surface_Device) is
     begin
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
-            free_fl_surface_device (This.Void_Ptr);
+            if Release_Current (This) then
+                free_fl_surface_device (This.Void_Ptr);
+            end if;
             This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;
@@ -118,12 +138,92 @@ package body FLTK.Devices.Surface is
     Surface_Stack  : array (1 .. 16) of Surface_Access;
     Stack_Height   : Natural := 0;
 
+    --  The stand-ins Release_Current made, each for a surface freed while
+    --  remembered below another.  Each owns its FLTK object, and both are
+    --  freed by Reclaim once FLTK no longer keeps it.  At most one for each
+    --  place in the stack can be remembered.
+    Stand_Ins      : array (1 .. Surface_Stack'Last) of Surface_Access;
+
+    procedure Free is new Ada.Unchecked_Deallocation (Surface_Device'Class, Surface_Access);
+
+    procedure Reclaim is
+    begin
+        for Item of Stand_Ins loop
+            if Item /= null and then not Is_Remembered (Item.all) then
+                free_fl_surface_device_any (Item.Void_Ptr);
+                Item.Void_Ptr := Null_Pointer;
+                Free (Item);
+            end if;
+        end loop;
+    end Reclaim;
+
 
     procedure Set_Current_Bookkeep
            (Surface : in out Surface_Device'Class) is
     begin
         Current_Surface := Surface'Unchecked_Access;
+        Reclaim;
     end Set_Current_Bookkeep;
+
+
+    --  Whether Item is This.
+    function Same
+           (Item : access Surface_Device'Class;
+            This : in     Surface_Device'Class)
+        return Boolean
+    is
+        use type System.Address;
+    begin
+        return Item /= null and then Item.all'Address = This'Address;
+    end Same;
+
+
+    function Is_Remembered
+           (This : in Surface_Device'Class)
+        return Boolean is
+    begin
+        if Same (Current_Surface, This) then
+            return True;
+        end if;
+        for Index in 1 .. Stack_Height loop
+            if Same (Surface_Stack (Index), This) then
+                return True;
+            end if;
+        end loop;
+        return False;
+    end Is_Remembered;
+
+
+    function Release_Current
+           (This : in out Surface_Device'Class)
+        return Boolean
+    is
+        Stand_In : Surface_Access := null;
+    begin
+        while Same (Current_Surface, This) and Stack_Height > 0 loop
+            Pop_Current;
+        end loop;
+        if Same (Current_Surface, This) then
+            Original_Surface.Set_Current;
+        end if;
+        for Index in 1 .. Stack_Height loop
+            if Same (Surface_Stack (Index), This) then
+                if Stand_In = null then
+                    Stand_In := new Surface_Device;
+                    Stand_In.Void_Ptr := This.Void_Ptr;
+                    Stand_In.Needs_Dealloc := False;
+                    for Item of Stand_Ins loop
+                        if Item = null then
+                            Item := Stand_In;
+                            exit;
+                        end if;
+                    end loop;
+                end if;
+                Surface_Stack (Index) := Stand_In;
+            end if;
+        end loop;
+        return Stand_In = null;
+    end Release_Current;
 
 
 
@@ -168,6 +268,17 @@ package body FLTK.Devices.Surface is
     end Push_Current;
 
 
+    function Is_Current
+           (This : in Surface_Device)
+        return Boolean
+    is
+        use type Interfaces.C.int;
+    begin
+        return This.Void_Ptr /= Null_Pointer and then
+            fl_surface_device_is_current (This.Void_Ptr) /= 0;
+    end Is_Current;
+
+
     procedure Pop_Current is
     begin
         fl_surface_device_pop_current;
@@ -175,6 +286,7 @@ package body FLTK.Devices.Surface is
             Current_Surface := Surface_Stack (Stack_Height);
             Stack_Height := Stack_Height - 1;
         end if;
+        Reclaim;
     end Pop_Current;
 
 

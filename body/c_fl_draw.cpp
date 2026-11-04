@@ -412,6 +412,25 @@ void * fl_draw_read_image(void * data, int x, int y, int w, int h, int alpha) {
     return out;
 }
 
+//  What window win shows of x, y, w, h, clipped to it: X11's
+//  fl_capture_window writes past its image, and Wayland's reads past the
+//  draw buffer, for a rectangle partly off the window or of no size
+//  (pofltk 127).  0 if win isn't shown or nothing of it is inside.
+void * fl_draw_capture_window(void * win, int x, int y, int w, int h) {
+    Fl_Window *window = static_cast<Fl_Window*>(win);
+    if (!window || !window->shown() || w <= 0 || h <= 0) {
+        return 0;
+    }
+    int right = x < window->w() - w ? x + w : window->w();
+    int bottom = y < window->h() - h ? y + h : window->h();
+    int left = x < 0 ? 0 : x;
+    int top = y < 0 ? 0 : y;
+    if (right <= left || bottom <= top) {
+        return 0;
+    }
+    return fl_capture_window(window, left, top, right - left, bottom - top);
+}
+
 
 
 

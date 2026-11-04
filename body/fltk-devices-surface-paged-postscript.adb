@@ -261,7 +261,9 @@ package body FLTK.Devices.Surface.Paged.Postscript is
            (This : in out Postscript_File_Device) is
     begin
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
-            free_fl_postscript_file_device (This.Void_Ptr);
+            if Release_Current (This) then
+                free_fl_postscript_file_device (This.Void_Ptr);
+            end if;
             This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;

@@ -56,7 +56,9 @@ package body FLTK.Devices.Surface.Display is
            (This : in out Display_Device) is
     begin
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
-            free_fl_display_device (This.Void_Ptr);
+            if Release_Current (This) then
+                free_fl_display_device (This.Void_Ptr);
+            end if;
             This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;

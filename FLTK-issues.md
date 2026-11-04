@@ -352,3 +352,51 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
 - **Confirmed**: `test_paste_image`, on X11 and on sway. Without the
   workaround, its first text paste gave `""` and its text paste after an
   image gave `"image"`.
+
+### F14. An `Fl_Image_Surface` narrower or lower than 1 crashes when read
+
+- **What happens**: `Fl_Image_Surface (0, 5, 1)` is made without
+  complaint, and can be drawn on, but `image()` crashes. On X11 it reads
+  through null; on Wayland it divides by zero (SIGFPE). Seen 2026-11-04.
+- **Cause**: nothing checks the size. On X11 the driver's `image()`
+  returns null, and `Fl_Image_Surface::image`
+  calls `img->scale` on it (`Fl_Image_Surface.cxx:156`). On Wayland
+  `cairo_format_stride_for_width` gives a stride of 0
+  (`Fl_Wayland_Image_Surface_Driver.cxx:42`), which `image()` divides
+  by (139).
+- **Effect on FLTKAda**: `Image_Surface`'s and `Offscreen`'s
+  `Forge.Create` raise Constraint_Error for a width or height below 1
+  (FLTKAda-BUGS.md 69).
+- **Confirmed**: a C++ program under valgrind, on Xvfb (invalid read at
+  address 0, SIGSEGV) and on sway (SIGFPE), and `test_offscreens`.
+
+### F15. Deleting a surface that is current or pushed leaves it in FLTK's stack
+
+- **What happens**: deleting an `Fl_Image_Surface` remembered by
+  `push_current` under another, then popping, makes the freed surface
+  current, and drawing reads and writes freed memory: valgrind found 14
+  invalid reads and an invalid write on X11, the same on sway. Seen
+  2026-11-04.
+- **Cause**: `~Fl_Surface_Device` clears `surface_` if it is the surface
+  deleted, but not the stack (`Fl_Device.cxx:107-110`), and
+  `pop_current` calls `set_current` on what the stack holds (156).
+- **Effect on FLTKAda**: worked around. A surface freed while current
+  from a `Push_Current` is popped first. One buried under another is
+  replaced by a stand-in that keeps the FLTK object until the stack
+  forgets it (FLTKAda-BUGS.md 70, PLAN.md Phase 9).
+- **Confirmed**: a C++ program under valgrind on Xvfb and sway, and
+  `test_offscreens`, which draws on a stand-in after freeing the Ada
+  object, with no invalid reads.
+
+### F16. `Fl_Image_Surface::rescale` while the surface is current crashes
+
+- **What happens**: after `push_current (s)` and `s->rescale()`, drawing
+  reads through a null Cairo context and the program dies of SIGSEGV,
+  on X11 and on Wayland. Seen 2026-11-04.
+- **Cause**: `rescale` deletes `platform_surface` and makes a new one
+  (`Fl_Image_Surface.cxx:190-199`). The documentation says the surface
+  must not be current (186), but nothing checks it.
+- **Effect on FLTKAda**: `Image_Surface.Rescale` and `Offscreen.Rescale`
+  raise Program_Error while the surface is current or pushed.
+- **Confirmed**: a C++ program under valgrind on Xvfb and sway (invalid
+  read at address 4 in `cairo_rectangle`), and `test_offscreens`.

@@ -1923,3 +1923,44 @@ failed with the invalid read.
 the fix it raised. Passes on X11 and sway, and valgrind is clean on both.
 
 **Status.** Fixed.
+
+## 69. `Image_Surface` accepted a size below 1
+
+**Symptom.** `FLTK.Devices.Surface.Image.Forge.Create (0, 5)` made a
+surface, and reading its image crashed: a null read on X11, SIGFPE on
+Wayland.
+
+**Cause.** `Create` passed the size straight to FLTK, which doesn't check
+it (FLTK-issues.md F14).
+
+**Found.** Phase 9, 2026-11-04, writing `FLTK.Draw.Offscreens`, whose
+`Create` has the same rule.
+
+**Fix.** `Create` raises Constraint_Error if W or H is below 1.
+`test_offscreens` checks it for both packages. Passes on X11 and sway.
+
+**Status.** Fixed.
+
+## 70. Finalizing a surface that was current or pushed left FLTK pointing at it
+
+**Symptom.** An `Image_Surface` finalized while current, or while
+remembered by `Push_Current`, stayed in FLTK's surface stack, and the
+next `Pop_Current` made the freed surface current, so drawing used freed
+memory.
+
+**Cause.** `Finalize` deleted the FLTK object whatever FLTK still kept,
+and FLTK's destructor clears only the current surface, not the stack
+(FLTK-issues.md F15).
+
+**Found.** Phase 9, 2026-11-04, testing offscreens begun one inside
+another.
+
+**Fix.** Each surface's `Finalize` calls `Release_Current` first. That
+pops the surface if it is current from a push, and makes the original
+surface current if it still is. A surface buried under another is
+replaced in the Ada stack by a stand-in that owns the FLTK object, freed
+once FLTK's stack forgets it. `test_offscreens` frees an offscreen while
+begun, and a surface buried under another, then draws and pops. Passes
+on X11 and sway, and valgrind is clean on both.
+
+**Status.** Fixed.

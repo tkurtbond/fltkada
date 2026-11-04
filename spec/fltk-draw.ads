@@ -8,6 +8,7 @@ with
 
     Ada.Strings.Unbounded,
     FLTK.Images.Pixmaps,
+    FLTK.Images.RGB,
     FLTK.Widgets.Groups.Windows;
 
 
@@ -379,6 +380,16 @@ package FLTK.Draw is
        (if Alpha = 0
         then Read_Image'Result'Length = Size_Type (W) * Size_Type (H) * 3
         else Read_Image'Result'Length = Size_Type (W) * Size_Type (H) * 4);
+
+    --  What Item shows of the rectangle X, Y, W, H, with what is drawn on its
+    --  subwindows, as an image of the part of the rectangle inside Item: FLTK
+    --  doesn't clip, and writes or reads outside its buffers (pofltk 127).
+    --  Raises Draw_Error if Item was never made or isn't shown, or no part of
+    --  the rectangle is inside it.
+    function Capture_Window
+           (Item       : in FLTK.Widgets.Groups.Windows.Window'Class;
+            X, Y, W, H : in Integer)
+        return FLTK.Images.RGB.RGB_Image;
 
 
 

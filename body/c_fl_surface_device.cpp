@@ -42,6 +42,11 @@ void free_fl_surface_device(SURFACEDEVICE s) {
     delete static_cast<My_Surface_Device*>(s);
 }
 
+//  Deletes a surface of any kind, by Fl_Surface_Device's virtual destructor.
+void free_fl_surface_device_any(SURFACEDEVICE s) {
+    delete static_cast<Fl_Surface_Device*>(s);
+}
+
 
 
 
@@ -60,6 +65,10 @@ void fl_surface_device_push_current(SURFACEDEVICE s) {
 
 void fl_surface_device_pop_current(void) {
     Fl_Surface_Device::pop_current();
+}
+
+int fl_surface_device_is_current(SURFACEDEVICE s) {
+    return static_cast<Fl_Surface_Device*>(s)->is_current();
 }
 
 

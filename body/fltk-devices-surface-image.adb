@@ -64,6 +64,17 @@ package body FLTK.Devices.Surface.Image is
     pragma Import (C, fl_image_surface_highres_image, "fl_image_surface_highres_image");
     pragma Inline (fl_image_surface_highres_image);
 
+    function fl_image_surface_mask
+           (S, M : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_image_surface_mask, "fl_image_surface_mask");
+    pragma Inline (fl_image_surface_mask);
+
+    procedure fl_image_surface_rescale
+           (S : in Storage.Integer_Address);
+    pragma Import (C, fl_image_surface_rescale, "fl_image_surface_rescale");
+    pragma Inline (fl_image_surface_rescale);
+
 
 
 
@@ -85,7 +96,9 @@ package body FLTK.Devices.Surface.Image is
            (This : in out Image_Surface) is
     begin
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
-            free_fl_image_surface (This.Void_Ptr);
+            if Release_Current (This) then
+                free_fl_image_surface (This.Void_Ptr);
+            end if;
             This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;
@@ -104,6 +117,9 @@ package body FLTK.Devices.Surface.Image is
                 Highres : in Boolean := False)
             return Image_Surface is
         begin
+            if W < 1 or H < 1 then
+                raise Constraint_Error with "Image_Surface of a size below 1";
+            end if;
             return This : Image_Surface do
                 This.Void_Ptr := new_fl_image_surface
                    (Interfaces.C.int (W),
@@ -130,6 +146,16 @@ package body FLTK.Devices.Surface.Image is
     begin
         return This.High;
     end Is_Highres;
+
+
+    procedure Rescale
+           (This : in out Image_Surface) is
+    begin
+        if Is_Remembered (This) then
+            raise Program_Error with "Rescale of an Image_Surface current or pushed";
+        end if;
+        fl_image_surface_rescale (This.Void_Ptr);
+    end Rescale;
 
 
 
@@ -184,6 +210,26 @@ package body FLTK.Devices.Surface.Image is
             Wrapper (Img).Void_Ptr := fl_image_surface_highres_image (This.Void_Ptr);
         end return;
     end Get_Highres_Image;
+
+
+    procedure Mask
+           (This : in out Image_Surface;
+            Item : in     FLTK.Images.RGB.RGB_Image'Class) is
+    begin
+        if Wrapper (Item).Void_Ptr = Null_Pointer then
+            raise FLTK.Images.No_Image_Error with "Mask of an image never made";
+        end if;
+        case fl_image_surface_mask (This.Void_Ptr, Wrapper (Item).Void_Ptr) is
+            when 0 =>
+                null;
+            when 1 =>
+                raise Unsupported_Error with "Mask of an image not 3 bytes a pixel";
+            when 2 =>
+                raise Program_Error with "Mask of the current Image_Surface";
+            when others =>
+                raise Program_Error with "Mask twice with no Get_Image between";
+        end case;
+    end Mask;
 
 
 

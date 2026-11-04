@@ -85,7 +85,9 @@ package body FLTK.Devices.Surface.Copy is
            (This : in out Copy_Surface) is
     begin
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
-            free_fl_copy_surface (This.Void_Ptr);
+            if Release_Current (This) then
+                free_fl_copy_surface (This.Void_Ptr);
+            end if;
             This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;

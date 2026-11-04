@@ -73,6 +73,7 @@ extern "C" void fl_draw_draw_image_mono(void * data, int x, int y, int w, int h,
 extern "C" void fl_draw_draw_image_mono2(void * func, void * data, int x, int y, int w, int h, int d);
 extern "C" int fl_draw_draw_pixmap(void * data, int x, int y, unsigned int h);
 extern "C" void * fl_draw_read_image(void * data, int x, int y, int w, int h, int alpha);
+extern "C" void * fl_draw_capture_window(void * win, int x, int y, int w, int h);
 
 
 extern "C" int fl_draw_add_symbol(const char *name, void *func, int scalable);

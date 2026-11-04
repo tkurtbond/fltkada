@@ -49,6 +49,11 @@ package FLTK.Devices.Surface is
 
     procedure Pop_Current;
 
+    --  Whether This is the surface drawn on now.
+    function Is_Current
+           (This : in Surface_Device)
+        return Boolean;
+
 
 
 
@@ -82,9 +87,29 @@ private
            (Surface : in out Surface_Device'Class)
     with Inline;
 
+    --  Whether This is current or remembered by Push_Current.
+    function Is_Remembered
+           (This : in Surface_Device'Class)
+        return Boolean;
+
+    --  Called by Finalize before This's FLTK object is freed.  FLTK keeps
+    --  the current surface and the ones Push_Current remembers, and draws on
+    --  or makes current what it keeps after it is freed.  So This is popped
+    --  while it is current from a Push_Current, and the original surface is
+    --  made current if This still is.  If This is still remembered below
+    --  another, the result is False, and its FLTK object must not be freed:
+    --  the stack then remembers a stand-in with the same FLTK object.  The
+    --  stand-in owns that object, and both are freed once the stack has
+    --  forgotten the stand-in, the next time a surface is made current or
+    --  popped.
+    function Release_Current
+           (This : in out Surface_Device'Class)
+        return Boolean;
+
 
     pragma Inline (Get_Current);
     pragma Inline (Get_Original);
+    pragma Inline (Is_Current);
 
     pragma Inline (Has_Driver);
     pragma Inline (Get_Driver);

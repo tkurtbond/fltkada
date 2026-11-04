@@ -20,6 +20,7 @@ FLTK.Devices.Surface.Paged
 FLTK.Devices.Surface.Paged.Postscript
 FLTK.Devices.Surface.Paged.Printers
 FLTK.Draw
+FLTK.Draw.Offscreens
 FLTK.Draw.OpenGL
 FLTK.Environment
 FLTK.Errors
@@ -53,6 +54,7 @@ FLTK.Text_Buffers
 FLTK.Tooltips
 FLTK.Tree_Items
 FLTK.Tree_Items.Custom
+FLTK.UTF8
 FLTK.Widget_Trackers
 FLTK.Widgets
 FLTK.Widgets.Boxes

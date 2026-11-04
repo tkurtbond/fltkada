@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Utf8 Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Utf8 Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>fl_utf8.h</td>
+    <td>FLTK.UTF8</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+int fl_nonspacing(unsigned int ucs);
+</pre></td>
+<td><pre>
+function Is_Nonspacing
+       (Item : in Wide_Wide_Character)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char *fl_utf8_next_composed_char(const char *from,
+    const char *end);
+</pre></td>
+<td><pre>
+function Next_Composed
+       (Text  : in String;
+        Index : in Positive)
+    return Positive;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char *fl_utf8_previous_composed_char(const char *from,
+    const char *begin);
+</pre></td>
+<td><pre>
+function Previous_Composed
+       (Text  : in String;
+        Index : in Positive)
+    return Positive;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+unsigned fl_utf8from_mb(char *dst, unsigned dstlen,
+    const char *src, unsigned srclen);
+</pre></td>
+<td><pre>
+function From_Locale
+       (Text : in String)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fl_utf8locale(void);
+</pre></td>
+<td><pre>
+function Is_UTF8_Locale
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fl_utf8test(const char *src, unsigned len);
+</pre></td>
+<td><pre>
+function Test
+       (Text : in String)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+unsigned fl_utf8to_mb(const char *src, unsigned srclen,
+    char *dst, unsigned dstlen);
+</pre></td>
+<td><pre>
+function To_Locale
+       (Text : in String)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fl_utf_strcasecmp(const char *s1, const char *s2);
+</pre></td>
+<td><pre>
+function Compare_No_Case
+       (Left, Right : in String)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fl_utf_strncasecmp(const char *s1, const char *s2, int n);
+</pre></td>
+<td><pre>
+function Compare_No_Case
+       (Left, Right : in String;
+        Count       : in Natural)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fl_tolower(unsigned int ucs);
+</pre></td>
+<td><pre>
+function To_Lower
+       (Item : in Wide_Wide_Character)
+    return Wide_Wide_Character;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fl_utf_tolower(const unsigned char *str, int len, char *buf);
+</pre></td>
+<td><pre>
+function To_Lower
+       (Text : in String)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fl_toupper(unsigned int ucs);
+</pre></td>
+<td><pre>
+function To_Upper
+       (Item : in Wide_Wide_Character)
+    return Wide_Wide_Character;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fl_utf_toupper(const unsigned char *str, int len, char *buf);
+</pre></td>
+<td><pre>
+function To_Upper
+       (Text : in String)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fl_wcwidth_(unsigned int ucs);
+</pre></td>
+<td><pre>
+function Width
+       (Item : in Wide_Wide_Character)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+fl_utf8len, fl_utf8bytes, fl_utf8encode, fl_utf8decode, fl_utf8fwd,
+fl_utf8back, fl_utf8strlen, fl_utf_nb_char, fl_utf8toa, fl_utf8froma,
+and the UTF-16 and wchar_t conversions.
+</pre></td>
+<td><pre>
+Not bound: Ada.Strings.UTF_Encoding and its children, and
+Ada.Wide_Wide_Characters.Handling, do these.
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>

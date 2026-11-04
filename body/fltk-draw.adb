@@ -334,6 +334,13 @@ package body FLTK.Draw is
     pragma Import (C, fl_draw_read_image, "fl_draw_read_image");
     pragma Inline (fl_draw_read_image);
 
+    function fl_draw_capture_window
+           (Win        : in Storage.Integer_Address;
+            X, Y, W, H : in Interfaces.C.int)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_draw_capture_window, "fl_draw_capture_window");
+    pragma Inline (fl_draw_capture_window);
+
 
 
 
@@ -1429,6 +1436,28 @@ package body FLTK.Draw is
         end if;
         return Result;
     end Read_Image;
+
+
+    function Capture_Window
+           (Item       : in FLTK.Widgets.Groups.Windows.Window'Class;
+            X, Y, W, H : in Integer)
+        return FLTK.Images.RGB.RGB_Image
+    is
+        Captured : constant Storage.Integer_Address := fl_draw_capture_window
+           (Wrapper (Item).Void_Ptr,
+            Interfaces.C.int (X),
+            Interfaces.C.int (Y),
+            Interfaces.C.int (W),
+            Interfaces.C.int (H));
+    begin
+        if Captured = Null_Pointer then
+            raise Draw_Error with
+                "Capture_Window of a window not shown, or of nothing inside it";
+        end if;
+        return Img : FLTK.Images.RGB.RGB_Image do
+            Wrapper (Img).Void_Ptr := Captured;
+        end return;
+    end Capture_Window;
 
 
 

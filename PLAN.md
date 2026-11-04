@@ -2191,7 +2191,7 @@ sway, and under valgrind on both.
   FLTKAda-BUGS.md 68: finalizing a widget declared without
   `Forge.Create` read through a null pointer.
 
-### Phase 9: Offscreens, capture, and UTF-8
+### Phase 9: Offscreens, capture, and UTF-8 [done, 2026-11-04]
 
 - **`FLTK.Draw.Offscreen`:** create, begin and end, copy, rescale and
   delete, as a controlled type.
@@ -2205,6 +2205,81 @@ sway, and under valgrind on both.
     bind only what FLTK adds: `fl_nonspacing`, `fl_wcwidth`,
     `fl_utf8locale`, `to_mb`/`from_mb`, `fl_utf8test`, and FLTK's
     case-folding. Say so in the spec.
+
+Decisions and findings:
+
+- **The offscreen package is `FLTK.Draw.Offscreens`,** with the type
+  `Offscreen`, since `FLTK.Draw.Offscreen` would name the package and
+  the type alike. It is built on a high-resolution `Image_Surface`, as
+  FLTK's `fl_create_offscreen` is (`Fl_Image_Surface.cxx:302-361`).
+  `Begin_Drawing` and `End_Drawing` push and pop it. Beginning it twice,
+  ending it when it isn't the surface drawn on, and `Rescale` while
+  begun raise Program_Error. `Copy` raises only when the offscreen is
+  itself the surface drawn on: that is the one case Cairo leaves
+  undefined, and copying a begun offscreen buried under another is
+  fine. Test: `test_offscreens`.
+- **Surfaces freed while current or pushed** (FLTK-issues.md F15,
+  FLTKAda-BUGS.md 70). Every surface's `Finalize` calls
+  `Release_Current`. A surface that is current from a `Push_Current` is
+  popped, and the original surface is made current if it still is. One
+  buried under another can't be taken out of FLTK's stack, so the stack
+  keeps a stand-in that owns the FLTK object, and the stand-in and the
+  object are freed once the stack forgets it, the next time a surface
+  is made current or popped. The test draws on such a stand-in after
+  the Ada object is gone, then pops it.
+- **`Image_Surface.Rescale` and `Mask`.** `Rescale` raises
+  Program_Error while the surface is current or pushed (F16). The shim
+  keeps the mask state in its `My_Image_Surface` subclass, cleared by
+  `image()`, so the state lives with the FLTK object.
+- **Capture returns the clipped part.** `Capture_Window` returns an
+  image of the part of the rectangle inside the window. Unlike
+  `Read_Image`, it returns an `RGB_Image`, which carries its own size, so
+  pofltk's smaller result fits. Nothing inside, a hidden window, or one
+  never made raises `Draw_Error`.
+- **UTF-8 scope.** `FLTK.UTF8` binds `fl_nonspacing`, `fl_wcwidth_`,
+  `fl_utf8test`, FLTK's case-folding of characters and strings,
+  `fl_utf_strcasecmp`/`strncasecmp`, `fl_utf8locale`,
+  `fl_utf8to_mb`/`fl_utf8from_mb`, and also
+  `fl_utf8_next_composed_char`/`previous_composed_char`, which Ada
+  lacks and which issue 115 is about. What `Ada.Strings.UTF_Encoding`
+  and `Ada.Wide_Wide_Characters.Handling` do (encode, decode, length,
+  `fl_utf8toa`/`froma`, `fl_utf8toUtf16`, …) isn't bound, and the spec
+  says so. Test: `test_utf8`, which also runs in the C locale.
+
+Verdicts:
+
+- **Issue 115:** FIXED. The shim passes a copy with 16 zero bytes on each
+  side, and keeps what comes back within the text. A lone `F0` steps to
+  the end, "a" and a joiner gives the end, and `Previous_Composed` at
+  the start or of a selector at the start gives the start. An index
+  outside `Text'First .. Text'Last + 1` raises Constraint_Error.
+  `fl_utf8strlen` isn't bound.
+- **Issue 116:** FIXED. The shim gives the case functions a buffer of
+  `4n + 4` and writes the terminator. pofltk says a bad byte becomes
+  U+FFFD. That isn't so in FLTK's default build: `fl_utf8decode` reads
+  0x80–0x9F as CP1252 (`ERRORS_TO_CP1252`, `fl_utf8.cxx:667`) and other
+  bad bytes as Latin-1 (`ERRORS_TO_ISO8859_1`, 657). Both are up to 3
+  bytes, as `test_utf8` shows: 2000 bytes of 0x80 uppercase to 6000,
+  each U+20AC, and a lone 0xC9 lowercases to é.
+- **Issue 117:** NOT BOUND. `fl_utf8toa` is Latin-1, which
+  `Ada.Strings.UTF_Encoding` covers.
+- **Issue 118:** FIXED. The shim asks each function for the size first,
+  gives it a buffer of that, and in a non-UTF-8 locale measures
+  `fl_utf8from_mb`'s result itself. `test_utf8` converts 2000 bytes each
+  way, in the user's locale and in the C locale. `Is_UTF8_Locale`'s
+  comment gives `fl_utf8locale`'s rule and its cache
+  (`Fl_Unix_System_Driver.cxx:680-692`).
+- **Issue 127,** the `fl_capture_window` half: FIXED, as above.
+  `test_offscreens` captures a window partly outside on each side, with
+  `Integer'Last` sizes, and five rectangles wholly outside.
+- **Issue 137:** FIXED. `Mask` raises `FLTK.Unsupported_Error` for a mask
+  that isn't depth 3, and Program_Error on a surface that is current, or
+  masked with no `Get_Image` since. A mask set and not used is freed
+  with the surface. `test_offscreens` checks the pixels of a mask and of
+  an inverted one.
+- **New:** FLTK-issues.md F14–F16, and FLTKAda-BUGS.md 69 and 70.
+- **Results:** `test_offscreens` and `test_utf8` pass on X11 and sway,
+  with no invalid reads, and `vg-check.sh` passes on both.
 
 ### Phase 10: Widgets and images
 

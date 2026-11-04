@@ -227,6 +227,19 @@ function Can_Do_Alpha_Blending
 
   <tr>
 <td><pre>
+Fl_RGB_Image *fl_capture_window(Fl_Window *win, int x, int y,
+    int w, int h);
+</pre></td>
+<td><pre>
+function Capture_Window
+       (Item       : in FLTK.Widgets.Groups.Windows.Window'Class;
+        X, Y, W, H : in Integer)
+    return FLTK.Images.RGB.RGB_Image;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 void fl_chord(int x, int y, int w, int h, double a1, double a2);
 </pre></td>
 <td><pre>

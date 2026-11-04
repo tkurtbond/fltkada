@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Draw (FLTK.Draw.Offscreens) Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Draw (FLTK.Draw.Offscreens) Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>fl_draw.H</td>
+    <td>FLTK.Draw.Offscreens</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Offscreen</td>
+    <td>Offscreen</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void fl_begin_offscreen(Fl_Offscreen ctx);
+</pre></td>
+<td><pre>
+procedure Begin_Drawing
+       (This : in out Offscreen);
+
+function Is_Drawing
+       (This : in Offscreen)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void fl_copy_offscreen(int x, int y, int w, int h,
+    Fl_Offscreen pixmap, int srcx, int srcy);
+</pre></td>
+<td><pre>
+procedure Copy
+       (This                 : in Offscreen;
+        X, Y, W, H           : in Integer;
+        Source_X, Source_Y   : in Integer := 0);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Offscreen fl_create_offscreen(int w, int h);
+</pre></td>
+<td><pre>
+function Create
+       (W, H : in Integer)
+    return Offscreen;
+
+function Is_Valid
+       (This : in Offscreen)
+    return Boolean;
+
+function Get_W
+       (This : in Offscreen)
+    return Integer;
+
+function Get_H
+       (This : in Offscreen)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void fl_delete_offscreen(Fl_Offscreen ctx);
+</pre></td>
+<td><pre>
+Done automatically when an Offscreen is finalized.
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void fl_end_offscreen();
+</pre></td>
+<td><pre>
+procedure End_Drawing
+       (This : in out Offscreen);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void fl_rescale_offscreen(Fl_Offscreen &ctx);
+</pre></td>
+<td><pre>
+procedure Rescale
+       (This : in out Offscreen);
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
