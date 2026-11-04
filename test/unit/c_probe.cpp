@@ -297,7 +297,7 @@ extern "C" void fl_probe_printer_uses_gtk(int on) {
 
 extern "C" int fl_probe_configured(int feature) {
     switch (feature) {
-#if FLTK_USE_SVG
+#ifdef FLTK_USE_SVG
     case 0: return 1;
 #endif
 #if FLTK_USE_WAYLAND

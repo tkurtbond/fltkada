@@ -15,6 +15,15 @@ package FLTK.Images.RGB.SVG is
 
 
 
+    --  True if this FLTK can read SVG.  An FLTK may be built without it, and
+    --  then every Create raises FLTK.Unsupported_Error (pofltk 73).
+
+    function Is_Supported
+        return Boolean;
+
+
+
+
     package Forge is
 
         function Create
@@ -108,6 +117,8 @@ private
     overriding procedure Finalize
            (This : in out SVG_Image);
 
+
+    pragma Inline (Is_Supported);
 
     pragma Inline (Copy);
 

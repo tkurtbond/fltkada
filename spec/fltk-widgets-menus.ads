@@ -69,11 +69,25 @@ package FLTK.Widgets.Menus is
 
     --  Menu Items  --
 
-    procedure Add
+    --  Add and Add_Items look for the item first, comparing labels without
+    --  their '&'s.  A label already in the (sub)menu is that item: its
+    --  callback, shortcut and flags are replaced, and nothing is added.  The
+    --  search skips hidden items, other than the first, so a hidden item's
+    --  label adds a second item (Fl_Menu_add.cxx:79-91, 173-174, 189-190,
+    --  203-206; pofltk 79).
+
+    --  Add_Items is FLTK's add (const char *): it splits Text at each '|'
+    --  and adds each part as an item with no callback, and returns the last
+    --  one's index.  A part is cut after 1022 bytes, the byte there is
+    --  dropped, and the rest is the next item (Fl_Menu_add.cxx:445-460;
+    --  FLTK-issues.md F11).
+    --  It was named Add, and no call to it could compile, since the Add
+    --  below takes the same two parameters (FLTKAda-BUGS.md 65).
+    procedure Add_Items
            (This : in out Menu;
             Text : in     String);
 
-    function Add
+    function Add_Items
            (This : in out Menu;
             Text : in     String)
         return Index;

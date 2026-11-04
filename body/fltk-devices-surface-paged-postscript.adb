@@ -58,6 +58,12 @@ package body FLTK.Devices.Surface.Paged.Postscript is
 
     --  Static Attributes  --
 
+    function fl_postscript_file_device_supported
+        return Interfaces.C.int;
+    pragma Import (C, fl_postscript_file_device_supported,
+        "fl_postscript_file_device_supported");
+    pragma Inline (fl_postscript_file_device_supported);
+
     function fl_postscript_file_device_get_file_chooser_title
         return Interfaces.C.Strings.chars_ptr;
     pragma Import (C, fl_postscript_file_device_get_file_chooser_title,
@@ -293,6 +299,13 @@ package body FLTK.Devices.Surface.Paged.Postscript is
     --  Static Attributes  --
     -------------------------
 
+    function Is_Supported
+        return Boolean is
+    begin
+        return fl_postscript_file_device_supported /= 0;
+    end Is_Supported;
+
+
     function Get_File_Chooser_Title
         return String is
     begin
@@ -303,6 +316,9 @@ package body FLTK.Devices.Surface.Paged.Postscript is
     procedure Set_File_Chooser_Title
            (Value : in String) is
     begin
+        if not Is_Supported then
+            raise Unsupported_Error with "this FLTK was built without printing";
+        end if;
         Interfaces.C.Strings.Free (File_Chooser_Title);
         File_Chooser_Title := Interfaces.C.Strings.New_String (Value);
         fl_postscript_file_device_set_file_chooser_title (File_Chooser_Title);

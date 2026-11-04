@@ -15,6 +15,7 @@ extern "C" CAIROWINDOW new_fl_cairo_window(int w, int h);
 extern "C" void free_fl_cairo_window(CAIROWINDOW w);
 
 
+extern "C" int fl_cairo_window_supported();
 extern "C" void fl_cairo_window_set_draw_cb(CAIROWINDOW w, void * cb);
 
 

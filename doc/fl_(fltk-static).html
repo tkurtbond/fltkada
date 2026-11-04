@@ -402,7 +402,7 @@ static void copy
 procedure Copy
        (Text : in String;
         Dest : in Buffer_Kind);
-</pre></td>
+</pre><p>Wayland has no selection buffer: copying to and pasting from Selection do nothing useful there (pofltk 50).</p></td>
   </tr>
 
   <tr>
@@ -749,7 +749,7 @@ static void paste
 procedure Paste
        (Receiver : in FLTK.Widgets.Widget'Class;
         Source   : in Buffer_Kind);
-</pre></td>
+</pre><p>Wayland has no selection buffer: copying to and pasting from Selection do nothing useful there (pofltk 50).</p></td>
   </tr>
 
   <tr>
@@ -896,7 +896,7 @@ static void selection(Fl_Widget &owner, const char *,
 procedure Selection
        (Owner : in FLTK.Widgets.Widget'Class;
         Text  : in String);
-</pre></td>
+</pre><p>The previous owner is not sent Selection_Clear: FLTK never sends it (pofltk 132).</p></td>
   </tr>
 
   <tr>

@@ -14,6 +14,9 @@
 typedef void* SVGIMAGE;
 
 
+extern "C" int fl_svg_image_available();
+
+
 extern "C" SVGIMAGE new_fl_svg_image(const char * f);
 extern "C" SVGIMAGE new_fl_svg_image2(const char * n, const char * d);
 extern "C" SVGIMAGE new_fl_svg_image3(const char * n, void * d, size_t l);

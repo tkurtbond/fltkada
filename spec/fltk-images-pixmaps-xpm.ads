@@ -17,6 +17,9 @@ package FLTK.Images.Pixmaps.XPM is
 
     package Forge is
 
+        --  A colour given by name, such as "red", is read only on X11: elsewhere
+        --  FLTK reads hexadecimal alone, and a name becomes FLTK's gray
+        --  (Fl_Screen_Driver.cxx:625-646, pofltk 47).  Give colours as "#rrggbb".
         function Create
                (Filename : in String)
             return XPM_Image;

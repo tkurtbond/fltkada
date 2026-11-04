@@ -288,3 +288,29 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
   `Postscript_File_Device`, under valgrind on Xvfb: 10,622 bytes
   definitely lost from `_cairo_ps_surface_create_for_stream_internal`
   through `start_postscript`, no invalid reads, and the file was written.
+
+### F10. `Fl_Browser::load` drops a byte where it splits a long line
+
+- **What happens**: a line longer than 1023 bytes is split into lines of
+  1023 bytes, as pofltk 40 says, but the byte that comes after each
+  1023 is lost. A file of one 1030-byte line loads as lines of 1023 and
+  6 bytes. Seen 2026-11-04.
+- **Cause**: the loop reads a byte with `getc`, and when the buffer is
+  full it ends the line and adds it without storing that byte
+  (`Fl_Browser_load.cxx:43-50`).
+- **Effect on FLTKAda**: none it can fix short of its own `Load`. The
+  spec of `Textline.Load` says so.
+- **Confirmed**: `test_browser_load`, on X11 and on sway.
+
+### F11. `Fl_Menu_::add (const char *)` drops a byte where it cuts a long part
+
+- **What happens**: a part of the text, between `|`s, longer than 1022
+  bytes is cut into items of 1022 bytes, and the byte after each 1022 is
+  lost. A part of 1030 bytes adds items of 1022 and 7 bytes. Seen
+  2026-11-04.
+- **Cause**: the copy into the 1024-byte `buf` stops at 1022 bytes, and
+  after adding the item `if (*str) str++` skips the next byte as if it
+  were a `|` (`Fl_Menu_add.cxx:451-457`).
+- **Effect on FLTKAda**: none it can fix short of splitting the text
+  itself. The spec of `Add_Items` says so.
+- **Confirmed**: `test_menu_add_items`, on X11 and on sway.

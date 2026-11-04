@@ -572,17 +572,17 @@ package body FLTK.Widgets.Menus is
 
     --  Menu Items  --
 
-    procedure Add
+    procedure Add_Items
            (This : in out Menu;
             Text : in     String)
     is
         Ignore : constant Interfaces.C.int := fl_menu_add (This.Void_Ptr, Interfaces.C.To_C (Text));
     begin
         This.Adjust_Item_Store;
-    end Add;
+    end Add_Items;
 
 
-    function Add
+    function Add_Items
            (This : in out Menu;
             Text : in     String)
         return Index
@@ -592,7 +592,7 @@ package body FLTK.Widgets.Menus is
     begin
         This.Adjust_Item_Store;
         return Index (Added_Spot + 1);
-    end Add;
+    end Add_Items;
 
 
     procedure Add

@@ -76,6 +76,14 @@
   <tr><th colspan="2">Static Attributes</th></tr>
 
   <tr>
+    <td>&nbsp;</td>
+<td><pre>
+function Is_Supported
+    return Boolean;
+</pre><p>False if this FLTK was built with --disable-print. The device then writes nothing, Get_File_Chooser_Title gives "" and Set_File_Chooser_Title raises FLTK.Unsupported_Error (pofltk 104).</p></td>
+  </tr>
+
+  <tr>
 <td><pre>
 static const char * class_id = "Fl_PostScript_File_Device";
 </pre></td>
@@ -134,7 +142,10 @@ void end_job(void);
 procedure End_Job
        (This : in out Postscript_File_Device);
 </pre>
-<p>For a job given a File_Type, raises File_Write_Error if the PostScript couldn't all be written. The job writes to the file through a stream of the binding's, so that FLTK, which under Pango closes the file it was given on a Cairo error and then writes to it, never touches the File_Type's file (pofltk 101).</p></td>
+<p>For a job given a File_Type, raises File_Write_Error if the PostScript couldn't all be written. The job writes to the file through a stream of the binding's, so that FLTK, which under Pango closes the file it was given on a Cairo error and then writes to it, never touches the File_Type's file (pofltk 101).</p>
+<p>FLTK reports any other error only with an alert, which waits for the
+user: a failed write in a job FLTK opened the file for, or a Cairo error
+the binding doesn't refuse first (pofltk 102).</p></td>
   </tr>
 
   <tr>

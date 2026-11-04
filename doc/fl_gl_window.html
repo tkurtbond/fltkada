@@ -317,7 +317,8 @@ int mode(int a);
 procedure Set_Mode
        (This : in out GL_Window;
         Mask : in     Mode_Mask);
-</pre></td>
+</pre><p>On Wayland FLTK adds Double to every mode, so Get_Mode reads back Double
+after Set_Mode asked for a single buffer (pofltk 113).</p></td>
   </tr>
 
   <tr>

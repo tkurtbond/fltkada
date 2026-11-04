@@ -173,7 +173,9 @@ procedure Load
         Dir  : in     String;
         Sort : in not null FLTK.Filenames.Compare_Function :=
             FLTK.Filenames.Numeric_Sort'Access);
-</pre></td>
+</pre><p>The function returns the number of the directory's entries, with
+./ and those the filter hides, not of the lines listed (pofltk 40).
+Load ("") lists the mount points.</p></td>
   </tr>
 
   <tr>

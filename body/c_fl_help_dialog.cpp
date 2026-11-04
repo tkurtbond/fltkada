@@ -4,14 +4,22 @@
 //  Released into the public domain
 
 
+#include <FL/Fl_Group.H>
 #include <FL/Fl_Help_Dialog.H>
 #include "c_fl_help_dialog.h"
 
 
 
 
+//  The dialog's window is top-level, so making it sets the current group to
+//  none (Fl_Window.cxx:82), and its end () leaves it none
+//  (Fl_Help_Dialog.cxx:198).  So the current group is put back, as
+//  Fl_File_Chooser's constructor does itself (pofltk 93).
+
 HELPDIALOG new_fl_help_dialog() {
+    Fl_Group *current = Fl_Group::current();
     Fl_Help_Dialog *d = new Fl_Help_Dialog();
+    Fl_Group::current(current);
     return d;
 }
 

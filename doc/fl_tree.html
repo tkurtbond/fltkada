@@ -174,7 +174,7 @@ void clear();
 <td><pre>
 procedure Clear
        (This : in out Tree);
-</pre></td>
+</pre><p>Deletes the root too (pofltk 43).</p></td>
   </tr>
 
   <tr>
@@ -209,7 +209,7 @@ Fl_Tree_Item* root();
 function Root
        (This : in Tree)
     return FLTK.Tree_Items.Tree_Item;
-</pre></td>
+</pre><p>Null after Clear, until Add makes a new root (pofltk 43).</p></td>
   </tr>
 
   <tr>

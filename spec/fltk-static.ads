@@ -373,6 +373,10 @@ package FLTK.Static is
 
     --  Clipboard / Selection  --
 
+    --  Wayland has no selection buffer.  There, Copy to Selection keeps the
+    --  text but offers it to no one, and Paste from Selection does nothing
+    --  (fl_wayland_clipboard_dnd.cxx:617-618, 659-686, pofltk 50).  X11 has
+    --  both, and Clipboard works on both.
     procedure Copy
            (Text : in String;
             Dest : in Buffer_Kind);
@@ -381,6 +385,8 @@ package FLTK.Static is
            (Receiver : in FLTK.Widgets.Widget'Class;
             Source   : in Buffer_Kind);
 
+    --  The widget that owned the selection before is not sent
+    --  Selection_Clear: FLTK never sends it (pofltk 132).
     procedure Selection
            (Owner : in FLTK.Widgets.Widget'Class;
             Text  : in String);

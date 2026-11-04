@@ -445,6 +445,8 @@ package FLTK is
         Hide,
         Show,
         Paste,
+        --  FLTK never sends Selection_Clear: its one mention is a comment
+        --  (Fl.cxx:1630), and the old owner hears nothing (pofltk 132).
         Selection_Clear,
         Mouse_Wheel,
         DnD_Enter,

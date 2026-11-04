@@ -307,7 +307,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
 
     --  Menu Items  --
 
-    procedure Add
+    procedure Add_Items
            (This : in out System_Menu_Bar;
             Text : in     String)
     is
@@ -315,10 +315,10 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
             (This.Void_Ptr, Interfaces.C.To_C (Text));
     begin
         This.Adjust_Item_Store;
-    end Add;
+    end Add_Items;
 
 
-    function Add
+    function Add_Items
            (This : in out System_Menu_Bar;
             Text : in     String)
         return Index
@@ -328,7 +328,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
     begin
         This.Adjust_Item_Store;
         return Index (Added_Spot + 1);
-    end Add;
+    end Add_Items;
 
 
     procedure Add

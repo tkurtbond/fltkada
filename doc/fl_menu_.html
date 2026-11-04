@@ -165,15 +165,17 @@ function Create
 int add(const char *);
 </pre></td>
 <td><pre>
-procedure Add
+procedure Add_Items
        (This : in out Menu;
         Text : in     String);
 
-function Add
+function Add_Items
        (This : in out Menu;
         Text : in     String)
     return Index;
-</pre></td>
+</pre><p>Adds an item for each part of Text between '|'s, and returns the last
+one's index. A part is cut after 1022 bytes, the byte there dropped. It was
+named Add, but no call to it could compile (FLTKAda-BUGS.md 65).</p></td>
   </tr>
 
   <tr>
@@ -196,7 +198,10 @@ function Add
         Shortcut : in     Key_Combo := No_Key;
         Flags    : in     Menu_Flag := Flag_Normal)
     return Index;
-</pre></td>
+</pre><p>A label already in the (sub)menu, compared without its '&amp;'s, is
+that item: it is changed, and nothing is added. Hidden items other than
+the first aren't found, so a hidden item's label adds a second item
+(pofltk 79).</p></td>
   </tr>
 
   <tr>

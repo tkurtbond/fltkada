@@ -127,6 +127,14 @@ function Create
   <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
+    <td>&nbsp;</td>
+<td><pre>
+function Is_Supported
+    return Boolean;
+</pre><p>False if this FLTK was built without Cairo support. Set_Cairo_Draw then raises FLTK.Unsupported_Error, since its callback would never be called (pofltk 114).</p></td>
+  </tr>
+
+  <tr>
 <td><pre>
 void set_draw_cb(cairo_draw_cb cb);
 </pre></td>
@@ -134,7 +142,7 @@ void set_draw_cb(cairo_draw_cb cb);
 procedure Set_Cairo_Draw
        (This : in out Cairo_Window;
         Func : in     Cairo_Callback);
-</pre></td>
+</pre><p>Func must leave cairo_save and cairo_restore balanced. On Wayland one cairo_restore too many leaves FLTK's own context in error, and the window draws nothing more; on X11 only that draw is lost (pofltk 114).</p></td>
   </tr>
 
 </table>

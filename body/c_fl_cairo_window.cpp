@@ -75,6 +75,18 @@ void free_fl_cairo_window(CAIROWINDOW w) {
 
 
 
+//  FLTK has Fl_Cairo_Window only when built with Cairo (Fl_Cairo_Window.H:26;
+//  pofltk 114).  Without, this is a Double_Window, and the Ada side refuses a
+//  draw callback that would never be called.
+
+int fl_cairo_window_supported() {
+    #ifdef FLTK_HAVE_CAIRO
+    return 1;
+    #else
+    return 0;
+    #endif
+}
+
 void fl_cairo_window_set_draw_cb(CAIROWINDOW w, void * cb) {
     #ifdef FLTK_HAVE_CAIRO
     static_cast<Fl_Cairo_Window*>(w)->set_draw_cb(reinterpret_cast<Fl_Cairo_Window::cairo_draw_cb>(cb));

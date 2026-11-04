@@ -69,6 +69,13 @@ package FLTK.Devices.Surface.Paged.Postscript is
 
     --  Static Attributes  --
 
+    --  False if this FLTK was built with --disable-print.  Its PostScript
+    --  device then exists but writes nothing, and it has no file chooser
+    --  title: Get_File_Chooser_Title gives "" and Set_File_Chooser_Title
+    --  raises FLTK.Unsupported_Error (pofltk 104).
+    function Is_Supported
+        return Boolean;
+
     function Get_File_Chooser_Title
         return String;
 
@@ -124,7 +131,10 @@ package FLTK.Devices.Surface.Paged.Postscript is
     --  For a job given a File_Type, raises File_Write_Error if the
     --  PostScript couldn't all be written to it (pofltk 101).  A job's
     --  PostScript goes to the file through a stream of the binding's, so
-    --  that FLTK never closes the file: the program closes it.
+    --  that FLTK never closes the file: the program closes it.  Any other
+    --  error FLTK reports only with an alert, which waits for the user: a
+    --  failed write in a job FLTK opened the file for, or a Cairo error the
+    --  binding doesn't refuse first (Fl_PostScript.cxx:1980-1983, pofltk 102).
     procedure End_Job
            (This : in out Postscript_File_Device);
 
@@ -202,6 +212,7 @@ private
 
     pragma Inline (Is_Open);
 
+    pragma Inline (Is_Supported);
     pragma Inline (Get_File_Chooser_Title);
 
     pragma Inline (Get_Postscript_Driver);

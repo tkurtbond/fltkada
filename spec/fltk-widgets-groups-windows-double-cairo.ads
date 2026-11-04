@@ -13,8 +13,9 @@ package FLTK.Widgets.Groups.Windows.Double.Cairo is
 
 
     --  If FLTK has not been built with Cairo support then
-    --  this will just be a duplicate of Double_Window and the
-    --  callback set with Set_Cairo_Draw will never be triggered.
+    --  this will just be a duplicate of Double_Window, Is_Supported
+    --  is False, and Set_Cairo_Draw raises FLTK.Unsupported_Error,
+    --  since its callback would never be called (pofltk 114).
 
     --  Building with Cairo support requires either of
     --  1. CMake option FLTK_OPTION_CAIRO_WINDOW
@@ -74,6 +75,17 @@ package FLTK.Widgets.Groups.Windows.Double.Cairo is
 
     --  Cairo Callback  --
 
+    function Is_Supported
+        return Boolean;
+
+    --  Func must leave the context's cairo_save and cairo_restore balanced.
+    --  On Wayland the context is the one FLTK draws the window with
+    --  (Fl_Cairo.cxx:104-112), which holds a cairo_save of FLTK's from the
+    --  start (Fl_Wayland_Graphics_Driver.cxx:219).  One cairo_restore too
+    --  many takes that, and the context stays in error, so the window, FLTK's
+    --  own drawing in it too, draws nothing more.  On X11 the context is made
+    --  for the window, and only that draw is lost.  pofltk 114, which saw it
+    --  with Fl_Cairo_Window under Xvfb and on a headless sway.
     procedure Set_Cairo_Draw
            (This : in out Cairo_Window;
             Func : in     Cairo_Callback);
@@ -109,6 +121,7 @@ private
            (This : in out Cairo_Window);
 
 
+    pragma Inline (Is_Supported);
     pragma Inline (Set_Cairo_Draw);
 
     pragma Inline (Draw);

@@ -134,12 +134,31 @@ void free_fl_postscript_file_device(POSTSCRIPTFILEDEVICE p) {
 
 
 
+//  An FLTK built with --disable-print (FL_NO_PRINT_SUPPORT) has stubs for
+//  the device's methods but no file_chooser_title, which is defined only in
+//  Fl_PostScript.cxx (:18, 49), and it says so only in config.h, which isn't
+//  installed (pofltk 104).  So the shim names it weakly, and its address
+//  says whether this FLTK prints.
+
+extern const char * fl_ps_chooser_title
+    __asm__("_ZN25Fl_PostScript_File_Device18file_chooser_titleE")
+    __attribute__((weak));
+
+int fl_postscript_file_device_supported() {
+    return &fl_ps_chooser_title != 0;
+}
+
 const char * fl_postscript_file_device_get_file_chooser_title() {
-    return Fl_PostScript_File_Device::file_chooser_title;
+    if (&fl_ps_chooser_title == 0 || fl_ps_chooser_title == 0) {
+        return "";
+    }
+    return fl_ps_chooser_title;
 }
 
 void fl_postscript_file_device_set_file_chooser_title(const char * v) {
-    Fl_PostScript_File_Device::file_chooser_title = v;
+    if (&fl_ps_chooser_title != 0) {
+        fl_ps_chooser_title = v;
+    }
 }
 
 

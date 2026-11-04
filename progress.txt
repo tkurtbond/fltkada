@@ -208,8 +208,8 @@ the latest version?
 Fl_Table::callback has wrong signature, still around and unfixed in 1.4
 possibly this hasn't been noticed because it's only visible to doxygen
 
-Menu.Add (Text) with one argument is ambiguous between the defaulted Add
-overloads; callers must write Add (Text, null)
+Menus: the one-string Add, FLTK's add (const char *), which splits on '|',
+is now Add_Items: as Add, no call to it compiled (FLTKAda-BUGS.md 65)
 
 calling Remove_Clipboard_Notify from inside a clipboard notify handler raises
 Program_Error (the handler vector is tamper-checked while it is being iterated);
@@ -452,6 +452,12 @@ finds it (pofltk 83)
 Filenames: Relative's Changed is True when the name became "." (pofltk 94)
 
 Widgets: Set_Label with a kind sets a shown window's title too (pofltk 6)
+
+Portability: SVG_Image, Postscript_File_Device and Cairo_Window have
+Is_Supported, and raise Unsupported_Error where this FLTK lacks SVG,
+printing or Cairo (pofltk 73, 104, 114); a --disable-print FLTK's null
+Printer strings read as ""; Help_Dialog's Create keeps the current group
+(pofltk 93)
 
 Images: a BMP, ICO or GIF that FLTK would read or write past is refused
 with Format_Error, and an animation of one isn't loaded (pofltk 87, 88); a

@@ -112,6 +112,10 @@ package FLTK.Widgets.Groups.Windows.OpenGL is
 
     --  OpenGL Modes  --
 
+    --  On Wayland FLTK adds Double to every mode, since EGL there draws
+    --  double-buffered only, so Get_Mode reads back Double after Set_Mode
+    --  asked for a single buffer (Fl_Wayland_Gl_Window_Driver.cxx:37, 113,
+    --  301; pofltk 113).
     function Get_Mode
            (This : in GL_Window)
         return Mode_Mask;

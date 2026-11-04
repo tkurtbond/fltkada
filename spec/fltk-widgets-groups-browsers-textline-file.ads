@@ -61,6 +61,10 @@ package FLTK.Widgets.Groups.Browsers.Textline.File is
 
     --  Directory  --
 
+    --  Returns the number of the directory's entries, counting ./ and the
+    --  files the filter hides, not the number of lines listed; that is
+    --  Number_Of_Lines (Fl_File_Browser.cxx:442-474, pofltk 40).  Load ("")
+    --  lists the mount points.
     function Load
            (This : in out File_Browser;
             Dir  : in     String;

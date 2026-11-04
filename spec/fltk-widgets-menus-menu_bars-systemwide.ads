@@ -44,11 +44,11 @@ package FLTK.Widgets.Menus.Menu_Bars.Systemwide is
 
     --  Menu Items  --
 
-    procedure Add
+    procedure Add_Items
            (This : in out System_Menu_Bar;
             Text : in     String);
 
-    function Add
+    function Add_Items
            (This : in out System_Menu_Bar;
             Text : in     String)
         return Index;

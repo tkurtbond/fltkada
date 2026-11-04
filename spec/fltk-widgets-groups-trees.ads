@@ -81,6 +81,8 @@ package FLTK.Widgets.Groups.Trees is
            (This : in out Tree;
             Item : in     FLTK.Tree_Items.Tree_Item);
 
+    --  Deletes the root as well, so Root is null until Add makes a new one
+    --  (Fl_Tree.cxx:934-940, pofltk 43).
     procedure Clear
            (This : in out Tree);
 
@@ -98,6 +100,7 @@ package FLTK.Widgets.Groups.Trees is
 
     --  Root  --
 
+    --  Is null (Tree_Items.Is_Null) after Clear, until Add makes a new root.
     function Root
            (This : in Tree)
         return FLTK.Tree_Items.Tree_Item;

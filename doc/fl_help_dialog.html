@@ -55,7 +55,7 @@ Fl_Help_Dialog();
 <td><pre>
 function Create
     return Help_Dialog;
-</pre></td>
+</pre><p>Leaves the current group as it was, where FLTK's constructor leaves none (pofltk 93).</p></td>
   </tr>
 
   <tr>
@@ -103,7 +103,8 @@ void load(const char *f);
 procedure Load
        (This : in out Help_Dialog;
         Name : in     String);
-</pre></td>
+</pre><p>A URL is opened in the user's web browser with fl_open_uri, not
+shown here (pofltk 93).</p></td>
   </tr>
 
   <tr>

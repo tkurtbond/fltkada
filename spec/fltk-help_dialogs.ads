@@ -17,6 +17,9 @@ package FLTK.Help_Dialogs is
 
     package Forge is
 
+        --  Both leave the current group as it was.  FLTK's constructor leaves
+        --  none (Fl_Window.cxx:82, Fl_Help_Dialog.cxx:198), and the binding
+        --  puts it back (pofltk 93).
         function Create
             return Help_Dialog;
 
@@ -63,7 +66,8 @@ package FLTK.Help_Dialogs is
     --  Content  --
 
     --  Name here can be either a ftp/http/https/ipp/mailto/news URL or a filename.
-    --  See Load procedure in FLTK.Widgets.Groups.Help_Views
+    --  See Load procedure in FLTK.Widgets.Groups.Help_Views: a URL opens in
+    --  the user's web browser, not here.
     procedure Load
            (This : in out Help_Dialog;
             Name : in     String);

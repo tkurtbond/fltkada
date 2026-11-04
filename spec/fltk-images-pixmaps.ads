@@ -46,6 +46,9 @@ package FLTK.Images.Pixmaps is
         --  Unlike Bitmaps or RGB_Images, you do NOT have to keep this data around.
         --  A copy will be allocated and deallocated internally.
 
+        --  A colour given by name, such as "red", is read only on X11: elsewhere
+        --  FLTK reads hexadecimal alone, and a name becomes FLTK's gray
+        --  (Fl_Screen_Driver.cxx:625-646, pofltk 47).  Give colours as "#rrggbb".
         function Create
                (Values : in Header;
                 Colors : in Color_Definition_Array;

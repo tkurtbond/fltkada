@@ -316,7 +316,9 @@ int load(const char *filename);
 procedure Load
        (This : in out Textline_Browser;
         File : in     String);
-</pre></td>
+</pre><p>A file ending in a newline ends with an empty line, a line is
+ended every 1023 bytes (the byte there is dropped), and Load ("") only
+clears the browser (pofltk 40).</p></td>
   </tr>
 
   <tr>

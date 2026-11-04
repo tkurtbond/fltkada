@@ -12,6 +12,16 @@
 
 
 
+//  An FLTK built with --disable-print has every one of these strings null
+//  (Fl_Printer.cxx:21, 49-67), and Ada can't read a null as a String.
+
+static const char * or_empty(const char * s) {
+    return s == 0 ? "" : s;
+}
+
+
+
+
 //  Flattened C API
 
 PRINTER new_fl_printer(void) {
@@ -27,7 +37,7 @@ void free_fl_printer(PRINTER p) {
 
 
 const char * fl_printer_get_dialog_title() {
-    return Fl_Printer::dialog_title;
+    return or_empty(Fl_Printer::dialog_title);
 }
 
 void fl_printer_set_dialog_title(const char * v) {
@@ -35,7 +45,7 @@ void fl_printer_set_dialog_title(const char * v) {
 }
 
 const char * fl_printer_get_dialog_printer() {
-    return Fl_Printer::dialog_printer;
+    return or_empty(Fl_Printer::dialog_printer);
 }
 
 void fl_printer_set_dialog_printer(const char * v) {
@@ -43,7 +53,7 @@ void fl_printer_set_dialog_printer(const char * v) {
 }
 
 const char * fl_printer_get_dialog_range() {
-    return Fl_Printer::dialog_range;
+    return or_empty(Fl_Printer::dialog_range);
 }
 
 void fl_printer_set_dialog_range(const char * v) {
@@ -51,7 +61,7 @@ void fl_printer_set_dialog_range(const char * v) {
 }
 
 const char * fl_printer_get_dialog_copies() {
-    return Fl_Printer::dialog_copies;
+    return or_empty(Fl_Printer::dialog_copies);
 }
 
 void fl_printer_set_dialog_copies(const char * v) {
@@ -59,7 +69,7 @@ void fl_printer_set_dialog_copies(const char * v) {
 }
 
 const char * fl_printer_get_dialog_all() {
-    return Fl_Printer::dialog_all;
+    return or_empty(Fl_Printer::dialog_all);
 }
 
 void fl_printer_set_dialog_all(const char * v) {
@@ -67,7 +77,7 @@ void fl_printer_set_dialog_all(const char * v) {
 }
 
 const char * fl_printer_get_dialog_pages() {
-    return Fl_Printer::dialog_pages;
+    return or_empty(Fl_Printer::dialog_pages);
 }
 
 void fl_printer_set_dialog_pages(const char * v) {
@@ -75,7 +85,7 @@ void fl_printer_set_dialog_pages(const char * v) {
 }
 
 const char * fl_printer_get_dialog_from() {
-    return Fl_Printer::dialog_from;
+    return or_empty(Fl_Printer::dialog_from);
 }
 
 void fl_printer_set_dialog_from(const char * v) {
@@ -83,7 +93,7 @@ void fl_printer_set_dialog_from(const char * v) {
 }
 
 const char * fl_printer_get_dialog_to() {
-    return Fl_Printer::dialog_to;
+    return or_empty(Fl_Printer::dialog_to);
 }
 
 void fl_printer_set_dialog_to(const char * v) {
@@ -91,7 +101,7 @@ void fl_printer_set_dialog_to(const char * v) {
 }
 
 const char * fl_printer_get_dialog_properties() {
-    return Fl_Printer::dialog_properties;
+    return or_empty(Fl_Printer::dialog_properties);
 }
 
 void fl_printer_set_dialog_properties(const char * v) {
@@ -99,7 +109,7 @@ void fl_printer_set_dialog_properties(const char * v) {
 }
 
 const char * fl_printer_get_dialog_copyno() {
-    return Fl_Printer::dialog_copyNo;
+    return or_empty(Fl_Printer::dialog_copyNo);
 }
 
 void fl_printer_set_dialog_copyno(const char * v) {
@@ -107,7 +117,7 @@ void fl_printer_set_dialog_copyno(const char * v) {
 }
 
 const char * fl_printer_get_dialog_print_button() {
-    return Fl_Printer::dialog_print_button;
+    return or_empty(Fl_Printer::dialog_print_button);
 }
 
 void fl_printer_set_dialog_print_button(const char * v) {
@@ -115,7 +125,7 @@ void fl_printer_set_dialog_print_button(const char * v) {
 }
 
 const char * fl_printer_get_dialog_cancel_button() {
-    return Fl_Printer::dialog_cancel_button;
+    return or_empty(Fl_Printer::dialog_cancel_button);
 }
 
 void fl_printer_set_dialog_cancel_button(const char * v) {
@@ -123,7 +133,7 @@ void fl_printer_set_dialog_cancel_button(const char * v) {
 }
 
 const char * fl_printer_get_dialog_print_to_file() {
-    return Fl_Printer::dialog_print_to_file;
+    return or_empty(Fl_Printer::dialog_print_to_file);
 }
 
 void fl_printer_set_dialog_print_to_file(const char * v) {
@@ -131,7 +141,7 @@ void fl_printer_set_dialog_print_to_file(const char * v) {
 }
 
 const char * fl_printer_get_property_title() {
-    return Fl_Printer::property_title;
+    return or_empty(Fl_Printer::property_title);
 }
 
 void fl_printer_set_property_title(const char * v) {
@@ -139,7 +149,7 @@ void fl_printer_set_property_title(const char * v) {
 }
 
 const char * fl_printer_get_property_pagesize() {
-    return Fl_Printer::property_pagesize;
+    return or_empty(Fl_Printer::property_pagesize);
 }
 
 void fl_printer_set_property_pagesize(const char * v) {
@@ -147,7 +157,7 @@ void fl_printer_set_property_pagesize(const char * v) {
 }
 
 const char * fl_printer_get_property_mode() {
-    return Fl_Printer::property_mode;
+    return or_empty(Fl_Printer::property_mode);
 }
 
 void fl_printer_set_property_mode(const char * v) {
@@ -155,7 +165,7 @@ void fl_printer_set_property_mode(const char * v) {
 }
 
 const char * fl_printer_get_property_use() {
-    return Fl_Printer::property_use;
+    return or_empty(Fl_Printer::property_use);
 }
 
 void fl_printer_set_property_use(const char * v) {
@@ -163,7 +173,7 @@ void fl_printer_set_property_use(const char * v) {
 }
 
 const char * fl_printer_get_property_save() {
-    return Fl_Printer::property_save;
+    return or_empty(Fl_Printer::property_save);
 }
 
 void fl_printer_set_property_save(const char * v) {
@@ -171,7 +181,7 @@ void fl_printer_set_property_save(const char * v) {
 }
 
 const char * fl_printer_get_property_cancel() {
-    return Fl_Printer::property_cancel;
+    return or_empty(Fl_Printer::property_cancel);
 }
 
 void fl_printer_set_property_cancel(const char * v) {

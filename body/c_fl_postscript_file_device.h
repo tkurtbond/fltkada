@@ -15,6 +15,7 @@ extern "C" POSTSCRIPTFILEDEVICE new_fl_postscript_file_device(void);
 extern "C" void free_fl_postscript_file_device(POSTSCRIPTFILEDEVICE p);
 
 
+extern "C" int fl_postscript_file_device_supported();
 extern "C" const char * fl_postscript_file_device_get_file_chooser_title();
 extern "C" void fl_postscript_file_device_set_file_chooser_title(const char * v);
 

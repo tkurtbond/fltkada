@@ -88,6 +88,11 @@ package FLTK.Widgets.Groups.Browsers.Textline is
 
     --  Text Loading  --
 
+    --  Adds a line at each newline and one at the end of the file, so a file
+    --  that ends in a newline ends with an empty line.  A line is ended every
+    --  1023 bytes, and the byte where it is ended is dropped.  Load ("") only
+    --  clears the browser, and raises nothing (Fl_Browser_load.cxx:38-52,
+    --  pofltk 40; FLTK-issues.md F10).
     procedure Load
            (This : in out Textline_Browser;
             File : in     String);

@@ -1818,3 +1818,34 @@ the old test the shim failed valgrind 6 runs of 6, 3 on X11 and 3 on
 sway, and with the fix it passes 6 of 6.
 
 **Status.** Fixed.
+
+
+## 65. Menu's one-string Add can't be called
+
+**Symptom.** `Add (This, Text)`, the procedure and the function in
+`FLTK.Widgets.Menus`, can't be called. Every call, `M.Add ("a|b")`,
+`Add (M, "a|b")` or `Add (This => M, Text => "a|b")`, is ambiguous with
+the `Add` whose `Action`, `Shortcut` (a `Key_Combo`) and `Flags` all
+have defaults, and doesn't compile.
+
+**Cause.** The two have the same required parameters, `This` and
+`Text`. So FLTK's `add (const char *)` (Fl_Menu_add.cxx:445-460), which
+splits its text on `|` into several items and reads a shortcut after a
+tab, can't be reached from Ada. A call with only the text has to name
+`Flags` or another defaulted parameter, and then gets the other `Add`,
+which makes one item.
+
+**Found.** Writing `test_menu_add_merge` for pofltk 79, 2026-11-04;
+confirmed with a scratch program checked with `gcc -c -gnatc`, which
+reported "ambiguous call to "ADD"" for each form.
+
+**Fix.** The one-string `Add`, the procedure and the function, is now
+`Add_Items`, in `FLTK.Widgets.Menus` and in `System_Menu_Bar`, which
+overrides it. Removing the defaults of the other `Add` instead would have
+broken every caller that leaves them out. No caller could have used the
+old name, since no call to it compiled. The new test
+`test_menu_add_items` checks the split at `|`, the index returned, and
+a part over 1022 bytes (FLTK-issues.md F11); passes on X11 and sway,
+with vg=0.
+
+**Status.** Fixed.

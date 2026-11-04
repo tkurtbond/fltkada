@@ -1941,7 +1941,7 @@ sway, and under valgrind. Each test was seen to fail before its fix.
   valgrind 6 runs of 6 on X11 and sway, and with the fix it passes 6
   of 6.
 
-### Phase 7: Documentation-only pitfalls and portability
+### Phase 7: Documentation-only pitfalls and portability [done, 2026-11-04]
 
 **Spec comments** (and the matching `doc/*.html`):
 
@@ -1966,6 +1966,109 @@ sway, and under valgrind. Each test was seen to fail before its fix.
 - 114: make it visible when `Set_Cairo_Draw` is a no-op because FLTK has
   no Cairo.
 - 93: restore `Fl_Group::current()` around `new_fl_help_dialog`.
+
+What was done. Every spec comment has its `doc/*.html` note. Where a
+test could show the behaviour without opening the user's browser or
+waiting on an alert, there is one, run on Xvfb and on a headless sway,
+and under valgrind. Each fix's test was seen to fail before it.
+
+- **Issue 10** (new test `test_changed_callback`): documented. FLTK
+  clears `changed` after a callback unless it is
+  `Fl_Widget::default_callback` (`Fl_Widget.cxx:385-386`). The spec of
+  `Has_Changed` says so, and that `Do_Callback` calls the Ada callback
+  without clearing it. The test clicks a check button with a callback,
+  which sees `changed` and finds it cleared after; one with no callback
+  keeps it, and `Do_Callback` clears nothing. Passes on X11 and sway.
+- **Issue 40** (new test `test_browser_load`): documented. The test
+  writes its own directory. A `Textline_Browser` loading "a\nb\n" has 3
+  lines, the last empty; `Load ("")` empties it and raises nothing.
+  `File_Browser.Load` returns the directory's entries, 6 with `./` and
+  `../`, while the `*.txt` filter lists 4 lines
+  (`Fl_File_Browser.cxx:442-474`). New: the byte after each 1023 of a
+  long line is dropped (FLTK-issues.md F10). Passes on X11 and sway.
+- **Issue 43** (`test_tree_remove`, extended): documented. After
+  `Clear`, `Root` is null (`Fl_Tree.cxx:934-940`), and `Add` makes a
+  new root. The spec of `Clear` and `Root` says so.
+- **Issue 44**: documented, from the source alone, since a window
+  manager's icon can't be read back on Wayland. `Fl_Window_Driver::icons`
+  is empty (`Fl_Window_Driver.H:181`); the X11, Windows and macOS
+  drivers override it, Wayland's doesn't. The spec before `Set_Icon`
+  says so.
+- **Issue 47** (new test `test_xpm_color_names`): documented. An XPM
+  with "red" and "#0000ff" draws red and blue on X11, and FLTK's gray
+  (16#C0C0C0#) and blue on sway (`Fl_Screen_Driver.cxx:625-646`). The
+  pixmap specs say to use `#rrggbb`.
+- **Issue 50** (new test `test_selection_buffer`): documented. Pasting
+  the selection buffer gives what was copied to it on X11, and nothing
+  on sway (`fl_wayland_clipboard_dnd.cxx:617-618, 659-686`); the
+  clipboard works on both. The spec of `Copy` says so.
+- **Issue 79** (new test `test_menu_add_merge`): documented, and pofltk
+  79 corrected. Adding a label already in the menu, `&` aside, returns
+  the same item and gives it the new flags; a hidden item is added
+  again. But a hidden *first* item is found: `Fl_Menu_Item::insert`
+  compares the first item before it calls `next()`
+  (`Fl_Menu_add.cxx:173-174, 189-190, 203-206`), and the test checks
+  both. Writing the test found FLTKAda-BUGS.md 65: the one-string
+  `Add`, FLTK's `add (const char *)`, couldn't be called. Decided by
+  the user: it is renamed `Add_Items` (new test `test_menu_add_items`),
+  rather than dropping the defaults of the other `Add`. Its test found
+  FLTK-issues.md F11.
+- **Issue 93** (new test `test_help_dialog_group`): the shim keeps
+  `Fl_Group::current()` around `new Fl_Help_Dialog`, whose window
+  leaves none (`Fl_Window.cxx:82`, `Fl_Help_Dialog.cxx:198`). Both
+  `Forge.Create`s go through it. Before the fix both checks failed: no
+  current group, and the box made after it in no group. The spec of
+  `Help_View.Load` and `Help_Dialog.Load` says a URL opens the user's
+  browser (`Fl_Help_View.cxx:3353-3361`); not tested, since the test
+  would open one.
+- **Issue 102**: documented, from the source. FLTKAda binds no PDF or
+  EPS surface, so of pofltk's cases only
+  `Fl_PostScript_File_Device::end_job`'s alert applies, given when
+  `close_cmd_` is null (`Fl_PostScript.cxx:1980-1983`). For a job given
+  a `File_Type` the binding's stream reports the write error itself
+  (Phase 5, pofltk 101), and the shim never sets a close command. The
+  spec of `End_Job` says which errors are still reported only by the
+  alert.
+- **Issue 113** (new test `test_gl_window_group`): documented. The
+  plan's first half doesn't arise in FLTKAda: every group's `Forge`
+  already ends the group (`Extra_Init`, `fltk-widgets-groups.adb`), so a
+  `Window` and a `GL_Window` made inside `Begin_Current` both leave the
+  outer window current. The test checks both. Under Wayland a
+  single-buffered `Set_Mode` reads back `Double`, on X11 it doesn't
+  (`Fl_Wayland_Gl_Window_Driver.cxx:37, 113, 301`). The spec of
+  `Get_Mode` says so.
+- **Issue 114** (new test `test_cairo_support`): `Cairo_Window` has
+  `Is_Supported`, from `FLTK_HAVE_CAIRO` in the shim, and
+  `Set_Cairo_Draw` raises `Unsupported_Error` without Cairo, since its
+  callback would never be called (`Fl_Cairo_Window.H:26`). The
+  save/restore note was already in the spec, and is now in
+  `doc/fl_cairo_window.html`.
+- **Issue 132**: documented, from the source. Nothing in FLTK 1.4.5
+  sends `FL_SELECTIONCLEAR`; its one mention is a comment
+  (`Fl.cxx:1630`). The comment on `Selection_Clear` in `Event_Kind` and
+  the spec of `Selection` say so.
+- **Issue 73** (new test `test_svg_support`): the shim names
+  `Fl_SVG_Image` only `#ifdef FLTK_USE_SVG` (from `fl_config.h`, as
+  `Fl_SVG_Image.cxx:19` tests it). Without it `SVG.Is_Supported` is
+  False and each `Create` raises `Unsupported_Error`.
+- **Issue 104** (new test `test_print_support`): the plan's guard on
+  `FL_NO_PRINT_SUPPORT` was impossible: that macro is set only in
+  `config.h`, which FLTK doesn't install. The shim names
+  `Fl_PostScript_File_Device::file_chooser_title` with a weak
+  reference instead, as pofltk does, and its address says whether this
+  FLTK prints (`Fl_PostScript.cxx:18, 49`). `Postscript.Is_Supported`
+  gives that; without it `Get_File_Chooser_Title` gives "" and
+  `Set_File_Chooser_Title` raises `Unsupported_Error`. Such an FLTK's
+  `Fl_Printer` strings are all null (`Fl_Printer.cxx:21, 49-67`), which
+  the shim now gives as "". A scratch C++ program built with and
+  without libfltk showed the weak address null without.
+- **Controls for 73, 104 and 114.** This FLTK has SVG, printing and
+  Cairo, so a run here checks only the supported case. The other was
+  checked by putting in front of the shim's `fl_svg_image_available`,
+  `fl_postscript_file_device_supported` or `fl_cairo_window_supported`
+  one that gives 0, with `LD_PRELOAD`: each `Create`, the title setter
+  and `Set_Cairo_Draw` raised `Unsupported_Error`, and the checks that
+  this FLTK has the feature failed.
 
 ### Phase 8: Core statics
 

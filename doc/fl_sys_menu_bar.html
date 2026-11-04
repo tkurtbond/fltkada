@@ -130,15 +130,16 @@ function Add
 int add(const char *str);
 </pre></td>
 <td><pre>
-procedure Add
+procedure Add_Items
        (This : in out System_Menu_Bar;
         Text : in     String);
 
-function Add
+function Add_Items
        (This : in out System_Menu_Bar;
         Text : in     String)
     return Index;
-</pre></td>
+</pre><p>As Menu's Add_Items (see fl_menu_.html). It was named Add, but no call
+to it could compile (FLTKAda-BUGS.md 65).</p></td>
   </tr>
 
   <tr>

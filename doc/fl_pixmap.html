@@ -109,7 +109,8 @@ with Pre =>
     (for all Definition of Colors =>
         Ada.Strings.Unbounded.Length (Definition.Name) = Values.Per_Pixel) and
     Pixels'Length (2) = Values.Width * Values.Per_Pixel;
-</pre></td>
+</pre><p>A colour given by name ("red") is read only on X11; on Wayland it
+is FLTK's gray. Give colours as "#rrggbb" (pofltk 47).</p></td>
   </tr>
 
 </table>

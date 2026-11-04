@@ -116,6 +116,14 @@ image lasts (FLTK-issues.md F8).</td>
   <tr><th colspan="2">Functions and Procedures</th></tr>
 
   <tr>
+    <td>&nbsp;</td>
+<td><pre>
+function Is_Supported
+    return Boolean;
+</pre><p>False if this FLTK was built without SVG support. Every Create then raises FLTK.Unsupported_Error (pofltk 73).</p></td>
+  </tr>
+
+  <tr>
 <td><pre>
 Fl_SVG_Image * as_svg_image();
 </pre></td>

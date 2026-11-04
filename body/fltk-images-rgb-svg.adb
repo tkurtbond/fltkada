@@ -22,6 +22,11 @@ package body FLTK.Images.RGB.SVG is
 
     --  Allocation  --
 
+    function fl_svg_image_available
+        return Interfaces.C.int;
+    pragma Import (C, fl_svg_image_available, "fl_svg_image_available");
+    pragma Inline (fl_svg_image_available);
+
     function new_fl_svg_image
            (F : in Interfaces.C.char_array)
         return Storage.Integer_Address;
@@ -144,12 +149,30 @@ package body FLTK.Images.RGB.SVG is
     --  Constructors  --
     --------------------
 
+    function Is_Supported
+        return Boolean is
+    begin
+        return fl_svg_image_available /= 0;
+    end Is_Supported;
+
+
+    procedure Check_Supported is
+    begin
+        if not Is_Supported then
+            raise Unsupported_Error with "this FLTK was built without SVG";
+        end if;
+    end Check_Supported;
+
+
+
+
     package body Forge is
 
         function Create
                (Filename : in String)
             return SVG_Image is
         begin
+            Check_Supported;
             return This : SVG_Image do
                 This.Void_Ptr := new_fl_svg_image
                    (Interfaces.C.To_C (Filename));
@@ -166,6 +189,7 @@ package body FLTK.Images.RGB.SVG is
                 Data : in String)
             return SVG_Image is
         begin
+            Check_Supported;
             return This : SVG_Image do
                 This.Void_Ptr := new_fl_svg_image2
                    (Interfaces.C.To_C (Name),
@@ -183,6 +207,7 @@ package body FLTK.Images.RGB.SVG is
                 Data : in Color_Component_Array)
             return SVG_Image is
         begin
+            Check_Supported;
             return This : SVG_Image do
                 This.Void_Ptr := new_fl_svg_image3
                    (Interfaces.C.To_C (Name),

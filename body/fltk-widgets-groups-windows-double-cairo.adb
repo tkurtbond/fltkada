@@ -11,6 +11,10 @@ with
     Interfaces.C,
     System.Address_To_Access_Conversions;
 
+use type
+
+    Interfaces.C.int;
+
 
 package body FLTK.Widgets.Groups.Windows.Double.Cairo is
 
@@ -41,6 +45,11 @@ package body FLTK.Widgets.Groups.Windows.Double.Cairo is
 
 
     --  Cairo Callback  --
+
+    function fl_cairo_window_supported
+        return Interfaces.C.int;
+    pragma Import (C, fl_cairo_window_supported, "fl_cairo_window_supported");
+    pragma Inline (fl_cairo_window_supported);
 
     procedure fl_cairo_window_set_draw_cb
            (W, F : in Storage.Integer_Address);
@@ -243,10 +252,20 @@ package body FLTK.Widgets.Groups.Windows.Double.Cairo is
 
     --  Cairo Callback  --
 
+    function Is_Supported
+        return Boolean is
+    begin
+        return fl_cairo_window_supported /= 0;
+    end Is_Supported;
+
+
     procedure Set_Cairo_Draw
            (This : in out Cairo_Window;
             Func : in     Cairo_Callback) is
     begin
+        if not Is_Supported then
+            raise Unsupported_Error with "this FLTK was built without Cairo";
+        end if;
         This.My_Func := Func;
     end Set_Cairo_Draw;
 

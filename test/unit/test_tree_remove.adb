@@ -196,6 +196,12 @@ begin
     Tree.Clear;
     Check (TI.Is_Null (Tree.Callback_Item), "after Clear there is no Callback_Item");
 
+    --  pofltk 43: Clear deletes the root too, so Root is null until Add makes
+    --  a new one (Fl_Tree.cxx:934-940).
+    Check (TI.Is_Null (Tree.Root), "after Clear there is no Root");
+    Check (not TI.Is_Null (Tree.Add ("new")) and then not TI.Is_Null (Tree.Root),
+        "Add makes a new Root");
+
     Summary;
 
 exception

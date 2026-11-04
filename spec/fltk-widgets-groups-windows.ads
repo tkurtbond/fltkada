@@ -115,6 +115,9 @@ package FLTK.Widgets.Groups.Windows is
 
     --  Icons, Cursors  --
 
+    --  The icon procedures do nothing on Wayland, whose window and screen
+    --  drivers don't override FLTK's empty ones (Fl_Window_Driver.H:181,
+    --  Fl_Screen_Driver.cxx:648, pofltk 44).
     procedure Set_Icon
            (This : in out Window;
             Pic  : in     FLTK.Images.RGB.RGB_Image'Class);

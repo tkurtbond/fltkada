@@ -83,6 +83,12 @@ package FLTK.Widgets is
 
     --  Changed and Output  --
 
+    --  When FLTK calls a widget's callback, it clears the changed flag once
+    --  the callback returns, unless the widget still has FLTK's default
+    --  callback (Fl_Widget.cxx:385-386, pofltk 10).  So a widget given an
+    --  Ada callback by Set_Callback reports Has_Changed only inside that
+    --  callback, and one given none keeps it until Clear_Changed.
+    --  Do_Callback calls the Ada callback directly and clears nothing.
     function Has_Changed
            (This : in Widget)
         return Boolean;
@@ -322,6 +328,8 @@ package FLTK.Widgets is
            (This : in out Widget;
             Func : in     Widget_Callback);
 
+    --  Calls the Ada callback itself, so the changed flag is left as it
+    --  was (see Has_Changed).
     procedure Do_Callback
            (This : in out Widget);
 

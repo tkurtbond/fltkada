@@ -101,6 +101,8 @@ package FLTK.Widgets.Groups.Help_Views is
         return String;
 
     --  Name here can be either a ftp/http/https/ipp/mailto/news URL or a filename.
+    --  A URL isn't shown here: FLTK hands it to fl_open_uri, which opens it in
+    --  the user's web browser (Fl_Help_View.cxx:3353-3361, pofltk 93).
     procedure Load
            (This : in out Help_View;
             Name : in     String);

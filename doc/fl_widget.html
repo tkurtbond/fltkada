@@ -286,7 +286,10 @@ unsigned int changed() const;
 function Has_Changed
        (This : in Widget)
     return Boolean;
-</pre></td>
+</pre><p>FLTK clears the flag after it calls a callback, unless the
+widget still has FLTK's default callback (pofltk 10). So with an Ada
+callback it is True only inside the callback; with none it stays True.
+Do_Callback calls the Ada callback directly and doesn't clear it.</p></td>
   </tr>
 
   <tr>
