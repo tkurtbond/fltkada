@@ -15,10 +15,13 @@ FLTK.Devices
 FLTK.Devices.Surface
 FLTK.Devices.Surface.Copy
 FLTK.Devices.Surface.Display
+FLTK.Devices.Surface.EPS
 FLTK.Devices.Surface.Image
 FLTK.Devices.Surface.Paged
+FLTK.Devices.Surface.Paged.PDF
 FLTK.Devices.Surface.Paged.Postscript
 FLTK.Devices.Surface.Paged.Printers
+FLTK.Devices.Surface.SVG
 FLTK.Draw
 FLTK.Draw.Offscreens
 FLTK.Draw.OpenGL
@@ -174,6 +177,9 @@ Needs an internal Graphics_Driver'Class:
 Fl_Copy_Surface (via internal Quartz/GDI/Xlib surface)
 Fl_Printer (via internal Fl_System_Printer (win/mac) or Fl_PostScript_Printer (linux))
 Fl_PostScript_File_Device (internal Fl_PostScript_Graphics_Driver)
+Fl_EPS_File_Surface (internal Fl_PostScript_Graphics_Driver)
+Fl_PDF_File_Surface (internal platform PDF surface, Cairo on X11 and Wayland)
+Fl_SVG_File_Surface (internal Fl_SVG_Graphics_Driver)
 
 
 

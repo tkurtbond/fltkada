@@ -34,6 +34,7 @@ project Tests is
         "page_formats.adb",
         "pixmap.adb",
         "preferences.adb",
+        "saveas.adb",
         "tree.adb",
         "tree_table1.adb",
         "tree_simple.adb",
@@ -60,6 +61,7 @@ project Tests is
         for Executable ("page_formats.adb")       use "page_formats";
         for Executable ("pixmap.adb")             use "pixmap";
         for Executable ("preferences.adb")        use "preferences";
+        for Executable ("saveas.adb")             use "saveas";
         for Executable ("tree.adb")               use "tree";
         for Executable ("tree_table1.adb")        use "tree_table1";
         for Executable ("tree_simple.adb")        use "tree_simple";

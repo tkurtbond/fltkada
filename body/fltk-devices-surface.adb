@@ -166,6 +166,27 @@ package body FLTK.Devices.Surface is
     end Set_Current_Bookkeep;
 
 
+    procedure Push_Bookkeep
+           (This : in out Surface_Device'Class) is
+    begin
+        if Stack_Height < Surface_Stack'Last then
+            Stack_Height := Stack_Height + 1;
+            Surface_Stack (Stack_Height) := Surface_Access (Current_Surface);
+        end if;
+        Current_Surface := This'Unchecked_Access;
+    end Push_Bookkeep;
+
+
+    procedure Pop_Bookkeep is
+    begin
+        if Stack_Height > 0 then
+            Current_Surface := Surface_Stack (Stack_Height);
+            Stack_Height := Stack_Height - 1;
+        end if;
+        Reclaim;
+    end Pop_Bookkeep;
+
+
     --  Whether Item is This.
     function Same
            (Item : access Surface_Device'Class;
@@ -176,6 +197,14 @@ package body FLTK.Devices.Surface is
     begin
         return Item /= null and then Item.all'Address = This'Address;
     end Same;
+
+
+    function Is_Top
+           (This : in Surface_Device'Class)
+        return Boolean is
+    begin
+        return Same (Current_Surface, This);
+    end Is_Top;
 
 
     function Is_Remembered
@@ -259,12 +288,9 @@ package body FLTK.Devices.Surface is
     procedure Push_Current
            (This : in out Surface_Device'Class) is
     begin
-        if Stack_Height < Surface_Stack'Last then
-            Stack_Height := Stack_Height + 1;
-            Surface_Stack (Stack_Height) := Surface_Access (Current_Surface);
-        end if;
+        This.Check_Drawable;
         fl_surface_device_push_current (This.Void_Ptr);
-        Current_Surface := This'Unchecked_Access;
+        Push_Bookkeep (This);
     end Push_Current;
 
 
@@ -282,11 +308,7 @@ package body FLTK.Devices.Surface is
     procedure Pop_Current is
     begin
         fl_surface_device_pop_current;
-        if Stack_Height > 0 then
-            Current_Surface := Surface_Stack (Stack_Height);
-            Stack_Height := Stack_Height - 1;
-        end if;
-        Reclaim;
+        Pop_Bookkeep;
     end Pop_Current;
 
 

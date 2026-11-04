@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_PDF_File_Surface Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_PDF_File_Surface Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_PDF_File_Surface.H</td>
+    <td>FLTK.Devices.Surface.Paged.PDF</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_PDF_File_Surface</td>
+    <td>PDF_File_Surface</td>
+  </tr>
+
+  <tr>
+    <td></td>
+    <td>Dialog_Text</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_PDF_File_Surface();
+</pre></td>
+<td><pre>
+function Create
+    return PDF_File_Surface;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Static Attributes</th></tr>
+
+  <tr>
+<td><pre>
+static const char *format_dialog_title;
+static const char *format_dialog_page_size;
+static const char *format_dialog_orientation;
+static const char *format_dialog_default;
+</pre></td>
+<td><pre>
+function Get_Dialog_Text
+       (Which : in Dialog_Text)
+    return String;
+
+procedure Set_Dialog_Text
+       (Which : in Dialog_Text;
+        Value : in String);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+int begin_document(const char* pathname,
+    enum Page_Format format = A4,
+    enum Page_Layout layout = PORTRAIT,
+    char **perr = NULL);
+</pre></td>
+<td><pre>
+procedure Start_Document
+       (This   : in out PDF_File_Surface;
+        Name   : in     String;
+        Format : in     Page_Format := A4;
+        Layout : in     Page_Layout := Portrait);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int begin_job(const char* defaultfilename,
+    char **perr = NULL);
+</pre></td>
+<td><pre>
+procedure Start_Job
+       (This         : in out PDF_File_Surface;
+        Default_Name : in     String);
+
+Raises User_Cancel_Error if the user cancels.
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int begin_job(int, int *, int *, char **);
+</pre></td>
+<td><pre>
+procedure Start_Job
+       (This  : in out PDF_File_Surface;
+        Count : in     Natural := 0);
+
+procedure Start_Job
+       (This     : in out PDF_File_Surface;
+        Count    : in     Natural := 0;
+        From, To :    out Positive);
+
+Both raise Page_Error: FLTK's does nothing.
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void end_job(void);
+</pre></td>
+<td><pre>
+procedure End_Job
+       (This : in out PDF_File_Surface);
+
+Raises File_Write_Error, and never alerts (pofltk 102).
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char *pdf_filename();
+</pre></td>
+<td><pre>
+function Get_File_Name
+       (This : in PDF_File_Surface)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+
+</pre></td>
+<td><pre>
+function Is_Open
+       (This : in PDF_File_Surface)
+    return Boolean;
+
+function Is_Supported
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int begin_page(void);
+</pre></td>
+<td><pre>
+procedure Start_Page
+       (This : in out PDF_File_Surface);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int end_page(void);
+</pre></td>
+<td><pre>
+procedure End_Page
+       (This : in out PDF_File_Surface);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void margins(int *left, int *top,
+    int *right, int *bottom);
+</pre></td>
+<td><pre>
+procedure Get_Margins
+       (This                     : in     PDF_File_Surface;
+        Left, Top, Right, Bottom :    out Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int printable_rect(int *w, int *h);
+</pre></td>
+<td><pre>
+procedure Get_Printable_Rect
+       (This : in     PDF_File_Surface;
+        W, H :    out Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void origin(int *x, int *y);
+</pre></td>
+<td><pre>
+procedure Get_Origin
+       (This : in     PDF_File_Surface;
+        X, Y :    out Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void origin(int x, int y);
+</pre></td>
+<td><pre>
+procedure Set_Origin
+       (This : in out PDF_File_Surface;
+        X, Y : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void rotate(float angle);
+</pre></td>
+<td><pre>
+procedure Rotate
+       (This    : in out PDF_File_Surface;
+        Degrees : in     Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void scale(float s_x, float s_y = 0);
+</pre></td>
+<td><pre>
+procedure Scale
+       (This   : in out PDF_File_Surface;
+        Factor : in     Float);
+
+procedure Scale
+       (This               : in out PDF_File_Surface;
+        Factor_X, Factor_Y : in     Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void translate(int x, int y);
+</pre></td>
+<td><pre>
+procedure Translate
+       (This             : in out PDF_File_Surface;
+        Delta_X, Delta_Y : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void untranslate();
+</pre></td>
+<td><pre>
+procedure Untranslate
+       (This : in out PDF_File_Surface);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw(Fl_Widget* widget, int delta_x = 0, int delta_y = 0);
+</pre></td>
+<td><pre>
+procedure Print_Widget
+       (This               : in out PDF_File_Surface;
+        Item               : in     Widget'Class;
+        Offset_X, Offset_Y : in     Integer := 0);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void print_window(Fl_Window *win,
+    int x_offset = 0, int y_offset = 0);
+</pre></td>
+<td><pre>
+procedure Print_Window
+       (This               : in out PDF_File_Surface;
+        Item               : in     Window'Class;
+        Offset_X, Offset_Y : in     Integer := 0);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void print_window_part(Fl_Window *win, int x, int y,
+    int w, int h, int delta_x = 0, int delta_y = 0);
+</pre></td>
+<td><pre>
+procedure Print_Window_Part
+       (This               : in out PDF_File_Surface;
+        Item               : in     Window'Class;
+        X, Y, W, H         : in     Integer;
+        Offset_X, Offset_Y : in     Integer := 0);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void set_current();
+</pre></td>
+<td><pre>
+procedure Set_Current
+       (This : in out PDF_File_Surface);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+bool is_current();
+</pre></td>
+<td><pre>
+Inherited from FLTK.Devices.Surface.
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>

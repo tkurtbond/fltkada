@@ -87,6 +87,26 @@ private
            (Surface : in out Surface_Device'Class)
     with Inline;
 
+    --  Record a push or pop of FLTK's stack of surfaces that FLTK made
+    --  itself: the begin_page and end_page of a Paged_Device push and pop
+    --  it (Fl_PostScript.cxx:1902, 1942).  Push_Current and Pop_Current
+    --  use them too.
+    procedure Push_Bookkeep
+           (This : in out Surface_Device'Class);
+
+    procedure Pop_Bookkeep;
+
+    --  Whether This is the surface last made current or pushed.
+    function Is_Top
+           (This : in Surface_Device'Class)
+        return Boolean;
+
+    --  Raises Program_Error if This can no longer be drawn on.  Push_Current
+    --  calls it, and so do the Set_Currents of the surfaces that override
+    --  it: an EPS or SVG surface after Finish, or a PDF surface with no job.
+    procedure Check_Drawable
+           (This : in Surface_Device) is null;
+
     --  Whether This is current or remembered by Push_Current.
     function Is_Remembered
            (This : in Surface_Device'Class)

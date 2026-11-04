@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_SVG_File_Surface Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_SVG_File_Surface Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_SVG_File_Surface.H</td>
+    <td>FLTK.Devices.Surface.SVG</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_SVG_File_Surface</td>
+    <td>SVG_File_Surface</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_SVG_File_Surface(int width, int height, FILE *svg,
+    int (*closef)(FILE*) = NULL);
+</pre></td>
+<td><pre>
+function Create
+       (Name : in String;
+        W, H : in Positive)
+    return SVG_File_Surface;
+
+Raises File_Open_Error if Name can't be opened.
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+int printable_rect(int *w, int *h);
+</pre></td>
+<td><pre>
+procedure Get_Printable_Rect
+       (This : in     SVG_File_Surface;
+        W, H :    out Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void origin(int *x, int *y);
+</pre></td>
+<td><pre>
+procedure Get_Origin
+       (This : in     SVG_File_Surface;
+        X, Y :    out Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void origin(int x, int y);
+</pre></td>
+<td><pre>
+procedure Set_Origin
+       (This : in out SVG_File_Surface;
+        X, Y : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void translate(int x, int y);
+</pre></td>
+<td><pre>
+procedure Translate
+       (This             : in out SVG_File_Surface;
+        Delta_X, Delta_Y : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void untranslate();
+</pre></td>
+<td><pre>
+procedure Untranslate
+       (This : in out SVG_File_Surface);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw(Fl_Widget* widget, int delta_x = 0, int delta_y = 0);
+</pre></td>
+<td><pre>
+procedure Draw_Widget
+       (This               : in out SVG_File_Surface;
+        Item               : in     FLTK.Widgets.Widget'Class;
+        Offset_X, Offset_Y : in     Integer := 0);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw_decorated_window(Fl_Window *win,
+    int x_offset = 0, int y_offset = 0);
+</pre></td>
+<td><pre>
+procedure Draw_Decorated_Window
+       (This               : in out SVG_File_Surface;
+        Item               : in     Window'Class;
+        Offset_X, Offset_Y : in     Integer := 0);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void print_window_part(Fl_Window *win, int x, int y,
+    int w, int h, int delta_x = 0, int delta_y = 0);
+</pre></td>
+<td><pre>
+procedure Print_Window_Part
+       (This               : in out SVG_File_Surface;
+        Item               : in     Window'Class;
+        X, Y, W, H         : in     Integer;
+        Offset_X, Offset_Y : in     Integer := 0);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void set_current();
+</pre></td>
+<td><pre>
+procedure Set_Current
+       (This : in out SVG_File_Surface);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int close();
+</pre></td>
+<td><pre>
+procedure Finish
+       (This : in out SVG_File_Surface);
+
+function Is_Finished
+       (This : in SVG_File_Surface)
+    return Boolean;
+
+Raises File_Write_Error if the file couldn't all be written.
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+FILE *file();
+</pre></td>
+<td><pre>
+Not bound: the surface opens and closes its own file.
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+~Fl_SVG_File_Surface();
+</pre></td>
+<td><pre>
+Done automatically when the surface is finalized, after Finish.
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+
+</pre></td>
+<td><pre>
+function Is_Supported
+    return Boolean;
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>

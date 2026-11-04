@@ -868,7 +868,9 @@ headless sway, each seen to fail before its fix:
   (`Storage_Error`). pofltk's SVG bug, where `ensure_font` reset the SVG
   surface's font on every call, can't happen here: FLTKAda binds no
   SVG, EPS or PDF surface yet (Phase 11). `ensure_font` already asks
-  `fl_size()`, as pofltk's fixed version does.
+  `fl_size()`, as pofltk's fixed version does. (Phase 11 bound them:
+  `test_eps_surface` and `test_pdf_surface` draw text first with no font
+  set, and `test_svg_surface` finds the font set in the file.)
 - **Issue 28: AFFECTED (Wayland), done.** `Menu_Button.Popup`,
   `Menu.Popup` and `Menu.Pulldown` first call `wait_for_expose` on the
   window FLTK puts the menu over: the menu widget's top window, or
@@ -2022,7 +2024,7 @@ and under valgrind. Each fix's test was seen to fail before it.
   browser (`Fl_Help_View.cxx:3353-3361`); not tested, since the test
   would open one.
 - **Issue 102**: documented, from the source. FLTKAda binds no PDF or
-  EPS surface, so of pofltk's cases only
+  EPS surface (until Phase 11, which see), so of pofltk's cases only
   `Fl_PostScript_File_Device::end_job`'s alert applies, given when
   `close_cmd_` is null (`Fl_PostScript.cxx:1980-1983`). For a job given
   a `File_Type` the binding's stream reports the write error itself
@@ -2375,7 +2377,7 @@ Verdicts:
   `test_image_handlers`, `test_write_png`, `test_widget_multi_label` and
   `test_file_icons` pass on X11 and sway. Valgrind finds no errors.
 
-### Phase 11: File surfaces
+### Phase 11: File surfaces [done, 2026-11-04]
 
 `FLTK.Devices.Surface.EPS`, `…Paged.PDF` and `…SVG`, with the choice
 binding_architecture.md §7.3 already discusses (the `Widget_Surface`
@@ -2385,6 +2387,90 @@ wrinkle).
   Return an error status, and never alert.
 - Port pofltk's `SaveAs` example, which writes PostScript, EPS, PDF and
   SVG.
+
+Decisions and findings:
+
+- **The `Widget_Surface` wrinkle:** option 1 of §7.3. `EPS` and `SVG`
+  are children of `FLTK.Devices.Surface`, as `Copy` and `Image` are, and
+  `PDF` is a child of `Paged`, since `Fl_PDF_File_Surface` is an
+  `Fl_Paged_Device`. No `Widget_Surface` package: nothing it would hold
+  is shared beyond what each already has.
+- **Paged devices on FLTKAda's stack of surfaces** (FLTKAda-BUGS.md 75).
+  `begin_page` pushes the device and `end_page` pops whatever is on top,
+  for PostScript, printers and PDF alike. `Start_Page` and `End_Page`
+  now keep FLTKAda's record of the stack in step, and refuse a page in
+  a page and an end outside one. Found while designing the PDF surface.
+- **A file of FLTKAda's.** EPS and SVG write through a `File_Sink`
+  (`body/c_fl_file_sink.cpp`), the shim's own stream with a close
+  function, so a failed write is a status and not FLTK's alert. EPS's
+  destructor, which alerts (`Fl_PostScript.cxx:2051-2058`), never closes
+  the file: `Finish` and `Finalize` call `close()` first.
+- **PDF writes through a FIFO.** `Fl_PDF_File_Surface` opens its file
+  itself, by name, and `end_job` reports a failed write only with
+  `fl_alert` (`Fl_PostScript.cxx:1776-1792`). For a document the
+  program names, `Start_Document` has FLTK write to a FIFO in a fresh
+  directory under `$TMPDIR`, which a thread of the shim's copies to the
+  file. The thread starts first, holding a write end so its read can't
+  end early, and a pipe stops it if FLTK fails. The FIFO and its
+  directory are removed at once, before any page. A full disk is then
+  File_Write_Error from `End_Job`, and FLTK never sees an error. POSIX
+  only, like the rest of the X11 and Wayland shim.
+- **The file chooser path** (`Start_Job`, FLTK's format dialog then
+  `Fl_Native_File_Chooser`): FLTK writes the file it was given, so a
+  timer during `end_job` watches for a new modal window, as pofltk's
+  shim does, hides it and makes `End_Job` raise File_Write_Error. A
+  cancelled dialog raises User_Cancel_Error.
+- **One document per surface.** A second `begin_document` works in
+  FLTK but leaks the first name (FLTK-issues.md F20). `Start_Document`
+  or `Start_Job` on a surface that has begun one raises Page_Error.
+  Printer-style `Start_Job (Count)` raises Page_Error too: FLTK's
+  returns 1 and does nothing ("don't use", `Fl_PostScript.cxx:1601`).
+- **A PDF surface with no document can't be drawn on.** Its transform,
+  page and print calls raise Program_Error until `Start_Document` or
+  `Start_Job` succeeds, and after `End_Job`: FLTK's driver has no Cairo
+  context then.
+- **The PDF's page calls are virtual.** `c_fl_paged_device.cpp` calls
+  `Fl_Paged_Device::` qualified, which skips `Fl_PDF_File_Surface`'s
+  forwarding to its platform surface, so the PDF shim has its own.
+  `Print_Widget` and the rest go through `Fl_Widget_Surface::draw`,
+  whose calls are virtual (`Fl_Widget_Surface.cxx:43-85`), and work.
+- **Support is found at run time.** A weak reference to
+  `Fl_PDF_Pango_File_Surface::end_job` says FLTK has Pango, and the
+  dialog texts, named weakly as the PostScript chooser title is, say it
+  has print support (F21, pofltk 104). Only the supported case was run
+  here.
+- **SVG's open groups** (FLTK-issues.md F18). `close()` leaves a
+  `translate`'s group open, and the file isn't XML. `SVG.Finish` closes
+  them first, and `Untranslate` with none open raises Constraint_Error.
+- **SaveAs** (`test/saveas.adb`): pofltk's example, with one addition.
+  Given a format and a file name, it writes that file with no window, so
+  it can be checked headless. Under Xvfb all four files are written and
+  render with Ghostscript and rsvg-convert, the same picture as the
+  window, and a missing directory or `/dev/full` exits 1 with the
+  reason. All four are clean under valgrind.
+
+Verdicts:
+
+- **Issue 100:** HANDLED, by `ensure_font`, as for PostScript. The new
+  checks draw text first, with no font set, on EPS and PDF, and the
+  files are written. SVG keeps the font set (`test_svg_surface`), so
+  pofltk's related bug doesn't arise.
+- **Issue 102:** FIXED for PDF and EPS. A failed write raises
+  File_Write_Error with the reason, and never alerts: `/dev/full` in
+  `test_pdf_surface` gives "the PDF couldn't all be written", the
+  copier's message, not the watch's. Finalizing an unfinished
+  `/dev/full` surface doesn't hang.
+- **Issue 103,** for PDF: as for PostScript. `Media` raises
+  Constraint_Error, transforms outside a page raise Page_Error, and
+  `Print_Widget` draws what is visible. The chooser's message,
+  allocated with `new[]` under Pango, is freed with `delete[]`; the
+  `strdup` path is FLTK's without Pango, where `Create` refuses first.
+- **Issue 104:** HANDLED for PDF, by the weak dialog texts above; EPS
+  uses the PostScript chooser title's test.
+- **New:** FLTK-issues.md F18 to F21, and FLTKAda-BUGS.md 75.
+- **Results:** `test_eps_surface`, `test_svg_surface`,
+  `test_pdf_surface` and `test_page_finalize` pass on X11 and sway.
+  Valgrind finds no errors.
 
 ### Phase 12: Method gaps in classes already bound
 

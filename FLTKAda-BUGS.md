@@ -2052,3 +2052,30 @@ the OpenGL `Measure` already did this. `test_file_icons` measures one
 line of text against a longer one. Valgrind is clean on X11.
 
 **Status.** Fixed.
+
+## 75. A Paged device in a page wasn't on FLTKAda's stack of surfaces
+
+**Symptom.** During a page, `Get_Current` wasn't the PostScript device
+or printer. A device finalized in a page left FLTK's current surface
+pointing at the freed device, so the next drawing used freed memory.
+`End_Page` outside a page popped some other surface.
+
+**Cause.** The `begin_page` of `Fl_PostScript_File_Device` pushes the
+device on FLTK's stack of surfaces, and `end_page` pops it, whatever is
+on top (`drivers/PostScript/Fl_PostScript.cxx:1902, 1942`). The WinAPI
+and Cocoa printers do the same (`Fl_WinAPI_Printer_Driver.cxx:416, 466`,
+`Fl_Cocoa_Printer_Driver.mm:326, 367`). FLTKAda's own record of the
+stack, which `Get_Current` reads and `Finalize` uses to take a device
+off the stack, didn't know about it.
+
+**Found.** Phase 11, 2026-11-04, while designing the PDF surface, which
+pushes in the same way. `test_page_finalize` failed two checks.
+
+**Fix.** `FLTK.Devices.Surface` has private `Push_Bookkeep` and
+`Pop_Bookkeep`, used by `Push_Current` and `Pop_Current` too. The
+`Start_Page` and `End_Page` of `Postscript_File_Device` and `Printer`
+call them. `Start_Page` in a page and `End_Page` outside one raise
+`Page_Error` before calling FLTK. `test_page_finalize` checks all of
+this.
+
+**Status.** Fixed.

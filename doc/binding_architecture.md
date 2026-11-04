@@ -447,7 +447,8 @@ class that doesn't exist in the current Ada binding's hierarchy at all.
 `FLTK.Devices.Surface.Copy`, `.Image`, and `.Paged` are currently all
 direct children of `FLTK.Devices.Surface`, matching FLTK's *older*
 layout. See §8.3 for what this means for binding the new PDF/EPS/SVG
-file surfaces.
+file surfaces. (That is §7.3; PLAN.md Phase 11 bound them as its
+option 1, flat children of `FLTK.Devices.Surface` and `.Paged`.)
 
 ### 3.5 `FLTK.Static` — the free-function ("`Fl::`") API
 
@@ -712,7 +713,7 @@ needed no closure registration: FLTK's own timer redraws the canvas.
 | `Fl_ICO_Image` | `Fl_BMP_Image` | `FLTK.Images.RGB.BMP.ICO` | Windows `.ico` icon files. |
 | `Fl_File_Icon` | (standalone) | `FLTK.Images.File_Icons` (or similar) | Icon images used as labels/in file browsers; check whether the already-bound `FLTK.Widgets.Groups.Browsers.Textline.File` (`Fl_File_Browser`) already needs this to be useful. |
 | `Fl_Scheme` | (standalone) | extend `FLTK.Static` or new `FLTK.Schemes` | New class-based scheme-registration API. `FLTK.Static` already binds the older string-based `Get_Scheme`/`Set_Scheme`/`Is_Scheme`/`Reload_Scheme` (`Fl::scheme()` etc.) — this is the newer, richer API layered on top, not a replacement. Its three public calls, `num_schemes`, `names` and `add_scheme_name`, are now bound in `FLTK.Static` as `Scheme_Count`, `Scheme_Name` and `Add_Scheme_Name` (PLAN.md Phase 8). |
-| `Fl_EPS_File_Surface`, `Fl_PDF_File_Surface`, `Fl_SVG_File_Surface` | `Fl_Widget_Surface`/`Fl_Paged_Device` | `FLTK.Devices.Surface.EPS`/`.PDF`/`.SVG` (or `.Paged.PDF` for the `Fl_Paged_Device`-derived one) | New vector-output drawing surfaces, parallel to the already-bound `.Copy`/`.Image`/`.Paged.Postscript`/`.Paged.Printers`. See §7.3 for the hierarchy wrinkle. |
+| `Fl_EPS_File_Surface`, `Fl_PDF_File_Surface`, `Fl_SVG_File_Surface` | `Fl_Widget_Surface`/`Fl_Paged_Device` | `FLTK.Devices.Surface.EPS`/`.PDF`/`.SVG` (or `.Paged.PDF` for the `Fl_Paged_Device`-derived one) | New vector-output drawing surfaces, parallel to the already-bound `.Copy`/`.Image`/`.Paged.Postscript`/`.Paged.Printers`. See §7.3 for the hierarchy wrinkle. Now bound as `FLTK.Devices.Surface.EPS`, `.SVG` and `.Paged.PDF` (PLAN.md Phase 11). |
 
 **Probably not worth binding — internal/superseded/no public header:**
 
@@ -747,6 +748,15 @@ directly. Two options, in order of preference:
    larger, backwards-incompatible change to an area that's otherwise
    "Done" — only worth it if binding `Fl_Terminal` or something else
    later turns out to need code shared at exactly that level.
+
+**Decided (PLAN.md Phase 11): option 1.** `FLTK.Devices.Surface.EPS` and
+`.SVG` are children of `FLTK.Devices.Surface`, and `PDF` is
+`FLTK.Devices.Surface.Paged.PDF`, since `Fl_PDF_File_Surface` is an
+`Fl_Paged_Device`. EPS and SVG bind `Fl_Widget_Surface`'s `draw`,
+`draw_decorated_window` and `print_window_part` themselves, as
+`Draw_Widget`, `Draw_Decorated_Window` and `Print_Window_Part`; PDF has
+`Paged`'s `Print_Widget` and the rest. Nothing else would have been
+shared.
 
 ### 7.4 `FLTK.Devices.Graphics` — the actual blocker for several items
 

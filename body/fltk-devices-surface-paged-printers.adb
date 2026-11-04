@@ -860,10 +860,15 @@ package body FLTK.Devices.Surface.Paged.Printers is
     procedure Start_Page
            (This : in out Printer) is
     begin
+        if This.In_Page then
+            raise Page_Error with "a page is already started";
+        end if;
         This.Shifts := 0;
         if fl_printer_start_page (This.Void_Ptr) /= 0 then
             raise Page_Error;
         end if;
+        --  FLTK's begin_page pushed the device (FLTKAda-BUGS.md 75).
+        Push_Bookkeep (This);
         This.In_Page := True;
     end Start_Page;
 
@@ -871,11 +876,21 @@ package body FLTK.Devices.Surface.Paged.Printers is
     procedure End_Page
            (This : in out Printer) is
     begin
+        --  FLTK's end_page pops the stack of surfaces whatever is on top,
+        --  so outside a page it would pop some other surface.
+        if not This.In_Page then
+            raise Page_Error with "no page is started";
+        end if;
         This.In_Page := False;
         This.Shifts := 0;
-        if fl_printer_end_page (This.Void_Ptr) /= 0 then
-            raise Page_Error;
-        end if;
+        declare
+            Result : constant Interfaces.C.int := fl_printer_end_page (This.Void_Ptr);
+        begin
+            Pop_Bookkeep;
+            if Result /= 0 then
+                raise Page_Error;
+            end if;
+        end;
     end End_Page;
 
 

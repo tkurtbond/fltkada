@@ -89,6 +89,10 @@ package FLTK.Devices.Surface.Paged is
     procedure End_Job
            (This : in out Paged_Device);
 
+    --  For a printer or a file device, Start_Page makes the device current
+    --  until End_Page, which makes current again what was before; Start_Page
+    --  in a page, and End_Page outside one, raise Page_Error (FLTKAda-BUGS.md
+    --  75).
     procedure Start_Page
            (This : in out Paged_Device);
 

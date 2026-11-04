@@ -421,3 +421,72 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
   abort, and a 4x4 image writes. Under valgrind, depth 0 and a short
   line size read past the data at `fl_write_png.cxx:161`.
   `test_write_png` checks that `Write_PNG` raises.
+
+### F18. `Fl_SVG_File_Surface::close` leaves a `translate` group unclosed
+
+- **What happens**: after `translate` with no `untranslate`, `close()`
+  writes an SVG whose groups don't match, which XML parsers refuse:
+  xmllint reports "Opening and ending tag mismatch: g ... and svg".
+  Seen 2026-11-04, on X11.
+- **Cause**: `translate` opens a `<g>` and `untranslate` closes one
+  (`Fl_SVG_File_Surface.cxx:378-386`), but `close()` writes only the
+  `</g></g></svg>` that closes the two groups the constructor opened
+  (370-376). Nothing counts the groups in between.
+- **Effect on FLTKAda**: `SVG.Finish` undoes every `Translate` not yet
+  undone first, and `Untranslate` with none to undo raises
+  Constraint_Error, since the `</g>` it wrote would close one of the
+  constructor's groups.
+- **Confirmed**: a C++ program under Xvfb, whose file xmllint refuses.
+  `test_svg_surface` checks that the binding's file, after two
+  `Translate`s left open, closes as many groups as it opens.
+
+### F19. The PDF surface's `begin_job` leaks the page size it reads
+
+- **What happens**: each `Fl_PDF_File_Surface::begin_job` under X11 or
+  Wayland loses a few bytes, the page size's name. Valgrind reports them
+  definitely lost, from `Fl_Preferences::get`. Seen 2026-11-04.
+- **Cause**: `Fl_PDF_Pango_File_Surface::begin_job` reads
+  `PDF/page_size` with the `char *&` form of `Fl_Preferences::get`, which
+  returns a `strdup`ed copy for the caller to free, and never frees it
+  (`Fl_PostScript.cxx:1683`).
+- **Effect on FLTKAda**: none it can fix: the string is FLTK's local.
+  `PDF.Start_Job` loses the bytes once a call. `test/vg-check.sh` doesn't
+  count it, since FLTK allocated it.
+- **Confirmed**: `test_pdf_surface` under valgrind, which cancels the
+  format dialog once.
+
+### F20. A second document on one PDF surface leaks the first one's name
+
+- **What happens**: `begin_document` on an `Fl_PDF_File_Surface` that has
+  written a document works, and the second file is right, but the first
+  name is lost. Seen 2026-11-04, on X11.
+- **Cause**: `Fl_PDF_Pango_File_Surface::begin_document` sets
+  `doc_fname = strdup (outfname)` without freeing the name already there
+  (`Fl_PostScript.cxx:1753`). Only the destructor frees it (1598).
+- **Effect on FLTKAda**: a `PDF_File_Surface` writes one document.
+  `Start_Document` or `Start_Job` on one that has begun one raises
+  Page_Error.
+- **Confirmed**: a C++ program under valgrind on Xvfb, two documents on
+  one surface: both files are written, and 6 bytes from the `strdup` at
+  1753 are definitely lost.
+
+### F21. Smaller pitfalls of `Fl_PDF_File_Surface`
+
+- **`pdf_filename()` without Pango dereferences null.** It returns
+  `*out_filename_` (`FL/Fl_PDF_File_Surface.H:84`), and the non-Pango
+  `new_platform_pdf_surface_` sets `out_filename_` to null
+  (`Fl_PostScript.cxx:1475-1478`).
+- **`begin_document` keeps its `FILE` when Cairo fails.** It opens the
+  file, and if `cairo_pdf_surface_create_for_stream` then fails it
+  returns 2 without closing it (`Fl_PostScript.cxx:1721-1737`).
+- **The dialog's texts are where `--disable-print` shows.** The four
+  `format_dialog_*` statics don't exist in such an FLTK
+  (`Fl_Device.cxx:169`, as pofltk 104 says), so naming one fails to
+  link.
+- **Effect on FLTKAda**: `PDF.Forge.Create` raises Unsupported_Error
+  without Pango, so the binding never asks `pdf_filename()` there. The
+  shim reads a document it names from a FIFO, through a thread that a
+  pipe can stop, so a `FILE` FLTK keeps can't block it. It names the
+  texts weakly, and `Is_Supported` is False without them.
+- **Confirmed**: from FLTK's source; no FLTK without Pango or print
+  support was built to show the first and third.

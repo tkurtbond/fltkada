@@ -447,10 +447,15 @@ package body FLTK.Devices.Surface.Paged.Postscript is
     procedure Start_Page
            (This : in out Postscript_File_Device) is
     begin
+        if This.In_Page then
+            raise Page_Error with "a page is already started";
+        end if;
         This.Shifts := 0;
         if fl_postscript_file_device_start_page (This.Void_Ptr) /= 0 then
             raise Page_Error;
         end if;
+        --  FLTK's begin_page pushed the device (FLTKAda-BUGS.md 75).
+        Push_Bookkeep (This);
         This.In_Page := True;
     end Start_Page;
 
@@ -458,11 +463,22 @@ package body FLTK.Devices.Surface.Paged.Postscript is
     procedure End_Page
            (This : in out Postscript_File_Device) is
     begin
+        --  FLTK's end_page pops the stack of surfaces whatever is on top,
+        --  so outside a page it would pop some other surface.
+        if not This.In_Page then
+            raise Page_Error with "no page is started";
+        end if;
         This.In_Page := False;
         This.Shifts := 0;
-        if fl_postscript_file_device_end_page (This.Void_Ptr) /= 0 then
-            raise Page_Error;
-        end if;
+        declare
+            Result : constant Interfaces.C.int :=
+                fl_postscript_file_device_end_page (This.Void_Ptr);
+        begin
+            Pop_Bookkeep;
+            if Result /= 0 then
+                raise Page_Error;
+            end if;
+        end;
     end End_Page;
 
 
