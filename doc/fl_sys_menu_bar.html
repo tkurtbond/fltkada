@@ -81,6 +81,16 @@ function Create
 
   <tr>
 <td><pre>
+static void about(Fl_Callback *cb, void *data);
+</pre></td>
+<td><pre>
+procedure Set_About_Callback
+       (Func : in About_Callback);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 int add(const char *label, const char *shortcut,
     Fl_Callback *cb, void *user_data=0, int flags=0);
 </pre></td>
@@ -160,6 +170,15 @@ int clear_submenu(int index);
 procedure Clear_Submenu
        (This  : in out System_Menu_Bar;
         Place : in     Index);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void create_window_menu();
+</pre></td>
+<td><pre>
+procedure Create_Window_Menu;
 </pre></td>
   </tr>
 
@@ -329,6 +348,26 @@ void update();
 <td><pre>
 procedure Update
        (This : in out System_Menu_Bar);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static window_menu_style_enum window_menu_style();
+</pre></td>
+<td><pre>
+function Get_Window_Menu_Style
+    return Window_Menu_Style_Kind;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static void window_menu_style(window_menu_style_enum style);
+</pre></td>
+<td><pre>
+procedure Set_Window_Menu_Style
+       (To : in Window_Menu_Style_Kind);
 </pre></td>
   </tr>
 

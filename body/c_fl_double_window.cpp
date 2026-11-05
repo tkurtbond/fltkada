@@ -7,6 +7,7 @@
 #include <FL/Fl_Double_Window.H>
 #include "c_fl_double_window.h"
 #include "c_fl_window.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -22,9 +23,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Double_Window : public Fl_Double_Window {
+class My_Double_Window : public Ada_Resizing<Fl_Double_Window> {
 public:
-    using Fl_Double_Window::Fl_Double_Window;
+    using Ada_Resizing<Fl_Double_Window>::Ada_Resizing;
 
     ~My_Double_Window() { window_shape_gone(this); }
 
@@ -96,7 +97,7 @@ void fl_double_window_flush2(DOUBLEWINDOW d, int e) {
 
 
 void fl_double_window_resize(DOUBLEWINDOW d, int x, int y, int w, int h) {
-    static_cast<Fl_Double_Window*>(d)->resize(x, y, w, h);
+    ada_default_resize(static_cast<Fl_Widget*>(d), x, y, w, h);
 }
 
 

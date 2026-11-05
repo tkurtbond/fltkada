@@ -36,6 +36,7 @@ extern "C" void fl_terminal_reset_terminal(TERMINAL t);
 
 
 extern "C" void fl_terminal_cursor_home(TERMINAL t);
+extern "C" void fl_terminal_cursor_move(TERMINAL t, int what, int count, int scroll);
 extern "C" int fl_terminal_get_cursor_row(TERMINAL t);
 extern "C" void fl_terminal_set_cursor_row(TERMINAL t, int r);
 extern "C" int fl_terminal_get_cursor_col(TERMINAL t);

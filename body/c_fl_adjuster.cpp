@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Adjuster.H>
 #include "c_fl_adjuster.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -33,9 +34,9 @@ public:
 
 //  Attaching all relevant hooks and friends
 
-class My_Adjuster : public Fl_Adjuster {
+class My_Adjuster : public Ada_Resizing<Fl_Adjuster> {
 public:
-    using Fl_Adjuster::Fl_Adjuster;
+    using Ada_Resizing<Fl_Adjuster>::Ada_Resizing;
 
     friend void fl_adjuster_draw(ADJUSTER a);
     friend int fl_adjuster_handle(ADJUSTER a, int e);

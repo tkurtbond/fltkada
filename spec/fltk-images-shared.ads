@@ -107,6 +107,14 @@ package FLTK.Images.Shared is
            (This : in Shared_Image)
         return Natural;
 
+    --  The pool's order: by Name, then Get_Data_W, then Get_Data_H, as
+    --  Fl_Shared_Image::compare orders FLTK's cache, which keeps
+    --  Pool_Images in this order.  A Shared_Image is limited, so to sort
+    --  others, sort their indexes, with Ada.Containers.Generic_Sort for one.
+    function "<"
+           (Left, Right : in Shared_Image)
+        return Boolean;
+
     --  An image of another size than its file's keeps that size, by which
     --  Find finds it (pofltk 83).
     procedure Reload
@@ -180,6 +188,7 @@ private
     pragma Inline (Name);
     pragma Inline (Original);
     pragma Inline (Reference_Count);
+    pragma Inline ("<");
     pragma Inline (Reload);
     pragma Inline (Uncache);
 

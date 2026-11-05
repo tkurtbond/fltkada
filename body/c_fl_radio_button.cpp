@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Radio_Button.H>
 #include "c_fl_radio_button.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -21,9 +22,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Radio_Button : public Fl_Radio_Button {
+class My_Radio_Button : public Ada_Resizing<Fl_Radio_Button> {
 public:
-    using Fl_Radio_Button::Fl_Radio_Button;
+    using Ada_Resizing<Fl_Radio_Button>::Ada_Resizing;
 
     friend void fl_radio_button_draw(RADIOBUTTON b);
     friend int fl_radio_button_handle(RADIOBUTTON b, int e);

@@ -36,9 +36,9 @@ public:
 
 //  Attaching all relevant hooks and friends
 
-class My_Group : public Fl_Group {
+class My_Group : public Ada_Resizing<Fl_Group> {
 public:
-    using Fl_Group::Fl_Group;
+    using Ada_Resizing<Fl_Group>::Ada_Resizing;
 
     friend void fl_group_draw(GROUP g);
     friend int fl_group_handle(GROUP g, int e);
@@ -143,7 +143,7 @@ void fl_group_init_sizes(GROUP g) {
 }
 
 void fl_group_resize(GROUP g, int x, int y, int w, int h) {
-    static_cast<Fl_Group*>(g)->resize(x, y, w, h);
+    ada_default_resize(static_cast<Fl_Widget*>(g), x, y, w, h);
 }
 
 

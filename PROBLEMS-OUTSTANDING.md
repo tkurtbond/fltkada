@@ -8,7 +8,12 @@ checklist of what is bound; this file explains the problems in more detail.
 
 ## Problems found during the porting
 
-### Menu.Add (Text) is ambiguous
+### ~~Menu.Add (Text) is ambiguous~~
+
+Fixed in Phase 7 as FLTKAda-BUGS.md 65: the one-string overload is now
+`Add_Items`, so `Add (Text)` has only one meaning. Checked again in
+Phase 12 with a scratch compile of `C.Add ("a")`, `I := C.Add ("d")` and
+`C.Add ("f", Shortcut => "^a")`. The status until then:
 
 A call to `Add (Text)` with only one argument matches both
 `Add (This, Text)` and the overload whose other parameters all have defaults,
@@ -16,7 +21,12 @@ A call to `Add (Text)` with only one argument matches both
 rejects it as ambiguous, so callers must write `Add (Text, null)`. The ports
 in `examples/` do this, for example in howto-browser-with-icons.
 
-### Removing a clipboard handler from inside a handler raises Program_Error
+### ~~Removing a clipboard handler from inside a handler raises Program_Error~~
+
+Fixed in Phase 12 as FLTKAda-BUGS.md 81: each hook loops over a copy of
+its handlers. The event handlers had the same problem, as this entry
+guessed, and so did the system handlers. `test_hook_exceptions` checks
+the event and clipboard cases. The status until then:
 
 If a clipboard notify handler calls `Remove_Clipboard_Notify`, it raises
 Program_Error. This is because the handler vector is being iterated with
@@ -24,13 +34,24 @@ Program_Error. This is because the handler vector is being iterated with
 loop. The other handler vectors in `FLTK.Events` probably have the same
 problem.
 
-### Dispatch_Hook's error message is misleading
+### ~~Dispatch_Hook's error message is misleading~~
+
+Fixed in Phase 12 as FLTKAda-BUGS.md 45, in `Dispatch_Hook` and the
+other hooks that did the same: FLTK's values are checked before the
+user's code is called, and the user's exception arrives as itself.
+`test_hook_exceptions` checks it. The status until then:
 
 `Dispatch_Hook` handles Constraint_Error by reporting an unexpected event
 value. It does this for *any* Constraint_Error raised in the user's dispatch
 function, so a bug in user code is reported as an FLTK event problem.
 
-### Menu_Item Set_Label with an image or multi-label kind is meaningless
+### ~~Menu_Item Set_Label with an image or multi-label kind is meaningless~~
+
+Fixed in Phase 12 as FLTKAda-BUGS.md 83. It was worse than meaningless:
+drawing such an item crashed once FLTK's image or multi-label drawing
+had been used. `Set_Label` and `Set_Label_Kind` now keep text from being
+taken as a pointer: the text is shown as a normal label. A precondition
+would have been off in release builds (28). The status until then:
 
 `Set_Label (Kind => Image_Label or Multi_Label, Text)` passes `Text` as the
 label, but for those label types FLTK treats the label as a pointer to an
@@ -47,7 +68,12 @@ Within a Multi_Label:
 - the text parts are owned by the Ada object;
 - images and chained Multi_Labels are not owned, and must outlive it.
 
-### FLTK only calls Resize overrides for some widgets
+### ~~FLTK only calls Resize overrides for some widgets~~
+
+Fixed in Phase 12: every widget's shim class now derives from
+`Ada_Resizing`, so FLTK calls an Ada `Resize` override on any widget
+(`doc/binding_architecture.md` §2.5, `test/unit/test_resize_hook.adb`).
+What follows was the status until then.
 
 The new `widget_resize_hook` lets FLTK call an Ada `Resize` override, but so
 far only these use it:
@@ -71,11 +97,6 @@ Ada objects.
 `FLTK.Widgets.Groups.Windows.Get_First_Window` and `Get_Next_Window` assume
 every window has an Ada object. That isn't true of windows FLTK creates
 itself, such as the file chooser's.
-
-### GIF.Animated Fail_Code clamps positive values
-
-`FLTK.Images.Pixmaps.GIF.Animated` `Fail_Code` maps a positive `ld ()`
-value to 0.
 
 ### Tiled.Tile is a non-owning view
 
@@ -121,8 +142,9 @@ The protected members `init`, `alloc_size` and `on_remove` are not bound.
   `CharStyle`, `Cursor`, `EscapeSeq`, `Margin` and `Selection`.
 - These protected internals are not bound:
   - the `u8c_*` row and character accessors;
-  - cursor movement, scrolling, inserting and deleting rows and characters,
-    and the `clear_*` operations;
+  - scrolling, inserting and deleting rows and characters, and the
+    `clear_*` operations (the cursor moves are bound as the public
+    `Cursor_*` procedures);
   - `handle_unknown_char`, `draw_row*` and `draw_buff`;
   - selection handling.
 - `printf` and `vprintf` are replaced by `Print`, which takes a string
@@ -136,8 +158,6 @@ These are deliberately scoped to the commonly used part of the API. The full
 list of what is and isn't bound is in `progress.txt`. The main gaps are:
 - creating a standalone `Fl_Tree_Item`;
 - the low-level child-array operations;
-- `labelfgcolor` and `labelbgcolor`;
-- the tree-wide default icons;
 - `item_draw_callback`;
 - the path-string overloads of open, close and select;
 - the `docallback` parameter;

@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Input_Choice.H>
 #include "c_fl_input_choice.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -21,9 +22,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Input_Choice : public Fl_Input_Choice {
+class My_Input_Choice : public Ada_Resizing<Fl_Input_Choice> {
 public:
-    using Fl_Input_Choice::Fl_Input_Choice;
+    using Ada_Resizing<Fl_Input_Choice>::Ada_Resizing;
 
     friend void fl_input_choice_draw(INPUTCHOICE n);
     friend int fl_input_choice_handle(INPUTCHOICE n, int e);
@@ -165,7 +166,7 @@ void fl_input_choice_set_value2(INPUTCHOICE n, int t) {
 
 
 void fl_input_choice_resize(INPUTCHOICE n, int x, int y, int w, int h) {
-    static_cast<Fl_Input_Choice*>(n)->resize(x, y, w, h);
+    ada_default_resize(static_cast<Fl_Widget*>(n), x, y, w, h);
 }
 
 

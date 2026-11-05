@@ -7,6 +7,7 @@
 #include <FL/Fl_Menu_Bar.H>
 #include "c_fl_menu_bar.h"
 #include "c_fl_menuitem.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -22,9 +23,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Menu_Bar : public Fl_Menu_Bar {
+class My_Menu_Bar : public Ada_Resizing<Fl_Menu_Bar> {
 public:
-    using Fl_Menu_Bar::Fl_Menu_Bar;
+    using Ada_Resizing<Fl_Menu_Bar>::Ada_Resizing;
 
     friend void fl_menu_bar_draw(MENUBAR m);
     friend int fl_menu_bar_handle(MENUBAR m, int e);

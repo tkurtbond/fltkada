@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Hor_Slider.H>
 #include "c_fl_horizontal_slider.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -23,9 +24,9 @@ extern "C" int valuator_format_hook(void * ud, char * buf);
 
 //  Attaching all relevant hooks and friends
 
-class My_Horizontal_Slider : public Fl_Hor_Slider {
+class My_Horizontal_Slider : public Ada_Resizing<Fl_Hor_Slider> {
 public:
-    using Fl_Hor_Slider::Fl_Hor_Slider;
+    using Ada_Resizing<Fl_Hor_Slider>::Ada_Resizing;
 
     friend void fl_horizontal_slider_draw(HORIZONTALSLIDER s);
     friend int fl_horizontal_slider_handle(HORIZONTALSLIDER s, int e);

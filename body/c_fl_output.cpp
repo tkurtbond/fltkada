@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Output.H>
 #include "c_fl_output.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -21,9 +22,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Output : public Fl_Output {
+class My_Output : public Ada_Resizing<Fl_Output> {
 public:
-    using Fl_Output::Fl_Output;
+    using Ada_Resizing<Fl_Output>::Ada_Resizing;
 
     friend void fl_output_draw(OUTPUTT i);
     friend int fl_output_handle(OUTPUTT i, int e);

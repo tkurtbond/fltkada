@@ -6,7 +6,6 @@
 
 with
 
-    Ada.Assertions,
     FLTK.Hook_Exceptions,
     FLTK.Widgets.Groups,
     Interfaces.C.Strings,
@@ -16,7 +15,6 @@ with
 package body FLTK.Widgets.Valuators is
 
 
-    package Chk renames Ada.Assertions;
 
     package Valuator_Convert is new System.Address_To_Access_Conversions (Valuator'Class);
 
@@ -206,7 +204,16 @@ package body FLTK.Widgets.Valuators is
     is
         Ada_Obj : access Valuator'Class;
     begin
-        pragma Assert (Userdata /= Null_Pointer);
+        --  Checked here, and not by a handler around the call, so that the
+        --  program's own exceptions aren't taken for FLTK's (FLTKAda-BUGS.md 45).
+        if Userdata = Null_Pointer then
+            Hook_Exceptions.Save_New
+               (Internal_FLTK_Error'Identity,
+                "Valuator::format callback hook was passed null userdata wrapper " &
+                "reference pointer");
+            Interfaces.C.Strings.Update (Buffer, 0, Interfaces.C.To_C (""), False);
+            return 0;
+        end if;
         Ada_Obj := Valuator_Convert.To_Pointer (Storage.To_Address (Userdata));
         declare
             --  God this whole Format method is sketchy as hell.
@@ -223,12 +230,6 @@ package body FLTK.Widgets.Valuators is
             end if;
         end;
     exception
-    when Chk.Assertion_Error =>
-        Hook_Exceptions.Save_New
-           (Internal_FLTK_Error'Identity,
-            "Valuator::format callback hook was passed null userdata wrapper reference pointer");
-        Interfaces.C.Strings.Update (Buffer, 0, Interfaces.C.To_C (""), False);
-        return 0;
     when Occurrence : others =>
         Hook_Exceptions.Save (Occurrence);
         Interfaces.C.Strings.Update (Buffer, 0, Interfaces.C.To_C (""), False);

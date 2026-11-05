@@ -2472,7 +2472,7 @@ Verdicts:
   `test_pdf_surface` and `test_page_finalize` pass on X11 and sway.
   Valgrind finds no errors.
 
-### Phase 12: Method gaps in classes already bound
+### Phase 12: Method gaps in classes already bound [done, 2026-11-04]
 
 **Dialogs and input:**
 
@@ -2528,6 +2528,115 @@ Also the open bugs listed in `progress.txt`/`PROBLEMS-OUTSTANDING.md`:
 the `Menu.Add (Text)` ambiguity, `Remove_Clipboard_Notify` inside a
 handler, `Dispatch_Hook`'s `Constraint_Error` label, and `Menu_Item`
 `Set_Label` with an image or multi-label kind.
+
+Decisions and findings:
+
+- **The methods.** Each group of the list above is bound and has a unit
+  test: `test_ask_placement`, `test_undo_redo`, `test_layout_methods`,
+  `test_widget_methods`, `test_tree_methods`, `test_terminal_cursor`,
+  `test_text_buffer_methods`, `test_pixmap_data`, `test_shared_order`,
+  `test_grid_cells`, `test_window_list`, `test_scheme_choice`,
+  `test_resize_hook` and `test_hook_exceptions`. Each new check was seen
+  to fail without its fix, unless it is noted below as not having been.
+- **Issue 24** (`test_layout_methods`). Decided: `Set_Size_Range` and
+  `Init_Size_Range` call `init_sizes` first, in the shim. Without that,
+  `move_intersection` starts from the sizes `init_sizes` saved before
+  the last move, and the next move puts the children back. With ranges
+  set, FLTK saves the sizes after every move anyway, so this changes
+  nothing else.
+- **Issues 78 and 84, the tree's own icons** (`test_tree_methods`).
+  Decided as for items' icons in Phase 4: the tree gets a copy of each
+  icon, which `FLTK.Tree_Icons` holds while the tree shows it. FLTK also
+  makes and deletes an inactive copy (`Fl_Tree_Prefs.cxx:63-90`), so a
+  `Shared_Image` is copied as a plain image, and the pool's entry is
+  left alone.
+- **Issue 97** (`test_terminal_cursor`). Decided: `Restore_Cursor`
+  restores the place itself, so a place saved at column 1 comes back.
+  `ESC[u` still goes through FLTK, which can't be helped, and still
+  misses it. The test checks both.
+- **Issue 99, for the cursor moves** (`test_terminal_cursor`). FLTK's
+  moves don't redraw, because `display_modified` is private. Decided,
+  as in pofltk: the shim calls `append_ascii("")` after each one, which
+  redraws as `redraw_style` says. At first `Cursor_Home`,
+  `Set_Cursor_Row` and `Set_Cursor_Column` were left out of this, while
+  pofltk's `ofl_terminal_cursor` and setters include them. They now
+  redraw too. Before that, the test's three checks for them failed,
+  with no draws. A count below 1 can't be given, since `Count` is
+  `Positive`. FLTK would take it as 1.
+- **F22 to F28** are new FLTK issues (FLTK-issues.md):
+  - F22, on Wayland a GL window's swap interval is one setting for all
+    windows. This is documented in the spec, on `Get_Swap_Interval`.
+  - F23, `PER_WRITE` redraws once and then never again, and F24, the
+    tabs stop at the first tab stop whatever the count. Both are worked
+    around in the shim, and `test_terminal_cursor` checks both.
+  - F25, an animated GIF that can't be opened is reported as a bad
+    format. `Fail_Code` gives -2 for it.
+  - F26, `insertfile` loses the end of a file that isn't UTF-8. The shim
+    reads files itself (`test_text_buffer_methods`).
+  - F27, `Fl_Grid::Cell`'s setters don't lay the grid out, and its span
+    setters don't check (`test_grid_cells`).
+  - F28, `Fl_Scheme_Choice`'s callback reads before its menu when
+    nothing is chosen (`test_scheme_choice`).
+- **FLTKAda bugs found and fixed:** 76 to 84 in FLTKAda-BUGS.md, with
+  51 and 45. 45's hooks now check FLTK's values before calling the
+  program's code. 81 is handlers that remove handlers, 82 is a
+  dispatch function given a window FLTK made, 83 is a menu item's text
+  taken as a pointer, and 84 is the awake functions' and
+  `Draw_Pixmap`'s checks, which were `pragma Assert`s. 28 stays open:
+  about 80 `pragma Assert`s on FLTK's results remain, unsorted.
+- **Negative controls.** For each fix, the test was run against the old
+  code, as FLTKAda-BUGS.md records under each entry. For
+  `test_resize_hook`, 7 of its checks failed before the `Ada_Resizing`
+  change, and all 10 pass after it.
+- **Terminal `Clear_With`** is `Clear (This, Hue)`, an overload of
+  `Clear`, as FLTK's `clear(Fl_Color)` is.
+- **`GIF.Animated.Fail_Code` clamping** is moot. FLTK's codes are -1 to
+  -3, and `Fail_Code` gives them as they are, with F25's -2 corrected.
+  Bug 76 made the size functions return 0 for a failed image.
+- **`Pixmaps` data access.** The data is given as lines, as FLTK holds
+  it, with `Get_Line_Count` and `Get_Line`. The colors line of a
+  pixmap FLTK has converted holds NUL, so lines are `String`, not
+  C strings.
+- **`Shared` compare.** `"<"` orders images as
+  `Fl_Shared_Image::compare` orders the pool. A `Shared_Image` is
+  limited, so a program sorts indexes (`test_shared_order`).
+- **Text buffer 1-indexing.** Decided: positions stay byte offsets from
+  0, as FLTK's and a text display's are, so a buffer's positions and a
+  display's agree. File errors still raise `Storage_Error`, now saying why (80). The
+  protected internals stay unbound, because they bypass undo and the
+  modify callbacks.
+- **`Grid` cells.** A cell is read with `Has_Cell`, `Get_Cell` (a
+  `Cell_Info` record) and `Cell_Widget`. It is set with
+  `Set_Cell_Alignment` and `Set_Cell_Minimum_Size`, which lay the grid
+  out again (F27). `Fl_Grid::Cell` itself isn't bound, so its span
+  setters, which can make layout read past the grid, can't be reached.
+- **`Flex` protected methods** are left unbound. `init` would drop the
+  fixed-size array without freeing it, `alloc_size` is only `size + 8`,
+  and FLTK's `on_remove` already runs from `Remove`.
+- **Windows FLTK made** (`test_window_list`). `Get_First_Window` and
+  `Get_Next_Window` skip them, as pofltk's `ofl_first_window` does. This
+  uses the shim's table of the widgets that have Ada objects, from 51's
+  fix, so nothing is read from user data that isn't FLTKAda's.
+- **`Choices.Schemes`.** A callback set replaces FLTK's, as in FLTK, and
+  can call the new `Switch_Scheme` to switch as FLTK's does. FLTK calls
+  its own `init_value` from `handle`, so an Ada `Init_Value` override is
+  reached only from Ada.
+- **`Resize` overrides** (`test_resize_hook`). Every widget's shim class
+  now derives from the `Ada_Resizing` mixin, so FLTK's `resize` reaches
+  an Ada override on any widget. The default calls FLTK's own `resize`,
+  so an override that calls it runs once, whoever started the resize.
+- **Hook exceptions and `Dispatch_Window`** (45, 82). A hook checks
+  FLTK's values explicitly, then calls the program's code, with only a
+  `when others` handler around it that saves the occurrence. The
+  dispatch hook keeps the window FLTK gave while the dispatch function
+  runs, so `Handle (Event, null)` can pass the event on to a window FLTK
+  made. 44's API question, how to name such a window, stays open.
+- **Pixmap checks.** 77's checks moved from `Pixmaps.Forge.Create` to
+  `Pixmap_Marshal.Marshal_Data`, so `Draw.Draw_Pixmap` makes them too
+  (84). The `Pre` on `Draw_Pixmap` stays as documentation.
+- **Awake.** `Add_Awake_Handler`, `Awake` and `Get_Awake_Handler` raise
+  `Tasking_Error` for FLTK's -1 (84). `test_statics_core` fills FLTK's
+  ring of 1023 to check them.
 
 ### Phase 13: GLUT fonts
 

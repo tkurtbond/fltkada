@@ -204,6 +204,17 @@ enum("Images.File_Icons.File_Kind",
        ("Link", "LINK"), ("Directory", "DIRECTORY")]])
 add("Long_Long_Integer (Images.File_Icons.Icon_Color)", "FL_ICON_COLOR")
 
+section("Tab overflow (Fl_Tabs::handle_overflow)")
+enum("Tabbed.Overflow_Kind",
+     [(f"Tabbed.{a}_Overflow", "Fl_Tabs::OVERFLOW_" + a.upper())
+      for a in "Compress Clip Pulldown Drag".split()])
+
+section("Window menu styles (Fl_Sys_Menu_Bar::window_menu_style_enum)")
+enum("Sys_Menu.Window_Menu_Style_Kind",
+     [(f"Sys_Menu.{a}", "Fl_Sys_Menu_Bar::" + a.lower())
+      for a in "No_Window_Menu Tabbing_Mode_None Tabbing_Mode_Automatic Tabbing_Mode_Preferred"
+      .split()])
+
 
 HEADER = """{c}  Programmed by T. Kurt Bond and Claude Opus 5.5
 {c}  Released into the public domain
@@ -224,7 +235,8 @@ def cpp():
            "//  FLTK's value of each constant the Ada test, fltk-test_constants.adb,",
            "//  checks, in the same order.", "", "",
            "#include <FL/Enumerations.H>", "#include <FL/Fl_File_Icon.H>",
-           "#include <FL/Fl_Menu_Item.H>", "", "",
+           "#include <FL/Fl_Menu_Item.H>", "#include <FL/Fl_Sys_Menu_Bar.H>",
+           "#include <FL/Fl_Tabs.H>", "", "",
            'extern "C" const long long c_constants[];', "",
            'extern "C" const long long c_constants[] =', "{"]
     for item in CHECKS:
@@ -243,8 +255,11 @@ def ada():
            "--  Checks each of FLTKAda's constants against FLTK's value, from",
            "--  c_constants.cpp.  A child of FLTK, so it can see the private",
            "--  conversions.  Run by test_constants.adb.", "", "",
-           "with", "", "    Checks,", "    FLTK.Draw,", "    FLTK.Images.File_Icons,", "    FLTK.Screen;", "", "",
+           "with", "", "    Checks,", "    FLTK.Draw,", "    FLTK.Images.File_Icons,", "    FLTK.Screen,",
+           "    FLTK.Widgets.Groups.Tabbed,", "    FLTK.Widgets.Menus.Menu_Bars.Systemwide;", "", "",
            "procedure FLTK.Test_Constants is", "", "",
+           "    package Tabbed renames FLTK.Widgets.Groups.Tabbed;",
+           "    package Sys_Menu renames FLTK.Widgets.Menus.Menu_Bars.Systemwide;", "", "",
            f"    type Value_Array is array (1 .. {count}) of Long_Long_Integer;",
            "    pragma Convention (C, Value_Array);", "",
            "    FLTK_Values : Value_Array;",

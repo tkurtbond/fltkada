@@ -21,6 +21,11 @@ package FLTK.Widgets.Groups.Windows.OpenGL is
     type GL_Window_Reference (Data : not null access GL_Window'Class) is
         limited null record with Implicit_Dereference => Data;
 
+    --  Vertical blanks between buffer swaps; see Get_Swap_Interval.
+    subtype Swap_Interval is Integer range -1 .. Integer'Last;
+
+    Unknown_Interval : constant Swap_Interval := -1;
+
     --  RGB mode is achieved by Index being set to False
     --  Single buffer mode is achieved by Double being set to False
     type Mode_Mask is record
@@ -192,6 +197,22 @@ package FLTK.Widgets.Groups.Windows.OpenGL is
     procedure Swap_Buffers
            (This : in out GL_Window);
 
+    --  How many vertical blanks the window waits for between buffer
+    --  swaps.  Set it on a shown window, typically from Draw.  What works
+    --  depends on the GL driver: most take only 0 and 1, and some can set
+    --  the interval but not read it, so Get_Swap_Interval is then
+    --  Unknown_Interval.  On X11 it is also Unknown_Interval for a window
+    --  not shown.  On Wayland the interval is one setting for every GL
+    --  window, 1 at first, and Get_Swap_Interval reads it for any window,
+    --  shown or not (FLTK-issues.md F22).
+    function Get_Swap_Interval
+           (This : in GL_Window)
+        return Swap_Interval;
+
+    procedure Set_Swap_Interval
+           (This   : in out GL_Window;
+            Frames : in     Natural);
+
     procedure Draw
            (This : in out GL_Window);
 
@@ -270,6 +291,8 @@ private
     pragma Inline (Ortho);
     pragma Inline (Redraw_Overlay);
     pragma Inline (Swap_Buffers);
+    pragma Inline (Get_Swap_Interval);
+    pragma Inline (Set_Swap_Interval);
     pragma Inline (Draw);
     pragma Inline (Handle);
 

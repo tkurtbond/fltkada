@@ -363,6 +363,17 @@ package FLTK.Widgets.Menus is
            (This : in out Menu;
             To   : in     Box_Kind);
 
+    --  The box of the pop-up menus' windows.  No_Box, the default, means
+    --  the menu's own box (Get_Box), or Flat_Box if that is No_Box too
+    --  (Fl_Menu.cxx, menuwindow).
+    function Get_Menu_Box
+           (This : in Menu)
+        return Box_Kind;
+
+    procedure Set_Menu_Box
+           (This : in out Menu;
+            To   : in     Box_Kind);
+
     --  Unlike FLTK's global(), the menu may be finalized: its shortcuts then
     --  stop working (pofltk 27).
     procedure Make_Global
@@ -551,6 +562,8 @@ private
 
     pragma Inline (Get_Down_Box);
     pragma Inline (Set_Down_Box);
+    pragma Inline (Get_Menu_Box);
+    pragma Inline (Set_Menu_Box);
     pragma Inline (Make_Global);
     pragma Inline (Measure_Item);
 

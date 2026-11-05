@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Clock.H>
 #include "c_fl_clock_output.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -32,9 +33,9 @@ public:
 
 //  Attaching all relevant hooks and friends
 
-class My_Clock_Output : public Fl_Clock_Output {
+class My_Clock_Output : public Ada_Resizing<Fl_Clock_Output> {
 public:
-    using Fl_Clock_Output::Fl_Clock_Output;
+    using Ada_Resizing<Fl_Clock_Output>::Ada_Resizing;
 
     friend void fl_clock_output_draw(CLOCKOUTPUT c);
     friend int fl_clock_output_handle(CLOCKOUTPUT c, int e);
@@ -99,6 +100,17 @@ void fl_clock_output_set_value(CLOCKOUTPUT c, unsigned long v) {
 
 void fl_clock_output_set_value2(CLOCKOUTPUT c, int h, int m, int s) {
     static_cast<Fl_Clock_Output*>(c)->Fl_Clock_Output::value(h,m,s);
+}
+
+
+
+
+int fl_clock_output_get_shadow(CLOCKOUTPUT c) {
+    return static_cast<Fl_Clock_Output*>(c)->shadow();
+}
+
+void fl_clock_output_set_shadow(CLOCKOUTPUT c, int s) {
+    static_cast<Fl_Clock_Output*>(c)->shadow(s);
 }
 
 

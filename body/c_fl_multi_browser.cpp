@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Multi_Browser.H>
 #include "c_fl_multi_browser.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -39,9 +40,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Multi_Browser : public Fl_Multi_Browser {
+class My_Multi_Browser : public Ada_Resizing<Fl_Multi_Browser> {
 public:
-    using Fl_Multi_Browser::Fl_Multi_Browser;
+    using Ada_Resizing<Fl_Multi_Browser>::Ada_Resizing;
 
     friend int fl_multi_browser_item_width(MULTIBROWSER b, void * item);
     friend int fl_multi_browser_item_height(MULTIBROWSER b, void * item);

@@ -140,6 +140,41 @@ package body FLTK.Widgets.Groups.Grids is
 
 
 
+    --  Cells  --
+
+    function fl_grid_cell_widget
+           (G    : in Storage.Integer_Address;
+            R, C : in Interfaces.C.int)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_grid_cell_widget, "fl_grid_cell_widget");
+    pragma Inline (fl_grid_cell_widget);
+
+    function fl_grid_get_cell
+           (G, W           : in     Storage.Integer_Address;
+            R, C, RS, CS   :    out Interfaces.C.int;
+            A              :    out Grid_Alignment;
+            MW, MH         :    out Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_grid_get_cell, "fl_grid_get_cell");
+    pragma Inline (fl_grid_get_cell);
+
+    function fl_grid_set_cell_align
+           (G, W : in Storage.Integer_Address;
+            A    : in Grid_Alignment)
+        return Interfaces.C.int;
+    pragma Import (C, fl_grid_set_cell_align, "fl_grid_set_cell_align");
+    pragma Inline (fl_grid_set_cell_align);
+
+    function fl_grid_set_cell_minimum_size
+           (G, W   : in Storage.Integer_Address;
+            MW, MH : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_grid_set_cell_minimum_size, "fl_grid_set_cell_minimum_size");
+    pragma Inline (fl_grid_set_cell_minimum_size);
+
+
+
+
     --  Columns  --
 
     procedure fl_grid_set_col_width
@@ -653,6 +688,93 @@ package body FLTK.Widgets.Groups.Grids is
             Interfaces.C.int (Column_Span),
             Align) /= 0;
     end Set_Widget;
+
+
+
+
+    --  Cells  --
+
+    function Has_Cell
+           (This : in Grid;
+            Item : in Widget'Class)
+        return Boolean
+    is
+        R, C, RS, CS, MW, MH : Interfaces.C.int;
+        A : Grid_Alignment;
+    begin
+        return fl_grid_get_cell
+            (This.Void_Ptr, Item.Void_Ptr, R, C, RS, CS, A, MW, MH) /= 0;
+    end Has_Cell;
+
+
+    function Get_Cell
+           (This : in Grid;
+            Item : in Widget'Class)
+        return Cell_Info
+    is
+        R, C, RS, CS, MW, MH : Interfaces.C.int;
+        A : Grid_Alignment;
+    begin
+        if fl_grid_get_cell (This.Void_Ptr, Item.Void_Ptr, R, C, RS, CS, A, MW, MH) = 0 then
+            raise Constraint_Error with "widget has no cell in this grid";
+        end if;
+        return
+           (Row         => Positive (R + 1),
+            Column      => Positive (C + 1),
+            Row_Span    => Positive (RS),
+            Column_Span => Positive (CS),
+            Align       => A,
+            Min_Width   => Natural (MW),
+            Min_Height  => Natural (MH));
+    end Get_Cell;
+
+
+    function Cell_Widget
+           (This        : in Grid;
+            Row, Column : in Positive)
+        return access Widget'Class
+    is
+        Widget_Ptr : Storage.Integer_Address;
+    begin
+        if Row > This.Get_Rows or Column > This.Get_Columns then
+            return null;
+        end if;
+        Widget_Ptr := fl_grid_cell_widget
+            (This.Void_Ptr, Interfaces.C.int (Row) - 1, Interfaces.C.int (Column) - 1);
+        if Widget_Ptr = Null_Pointer then
+            return null;
+        end if;
+        Widget_Ptr := fl_widget_get_user_data (Widget_Ptr);
+        if Widget_Ptr = Null_Pointer then
+            raise Internal_FLTK_Error with
+                "Fl_Grid::cell has a Widget with no user_data reference back to Ada";
+        end if;
+        return Widget_Convert.To_Pointer (Storage.To_Address (Widget_Ptr));
+    end Cell_Widget;
+
+
+    procedure Set_Cell_Alignment
+           (This  : in out Grid;
+            Item  : in     Widget'Class;
+            Align : in     Grid_Alignment) is
+    begin
+        if fl_grid_set_cell_align (This.Void_Ptr, Item.Void_Ptr, Align) = 0 then
+            raise Constraint_Error with "widget has no cell in this grid";
+        end if;
+    end Set_Cell_Alignment;
+
+
+    procedure Set_Cell_Minimum_Size
+           (This          : in out Grid;
+            Item          : in     Widget'Class;
+            Width, Height : in     Natural) is
+    begin
+        if fl_grid_set_cell_minimum_size
+            (This.Void_Ptr, Item.Void_Ptr, Interfaces.C.int (Width), Interfaces.C.int (Height)) = 0
+        then
+            raise Constraint_Error with "widget has no cell in this grid";
+        end if;
+    end Set_Cell_Minimum_Size;
 
 
 

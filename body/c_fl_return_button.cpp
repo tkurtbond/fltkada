@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Return_Button.H>
 #include "c_fl_return_button.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -21,9 +22,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Return_Button : public Fl_Return_Button {
+class My_Return_Button : public Ada_Resizing<Fl_Return_Button> {
 public:
-    using Fl_Return_Button::Fl_Return_Button;
+    using Ada_Resizing<Fl_Return_Button>::Ada_Resizing;
 
     friend void fl_return_button_draw(RETURNBUTTON b);
     friend int fl_return_button_handle(RETURNBUTTON b, int e);

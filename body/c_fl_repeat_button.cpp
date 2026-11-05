@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Repeat_Button.H>
 #include "c_fl_repeat_button.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -21,9 +22,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Repeat_Button : public Fl_Repeat_Button {
+class My_Repeat_Button : public Ada_Resizing<Fl_Repeat_Button> {
 public:
-    using Fl_Repeat_Button::Fl_Repeat_Button;
+    using Ada_Resizing<Fl_Repeat_Button>::Ada_Resizing;
 
     friend void fl_repeat_button_draw(REPEATBUTTON b);
     friend int fl_repeat_button_handle(REPEATBUTTON b, int e);

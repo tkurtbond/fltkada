@@ -139,6 +139,32 @@ package body FLTK.Text_Buffers is
     pragma Import (C, fl_text_buffer_savefile, "fl_text_buffer_savefile");
     pragma Inline (fl_text_buffer_savefile);
 
+    function fl_text_buffer_was_transcoded
+           (TB : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_buffer_was_transcoded, "fl_text_buffer_was_transcoded");
+    pragma Inline (fl_text_buffer_was_transcoded);
+
+    function fl_text_buffer_get_transcoding_warning
+           (TB : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_buffer_get_transcoding_warning,
+        "fl_text_buffer_get_transcoding_warning");
+    pragma Inline (fl_text_buffer_get_transcoding_warning);
+
+    procedure fl_text_buffer_set_transcoding_warning
+           (TB : in Storage.Integer_Address;
+            O  : in Interfaces.C.int);
+    pragma Import (C, fl_text_buffer_set_transcoding_warning,
+        "fl_text_buffer_set_transcoding_warning");
+    pragma Inline (fl_text_buffer_set_transcoding_warning);
+
+    function fl_text_buffer_file_encoding_warning_message
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_text_buffer_file_encoding_warning_message,
+        "fl_text_buffer_file_encoding_warning_message");
+    pragma Inline (fl_text_buffer_file_encoding_warning_message);
+
 
 
 
@@ -236,6 +262,13 @@ package body FLTK.Text_Buffers is
         return Interfaces.C.int;
     pragma Import (C, fl_text_buffer_count_lines, "fl_text_buffer_count_lines");
     pragma Inline (fl_text_buffer_count_lines);
+
+    function fl_text_buffer_estimate_lines
+           (TB      : in Storage.Integer_Address;
+            S, F, L : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_buffer_estimate_lines, "fl_text_buffer_estimate_lines");
+    pragma Inline (fl_text_buffer_estimate_lines);
 
     function fl_text_buffer_length
            (TB : in Storage.Integer_Address)
@@ -366,6 +399,19 @@ package body FLTK.Text_Buffers is
     procedure fl_text_buffer_unhighlight
            (TB : in Storage.Integer_Address);
     pragma Import (C, fl_text_buffer_unhighlight, "fl_text_buffer_unhighlight");
+
+    function fl_text_buffer_highlight_position
+           (TB   : in     Storage.Integer_Address;
+            S, E :    out Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_buffer_highlight_position, "fl_text_buffer_highlight_position");
+    pragma Inline (fl_text_buffer_highlight_position);
+
+    function fl_text_buffer_highlighted
+           (TB : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_buffer_highlighted, "fl_text_buffer_highlighted");
+    pragma Inline (fl_text_buffer_highlighted);
     pragma Inline (fl_text_buffer_unhighlight);
 
 
@@ -415,6 +461,13 @@ package body FLTK.Text_Buffers is
 
 
     --  Navigation  --
+
+    function fl_text_buffer_is_word_separator
+           (TB : in Storage.Integer_Address;
+            P  : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_buffer_is_word_separator, "fl_text_buffer_is_word_separator");
+    pragma Inline (fl_text_buffer_is_word_separator);
 
     function fl_text_buffer_word_start
            (TB : in Storage.Integer_Address;
@@ -483,6 +536,32 @@ package body FLTK.Text_Buffers is
             F  : in Interfaces.C.char);
     pragma Import (C, fl_text_buffer_canundo, "fl_text_buffer_canundo");
     pragma Inline (fl_text_buffer_canundo);
+
+    function fl_text_buffer_undo
+           (TB : in     Storage.Integer_Address;
+            CP :    out Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_buffer_undo, "fl_text_buffer_undo");
+    pragma Inline (fl_text_buffer_undo);
+
+    function fl_text_buffer_redo
+           (TB : in     Storage.Integer_Address;
+            CP :    out Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_buffer_redo, "fl_text_buffer_redo");
+    pragma Inline (fl_text_buffer_redo);
+
+    function fl_text_buffer_can_undo
+           (TB : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_buffer_can_undo, "fl_text_buffer_can_undo");
+    pragma Inline (fl_text_buffer_can_undo);
+
+    function fl_text_buffer_can_redo
+           (TB : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_buffer_can_redo, "fl_text_buffer_can_redo");
+    pragma Inline (fl_text_buffer_can_redo);
 
     procedure fl_text_buffer_copy
            (TB, TB2 : in Storage.Integer_Address;
@@ -748,7 +827,7 @@ package body FLTK.Text_Buffers is
     procedure Load_File
            (This   : in out Text_Buffer;
             Name   : in     String;
-            Buffer : in     Natural := 128 * 1024)
+            Buffer : in     Positive := 128 * 1024)
     is
         Err_No : constant Interfaces.C.int := fl_text_buffer_loadfile
            (This.Void_Ptr,
@@ -764,7 +843,7 @@ package body FLTK.Text_Buffers is
     procedure Append_File
            (This   : in out Text_Buffer;
             Name   : in     String;
-            Buffer : in     Natural := 128 * 1024)
+            Buffer : in     Positive := 128 * 1024)
     is
         Err_No : constant Interfaces.C.int := fl_text_buffer_appendfile
            (This.Void_Ptr,
@@ -781,7 +860,7 @@ package body FLTK.Text_Buffers is
            (This   : in out Text_Buffer;
             Name   : in     String;
             Place  : in     Position;
-            Buffer : in     Natural := 128 * 1024)
+            Buffer : in     Positive := 128 * 1024)
     is
         Err_No : constant Interfaces.C.int := fl_text_buffer_insertfile
            (This.Void_Ptr,
@@ -799,7 +878,7 @@ package body FLTK.Text_Buffers is
            (This          : in Text_Buffer;
             Name          : in String;
             Start, Finish : in Position;
-            Buffer        : in Natural := 128 * 1024)
+            Buffer        : in Positive := 128 * 1024)
     is
         Err_No : constant Interfaces.C.int := fl_text_buffer_outputfile
            (This.Void_Ptr,
@@ -817,7 +896,7 @@ package body FLTK.Text_Buffers is
     procedure Save_File
            (This   : in Text_Buffer;
             Name   : in String;
-            Buffer : in Natural := 128 * 1024)
+            Buffer : in Positive := 128 * 1024)
     is
         Err_No : constant Interfaces.C.int := fl_text_buffer_savefile
            (This.Void_Ptr,
@@ -828,6 +907,37 @@ package body FLTK.Text_Buffers is
             raise Storage_Error with Interfaces.C.Strings.Value (strerror (Err_No));
         end if;
     end Save_File;
+
+
+    function Was_Transcoded
+           (This : in Text_Buffer)
+        return Boolean is
+    begin
+        return fl_text_buffer_was_transcoded (This.Void_Ptr) /= 0;
+    end Was_Transcoded;
+
+
+    function Has_Transcoding_Warning
+           (This : in Text_Buffer)
+        return Boolean is
+    begin
+        return fl_text_buffer_get_transcoding_warning (This.Void_Ptr) /= 0;
+    end Has_Transcoding_Warning;
+
+
+    procedure Set_Transcoding_Warning
+           (This : in out Text_Buffer;
+            To   : in     Boolean) is
+    begin
+        fl_text_buffer_set_transcoding_warning (This.Void_Ptr, Boolean'Pos (To));
+    end Set_Transcoding_Warning;
+
+
+    function File_Encoding_Warning
+        return String is
+    begin
+        return Interfaces.C.Strings.Value (fl_text_buffer_file_encoding_warning_message);
+    end File_Encoding_Warning;
 
 
 
@@ -955,9 +1065,9 @@ package body FLTK.Text_Buffers is
     function Next_Char
            (This  : in Text_Buffer;
             Place : in Position)
-        return Character is
+        return Position is
     begin
-        return Character'Val (fl_text_buffer_next_char
+        return Position (fl_text_buffer_next_char
            (This.Void_Ptr,
             Interfaces.C.int (Place)));
     end Next_Char;
@@ -966,9 +1076,9 @@ package body FLTK.Text_Buffers is
     function Prev_Char
            (This  : in Text_Buffer;
             Place : in Position)
-        return Character is
+        return Position is
     begin
-        return Character'Val (fl_text_buffer_prev_char
+        return Position (fl_text_buffer_prev_char
            (This.Void_Ptr,
             Interfaces.C.int (Place)));
     end Prev_Char;
@@ -1000,6 +1110,20 @@ package body FLTK.Text_Buffers is
             Interfaces.C.int (Start),
             Interfaces.C.int (Finish)));
     end Count_Lines;
+
+
+    function Estimate_Lines
+           (This          : in Text_Buffer;
+            Start, Finish : in Position;
+            Line_Length   : in Positive)
+        return Natural is
+    begin
+        return Natural (fl_text_buffer_estimate_lines
+           (This.Void_Ptr,
+            Interfaces.C.int (Start),
+            Interfaces.C.int (Finish),
+            Interfaces.C.int (Line_Length)));
+    end Estimate_Lines;
 
 
     function Length
@@ -1190,12 +1314,24 @@ package body FLTK.Text_Buffers is
 
     --  Highlighting  --
 
+    function Has_Highlight
+           (This : in Text_Buffer)
+        return Boolean is
+    begin
+        return fl_text_buffer_highlighted (This.Void_Ptr) /= 0;
+    end Has_Highlight;
+
+
     procedure Get_Highlight
            (This          : in     Text_Buffer;
-            Start, Finish :    out Position) is
+            Start, Finish :    out Position)
+    is
+        S, F   : Interfaces.C.int;
+        Ignore : constant Interfaces.C.int :=
+            fl_text_buffer_highlight_position (This.Void_Ptr, S, F);
     begin
-        Start := This.High_From;
-        Finish := This.High_To;
+        Start := Position (S);
+        Finish := Position (F);
     end Get_Highlight;
 
 
@@ -1203,8 +1339,6 @@ package body FLTK.Text_Buffers is
            (This          : in out Text_Buffer;
             Start, Finish : in     Position) is
     begin
-        This.High_From := Start;
-        This.High_To := Finish;
         fl_text_buffer_highlight
            (This.Void_Ptr,
             Interfaces.C.int (Start),
@@ -1343,6 +1477,15 @@ package body FLTK.Text_Buffers is
 
     --  Navigation  --
 
+    function Is_Word_Separator
+           (This  : in Text_Buffer;
+            Place : in Position)
+        return Boolean is
+    begin
+        return fl_text_buffer_is_word_separator (This.Void_Ptr, Interfaces.C.int (Place)) /= 0;
+    end Is_Word_Separator;
+
+
     function Word_Start
            (This  : in Text_Buffer;
             Place : in Position)
@@ -1450,6 +1593,90 @@ package body FLTK.Text_Buffers is
     begin
         fl_text_buffer_canundo (This.Void_Ptr, Interfaces.C.char'Val (Boolean'Pos (Flag)));
     end Can_Undo;
+
+
+    function Can_Undo
+           (This : in Text_Buffer)
+        return Boolean is
+    begin
+        return fl_text_buffer_can_undo (This.Void_Ptr) /= 0;
+    end Can_Undo;
+
+
+    function Can_Redo
+           (This : in Text_Buffer)
+        return Boolean is
+    begin
+        return fl_text_buffer_can_redo (This.Void_Ptr) /= 0;
+    end Can_Redo;
+
+
+    procedure Undo
+           (This : in out Text_Buffer)
+    is
+        Ignore : Position;
+    begin
+        if This.Undo (Ignore) then
+            null;
+        end if;
+    end Undo;
+
+
+    function Undo
+           (This : in out Text_Buffer)
+        return Boolean
+    is
+        Ignore : Position;
+    begin
+        return This.Undo (Ignore);
+    end Undo;
+
+
+    function Undo
+           (This   : in out Text_Buffer;
+            Cursor :    out Position)
+        return Boolean
+    is
+        C_Pos  : Interfaces.C.int;
+        Result : constant Interfaces.C.int := fl_text_buffer_undo (This.Void_Ptr, C_Pos);
+    begin
+        Cursor := Position (C_Pos);
+        return Result /= 0;
+    end Undo;
+
+
+    procedure Redo
+           (This : in out Text_Buffer)
+    is
+        Ignore : Position;
+    begin
+        if This.Redo (Ignore) then
+            null;
+        end if;
+    end Redo;
+
+
+    function Redo
+           (This : in out Text_Buffer)
+        return Boolean
+    is
+        Ignore : Position;
+    begin
+        return This.Redo (Ignore);
+    end Redo;
+
+
+    function Redo
+           (This   : in out Text_Buffer;
+            Cursor :    out Position)
+        return Boolean
+    is
+        C_Pos  : Interfaces.C.int;
+        Result : constant Interfaces.C.int := fl_text_buffer_redo (This.Void_Ptr, C_Pos);
+    begin
+        Cursor := Position (C_Pos);
+        return Result /= 0;
+    end Redo;
 
 
     procedure Copy

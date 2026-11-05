@@ -121,11 +121,11 @@ package body FLTK.Images.Pixmaps.GIF.Animated is
     pragma Import (C, fl_anim_gif_image_name, "fl_anim_gif_image_name");
     pragma Inline (fl_anim_gif_image_name);
 
-    function fl_image_ld
+    function fl_image_fail
            (I : in Storage.Integer_Address)
         return Interfaces.C.int;
-    pragma Import (C, fl_image_ld, "fl_image_ld");
-    pragma Inline (fl_image_ld);
+    pragma Import (C, fl_image_fail, "fl_image_fail");
+    pragma Inline (fl_image_fail);
 
 
 
@@ -719,11 +719,11 @@ package body FLTK.Images.Pixmaps.GIF.Animated is
 
     function Fail_Code
            (This : in Animated_GIF_Image)
-        return Integer
-    is
-        Result : constant Integer := Integer (fl_image_ld (This.Void_Ptr));
+        return Integer is
     begin
-        return (if Result < 0 then Result else 0);
+        --  Fl_Image::fail, which is -1 for an animation never loaded, as
+        --  ld() alone isn't (Fl_Image.cxx:203-212).
+        return Integer (fl_image_fail (This.Void_Ptr));
     end Fail_Code;
 
 

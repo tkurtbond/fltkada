@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Chart.H>
 #include "c_fl_chart.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -38,9 +39,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Chart : public Fl_Chart {
+class My_Chart : public Ada_Resizing<Fl_Chart> {
 public:
-    using Fl_Chart::Fl_Chart;
+    using Ada_Resizing<Fl_Chart>::Ada_Resizing;
 
     friend void fl_chart_draw(CHART n);
     friend int fl_chart_handle(CHART n, int e);

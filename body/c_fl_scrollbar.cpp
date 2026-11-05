@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Scrollbar.H>
 #include "c_fl_scrollbar.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -33,9 +34,9 @@ extern "C" int valuator_format_hook(void * ud, char * buf);
 
 //  Attaching all relevant hooks and friends
 
-class My_Scrollbar : public Fl_Scrollbar {
+class My_Scrollbar : public Ada_Resizing<Fl_Scrollbar> {
 public:
-    using Fl_Scrollbar::Fl_Scrollbar;
+    using Ada_Resizing<Fl_Scrollbar>::Ada_Resizing;
 
     friend void fl_scrollbar_draw(SCROLLBAR s);
     friend int fl_scrollbar_handle(SCROLLBAR s, int e);

@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Valuator.H>
 #include "c_fl_valuator.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -33,9 +34,9 @@ public:
 
 //  Attaching all relevant hooks and friends
 
-class My_Valuator : public Fl_Valuator {
+class My_Valuator : public Ada_Resizing<Fl_Valuator> {
 public:
-    using Fl_Valuator::Fl_Valuator;
+    using Ada_Resizing<Fl_Valuator>::Ada_Resizing;
     friend VALUATOR new_fl_valuator(int x, int y, int w, int h, char* label);
 
     friend void fl_valuator_draw(VALUATOR v);

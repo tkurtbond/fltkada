@@ -37,9 +37,9 @@ public:
 
 //  Attaching all relevant hooks and friends
 
-class My_Window : public Fl_Window {
+class My_Window : public Ada_Resizing<Fl_Window> {
 public:
-    using Fl_Window::Fl_Window;
+    using Ada_Resizing<Fl_Window>::Ada_Resizing;
 
     friend void fl_window_draw(WINDOW n);
     friend int fl_window_handle(WINDOW n, int e);
@@ -327,7 +327,7 @@ void fl_window_size_range(WINDOW n, int lw, int lh, int hw, int hh, int dw, int 
 }
 
 void fl_window_resize(WINDOW n, int x, int y, int w, int h) {
-    static_cast<Fl_Window*>(n)->resize(x, y, w, h);
+    ada_default_resize(static_cast<Fl_Widget*>(n), x, y, w, h);
 }
 
 int fl_window_get_force_position(WINDOW n) {

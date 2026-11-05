@@ -579,6 +579,9 @@ package FLTK.Static is
     procedure Default_Window_Close
            (Item : in out FLTK.Widgets.Widget'Class);
 
+    --  The shown windows, most recently active first.  A window FLTK made,
+    --  such as a file chooser's or a dialog's, has no Ada object, and is
+    --  skipped.  Get_Next_Window of a window not shown is null.
     function Get_First_Window
         return access FLTK.Widgets.Groups.Windows.Window'Class;
 
@@ -589,6 +592,7 @@ package FLTK.Static is
            (From : in FLTK.Widgets.Groups.Windows.Window'Class)
         return access FLTK.Widgets.Groups.Windows.Window'Class;
 
+    --  Null too when the top modal window is one FLTK made.
     function Get_Top_Modal
         return access FLTK.Widgets.Groups.Windows.Window'Class;
 

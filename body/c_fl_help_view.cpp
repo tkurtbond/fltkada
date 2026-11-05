@@ -9,6 +9,7 @@
 #include <FL/Fl_Help_View.H>
 #include <FL/Enumerations.H>
 #include "c_fl_help_view.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 #include <map>
 #include <string>
@@ -39,9 +40,9 @@ extern "C" int help_view_link_hook(void * ud, const char * uri);
 //  names nothing, so FLTK draws its broken image, where NULL would crash it
 //  (pofltk 90).  Ported from pofltk's FlHelp.cpp.
 
-class My_Help_View : public Fl_Help_View {
+class My_Help_View : public Ada_Resizing<Fl_Help_View> {
 public:
-    using Fl_Help_View::Fl_Help_View;
+    using Ada_Resizing<Fl_Help_View>::Ada_Resizing;
 
     //  The destructor of Fl_Help_View would ask about its images once this
     //  class is gone.
@@ -52,7 +53,7 @@ public:
 
     void draw();
     int handle(int e);
-    void resize(int x, int y, int w, int h);
+    void base_resize(int x, int y, int w, int h);
 
     std::map<std::string, std::string> images;
     std::string answer;
@@ -77,7 +78,7 @@ int My_Help_View::handle(int e) {
     return widget_handle_hook(this->user_data(), e);
 }
 
-void My_Help_View::resize(int x, int y, int w, int h) {
+void My_Help_View::base_resize(int x, int y, int w, int h) {
     ++changes;
     Fl_Help_View::resize(x, y, w, h);
 }
@@ -135,6 +136,14 @@ void fl_help_view_clear_selection(HELPVIEW v) {
 
 void fl_help_view_select_all(HELPVIEW v) {
     static_cast<Fl_Help_View*>(v)->select_all();
+}
+
+int fl_help_view_text_selected(HELPVIEW v) {
+    return static_cast<Fl_Help_View*>(v)->text_selected();
+}
+
+int fl_help_view_copy(HELPVIEW v, int c) {
+    return static_cast<Fl_Help_View*>(v)->copy(c);
 }
 
 
@@ -230,7 +239,7 @@ void fl_help_view_set_size(HELPVIEW v, int w, int h) {
 }
 
 void fl_help_view_resize(HELPVIEW v, int x, int y, int w, int h) {
-    static_cast<Fl_Help_View*>(v)->resize(x, y, w, h);
+    ada_default_resize(static_cast<Fl_Widget*>(v), x, y, w, h);
 }
 
 unsigned int fl_help_view_get_textcolor(HELPVIEW v) {

@@ -17,6 +17,8 @@ extern "C" void free_fl_help_view(HELPVIEW v);
 
 extern "C" void fl_help_view_clear_selection(HELPVIEW v);
 extern "C" void fl_help_view_select_all(HELPVIEW v);
+extern "C" int fl_help_view_text_selected(HELPVIEW v);
+extern "C" int fl_help_view_copy(HELPVIEW v, int c);
 
 
 extern "C" int fl_help_view_find(HELPVIEW v, const char * s, int p);

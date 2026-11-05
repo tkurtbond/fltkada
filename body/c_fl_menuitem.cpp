@@ -294,14 +294,27 @@ const char * fl_menu_item_get_label(MENUITEM mi) {
     return item_name(static_cast<Fl_Menu_Item*>(mi));
 }
 
+//  The label of a multi-label, a file icon or an image label is a pointer
+//  to it, not text (Fl_Multi_Label.cxx:28, Fl_File_Icon.cxx:425,
+//  Fl_Image.cxx:224).
+static bool pointer_type(int t) {
+    return t == _FL_MULTI_LABEL || t == _FL_ICON_LABEL || t == _FL_IMAGE_LABEL;
+}
+
+//  Text given to an item showing an image or a multi-label is shown as
+//  FL_NORMAL_LABEL, which FLTK doesn't read as a pointer (FLTKAda-BUGS.md 83).
 void fl_menu_item_set_label(MENUITEM mi, const char *t) {
-    free_text_label(static_cast<Fl_Menu_Item*>(mi));
-    static_cast<Fl_Menu_Item*>(mi)->label(t==0?0:strdup(t));
+    Fl_Menu_Item * item = static_cast<Fl_Menu_Item*>(mi);
+    free_text_label(item);
+    if (pointer_type(item->labeltype_)) {
+        item->labeltype_ = FL_NORMAL_LABEL;
+    }
+    item->label(t==0?0:strdup(t));
 }
 
 void fl_menu_item_set_label2(MENUITEM mi, int k, const char * t) {
-    free_text_label(static_cast<Fl_Menu_Item*>(mi));
-    static_cast<Fl_Menu_Item*>(mi)->label(static_cast<Fl_Labeltype>(k), t==0?0:strdup(t));
+    fl_menu_item_set_label(mi, t);
+    fl_menu_item_set_labeltype(mi, k);
 }
 
 unsigned int fl_menu_item_get_labelcolor(MENUITEM mi) {
@@ -334,15 +347,15 @@ int fl_menu_item_get_labeltype(MENUITEM mi) {
 }
 
 //  An item showing an image or a multi-label keeps it when given either
-//  type again, and shows its name when given another.
+//  type again, and shows its name when given another.  None of the types
+//  whose label is a pointer is given to text, which FLTK would read as the
+//  pointer (FLTKAda-BUGS.md 83).
 void fl_menu_item_set_labeltype(MENUITEM mi, int t) {
     Fl_Menu_Item * item = static_cast<Fl_Menu_Item*>(mi);
-    if (item_label(item) != 0) {
-        if (t == _FL_IMAGE_LABEL || t == _FL_MULTI_LABEL) {
-            return;
-        }
-        plain_item(item);
+    if (pointer_type(t)) {
+        return;
     }
+    plain_item(item);
     item->labeltype(static_cast<Fl_Labeltype>(t));
 }
 

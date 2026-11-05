@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Round_Clock.H>
 #include "c_fl_round_clock.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -21,9 +22,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Round_Clock : public Fl_Round_Clock {
+class My_Round_Clock : public Ada_Resizing<Fl_Round_Clock> {
 public:
-    using Fl_Round_Clock::Fl_Round_Clock;
+    using Ada_Resizing<Fl_Round_Clock>::Ada_Resizing;
 
     friend void fl_round_clock_draw(ROUNDCLOCK c);
     friend int fl_round_clock_handle(ROUNDCLOCK c, int e);

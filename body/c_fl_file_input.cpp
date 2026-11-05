@@ -6,6 +6,7 @@
 
 #include <FL/Fl_File_Input.H>
 #include "c_fl_file_input.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -21,9 +22,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_File_Input : public Fl_File_Input {
+class My_File_Input : public Ada_Resizing<Fl_File_Input> {
 public:
-    using Fl_File_Input::Fl_File_Input;
+    using Ada_Resizing<Fl_File_Input>::Ada_Resizing;
 
     friend void fl_file_input_draw(FILEINPUT i);
     friend int fl_file_input_handle(FILEINPUT i, int e);

@@ -86,6 +86,24 @@ package body FLTK.Widgets.Inputs is
     pragma Import (C, fl_input_undo, "fl_input_undo");
     pragma Inline (fl_input_undo);
 
+    function fl_input_redo
+           (I : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_input_redo, "fl_input_redo");
+    pragma Inline (fl_input_redo);
+
+    function fl_input_can_undo
+           (I : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_input_can_undo, "fl_input_can_undo");
+    pragma Inline (fl_input_can_undo);
+
+    function fl_input_can_redo
+           (I : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_input_can_redo, "fl_input_can_redo");
+    pragma Inline (fl_input_can_redo);
+
 
 
 
@@ -556,6 +574,39 @@ package body FLTK.Widgets.Inputs is
     begin
         return fl_input_undo (This.Void_Ptr) /= 0;
     end Undo;
+
+
+    procedure Redo
+           (This : in out Input)
+    is
+        Ignore : constant Interfaces.C.int := fl_input_redo (This.Void_Ptr);
+    begin
+        null;
+    end Redo;
+
+
+    function Redo
+           (This : in out Input)
+        return Boolean is
+    begin
+        return fl_input_redo (This.Void_Ptr) /= 0;
+    end Redo;
+
+
+    function Can_Undo
+           (This : in Input)
+        return Boolean is
+    begin
+        return fl_input_can_undo (This.Void_Ptr) /= 0;
+    end Can_Undo;
+
+
+    function Can_Redo
+           (This : in Input)
+        return Boolean is
+    begin
+        return fl_input_can_redo (This.Void_Ptr) /= 0;
+    end Can_Redo;
 
 
 

@@ -242,6 +242,45 @@ begin
     begin
         Check (Good.Is_Loaded and then Anim.Frame_Count (Dir & "anim.gif") = 3,
             "a sound animation loads");
+        Check (Good.Fail_Code = 0, "and its Fail_Code is 0:" & Integer'Image (Good.Fail_Code));
+    end;
+
+    --  Fail_Code is FLTK's fail (), which is -1 for an animation never
+    --  loaded, and -2 for a file that can't be read, which FLTK reports as
+    --  -3 (F25).
+    declare
+        Empty   : constant Anim.Animated_GIF_Image := Anim.Forge.Create;
+        Missing : constant Anim.Animated_GIF_Image := Anim.Forge.Create (Dir & "no-such.gif");
+        Later   : Anim.Animated_GIF_Image := Anim.Forge.Create;
+
+        --  Loads first, so that the message shows the code after it.
+        procedure Loads
+               (Name     : in String;
+                Works    : in Boolean;
+                Code     : in Integer;
+                Message  : in String)
+        is
+            Loaded : constant Boolean := Later.Load (Dir & Name);
+        begin
+            Check (Loaded = Works and Later.Fail_Code = Code,
+                Message & ":" & Integer'Image (Later.Fail_Code));
+        end Loads;
+    begin
+        Check (Empty.Fail_Code = -1,
+            "an animation never loaded fails with -1:" & Integer'Image (Empty.Fail_Code));
+        Check (Missing.Fail_Code = -2,
+            "an animation of no file fails with -2 (F25):" & Integer'Image (Missing.Fail_Code));
+        Loads ("no-such.gif", False, -2, "and so does Load of no file (F25)");
+        Loads ("anim.gif", True, 0, "a Load that works after it is 0");
+        Loads ("loop.gif", False, -3, "and one of a bad file -3");
+
+        --  FLTK says -1 wide for one never loaded, and keeps the error in
+        --  the line size; neither may raise (FLTKAda-BUGS.md 76).
+        Check (Empty.Get_W = 0 and Empty.Get_H = 0 and Empty.Get_Data_W = 0
+                and Empty.Get_Data_H = 0 and Empty.Get_Line_Size = 0,
+            "an animation never loaded is 0 by 0");
+        Check (Missing.Get_W = 0 and Missing.Get_Line_Size = 0,
+            "and so is one of no file, line size and all");
     end;
     Not_Animated ("loop.gif");
     Not_Animated ("beyond.gif");

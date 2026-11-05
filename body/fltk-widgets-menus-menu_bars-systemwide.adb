@@ -8,6 +8,7 @@ with
 
     Ada.Assertions,
     Ada.Unchecked_Deallocation,
+    FLTK.Hook_Exceptions,
     FLTK.Widgets.Groups,
     Interfaces.C.Strings;
 
@@ -187,6 +188,60 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
            (M : in Storage.Integer_Address);
     pragma Import (C, fl_sys_menu_bar_update, "fl_sys_menu_bar_update");
     pragma Inline (fl_sys_menu_bar_update);
+
+
+
+
+    --  macOS Only  --
+
+    procedure fl_sys_menu_bar_about
+           (CB : in Storage.Integer_Address);
+    pragma Import (C, fl_sys_menu_bar_about, "fl_sys_menu_bar_about");
+    pragma Inline (fl_sys_menu_bar_about);
+
+    function fl_sys_menu_bar_get_window_menu_style
+        return Interfaces.C.int;
+    pragma Import (C, fl_sys_menu_bar_get_window_menu_style,
+        "fl_sys_menu_bar_get_window_menu_style");
+    pragma Inline (fl_sys_menu_bar_get_window_menu_style);
+
+    procedure fl_sys_menu_bar_set_window_menu_style
+           (S : in Interfaces.C.int);
+    pragma Import (C, fl_sys_menu_bar_set_window_menu_style,
+        "fl_sys_menu_bar_set_window_menu_style");
+    pragma Inline (fl_sys_menu_bar_set_window_menu_style);
+
+    procedure fl_sys_menu_bar_create_window_menu;
+    pragma Import (C, fl_sys_menu_bar_create_window_menu,
+        "fl_sys_menu_bar_create_window_menu");
+    pragma Inline (fl_sys_menu_bar_create_window_menu);
+
+
+
+
+    ---------------------
+    --  Callback Hook  --
+    ---------------------
+
+    About_Func : About_Callback := null;
+
+    procedure About_Callback_Hook
+           (Widget_Ptr, User_Data : in Storage.Integer_Address);
+
+    pragma Convention (C, About_Callback_Hook);
+
+    procedure About_Callback_Hook
+           (Widget_Ptr, User_Data : in Storage.Integer_Address)
+    is
+        pragma Unreferenced (Widget_Ptr, User_Data);
+    begin
+        if About_Func /= null then
+            About_Func.all;
+        end if;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+    end About_Callback_Hook;
 
 
 
@@ -636,6 +691,45 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
     begin
         fl_sys_menu_bar_update (This.Void_Ptr);
     end Update;
+
+
+
+
+
+    --  macOS Only  --
+
+    procedure Set_About_Callback
+           (Func : in About_Callback) is
+    begin
+        About_Func := Func;
+        fl_sys_menu_bar_about (Storage.To_Integer (About_Callback_Hook'Address));
+    end Set_About_Callback;
+
+
+    function Get_Window_Menu_Style
+        return Window_Menu_Style_Kind
+    is
+        Result : constant Interfaces.C.int := fl_sys_menu_bar_get_window_menu_style;
+    begin
+        return Window_Menu_Style_Kind'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Sys_Menu_Bar::window_menu_style returned unexpected int value of " &
+        Interfaces.C.int'Image (Result);
+    end Get_Window_Menu_Style;
+
+
+    procedure Set_Window_Menu_Style
+           (To : in Window_Menu_Style_Kind) is
+    begin
+        fl_sys_menu_bar_set_window_menu_style (Window_Menu_Style_Kind'Pos (To));
+    end Set_Window_Menu_Style;
+
+
+    procedure Create_Window_Menu is
+    begin
+        fl_sys_menu_bar_create_window_menu;
+    end Create_Window_Menu;
 
 
 

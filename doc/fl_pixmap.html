@@ -110,7 +110,10 @@ with Pre =>
         Ada.Strings.Unbounded.Length (Definition.Name) = Values.Per_Pixel) and
     Pixels'Length (2) = Values.Width * Values.Per_Pixel;
 </pre><p>A colour given by name ("red") is read only on X11; on Wayland it
-is FLTK's gray. Give colours as "#rrggbb" (pofltk 47).</p></td>
+is FLTK's gray. Give colours as "#rrggbb" (pofltk 47).</p>
+<p>Raises Constraint_Error, in a release build too, if the data doesn't
+match the header, or the pixmap is too big for FLTK (FLTKAda-BUGS.md
+77).</p></td>
   </tr>
 
 </table>
@@ -153,6 +156,25 @@ function Copy
        (This : in Pixmap)
     return Pixmap'Class;
 </pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char * const * data() const;
+int count() const;
+</pre></td>
+<td><pre>
+function Get_Line_Count
+       (This : in Pixmap)
+    return Natural;
+
+function Get_Line
+       (This  : in Pixmap;
+        Index : in Positive)
+    return String;
+</pre><p>The XPM lines, the header first. A GIF's are in FLTK's compressed
+form, whose second line is 4 bytes a colour and can hold NUL; Get_Line
+gives each line at the length FLTK reads.</p></td>
   </tr>
 
   <tr>

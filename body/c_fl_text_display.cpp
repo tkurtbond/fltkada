@@ -8,6 +8,7 @@
 #include <FL/Fl_Text_Buffer.H>
 #include "c_fl_text_display.h"
 #include "c_fl_text_buffer.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -75,9 +76,9 @@ public:
 
 //  Attaching all relevant hooks and friends
 
-class My_Text_Display : public Fl_Text_Display {
+class My_Text_Display : public Ada_Resizing<Fl_Text_Display> {
 public:
-    using Fl_Text_Display::Fl_Text_Display;
+    using Ada_Resizing<Fl_Text_Display>::Ada_Resizing;
 
     friend void fl_text_display_draw(TEXTDISPLAY td);
     friend int fl_text_display_handle(TEXTDISPLAY td, int e);
@@ -545,7 +546,7 @@ void fl_text_display_set_shortcut(TEXTDISPLAY td, int s) {
 
 
 void fl_text_display_resize(TEXTDISPLAY td, int x, int y, int w, int h) {
-    static_cast<Fl_Text_Display*>(td)->resize(x, y, w, h);
+    ada_default_resize(static_cast<Fl_Widget*>(td), x, y, w, h);
 }
 
 

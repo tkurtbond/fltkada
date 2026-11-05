@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Toggle_Button.H>
 #include "c_fl_toggle_button.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -21,9 +22,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Toggle_Button : public Fl_Toggle_Button {
+class My_Toggle_Button : public Ada_Resizing<Fl_Toggle_Button> {
 public:
-    using Fl_Toggle_Button::Fl_Toggle_Button;
+    using Ada_Resizing<Fl_Toggle_Button>::Ada_Resizing;
 
     friend void fl_toggle_button_draw(TOGGLEBUTTON b);
     friend int fl_toggle_button_handle(TOGGLEBUTTON b, int e);

@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Secret_Input.H>
 #include "c_fl_secret_input.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -21,9 +22,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Secret_Input : public Fl_Secret_Input {
+class My_Secret_Input : public Ada_Resizing<Fl_Secret_Input> {
 public:
-    using Fl_Secret_Input::Fl_Secret_Input;
+    using Ada_Resizing<Fl_Secret_Input>::Ada_Resizing;
 
     friend void fl_secret_input_draw(SECRETINPUT i);
     friend int fl_secret_input_handle(SECRETINPUT i, int e);

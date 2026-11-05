@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Radio_Round_Button.H>
 #include "c_fl_radio_round_button.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -21,9 +22,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Radio_Round_Button : public Fl_Radio_Round_Button {
+class My_Radio_Round_Button : public Ada_Resizing<Fl_Radio_Round_Button> {
 public:
-    using Fl_Radio_Round_Button::Fl_Radio_Round_Button;
+    using Ada_Resizing<Fl_Radio_Round_Button>::Ada_Resizing;
 
     friend void fl_radio_round_button_draw(RADIOROUNDBUTTON b);
     friend int fl_radio_round_button_handle(RADIOROUNDBUTTON b, int e);

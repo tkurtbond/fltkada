@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Check_Button.H>
 #include "c_fl_check_button.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -32,9 +33,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Check_Button : public Fl_Check_Button {
+class My_Check_Button : public Ada_Resizing<Fl_Check_Button> {
 public:
-    using Fl_Check_Button::Fl_Check_Button;
+    using Ada_Resizing<Fl_Check_Button>::Ada_Resizing;
 
     friend void fl_check_button_draw(CHECKBUTTON b);
     friend int fl_check_button_handle(CHECKBUTTON b, int e);

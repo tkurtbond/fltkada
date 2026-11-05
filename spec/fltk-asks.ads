@@ -35,6 +35,11 @@ package FLTK.Asks is
     type File_Chooser_Callback is access procedure
            (Item : in String);
 
+    --  How the next dialog will be placed: where FLTK puts it (by default
+    --  at the mouse, see Set_Message_Hotspot), with its top left corner at
+    --  a point, or with its centre at a point.
+    type Message_Position_Kind is (Default_Position, Corner_Position, Center_Position);
+
 
 
 
@@ -185,6 +190,33 @@ package FLTK.Asks is
     procedure Set_Message_Title_Default
            (To : in String);
 
+    --  The text of the next dialog's icon only.  An empty string leaves the
+    --  dialog its own ("!", "?" and so on, or the default below).
+    procedure Set_Message_Icon_Label
+           (To : in String);
+
+    --  The text of every dialog's icon, which is Get_Message_Icon's label.
+    --  An empty string gives each dialog its own again.
+    procedure Set_Message_Icon_Label_Default
+           (To : in String);
+
+    --  Places the next dialog only.  With Centered, (X, Y) is its centre;
+    --  otherwise its top left corner.
+    procedure Set_Message_Position
+           (X, Y     : in Integer;
+            Centered : in Boolean := False);
+
+    --  Centres the next dialog over Item, which must be in a shown window.
+    --  Item's place is taken now, so Item may go before the dialog is shown.
+    procedure Set_Message_Position_Over
+           (Item : in FLTK.Widgets.Widget'Class);
+
+    --  How the next dialog will be placed.  X and Y are -1 for
+    --  Default_Position.
+    procedure Get_Message_Position
+           (X, Y : out Integer;
+            Kind : out Message_Position_Kind);
+
 
 private
 
@@ -222,6 +254,10 @@ private
     pragma Inline (Get_Message_Icon);
     pragma Inline (Set_Message_Title);
     pragma Inline (Set_Message_Title_Default);
+    pragma Inline (Set_Message_Icon_Label);
+    pragma Inline (Set_Message_Icon_Label_Default);
+    pragma Inline (Set_Message_Position);
+    pragma Inline (Get_Message_Position);
 
 
     --  Needed to ensure chars_ptr storage is properly cleaned up

@@ -180,7 +180,66 @@ package FLTK.Widgets.Groups.Terminals is
 
     --  Cursor  --
 
+    --  Cursor_Home, Set_Cursor_Row and Set_Cursor_Column redraw as
+    --  Redraw_Style says, as the moves below do (pofltk 99).
     procedure Cursor_Home
+           (This : in out Terminal);
+
+    --  The cursor's moves, as the escape sequences make them.  Up, Down
+    --  and Right stop at the screen's edge, or with Scroll scroll the
+    --  screen (Right goes on to the next line).  Left and the tabs stop
+    --  at the line's ends.  CR goes to the start of the line, and CRLF
+    --  then down Count lines, scrolling.  Each redraws as Redraw_Style
+    --  says.
+
+    procedure Cursor_Up
+           (This   : in out Terminal;
+            Count  : in     Positive := 1;
+            Scroll : in     Boolean  := False);
+
+    procedure Cursor_Down
+           (This   : in out Terminal;
+            Count  : in     Positive := 1;
+            Scroll : in     Boolean  := False);
+
+    procedure Cursor_Left
+           (This  : in out Terminal;
+            Count : in     Positive := 1);
+
+    procedure Cursor_Right
+           (This   : in out Terminal;
+            Count  : in     Positive := 1;
+            Scroll : in     Boolean  := False);
+
+    procedure Cursor_End_Of_Line
+           (This : in out Terminal);
+
+    procedure Cursor_Start_Of_Line
+           (This : in out Terminal);
+
+    procedure Cursor_CR
+           (This : in out Terminal);
+
+    procedure Cursor_CRLF
+           (This  : in out Terminal;
+            Count : in     Positive := 1);
+
+    procedure Cursor_Tab_Right
+           (This  : in out Terminal;
+            Count : in     Positive := 1);
+
+    procedure Cursor_Tab_Left
+           (This  : in out Terminal;
+            Count : in     Positive := 1);
+
+    --  The place ESC[s saves and ESC[u restores.  Restore_Cursor does
+    --  nothing if no place was saved.  FLTK's own restore misses a place
+    --  in column 1; this one doesn't (pofltk 97), though ESC[u still
+    --  does.
+    procedure Save_Cursor
+           (This : in out Terminal);
+
+    procedure Restore_Cursor
            (This : in out Terminal);
 
     function Get_Cursor_Row
@@ -556,6 +615,18 @@ private
     pragma Inline (Reset_Terminal);
 
     pragma Inline (Cursor_Home);
+    pragma Inline (Cursor_Up);
+    pragma Inline (Cursor_Down);
+    pragma Inline (Cursor_Left);
+    pragma Inline (Cursor_Right);
+    pragma Inline (Cursor_End_Of_Line);
+    pragma Inline (Cursor_Start_Of_Line);
+    pragma Inline (Cursor_CR);
+    pragma Inline (Cursor_CRLF);
+    pragma Inline (Cursor_Tab_Right);
+    pragma Inline (Cursor_Tab_Left);
+    pragma Inline (Save_Cursor);
+    pragma Inline (Restore_Cursor);
     pragma Inline (Get_Cursor_Row);
     pragma Inline (Set_Cursor_Row);
     pragma Inline (Get_Cursor_Column);

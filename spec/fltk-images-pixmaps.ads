@@ -80,6 +80,26 @@ package FLTK.Images.Pixmaps is
 
 
 
+    --  Data  --
+
+    --  The pixmap's data, as FLTK holds it: the lines of an XPM, the first
+    --  of which is the header.  A pixmap from a GIF has them in FLTK's own
+    --  form, where the header gives the number of colors as negative and
+    --  the second line holds all the colors, 4 bytes each (an index, then
+    --  red, green and blue), so it can hold NUL.  A pixmap with no data has
+    --  no lines.  Get_Line raises Constraint_Error for a line it doesn't have.
+    function Get_Line_Count
+           (This : in Pixmap)
+        return Natural;
+
+    function Get_Line
+           (This  : in Pixmap;
+            Index : in Positive)
+        return String;
+
+
+
+
     --  Colors  --
 
     procedure Color_Average
@@ -123,6 +143,8 @@ private
     overriding procedure Finalize
            (This : in out Pixmap);
 
+
+    pragma Inline (Get_Line_Count);
 
     pragma Inline (Color_Average);
     pragma Inline (Desaturate);

@@ -223,24 +223,25 @@ possibly this hasn't been noticed because it's only visible to doxygen
 Menus: the one-string Add, FLTK's add (const char *), which splits on '|',
 is now Add_Items: as Add, no call to it compiled (FLTKAda-BUGS.md 65)
 
-calling Remove_Clipboard_Notify from inside a clipboard notify handler raises
-Program_Error (the handler vector is tamper-checked while it is being iterated);
-the other Events handler vectors likely have the same problem
+an event, system or clipboard handler can now remove handlers, itself
+included, while FLTK calls them; this raised Program_Error (FLTKAda-BUGS.md 81)
 
-Dispatch_Hook's Constraint_Error handler reports any Constraint_Error raised in
-the user's dispatch function as an unexpected event value; several other hooks'
-handlers relabel the user's Constraint_Error or Assertion_Error the same way
-(FLTKAda-BUGS.md 45)
+a Constraint_Error or Assertion_Error raised in a dispatch function, event
+handler, table Draw_Cell or other hook now reaches the program as itself,
+not as Internal_FLTK_Error (FLTKAda-BUGS.md 45)
 
 Events.Get_Grab can't return a window FLTK made itself, such as a pop-up
-menu's: it gives null, or Internal_FLTK_Error under -gnata (FLTKAda-BUGS.md 44)
+menu's: it gives null, or Internal_FLTK_Error under -gnata (FLTKAda-BUGS.md 44);
+a dispatch function given such a window as null can pass the event on to it
+with Handle (Event, null) (FLTKAda-BUGS.md 82)
 
-Menu_Item Set_Label (Kind => Image_Label or Multi_Label, Text) is meaningless,
-since FLTK treats the label text as a pointer to an image or Fl_Multi_Label;
-use Set_Image / Set_Multi_Label instead.  An item showing an image or a
-multi-label keeps its name, which Get_Label returns and paths use; FLTK
-read the pointer as the item's text, and Remove, Clear_Submenu and
-Set_Label freed it (pofltk 54, PLAN.md Phase 4)
+Menu_Item Set_Label (Kind => Image_Label, Multi_Label or Icon_Label, Text)
+shows Text as a normal label, and Set_Label_Kind leaves those kinds alone,
+since FLTK takes such a label as a pointer; drawing one crashed
+(FLTKAda-BUGS.md 83).  Use Set_Image / Set_Multi_Label.  An item
+showing an image or a multi-label keeps its name, which Get_Label returns
+and paths use; FLTK read the pointer as the item's text, and Remove,
+Clear_Submenu and Set_Label freed it (pofltk 54, PLAN.md Phase 4)
 
 FLTK's glut.H declares glutExtensionSupported as taking char*, but its
 definition takes const char* (see body/c_fl_glut.cpp)
@@ -405,7 +406,10 @@ raise Constraint_Error, rather than overrun FLTK's copy (pofltk 136)
 Terminal: the cursor and the saved place are kept on the screen after a
 size setter or resize; the error character must be one printable UTF-8
 character; a text size of 0, no columns, or more than 2**24 cells raise
-Constraint_Error (pofltk 96, 98, 99)
+Constraint_Error (pofltk 96, 98, 99); the cursor's moves, Cursor_Home and
+Set_Cursor_Row/Column redraw as Redraw_Style says (pofltk 99, F23); the
+tabs move Count tab stops (F24); Restore_Cursor restores a place saved at
+column 1 (pofltk 97)
 
 PostScript: a job given a File_Type writes through the binding's own stream,
 so that FLTK can't close the file twice, and End_Job raises File_Write_Error
@@ -461,6 +465,38 @@ Clock: Get_Time gives back what Set_Time set (pofltk 76)
 Shared images: Reload keeps a scaled image at its size, so Find still
 finds it (pofltk 83)
 
+Shared images: "<" orders them as Fl_Shared_Image::compare orders the
+pool, by name, then data width, then data height
+
+Text buffers: positions stay byte offsets from 0, as FLTK's and a text
+display's are; Next_Char and Prev_Char give places, not characters
+(FLTKAda-BUGS.md 78); Get_Highlight gives FLTK's highlight, which moves
+with the text (FLTKAda-BUGS.md 79); file errors say why (FLTKAda-BUGS.md
+80); a file that isn't UTF-8 is read whole (FLTK-issues.md F26), with
+Was_Transcoded, Set_Transcoding_Warning and File_Encoding_Warning; added
+Has_Highlight, Is_Word_Separator and Estimate_Lines.  Left unbound:
+address, printf/vprintf, the Fl_Text_Selection accessors, and the
+protected internals, which bypass undo and the modify callbacks
+
+Grids: a cell is read with Has_Cell, Get_Cell and Cell_Widget, and set
+with Set_Cell_Alignment and Set_Cell_Minimum_Size, which lay the grid out
+again (FLTK-issues.md F27).  Cell's span setters, which can make layout
+read past the grid, and the protected draw_grid, init, add_cell,
+remove_cell and on_remove are left unbound
+
+Flex: the protected init, alloc_size and on_remove are left unbound.
+init would drop the fixed-size array without freeing it, alloc_size is
+size + 8, and FLTK's on_remove already runs from Remove (Fl_Flex.cxx)
+
+Windows: Get_First_Window and Get_Next_Window skip the windows FLTK made,
+such as a file chooser's or a dialog's, and Get_Top_Modal is null for
+one.  The shim knows which widgets have Ada objects (FLTKAda-BUGS.md 51)
+
+Scheme choices: a callback set replaces FLTK's, as in FLTK, and can call
+Switch_Scheme to switch as FLTK's does (F28).  FLTK calls its own
+init_value from handle, so an Ada Init_Value override is reached only
+from Ada; override Handle instead
+
 Filenames: Relative's Changed is True when the name became "." (pofltk 94)
 
 Widgets: Set_Label with a kind sets a shown window's title too (pofltk 6)
@@ -501,37 +537,27 @@ Incomplete APIs:
 
 FLTK
 FLTK.Devices.Graphics
-FLTK.Images.Pixmaps (unmarshall data access?)
-FLTK.Images.Shared (compare)
 FLTK.Static (Option lacks FNFC_Uses_Zenity, FNFC_Uses_Kdialog,
     Printer_Uses_GTK, Show_Scaling and Simple_Zoom_Shortcut)
-FLTK.Text_Buffers (a few functions, protected stuff, ensure buffer is 1-indexed)
-FLTK.Widgets.Groups.Text_Displays (ensure text buffer is 1-indexed)
 FLTK.GLUT (no check yet that a GL context is ready for GLUT text, pofltk 112;
     the GLUT bitmap/stroke fonts, the geometric models glutWire*/glutSolid*,
     and the glut_window/glut_menu globals; windows from Create_Window/
     Create_Sub_Window have no Ada object)
-FLTK.Images.Pixmaps.GIF.Animated (Fail_Code clamps a positive ld() to 0)
 FLTK.Images.Tiled (Tile returns a non-owning view of the tiled image)
-FLTK.Widgets.Groups.Flex (protected init, alloc_size, on_remove)
-FLTK.Widgets.Groups.Grids (Fl_Grid::Cell and cell(row,col) / cell(widget);
-    protected draw_grid (virtual), init, add_cell, remove_cell, on_remove)
 FLTK.Widgets.Groups.Terminals
     Nested helper classes Utf8Char, RingBuffer, CharStyle, Cursor, EscapeSeq,
     Margin and Selection are not bound.
-    Protected internals not bound: u8c_* row/char accessors, cursor_up/down/
-    left/right, scroll, insert/delete rows/chars, clear_eol/clear_sod/etc,
+    Protected internals not bound: u8c_* row/char accessors, scroll,
+    insert/delete rows/chars, clear_eol/clear_sod/etc,
     handle_unknown_char, draw_row*/draw_buff, walk_selection, select_word/line,
-    handle_selection*, is_redraw_style.
+    handle_selection*, is_redraw_style. (The cursor moves cursor_up/down/
+    left/right/eol/sol/cr/crlf, the tabs and save/restore are bound, as the
+    public Cursor_* procedures, Save_Cursor and Restore_Cursor.)
     printf/vprintf varargs replaced by Print (format in Ada).
     color() not overridden (Fl_Terminal's version is a no-op pass-through);
     box() getter is inherited from Widget.
-    Pitfall: Group.Child on a Terminal returns the internal scrollbars, whose
-    user_data is the C++ terminal pointer rather than an Ada wrapper.
-FLTK.Widgets.Groups.Windows (Get_First_Window/Get_Next_Window unsafe with
-    C++-created windows such as the file chooser)
-FLTK.Widgets.Menus.Choices.Schemes (init_value callable but not overridable
-    from Ada; setting a callback replaces the built-in scheme-switching one)
+    Group.Child on a Terminal's internal scrollbars raises
+    Internal_FLTK_Error: FLTK made them, and they have no Ada objects.
 
 FLTK.Tree_Items / FLTK.Widgets.Groups.Trees -- deliberately scoped to the
 common ~60% of the Fl_Tree / Fl_Tree_Item API rather than full parity
@@ -547,7 +573,8 @@ common ~60% of the Fl_Tree / Fl_Tree_Item API rather than full parity
     (Trees.Add with an Item), so custom items can be put in the tree.
   - Fl_Tree_Item's labelfont/labelsize ARE bound (Tree_Items.Get/
     Set_Label_Font, Get/Set_Label_Size), along with label_x/y/w/h;
-    labelfgcolor/labelbgcolor are not.
+    labelfgcolor/labelbgcolor are bound too (Tree_Items.Get/
+    Set_Label_FG_Color, Get/Set_Label_BG_Color).
   - widget() embedding IS bound (Tree_Items.Set_Widget/Has_Widget/
     Get_Widget), along with item_draw_mode() (Tree_Items.Item_Draw_Mode,
     Trees.Get/Set_Item_Draw_Mode) and widgetmarginleft()
@@ -562,8 +589,9 @@ common ~60% of the Fl_Tree / Fl_Tree_Item API rather than full parity
     private package FLTK.Tree_Icons, which frees a copy once no item of
     the tree shows it, or the tree goes (pofltk 78). Get_User_Icon and
     Get_User_Deicon return that copy. The tree-wide default
-    icons (Fl_Tree::usericon/openicon/closeicon, as opposed to a
-    specific item's) are still not bound.
+    icons (Fl_Tree::usericon/openicon/closeicon) are bound as
+    Trees.Get/Set/Clear_User_Icon, _Open_Icon and _Close_Icon, kept the
+    same way.
   - overriding draw_item_content() IS bound, through the separate
     FLTK.Tree_Items.Custom package: derive from Custom_Item and override
     Draw_Item_Content (see examples/tree_custom_draw_items.adb).
@@ -576,8 +604,8 @@ common ~60% of the Fl_Tree / Fl_Tree_Item API rather than full parity
   - Fl_Tree_Prefs as a standalone bindable object -- its settings are
     exposed only via Fl_Tree's own forwarding methods, matching what
     FLTK's own docs recommend using instead of Fl_Tree_Prefs directly.
-  - scrollbar/position controls (vposition/hposition/scrollbar_size),
-    load() from Fl_Preferences.
+  - load() from Fl_Preferences. (vposition/hposition/scrollbar_size ARE
+    bound: Trees.Get/Set_V_Position, _H_Position, _Scrollbar_Size.)
 See test/tree.adb and the examples/tree_*.adb ports for working examples
 of what is bound.
 

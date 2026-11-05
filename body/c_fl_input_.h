@@ -21,6 +21,9 @@ extern "C" int fl_input_cut2(INPUT i, int b);
 extern "C" int fl_input_cut3(INPUT i, int a, int b);
 extern "C" int fl_input_copy_cuts(INPUT i);
 extern "C" int fl_input_undo(INPUT i);
+extern "C" int fl_input_redo(INPUT i);
+extern "C" int fl_input_can_undo(INPUT i);
+extern "C" int fl_input_can_redo(INPUT i);
 
 
 extern "C" int fl_input_get_readonly(INPUT i);

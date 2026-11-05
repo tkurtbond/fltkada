@@ -57,6 +57,19 @@ package body FLTK.Widgets.Groups.Help_Views is
     pragma Import (C, fl_help_view_select_all, "fl_help_view_select_all");
     pragma Inline (fl_help_view_select_all);
 
+    function fl_help_view_text_selected
+           (V : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_help_view_text_selected, "fl_help_view_text_selected");
+    pragma Inline (fl_help_view_text_selected);
+
+    function fl_help_view_copy
+           (V : in Storage.Integer_Address;
+            C : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_help_view_copy, "fl_help_view_copy");
+    pragma Inline (fl_help_view_copy);
+
 
 
 
@@ -274,9 +287,22 @@ package body FLTK.Widgets.Groups.Help_Views is
     is
         Ada_Help_View : access Help_View'Class;
     begin
-        pragma Assert (U /= Null_Pointer);
+        --  Checked here, and not by a handler around the call, so that the
+        --  program's own exceptions aren't taken for FLTK's (FLTKAda-BUGS.md 45).
+        if U = Null_Pointer then
+            Hook_Exceptions.Save_New
+               (Internal_FLTK_Error'Identity,
+                "Fl_Help_View::link callback hook received Widget with no user_data reference " &
+                "back to Ada");
+            return 0;
+        end if;
         Ada_Help_View := Help_View_Convert.To_Pointer (Storage.To_Address (U));
-        pragma Assert (Ada_Help_View.Zelda /= null);
+        if Ada_Help_View.Zelda = null then
+            Hook_Exceptions.Save_New
+               (Internal_FLTK_Error'Identity,
+                "Fl_Help_View::link callback hook called with no link function set");
+            return 0;
+        end if;
         declare
             Answer : constant String :=
                 Ada_Help_View.Zelda (Ada_Help_View.all, Interfaces.C.Strings.Value (S));
@@ -288,12 +314,6 @@ package body FLTK.Widgets.Groups.Help_Views is
             return 1;
         end;
     exception
-    when Chk.Assertion_Error =>
-        Hook_Exceptions.Save_New
-           (Internal_FLTK_Error'Identity,
-            "Fl_Help_View::link callback hook received Widget with no user_data reference " &
-            "back to Ada");
-        return 0;
     when Occurrence : others =>
         Hook_Exceptions.Save (Occurrence);
         return 0;
@@ -416,6 +436,33 @@ package body FLTK.Widgets.Groups.Help_Views is
     begin
         fl_help_view_select_all (This.Void_Ptr);
     end Select_All;
+
+
+    function Has_Selection
+           (This : in Help_View)
+        return Boolean is
+    begin
+        return fl_help_view_text_selected (This.Void_Ptr) /= 0;
+    end Has_Selection;
+
+
+    procedure Copy
+           (This        : in out Help_View;
+            Destination : in     Clipboard_Kind := Cut_Paste_Board)
+    is
+        Ignore : constant Boolean := This.Copy (Destination);
+    begin
+        null;
+    end Copy;
+
+
+    function Copy
+           (This        : in out Help_View;
+            Destination : in     Clipboard_Kind := Cut_Paste_Board)
+        return Boolean is
+    begin
+        return fl_help_view_copy (This.Void_Ptr, Clipboard_Kind'Pos (Destination)) /= 0;
+    end Copy;
 
 
 

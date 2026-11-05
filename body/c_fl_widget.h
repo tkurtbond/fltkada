@@ -135,6 +135,45 @@ extern "C" int fl_widget_handle(WIDGET w, int e);
 extern "C" int fl_widget_use_accents_menu(WIDGET w);
 
 
+//  An Ada widget's FLTK class B, with resize() sent to the Ada Resize,
+//  which FLTK calls as a group or a window lays out its children.  Until
+//  the Ada side has set the user data there is no Ada object, and B's own
+//  runs.  The Ada default Resize is base_resize, through
+//  ada_default_resize, so an override that calls the default runs once.
+//  Ported from pofltk's W and Hooks (pofltk.h).
+
+extern "C" void widget_resize_hook(void * ud, int x, int y, int w, int h);
+
+class Ada_Resizer {
+public:
+    virtual ~Ada_Resizer() {}
+    virtual void base_resize(int x, int y, int w, int h) = 0;
+};
+
+template <class B> class Ada_Resizing : public B, public Ada_Resizer {
+public:
+    using B::B;
+
+    void resize(int x, int y, int w, int h) override {
+        if (this->user_data() == nullptr) {
+            this->base_resize(x, y, w, h);
+        } else {
+            widget_resize_hook(this->user_data(), x, y, w, h);
+        }
+    }
+
+    void base_resize(int x, int y, int w, int h) override {
+        B::resize(x, y, w, h);
+    }
+};
+
+class Fl_Widget;
+
+//  FLTK's own resize for an Ada widget, not the virtual one, which would
+//  come back to the Ada Resize; the virtual one for a widget FLTK made.
+void ada_default_resize(Fl_Widget * w, int x, int y, int ww, int hh);
+
+
 #endif
 
 

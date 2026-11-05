@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Grid.H>
 #include "c_fl_grid.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -40,9 +41,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Grid : public Fl_Grid {
+class My_Grid : public Ada_Resizing<Fl_Grid> {
 public:
-    using Fl_Grid::Fl_Grid;
+    using Ada_Resizing<Fl_Grid>::Ada_Resizing;
 
     friend void fl_grid_draw(GRID n);
     friend int fl_grid_handle(GRID n, int e);
@@ -161,6 +162,54 @@ int fl_grid_set_widget(GRID g, void * w, int r, int c, unsigned short a) {
 int fl_grid_set_widget2(GRID g, void * w, int r, int c, int rs, int cs,
     unsigned short a) {
     return static_cast<Fl_Grid*>(g)->widget(static_cast<Fl_Widget*>(w), r, c, rs, cs, a) != 0;
+}
+
+
+
+
+//  A cell is named by its widget, since FLTK frees cells.  The setters lay
+//  the grid out again, which Fl_Grid::Cell's don't (FLTK-issues.md F27).
+
+void * fl_grid_cell_widget(GRID g, int r, int c) {
+    Fl_Grid::Cell * cell = static_cast<Fl_Grid*>(g)->cell(r, c);
+    return cell == 0 ? 0 : cell->widget();
+}
+
+int fl_grid_get_cell(GRID g, void * w, int * r, int * c, int * rs, int * cs,
+    unsigned short * a, int * mw, int * mh) {
+    Fl_Grid::Cell * cell = static_cast<Fl_Grid*>(g)->cell(static_cast<Fl_Widget*>(w));
+    if (cell == 0) {
+        return 0;
+    }
+    *r = cell->row();
+    *c = cell->col();
+    *rs = cell->rowspan();
+    *cs = cell->colspan();
+    *a = cell->align();
+    cell->minimum_size(mw, mh);
+    return 1;
+}
+
+int fl_grid_set_cell_align(GRID g, void * w, unsigned short a) {
+    Fl_Grid * grid = static_cast<Fl_Grid*>(g);
+    Fl_Grid::Cell * cell = grid->cell(static_cast<Fl_Widget*>(w));
+    if (cell == 0) {
+        return 0;
+    }
+    cell->align(a);
+    grid->need_layout(1);
+    return 1;
+}
+
+int fl_grid_set_cell_minimum_size(GRID g, void * w, int mw, int mh) {
+    Fl_Grid * grid = static_cast<Fl_Grid*>(g);
+    Fl_Grid::Cell * cell = grid->cell(static_cast<Fl_Widget*>(w));
+    if (cell == 0) {
+        return 0;
+    }
+    cell->minimum_size(mw, mh);
+    grid->need_layout(1);
+    return 1;
 }
 
 

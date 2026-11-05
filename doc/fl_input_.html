@@ -96,6 +96,28 @@ function Create
 
   <tr>
 <td><pre>
+bool can_redo() const;
+</pre></td>
+<td><pre>
+function Can_Redo
+       (This : in Input)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+bool can_undo() const;
+</pre></td>
+<td><pre>
+function Can_Undo
+       (This : in Input)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 int copy(int clipboard);
 </pre></td>
 <td><pre>
@@ -355,6 +377,20 @@ void readonly(int b);
 procedure Set_Readonly
        (This : in out Input;
         To   : in     Boolean);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int redo();
+</pre></td>
+<td><pre>
+procedure Redo
+       (This : in out Input);
+
+function Redo
+       (This : in out Input)
+    return Boolean;
 </pre></td>
   </tr>
 

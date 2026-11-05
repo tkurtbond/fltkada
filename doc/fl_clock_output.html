@@ -133,6 +133,28 @@ function Get_Second
 
   <tr>
 <td><pre>
+int shadow() const;
+</pre></td>
+<td><pre>
+function Has_Shadow
+       (This : in Clock)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void shadow(int mode);
+</pre></td>
+<td><pre>
+procedure Set_Shadow
+       (This : in out Clock;
+        To   : in     Boolean);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 void value(ulong v);
 </pre></td>
 <td><pre>

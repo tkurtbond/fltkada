@@ -41,6 +41,12 @@ package body FLTK.Widgets.Menus.Choices.Schemes is
     pragma Import (C, fl_scheme_choice_init_value, "fl_scheme_choice_init_value");
     pragma Inline (fl_scheme_choice_init_value);
 
+    function fl_scheme_choice_switch
+           (C : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_scheme_choice_switch, "fl_scheme_choice_switch");
+    pragma Inline (fl_scheme_choice_switch);
+
 
 
 
@@ -155,6 +161,15 @@ package body FLTK.Widgets.Menus.Choices.Schemes is
     begin
         fl_scheme_choice_init_value (This.Void_Ptr);
     end Init_Value;
+
+
+    procedure Switch_Scheme
+           (This : in out Scheme_Choice)
+    is
+        Ignore : constant Interfaces.C.int := fl_scheme_choice_switch (This.Void_Ptr);
+    begin
+        null;
+    end Switch_Scheme;
 
 
 

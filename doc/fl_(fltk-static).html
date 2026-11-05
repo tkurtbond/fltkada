@@ -603,6 +603,7 @@ procedure Enable_System_Input;
 static Fl_Window * first_window();
 </pre></td>
 <td><pre>
+--  Skips the windows FLTK made, such as a file chooser's.
 function Get_First_Window
     return access FLTK.Widgets.Groups.Windows.Window'Class;
 </pre></td>
@@ -831,6 +832,7 @@ procedure Set_Menu_Line_Spacing
 static Fl_Window * modal();
 </pre></td>
 <td><pre>
+--  Null for a window FLTK made, such as a dialog's.
 function Get_Top_Modal
     return access FLTK.Widgets.Groups.Windows.Window'Class;
 </pre></td>
@@ -852,6 +854,7 @@ function Scheme_Name
 static Fl_Window * next_window(const Fl_Window *);
 </pre></td>
 <td><pre>
+--  Skips the windows FLTK made; null if From isn't shown.
 function Get_Next_Window
        (From : in FLTK.Widgets.Groups.Windows.Window'Class)
     return access FLTK.Widgets.Groups.Windows.Window'Class;

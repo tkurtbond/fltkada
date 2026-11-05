@@ -8,6 +8,7 @@
 #include <FL/platform.H>
 #include "c_fl_gl_window.h"
 #include "c_fl_window.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -23,9 +24,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Gl_Window : public Fl_Gl_Window {
+class My_Gl_Window : public Ada_Resizing<Fl_Gl_Window> {
 public:
-    using Fl_Gl_Window::Fl_Gl_Window;
+    using Ada_Resizing<Fl_Gl_Window>::Ada_Resizing;
 
     ~My_Gl_Window() { window_shape_gone(this); }
 
@@ -113,7 +114,7 @@ float fl_gl_window_pixels_per_unit(GLWINDOW w) {
 }
 
 void fl_gl_window_resize(GLWINDOW gw, int x, int y, int w, int h) {
-    static_cast<Fl_Gl_Window*>(gw)->resize(x, y, w, h);
+    ada_default_resize(static_cast<Fl_Widget*>(gw), x, y, w, h);
 }
 
 
@@ -209,6 +210,14 @@ void fl_gl_window_redraw_overlay(GLWINDOW w) {
 
 void fl_gl_window_swap_buffers(GLWINDOW w) {
     static_cast<Fl_Gl_Window*>(w)->swap_buffers();
+}
+
+int fl_gl_window_get_swap_interval(GLWINDOW w) {
+    return static_cast<Fl_Gl_Window*>(w)->swap_interval();
+}
+
+void fl_gl_window_set_swap_interval(GLWINDOW w, int f) {
+    static_cast<Fl_Gl_Window*>(w)->swap_interval(f);
 }
 
 

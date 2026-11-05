@@ -360,11 +360,77 @@ function Get_Cursor_Column
 
   <tr>
 <td><pre>
+void cursor_cr(void);
+</pre></td>
+<td><pre>
+procedure Cursor_CR
+       (This : in out Terminal);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cursor_crlf(int count=1);
+</pre></td>
+<td><pre>
+procedure Cursor_CRLF
+       (This  : in out Terminal;
+        Count : in     Positive := 1);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cursor_down(int count=1, bool do_scroll=false);
+</pre></td>
+<td><pre>
+procedure Cursor_Down
+       (This   : in out Terminal;
+        Count  : in     Positive := 1;
+        Scroll : in     Boolean  := False);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cursor_eol(void);
+</pre></td>
+<td><pre>
+procedure Cursor_End_Of_Line
+       (This : in out Terminal);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 void cursor_home();
 </pre></td>
 <td><pre>
 procedure Cursor_Home
        (This : in out Terminal);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cursor_left(int count=1);
+</pre></td>
+<td><pre>
+procedure Cursor_Left
+       (This  : in out Terminal;
+        Count : in     Positive := 1);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cursor_right(int count=1, bool do_scroll=false);
+</pre></td>
+<td><pre>
+procedure Cursor_Right
+       (This   : in out Terminal;
+        Count  : in     Positive := 1;
+        Scroll : in     Boolean  := False);
 </pre></td>
   </tr>
 
@@ -376,6 +442,50 @@ int cursor_row() const;
 function Get_Cursor_Row
        (This : in Terminal)
     return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cursor_sol(void);
+</pre></td>
+<td><pre>
+procedure Cursor_Start_Of_Line
+       (This : in out Terminal);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cursor_tab_left(int count=1);
+</pre></td>
+<td><pre>
+procedure Cursor_Tab_Left
+       (This  : in out Terminal;
+        Count : in     Positive := 1);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cursor_tab_right(int count=1);
+</pre></td>
+<td><pre>
+procedure Cursor_Tab_Right
+       (This  : in out Terminal;
+        Count : in     Positive := 1);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cursor_up(int count=1, bool do_scroll=false);
+</pre></td>
+<td><pre>
+procedure Cursor_Up
+       (This   : in out Terminal;
+        Count  : in     Positive := 1;
+        Scroll : in     Boolean  := False);
 </pre></td>
   </tr>
 
@@ -813,6 +923,26 @@ void reset_terminal();
 </pre></td>
 <td><pre>
 procedure Reset_Terminal
+       (This : in out Terminal);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void restore_cursor(void);
+</pre></td>
+<td><pre>
+procedure Restore_Cursor
+       (This : in out Terminal);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void save_cursor(void);
+</pre></td>
+<td><pre>
+procedure Save_Cursor
        (This : in out Terminal);
 </pre></td>
   </tr>

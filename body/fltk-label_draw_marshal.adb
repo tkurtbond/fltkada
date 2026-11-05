@@ -6,7 +6,6 @@
 
 with
 
-    Ada.Assertions,
     FLTK.Hook_Exceptions,
     FLTK.Labels,
     FLTK.Registry,
@@ -20,11 +19,6 @@ use type
 
 
 package body FLTK.Label_Draw_Marshal is
-
-
-    package Chk renames Ada.Assertions;
-
-
 
 
     Draw_Array    : array (Label_Kind) of FLTK.Static.Label_Draw_Function;
@@ -46,7 +40,14 @@ package body FLTK.Label_Draw_Marshal is
     is
         My_Label : access FLTK.Labels.Label'Class;
     begin
-        pragma Assert (FLTK.Registry.Label_Store.Contains (L));
+        --  Checked here, and not by a handler around the call, so that the
+        --  program's own exceptions aren't taken for FLTK's (FLTKAda-BUGS.md 45).
+        if not FLTK.Registry.Label_Store.Contains (L) then
+            Hook_Exceptions.Save_New
+               (Internal_FLTK_Error'Identity,
+                "Label_Draw_Hook was handed Label with no back reference to Ada in registry");
+            return;
+        end if;
         My_Label := FLTK.Registry.Label_Store.Element (L);
         Draw_Array (My_Label.Get_Kind)
            (My_Label.all,
@@ -54,10 +55,6 @@ package body FLTK.Label_Draw_Marshal is
             Integer (W), Integer (H),
             Alignment (A));
     exception
-    when Chk.Assertion_Error =>
-        Hook_Exceptions.Save_New
-           (Internal_FLTK_Error'Identity,
-            "Label_Draw_Hook was handed Label with no back reference to Ada in registry");
     when Occurrence : others =>
         Hook_Exceptions.Save (Occurrence);
     end Label_Draw_Hook;
@@ -74,16 +71,19 @@ package body FLTK.Label_Draw_Marshal is
     is
         My_Label : access FLTK.Labels.Label'Class;
     begin
-        pragma Assert (FLTK.Registry.Label_Store.Contains (L));
+        W := 0;
+        H := 0;
+        if not FLTK.Registry.Label_Store.Contains (L) then
+            Hook_Exceptions.Save_New
+               (Internal_FLTK_Error'Identity,
+                "Label_Measure_Hook was handed Label with no back reference to Ada in registry");
+            return;
+        end if;
         My_Label := FLTK.Registry.Label_Store.Element (L);
         Measure_Array (My_Label.Get_Kind)
            (My_Label.all,
             Integer (W), Integer (H));
     exception
-    when Chk.Assertion_Error =>
-        Hook_Exceptions.Save_New
-           (Internal_FLTK_Error'Identity,
-            "Label_Measure_Hook was handed Label with no back reference to Ada in registry");
     when Occurrence : others =>
         Hook_Exceptions.Save (Occurrence);
     end Label_Measure_Hook;

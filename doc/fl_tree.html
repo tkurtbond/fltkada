@@ -143,6 +143,53 @@ function Insert
 
   <tr>
 <td><pre>
+Fl_Image* closeicon() const;
+</pre></td>
+<td><pre>
+function Get_Close_Icon
+       (This : in Tree)
+    return access FLTK.Images.Image'Class;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void closeicon(Fl_Image *val);
+</pre></td>
+<td><pre>
+procedure Set_Close_Icon
+       (This : in out Tree;
+        Icon : in     FLTK.Images.Image'Class);
+
+procedure Clear_Close_Icon
+       (This : in out Tree);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int hposition() const;
+</pre></td>
+<td><pre>
+function Get_H_Position
+       (This : in Tree)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void hposition(int pos);
+</pre></td>
+<td><pre>
+procedure Set_H_Position
+       (This  : in out Tree;
+        Value : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 Fl_Tree_Item *insert_above(Fl_Tree_Item *above, const char *name);
 </pre></td>
 <td><pre>
@@ -198,6 +245,53 @@ function Find
        (This : in Tree;
         Path : in String)
     return FLTK.Tree_Items.Tree_Item;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Color item_labelbgcolor(void) const;
+</pre></td>
+<td><pre>
+function Get_Item_Label_BG_Color
+       (This : in Tree)
+    return Color;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void item_labelbgcolor(Fl_Color val);
+</pre></td>
+<td><pre>
+procedure Set_Item_Label_BG_Color
+       (This : in out Tree;
+        Hue  : in     Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Image* openicon() const;
+</pre></td>
+<td><pre>
+function Get_Open_Icon
+       (This : in Tree)
+    return access FLTK.Images.Image'Class;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void openicon(Fl_Image *val);
+</pre></td>
+<td><pre>
+procedure Set_Open_Icon
+       (This : in out Tree;
+        Icon : in     FLTK.Images.Image'Class);
+
+procedure Clear_Open_Icon
+       (This : in out Tree);
 </pre></td>
   </tr>
 
@@ -382,6 +476,28 @@ function Selected_Items
 
   <tr>
 <td><pre>
+int scrollbar_size() const;
+</pre></td>
+<td><pre>
+function Get_Scrollbar_Size
+       (This : in Tree)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void scrollbar_size(int size);
+</pre></td>
+<td><pre>
+procedure Set_Scrollbar_Size
+       (This  : in out Tree;
+        Value : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 int showroot() const;
 void showroot(int val);
 </pre></td>
@@ -557,6 +673,53 @@ function Get_Item_Draw_Mode
 procedure Set_Item_Draw_Mode
        (This : in out Tree;
         Mode : in     FLTK.Tree_Items.Item_Draw_Mode);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Image* usericon() const;
+</pre></td>
+<td><pre>
+function Get_User_Icon
+       (This : in Tree)
+    return access FLTK.Images.Image'Class;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void usericon(Fl_Image *val);
+</pre></td>
+<td><pre>
+procedure Set_User_Icon
+       (This : in out Tree;
+        Icon : in     FLTK.Images.Image'Class);
+
+procedure Clear_User_Icon
+       (This : in out Tree);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int vposition() const;
+</pre></td>
+<td><pre>
+function Get_V_Position
+       (This : in Tree)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void vposition(int pos);
+</pre></td>
+<td><pre>
+procedure Set_V_Position
+       (This  : in out Tree;
+        Value : in     Integer);
 </pre></td>
   </tr>
 

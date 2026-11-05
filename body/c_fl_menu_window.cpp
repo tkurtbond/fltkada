@@ -7,6 +7,7 @@
 #include <FL/Fl_Menu_Window.H>
 #include "c_fl_menu_window.h"
 #include "c_fl_window.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -22,9 +23,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Menu_Window : public Fl_Menu_Window {
+class My_Menu_Window : public Ada_Resizing<Fl_Menu_Window> {
 public:
-    using Fl_Menu_Window::Fl_Menu_Window;
+    using Ada_Resizing<Fl_Menu_Window>::Ada_Resizing;
 
     ~My_Menu_Window() { window_shape_gone(this); }
 

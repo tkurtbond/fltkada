@@ -45,6 +45,11 @@ extern "C" void fl_ask_message_font(int f, int s);
 extern "C" void * fl_ask_message_icon(void);
 extern "C" void fl_ask_message_title(const char * t);
 extern "C" void fl_ask_message_title_default(const char * t);
+extern "C" void fl_ask_message_icon_label(const char * t);
+extern "C" void fl_ask_message_icon_label_default(const char * t);
+extern "C" void fl_ask_set_message_position(int x, int y, int c);
+extern "C" void fl_ask_set_message_position_over(void * w);
+extern "C" int fl_ask_get_message_position(int &x, int &y);
 
 
 #endif

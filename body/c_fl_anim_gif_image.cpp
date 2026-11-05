@@ -6,6 +6,8 @@
 
 #include <FL/Fl_Anim_GIF_Image.H>
 #include <FL/Fl_Widget.H>
+#include <FL/fl_utf8.h>
+#include <stdio.h>
 #include <set>
 #include "c_fl_anim_gif_image.h"
 #include "c_fl_image_check.h"
@@ -18,6 +20,31 @@
 //  it invalid, failed with ERR_FORMAT and cleared, as any bad file does
 //  (Fl_Anim_GIF_Image.cxx:1041-1080).
 static const unsigned char no_frames[] = {'G', 'I', 'F', '8', '9', 'a', 1, 0, 1, 0, 0, 0, 0, ';'};
+
+//  A file that can't be read fails with ERR_FORMAT, not ERR_FILE_ACCESS:
+//  Fl_Anim_GIF_Image::load sets ERR_FORMAT on any failure, over what
+//  Fl_GIF_Image set (Fl_Anim_GIF_Image.cxx:1072-1076, F25), and no_frames
+//  is a format failure too.  This puts the access failure back.
+//  Fl_Image::ld(int) is protected; a pointer to it may be formed through
+//  a derived class.
+struct Set_Ld : Fl_Anim_GIF_Image {
+    static void to(Fl_Anim_GIF_Image * a, int v) {
+        void (Fl_Image::*set)(int) = &Set_Ld::ld;
+        (a->*set)(v);
+    }
+};
+
+static void mark_access(Fl_Anim_GIF_Image * a, const char * f) {
+    if (a->valid() || f == 0) {
+        return;
+    }
+    FILE *fp = fl_fopen(f, "rb");
+    if (fp == 0) {
+        Set_Ld::to(a, Fl_Image::ERR_FILE_ACCESS);
+    } else {
+        fclose(fp);
+    }
+}
 
 static bool anim_ok(const char * n, const void * d, size_t s) {
     return d == 0 ? gif_file_ok(n, true) : gif_data_ok(static_cast<const unsigned char*>(d), s,
@@ -88,6 +115,7 @@ ANIMGIFIMAGE new_fl_anim_gif_image(const char * f, void * c, unsigned short l) {
         Fl_Anim_GIF_Image *a = anim_ok(f, 0, 0)
             ? new Fl_Anim_GIF_Image(f, static_cast<Fl_Widget*>(c), l)
             : new Fl_Anim_GIF_Image(f, no_frames, sizeof no_frames, static_cast<Fl_Widget*>(c), l);
+        mark_access(a, f);
         note_canvas(a);
         return a;
     } catch (...) {
@@ -169,9 +197,16 @@ int fl_anim_gif_image_load(ANIMGIFIMAGE a, const char * n, void * d, size_t s) {
     try {
         if (!anim_ok(n, d, s)) {
             an->load(null_if_empty(n), no_frames, sizeof no_frames);
+            if (d == 0) {
+                mark_access(an, n);
+            }
             return 0;
         }
-        return an->load(null_if_empty(n), static_cast<const unsigned char*>(d), s);
+        int ok = an->load(null_if_empty(n), static_cast<const unsigned char*>(d), s);
+        if (d == 0) {
+            mark_access(an, n);
+        }
+        return ok;
     } catch (...) {
         an->load(null_if_empty(n), no_frames, sizeof no_frames);
         return 0;

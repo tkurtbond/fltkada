@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Tree.H>
 #include "c_fl_tree.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -96,9 +97,9 @@ void fl_tree_forget(TREE t, TREEITEM item, int below) {
 
 //  Attaching all relevant hooks and friends
 
-class My_Tree : public Fl_Tree {
+class My_Tree : public Ada_Resizing<Fl_Tree> {
 public:
-    using Fl_Tree::Fl_Tree;
+    using Ada_Resizing<Fl_Tree>::Ada_Resizing;
 
     friend void fl_tree_draw(TREE n);
     friend int fl_tree_handle(TREE n, int e);
@@ -170,10 +171,14 @@ TREEITEM fl_tree_insert_above(TREE t, TREEITEM above, const char * name) {
     return static_cast<Fl_Tree*>(t)->insert_above(static_cast<Fl_Tree_Item*>(above), name);
 }
 
-//  Whether an item of tree t shows img as its user icon, or as the one it
-//  shows while inactive (pofltk 78).
+//  Whether tree t shows img as its open, close or user icon, or an item of
+//  it shows img as its user icon, or as the one it shows while inactive
+//  (pofltk 78).
 int fl_tree_shows_icon(TREE t, void * img) {
     Fl_Tree * tr = static_cast<Fl_Tree*>(t);
+    if (tr->openicon() == img || tr->closeicon() == img || tr->usericon() == img) {
+        return 1;
+    }
     for (Fl_Tree_Item * it = tr->first(); it != 0; it = it->next()) {
         if (it->usericon() == img || it->userdeicon() == img) {
             return 1;
@@ -360,6 +365,14 @@ void fl_tree_set_item_label_color(TREE t, unsigned int val) {
     static_cast<Fl_Tree*>(t)->item_labelfgcolor(val);
 }
 
+unsigned int fl_tree_get_item_label_bgcolor(TREE t) {
+    return static_cast<Fl_Tree*>(t)->item_labelbgcolor();
+}
+
+void fl_tree_set_item_label_bgcolor(TREE t, unsigned int val) {
+    static_cast<Fl_Tree*>(t)->item_labelbgcolor(val);
+}
+
 int fl_tree_get_margin_left(TREE t) {
     return static_cast<Fl_Tree*>(t)->marginleft();
 }
@@ -398,6 +411,58 @@ int fl_tree_get_select_box(TREE t) {
 
 void fl_tree_set_select_box(TREE t, int val) {
     static_cast<Fl_Tree*>(t)->selectbox(static_cast<Fl_Boxtype>(val));
+}
+
+//  The tree's open (what 0), close (1) or user (2) icon.  Fl_Tree_Prefs
+//  keeps img's pointer, and makes and deletes an inactive copy of it
+//  (Fl_Tree_Prefs.cxx:63-90, Fl_Tree_Prefs.H:320-330), so img must outlive
+//  its use and must not be a shared image (pofltk 78, 84).
+void * fl_tree_get_icon(TREE t, int what) {
+    Fl_Tree * tr = static_cast<Fl_Tree*>(t);
+    return what == 0 ? tr->openicon() : what == 1 ? tr->closeicon() : tr->usericon();
+}
+
+void fl_tree_set_icon(TREE t, int what, void * img) {
+    Fl_Tree * tr = static_cast<Fl_Tree*>(t);
+    Fl_Image * i = static_cast<Fl_Image*>(img);
+    switch (what) {
+    case 0:
+        tr->openicon(i);
+        break;
+    case 1:
+        tr->closeicon(i);
+        break;
+    default:
+        tr->usericon(i);
+        break;
+    }
+}
+
+
+
+
+int fl_tree_get_vposition(TREE t) {
+    return static_cast<Fl_Tree*>(t)->vposition();
+}
+
+void fl_tree_set_vposition(TREE t, int pos) {
+    static_cast<Fl_Tree*>(t)->vposition(pos);
+}
+
+int fl_tree_get_hposition(TREE t) {
+    return static_cast<Fl_Tree*>(t)->hposition();
+}
+
+void fl_tree_set_hposition(TREE t, int pos) {
+    static_cast<Fl_Tree*>(t)->hposition(pos);
+}
+
+int fl_tree_get_scrollbar_size(TREE t) {
+    return static_cast<Fl_Tree*>(t)->scrollbar_size();
+}
+
+void fl_tree_set_scrollbar_size(TREE t, int size) {
+    static_cast<Fl_Tree*>(t)->scrollbar_size(size);
 }
 
 

@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Pack.H>
 #include "c_fl_pack.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -21,9 +22,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Pack : public Fl_Pack {
+class My_Pack : public Ada_Resizing<Fl_Pack> {
 public:
-    using Fl_Pack::Fl_Pack;
+    using Ada_Resizing<Fl_Pack>::Ada_Resizing;
 
     friend void fl_pack_draw(PACK n);
     friend int fl_pack_handle(PACK n, int e);

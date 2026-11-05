@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Browser_.H>
 #include "c_fl_browser_.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -69,9 +70,9 @@ public:
 
 //  Attaching all relevant hooks and friends
 
-class My_Browser_ : public Fl_Browser_ {
+class My_Browser_ : public Ada_Resizing<Fl_Browser_> {
 public:
-    using Fl_Browser_::Fl_Browser_;
+    using Ada_Resizing<Fl_Browser_>::Ada_Resizing;
     friend ABSTRACTBROWSER new_fl_abstract_browser(int x, int y, int w, int h, char * label);
 
     friend int fl_abstract_browser_full_width(ABSTRACTBROWSER b);
@@ -333,7 +334,7 @@ void fl_abstract_browser_set_textsize(ABSTRACTBROWSER b, int s) {
 
 
 void fl_abstract_browser_resize(ABSTRACTBROWSER b, int x, int y, int w, int h) {
-    static_cast<Fl_Browser_*>(b)->resize(x, y, w, h);
+    ada_default_resize(static_cast<Fl_Widget*>(b), x, y, w, h);
 }
 
 void fl_abstract_browser_bbox(ABSTRACTBROWSER b, int &x, int &y, int &w, int &h) {

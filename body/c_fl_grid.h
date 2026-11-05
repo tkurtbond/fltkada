@@ -53,6 +53,13 @@ extern "C" int fl_grid_set_widget2(GRID g, void * w, int r, int c, int rs, int c
     unsigned short a);
 
 
+extern "C" void * fl_grid_cell_widget(GRID g, int r, int c);
+extern "C" int fl_grid_get_cell(GRID g, void * w, int * r, int * c, int * rs, int * cs,
+    unsigned short * a, int * mw, int * mh);
+extern "C" int fl_grid_set_cell_align(GRID g, void * w, unsigned short a);
+extern "C" int fl_grid_set_cell_minimum_size(GRID g, void * w, int mw, int mh);
+
+
 extern "C" void fl_grid_set_col_width(GRID g, int c, int v);
 extern "C" void fl_grid_set_col_width2(GRID g, const int * v, size_t s);
 extern "C" int fl_grid_get_col_width(GRID g, int c);

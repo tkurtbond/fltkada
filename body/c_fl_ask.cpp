@@ -6,6 +6,7 @@
 
 #include <string>
 #include <FL/fl_ask.H>
+#include <FL/Fl_Box.H>
 #include <FL/fl_show_colormap.H>
 #include <FL/Fl_File_Chooser.H>
 #include <FL/Fl_Color_Chooser.H>
@@ -161,6 +162,38 @@ void fl_ask_message_title(const char * t) {
 
 void fl_ask_message_title_default(const char * t) {
     fl_message_title_default(t);
+}
+
+//  fl_message_icon_label keeps its pointer until the next dialog copies it
+//  (Fl_Message.cxx:169-171, 561-563), so the shim keeps the text.
+static std::string icon_label;
+
+void fl_ask_message_icon_label(const char * t) {
+    try {
+        icon_label = t;
+        fl_message_icon_label(*t ? icon_label.c_str() : 0);
+    } catch (...) {
+        fl_message_icon_label(0);
+    }
+}
+
+//  The icon template's label, which every dialog copies (Fl_Message.cxx:172-173).
+void fl_ask_message_icon_label_default(const char * t) {
+    fl_message_icon()->copy_label(*t ? t : 0);
+}
+
+void fl_ask_set_message_position(int x, int y, int c) {
+    fl_message_position(x, y, c);
+}
+
+//  FLTK works out the position at once and keeps no pointer to the widget
+//  (Fl_Message.h:117-127).
+void fl_ask_set_message_position_over(void * w) {
+    fl_message_position(static_cast<Fl_Widget*>(w));
+}
+
+int fl_ask_get_message_position(int &x, int &y) {
+    return fl_message_position(&x, &y);
 }
 
 

@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Multiline_Output.H>
 #include "c_fl_multiline_output.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -21,9 +22,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Multiline_Output : public Fl_Multiline_Output {
+class My_Multiline_Output : public Ada_Resizing<Fl_Multiline_Output> {
 public:
-    using Fl_Multiline_Output::Fl_Multiline_Output;
+    using Ada_Resizing<Fl_Multiline_Output>::Ada_Resizing;
 
     friend void fl_multiline_output_draw(MULTILINEOUTPUT i);
     friend int fl_multiline_output_handle(MULTILINEOUTPUT i, int e);

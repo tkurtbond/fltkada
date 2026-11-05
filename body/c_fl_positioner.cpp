@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Positioner.H>
 #include "c_fl_positioner.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -33,9 +34,9 @@ public:
 
 //  Attaching all relevant hooks and friends
 
-class My_Positioner : public Fl_Positioner {
+class My_Positioner : public Ada_Resizing<Fl_Positioner> {
 public:
-    using Fl_Positioner::Fl_Positioner;
+    using Ada_Resizing<Fl_Positioner>::Ada_Resizing;
 
     friend void fl_positioner_draw(POSITIONER p);
     friend int fl_positioner_handle(POSITIONER p, int e);

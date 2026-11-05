@@ -325,20 +325,31 @@ when nothing overrides it.
 
 `Handle` works identically via `Handle_Ptr`/`fl_box_handle`.
 
-`resize()` is a third virtual that a few widgets route back into Ada
-the same way, so that an Ada override of `Resize` is called when FLTK
-resizes the widget (e.g. as part of a window or group layout).
-`FLTK.Widgets` exports `Resize_Hook` as `widget_resize_hook`, and a
-shim whose `My_X` class overrides `resize()` calls it, falling back to
-the base class `resize()` while `user_data()` is still null (FLTK can
-resize a widget before the Ada side has attached itself). The leaf
-binding's own `Resize` then calls a `fl_<thing>_resize` trampoline for
-the default behaviour. Unlike `Draw`/`Handle` this is not wired into
-every widget: only `Box`, `Table` and `Table_Row` have it so far, so an
-Ada `Resize` override on any other widget type is only called when Ada
-code calls it. Adding it to another widget means adding the `resize()`
-override and the `fl_<thing>_resize` trampoline to that widget's shim,
-and an overriding `Resize` to its Ada package.
+`resize()` is a third virtual routed back into Ada, so that an Ada
+override of `Resize` is called when FLTK resizes the widget, as a
+window or a group lays out its children. It works differently from
+`Draw`/`Handle`, as pofltk's `W` template does (Phase 12). Every
+widget's `My_X` derives from `Ada_Resizing<Fl_X>` (`c_fl_widget.h`)
+instead of `Fl_X` directly, and inherits its constructors with
+`using Ada_Resizing<Fl_X>::Ada_Resizing;`. `Ada_Resizing`'s `resize()`
+calls `widget_resize_hook`, which `FLTK.Widgets` exports from
+`Resize_Hook`. Before the Ada side has set `user_data()`, it calls
+`base_resize()` instead, since FLTK can resize a widget before then.
+`base_resize()` is `Fl_X::resize()`; `My_Help_View` and `My_Terminal`
+override it to do their own bookkeeping as well. Each Ada `Resize`
+default (`Widget`'s, and the overriding ones in `Box`, `Group`,
+`Window`, `Table` and the others) calls its `fl_<thing>_resize`, which
+calls `ada_default_resize`. That finds the `Ada_Resizer` by
+`dynamic_cast` and calls `base_resize()`, not the virtual `resize()`,
+which would come back to Ada. So an override that calls the default
+runs once, whether FLTK or Ada started the resize. A widget FLTK made
+has no `Ada_Resizer`, and gets the virtual `resize()`. The two-argument
+`Resize` is FLTK's `size()`, which calls the virtual `resize()`, so it
+reaches an override of the four-argument one.
+`test/unit/test_resize_hook.adb` checks all of this. A new widget
+binding needs nothing more than the `Ada_Resizing` base, and a
+`fl_<thing>_resize` that calls `ada_default_resize` if its Ada package
+overrides `Resize`.
 
 ### 2.6 Callbacks: not the same mechanism as `Draw`/`Handle`
 
@@ -399,7 +410,14 @@ image format (§7.2) is materially simpler than adding a widget.
 ### 3.2 `Labels` and `FLTK.Registry`
 
 Most bound objects use FLTK's own `user_data()` slot to store their Ada
-back-reference (§2.4). A few things FLTK exposes — labels in
+back-reference (§2.4). A widget FLTK made itself, such as a dialog's
+window, a file chooser's window or a terminal's scrollbar, has user data
+of its own or none, so the shim also keeps a table of the widgets
+`fl_widget_set_user_data` gave an Ada object, and
+`fl_widget_get_user_data` returns 0 for any other widget
+(`body/c_fl_widget.cpp`, FLTKAda-BUGS.md 51). Code that turns a C++
+widget into its Ada object must treat 0 as "a widget FLTK made", never
+as a pointer. A few things FLTK exposes — labels in
 particular — have no such slot built in. For those, the private
 `FLTK.Registry` package keeps a side table:
 
@@ -569,7 +587,8 @@ constructor arguments."
    `FLTK.Widgets.Buttons`).
 2. **C++ shim** (`body/c_fl_<name>.h`/`.cpp`): opaque typedef,
    `new_fl_<name>[N]`/`free_fl_<name>` for each constructor overload you
-   intend to bind, a `My_<Name> : public Fl_<Name>` subclass overriding
+   intend to bind, a `My_<Name> : public Ada_Resizing<Fl_<Name>>`
+   subclass (which sends `resize()` to Ada, §2.5) overriding
    `draw()`/`handle()` to call `widget_draw_hook`/`widget_handle_hook`
    (copy verbatim — every widget's is identical), and
    `fl_<name>_draw`/`fl_<name>_handle` trampolines that call
@@ -795,7 +814,4 @@ the binding:
   docs, not to the compiler) — double check before touching
   `FLTK.Widgets.Groups.Tables`.
 * Several "Incomplete APIs" remain deliberately partial:
-  `FLTK.Images.Pixmaps` (unmarshalling raw pixmap data),
-  `FLTK.Images.Shared` (`images()`, `compare`), `FLTK.Text_Buffers` (a
-  few functions, some protected internals, and "ensure buffer is
-  1-indexed" — also noted for `FLTK.Widgets.Groups.Text_Displays`).
+  see `progress.txt`.

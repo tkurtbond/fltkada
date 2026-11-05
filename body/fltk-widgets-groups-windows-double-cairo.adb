@@ -6,7 +6,6 @@
 
 with
 
-    Ada.Assertions,
     FLTK.Hook_Exceptions,
     Interfaces.C,
     System.Address_To_Access_Conversions;
@@ -17,11 +16,6 @@ use type
 
 
 package body FLTK.Widgets.Groups.Windows.Double.Cairo is
-
-
-    package Chk renames Ada.Assertions;
-
-
 
 
     ------------------------
@@ -96,15 +90,19 @@ package body FLTK.Widgets.Groups.Windows.Double.Cairo is
         Ada_Object : constant access Cairo_Window'Class :=
             Cairo_Convert.To_Pointer (Ada_Addr);
     begin
-        pragma Assert (Ada_Object /= null);
+        --  Checked here, and not by a handler around the call, so that the
+        --  program's own exceptions aren't taken for FLTK's (FLTKAda-BUGS.md 45).
+        if Ada_Object = null then
+            Hook_Exceptions.Save_New
+               (Internal_FLTK_Error'Identity,
+                "Fl_Cairo_Window draw hook received Widget with no user_data reference " &
+                "back to Ada");
+            return;
+        end if;
         if Ada_Object.My_Func /= null then
             Ada_Object.My_Func (Cairo_Window (Ada_Object.all), Storage.To_Address (Cairo_Addr));
         end if;
     exception
-    when Chk.Assertion_Error =>
-        Hook_Exceptions.Save_New
-           (Internal_FLTK_Error'Identity,
-            "Fl_Cairo_Window draw hook received Widget with no user_data reference back to Ada");
     when Occurrence : others =>
         Hook_Exceptions.Save (Occurrence);
     end Cairo_Draw_Hook;

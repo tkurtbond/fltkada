@@ -157,8 +157,10 @@ package FLTK.Images.Pixmaps.GIF.Animated is
            (This : in Animated_GIF_Image)
         return Boolean;
 
-    --  Zero after a successful load, otherwise the raw negative FLTK
-    --  image error code (-1 no image, -2 file access, -3 format).
+    --  Zero after a successful load, otherwise the negative FLTK image
+    --  error code: -1 for no image (as before any load), -2 for a file
+    --  that can't be read (which FLTK itself reports as -3, F25), -3 for
+    --  a bad format.
     function Fail_Code
            (This : in Animated_GIF_Image)
         return Integer;

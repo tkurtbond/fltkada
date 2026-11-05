@@ -70,6 +70,22 @@ procedure Test_Statics_Core is
     end Show_It;
 
 
+    procedure Get_Awake_Action is
+        Ignore : constant Sta.Awake_Handler := Sta.Get_Awake_Handler;
+    begin
+        null;
+    end Get_Awake_Action;
+
+    procedure Add_Awake_Action is
+    begin
+        Sta.Add_Awake_Handler (Count_Idle'Unrestricted_Access);
+    end Add_Awake_Action;
+
+    procedure Awake_Action is
+    begin
+        Sta.Awake (Count_Idle'Unrestricted_Access);
+    end Awake_Action;
+
     procedure Test_Loop is
     begin
         Sta.Add_Check (Count_Check'Unrestricted_Access);
@@ -94,6 +110,29 @@ procedure Test_Statics_Core is
         Check (Sta.Get_Program_Should_Quit, "Set_Program_Should_Quit");
         Sta.Set_Program_Should_Quit (False);
         Check (not Sta.Get_Program_Should_Quit, "and back");
+
+        Raises (Get_Awake_Action'Access, Tasking_Error'Identity,
+                "Get_Awake_Handler with nothing waiting raises Tasking_Error (FLTKAda-BUGS.md 84)");
+
+        --  FLTK's ring holds 1023 (Fl_lock.cxx:66, 85-91).
+        for N in 1 .. 1023 loop
+            Sta.Add_Awake_Handler (Count_Idle'Unrestricted_Access);
+        end loop;
+        Raises (Add_Awake_Action'Access, Tasking_Error'Identity,
+                "Add_Awake_Handler with the ring full raises Tasking_Error (84)");
+        Raises (Awake_Action'Access, Tasking_Error'Identity, "and so does Awake (84)");
+        declare
+            use type Sta.Awake_Handler;
+            Same : Natural := 0;
+        begin
+            for N in 1 .. 1023 loop
+                if Sta.Get_Awake_Handler = Count_Idle'Unrestricted_Access then
+                    Same := Same + 1;
+                end if;
+            end loop;
+            Check (Same = 1023, "Get_Awake_Handler gives back each one:" & Natural'Image (Same));
+        end;
+        Raises (Get_Awake_Action'Access, Tasking_Error'Identity, "and then nothing is waiting");
     end Test_Loop;
 
 

@@ -25,6 +25,10 @@ extern "C" void fl_clock_output_set_value(CLOCKOUTPUT c, unsigned long v);
 extern "C" void fl_clock_output_set_value2(CLOCKOUTPUT c, int h, int m, int s);
 
 
+extern "C" int fl_clock_output_get_shadow(CLOCKOUTPUT c);
+extern "C" void fl_clock_output_set_shadow(CLOCKOUTPUT c, int s);
+
+
 extern "C" void fl_clock_output_draw(CLOCKOUTPUT c);
 extern "C" void fl_clock_output_draw2(CLOCKOUTPUT c, int x, int y, int w, int h);
 extern "C" int fl_clock_output_handle(CLOCKOUTPUT c, int e);

@@ -7,6 +7,7 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Text_Editor.H>
 #include "c_fl_text_editor.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -33,9 +34,9 @@ public:
 
 //  Attaching all relevant hooks and friends
 
-class My_Text_Editor : public Fl_Text_Editor {
+class My_Text_Editor : public Ada_Resizing<Fl_Text_Editor> {
 public:
-    using Fl_Text_Editor::Fl_Text_Editor;
+    using Ada_Resizing<Fl_Text_Editor>::Ada_Resizing;
 
     friend void fl_text_editor_draw(TEXTEDITOR te);
     friend int fl_text_editor_handle(TEXTEDITOR te, int e);

@@ -212,6 +212,32 @@ package body FLTK.Asks is
     pragma Import (C, fl_ask_message_title_default, "fl_ask_message_title_default");
     pragma Inline (fl_ask_message_title_default);
 
+    procedure fl_ask_message_icon_label
+           (T : in Interfaces.C.char_array);
+    pragma Import (C, fl_ask_message_icon_label, "fl_ask_message_icon_label");
+    pragma Inline (fl_ask_message_icon_label);
+
+    procedure fl_ask_message_icon_label_default
+           (T : in Interfaces.C.char_array);
+    pragma Import (C, fl_ask_message_icon_label_default, "fl_ask_message_icon_label_default");
+    pragma Inline (fl_ask_message_icon_label_default);
+
+    procedure fl_ask_set_message_position
+           (X, Y, C : in Interfaces.C.int);
+    pragma Import (C, fl_ask_set_message_position, "fl_ask_set_message_position");
+    pragma Inline (fl_ask_set_message_position);
+
+    procedure fl_ask_set_message_position_over
+           (W : in Storage.Integer_Address);
+    pragma Import (C, fl_ask_set_message_position_over, "fl_ask_set_message_position_over");
+    pragma Inline (fl_ask_set_message_position_over);
+
+    function fl_ask_get_message_position
+           (X, Y : out Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_ask_get_message_position, "fl_ask_get_message_position");
+    pragma Inline (fl_ask_get_message_position);
+
 
 
 
@@ -743,6 +769,56 @@ package body FLTK.Asks is
     begin
         fl_ask_message_title_default (Interfaces.C.To_C (To));
     end Set_Message_Title_Default;
+
+
+    procedure Set_Message_Icon_Label
+           (To : in String) is
+    begin
+        fl_ask_message_icon_label (Interfaces.C.To_C (To));
+    end Set_Message_Icon_Label;
+
+
+    procedure Set_Message_Icon_Label_Default
+           (To : in String) is
+    begin
+        fl_ask_message_icon_label_default (Interfaces.C.To_C (To));
+    end Set_Message_Icon_Label_Default;
+
+
+    procedure Set_Message_Position
+           (X, Y     : in Integer;
+            Centered : in Boolean := False) is
+    begin
+        fl_ask_set_message_position
+           (Interfaces.C.int (X), Interfaces.C.int (Y), Boolean'Pos (Centered));
+    end Set_Message_Position;
+
+
+    procedure Set_Message_Position_Over
+           (Item : in FLTK.Widgets.Widget'Class) is
+    begin
+        if Wrapper (Item).Void_Ptr = Null_Pointer then
+            raise Program_Error with "Set_Message_Position_Over given a widget with no FLTK object";
+        end if;
+        fl_ask_set_message_position_over (Wrapper (Item).Void_Ptr);
+    end Set_Message_Position_Over;
+
+
+    procedure Get_Message_Position
+           (X, Y : out Integer;
+            Kind : out Message_Position_Kind)
+    is
+        C_X, C_Y : Interfaces.C.int;
+        Result   : constant Interfaces.C.int := fl_ask_get_message_position (C_X, C_Y);
+    begin
+        if Result not in 0 .. 2 then
+            raise Internal_FLTK_Error with
+                "fl_message_position returned unknown kind " & Interfaces.C.int'Image (Result);
+        end if;
+        X := Integer (C_X);
+        Y := Integer (C_Y);
+        Kind := Message_Position_Kind'Val (Result);
+    end Get_Message_Position;
 
 
 begin

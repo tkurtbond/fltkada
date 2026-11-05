@@ -9,6 +9,7 @@
 #include "c_fl_sys_menu_bar.h"
 #include "c_fl_menuitem.h"
 #include "c_fl_menu.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -26,9 +27,9 @@ extern "C" void menu_item_callback_hook(void * cobj, void * ud);
 
 //  Attaching all relevant hooks and friends
 
-class My_Sys_Menu_Bar : public Fl_Sys_Menu_Bar {
+class My_Sys_Menu_Bar : public Ada_Resizing<Fl_Sys_Menu_Bar> {
 public:
-    using Fl_Sys_Menu_Bar::Fl_Sys_Menu_Bar;
+    using Ada_Resizing<Fl_Sys_Menu_Bar>::Ada_Resizing;
 
     friend void fl_sys_menu_bar_draw(SYSMENUBAR m);
     friend int fl_sys_menu_bar_handle(SYSMENUBAR m, int e);
@@ -174,6 +175,28 @@ void fl_sys_menu_bar_update(SYSMENUBAR m) {
 #else
     (void)(m);
 #endif
+}
+
+
+
+
+//  These do nothing except on macOS, the only system with a driver for
+//  them (Fl_Sys_Menu_Bar.cxx).
+
+void fl_sys_menu_bar_about(void (*cb)(void*, void*)) {
+    Fl_Sys_Menu_Bar::about(reinterpret_cast<Fl_Callback*>(cb), 0);
+}
+
+int fl_sys_menu_bar_get_window_menu_style() {
+    return Fl_Sys_Menu_Bar::window_menu_style();
+}
+
+void fl_sys_menu_bar_set_window_menu_style(int s) {
+    Fl_Sys_Menu_Bar::window_menu_style(static_cast<Fl_Sys_Menu_Bar::window_menu_style_enum>(s));
+}
+
+void fl_sys_menu_bar_create_window_menu() {
+    Fl_Sys_Menu_Bar::create_window_menu();
 }
 
 

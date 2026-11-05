@@ -93,6 +93,17 @@ function Handle
 
   <tr>
 <td><pre>
+void init_size_range(int default_min_w = -1, int default_min_h = -1);
+</pre></td>
+<td><pre>
+procedure Init_Size_Range
+       (This         : in out Tiled_Group;
+        Min_W, Min_H : in     Natural := 0);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 void position(int oldx, int oldy, int newx, int newy);
 </pre></td>
 <td><pre>
@@ -111,6 +122,28 @@ void resize(int X, int Y, int W, int H);
 procedure Resize
        (This       : in out Tiled_Group;
         X, Y, W, H : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void size_range(int index, int minw, int minh,
+    int maxw=0x7FFFFFFF, int maxh=0x7FFFFFFF);
+void size_range(Fl_Widget *w, int minw, int minh,
+    int maxw=0x7FFFFFFF, int maxh=0x7FFFFFFF);
+</pre></td>
+<td><pre>
+procedure Set_Size_Range
+       (This         : in out Tiled_Group;
+        Place        : in     Index;
+        Min_W, Min_H : in     Natural;
+        Max_W, Max_H : in     Natural := Natural'Last);
+
+procedure Set_Size_Range
+       (This         : in out Tiled_Group;
+        Item         : in     Widget'Class;
+        Min_W, Min_H : in     Natural;
+        Max_W, Max_H : in     Natural := Natural'Last);
 </pre></td>
   </tr>
 

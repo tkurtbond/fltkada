@@ -58,6 +58,30 @@ package body FLTK.Tree_Items is
     pragma Import (C, fl_tree_item_set_labelsize, "fl_tree_item_set_labelsize");
     pragma Inline (fl_tree_item_set_labelsize);
 
+    function fl_tree_item_get_labelfgcolor
+           (TI : in Storage.Integer_Address)
+        return Interfaces.C.unsigned;
+    pragma Import (C, fl_tree_item_get_labelfgcolor, "fl_tree_item_get_labelfgcolor");
+    pragma Inline (fl_tree_item_get_labelfgcolor);
+
+    procedure fl_tree_item_set_labelfgcolor
+           (TI : in Storage.Integer_Address;
+            C  : in Interfaces.C.unsigned);
+    pragma Import (C, fl_tree_item_set_labelfgcolor, "fl_tree_item_set_labelfgcolor");
+    pragma Inline (fl_tree_item_set_labelfgcolor);
+
+    function fl_tree_item_get_labelbgcolor
+           (TI : in Storage.Integer_Address)
+        return Interfaces.C.unsigned;
+    pragma Import (C, fl_tree_item_get_labelbgcolor, "fl_tree_item_get_labelbgcolor");
+    pragma Inline (fl_tree_item_get_labelbgcolor);
+
+    procedure fl_tree_item_set_labelbgcolor
+           (TI : in Storage.Integer_Address;
+            C  : in Interfaces.C.unsigned);
+    pragma Import (C, fl_tree_item_set_labelbgcolor, "fl_tree_item_set_labelbgcolor");
+    pragma Inline (fl_tree_item_set_labelbgcolor);
+
     function fl_tree_item_label_x
            (TI : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -378,6 +402,37 @@ package body FLTK.Tree_Items is
     begin
         fl_tree_item_set_labelsize (This.Void_Ptr, Interfaces.C.int (Size));
     end Set_Label_Size;
+
+    function Get_Label_FG_Color
+           (This : in Tree_Item)
+        return Color is
+    begin
+        return Color (fl_tree_item_get_labelfgcolor (This.Void_Ptr));
+    end Get_Label_FG_Color;
+
+
+    procedure Set_Label_FG_Color
+           (This : in Tree_Item;
+            Hue  : in Color) is
+    begin
+        fl_tree_item_set_labelfgcolor (This.Void_Ptr, Interfaces.C.unsigned (Hue));
+    end Set_Label_FG_Color;
+
+
+    function Get_Label_BG_Color
+           (This : in Tree_Item)
+        return Color is
+    begin
+        return Color (fl_tree_item_get_labelbgcolor (This.Void_Ptr));
+    end Get_Label_BG_Color;
+
+
+    procedure Set_Label_BG_Color
+           (This : in Tree_Item;
+            Hue  : in Color) is
+    begin
+        fl_tree_item_set_labelbgcolor (This.Void_Ptr, Interfaces.C.unsigned (Hue));
+    end Set_Label_BG_Color;
 
 
     function Label_X

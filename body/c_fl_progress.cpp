@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Progress.H>
 #include "c_fl_progress.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -21,9 +22,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Progress : public Fl_Progress {
+class My_Progress : public Ada_Resizing<Fl_Progress> {
 public:
-    using Fl_Progress::Fl_Progress;
+    using Ada_Resizing<Fl_Progress>::Ada_Resizing;
 
     friend void fl_progress_draw(PROGRESS p);
     friend int fl_progress_handle(PROGRESS p, int e);

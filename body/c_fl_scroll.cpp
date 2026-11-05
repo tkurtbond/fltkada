@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Scroll.H>
 #include "c_fl_scroll.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -41,9 +42,9 @@ public:
 
 //  Attaching all relevant hooks and friends
 
-class My_Scroll : public Fl_Scroll {
+class My_Scroll : public Ada_Resizing<Fl_Scroll> {
 public:
-    using Fl_Scroll::Fl_Scroll;
+    using Ada_Resizing<Fl_Scroll>::Ada_Resizing;
 
     friend void fl_scroll_draw(SCROLL s);
     friend int fl_scroll_handle(SCROLL s, int e);
@@ -119,7 +120,7 @@ void fl_scroll_set_size(SCROLL s, int t) {
 
 
 void fl_scroll_resize(SCROLL s, int x, int y, int w, int h) {
-    static_cast<Fl_Scroll*>(s)->resize(x, y, w, h);
+    ada_default_resize(static_cast<Fl_Widget*>(s), x, y, w, h);
 }
 
 void fl_scroll_recalc_scrollbars(SCROLL s,

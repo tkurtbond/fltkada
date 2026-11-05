@@ -29,6 +29,8 @@ private package FLTK.Pixmap_Marshal is
            (Value : in FLTK.Images.Pixmaps.Color_Kind)
         return Character;
 
+    --  Raises Constraint_Error if the data isn't as the header says, so
+    --  that FLTK doesn't read past it (FLTKAda-BUGS.md 77).
     function Marshal_Data
            (Values : in FLTK.Images.Pixmaps.Header;
             Colors : in FLTK.Images.Pixmaps.Color_Definition_Array;

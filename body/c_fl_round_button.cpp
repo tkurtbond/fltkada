@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Round_Button.H>
 #include "c_fl_round_button.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -21,9 +22,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Round_Button : public Fl_Round_Button {
+class My_Round_Button : public Ada_Resizing<Fl_Round_Button> {
 public:
-    using Fl_Round_Button::Fl_Round_Button;
+    using Ada_Resizing<Fl_Round_Button>::Ada_Resizing;
 
     friend void fl_round_button_draw(ROUNDBUTTON b);
     friend int fl_round_button_handle(ROUNDBUTTON b, int e);

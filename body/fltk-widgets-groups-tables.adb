@@ -708,37 +708,44 @@ package body FLTK.Widgets.Groups.Tables is
         Context : Table_Context;
         Row, Column : Natural;
     begin
-        pragma Assert (UD /= Null_Pointer);
+        --  Checked here, and not by a handler around the call, so that the
+        --  program's own exceptions aren't taken for FLTK's (FLTKAda-BUGS.md 45).
+        if UD = Null_Pointer then
+            Hook_Exceptions.Save_New
+               (Internal_FLTK_Error'Identity,
+                "User data null pointer passed to Fl_Table::draw_cell override hook");
+            return;
+        end if;
         Ada_Table := Table_Convert.To_Pointer (Storage.To_Address (UD));
-        Context := To_Context (E);
-        case Context is
-        when Row_Header =>
-            Row := Positive (R + 1);
-            Column := Natural (C);
-        when Column_Header =>
-            Row := Natural (R);
-            Column := Positive (C + 1);
-        when Within_Cell =>
-            Row := Positive (R + 1);
-            Column := Positive (C + 1);
-        when others =>
-            Row := Natural (R);
-            Column := Natural (C);
-        end case;
+        begin
+            Context := To_Context (E);
+            case Context is
+            when Row_Header =>
+                Row := Positive (R + 1);
+                Column := Natural (C);
+            when Column_Header =>
+                Row := Natural (R);
+                Column := Positive (C + 1);
+            when Within_Cell =>
+                Row := Positive (R + 1);
+                Column := Positive (C + 1);
+            when others =>
+                Row := Natural (R);
+                Column := Natural (C);
+            end case;
+        exception
+        when Constraint_Error =>
+            Hook_Exceptions.Save_New
+               (Internal_FLTK_Error'Identity,
+                "Unexpected int values passed to Fl_Table::draw_cell override hook of" &
+                Latin.LF & Latin.HT & "row = " & Interfaces.C.int'Image (R) & Latin.LF &
+                Latin.HT & "column = " & Interfaces.C.int'Image (C));
+            return;
+        end;
         Ada_Table.Draw_Cell
            (Context, Row, Column,
             Integer (X), Integer (Y), Integer (W), Integer (H));
     exception
-    when Chk.Assertion_Error =>
-        Hook_Exceptions.Save_New
-           (Internal_FLTK_Error'Identity,
-            "User data null pointer passed to Fl_Table::draw_cell override hook");
-    when Constraint_Error =>
-        Hook_Exceptions.Save_New
-           (Internal_FLTK_Error'Identity,
-            "Unexpected int values passed to Fl_Table::draw_cell override hook of" & Latin.LF &
-            Latin.HT & "row = " & Interfaces.C.int'Image (R) & Latin.LF &
-            Latin.HT & "column = " & Interfaces.C.int'Image (C));
     when Occurrence : others =>
         Hook_Exceptions.Save (Occurrence);
     end Table_Draw_Cell_Hook;

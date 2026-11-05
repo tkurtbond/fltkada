@@ -323,6 +323,18 @@ package body FLTK.Widgets.Menus is
     pragma Import (C, fl_menu_set_down_box, "fl_menu_set_down_box");
     pragma Inline (fl_menu_set_down_box);
 
+    function fl_menu_get_menu_box
+           (M : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_menu_get_menu_box, "fl_menu_get_menu_box");
+    pragma Inline (fl_menu_get_menu_box);
+
+    procedure fl_menu_set_menu_box
+           (M : in Storage.Integer_Address;
+            T : in Interfaces.C.int);
+    pragma Import (C, fl_menu_set_menu_box, "fl_menu_set_menu_box");
+    pragma Inline (fl_menu_set_menu_box);
+
     procedure fl_menu_global
            (M : in Storage.Integer_Address);
     pragma Import (C, fl_menu_global, "fl_menu_global");
@@ -454,14 +466,17 @@ package body FLTK.Widgets.Menus is
         Ada_Widget : access Widget'Class;
         Action : constant Widget_Callback := Callback_Convert.To_Access (User_Data);
     begin
-        pragma Assert (Ada_Ptr /= Null_Pointer);
+        --  Checked here, and not by a handler around the call, so that the
+        --  program's own exceptions aren't taken for FLTK's (FLTKAda-BUGS.md 45).
+        if Ada_Ptr = Null_Pointer then
+            Hook_Exceptions.Save_New
+               (Internal_FLTK_Error'Identity,
+                "Callback in Fl_Menu_ was supplied Widget pointer with no user data");
+            return;
+        end if;
         Ada_Widget := Widget_Convert.To_Pointer (Storage.To_Address (Ada_Ptr));
         Action.all (Ada_Widget.all);
     exception
-    when Chk.Assertion_Error =>
-        Hook_Exceptions.Save_New
-           (Internal_FLTK_Error'Identity,
-            "Callback in Fl_Menu_ was supplied Widget pointer with no user data");
     when Occurrence : others =>
         Hook_Exceptions.Save (Occurrence);
     end Item_Hook;
@@ -1340,6 +1355,28 @@ package body FLTK.Widgets.Menus is
     begin
         fl_menu_set_down_box (This.Void_Ptr, Box_Kind'Pos (To));
     end Set_Down_Box;
+
+
+    function Get_Menu_Box
+           (This : in Menu)
+        return Box_Kind
+    is
+        Result : constant Interfaces.C.int := fl_menu_get_menu_box (This.Void_Ptr);
+    begin
+        return Box_Kind'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Menu_::menu_box returned unexpected Box value of " &
+        Interfaces.C.int'Image (Result);
+    end Get_Menu_Box;
+
+
+    procedure Set_Menu_Box
+           (This : in out Menu;
+            To   : in     Box_Kind) is
+    begin
+        fl_menu_set_menu_box (This.Void_Ptr, Box_Kind'Pos (To));
+    end Set_Menu_Box;
 
 
     procedure Make_Global

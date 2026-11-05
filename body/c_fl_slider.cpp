@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Slider.H>
 #include "c_fl_slider.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -35,9 +36,9 @@ public:
 
 //  Attaching all relevant hooks and friends
 
-class My_Slider : public Fl_Slider {
+class My_Slider : public Ada_Resizing<Fl_Slider> {
 public:
-    using Fl_Slider::Fl_Slider;
+    using Ada_Resizing<Fl_Slider>::Ada_Resizing;
 
     friend void fl_slider_draw(SLIDER s);
     friend int fl_slider_handle(SLIDER s, int e);

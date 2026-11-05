@@ -7,6 +7,7 @@
 #include <FL/Fl_Choice.H>
 #include "c_fl_choice.h"
 #include "c_fl_menuitem.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -22,9 +23,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Choice : public Fl_Choice {
+class My_Choice : public Ada_Resizing<Fl_Choice> {
 public:
-    using Fl_Choice::Fl_Choice;
+    using Ada_Resizing<Fl_Choice>::Ada_Resizing;
 
     friend void fl_choice_draw(CHOICE n);
     friend int fl_choice_handle(CHOICE n, int e);

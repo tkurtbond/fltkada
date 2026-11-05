@@ -390,7 +390,10 @@ function Get_Label
   </tr>
 
   <tr>
-<td><pre>
+<td>An item whose label kind is Image_Label, Multi_Label or Icon_Label,
+which FLTK reads as a pointer and not as text, becomes Normal_Label, so
+the text is drawn as text (FLTKAda-BUGS.md 83).
+<pre>
 void label(const char *a);
 </pre></td>
 <td><pre>
@@ -401,7 +404,10 @@ procedure Set_Label
   </tr>
 
   <tr>
-<td><pre>
+<td>This is Set_Label (Text), then Set_Label_Kind (Kind). A Kind of
+Image_Label, Multi_Label or Icon_Label is ignored, so the text is drawn as
+text; use Set_Image or Set_Multi_Label for those (FLTKAda-BUGS.md 83).
+<pre>
 void label(Fl_Labeltype a, const char *b);
 </pre></td>
 <td><pre>
@@ -490,7 +496,12 @@ function Get_Label_Kind
   </tr>
 
   <tr>
-<td><pre>
+<td>Image_Label, Multi_Label and Icon_Label are ignored, and the kind is
+left as it is: FLTK would read the item's text as a pointer
+(FLTKAda-BUGS.md 83). Set_Image and Set_Multi_Label set those kinds. Any
+other kind given to an item showing an image or a multi-label makes it
+show its name again, as text.
+<pre>
 void labeltype(Fl_Labeltype a);
 </pre></td>
 <td><pre>

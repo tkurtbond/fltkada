@@ -25,6 +25,11 @@ extern "C" void fl_tabs_set_value(TABS t, void * w);
 extern "C" void * fl_tabs_which(TABS t, int x, int y);
 
 
+extern "C" unsigned int fl_tabs_get_tab_align(TABS t);
+extern "C" void fl_tabs_set_tab_align(TABS t, unsigned int a);
+extern "C" void fl_tabs_handle_overflow(TABS t, int o);
+
+
 extern "C" void fl_tabs_draw(TABS t);
 extern "C" void fl_tabs_redraw_tabs(TABS t);
 extern "C" int fl_tabs_handle(TABS t, int e);

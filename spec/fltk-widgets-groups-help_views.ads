@@ -17,6 +17,10 @@ package FLTK.Widgets.Groups.Help_Views is
 
     No_Position : constant Extended_Position := 0;
 
+    --  Where Copy puts the selected text.  Both_Buffers is both only on
+    --  X11; elsewhere it is the cut and paste board.
+    type Clipboard_Kind is (Selection_Buffer, Cut_Paste_Board, Both_Buffers);
+
     type Link_Callback is access function
            (Item : in out Help_View'Class;
             URI  : in     String)
@@ -55,6 +59,23 @@ package FLTK.Widgets.Groups.Help_Views is
 
     procedure Select_All
            (This : in out Help_View);
+
+    --  Whether text is selected in this view.  Only one view at a time has
+    --  a selection: selecting in another clears this one's.
+    function Has_Selection
+           (This : in Help_View)
+        return Boolean;
+
+    --  Copies the selected text, as plain UTF-8, to Destination.  The
+    --  function is False, and nothing is copied, if no text is selected.
+    procedure Copy
+           (This        : in out Help_View;
+            Destination : in     Clipboard_Kind := Cut_Paste_Board);
+
+    function Copy
+           (This        : in out Help_View;
+            Destination : in     Clipboard_Kind := Cut_Paste_Board)
+        return Boolean;
 
 
 
@@ -219,6 +240,7 @@ private
 
     pragma Inline (Clear_Selection);
     pragma Inline (Select_All);
+    pragma Inline (Has_Selection);
 
     pragma Inline (Find);
     pragma Inline (Get_Leftline_Pixel);

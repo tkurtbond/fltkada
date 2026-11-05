@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Button.H>
 #include "c_fl_button.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -41,9 +42,9 @@ public:
 
 //  Attaching all relevant hooks and friends
 
-class My_Button : public Fl_Button {
+class My_Button : public Ada_Resizing<Fl_Button> {
 public:
-    using Fl_Button::Fl_Button;
+    using Ada_Resizing<Fl_Button>::Ada_Resizing;
 
     friend void fl_button_draw(BUTTON b);
     friend int fl_button_handle(BUTTON b, int e);

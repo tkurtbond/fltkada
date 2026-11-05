@@ -78,6 +78,8 @@ extern "C" int fl_tree_get_item_label_size(TREE t);
 extern "C" void fl_tree_set_item_label_size(TREE t, int val);
 extern "C" unsigned int fl_tree_get_item_label_color(TREE t);
 extern "C" void fl_tree_set_item_label_color(TREE t, unsigned int val);
+extern "C" unsigned int fl_tree_get_item_label_bgcolor(TREE t);
+extern "C" void fl_tree_set_item_label_bgcolor(TREE t, unsigned int val);
 extern "C" int fl_tree_get_margin_left(TREE t);
 extern "C" void fl_tree_set_margin_left(TREE t, int val);
 extern "C" int fl_tree_get_widget_margin_left(TREE t);
@@ -88,6 +90,16 @@ extern "C" int fl_tree_get_item_draw_mode(TREE t);
 extern "C" void fl_tree_set_item_draw_mode(TREE t, int val);
 extern "C" int fl_tree_get_select_box(TREE t);
 extern "C" void fl_tree_set_select_box(TREE t, int val);
+extern "C" void * fl_tree_get_icon(TREE t, int what);
+extern "C" void fl_tree_set_icon(TREE t, int what, void * img);
+
+
+extern "C" int fl_tree_get_vposition(TREE t);
+extern "C" void fl_tree_set_vposition(TREE t, int pos);
+extern "C" int fl_tree_get_hposition(TREE t);
+extern "C" void fl_tree_set_hposition(TREE t, int pos);
+extern "C" int fl_tree_get_scrollbar_size(TREE t);
+extern "C" void fl_tree_set_scrollbar_size(TREE t, int size);
 
 
 extern "C" void fl_tree_show_self(TREE t);

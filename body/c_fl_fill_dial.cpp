@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Fill_Dial.H>
 #include "c_fl_fill_dial.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -23,9 +24,9 @@ extern "C" int valuator_format_hook(void * ud, char * buf);
 
 //  Attaching all relevant hooks and friends
 
-class My_Fill_Dial : public Fl_Fill_Dial {
+class My_Fill_Dial : public Ada_Resizing<Fl_Fill_Dial> {
 public:
-    using Fl_Fill_Dial::Fl_Fill_Dial;
+    using Ada_Resizing<Fl_Fill_Dial>::Ada_Resizing;
 
     friend void fl_fill_dial_draw(FILLDIAL v);
     friend int fl_fill_dial_handle(FILLDIAL v, int e);

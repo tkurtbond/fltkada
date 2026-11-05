@@ -4,10 +4,12 @@
 //  Released into the public domain
 
 
+#include <FL/Fl_Group.H>
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Image.H>
 #include <FL/platform.H>
+#include <unordered_map>
 #include "c_fl_widget.h"
 #include "c_fl_anim_gif_image.h"
 #include "c_fl_file_chooser.h"
@@ -37,11 +39,36 @@ public:
 
 
 
+//  The widgets with Ada objects
+
+//  Each widget Ada made or wrapped, with the Ada object its user data was
+//  set to.  A widget FLTK made has user data of its own, or none: a file
+//  chooser's window has the Fl_File_Chooser (Fl_File_Chooser.cxx:114), a
+//  menu's window 0.  So fl_widget_get_user_data gives the Ada object only
+//  for a widget here whose user data is still that object, and otherwise
+//  0 (FLTKAda-BUGS.md 44, 51).  fl_widget_forget takes a widget out, with
+//  the parts FLTK made in it, which go with it.
+
+static std::unordered_map<const Fl_Widget*, void*> ada_widgets;
+
+static void forget_ada_object(Fl_Widget * w) {
+    ada_widgets.erase(w);
+    Fl_Group * g = w->as_group();
+    if (g != 0) {
+        for (int i = 0; i < g->children(); i++) {
+            forget_ada_object(g->child(i));
+        }
+    }
+}
+
+
+
+
 //  Attaching all relevant hooks and friends
 
-class My_Widget : public Fl_Widget {
+class My_Widget : public Ada_Resizing<Fl_Widget> {
 public:
-    using Fl_Widget::Fl_Widget;
+    using Ada_Resizing<Fl_Widget>::Ada_Resizing;
     friend WIDGET new_fl_widget(int x, int y, int w, int h, char* label);
 
     friend void fl_widget_draw(WIDGET w);
@@ -96,17 +123,32 @@ void fl_widget_forget(WIDGET w) {
     //  A widget freed in a callback is deleted later (Fl::delete_widget),
     //  but its Ada object is gone now, so its trackers say so now.
     Fl::clear_widget_pointer(wi);
+    forget_ada_object(wi);
 }
 
 
 
 
 void * fl_widget_get_user_data(WIDGET w) {
-    return static_cast<Fl_Widget*>(w)->user_data();
+    if (w == 0) {
+        return 0;
+    }
+    Fl_Widget * wi = static_cast<Fl_Widget*>(w);
+    std::unordered_map<const Fl_Widget*, void*>::const_iterator i = ada_widgets.find(wi);
+    if (i == ada_widgets.end() || i->second != wi->user_data()) {
+        return 0;
+    }
+    return i->second;
 }
 
 void fl_widget_set_user_data(WIDGET w, void * d) {
-    static_cast<Fl_Widget*>(w)->user_data(d);
+    Fl_Widget * wi = static_cast<Fl_Widget*>(w);
+    wi->user_data(d);
+    if (d == 0) {
+        ada_widgets.erase(wi);
+    } else {
+        ada_widgets[wi] = d;
+    }
 }
 
 
@@ -416,8 +458,17 @@ void fl_widget_size(WIDGET w, int d, int h) {
     static_cast<Fl_Widget*>(w)->size(d, h);
 }
 
+void ada_default_resize(Fl_Widget * w, int x, int y, int ww, int hh) {
+    Ada_Resizer * r = dynamic_cast<Ada_Resizer*>(w);
+    if (r != 0) {
+        r->base_resize(x, y, ww, hh);
+    } else {
+        w->resize(x, y, ww, hh);
+    }
+}
+
 void fl_widget_resize(WIDGET o, int x, int y, int w, int h) {
-    static_cast<Fl_Widget*>(o)->resize(x, y, w, h);
+    ada_default_resize(static_cast<Fl_Widget*>(o), x, y, w, h);
 }
 
 void fl_widget_position(WIDGET w, int x, int y) {

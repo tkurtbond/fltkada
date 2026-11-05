@@ -61,6 +61,10 @@ extern "C" int fl_tree_item_get_labelfont(TREEITEM ti);
 extern "C" void fl_tree_item_set_labelfont(TREEITEM ti, int f);
 extern "C" int fl_tree_item_get_labelsize(TREEITEM ti);
 extern "C" void fl_tree_item_set_labelsize(TREEITEM ti, int s);
+extern "C" unsigned int fl_tree_item_get_labelfgcolor(TREEITEM ti);
+extern "C" void fl_tree_item_set_labelfgcolor(TREEITEM ti, unsigned int c);
+extern "C" unsigned int fl_tree_item_get_labelbgcolor(TREEITEM ti);
+extern "C" void fl_tree_item_set_labelbgcolor(TREEITEM ti, unsigned int c);
 
 
 extern "C" int fl_tree_item_label_x(TREEITEM ti);

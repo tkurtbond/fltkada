@@ -35,6 +35,18 @@ package body FLTK.Widgets.Groups.Tiled is
 
     --  Dimensions  --
 
+    procedure fl_tile_size_range
+           (T                         : in Storage.Integer_Address;
+            I, MinW, MinH, MaxW, MaxH : in Interfaces.C.int);
+    pragma Import (C, fl_tile_size_range, "fl_tile_size_range");
+    pragma Inline (fl_tile_size_range);
+
+    procedure fl_tile_init_size_range
+           (T          : in Storage.Integer_Address;
+            MinW, MinH : in Interfaces.C.int);
+    pragma Import (C, fl_tile_init_size_range, "fl_tile_init_size_range");
+    pragma Inline (fl_tile_init_size_range);
+
     procedure fl_tile_position
            (T              : in Storage.Integer_Address;
             OX, OY, NX, NY : in Interfaces.C.int);
@@ -176,6 +188,48 @@ package body FLTK.Widgets.Groups.Tiled is
             Interfaces.C.int (W),
             Interfaces.C.int (H));
     end Resize;
+
+
+    procedure Init_Size_Range
+           (This         : in out Tiled_Group;
+            Min_W, Min_H : in     Natural := 0) is
+    begin
+        fl_tile_init_size_range
+           (This.Void_Ptr, Interfaces.C.int (Min_W), Interfaces.C.int (Min_H));
+    end Init_Size_Range;
+
+
+    procedure Set_Size_Range
+           (This         : in out Tiled_Group;
+            Place        : in     Index;
+            Min_W, Min_H : in     Natural;
+            Max_W, Max_H : in     Natural := Natural'Last) is
+    begin
+        if Place > This.Number_Of_Children then
+            raise Constraint_Error with "Set_Size_Range given index" & Index'Image (Place)
+                & " of" & Natural'Image (This.Number_Of_Children) & " children";
+        end if;
+        fl_tile_size_range
+           (This.Void_Ptr,
+            Interfaces.C.int (Place - 1),
+            Interfaces.C.int (Min_W), Interfaces.C.int (Min_H),
+            Interfaces.C.int (Max_W), Interfaces.C.int (Max_H));
+    end Set_Size_Range;
+
+
+    procedure Set_Size_Range
+           (This         : in out Tiled_Group;
+            Item         : in     Widget'Class;
+            Min_W, Min_H : in     Natural;
+            Max_W, Max_H : in     Natural := Natural'Last)
+    is
+        Place : constant Extended_Index := This.Find (Item);
+    begin
+        if Place = No_Index then
+            raise Constraint_Error with "Set_Size_Range given a widget not in the tile";
+        end if;
+        This.Set_Size_Range (Place, Min_W, Min_H, Max_W, Max_H);
+    end Set_Size_Range;
 
 
 

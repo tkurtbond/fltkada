@@ -1097,10 +1097,8 @@ package body FLTK.Widgets is
     begin
         if Parent_Ptr /= Null_Pointer then
             Parent_Ptr := fl_widget_get_user_data (Parent_Ptr);
-            --  Can't assert user data being not null here because fl_ask is a bitch,
-            --  so have to fall back on saying that if it's null then you get nothing.
-            --  Any widget created by users of this binding will have appropriate back
-            --  reference to the corresponding Ada object in the user data anyway.
+            --  A group FLTK made, such as a dialog's or a file chooser's, has no
+            --  Ada object, and the shim gives null for it (FLTKAda-BUGS.md 51).
             Actual_Parent := Group_Convert.To_Pointer (Storage.To_Address (Parent_Ptr));
         end if;
         return Actual_Parent;

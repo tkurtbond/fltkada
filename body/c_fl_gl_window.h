@@ -54,6 +54,8 @@ extern "C" void fl_gl_window_make_overlay_current(GLWINDOW w);
 extern "C" void fl_gl_window_ortho(GLWINDOW w);
 extern "C" void fl_gl_window_redraw_overlay(GLWINDOW w);
 extern "C" void fl_gl_window_swap_buffers(GLWINDOW w);
+extern "C" int fl_gl_window_get_swap_interval(GLWINDOW w);
+extern "C" void fl_gl_window_set_swap_interval(GLWINDOW w, int f);
 
 
 extern "C" void fl_gl_window_draw(GLWINDOW n);

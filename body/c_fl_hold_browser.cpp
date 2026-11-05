@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Hold_Browser.H>
 #include "c_fl_hold_browser.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -39,9 +40,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Hold_Browser : public Fl_Hold_Browser {
+class My_Hold_Browser : public Ada_Resizing<Fl_Hold_Browser> {
 public:
-    using Fl_Hold_Browser::Fl_Hold_Browser;
+    using Ada_Resizing<Fl_Hold_Browser>::Ada_Resizing;
 
     friend int fl_hold_browser_item_width(HOLDBROWSER b, void * item);
     friend int fl_hold_browser_item_height(HOLDBROWSER b, void * item);

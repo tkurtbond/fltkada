@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Shortcut_Button.H>
 #include "c_fl_shortcut_button.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -21,9 +22,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Shortcut_Button : public Fl_Shortcut_Button {
+class My_Shortcut_Button : public Ada_Resizing<Fl_Shortcut_Button> {
 public:
-    using Fl_Shortcut_Button::Fl_Shortcut_Button;
+    using Ada_Resizing<Fl_Shortcut_Button>::Ada_Resizing;
 
     friend void fl_shortcut_button_draw(SHORTCUTBUTTON b);
     friend int fl_shortcut_button_handle(SHORTCUTBUTTON b, int e);

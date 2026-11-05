@@ -10,6 +10,7 @@ with
 
     Ada.Containers.Vectors,
     Ada.Unchecked_Deallocation,
+    FLTK.Images.Shared,
     Interfaces.C;
 
 use type
@@ -43,6 +44,12 @@ package body FLTK.Tree_Icons is
     pragma Import (C, fl_tree_shows_icon, "fl_tree_shows_icon");
     pragma Inline (fl_tree_shows_icon);
 
+    function fl_shared_image_own_copy
+           (I : in Storage.Integer_Address)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_shared_image_own_copy, "fl_shared_image_own_copy");
+    pragma Inline (fl_shared_image_own_copy);
+
 
     function Pointer
            (Image : in Image_Access)
@@ -63,6 +70,27 @@ package body FLTK.Tree_Icons is
         Store.Append ((Tree => Tree, Image => Copied, Kept => Kept));
         return Pointer (Copied);
     end Hold;
+
+
+    function Hold_Private
+           (Tree : in Storage.Integer_Address;
+            Pic  : in FLTK.Images.Image'Class)
+        return Storage.Integer_Address
+    is
+        Copied : Image_Access;
+    begin
+        if Pic not in FLTK.Images.Shared.Shared_Image'Class then
+            return Hold (Tree, Pic, Kept => False);
+        end if;
+        Copied := new FLTK.Images.Image;
+        Wrapper (Copied.all).Void_Ptr := fl_shared_image_own_copy (Wrapper (Pic).Void_Ptr);
+        if Pointer (Copied) = Null_Pointer then
+            Free (Copied);
+            raise Storage_Error with "a Shared_Image that could not be copied";
+        end if;
+        Store.Append ((Tree => Tree, Image => Copied, Kept => False));
+        return Pointer (Copied);
+    end Hold_Private;
 
 
     function Find

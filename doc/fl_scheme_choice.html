@@ -96,6 +96,8 @@ function Handle
 virtual void init_value();
 </pre></td>
 <td><pre>
+--  FLTK calls its own from Handle; override Handle
+--  to change what a show, push or enter does.
 procedure Init_Value
        (This : in out Scheme_Choice);
 </pre></td>
@@ -112,7 +114,13 @@ procedure Init_Value
 <td><pre>
 static void scheme_cb_(Fl_Widget *w, void *);
 </pre></td>
-<td>Intentionally left unbound. It is installed as the callback by the constructor, and setting a callback replaces it.</td>
+<td><pre>
+--  The constructor installs scheme_cb_ as the callback, and
+--  setting a callback replaces it; a callback can call this.
+--  With nothing chosen it does nothing (FLTK-issues.md F28).
+procedure Switch_Scheme
+       (This : in out Scheme_Choice);
+</pre></td>
   </tr>
 
 </table>

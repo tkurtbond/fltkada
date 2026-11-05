@@ -167,6 +167,12 @@ package body FLTK.Widgets.Groups.Terminals is
     pragma Import (C, fl_terminal_cursor_home, "fl_terminal_cursor_home");
     pragma Inline (fl_terminal_cursor_home);
 
+    procedure fl_terminal_cursor_move
+           (T       : in Storage.Integer_Address;
+            W, C, S : in Interfaces.C.int);
+    pragma Import (C, fl_terminal_cursor_move, "fl_terminal_cursor_move");
+    pragma Inline (fl_terminal_cursor_move);
+
     function fl_terminal_get_cursor_row
            (T : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -1070,6 +1076,115 @@ package body FLTK.Widgets.Groups.Terminals is
     begin
         fl_terminal_cursor_home (This.Void_Ptr);
     end Cursor_Home;
+
+
+    --  What fl_terminal_cursor_move does, by number
+    procedure Move
+           (This   : in out Terminal;
+            What   : in     Natural;
+            Count  : in     Positive := 1;
+            Scroll : in     Boolean  := False) is
+    begin
+        fl_terminal_cursor_move
+           (This.Void_Ptr,
+            Interfaces.C.int (What),
+            Interfaces.C.int (Count),
+            Boolean'Pos (Scroll));
+    end Move;
+
+
+    procedure Cursor_Up
+           (This   : in out Terminal;
+            Count  : in     Positive := 1;
+            Scroll : in     Boolean  := False) is
+    begin
+        Move (This, 0, Count, Scroll);
+    end Cursor_Up;
+
+
+    procedure Cursor_Down
+           (This   : in out Terminal;
+            Count  : in     Positive := 1;
+            Scroll : in     Boolean  := False) is
+    begin
+        Move (This, 1, Count, Scroll);
+    end Cursor_Down;
+
+
+    procedure Cursor_Left
+           (This  : in out Terminal;
+            Count : in     Positive := 1) is
+    begin
+        Move (This, 2, Count);
+    end Cursor_Left;
+
+
+    procedure Cursor_Right
+           (This   : in out Terminal;
+            Count  : in     Positive := 1;
+            Scroll : in     Boolean  := False) is
+    begin
+        Move (This, 3, Count, Scroll);
+    end Cursor_Right;
+
+
+    procedure Cursor_End_Of_Line
+           (This : in out Terminal) is
+    begin
+        Move (This, 4);
+    end Cursor_End_Of_Line;
+
+
+    procedure Cursor_Start_Of_Line
+           (This : in out Terminal) is
+    begin
+        Move (This, 5);
+    end Cursor_Start_Of_Line;
+
+
+    procedure Cursor_CR
+           (This : in out Terminal) is
+    begin
+        Move (This, 6);
+    end Cursor_CR;
+
+
+    procedure Cursor_CRLF
+           (This  : in out Terminal;
+            Count : in     Positive := 1) is
+    begin
+        Move (This, 7, Count);
+    end Cursor_CRLF;
+
+
+    procedure Cursor_Tab_Right
+           (This  : in out Terminal;
+            Count : in     Positive := 1) is
+    begin
+        Move (This, 8, Count);
+    end Cursor_Tab_Right;
+
+
+    procedure Cursor_Tab_Left
+           (This  : in out Terminal;
+            Count : in     Positive := 1) is
+    begin
+        Move (This, 9, Count);
+    end Cursor_Tab_Left;
+
+
+    procedure Save_Cursor
+           (This : in out Terminal) is
+    begin
+        Move (This, 10);
+    end Save_Cursor;
+
+
+    procedure Restore_Cursor
+           (This : in out Terminal) is
+    begin
+        Move (This, 11);
+    end Restore_Cursor;
 
 
     function Get_Cursor_Row

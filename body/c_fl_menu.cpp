@@ -13,6 +13,7 @@
 #include <cstring>
 #include "c_fl_menu.h"
 #include "c_fl_menuitem.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -30,9 +31,9 @@ extern "C" void menu_item_callback_hook(void * cobj, void * ud);
 
 //  Attaching all relevant hooks and friends
 
-class My_Menu : public Fl_Menu_ {
+class My_Menu : public Ada_Resizing<Fl_Menu_> {
 public:
-    using Fl_Menu_::Fl_Menu_;
+    using Ada_Resizing<Fl_Menu_>::Ada_Resizing;
 
     friend void fl_menu_draw(MENU m);
     friend int fl_menu_handle(MENU m, int e);
@@ -450,6 +451,14 @@ int fl_menu_get_down_box(MENU m) {
 
 void fl_menu_set_down_box(MENU m, int t) {
     static_cast<Fl_Menu_*>(m)->down_box(static_cast<Fl_Boxtype>(t));
+}
+
+int fl_menu_get_menu_box(MENU m) {
+    return static_cast<Fl_Menu_*>(m)->menu_box();
+}
+
+void fl_menu_set_menu_box(MENU m, int t) {
+    static_cast<Fl_Menu_*>(m)->menu_box(static_cast<Fl_Boxtype>(t));
 }
 
 //  The menu whose shortcuts work in every window.  FLTK's own global()

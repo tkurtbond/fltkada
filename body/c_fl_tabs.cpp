@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Tabs.H>
 #include "c_fl_tabs.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -31,9 +32,9 @@ public:
 
 //  Attaching all relevant hooks and friends
 
-class My_Tabs : public Fl_Tabs {
+class My_Tabs : public Ada_Resizing<Fl_Tabs> {
 public:
-    using Fl_Tabs::Fl_Tabs;
+    using Ada_Resizing<Fl_Tabs>::Ada_Resizing;
 
     friend void fl_tabs_draw(TABS t);
     friend int fl_tabs_handle(TABS t, int e);
@@ -96,6 +97,21 @@ void fl_tabs_set_value(TABS t, void * w) {
 
 void * fl_tabs_which(TABS t, int x, int y) {
     return static_cast<Fl_Tabs*>(t)->which(x,y);
+}
+
+
+
+
+unsigned int fl_tabs_get_tab_align(TABS t) {
+    return static_cast<Fl_Tabs*>(t)->tab_align();
+}
+
+void fl_tabs_set_tab_align(TABS t, unsigned int a) {
+    static_cast<Fl_Tabs*>(t)->tab_align(a);
+}
+
+void fl_tabs_handle_overflow(TABS t, int o) {
+    static_cast<Fl_Tabs*>(t)->handle_overflow(o);
 }
 
 

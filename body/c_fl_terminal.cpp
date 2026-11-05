@@ -10,6 +10,7 @@
 #include <cstring>
 #include <string>
 #include "c_fl_terminal.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -39,13 +40,22 @@ static const long long max_cells = 1LL << 24;
 
 //  Attaching all relevant hooks and friends
 
-class My_Terminal : public Fl_Terminal {
+class My_Terminal : public Ada_Resizing<Fl_Terminal> {
 public:
-    using Fl_Terminal::Fl_Terminal;
+    using Ada_Resizing<Fl_Terminal>::Ada_Resizing;
 
     struct Seq {
         typedef EscapeSeq Fl_Terminal::*type;
         friend type member(Seq);
+    };
+
+    //  Under PER_WRITE, display_modified redraws only while
+    //  redraw_modified_ is false, and only the RATE_LIMITED timer sets it
+    //  false again: after one write the terminal never redraws, under
+    //  either style (F23).  draw and the style setter clear it here.
+    struct Modified {
+        typedef bool Fl_Terminal::*type;
+        friend type member(Modified);
     };
 
     //  The size setters and resize leave the cursor, and the place ESC[s
@@ -54,12 +64,25 @@ public:
     //  puts both back on the screen; cursor_row and cursor_col clamp.
     void fit();
 
-    void resize(int x, int y, int w, int h);
+    void base_resize(int x, int y, int w, int h);
+
+    //  Fl_Terminal::restore_cursor tests col != 1, a slip for -1, so a
+    //  place saved at column 1 isn't restored (pofltk 97).  This reads
+    //  the saved place and sets the cursor itself.
+    void restore();
+
+    //  display_modified is private, and the cursor's moves don't call
+    //  it; this is the public way there, so redraw_style is obeyed
+    //  (pofltk 99).
+    void modified() { append_ascii(""); }
+
+    friend void fl_terminal_cursor_move(TERMINAL t, int what, int count, int scroll);
 
     //  Fl_Terminal::error_char only stores the pointer it is given,
     //  so the string it points to is kept alive here.
     std::string error_store;
 
+    friend void fl_terminal_cursor_home(TERMINAL t);
     friend void fl_terminal_set_cursor_row(TERMINAL t, int r);
     friend void fl_terminal_set_cursor_col(TERMINAL t, int c);
     friend int fl_terminal_get_selection(TERMINAL t, int * srow, int * scol,
@@ -73,6 +96,7 @@ public:
 };
 
 template struct Reach<My_Terminal::Seq, &Fl_Terminal::escseq>;
+template struct Reach<My_Terminal::Modified, &Fl_Terminal::redraw_modified_>;
 
 void My_Terminal::fit() {
     cursor_row(cursor_row());
@@ -91,7 +115,17 @@ void My_Terminal::fit() {
     }
 }
 
-void My_Terminal::resize(int x, int y, int w, int h) {
+void My_Terminal::restore() {
+    EscapeSeq &seq = this->*member(Seq());
+    int row, col;
+    seq.restore_cursor(row, col);
+    if (row >= 0 && col >= 0) {
+        cursor_row(row);
+        cursor_col(col);
+    }
+}
+
+void My_Terminal::base_resize(int x, int y, int w, int h) {
     Fl_Terminal::resize(x, y, w, h);
     fit();
 }
@@ -217,8 +251,55 @@ void fl_terminal_reset_terminal(TERMINAL t) {
 
 
 
+//  These redraw as the other moves do (pofltk 99).
 void fl_terminal_cursor_home(TERMINAL t) {
-    static_cast<Fl_Terminal*>(t)->cursor_home();
+    My_Terminal *m = static_cast<My_Terminal*>(t);
+    m->cursor_home();
+    m->modified();
+}
+
+//  FLTK clamps every count but cursor_right's, which with scrolling
+//  would loop through a huge one a line at a time; no move needs more
+//  than a screen's worth of cells.
+void fl_terminal_cursor_move(TERMINAL t, int what, int count, int scroll) {
+    My_Terminal *m = static_cast<My_Terminal*>(t);
+    bool s = scroll != 0;
+    if (count < 1) {
+        return;
+    }
+    switch (what) {
+    case 0: m->cursor_up(count, s); break;
+    case 1: m->cursor_down(count, s); break;
+    case 2: m->cursor_left(count); break;
+    case 3: {
+        long long most = static_cast<long long>(m->display_columns()) *
+            (m->display_rows() + m->history_rows() + 1);
+        m->cursor_right(count > most ? static_cast<int>(most) : count, s);
+        break;
+    }
+    case 4: m->cursor_eol(); break;
+    case 5: m->cursor_sol(); break;
+    case 6: m->cursor_cr(); break;
+    case 7: m->cursor_crlf(count); break;
+    //  FLTK's tabs stop at the first tab stop whatever the count (F24)
+    case 8:
+    case 9:
+        if (count > m->display_columns()) {
+            count = m->display_columns();
+        }
+        for (int i = 0; i < count; i++) {
+            if (what == 8) {
+                m->cursor_tab_right(1);
+            } else {
+                m->cursor_tab_left(1);
+            }
+        }
+        break;
+    case 10: m->save_cursor(); break;
+    case 11: m->restore(); break;
+    default: return;
+    }
+    m->modified();
 }
 
 int fl_terminal_get_cursor_row(TERMINAL t) {
@@ -226,7 +307,9 @@ int fl_terminal_get_cursor_row(TERMINAL t) {
 }
 
 void fl_terminal_set_cursor_row(TERMINAL t, int r) {
-    static_cast<My_Terminal*>(t)->cursor_row(r);
+    My_Terminal *m = static_cast<My_Terminal*>(t);
+    m->cursor_row(r);
+    m->modified();
 }
 
 int fl_terminal_get_cursor_col(TERMINAL t) {
@@ -234,7 +317,9 @@ int fl_terminal_get_cursor_col(TERMINAL t) {
 }
 
 void fl_terminal_set_cursor_col(TERMINAL t, int c) {
-    static_cast<My_Terminal*>(t)->cursor_col(c);
+    My_Terminal *m = static_cast<My_Terminal*>(t);
+    m->cursor_col(c);
+    m->modified();
 }
 
 unsigned int fl_terminal_get_cursorfgcolor(TERMINAL t) {
@@ -325,8 +410,18 @@ int fl_terminal_get_redraw_style(TERMINAL t) {
     return static_cast<Fl_Terminal*>(t)->redraw_style();
 }
 
+//  A change made under the old style, and not yet drawn, is drawn now,
+//  unless the new style is NO_REDRAW (F23)
 void fl_terminal_set_redraw_style(TERMINAL t, int s) {
-    static_cast<Fl_Terminal*>(t)->redraw_style(static_cast<Fl_Terminal::RedrawStyle>(s));
+    My_Terminal *m = static_cast<My_Terminal*>(t);
+    m->redraw_style(static_cast<Fl_Terminal::RedrawStyle>(s));
+    bool &modified = m->*member(My_Terminal::Modified());
+    if (modified) {
+        modified = false;
+        if (s != Fl_Terminal::NO_REDRAW) {
+            m->redraw();
+        }
+    }
 }
 
 
@@ -577,8 +672,12 @@ void fl_terminal_free_text(char * s) {
 
 
 
+//  Drawn, the terminal is no longer modified, so the next change under
+//  PER_WRITE redraws again (F23)
 void fl_terminal_draw(TERMINAL n) {
-    static_cast<My_Terminal*>(n)->Fl_Terminal::draw();
+    My_Terminal *m = static_cast<My_Terminal*>(n);
+    m->Fl_Terminal::draw();
+    m->*member(My_Terminal::Modified()) = false;
 }
 
 int fl_terminal_handle(TERMINAL n, int e) {

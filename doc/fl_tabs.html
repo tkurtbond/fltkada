@@ -105,6 +105,17 @@ function Handle
 
   <tr>
 <td><pre>
+void handle_overflow(int ov);
+</pre></td>
+<td><pre>
+procedure Handle_Overflow
+       (This : in out Tabbed_Group;
+        Kind : in     Overflow_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 Fl_Widget * push() const;
 </pre></td>
 <td><pre>
@@ -122,6 +133,28 @@ int push(Fl_WIdget *);
 procedure Set_Push
        (This : in out Tabbed_Group;
         Item : in out Widget'Class);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Align tab_align() const;
+</pre></td>
+<td><pre>
+function Get_Tab_Alignment
+       (This : in Tabbed_Group)
+    return Alignment;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void tab_align(Fl_Align a);
+</pre></td>
+<td><pre>
+procedure Set_Tab_Alignment
+       (This      : in out Tabbed_Group;
+        New_Align : in     Alignment);
 </pre></td>
   </tr>
 

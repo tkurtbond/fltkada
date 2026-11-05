@@ -7,6 +7,7 @@
 #include <FL/Fl_Check_Browser.H>
 #include <FL/Fl_Browser_.H>
 #include "c_fl_check_browser.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -64,9 +65,9 @@ public:
 
 //  Attaching all relevant hooks and friends
 
-class My_Check_Browser : public Fl_Check_Browser {
+class My_Check_Browser : public Ada_Resizing<Fl_Check_Browser> {
 public:
-    using Fl_Check_Browser::Fl_Check_Browser;
+    using Ada_Resizing<Fl_Check_Browser>::Ada_Resizing;
 
     friend int fl_check_browser_full_width(CHECKBROWSER c);
     friend int fl_check_browser_full_height(CHECKBROWSER c);

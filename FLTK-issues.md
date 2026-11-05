@@ -490,3 +490,139 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
   texts weakly, and `Is_Supported` is False without them.
 - **Confirmed**: from FLTK's source; no FLTK without Pango or print
   support was built to show the first and third.
+
+### F22. On Wayland a GL window's swap interval is one setting for all
+
+- **What happens**: on Wayland, `Fl_Gl_Window::swap_interval()` reads
+  the last interval set on any GL window, or 1 if none was, even for a
+  window that isn't shown. On X11 a window not shown reads -1, and a
+  shown one its own interval, if the driver can say.
+- **Cause**: the Wayland driver keeps the interval in one static,
+  `swap_interval_` (`src/drivers/Wayland/Fl_Wayland_Gl_Window_Driver.cxx:66`),
+  sets it whenever `eglSwapInterval` succeeds, and returns it
+  (`:461-472`). The X11 driver asks GLX about the window's own drawable,
+  and returns -1 before the window has one
+  (`src/drivers/X11/Fl_X11_Gl_Window_Driver.cxx:374-376`).
+- **Effect on FLTKAda**: `GL_Window.Get_Swap_Interval` says so; nothing
+  to work around.
+- **Confirmed**: `test_widget_methods` (2026-11-04): an unshown window
+  reads 1 under headless sway and -1 under Xvfb. Under Xvfb a shown
+  window also reads -1, since its GLX driver can't report the interval;
+  under sway, setting 0 and then 1 reads back 0 and 1.
+
+### F23. `Fl_Terminal`'s `PER_WRITE` redraws once, and then never again
+
+- **What happens**: under `PER_WRITE`, the first write after the style is
+  set redraws the terminal and later writes don't. Neither does
+  `RATE_LIMITED` after that, nor after the style is changed away from
+  `RATE_LIMITED` while a write waits for the timer.
+- **Cause**: `display_modified` redraws under `PER_WRITE` only while
+  `redraw_modified_` is false, and starts `RATE_LIMITED`'s timer only
+  while it is false, and sets it true either way
+  (`src/Fl_Terminal.cxx:2964-2981`). Only the timer sets it false again
+  (`:3365-3376`); `display_modified_clear` is never called, and
+  `redraw_style()` removes the timer without clearing it (`:4053-4058`).
+- **Effect on FLTKAda**: the shim reaches the private flag, as it does
+  `escseq` (pofltk 96), and clears it after `Fl_Terminal::draw` and when
+  `Set_Redraw_Style` changes the style; a change still waiting then is
+  drawn, unless the new style is `No_Redraw`.
+- **Confirmed**: a scratch C++ program under Xvfb (2026-11-04): three
+  appends under `PER_WRITE` drew 1, 0 and 0 times, and an append under
+  `RATE_LIMITED` after them 0 times. `test_terminal_cursor`, whose
+  redraw checks fail without the workaround.
+
+### F24. `Fl_Terminal`'s tabs stop at the first tab stop, whatever the count
+
+- **What happens**: `cursor_tab_right(2)` from column 0 stops at column 8,
+  not 16, and `cursor_tab_left(2)` from 24 stops at 16, not 8. `ESC[2I`
+  and `ESC[2Z`, which call them, do the same.
+- **Cause**: both loop over the count, but return as soon as they find a
+  tab stop (`src/Fl_Terminal.cxx:2533-2555`).
+- **Effect on FLTKAda**: `Cursor_Tab_Right` and `Cursor_Tab_Left` call
+  FLTK once per tab, at most a line's width of times. `ESC[#I` and
+  `ESC[#Z` in a program's text can't be helped.
+- **Confirmed**: a scratch C++ program under Xvfb (2026-11-04), which
+  also showed `ESC[2I` stopping at 8; `test_terminal_cursor`, whose tab
+  checks fail without the workaround.
+
+### F25. `Fl_Anim_GIF_Image` reports a file it can't open as a bad format
+
+- **What happens**: an `Fl_Anim_GIF_Image` of a file that doesn't exist
+  has `fail()` -3, `ERR_FORMAT`, where an `Fl_GIF_Image` of the same
+  file has -2, `ERR_FILE_ACCESS`. A program can't tell a missing file
+  from a broken one.
+- **Cause**: `load()` sets `ld(ERR_FORMAT)` whenever the frames aren't
+  valid, whatever went wrong (`src/Fl_Anim_GIF_Image.cxx:1072-1076`).
+- **Effect on FLTKAda**: after a construction or `Load` that fails, the
+  shim tries to open the file itself, and sets -2 if it can't
+  (`mark_access` in `body/c_fl_anim_gif_image.cpp`). `Fail_Code` now
+  returns FLTK's `fail()`, so an animation never loaded gives -1, not 0.
+- **Confirmed**: a scratch C++ program under Xvfb (2026-11-04): -2 for
+  `Fl_GIF_Image`, -3 for `Fl_Anim_GIF_Image`, -1 for an empty one;
+  `test_image_crafted`, whose two F25 checks fail without the workaround.
+
+### F26. `Fl_Text_Buffer::insertfile` loses the end of a file that isn't UTF-8
+
+- **What happens**: `loadfile` of the five bytes `caf\xE9\n`, Latin-1,
+  gives the buffer `caf`. The `é` and the line feed are lost, and
+  `input_file_was_transcoded` stays false, so there is no warning. The
+  same letter followed by more text is read and transcoded.
+- **Cause**: `utf8_input_filter` takes `0xE9` as the start of a
+  three-byte sequence. With fewer bytes than that left in the file, it
+  stops (`src/Fl_Text_Buffer.cxx:1971-1977`) and returns what it has.
+  The next call stops there again and returns 0, which `insertfile`
+  takes for the end of the file (`:2020-2032`). Any file whose last
+  three bytes hold a byte that begins a longer sequence loses them.
+- **Effect on FLTKAda**: the shim reads files itself, with the same
+  loop, except that at the end of the file it decodes what is left as
+  `fl_utf8decode` does, a bad byte as CP1252. It sets
+  `input_file_was_transcoded` and calls `transcoding_warning_action` as
+  FLTK does. `Load_File`, `Append_File` and `Insert_File` use it.
+- **Confirmed**: a scratch program under Xvfb (2026-11-04): `caf\xE9\n`
+  loaded as 3 bytes, with no warning; `caf\xE9 au lait\n` and
+  `caf\xE9\n\n\n\n` loaded whole, with FLTK's alert.
+  `test_text_buffer_methods`, whose four F26 checks fail with FLTK's
+  `loadfile` in the shim.
+
+### F27. `Fl_Grid::Cell`'s setters don't lay the grid out, and its span setters don't check
+
+- **What happens**: `cell->align(FL_GRID_TOP_LEFT)` on a shown grid
+  leaves the widget where it was, stretched across its cell, until
+  something calls `need_layout(1)` or resizes the grid; so does
+  `minimum_size(w, h)`. `cell->rowspan(5)` in a 2 by 2 grid is
+  accepted, and the next `layout()` reads past the grid's row array.
+  Found 2026-11-04.
+- **Cause**: `Fl_Grid::Cell::align`, `minimum_size`, `rowspan` and
+  `colspan` (`FL/Fl_Grid.H`) only set the field, where `Fl_Grid::widget`
+  calls `need_layout(1)`. Nothing checks a span against the grid's edge
+  (FLTKAda's `Set_Widget` does, pofltk 21), and `layout()` adds up the
+  rows and columns a span covers (`src/Fl_Grid.cxx:470-478`).
+- **Effect on FLTKAda**: a cell is never handed to Ada, since FLTK frees
+  it. `Get_Cell` copies it. `Set_Cell_Alignment` and
+  `Set_Cell_Minimum_Size` call `need_layout(1)` after the setter. The
+  span setters aren't bound; `Set_Widget` sets spans.
+- **Confirmed**: a C++ program under Xvfb and valgrind: after `align`
+  the box stayed 110 by 110, and became 20 by 20 only after
+  `need_layout(1)`; after `rowspan(5)` and `layout()`, invalid reads of
+  4 and 2 bytes at `Fl_Grid.cxx:476-477`, just after the block
+  `layout(2, 2)` allocated. `test_grid_cells`, whose two F27 checks
+  fail with `need_layout(1)` taken out of the shim.
+
+### F28. `Fl_Scheme_Choice`'s callback reads before its menu when nothing is chosen
+
+- **What happens**: `do_callback()` on a scheme choice whose `value()`
+  is -1 reads the menu item before the first. Found 2026-11-04.
+- **Cause**: `Fl_Scheme_Choice::scheme_cb_` takes
+  `c->text(c->value())` (`src/Fl_Scheme_Choice.cxx:90`), and
+  `Fl_Menu_::text(i)` is `menu_[i].text`, unchecked (`FL/Fl_Menu_.H:214`).
+  A pick always sets a value first, so FLTK itself only gets there when
+  a program calls the callback with nothing chosen.
+- **Effect on FLTKAda**: `scheme_cb_` is reached from Ada only through
+  `Switch_Scheme`, which does nothing unless the choice's value is an
+  item.
+- **Confirmed**: a C++ program under Xvfb and valgrind: `value(-1)`
+  then `do_callback()` gave an invalid read of 8 bytes at
+  `Fl_Scheme_Choice.cxx:90`; the scheme stayed "plastic", by luck of what
+  was there. `test_scheme_choice` is clean under valgrind, and with the
+  check taken out of the shim, valgrind shows the same invalid read,
+  though all 6 checks still pass.

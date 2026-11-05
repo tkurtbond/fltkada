@@ -95,6 +95,27 @@ SHAREDIMAGE fl_shared_image_copy2(SHAREDIMAGE i) {
     }
 }
 
+//  A private copy of shared image i's image, drawn at i's size, for what
+//  FLTK copies and changes or deletes.  i's own copy() is the pool's entry
+//  (pofltk 84).  The caller deletes it.  0 if it can't be made.
+void * fl_shared_image_own_copy(SHAREDIMAGE i) {
+    Fl_Shared_Image *s = static_cast<Fl_Shared_Image*>(i);
+    const Fl_Image *from = s->image();
+    if (from == 0) {
+        return 0;
+    }
+    Fl_Image *c = 0;
+    try {
+        c = from->copy(from->data_w(), from->data_h());
+    } catch (...) {
+        return 0;
+    }
+    if (c != 0) {
+        c->scale(s->w(), s->h(), 0, 1);
+    }
+    return c;
+}
+
 
 
 

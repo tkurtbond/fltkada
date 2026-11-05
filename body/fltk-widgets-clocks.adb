@@ -6,7 +6,12 @@
 
 with
 
-    FLTK.Widgets.Groups;
+    FLTK.Widgets.Groups,
+    Interfaces.C;
+
+use type
+
+    Interfaces.C.int;
 
 
 package body FLTK.Widgets.Clocks is
@@ -75,6 +80,18 @@ package body FLTK.Widgets.Clocks is
             H, M, S : in Interfaces.C.int);
     pragma Import (C, fl_clock_output_set_value2, "fl_clock_output_set_value2");
     pragma Inline (fl_clock_output_set_value2);
+
+    function fl_clock_output_get_shadow
+           (C : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_clock_output_get_shadow, "fl_clock_output_get_shadow");
+    pragma Inline (fl_clock_output_get_shadow);
+
+    procedure fl_clock_output_set_shadow
+           (C : in Storage.Integer_Address;
+            S : in Interfaces.C.int);
+    pragma Import (C, fl_clock_output_set_shadow, "fl_clock_output_set_shadow");
+    pragma Inline (fl_clock_output_set_shadow);
 
 
 
@@ -249,6 +266,22 @@ package body FLTK.Widgets.Clocks is
 
 
     --  Drawing  --
+
+    function Has_Shadow
+           (This : in Clock)
+        return Boolean is
+    begin
+        return fl_clock_output_get_shadow (This.Void_Ptr) /= 0;
+    end Has_Shadow;
+
+
+    procedure Set_Shadow
+           (This : in out Clock;
+            To   : in     Boolean) is
+    begin
+        fl_clock_output_set_shadow (This.Void_Ptr, Boolean'Pos (To));
+    end Set_Shadow;
+
 
     procedure Draw
            (This : in out Clock) is

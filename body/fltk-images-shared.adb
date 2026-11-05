@@ -425,6 +425,24 @@ package body FLTK.Images.Shared is
     end Reference_Count;
 
 
+    function "<"
+           (Left, Right : in Shared_Image)
+        return Boolean
+    is
+        --  Ada's String "<" compares as strcmp does, by unsigned bytes.
+        Left_Name  : constant String := Left.Name;
+        Right_Name : constant String := Right.Name;
+    begin
+        if Left_Name /= Right_Name then
+            return Left_Name < Right_Name;
+        elsif Left.Get_Data_W /= Right.Get_Data_W then
+            return Left.Get_Data_W < Right.Get_Data_W;
+        else
+            return Left.Get_Data_H < Right.Get_Data_H;
+        end if;
+    end "<";
+
+
     procedure Reload
            (This : in out Shared_Image) is
     begin

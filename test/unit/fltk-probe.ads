@@ -134,12 +134,31 @@ package FLTK.Probe is
     function Modal_H
         return Natural;
 
+    --  Where the modal window shown is, as FLTK has it, or 0.
+    function Modal_X
+        return Integer;
+
+    function Modal_Y
+        return Integer;
+
+    --  The label of the icon of the message dialog shown (FLTK.Asks), or "".
+    function Modal_Icon
+        return String;
+
     --  A key sent to the modal window as if from the window system; False
     --  if none is shown.  Give a key the text the window system gives it:
     --  on Wayland, a key with no text is typed text to an input
     --  (Fl_Wayland_Screen_Driver::compose, Fl_Wayland_Screen_Driver.cxx:
     --  707-711), so an Enter with Text "" doesn't reach its callback there.
     function Modal_Key
+           (Code  : in Keypress;
+            State : in Modifier := Mod_None;
+            Text  : in String   := "")
+        return Boolean;
+
+    --  A Keydown sent by Fl::handle to the window with the grab, such as a
+    --  pop-up menu's, which FLTK made; False if nothing has the grab.
+    function Grab_Key
            (Code  : in Keypress;
             State : in Modifier := Mod_None;
             Text  : in String   := "")

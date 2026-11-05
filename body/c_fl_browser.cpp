@@ -8,6 +8,7 @@
 #include <FL/Fl_Image.H>
 #include "c_fl_browser.h"
 #include "c_fl_browser_.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -51,9 +52,9 @@ public:
 
 //  Attaching all relevant hooks and friends
 
-class My_Browser : public Fl_Browser {
+class My_Browser : public Ada_Resizing<Fl_Browser> {
 public:
-    using Fl_Browser::Fl_Browser;
+    using Ada_Resizing<Fl_Browser>::Ada_Resizing;
 
     friend int fl_browser_item_width(BROWSER b, void * item);
     friend int fl_browser_item_height(BROWSER b, void * item);

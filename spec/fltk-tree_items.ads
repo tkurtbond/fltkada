@@ -66,6 +66,10 @@ package FLTK.Tree_Items is
         Multi_Selection,
         Single_Draggable_Selection);
 
+    --  As a label's background colour, no colour of its own: an item's
+    --  label is drawn on the tree's background (Fl_Tree_Item.H, labelbgcolor).
+    Transparent_Background : constant Color := 16#FFFF_FFFF#;
+
     --  Controls how an item's label and Set_Widget-assigned widget (if
     --  any) are drawn together. With neither flag set (the default),
     --  an assigned widget replaces the label entirely, and the item's
@@ -110,6 +114,26 @@ package FLTK.Tree_Items is
     procedure Set_Label_Size
            (This : in Tree_Item;
             Size : in Font_Size);
+
+    --  An item's label colours start as the tree's Item_Label_FG_Color
+    --  and Item_Label_BG_Color when the item is added.  A tree redraws
+    --  when it next has cause to; call its Redraw to see a change at once.
+
+    function Get_Label_FG_Color
+           (This : in Tree_Item)
+        return Color;
+
+    procedure Set_Label_FG_Color
+           (This : in Tree_Item;
+            Hue  : in Color);
+
+    function Get_Label_BG_Color
+           (This : in Tree_Item)
+        return Color;
+
+    procedure Set_Label_BG_Color
+           (This : in Tree_Item;
+            Hue  : in Color);
 
     --  The area the item's label is drawn in, as of the last time the
     --  tree was drawn.  Mostly of use when drawing a custom item; see
@@ -355,6 +379,10 @@ private
     pragma Inline (Set_Label_Font);
     pragma Inline (Get_Label_Size);
     pragma Inline (Set_Label_Size);
+    pragma Inline (Get_Label_FG_Color);
+    pragma Inline (Set_Label_FG_Color);
+    pragma Inline (Get_Label_BG_Color);
+    pragma Inline (Set_Label_BG_Color);
     pragma Inline (Label_X);
     pragma Inline (Label_Y);
     pragma Inline (Label_W);

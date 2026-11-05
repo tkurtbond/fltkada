@@ -21,6 +21,12 @@ package FLTK.Widgets.Menus.Menu_Bars.Systemwide is
     type System_Menu_Bar_Reference (Data : not null access System_Menu_Bar'Class) is limited
         null record with Implicit_Dereference => Data;
 
+    type About_Callback is access procedure;
+
+    --  Whether and how FLTK adds a Window menu to the system menu bar.
+    type Window_Menu_Style_Kind is
+       (No_Window_Menu, Tabbing_Mode_None, Tabbing_Mode_Automatic, Tabbing_Mode_Preferred);
+
 
 
 
@@ -185,6 +191,31 @@ package FLTK.Widgets.Menus.Menu_Bars.Systemwide is
 
 
 
+    --  macOS Only  --
+
+    --  These act only on macOS, the one system whose system menu bar is not
+    --  an ordinary menu bar.  Elsewhere Set_About_Callback and
+    --  Set_Window_Menu_Style do nothing, Create_Window_Menu does nothing,
+    --  and Get_Window_Menu_Style is No_Window_Menu.
+
+    --  Func runs when the user chooses the application menu's About item.
+    --  Null leaves the item there but makes it do nothing.
+    procedure Set_About_Callback
+           (Func : in About_Callback);
+
+    function Get_Window_Menu_Style
+        return Window_Menu_Style_Kind;
+
+    --  Takes effect only if called before the first window is shown.
+    procedure Set_Window_Menu_Style
+           (To : in Window_Menu_Style_Kind);
+
+    --  Adds the Window menu now, after the menu bar is filled.
+    procedure Create_Window_Menu;
+
+
+
+
     --  Drawing  --
 
     procedure Draw
@@ -223,6 +254,10 @@ private
 
     pragma Inline (Make_Global);
     pragma Inline (Update);
+
+    pragma Inline (Get_Window_Menu_Style);
+    pragma Inline (Set_Window_Menu_Style);
+    pragma Inline (Create_Window_Menu);
 
     pragma Inline (Draw);
 

@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Value_Output.H>
 #include "c_fl_value_output.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -23,9 +24,9 @@ extern "C" int valuator_format_hook(void * ud, char * buf);
 
 //  Attaching all relevant hooks and friends
 
-class My_Value_Output : public Fl_Value_Output {
+class My_Value_Output : public Ada_Resizing<Fl_Value_Output> {
 public:
-    using Fl_Value_Output::Fl_Value_Output;
+    using Ada_Resizing<Fl_Value_Output>::Ada_Resizing;
 
     friend void fl_value_output_draw(VALUEOUTPUT a);
     friend int fl_value_output_handle(VALUEOUTPUT a, int e);

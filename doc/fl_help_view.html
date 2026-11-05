@@ -118,6 +118,22 @@ procedure Clear_Selection
 
   <tr>
 <td><pre>
+int copy(int clipboard=1);
+</pre></td>
+<td><pre>
+procedure Copy
+       (This        : in out Help_View;
+        Destination : in     Clipboard_Kind := Cut_Paste_Board);
+
+function Copy
+       (This        : in out Help_View;
+        Destination : in     Clipboard_Kind := Cut_Paste_Board)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 const char * directory() const;
 </pre></td>
 <td><pre>
@@ -271,6 +287,17 @@ void size(int W, int H);
 procedure Resize
        (This : in out Help_View;
         W, H : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int text_selected();
+</pre></td>
+<td><pre>
+function Has_Selection
+       (This : in Help_View)
+    return Boolean;
 </pre></td>
   </tr>
 

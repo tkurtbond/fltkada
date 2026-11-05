@@ -208,12 +208,45 @@ extern "C" int fl_probe_modal_h() {
     return modal == 0 ? 0 : modal->h();
 }
 
+extern "C" int fl_probe_modal_x() {
+    Fl_Window *modal = Fl::modal();
+    return modal == 0 ? 0 : modal->x();
+}
+
+extern "C" int fl_probe_modal_y() {
+    Fl_Window *modal = Fl::modal();
+    return modal == 0 ? 0 : modal->y();
+}
+
+extern "C" const char * fl_probe_modal_icon() {
+    Fl_Window *modal = Fl::modal();
+    if (modal == 0) {
+        return "";
+    }
+    //  Fl_Message's icon is the window's third child, after the message
+    //  box and the input (Fl_Message.cxx:150-162).
+    if (modal->children() < 3 || modal->child(2)->label() == 0) {
+        return "";
+    }
+    return modal->child(2)->label();
+}
+
 extern "C" int fl_probe_modal_key(int key, int state, const char * s) {
     Fl_Window *modal = Fl::modal();
     if (modal == 0) {
         return 0;
     }
     return fl_probe_handle_key(modal, FL_KEYDOWN, key, state, s);
+}
+
+//  The window FLTK made for a pop-up menu, which has the grab, given the
+//  key as the window system gives it.
+extern "C" int fl_probe_grab_key(int key, int state, const char * s) {
+    Fl_Window *grab = Fl::grab();
+    if (grab == 0) {
+        return 0;
+    }
+    return fl_probe_handle_key(grab, FL_KEYDOWN, key, state, s);
 }
 
 //  What Fl::handle does with an Escape no widget takes (Fl.cxx:1567-1570).

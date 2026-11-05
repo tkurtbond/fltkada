@@ -12,7 +12,9 @@
 --  Fl_Menu_::remove and replace free() that pointer (Fl_Menu_add.cxx), and
 --  item_pathname, find_index and insert read it as the item's text, so the
 --  item's path is not found.  Set_Image and Set_Multi_Label also freed the
---  item's text, its name in the menu.
+--  item's text, its name in the menu.  And no label kind whose label is
+--  a pointer is given to an item's text (FLTKAda-BUGS.md 83): FLTK read it
+--  as the pointer when it drew the menu.
 
 
 with
@@ -22,6 +24,7 @@ with
     FLTK.Images.RGB,
     FLTK.Menu_Items,
     FLTK.Multi_Labels,
+    FLTK.Widgets.Groups.Windows,
     FLTK.Widgets.Menus.Menu_Bars;
 
 use
@@ -37,6 +40,7 @@ procedure Test_Menu_Item_Labels is
     package ML  renames FLTK.Multi_Labels;
     package Mnu renames FLTK.Widgets.Menus;
     package Bar renames FLTK.Widgets.Menus.Menu_Bars;
+    package Win renames FLTK.Widgets.Groups.Windows;
 
     Pixels : constant FLTK.Color_Component_Array (1 .. 8 * 8 * 3) := (others => 100);
     Icon   : RGB.RGB_Image := RGB.Forge.Create (Pixels, 8, 8);
@@ -143,6 +147,65 @@ begin
     Menu.Clear;
     Menu.Add ("Again", Shortcut => No_Key);
     Menu.Item (Place ("Again")).Set_Image (Icon);
+
+    --  Text with a pointer's label kind, drawn (83).  The bar's first items
+    --  show an image and a multi-label, so FLTK has the kinds' functions.
+    declare
+        Window : Win.Window := Win.Forge.Create (0, 0, 600, 100, "Test_Menu_Item_Labels");
+        Drawn  : Bar.Menu_Bar := Bar.Forge.Create (Window, 0, 0, 600, 25);
+
+        function Item
+               (N : in Positive)
+            return access MI.Menu_Item'Class is
+        begin
+            return Drawn.Item (Mnu.Index (N)).Data;
+        end Item;
+
+        function Plain
+               (N    : in Positive;
+                Text : in String)
+            return Boolean is
+        begin
+            return Item (N).Get_Label_Kind = FLTK.Normal_Label and Item (N).Get_Label = Text;
+        end Plain;
+    begin
+        Drawn.Add ("image", Shortcut => No_Key);
+        Drawn.Add ("multi", Shortcut => No_Key);
+        Drawn.Add ("kind-image", Shortcut => No_Key);
+        Drawn.Add ("kind-multi", Shortcut => No_Key);
+        Drawn.Add ("kind-icon", Shortcut => No_Key);
+        Drawn.Add ("with-image", Shortcut => No_Key);
+        Drawn.Add ("with-multi", Shortcut => No_Key);
+        Drawn.Add ("with-icon", Shortcut => No_Key);
+        Drawn.Add ("image-text", Shortcut => No_Key);
+        Drawn.Add ("image-normal-text", Shortcut => No_Key);
+        Item (1).Set_Image (Icon);
+        Item (2).Set_Multi_Label (Multi);
+        Item (3).Set_Label_Kind (FLTK.Image_Label);
+        Item (4).Set_Label_Kind (FLTK.Multi_Label);
+        Item (5).Set_Label_Kind (FLTK.Icon_Label);
+        Item (6).Set_Label (FLTK.Image_Label, "6");
+        Item (7).Set_Label (FLTK.Multi_Label, "7");
+        Item (8).Set_Label (FLTK.Icon_Label, "8");
+        Item (9).Set_Image (Icon);
+        Item (9).Set_Label ("9");
+        Item (10).Set_Image (Icon);
+        Item (10).Set_Label (FLTK.Normal_Label, "10");
+        Window.Show;
+        for N in 1 .. 20 loop
+            exit when FLTK.Wait (0.02) < 0.0;
+        end loop;
+        Check (Plain (3, "kind-image") and Plain (4, "kind-multi") and Plain (5, "kind-icon"),
+            "Set_Label_Kind doesn't give text a pointer's kind (83)");
+        Check (Plain (6, "6") and Plain (7, "7") and Plain (8, "8"),
+            "nor does Set_Label (Kind, Text) (83)");
+        Check (Plain (9, "9") and Plain (10, "10"),
+            "and text given to an item showing an image is plain text (83)");
+        Check (Item (1).Get_Label_Kind = FLTK.Image_Label
+                and Item (2).Get_Label_Kind = FLTK.Multi_Label,
+            "the image and the multi-label are still shown");
+        Window.Hide;
+    end;
 
     Summary;
 

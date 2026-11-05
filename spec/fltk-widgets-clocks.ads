@@ -85,6 +85,15 @@ package FLTK.Widgets.Clocks is
 
     --  Drawing  --
 
+    --  Whether the hands are drawn with shadows.  The default is True.
+    function Has_Shadow
+           (This : in Clock)
+        return Boolean;
+
+    procedure Set_Shadow
+           (This : in out Clock;
+            To   : in     Boolean);
+
     procedure Draw
            (This : in out Clock);
 
@@ -121,6 +130,9 @@ private
 
     pragma Inline (Get_Time);
     pragma Inline (Set_Time);
+
+    pragma Inline (Has_Shadow);
+    pragma Inline (Set_Shadow);
 
     pragma Inline (Draw);
 

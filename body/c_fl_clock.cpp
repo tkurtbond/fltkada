@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Clock.H>
 #include "c_fl_clock.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -21,9 +22,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Clock : public Fl_Clock {
+class My_Clock : public Ada_Resizing<Fl_Clock> {
 public:
-    using Fl_Clock::Fl_Clock;
+    using Ada_Resizing<Fl_Clock>::Ada_Resizing;
 
     friend void fl_clock_draw(CLOCK c);
     friend int fl_clock_handle(CLOCK c, int e);

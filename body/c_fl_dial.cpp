@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Dial.H>
 #include "c_fl_dial.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -35,9 +36,9 @@ public:
 
 //  Attaching all relevant hooks and friends
 
-class My_Dial : public Fl_Dial {
+class My_Dial : public Ada_Resizing<Fl_Dial> {
 public:
-    using Fl_Dial::Fl_Dial;
+    using Ada_Resizing<Fl_Dial>::Ada_Resizing;
 
     friend void fl_dial_draw(DIAL v);
     friend int fl_dial_handle(DIAL v, int e);

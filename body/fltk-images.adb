@@ -390,7 +390,7 @@ package body FLTK.Images is
            (This : in Image)
         return Natural is
     begin
-        return Natural (fl_image_w (This.Void_Ptr));
+        return Natural (Interfaces.C.int'Max (0, fl_image_w (This.Void_Ptr)));
     end Get_W;
 
 
@@ -398,7 +398,7 @@ package body FLTK.Images is
            (This : in Image)
         return Natural is
     begin
-        return Natural (fl_image_h (This.Void_Ptr));
+        return Natural (Interfaces.C.int'Max (0, fl_image_h (This.Void_Ptr)));
     end Get_H;
 
 
@@ -414,7 +414,7 @@ package body FLTK.Images is
            (This : in Image)
         return Natural is
     begin
-        return Natural (fl_image_ld (This.Void_Ptr));
+        return Natural (Interfaces.C.int'Max (0, fl_image_ld (This.Void_Ptr)));
     end Get_Line_Size;
 
 
@@ -422,7 +422,7 @@ package body FLTK.Images is
            (This : in Image)
         return Natural is
     begin
-        return Natural (fl_image_data_w (This.Void_Ptr));
+        return Natural (Interfaces.C.int'Max (0, fl_image_data_w (This.Void_Ptr)));
     end Get_Data_W;
 
 
@@ -430,7 +430,7 @@ package body FLTK.Images is
            (This : in Image)
         return Natural is
     begin
-        return Natural (fl_image_data_h (This.Void_Ptr));
+        return Natural (Interfaces.C.int'Max (0, fl_image_data_h (This.Void_Ptr)));
     end Get_Data_H;
 
 

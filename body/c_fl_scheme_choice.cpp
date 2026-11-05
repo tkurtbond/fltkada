@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Scheme_Choice.H>
 #include "c_fl_scheme_choice.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -21,15 +22,18 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Scheme_Choice : public Fl_Scheme_Choice {
+class My_Scheme_Choice : public Ada_Resizing<Fl_Scheme_Choice> {
 public:
-    using Fl_Scheme_Choice::Fl_Scheme_Choice;
+    using Ada_Resizing<Fl_Scheme_Choice>::Ada_Resizing;
 
     friend void fl_scheme_choice_draw(SCHEMECHOICE n);
     friend int fl_scheme_choice_handle(SCHEMECHOICE n, int e);
 
     void draw();
     int handle(int e);
+    static void chosen(Fl_Widget * w) {
+        scheme_cb_(w, 0);
+    }
 };
 
 void My_Scheme_Choice::draw() {
@@ -63,6 +67,17 @@ void free_fl_scheme_choice(SCHEMECHOICE c) {
 
 void fl_scheme_choice_init_value(SCHEMECHOICE c) {
     static_cast<Fl_Scheme_Choice*>(c)->init_value();
+}
+
+//  FLTK's own callback reads the item at value(), unchecked, so with none
+//  chosen it reads before the menu (FLTK-issues.md F28).
+int fl_scheme_choice_switch(SCHEMECHOICE c) {
+    Fl_Scheme_Choice * s = static_cast<Fl_Scheme_Choice*>(c);
+    if (s->value() < 0 || s->value() >= s->size()) {
+        return 0;
+    }
+    My_Scheme_Choice::chosen(s);
+    return 1;
 }
 
 

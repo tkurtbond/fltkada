@@ -97,6 +97,10 @@ package FLTK.Images is
 
     --  Dimensions  --
 
+    --  An image with no data, such as one that failed to load, is 0 wide
+    --  and high with a Line_Size of 0, though FLTK may say -1 for the
+    --  size and keeps its error code in the line size.  Fail_Code gives
+    --  the error.
     function Get_W
            (This : in Image)
         return Natural;

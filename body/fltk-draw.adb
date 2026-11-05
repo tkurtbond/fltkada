@@ -1394,12 +1394,12 @@ package body FLTK.Draw is
             Interfaces.C.int (Y),
             Interfaces.C.unsigned (Tone));
     begin
-        pragma Assert (Result /= 0);
         Pixmap_Marshal.Free_Recursive (C_Data);
-    exception
-    when Chk.Assertion_Error =>
-        Pixmap_Marshal.Free_Recursive (C_Data);
-        raise Draw_Error with "fl_draw_pixmap could not decode supplied XPM pixmap data";
+        --  Explicit, not pragma Assert, which a release build doesn't
+        --  check (FLTKAda-BUGS.md 28).
+        if Result = 0 then
+            raise Draw_Error with "fl_draw_pixmap could not decode supplied XPM pixmap data";
+        end if;
     end Draw_Pixmap;
 
 

@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Input_.H>
 #include "c_fl_input_.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -21,9 +22,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Input : public Fl_Input_ {
+class My_Input : public Ada_Resizing<Fl_Input_> {
 public:
-    using Fl_Input_::Fl_Input_;
+    using Ada_Resizing<Fl_Input_>::Ada_Resizing;
 
     friend void fl_input_draw(INPUT i);
     friend int fl_input_handle(INPUT i, int e);
@@ -83,6 +84,18 @@ int fl_input_copy_cuts(INPUT i) {
 
 int fl_input_undo(INPUT i) {
     return static_cast<Fl_Input_*>(i)->undo();
+}
+
+int fl_input_redo(INPUT i) {
+    return static_cast<Fl_Input_*>(i)->redo();
+}
+
+int fl_input_can_undo(INPUT i) {
+    return static_cast<Fl_Input_*>(i)->can_undo();
+}
+
+int fl_input_can_redo(INPUT i) {
+    return static_cast<Fl_Input_*>(i)->can_redo();
 }
 
 
@@ -232,7 +245,7 @@ void fl_input_set_size(INPUT i, int w, int h) {
 }
 
 void fl_input_resize(INPUT i, int x, int y, int w, int h) {
-    static_cast<Fl_Input_*>(i)->Fl_Input_::resize(x, y, w, h);
+    ada_default_resize(static_cast<Fl_Widget*>(i), x, y, w, h);
 }
 
 

@@ -75,7 +75,11 @@ package FLTK.Events is
         return Event_Outcome;
 
     --  These two accept the possibly null Win given to an Event_Dispatch
-    --  function, since FLTK dispatches some events without a window.
+    --  function, since FLTK dispatches some events without a window, and
+    --  gives it a window FLTK made itself, such as a pop-up menu's, as null.
+    --  Inside an Event_Dispatch function a null Origin is the window FLTK
+    --  gave the dispatch, so Handle (Event, Win) passes the event on to it;
+    --  outside one it is no window.
     function Handle_Dispatch
            (Event  : in Event_Kind;
             Origin : access FLTK.Widgets.Groups.Windows.Window'Class)

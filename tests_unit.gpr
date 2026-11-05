@@ -41,6 +41,11 @@ project Tests_Unit is
         "test_glut_live.adb",
         "test_group_clear.adb",
         "test_grid_range.adb",
+        "test_grid_cells.adb",
+        "test_window_list.adb",
+        "test_scheme_choice.adb",
+        "test_resize_hook.adb",
+        "test_hook_exceptions.adb",
         "test_text_search.adb",
         "test_numeric_sort.adb",
         "test_image_crafted.adb",
@@ -49,6 +54,7 @@ project Tests_Unit is
         "test_free_font.adb",
         "test_dashes.adb",
         "test_terminal_fit.adb",
+        "test_terminal_cursor.adb",
         "test_ps_errors.adb",
         "test_page_misuse.adb",
         "test_image_reentry.adb",
@@ -76,6 +82,7 @@ project Tests_Unit is
         "test_changed_callback.adb",
         "test_browser_load.adb",
         "test_xpm_color_names.adb",
+        "test_pixmap_data.adb",
         "test_selection_buffer.adb",
         "test_menu_add_merge.adb",
         "test_gl_window_group.adb",
@@ -118,6 +125,8 @@ project Tests_Unit is
         "test_shortcut_button.adb",
         "test_ico_image.adb",
         "test_image_handlers.adb",
+        "test_shared_order.adb",
+        "test_text_buffer_methods.adb",
         "test_widget_multi_label.adb",
         "test_file_icons.adb",
         "test_anim_canvas.adb",
@@ -125,7 +134,12 @@ project Tests_Unit is
         "test_page_finalize.adb",
         "test_eps_surface.adb",
         "test_svg_surface.adb",
-        "test_pdf_surface.adb");
+        "test_pdf_surface.adb",
+        "test_ask_placement.adb",
+        "test_undo_redo.adb",
+        "test_layout_methods.adb",
+        "test_widget_methods.adb",
+        "test_tree_methods.adb");
 
     package Builder is
         for Default_Switches ("Ada") use

@@ -219,6 +219,18 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
     pragma Import (C, fl_gl_window_swap_buffers, "fl_gl_window_swap_buffers");
     pragma Inline (fl_gl_window_swap_buffers);
 
+    function fl_gl_window_get_swap_interval
+           (W : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_gl_window_get_swap_interval, "fl_gl_window_get_swap_interval");
+    pragma Inline (fl_gl_window_get_swap_interval);
+
+    procedure fl_gl_window_set_swap_interval
+           (W : in Storage.Integer_Address;
+            F : in Interfaces.C.int);
+    pragma Import (C, fl_gl_window_set_swap_interval, "fl_gl_window_set_swap_interval");
+    pragma Inline (fl_gl_window_set_swap_interval);
+
     procedure fl_gl_window_draw
            (W : in Storage.Integer_Address);
     pragma Import (C, fl_gl_window_draw, "fl_gl_window_draw");
@@ -573,6 +585,22 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
     begin
         fl_gl_window_swap_buffers (This.Void_Ptr);
     end Swap_Buffers;
+
+
+    function Get_Swap_Interval
+           (This : in GL_Window)
+        return Swap_Interval is
+    begin
+        return Swap_Interval (fl_gl_window_get_swap_interval (This.Void_Ptr));
+    end Get_Swap_Interval;
+
+
+    procedure Set_Swap_Interval
+           (This   : in out GL_Window;
+            Frames : in     Natural) is
+    begin
+        fl_gl_window_set_swap_interval (This.Void_Ptr, Interfaces.C.int (Frames));
+    end Set_Swap_Interval;
 
 
     procedure Draw

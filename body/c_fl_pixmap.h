@@ -26,6 +26,11 @@ extern "C" void fl_pixmap_desaturate(PIXMAP p);
 extern "C" void fl_pixmap_uncache(PIXMAP p);
 
 
+extern "C" int fl_pixmap_line_count(PIXMAP p);
+extern "C" int fl_pixmap_line_length(PIXMAP p, int i);
+extern "C" const char * fl_pixmap_line(PIXMAP p, int i);
+
+
 extern "C" void fl_pixmap_draw2(PIXMAP b, int x, int y);
 extern "C" void fl_pixmap_draw(PIXMAP b, int x, int y, int w, int h, int cx, int cy);
 

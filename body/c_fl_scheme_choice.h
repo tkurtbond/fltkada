@@ -16,6 +16,7 @@ extern "C" void free_fl_scheme_choice(SCHEMECHOICE c);
 
 
 extern "C" void fl_scheme_choice_init_value(SCHEMECHOICE c);
+extern "C" int fl_scheme_choice_switch(SCHEMECHOICE c);
 
 
 extern "C" void fl_scheme_choice_draw(SCHEMECHOICE n);

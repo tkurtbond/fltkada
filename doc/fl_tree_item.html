@@ -154,6 +154,50 @@ procedure Set_Label
 
   <tr>
 <td><pre>
+Fl_Color labelbgcolor() const;
+</pre></td>
+<td><pre>
+function Get_Label_BG_Color
+       (This : in Tree_Item)
+    return Color;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void labelbgcolor(Fl_Color val);
+</pre></td>
+<td><pre>
+procedure Set_Label_BG_Color
+       (This : in Tree_Item;
+        Hue  : in Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Color labelfgcolor() const;
+</pre></td>
+<td><pre>
+function Get_Label_FG_Color
+       (This : in Tree_Item)
+    return Color;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void labelfgcolor(Fl_Color val);
+</pre></td>
+<td><pre>
+procedure Set_Label_FG_Color
+       (This : in Tree_Item;
+        Hue  : in Color);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 Fl_Font labelfont() const;
 void labelfont(Fl_Font val);
 </pre></td>

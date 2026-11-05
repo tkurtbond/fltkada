@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Light_Button.H>
 #include "c_fl_light_button.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -21,9 +22,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Light_Button : public Fl_Light_Button {
+class My_Light_Button : public Ada_Resizing<Fl_Light_Button> {
 public:
-    using Fl_Light_Button::Fl_Light_Button;
+    using Ada_Resizing<Fl_Light_Button>::Ada_Resizing;
 
     friend void fl_light_button_draw(LIGHTBUTTON b);
     friend int fl_light_button_handle(LIGHTBUTTON b, int e);

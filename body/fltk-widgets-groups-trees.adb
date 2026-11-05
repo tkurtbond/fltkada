@@ -324,6 +324,18 @@ package body FLTK.Widgets.Groups.Trees is
     pragma Import (C, fl_tree_set_item_label_color, "fl_tree_set_item_label_color");
     pragma Inline (fl_tree_set_item_label_color);
 
+    function fl_tree_get_item_label_bgcolor
+           (T : in Storage.Integer_Address)
+        return Interfaces.C.unsigned;
+    pragma Import (C, fl_tree_get_item_label_bgcolor, "fl_tree_get_item_label_bgcolor");
+    pragma Inline (fl_tree_get_item_label_bgcolor);
+
+    procedure fl_tree_set_item_label_bgcolor
+           (T : in Storage.Integer_Address;
+            V : in Interfaces.C.unsigned);
+    pragma Import (C, fl_tree_set_item_label_bgcolor, "fl_tree_set_item_label_bgcolor");
+    pragma Inline (fl_tree_set_item_label_bgcolor);
+
     function fl_tree_get_margin_left
            (T : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -383,6 +395,56 @@ package body FLTK.Widgets.Groups.Trees is
             Val : in Interfaces.C.int);
     pragma Import (C, fl_tree_set_select_box, "fl_tree_set_select_box");
     pragma Inline (fl_tree_set_select_box);
+
+    function fl_tree_get_icon
+           (T    : in Storage.Integer_Address;
+            What : in Interfaces.C.int)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_tree_get_icon, "fl_tree_get_icon");
+    pragma Inline (fl_tree_get_icon);
+
+    procedure fl_tree_set_icon
+           (T    : in Storage.Integer_Address;
+            What : in Interfaces.C.int;
+            Img  : in Storage.Integer_Address);
+    pragma Import (C, fl_tree_set_icon, "fl_tree_set_icon");
+    pragma Inline (fl_tree_set_icon);
+
+    function fl_tree_get_vposition
+           (T : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_get_vposition, "fl_tree_get_vposition");
+    pragma Inline (fl_tree_get_vposition);
+
+    procedure fl_tree_set_vposition
+           (T : in Storage.Integer_Address;
+            V : in Interfaces.C.int);
+    pragma Import (C, fl_tree_set_vposition, "fl_tree_set_vposition");
+    pragma Inline (fl_tree_set_vposition);
+
+    function fl_tree_get_hposition
+           (T : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_get_hposition, "fl_tree_get_hposition");
+    pragma Inline (fl_tree_get_hposition);
+
+    procedure fl_tree_set_hposition
+           (T : in Storage.Integer_Address;
+            V : in Interfaces.C.int);
+    pragma Import (C, fl_tree_set_hposition, "fl_tree_set_hposition");
+    pragma Inline (fl_tree_set_hposition);
+
+    function fl_tree_get_scrollbar_size
+           (T : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_get_scrollbar_size, "fl_tree_get_scrollbar_size");
+    pragma Inline (fl_tree_get_scrollbar_size);
+
+    procedure fl_tree_set_scrollbar_size
+           (T : in Storage.Integer_Address;
+            V : in Interfaces.C.int);
+    pragma Import (C, fl_tree_set_scrollbar_size, "fl_tree_set_scrollbar_size");
+    pragma Inline (fl_tree_set_scrollbar_size);
 
 
 
@@ -1035,6 +1097,184 @@ package body FLTK.Widgets.Groups.Trees is
     begin
         fl_tree_set_select_box (This.Void_Ptr, Box_Kind'Pos (Box));
     end Set_Select_Box;
+
+    function Get_Item_Label_BG_Color
+           (This : in Tree)
+        return Color is
+    begin
+        return Color (fl_tree_get_item_label_bgcolor (This.Void_Ptr));
+    end Get_Item_Label_BG_Color;
+
+
+    procedure Set_Item_Label_BG_Color
+           (This : in out Tree;
+            Hue  : in     Color) is
+    begin
+        fl_tree_set_item_label_bgcolor (This.Void_Ptr, Interfaces.C.unsigned (Hue));
+    end Set_Item_Label_BG_Color;
+
+
+
+
+    --  Icons  --
+
+    type Icon_Kind is (Open_Icon, Close_Icon, User_Icon);
+
+
+    function Get_Icon
+           (This : in Tree;
+            Kind : in Icon_Kind)
+        return access FLTK.Images.Image'Class is
+    begin
+        return FLTK.Tree_Icons.Find
+           (This.Void_Ptr, fl_tree_get_icon (This.Void_Ptr, Icon_Kind'Pos (Kind)));
+    end Get_Icon;
+
+
+    procedure Set_Icon
+           (This : in out Tree;
+            Kind : in     Icon_Kind;
+            Icon : in     FLTK.Images.Image'Class)
+    is
+        Ptr : Storage.Integer_Address := Null_Pointer;
+    begin
+        if Wrapper (Icon).Void_Ptr /= Null_Pointer then
+            Ptr := FLTK.Tree_Icons.Hold_Private (This.Void_Ptr, Icon);
+        end if;
+        fl_tree_set_icon (This.Void_Ptr, Icon_Kind'Pos (Kind), Ptr);
+        FLTK.Tree_Icons.Drop_Unused (This.Void_Ptr);
+    end Set_Icon;
+
+
+    procedure Clear_Icon
+           (This : in out Tree;
+            Kind : in     Icon_Kind) is
+    begin
+        fl_tree_set_icon (This.Void_Ptr, Icon_Kind'Pos (Kind), Null_Pointer);
+        FLTK.Tree_Icons.Drop_Unused (This.Void_Ptr);
+    end Clear_Icon;
+
+
+    function Get_Open_Icon
+           (This : in Tree)
+        return access FLTK.Images.Image'Class is
+    begin
+        return Get_Icon (This, Open_Icon);
+    end Get_Open_Icon;
+
+
+    procedure Set_Open_Icon
+           (This : in out Tree;
+            Icon : in     FLTK.Images.Image'Class) is
+    begin
+        Set_Icon (This, Open_Icon, Icon);
+    end Set_Open_Icon;
+
+
+    procedure Clear_Open_Icon
+           (This : in out Tree) is
+    begin
+        Clear_Icon (This, Open_Icon);
+    end Clear_Open_Icon;
+
+
+    function Get_Close_Icon
+           (This : in Tree)
+        return access FLTK.Images.Image'Class is
+    begin
+        return Get_Icon (This, Close_Icon);
+    end Get_Close_Icon;
+
+
+    procedure Set_Close_Icon
+           (This : in out Tree;
+            Icon : in     FLTK.Images.Image'Class) is
+    begin
+        Set_Icon (This, Close_Icon, Icon);
+    end Set_Close_Icon;
+
+
+    procedure Clear_Close_Icon
+           (This : in out Tree) is
+    begin
+        Clear_Icon (This, Close_Icon);
+    end Clear_Close_Icon;
+
+
+    function Get_User_Icon
+           (This : in Tree)
+        return access FLTK.Images.Image'Class is
+    begin
+        return Get_Icon (This, User_Icon);
+    end Get_User_Icon;
+
+
+    procedure Set_User_Icon
+           (This : in out Tree;
+            Icon : in     FLTK.Images.Image'Class) is
+    begin
+        Set_Icon (This, User_Icon, Icon);
+    end Set_User_Icon;
+
+
+    procedure Clear_User_Icon
+           (This : in out Tree) is
+    begin
+        Clear_Icon (This, User_Icon);
+    end Clear_User_Icon;
+
+
+
+
+    --  Scrolling  --
+
+
+    function Get_V_Position
+           (This : in Tree)
+        return Integer is
+    begin
+        return Integer (fl_tree_get_vposition (This.Void_Ptr));
+    end Get_V_Position;
+
+
+    procedure Set_V_Position
+           (This  : in out Tree;
+            Value : in     Integer) is
+    begin
+        fl_tree_set_vposition (This.Void_Ptr, Interfaces.C.int (Value));
+    end Set_V_Position;
+
+
+    function Get_H_Position
+           (This : in Tree)
+        return Integer is
+    begin
+        return Integer (fl_tree_get_hposition (This.Void_Ptr));
+    end Get_H_Position;
+
+
+    procedure Set_H_Position
+           (This  : in out Tree;
+            Value : in     Integer) is
+    begin
+        fl_tree_set_hposition (This.Void_Ptr, Interfaces.C.int (Value));
+    end Set_H_Position;
+
+
+    function Get_Scrollbar_Size
+           (This : in Tree)
+        return Integer is
+    begin
+        return Integer (fl_tree_get_scrollbar_size (This.Void_Ptr));
+    end Get_Scrollbar_Size;
+
+
+    procedure Set_Scrollbar_Size
+           (This  : in out Tree;
+            Value : in     Integer) is
+    begin
+        fl_tree_set_scrollbar_size (This.Void_Ptr, Interfaces.C.int (Value));
+    end Set_Scrollbar_Size;
 
 
 

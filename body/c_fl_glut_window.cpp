@@ -9,6 +9,7 @@
 #include "c_fl_glut.h"
 #include "c_fl_gl_window.h"
 #include "c_fl_window.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -24,9 +25,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Glut_Window : public Fl_Glut_Window {
+class My_Glut_Window : public Ada_Resizing<Fl_Glut_Window> {
 public:
-    using Fl_Glut_Window::Fl_Glut_Window;
+    using Ada_Resizing<Fl_Glut_Window>::Ada_Resizing;
 
     ~My_Glut_Window() { window_shape_gone(this); }
 

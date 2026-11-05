@@ -4,8 +4,12 @@
 //  Released into the public domain
 
 
+#include <cerrno>
+#include <cstdio>
 #include <cstring>
+#include <new>
 #include <FL/Fl_Text_Buffer.H>
+#include <FL/fl_utf8.h>
 #include "c_fl_text_buffer.h"
 
 
@@ -20,8 +24,16 @@ public:
 
 
 
+//  FLTK's own transcoding warning, which is static in Fl_Text_Buffer.cxx,
+//  kept from the first buffer made so it can be put back.
+
+static void (*default_transcoding_warning)(Fl_Text_Buffer*) = 0;
+
 TEXTBUFFER new_fl_text_buffer(int rs, int pgs) {
     My_Text_Buffer *tb = new My_Text_Buffer(rs, pgs);
+    if (default_transcoding_warning == 0) {
+        default_transcoding_warning = tb->transcoding_warning_action;
+    }
     return tb;
 }
 
@@ -71,24 +83,129 @@ void fl_text_buffer_call_predelete_callbacks(TEXTBUFFER tb) {
 
 
 
-int fl_text_buffer_loadfile(TEXTBUFFER tb, char * n, int b) {
-    return static_cast<Fl_Text_Buffer*>(tb)->loadfile(n,b);
+//  These return errno, or 0, where FLTK returns 1 for a file it couldn't
+//  open and 2 for one it couldn't read or write (Fl_Text_Buffer.cxx:
+//  2005-2064), so that the Ada side can say why.
+
+static int file_error() {
+    return errno != 0 ? errno : EIO;
+}
+
+//  FLTK's insertfile loses the end of a file whose last bytes begin a
+//  UTF-8 sequence longer than what is left, such as a Latin-1 file
+//  ending in an accented letter: utf8_input_filter stops there and
+//  insertfile takes its 0 for the end (Fl_Text_Buffer.cxx:1971-1977,
+//  2020-2032; FLTK-issues.md F26).  This is its loop, except that at the
+//  end of the file the rest is decoded, each bad byte as CP1252, as
+//  fl_utf8decode decodes it.
+
+int fl_text_buffer_insertfile(TEXTBUFFER tb, char * n, int p, int b) {
+    Fl_Text_Buffer *buffer = static_cast<Fl_Text_Buffer*>(tb);
+    if (b < 1) {
+        return EINVAL;
+    }
+    errno = 0;
+    FILE *fp = fl_fopen(n, "r");
+    if (fp == 0) {
+        return file_error();
+    }
+    //  Each byte in becomes at most 3 out (fl_utf8encode of a CP1252 byte).
+    char *in = new (std::nothrow) char[b + 4];
+    char *out = new (std::nothrow) char[3 * (b + 4) + 1];
+    if (in == 0 || out == 0) {
+        delete[] in;
+        delete[] out;
+        fclose(fp);
+        return ENOMEM;
+    }
+    buffer->input_file_was_transcoded = 0;
+    int kept = 0;
+    while (true) {
+        int r = static_cast<int>(fread(in + kept, 1, b, fp));
+        bool ended = r < b;
+        char *at = in, *end = in + kept + r;
+        char *q = out;
+        while (at < end) {
+            int l = fl_utf8len1(*at);
+            if (at + l > end) {
+                if (!ended) {
+                    break;
+                }
+                l = static_cast<int>(end - at);
+            }
+            while (l > 0) {
+                int lp;
+                char multibyte[5];
+                unsigned u = fl_utf8decode(at, at + l, &lp);
+                int lq = fl_utf8encode(u, multibyte);
+                if (lp != l || lq != l) {
+                    buffer->input_file_was_transcoded = 1;
+                }
+                memcpy(q, multibyte, lq);
+                q += lq;
+                at += lp;
+                l -= lp;
+            }
+        }
+        kept = static_cast<int>(end - at);
+        memmove(in, at, kept);
+        if (q > out) {
+            int made = static_cast<int>(q - out);
+            buffer->insert(p, out, made);
+            p += made;
+        }
+        if (ended) {
+            break;
+        }
+    }
+    int e = ferror(fp) ? file_error() : 0;
+    fclose(fp);
+    delete[] in;
+    delete[] out;
+    if (e == 0 && buffer->input_file_was_transcoded && buffer->transcoding_warning_action) {
+        buffer->transcoding_warning_action(buffer);
+    }
+    return e;
 }
 
 int fl_text_buffer_appendfile(TEXTBUFFER tb, char * n, int b) {
-    return static_cast<Fl_Text_Buffer*>(tb)->appendfile(n,b);
+    return fl_text_buffer_insertfile(tb, n, static_cast<Fl_Text_Buffer*>(tb)->length(), b);
 }
 
-int fl_text_buffer_insertfile(TEXTBUFFER tb, char * n, int p, int b) {
-    return static_cast<Fl_Text_Buffer*>(tb)->insertfile(n,p,b);
+int fl_text_buffer_loadfile(TEXTBUFFER tb, char * n, int b) {
+    Fl_Text_Buffer *buffer = static_cast<Fl_Text_Buffer*>(tb);
+    buffer->select(0, buffer->length());
+    buffer->remove_selection();
+    return fl_text_buffer_appendfile(tb, n, b);
 }
 
 int fl_text_buffer_outputfile(TEXTBUFFER tb, char * n, int f, int t, int b) {
-    return static_cast<Fl_Text_Buffer*>(tb)->outputfile(n,f,t,b);
+    if (b < 1) {
+        return EINVAL;
+    }
+    errno = 0;
+    return static_cast<Fl_Text_Buffer*>(tb)->outputfile(n,f,t,b) == 0 ? 0 : file_error();
 }
 
 int fl_text_buffer_savefile(TEXTBUFFER tb, char * n, int b) {
-    return static_cast<Fl_Text_Buffer*>(tb)->savefile(n,b);
+    return fl_text_buffer_outputfile(tb, n, 0, static_cast<Fl_Text_Buffer*>(tb)->length(), b);
+}
+
+int fl_text_buffer_was_transcoded(TEXTBUFFER tb) {
+    return static_cast<Fl_Text_Buffer*>(tb)->input_file_was_transcoded;
+}
+
+int fl_text_buffer_get_transcoding_warning(TEXTBUFFER tb) {
+    return static_cast<Fl_Text_Buffer*>(tb)->transcoding_warning_action != 0;
+}
+
+void fl_text_buffer_set_transcoding_warning(TEXTBUFFER tb, int on) {
+    static_cast<Fl_Text_Buffer*>(tb)->transcoding_warning_action =
+        on ? default_transcoding_warning : 0;
+}
+
+const char * fl_text_buffer_file_encoding_warning_message() {
+    return Fl_Text_Buffer::file_encoding_warning_message;
 }
 
 
@@ -134,8 +251,16 @@ int fl_text_buffer_next_char(TEXTBUFFER tb, int p) {
     return static_cast<Fl_Text_Buffer*>(tb)->next_char(p);
 }
 
+//  prev_char_clipped, which is 0 at 0 where prev_char is -1, from no
+//  further than length(): past it, FLTK gives back the place it's given
+//  (FLTK-issues.md F6).
+
 int fl_text_buffer_prev_char(TEXTBUFFER tb, int p) {
-    return static_cast<Fl_Text_Buffer*>(tb)->prev_char(p);
+    Fl_Text_Buffer *buffer = static_cast<Fl_Text_Buffer*>(tb);
+    if (p > buffer->length()) {
+        p = buffer->length();
+    }
+    return buffer->prev_char_clipped(p);
 }
 
 
@@ -147,6 +272,10 @@ int fl_text_buffer_count_displayed_characters(TEXTBUFFER tb, int s, int f) {
 
 int fl_text_buffer_count_lines(TEXTBUFFER tb, int s, int f) {
     return static_cast<Fl_Text_Buffer*>(tb)->count_lines(s,f);
+}
+
+int fl_text_buffer_estimate_lines(TEXTBUFFER tb, int s, int f, int l) {
+    return static_cast<Fl_Text_Buffer*>(tb)->estimate_lines(s,f,l);
 }
 
 int fl_text_buffer_length(TEXTBUFFER tb) {
@@ -235,6 +364,14 @@ void fl_text_buffer_unhighlight(TEXTBUFFER tb) {
     static_cast<Fl_Text_Buffer*>(tb)->unhighlight();
 }
 
+int fl_text_buffer_highlight_position(TEXTBUFFER tb, int * s, int * e) {
+    return static_cast<Fl_Text_Buffer*>(tb)->highlight_position(s, e);
+}
+
+int fl_text_buffer_highlighted(TEXTBUFFER tb) {
+    return static_cast<Fl_Text_Buffer*>(tb)->highlight();
+}
+
 
 
 
@@ -302,6 +439,10 @@ int fl_text_buffer_search_backward(TEXTBUFFER tb, int start, const char * item, 
 
 
 
+int fl_text_buffer_is_word_separator(TEXTBUFFER tb, int p) {
+    return static_cast<Fl_Text_Buffer*>(tb)->is_word_separator(p);
+}
+
 int fl_text_buffer_word_start(TEXTBUFFER tb, int p) {
     return static_cast<Fl_Text_Buffer*>(tb)->word_start(p);
 }
@@ -339,6 +480,26 @@ int fl_text_buffer_skip_displayed_characters(TEXTBUFFER tb, int s, int n) {
 
 void fl_text_buffer_canundo(TEXTBUFFER tb, char f) {
     return static_cast<Fl_Text_Buffer*>(tb)->canUndo(f);
+}
+
+//  FLTK sets the cursor position only when there was something to undo
+//  (Fl_Text_Buffer.cxx:563-606).
+int fl_text_buffer_undo(TEXTBUFFER tb, int &cp) {
+    cp = 0;
+    return static_cast<Fl_Text_Buffer*>(tb)->undo(&cp);
+}
+
+int fl_text_buffer_redo(TEXTBUFFER tb, int &cp) {
+    cp = 0;
+    return static_cast<Fl_Text_Buffer*>(tb)->redo(&cp);
+}
+
+int fl_text_buffer_can_undo(TEXTBUFFER tb) {
+    return static_cast<Fl_Text_Buffer*>(tb)->can_undo();
+}
+
+int fl_text_buffer_can_redo(TEXTBUFFER tb) {
+    return static_cast<Fl_Text_Buffer*>(tb)->can_redo();
 }
 
 void fl_text_buffer_copy(TEXTBUFFER tb, TEXTBUFFER tb2, int s, int f, int i) {

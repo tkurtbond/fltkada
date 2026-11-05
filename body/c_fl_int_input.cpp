@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Int_Input.H>
 #include "c_fl_int_input.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -21,9 +22,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Int_Input : public Fl_Int_Input {
+class My_Int_Input : public Ada_Resizing<Fl_Int_Input> {
 public:
-    using Fl_Int_Input::Fl_Int_Input;
+    using Ada_Resizing<Fl_Int_Input>::Ada_Resizing;
 
     friend void fl_int_input_draw(INTINPUT i);
     friend int fl_int_input_handle(INTINPUT i, int e);

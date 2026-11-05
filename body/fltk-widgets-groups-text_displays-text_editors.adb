@@ -6,7 +6,6 @@
 
 with
 
-    Ada.Assertions,
     Ada.Characters.Latin_1,
     FLTK.Events,
     FLTK.Hook_Exceptions,
@@ -20,7 +19,6 @@ use type
 package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
 
-    package Chk   renames Ada.Assertions;
     package Latin renames Ada.Characters.Latin_1;
 
 
@@ -492,7 +490,15 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
         --  will give you the first character in the textual representation, which
         --  is not ideal. This is why we have to grab the Last_Key manually.
     begin
-        pragma Assert (Editor_Ptr /= Null_Pointer);
+        --  Checked here, and not by a handler around the call, so that the
+        --  program's own exceptions aren't taken for FLTK's (FLTKAda-BUGS.md 45).
+        if Editor_Ptr = Null_Pointer then
+            Hook_Exceptions.Save_New
+               (Internal_FLTK_Error'Identity,
+                "Fl_Text_Editor C++ object had no user data reference back to the " &
+                "corresponding Ada object in the Key_Func hook");
+            return 0;
+        end if;
         Ada_Editor := Editor_Convert.To_Pointer (Storage.To_Address (Editor_Ptr));
         for B of Global_Key_Bindings loop
             if B.Key = Ada_Key and B.Func /= null then
@@ -512,12 +518,6 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
         end if;
         return Event_Outcome'Pos (Not_Handled);
     exception
-    when Chk.Assertion_Error =>
-        Hook_Exceptions.Save_New
-           (Internal_FLTK_Error'Identity,
-            "Fl_Text_Editor C++ object had no user data reference back to the " &
-            "corresponding Ada object in the Key_Func hook");
-        return 0;
     when Occurrence : others =>
         Hook_Exceptions.Save (Occurrence);
         return 0;

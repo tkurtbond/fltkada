@@ -6,6 +6,7 @@
 
 with
 
+    FLTK.Images,
     FLTK.Tree_Items;
 
 
@@ -263,6 +264,16 @@ package FLTK.Widgets.Groups.Trees is
            (This : in out Tree;
             Hue  : in     Color);
 
+    --  Tree_Items.Transparent_Background, the default, draws new items'
+    --  labels on the tree's background.
+    function Get_Item_Label_BG_Color
+           (This : in Tree)
+        return Color;
+
+    procedure Set_Item_Label_BG_Color
+           (This : in out Tree;
+            Hue  : in     Color);
+
     function Get_Margin_Left
            (This : in Tree)
         return Integer;
@@ -307,6 +318,90 @@ package FLTK.Widgets.Groups.Trees is
     procedure Set_Select_Box
            (This : in out Tree;
             Box  : in     Box_Kind);
+
+
+
+
+    --  Icons  --
+
+    --  The tree's own icons: the open icon, shown beside a closed item
+    --  with children, in place of FLTK's [+]; the close icon, shown beside
+    --  an open one, in place of [-] (Fl_Tree_Item.cxx:1079-1096); and the
+    --  user icon, shown beside every item without one of its own
+    --  (Tree_Items.Set_User_Icon).
+    --  FLTK keeps the image it is given, so the tree gets a copy of Icon,
+    --  which it keeps while it shows it (pofltk 78).  FLTK makes and
+    --  deletes an inactive copy of it as well, so a Shared_Image is copied
+    --  as a plain image, leaving the shared one alone (pofltk 84).  The
+    --  Get functions return the tree's copy, or null if there is none.
+
+    function Get_Open_Icon
+           (This : in Tree)
+        return access FLTK.Images.Image'Class;
+
+    procedure Set_Open_Icon
+           (This : in out Tree;
+            Icon : in     FLTK.Images.Image'Class);
+
+    procedure Clear_Open_Icon
+           (This : in out Tree);
+
+    function Get_Close_Icon
+           (This : in Tree)
+        return access FLTK.Images.Image'Class;
+
+    procedure Set_Close_Icon
+           (This : in out Tree;
+            Icon : in     FLTK.Images.Image'Class);
+
+    procedure Clear_Close_Icon
+           (This : in out Tree);
+
+    function Get_User_Icon
+           (This : in Tree)
+        return access FLTK.Images.Image'Class;
+
+    procedure Set_User_Icon
+           (This : in out Tree;
+            Icon : in     FLTK.Images.Image'Class);
+
+    procedure Clear_User_Icon
+           (This : in out Tree);
+
+
+
+
+    --  Scrolling  --
+
+    --  How many pixels of the tree are scrolled off the top, or the left.
+    --  A position is clamped between 0 and as far as the tree can scroll,
+    --  which is 1 until the tree is first drawn (Fl_Tree.cxx, vposition
+    --  and calc_dimensions).
+    function Get_V_Position
+           (This : in Tree)
+        return Integer;
+
+    procedure Set_V_Position
+           (This  : in out Tree;
+            Value : in     Integer);
+
+    function Get_H_Position
+           (This : in Tree)
+        return Integer;
+
+    procedure Set_H_Position
+           (This  : in out Tree;
+            Value : in     Integer);
+
+    --  The width of this tree's scrollbars.  0, the default, means
+    --  FLTK.Static's global scrollbar size.
+    function Get_Scrollbar_Size
+           (This : in Tree)
+        return Integer;
+
+    procedure Set_Scrollbar_Size
+           (This  : in out Tree;
+            Value : in     Integer);
 
 
 
@@ -405,6 +500,22 @@ private
     pragma Inline (Set_Item_Draw_Mode);
     pragma Inline (Get_Select_Box);
     pragma Inline (Set_Select_Box);
+    pragma Inline (Get_Item_Label_BG_Color);
+    pragma Inline (Set_Item_Label_BG_Color);
+
+    pragma Inline (Get_Open_Icon);
+    pragma Inline (Clear_Open_Icon);
+    pragma Inline (Get_Close_Icon);
+    pragma Inline (Clear_Close_Icon);
+    pragma Inline (Get_User_Icon);
+    pragma Inline (Clear_User_Icon);
+
+    pragma Inline (Get_V_Position);
+    pragma Inline (Set_V_Position);
+    pragma Inline (Get_H_Position);
+    pragma Inline (Set_H_Position);
+    pragma Inline (Get_Scrollbar_Size);
+    pragma Inline (Set_Scrollbar_Size);
 
     pragma Inline (Show_Self);
 

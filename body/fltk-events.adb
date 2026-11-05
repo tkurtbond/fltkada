@@ -422,6 +422,16 @@ package body FLTK.Events is
 
     Handlers : Handler_Vectors.Vector;
 
+    --  Whether FLTK's Num is an Event_Kind, checked before converting it so
+    --  that a Constraint_Error raised by the program's own code isn't taken
+    --  for FLTK's (FLTKAda-BUGS.md 45).
+    function Is_Event
+           (Num : in Interfaces.C.int)
+        return Boolean is
+    begin
+        return Num in Event_Kind'Pos (Event_Kind'First) .. Event_Kind'Pos (Event_Kind'Last);
+    end Is_Event;
+
     function Event_Handler_Hook
            (Num : in Interfaces.C.int)
         return Interfaces.C.int;
@@ -429,21 +439,27 @@ package body FLTK.Events is
 
     function Event_Handler_Hook
            (Num : in Interfaces.C.int)
-        return Interfaces.C.int is
+        return Interfaces.C.int
+    is
+        --  A copy, so that a handler can add or remove handlers.  Those it
+        --  removes are still called for this event, and those it adds
+        --  aren't.
+        Current : constant Handler_Vectors.Vector := Handlers;
     begin
-        for Call of reverse Handlers loop
+        if not Is_Event (Num) then
+            Hook_Exceptions.Save_New
+               (Internal_FLTK_Error'Identity,
+                "Event_Handler hook received unexpected event int value of " &
+                Interfaces.C.int'Image (Num));
+            return 0;
+        end if;
+        for Call of reverse Current loop
             if Call (Event_Kind'Val (Num)) /= Not_Handled then
                 return Event_Outcome'Pos (Handled);
             end if;
         end loop;
         return Event_Outcome'Pos (Not_Handled);
     exception
-    when Constraint_Error =>
-        Hook_Exceptions.Save_New
-           (Internal_FLTK_Error'Identity,
-            "Event_Handler hook received unexpected event int value of " &
-            Interfaces.C.int'Image (Num));
-        return 0;
     when Occurrence : others =>
         Hook_Exceptions.Save (Occurrence);
         return 0;
@@ -467,9 +483,12 @@ package body FLTK.Events is
 
     function System_Handler_Hook
            (E, U : in Storage.Integer_Address)
-        return Interfaces.C.int is
+        return Interfaces.C.int
+    is
+        --  A copy, as in Event_Handler_Hook.
+        Current : constant System_Handler_Vectors.Vector := System_Handlers;
     begin
-        for Call of reverse System_Handlers loop
+        for Call of reverse Current loop
             if Call (System_Event (Storage.To_Address (E))) = Handled then
                 return Event_Outcome'Pos (Handled);
             end if;
@@ -482,33 +501,41 @@ package body FLTK.Events is
     end System_Handler_Hook;
 
 
+    --  The window FLTK gave the dispatch function running, which Handle and
+    --  Handle_Dispatch use for a null Origin.  It may be one FLTK made, such
+    --  as a pop-up menu's, which the dispatch function is given as null.
+    Dispatch_Window : Storage.Integer_Address := Null_Pointer;
+
     function Dispatch_Hook
            (Num : in Interfaces.C.int;
             Ptr : in Storage.Integer_Address)
         return Interfaces.C.int
     is
-        Ada_Ptr : Storage.Integer_Address;
+        Ada_Ptr : Storage.Integer_Address := Null_Pointer;
         Actual_Window : access FLTK.Widgets.Groups.Windows.Window'Class;
+        Outer : constant Storage.Integer_Address := Dispatch_Window;
+        Result : Event_Outcome;
     begin
+        if not Is_Event (Num) then
+            Hook_Exceptions.Save_New
+               (Internal_FLTK_Error'Identity,
+                "Event_Dispatch hook received unexpected event int value of " &
+                Interfaces.C.int'Image (Num));
+            return 0;
+        end if;
         if Ptr /= Null_Pointer then
             Ada_Ptr := fl_widget_get_user_data (Ptr);
-            pragma Assert (Ada_Ptr /= Null_Pointer);
+        end if;
+        if Ada_Ptr /= Null_Pointer then
             Actual_Window := Window_Convert.To_Pointer (Storage.To_Address (Ada_Ptr));
         end if;
-        return Event_Outcome'Pos (Current_Dispatch (Event_Kind'Val (Num), Actual_Window));
+        Dispatch_Window := Ptr;
+        Result := Current_Dispatch (Event_Kind'Val (Num), Actual_Window);
+        Dispatch_Window := Outer;
+        return Event_Outcome'Pos (Result);
     exception
-    when Chk.Assertion_Error =>
-        Hook_Exceptions.Save_New
-           (Internal_FLTK_Error'Identity,
-            "Window passed to Event_Dispatch hook did not have user_data pointer back to Ada");
-        return 0;
-    when Constraint_Error =>
-        Hook_Exceptions.Save_New
-           (Internal_FLTK_Error'Identity,
-            "Event_Dispatch hook received unexpected event int value of " &
-            Interfaces.C.int'Image (Num));
-        return 0;
     when Occurrence : others =>
+        Dispatch_Window := Outer;
         Hook_Exceptions.Save (Occurrence);
         return 0;
     end Dispatch_Hook;
@@ -632,7 +659,7 @@ package body FLTK.Events is
     is
         Result : constant Interfaces.C.int := fl_event_handle_dispatch
            (Event_Kind'Pos (Event),
-            (if Origin = null then Null_Pointer else Wrapper (Origin.all).Void_Ptr));
+            (if Origin = null then Dispatch_Window else Wrapper (Origin.all).Void_Ptr));
     begin
         Hook_Exceptions.Reraise;
         return (if Result = 0 then Not_Handled else Handled);
@@ -646,7 +673,7 @@ package body FLTK.Events is
     is
         Result : constant Interfaces.C.int := fl_event_handle
            (Event_Kind'Pos (Event),
-            (if Origin = null then Null_Pointer else Wrapper (Origin.all).Void_Ptr));
+            (if Origin = null then Dispatch_Window else Wrapper (Origin.all).Void_Ptr));
     begin
         Hook_Exceptions.Reraise;
         return (if Result = 0 then Not_Handled else Handled);

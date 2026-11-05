@@ -430,13 +430,14 @@ package body FLTK.Widgets.Groups is
             fl_group_child (This.Void_Ptr, Interfaces.C.int (Place) - 1);
         Actual_Widget : access Widget'Class;
     begin
+        --  A part FLTK made, such as a terminal's scrollbar, has no Ada object.
         Widget_Ptr := fl_widget_get_user_data (Widget_Ptr);
-        pragma Assert (Widget_Ptr /= Null_Pointer);
+        if Widget_Ptr = Null_Pointer then
+            raise Internal_FLTK_Error with
+                "Fl_Group::child returned Widget with no user_data reference back to Ada";
+        end if;
         Actual_Widget := Widget_Convert.To_Pointer (Storage.To_Address (Widget_Ptr));
         return (Data => Actual_Widget);
-    exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "Fl_Group::child returned Widget with no user_data reference back to Ada";
     end Child;
 
 

@@ -100,11 +100,29 @@ package body FLTK.Probe is
         return C.int;
     pragma Import (C, fl_probe_modal_h, "fl_probe_modal_h");
 
+    function fl_probe_modal_x
+        return C.int;
+    pragma Import (C, fl_probe_modal_x, "fl_probe_modal_x");
+
+    function fl_probe_modal_y
+        return C.int;
+    pragma Import (C, fl_probe_modal_y, "fl_probe_modal_y");
+
+    function fl_probe_modal_icon
+        return CS.chars_ptr;
+    pragma Import (C, fl_probe_modal_icon, "fl_probe_modal_icon");
+
     function fl_probe_modal_key
            (K, S : in C.int;
             T    : in C.char_array)
         return C.int;
     pragma Import (C, fl_probe_modal_key, "fl_probe_modal_key");
+
+    function fl_probe_grab_key
+           (K, S : in C.int;
+            T    : in C.char_array)
+        return C.int;
+    pragma Import (C, fl_probe_grab_key, "fl_probe_grab_key");
 
     function fl_probe_close_modal
         return C.int;
@@ -433,6 +451,27 @@ package body FLTK.Probe is
     end Modal_H;
 
 
+    function Modal_X
+        return Integer is
+    begin
+        return Integer (fl_probe_modal_x);
+    end Modal_X;
+
+
+    function Modal_Y
+        return Integer is
+    begin
+        return Integer (fl_probe_modal_y);
+    end Modal_Y;
+
+
+    function Modal_Icon
+        return String is
+    begin
+        return CS.Value (fl_probe_modal_icon);
+    end Modal_Icon;
+
+
     function Modal_Key
            (Code  : in Keypress;
             State : in Modifier := Mod_None;
@@ -445,6 +484,19 @@ package body FLTK.Probe is
         Hook_Exceptions.Reraise;
         return Result;
     end Modal_Key;
+
+    function Grab_Key
+           (Code  : in Keypress;
+            State : in Modifier := Mod_None;
+            Text  : in String   := "")
+        return Boolean
+    is
+        Result : Boolean;
+    begin
+        Result := fl_probe_grab_key (Key_Number (Code), State_Bits (State), C.To_C (Text)) /= 0;
+        Hook_Exceptions.Reraise;
+        return Result;
+    end Grab_Key;
 
     function Close_Modal
         return Boolean

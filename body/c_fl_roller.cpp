@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Roller.H>
 #include "c_fl_roller.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -23,9 +24,9 @@ extern "C" int valuator_format_hook(void * ud, char * buf);
 
 //  Attaching all relevant hooks and friends
 
-class My_Roller : public Fl_Roller {
+class My_Roller : public Ada_Resizing<Fl_Roller> {
 public:
-    using Fl_Roller::Fl_Roller;
+    using Ada_Resizing<Fl_Roller>::Ada_Resizing;
 
     friend void fl_roller_draw(ROLLER r);
     friend int fl_roller_handle(ROLLER r, int e);

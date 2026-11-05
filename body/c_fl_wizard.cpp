@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Wizard.H>
 #include "c_fl_wizard.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -21,9 +22,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Wizard : public Fl_Wizard {
+class My_Wizard : public Ada_Resizing<Fl_Wizard> {
 public:
-    using Fl_Wizard::Fl_Wizard;
+    using Ada_Resizing<Fl_Wizard>::Ada_Resizing;
 
     friend void fl_wizard_draw(WIZARD w);
     friend int fl_wizard_handle(WIZARD w, int e);

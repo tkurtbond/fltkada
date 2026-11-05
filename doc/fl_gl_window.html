@@ -417,6 +417,28 @@ procedure Swap_Buffers
 
   <tr>
 <td><pre>
+int swap_interval() const;
+</pre></td>
+<td><pre>
+function Get_Swap_Interval
+       (This : in GL_Window)
+    return Swap_Interval;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void swap_interval(int);
+</pre></td>
+<td><pre>
+procedure Set_Swap_Interval
+       (This   : in out GL_Window;
+        Frames : in     Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 char valid() const;
 </pre></td>
 <td><pre>

@@ -13,6 +13,8 @@
 #include <FL/Enumerations.H>
 #include <FL/Fl_File_Icon.H>
 #include <FL/Fl_Menu_Item.H>
+#include <FL/Fl_Sys_Menu_Bar.H>
+#include <FL/Fl_Tabs.H>
 
 
 extern "C" const long long c_constants[];
@@ -340,5 +342,15 @@ extern "C" const long long c_constants[] =
     Fl_File_Icon::DEVICE,
     Fl_File_Icon::LINK,
     Fl_File_Icon::DIRECTORY,
-    FL_ICON_COLOR
+    FL_ICON_COLOR,
+    //  Tab overflow (Fl_Tabs::handle_overflow)
+    Fl_Tabs::OVERFLOW_COMPRESS,
+    Fl_Tabs::OVERFLOW_CLIP,
+    Fl_Tabs::OVERFLOW_PULLDOWN,
+    Fl_Tabs::OVERFLOW_DRAG,
+    //  Window menu styles (Fl_Sys_Menu_Bar::window_menu_style_enum)
+    Fl_Sys_Menu_Bar::no_window_menu,
+    Fl_Sys_Menu_Bar::tabbing_mode_none,
+    Fl_Sys_Menu_Bar::tabbing_mode_automatic,
+    Fl_Sys_Menu_Bar::tabbing_mode_preferred
 };

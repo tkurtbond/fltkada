@@ -542,6 +542,28 @@ procedure Use_Same_Items
 
   <tr>
 <td><pre>
+Fl_Boxtype menu_box() const;
+</pre></td>
+<td><pre>
+function Get_Menu_Box
+       (This : in Menu)
+    return Box_Kind;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void menu_box(Fl_Boxtype b);
+</pre></td>
+<td><pre>
+procedure Set_Menu_Box
+       (This : in out Menu;
+        To   : in     Box_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 int mode(int i) const;
 </pre></td>
 <td><pre>

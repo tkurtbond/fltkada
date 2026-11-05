@@ -99,6 +99,21 @@ package FLTK.Widgets.Inputs is
            (This : in out Input)
         return Boolean;
 
+    procedure Redo
+           (This : in out Input);
+
+    function Redo
+           (This : in out Input)
+        return Boolean;
+
+    function Can_Undo
+           (This : in Input)
+        return Boolean;
+
+    function Can_Redo
+           (This : in Input)
+        return Boolean;
+
 
 
 
@@ -332,6 +347,9 @@ private
     pragma Inline (Cut);
     pragma Inline (Copy_Cuts);
     pragma Inline (Undo);
+    pragma Inline (Redo);
+    pragma Inline (Can_Undo);
+    pragma Inline (Can_Redo);
 
     pragma Inline (Is_Readonly);
     pragma Inline (Set_Readonly);

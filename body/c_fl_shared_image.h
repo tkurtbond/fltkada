@@ -17,6 +17,7 @@ extern "C" SHAREDIMAGE fl_shared_image_find(const char * n, int w, int h);
 extern "C" void fl_shared_image_release(SHAREDIMAGE i);
 extern "C" SHAREDIMAGE fl_shared_image_copy(SHAREDIMAGE i, int w, int h);
 extern "C" SHAREDIMAGE fl_shared_image_copy2(SHAREDIMAGE i);
+extern "C" void * fl_shared_image_own_copy(SHAREDIMAGE i);
 
 
 extern "C" void fl_shared_image_color_average(SHAREDIMAGE i, int c, float b);

@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Flex.H>
 #include "c_fl_flex.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -21,9 +22,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Flex : public Fl_Flex {
+class My_Flex : public Ada_Resizing<Fl_Flex> {
 public:
-    using Fl_Flex::Fl_Flex;
+    using Ada_Resizing<Fl_Flex>::Ada_Resizing;
 
     friend void fl_flex_draw(FLEX n);
     friend int fl_flex_handle(FLEX n, int e);

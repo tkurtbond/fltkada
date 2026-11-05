@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Color_Chooser.H>
 #include "c_fl_color_chooser.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -21,9 +22,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Color_Chooser : public Fl_Color_Chooser {
+class My_Color_Chooser : public Ada_Resizing<Fl_Color_Chooser> {
 public:
-    using Fl_Color_Chooser::Fl_Color_Chooser;
+    using Ada_Resizing<Fl_Color_Chooser>::Ada_Resizing;
 
     friend void fl_color_chooser_draw(COLORCHOOSER n);
     friend int fl_color_chooser_handle(COLORCHOOSER n, int e);

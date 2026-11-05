@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Box.H>
 #include "c_fl_box.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -25,24 +26,21 @@ void fl_box_extra_init(void * adaobj, int x, int y, int w, int h, const char * l
 
 extern "C" void widget_draw_hook(void * ud);
 extern "C" int widget_handle_hook(void * ud, int e);
-extern "C" void widget_resize_hook(void * ud, int x, int y, int w, int h);
 
 
 
 
 //  Attaching all relevant hooks and friends
 
-class My_Box : public Fl_Box {
+class My_Box : public Ada_Resizing<Fl_Box> {
 public:
-    using Fl_Box::Fl_Box;
+    using Ada_Resizing<Fl_Box>::Ada_Resizing;
 
     friend void fl_box_draw(BOX n);
     friend int fl_box_handle(BOX n, int e);
-    friend void fl_box_resize(BOX n, int x, int y, int w, int h);
 
     void draw();
     int handle(int e);
-    void resize(int x, int y, int w, int h);
 };
 
 void My_Box::draw() {
@@ -51,15 +49,6 @@ void My_Box::draw() {
 
 int My_Box::handle(int e) {
     return widget_handle_hook(this->user_data(), e);
-}
-
-//  Before the Ada side has attached itself there is nothing to dispatch to
-void My_Box::resize(int x, int y, int w, int h) {
-    if (this->user_data() == nullptr) {
-        Fl_Box::resize(x, y, w, h);
-    } else {
-        widget_resize_hook(this->user_data(), x, y, w, h);
-    }
 }
 
 
@@ -97,7 +86,7 @@ int fl_box_handle(BOX n, int e) {
 }
 
 void fl_box_resize(BOX n, int x, int y, int w, int h) {
-    static_cast<My_Box*>(n)->Fl_Box::resize(x, y, w, h);
+    ada_default_resize(static_cast<Fl_Widget*>(n), x, y, w, h);
 }
 
 

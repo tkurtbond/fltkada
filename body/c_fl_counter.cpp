@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Counter.H>
 #include "c_fl_counter.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -23,9 +24,9 @@ extern "C" int valuator_format_hook(void * ud, char * buf);
 
 //  Attaching all relevant hooks and friends
 
-class My_Counter : public Fl_Counter {
+class My_Counter : public Ada_Resizing<Fl_Counter> {
 public:
-    using Fl_Counter::Fl_Counter;
+    using Ada_Resizing<Fl_Counter>::Ada_Resizing;
 
     friend void fl_counter_draw(COUNTER c);
     friend int fl_counter_handle(COUNTER c, int e);

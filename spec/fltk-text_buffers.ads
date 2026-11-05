@@ -19,6 +19,9 @@ package FLTK.Text_Buffers is
     type Text_Buffer_Reference (Data : access Text_Buffer'Class) is limited null record
         with Implicit_Dereference => Data;
 
+    --  A place in the text, as FLTK has it: the number of bytes before it,
+    --  so the first is 0, where the text as a String starts at 1.  A
+    --  Text_Display's places are the same.
     subtype Position is Natural;
 
     type Modification is (Insert, Restyle, Delete, None);
@@ -101,32 +104,58 @@ package FLTK.Text_Buffers is
 
     --  Files  --
 
+    --  A file that can't be opened, read or written raises Storage_Error
+    --  with the system's reason.  A file that isn't UTF-8 is read as
+    --  CP1252 and made UTF-8, all of it (FLTK-issues.md F26); then
+    --  Was_Transcoded is True and, unless Set_Transcoding_Warning turned
+    --  it off, FLTK shows File_Encoding_Warning in an alert before the
+    --  load returns.  Buffer is how many bytes are read at a time.
+
     procedure Load_File
            (This   : in out Text_Buffer;
             Name   : in     String;
-            Buffer : in     Natural := 128 * 1024);
+            Buffer : in     Positive := 128 * 1024);
 
     procedure Append_File
            (This   : in out Text_Buffer;
             Name   : in     String;
-            Buffer : in     Natural := 128 * 1024);
+            Buffer : in     Positive := 128 * 1024);
 
     procedure Insert_File
            (This   : in out Text_Buffer;
             Name   : in     String;
             Place  : in     Position;
-            Buffer : in     Natural := 128 * 1024);
+            Buffer : in     Positive := 128 * 1024);
 
     procedure Output_File
            (This          : in Text_Buffer;
             Name          : in String;
             Start, Finish : in Position;
-            Buffer        : in Natural := 128 * 1024);
+            Buffer        : in Positive := 128 * 1024);
 
     procedure Save_File
            (This   : in Text_Buffer;
             Name   : in String;
-            Buffer : in Natural := 128 * 1024);
+            Buffer : in Positive := 128 * 1024);
+
+    --  Whether the last file read wasn't UTF-8 and so was changed.
+    function Was_Transcoded
+           (This : in Text_Buffer)
+        return Boolean;
+
+    --  Whether FLTK alerts the user to a file read that wasn't UTF-8.  It
+    --  does by default.
+    function Has_Transcoding_Warning
+           (This : in Text_Buffer)
+        return Boolean;
+
+    procedure Set_Transcoding_Warning
+           (This : in out Text_Buffer;
+            To   : in     Boolean);
+
+    --  What FLTK's alert says.
+    function File_Encoding_Warning
+        return String;
 
 
 
@@ -174,15 +203,19 @@ package FLTK.Text_Buffers is
             Start, Finish : in Position)
         return String;
 
+    --  The place of the character after the one at Place, or Length at
+    --  the end.  A composed character, such as an emoji sequence, is one.
     function Next_Char
            (This  : in Text_Buffer;
             Place : in Position)
-        return Character;
+        return Position;
 
+    --  The place of the character before Place, or 0 at the start.  From
+    --  past the end, the last character's.
     function Prev_Char
            (This  : in Text_Buffer;
             Place : in Position)
-        return Character;
+        return Position;
 
 
 
@@ -198,6 +231,14 @@ package FLTK.Text_Buffers is
            (This          : in Text_Buffer;
             Start, Finish : in Position)
         return Integer;
+
+    --  Line feeds from Start up to Finish, plus a line break every
+    --  Line_Length bytes of a line, as if the text were wrapped there.
+    function Estimate_Lines
+           (This          : in Text_Buffer;
+            Start, Finish : in Position;
+            Line_Length   : in Positive)
+        return Natural;
 
     function Length
            (This : in Text_Buffer)
@@ -275,6 +316,12 @@ package FLTK.Text_Buffers is
 
     --  Highlighting  --
 
+    function Has_Highlight
+           (This : in Text_Buffer)
+        return Boolean;
+
+    --  0 and 0 if nothing is highlighted.  FLTK moves the highlight as
+    --  the text changes.
     procedure Get_Highlight
            (This          : in     Text_Buffer;
             Start, Finish :    out Position);
@@ -334,6 +381,14 @@ package FLTK.Text_Buffers is
 
     --  Navigation  --
 
+    --  Whether the character at Place ends a word: an ASCII character that
+    --  isn't a letter, digit or underscore, a no-break space, or CJK
+    --  punctuation.  Place past the end is a separator.
+    function Is_Word_Separator
+           (This  : in Text_Buffer;
+            Place : in Position)
+        return Boolean;
+
     function Word_Start
            (This  : in Text_Buffer;
             Place : in Position)
@@ -384,9 +439,46 @@ package FLTK.Text_Buffers is
 
     --  Miscellaneous  --
 
+    --  Turns undo and redo on or off.  They are on by default.
     procedure Can_Undo
            (This : in out Text_Buffer;
             Flag : in     Boolean);
+
+    --  Whether there is a change to undo, or an undone one to redo.
+    function Can_Undo
+           (This : in Text_Buffer)
+        return Boolean;
+
+    function Can_Redo
+           (This : in Text_Buffer)
+        return Boolean;
+
+    --  Undoes the last change, or redoes the last undone one.  The
+    --  functions return False if there was none.  Cursor is where the
+    --  change leaves the cursor, or 0 if there was none.
+    procedure Undo
+           (This : in out Text_Buffer);
+
+    function Undo
+           (This : in out Text_Buffer)
+        return Boolean;
+
+    function Undo
+           (This   : in out Text_Buffer;
+            Cursor :    out Position)
+        return Boolean;
+
+    procedure Redo
+           (This : in out Text_Buffer);
+
+    function Redo
+           (This : in out Text_Buffer)
+        return Boolean;
+
+    function Redo
+           (This   : in out Text_Buffer;
+            Cursor :    out Position)
+        return Boolean;
 
     procedure Copy
            (This          : in out Text_Buffer;
@@ -420,7 +512,6 @@ private
             Modify_CBs         : Modify_Vectors.Vector;
             Predelete_CBs      : Predelete_Vectors.Vector;
             Modify_Details_CBs : Modify_Details_Vectors.Vector;
-            High_From, High_To : Natural := 0;
         end record;
 
     overriding procedure Finalize
@@ -453,6 +544,9 @@ private
     pragma Inline (Enable_Callbacks);
     pragma Inline (Disable_Callbacks);
 
+    pragma Inline (Was_Transcoded);
+    pragma Inline (Has_Transcoding_Warning);
+    pragma Inline (Set_Transcoding_Warning);
     pragma Inline (Load_File);
     pragma Inline (Append_File);
     pragma Inline (Insert_File);
@@ -473,6 +567,7 @@ private
 
     pragma Inline (Count_Displayed_Characters);
     pragma Inline (Count_Lines);
+    pragma Inline (Estimate_Lines);
     pragma Inline (Length);
     pragma Inline (Get_Tab_Width);
     pragma Inline (Set_Tab_Width);
@@ -492,6 +587,7 @@ private
     pragma Inline (Unselect);
     pragma Inline (Secondary_Unselect);
 
+    pragma Inline (Has_Highlight);
     pragma Inline (Get_Highlight);
     pragma Inline (Set_Highlight);
     pragma Inline (Get_Highlighted_Text);
@@ -502,6 +598,7 @@ private
     pragma Inline (Search_Forward);
     pragma Inline (Search_Backward);
 
+    pragma Inline (Is_Word_Separator);
     pragma Inline (Word_Start);
     pragma Inline (Word_End);
     pragma Inline (Line_Start);
@@ -512,6 +609,9 @@ private
     pragma Inline (Skip_Displayed_Characters);
 
     pragma Inline (Can_Undo);
+    pragma Inline (Can_Redo);
+    pragma Inline (Undo);
+    pragma Inline (Redo);
     pragma Inline (Copy);
     pragma Inline (UTF8_Align);
 

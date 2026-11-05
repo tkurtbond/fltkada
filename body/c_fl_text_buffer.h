@@ -29,6 +29,10 @@ extern "C" int fl_text_buffer_appendfile(TEXTBUFFER tb, char * n, int b);
 extern "C" int fl_text_buffer_insertfile(TEXTBUFFER tb, char * n, int p, int b);
 extern "C" int fl_text_buffer_outputfile(TEXTBUFFER tb, char * n, int f, int t, int b);
 extern "C" int fl_text_buffer_savefile(TEXTBUFFER tb, char * n, int b);
+extern "C" int fl_text_buffer_was_transcoded(TEXTBUFFER tb);
+extern "C" int fl_text_buffer_get_transcoding_warning(TEXTBUFFER tb);
+extern "C" void fl_text_buffer_set_transcoding_warning(TEXTBUFFER tb, int on);
+extern "C" const char * fl_text_buffer_file_encoding_warning_message();
 
 
 extern "C" void fl_text_buffer_insert(TEXTBUFFER tb, int p, const char * item);
@@ -46,6 +50,7 @@ extern "C" int fl_text_buffer_prev_char(TEXTBUFFER tb, int p);
 
 extern "C" int fl_text_buffer_count_displayed_characters(TEXTBUFFER tb, int s, int f);
 extern "C" int fl_text_buffer_count_lines(TEXTBUFFER tb, int s, int f);
+extern "C" int fl_text_buffer_estimate_lines(TEXTBUFFER tb, int s, int f, int l);
 extern "C" int fl_text_buffer_length(TEXTBUFFER tb);
 extern "C" int fl_text_buffer_get_tab_distance(TEXTBUFFER tb);
 extern "C" void fl_text_buffer_set_tab_distance(TEXTBUFFER tb, int t);
@@ -70,6 +75,8 @@ extern "C" void fl_text_buffer_secondary_unselect(TEXTBUFFER tb);
 extern "C" void fl_text_buffer_highlight(TEXTBUFFER tb, int f, int t);
 extern "C" char * fl_text_buffer_highlight_text(TEXTBUFFER tb);
 extern "C" void fl_text_buffer_unhighlight(TEXTBUFFER tb);
+extern "C" int fl_text_buffer_highlight_position(TEXTBUFFER tb, int * s, int * e);
+extern "C" int fl_text_buffer_highlighted(TEXTBUFFER tb);
 
 
 extern "C" int fl_text_buffer_findchar_forward(TEXTBUFFER tb, int start,
@@ -82,6 +89,7 @@ extern "C" int fl_text_buffer_search_backward(TEXTBUFFER tb, int start,
     const char * item, int * found, int mcase);
 
 
+extern "C" int fl_text_buffer_is_word_separator(TEXTBUFFER tb, int p);
 extern "C" int fl_text_buffer_word_start(TEXTBUFFER tb, int p);
 extern "C" int fl_text_buffer_word_end(TEXTBUFFER tb, int p);
 extern "C" int fl_text_buffer_line_start(TEXTBUFFER tb, int p);
@@ -93,6 +101,10 @@ extern "C" int fl_text_buffer_skip_displayed_characters(TEXTBUFFER tb, int s, in
 
 
 extern "C" void fl_text_buffer_canundo(TEXTBUFFER tb, char f);
+extern "C" int fl_text_buffer_undo(TEXTBUFFER tb, int &cp);
+extern "C" int fl_text_buffer_redo(TEXTBUFFER tb, int &cp);
+extern "C" int fl_text_buffer_can_undo(TEXTBUFFER tb);
+extern "C" int fl_text_buffer_can_redo(TEXTBUFFER tb);
 extern "C" void fl_text_buffer_copy(TEXTBUFFER tb, TEXTBUFFER tb2, int s, int f, int i);
 extern "C" int fl_text_buffer_utf8_align(TEXTBUFFER tb, int p);
 

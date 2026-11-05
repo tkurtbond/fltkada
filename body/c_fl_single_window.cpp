@@ -7,6 +7,7 @@
 #include <FL/Fl_Single_Window.H>
 #include "c_fl_single_window.h"
 #include "c_fl_window.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -22,9 +23,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Single_Window : public Fl_Single_Window {
+class My_Single_Window : public Ada_Resizing<Fl_Single_Window> {
 public:
-    using Fl_Single_Window::Fl_Single_Window;
+    using Ada_Resizing<Fl_Single_Window>::Ada_Resizing;
 
     ~My_Single_Window() { window_shape_gone(this); }
 

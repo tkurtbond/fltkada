@@ -41,6 +41,12 @@ extern "C" void fl_sys_menu_bar_global(SYSMENUBAR m);
 extern "C" void fl_sys_menu_bar_update(SYSMENUBAR m);
 
 
+extern "C" void fl_sys_menu_bar_about(void (*cb)(void*, void*));
+extern "C" int fl_sys_menu_bar_get_window_menu_style();
+extern "C" void fl_sys_menu_bar_set_window_menu_style(int s);
+extern "C" void fl_sys_menu_bar_create_window_menu();
+
+
 extern "C" void fl_sys_menu_bar_draw(SYSMENUBAR m);
 extern "C" int fl_sys_menu_bar_handle(SYSMENUBAR m, int e);
 

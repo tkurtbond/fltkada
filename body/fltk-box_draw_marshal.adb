@@ -6,7 +6,6 @@
 
 with
 
-    Ada.Assertions,
     FLTK.Hook_Exceptions,
     FLTK.Static,
     Interfaces.C;
@@ -17,11 +16,6 @@ use type
 
 
 package body FLTK.Box_Draw_Marshal is
-
-
-    package Chk renames Ada.Assertions;
-
-
 
 
     C_Ptr_Array      : array (Box_Kind) of Storage.Integer_Address;
@@ -144,16 +138,19 @@ package body FLTK.Box_Draw_Marshal is
            (X, Y, W, H : in Interfaces.C.int;
             Tone       : in Interfaces.C.unsigned) is
     begin
-        pragma Assert (Ada_Access_Array (Kind) /= null);
+        --  Checked here, and not by a handler around the call, so that the
+        --  program's own exceptions aren't taken for FLTK's (FLTKAda-BUGS.md 45).
+        if Ada_Access_Array (Kind) = null then
+            Hook_Exceptions.Save_New
+               (Internal_FLTK_Error'Identity,
+                "Box_Draw_Function hook tried to get a null subprogram access");
+            return;
+        end if;
         Ada_Access_Array (Kind)
            (Integer (X), Integer (Y),
             Integer (W), Integer (H),
             Color (Tone));
     exception
-    when Chk.Assertion_Error =>
-        Hook_Exceptions.Save_New
-           (Internal_FLTK_Error'Identity,
-            "Box_Draw_Function hook tried to get a null subprogram access");
     when Occurrence : others =>
         Hook_Exceptions.Save (Occurrence);
     end Generic_Box_Draw_Hook;

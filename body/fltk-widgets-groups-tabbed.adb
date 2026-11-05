@@ -85,6 +85,29 @@ package body FLTK.Widgets.Groups.Tabbed is
 
 
 
+    --  Tab Appearance  --
+
+    function fl_tabs_get_tab_align
+           (T : in Storage.Integer_Address)
+        return Interfaces.C.unsigned;
+    pragma Import (C, fl_tabs_get_tab_align, "fl_tabs_get_tab_align");
+    pragma Inline (fl_tabs_get_tab_align);
+
+    procedure fl_tabs_set_tab_align
+           (T : in Storage.Integer_Address;
+            A : in Interfaces.C.unsigned);
+    pragma Import (C, fl_tabs_set_tab_align, "fl_tabs_set_tab_align");
+    pragma Inline (fl_tabs_set_tab_align);
+
+    procedure fl_tabs_handle_overflow
+           (T : in Storage.Integer_Address;
+            O : in Interfaces.C.int);
+    pragma Import (C, fl_tabs_handle_overflow, "fl_tabs_handle_overflow");
+    pragma Inline (fl_tabs_handle_overflow);
+
+
+
+
     --  Drawing, Events  --
 
     procedure fl_tabs_draw
@@ -285,6 +308,34 @@ package body FLTK.Widgets.Groups.Tabbed is
     when Chk.Assertion_Error => raise Internal_FLTK_Error with
         "Fl_Tabs::which returned Widget with no user_data reference back to Ada";
     end Get_Which;
+
+
+
+
+    --  Tab Appearance  --
+
+    function Get_Tab_Alignment
+           (This : in Tabbed_Group)
+        return Alignment is
+    begin
+        return Alignment (fl_tabs_get_tab_align (This.Void_Ptr));
+    end Get_Tab_Alignment;
+
+
+    procedure Set_Tab_Alignment
+           (This      : in out Tabbed_Group;
+            New_Align : in     Alignment) is
+    begin
+        fl_tabs_set_tab_align (This.Void_Ptr, Interfaces.C.unsigned (New_Align));
+    end Set_Tab_Alignment;
+
+
+    procedure Handle_Overflow
+           (This : in out Tabbed_Group;
+            Kind : in     Overflow_Kind) is
+    begin
+        fl_tabs_handle_overflow (This.Void_Ptr, Overflow_Kind'Pos (Kind));
+    end Handle_Overflow;
 
 
 

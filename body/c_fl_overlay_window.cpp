@@ -7,6 +7,7 @@
 #include <FL/Fl_Overlay_Window.H>
 #include "c_fl_overlay_window.h"
 #include "c_fl_window.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -24,9 +25,9 @@ extern "C" void overlay_window_draw_overlay_hook(void * ud);
 
 //  Attaching all relevant hooks and friends
 
-class My_Overlay_Window : public Fl_Overlay_Window {
+class My_Overlay_Window : public Ada_Resizing<Fl_Overlay_Window> {
 public:
-    using Fl_Overlay_Window::Fl_Overlay_Window;
+    using Ada_Resizing<Fl_Overlay_Window>::Ada_Resizing;
 
     ~My_Overlay_Window() { window_shape_gone(this); }
 
@@ -84,7 +85,7 @@ int fl_overlay_window_can_do_overlay(OVERLAYWINDOW w) {
 }
 
 void fl_overlay_window_resize(OVERLAYWINDOW ow, int x, int y, int w, int h) {
-    static_cast<Fl_Overlay_Window*>(ow)->resize(x, y, w, h);
+    ada_default_resize(static_cast<Fl_Widget*>(ow), x, y, w, h);
 }
 
 

@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Tile.H>
 #include "c_fl_tile.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -21,9 +22,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Tile : public Fl_Tile {
+class My_Tile : public Ada_Resizing<Fl_Tile> {
 public:
-    using Fl_Tile::Fl_Tile;
+    using Ada_Resizing<Fl_Tile>::Ada_Resizing;
 
     friend void fl_tile_draw(TILE n);
     friend int fl_tile_handle(TILE n, int e);
@@ -66,7 +67,23 @@ void fl_tile_position(TILE t, int ox, int oy, int nx, int ny) {
 }
 
 void fl_tile_resize(TILE t, int x, int y, int w, int h) {
-    static_cast<Fl_Tile*>(t)->resize(x, y, w, h);
+    ada_default_resize(static_cast<Fl_Widget*>(t), x, y, w, h);
+}
+
+//  Once there are size ranges, move_intersection starts from the sizes
+//  init_sizes saved, which a move made without ranges left as they were, so
+//  the next move would put the children back (pofltk 24).  Saving the sizes
+//  first changes nothing else: with ranges, FLTK saves them after every move.
+void fl_tile_size_range(TILE t, int i, int minw, int minh, int maxw, int maxh) {
+    Fl_Tile * tile = static_cast<Fl_Tile*>(t);
+    tile->init_sizes();
+    tile->size_range(i, minw, minh, maxw, maxh);
+}
+
+void fl_tile_init_size_range(TILE t, int minw, int minh) {
+    Fl_Tile * tile = static_cast<Fl_Tile*>(t);
+    tile->init_sizes();
+    tile->init_size_range(minw, minh);
 }
 
 

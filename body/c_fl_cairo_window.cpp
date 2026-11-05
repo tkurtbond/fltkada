@@ -8,6 +8,7 @@
 #include <FL/Fl_Double_Window.H>
 #include "c_fl_cairo_window.h"
 #include "c_fl_window.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -25,16 +26,16 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 class My_Cairo_Window :
 #ifdef FLTK_HAVE_CAIRO
-public Fl_Cairo_Window
+public Ada_Resizing<Fl_Cairo_Window>
 #else
-public Fl_Double_Window
+public Ada_Resizing<Fl_Double_Window>
 #endif
 {
 public:
 #ifdef FLTK_HAVE_CAIRO
-    using Fl_Cairo_Window::Fl_Cairo_Window;
+    using Ada_Resizing<Fl_Cairo_Window>::Ada_Resizing;
 #else
-    using Fl_Double_Window::Fl_Double_Window;
+    using Ada_Resizing<Fl_Double_Window>::Ada_Resizing;
 #endif
 
     ~My_Cairo_Window() { window_shape_gone(this); }

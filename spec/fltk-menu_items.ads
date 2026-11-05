@@ -102,6 +102,10 @@ package FLTK.Menu_Items is
            (This : in out Menu_Item;
             Text : in     String);
 
+    --  Text is shown as plain text if Kind is Image_Label, Multi_Label or
+    --  Icon_Label, whose label FLTK reads as a pointer; use Set_Image or
+    --  Set_Multi_Label for those.  Set_Label_Kind leaves the kind as it is
+    --  for them too (FLTKAda-BUGS.md 83).
     procedure Set_Label
            (This : in out Menu_Item;
             Kind : in     Label_Kind;

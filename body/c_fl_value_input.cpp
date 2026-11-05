@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Value_Input.H>
 #include "c_fl_value_input.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -23,9 +24,9 @@ extern "C" int valuator_format_hook(void * ud, char * buf);
 
 //  Attaching all relevant hooks and friends
 
-class My_Value_Input : public Fl_Value_Input {
+class My_Value_Input : public Ada_Resizing<Fl_Value_Input> {
 public:
-    using Fl_Value_Input::Fl_Value_Input;
+    using Ada_Resizing<Fl_Value_Input>::Ada_Resizing;
 
     friend void fl_value_input_draw(VALUEINPUT a);
     friend int fl_value_input_handle(VALUEINPUT a, int e);
@@ -154,7 +155,7 @@ void fl_value_input_set_text_size(VALUEINPUT v, int s) {
 
 
 void fl_value_input_resize(VALUEINPUT v, int x, int y, int w, int h) {
-    static_cast<Fl_Value_Input*>(v)->resize(x, y, w, h);
+    ada_default_resize(static_cast<Fl_Widget*>(v), x, y, w, h);
 }
 
 

@@ -166,6 +166,56 @@ package FLTK.Widgets.Groups.Grids is
 
 
 
+    --  Cells  --
+
+    --  Where Set_Widget put a widget.  Row and Column are the cell's top
+    --  left.  Min_Width and Min_Height are the size the widget keeps where
+    --  its alignment doesn't fill the cell, and a row or column the cell
+    --  alone spans is at least as big; Set_Widget sets them to the
+    --  widget's size.  FLTK frees a cell when its widget is set elsewhere
+    --  or removed, or the layout is changed, so a cell is named by its
+    --  widget.  Its span is set by Set_Widget, which checks it fits
+    --  (FLTK-issues.md F27).
+    type Cell_Info is record
+        Row, Column           : Positive;
+        Row_Span, Column_Span : Positive;
+        Align                 : Grid_Alignment;
+        Min_Width, Min_Height : Natural;
+    end record;
+
+    function Has_Cell
+           (This : in Grid;
+            Item : in Widget'Class)
+        return Boolean;
+
+    --  Raises Constraint_Error if Item has no cell in This.
+    function Get_Cell
+           (This : in Grid;
+            Item : in Widget'Class)
+        return Cell_Info;
+
+    --  The widget whose cell's top left is at Row, Column, or null if
+    --  there is none.
+    function Cell_Widget
+           (This        : in Grid;
+            Row, Column : in Positive)
+        return access Widget'Class;
+
+    --  These lay the grid out again, which FLTK's own don't (F27), and
+    --  raise Constraint_Error if Item has no cell in This.
+    procedure Set_Cell_Alignment
+           (This  : in out Grid;
+            Item  : in     Widget'Class;
+            Align : in     Grid_Alignment);
+
+    procedure Set_Cell_Minimum_Size
+           (This          : in out Grid;
+            Item          : in     Widget'Class;
+            Width, Height : in     Natural);
+
+
+
+
     --  Columns  --
 
     function Get_Column_Width

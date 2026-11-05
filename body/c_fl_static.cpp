@@ -11,6 +11,7 @@
 #include <FL/platform.H>
 #include <cstring>
 #include "c_fl_static.h"
+#include "c_fl_widget.h"
 
 
 
@@ -500,16 +501,27 @@ void fl_static_default_atclose(void * w, void * u) {
     Fl::default_atclose(static_cast<Fl_Window*>(w), u);
 }
 
+//  The first window shown from w on with an Ada object, or 0.  A window
+//  FLTK made, such as a file chooser's, is skipped, as in pofltk.
+static void * ada_window(Fl_Window * w) {
+    while (w != 0 && fl_widget_get_user_data(w) == 0) {
+        w = Fl::next_window(w);
+    }
+    return w;
+}
+
 void * fl_static_get_first_window() {
-    return Fl::first_window();
+    return ada_window(Fl::first_window());
 }
 
 void fl_static_set_first_window(void * w) {
     Fl::first_window(static_cast<Fl_Window*>(w));
 }
 
+//  Fl::next_window of a window not shown is an Fl::error.
 void * fl_static_next_window(void * w) {
-    return Fl::next_window(static_cast<Fl_Window*>(w));
+    Fl_Window * win = static_cast<Fl_Window*>(w);
+    return win->shown() ? ada_window(Fl::next_window(win)) : 0;
 }
 
 void * fl_static_modal() {

@@ -83,7 +83,10 @@
 <td><pre>
 static const char * file_encoding_warning_message;
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function File_Encoding_Warning
+    return String;
+</pre></td>
   </tr>
 
 </table>
@@ -97,14 +100,26 @@ static const char * file_encoding_warning_message;
 <td><pre>
 int input_file_was_transcoded;
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Was_Transcoded
+       (This : in Text_Buffer)
+    return Boolean;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 void (*transcoding_warning_action)(Fl_Text_Buffer *);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Has_Transcoding_Warning
+       (This : in Text_Buffer)
+    return Boolean;
+
+procedure Set_Transcoding_Warning
+       (This : in out Text_Buffer;
+        To   : in     Boolean);
+</pre></td>
   </tr>
 
 </table>
@@ -205,14 +220,14 @@ procedure Disable_Callbacks
 <td><pre>
 const char * address(int pos) const;
 </pre></td>
-<td>&nbsp;</td>
+<td>Intentionally left unbound.</td>
   </tr>
 
   <tr>
 <td><pre>
 char * address(int pos);
 </pre></td>
-<td>&nbsp;</td>
+<td>Intentionally left unbound.</td>
   </tr>
 
   <tr>
@@ -228,13 +243,13 @@ procedure Append_Text
 
   <tr>
 <td><pre>
-int appendFile(const char *file, int buflen=128*1024);
+int appendfile(const char *file, int buflen=128*1024);
 </pre></td>
 <td><pre>
 procedure Append_File
        (This   : in out Text_Buffer;
         Name   : in     String;
-        Buffer : in     Natural := 128 * 1024);
+        Buffer : in     Positive := 128 * 1024);
 </pre></td>
   </tr>
 
@@ -267,6 +282,28 @@ void call_predelete_callbacks();
 <td><pre>
 procedure Call_Predelete_Callbacks
        (This : in out Text_Buffer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+bool can_redo() const;
+</pre></td>
+<td><pre>
+function Can_Redo
+       (This : in Text_Buffer)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+bool can_undo() const;
+</pre></td>
+<td><pre>
+function Can_Undo
+       (This : in Text_Buffer)
+    return Boolean;
 </pre></td>
   </tr>
 
@@ -334,6 +371,19 @@ function Count_Lines
 
   <tr>
 <td><pre>
+int estimate_lines(int startPos, int endPos, int lineLen) const;
+</pre></td>
+<td><pre>
+function Estimate_Lines
+       (This          : in Text_Buffer;
+        Start, Finish : in Position;
+        Line_Length   : in Positive)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 int findchar_backward(int startPos, unsigned int searchChar,
     int *foundPos) const;
 </pre></td>
@@ -386,21 +436,25 @@ procedure Get_Highlight
 <td><pre>
 int highlight();
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+function Has_Highlight
+       (This : in Text_Buffer)
+    return Boolean;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 int highlight_position(int *start, int *end);
 </pre></td>
-<td>&nbsp;</td>
+<td>See Get_Highlight.</td>
   </tr>
 
   <tr>
 <td><pre>
 const Fl_Text_Selection * highlight_selection() const;
 </pre></td>
-<td>&nbsp;</td>
+<td>Intentionally left unbound.</td>
   </tr>
 
   <tr>
@@ -435,7 +489,19 @@ procedure Insert_File
        (This   : in out Text_Buffer;
         Name   : in     String;
         Place  : in     Position;
-        Buffer : in     Natural := 128 * 1024);
+        Buffer : in     Positive := 128 * 1024);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+bool is_word_separator(int pos) const;
+</pre></td>
+<td><pre>
+function Is_Word_Separator
+       (This  : in Text_Buffer;
+        Place : in Position)
+    return Boolean;
 </pre></td>
   </tr>
 
@@ -494,7 +560,7 @@ int loadfile(const char *file, int buflen=128*1024);
 procedure Load_File
        (This   : in out Text_Buffer;
         Name   : in     String;
-        Buffer : in     Natural := 128 * 1024);
+        Buffer : in     Positive := 128 * 1024);
 </pre></td>
   </tr>
 
@@ -506,7 +572,7 @@ int next_char(int ix) const;
 function Next_Char
        (This  : in Text_Buffer;
         Place : in Position)
-    return Character;
+    return Position;
 </pre></td>
   </tr>
 
@@ -514,7 +580,7 @@ function Next_Char
 <td><pre>
 int next_char_clipped(int ix) const;
 </pre></td>
-<td>&nbsp;</td>
+<td>See Next_Char, which is clipped.</td>
   </tr>
 
   <tr>
@@ -527,7 +593,7 @@ procedure Output_File
        (This          : in Text_Buffer;
         Name          : in String;
         Start, Finish : in Position;
-        Buffer        : in Natural := 128 * 1024);
+        Buffer        : in Positive := 128 * 1024);
 </pre></td>
   </tr>
 
@@ -539,7 +605,7 @@ int prev_char(int ix) const;
 function Prev_Char
        (This  : in Text_Buffer;
         Place : in Position)
-    return Character;
+    return Position;
 </pre></td>
   </tr>
 
@@ -547,21 +613,47 @@ function Prev_Char
 <td><pre>
 int prev_char_clipped(int ix) const;
 </pre></td>
-<td>&nbsp;</td>
+<td>See Prev_Char, which is clipped.</td>
   </tr>
 
   <tr>
 <td><pre>
 const Fl_Text_Selection * primary_selection() const;
 </pre></td>
-<td>&nbsp;</td>
+<td>Intentionally left unbound.</td>
   </tr>
 
   <tr>
 <td><pre>
 Fl_Text_Selection * primary_selection();
 </pre></td>
-<td>&nbsp;</td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void printf(const char *fmt, ...);
+</pre></td>
+<td>Intentionally left unbound. Use Append_Text with Ada's string operations.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int redo(int *cp=0);
+</pre></td>
+<td><pre>
+procedure Redo
+       (This : in out Text_Buffer);
+
+function Redo
+       (This : in out Text_Buffer)
+    return Boolean;
+
+function Redo
+       (This   : in out Text_Buffer;
+        Cursor :    out Position)
+    return Boolean;
+</pre></td>
   </tr>
 
   <tr>
@@ -689,7 +781,7 @@ int savefile(const char *file, int buflen=128*1024);
 procedure Save_File
        (This   : in Text_Buffer;
         Name   : in String;
-        Buffer : in Natural := 128 * 1024);
+        Buffer : in Positive := 128 * 1024);
 </pre></td>
   </tr>
 
@@ -754,7 +846,7 @@ function Has_Secondary_Selection
 <td><pre>
 const Fl_Text_Selection * secondary_selection() const;
 </pre></td>
-<td>&nbsp;</td>
+<td>Intentionally left unbound.</td>
   </tr>
 
   <tr>
@@ -921,7 +1013,19 @@ function Text_At
 <td><pre>
 int undo(int *cp=0);
 </pre></td>
-<td>&nbsp;</td>
+<td><pre>
+procedure Undo
+       (This : in out Text_Buffer);
+
+function Undo
+       (This : in out Text_Buffer)
+    return Boolean;
+
+function Undo
+       (This   : in out Text_Buffer;
+        Cursor :    out Position)
+    return Boolean;
+</pre></td>
   </tr>
 
   <tr>
@@ -958,6 +1062,13 @@ function UTF8_Align
 
   <tr>
 <td><pre>
+void vprintf(const char *fmt, va_list ap);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
 int word_end(int pos) const;
 </pre></td>
 <td><pre>
@@ -986,6 +1097,92 @@ function Word_Start
 
 <table class="function">
   <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+int apply_undo(Fl_Text_Undo_Action *action, int *cursorPos);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void call_modify_callbacks(int pos, int nDeleted, int nInserted,
+    int nRestyled, const char *deletedText) const;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void call_predelete_callbacks(int pos, int nDeleted) const;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int insert_(int pos, const char *text, int insertedLength=-1);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void move_gap(int pos);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void reallocate_with_gap(int newGapStart, int newGapLen);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void redisplay_selection(Fl_Text_Selection *oldSelection,
+    Fl_Text_Selection *newSelection) const;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void remove_(int start, int end);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void remove_selection_(Fl_Text_Selection *sel);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void replace_selection_(Fl_Text_Selection *sel, const char *text);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+char * selection_text_(Fl_Text_Selection *sel) const;
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void update_selections(int pos, int nDeleted, int nInserted);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
 
 </table>
 

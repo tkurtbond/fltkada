@@ -224,6 +224,22 @@ void fl_tree_item_set_labelsize(TREEITEM ti, int s) {
     static_cast<Fl_Tree_Item*>(ti)->labelsize(s);
 }
 
+unsigned int fl_tree_item_get_labelfgcolor(TREEITEM ti) {
+    return static_cast<Fl_Tree_Item*>(ti)->labelfgcolor();
+}
+
+void fl_tree_item_set_labelfgcolor(TREEITEM ti, unsigned int c) {
+    static_cast<Fl_Tree_Item*>(ti)->labelfgcolor(c);
+}
+
+unsigned int fl_tree_item_get_labelbgcolor(TREEITEM ti) {
+    return static_cast<Fl_Tree_Item*>(ti)->labelbgcolor();
+}
+
+void fl_tree_item_set_labelbgcolor(TREEITEM ti, unsigned int c) {
+    static_cast<Fl_Tree_Item*>(ti)->labelbgcolor(c);
+}
+
 
 
 

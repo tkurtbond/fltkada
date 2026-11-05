@@ -6,18 +6,12 @@
 
 with
 
-    Ada.Assertions,
     FLTK.Hook_Exceptions,
     Interfaces.C,
     System.Address_To_Access_Conversions;
 
 
 package body FLTK.Tree_Items.Custom is
-
-
-    package Chk renames Ada.Assertions;
-
-
 
 
     ------------------------
@@ -86,15 +80,17 @@ package body FLTK.Tree_Items.Custom is
         use type Interfaces.C.int;
         Ada_Item : access Custom_Item'Class;
     begin
-        pragma Assert (UD /= Null_Pointer);
+        --  Checked here, and not by a handler around the call, so that the
+        --  program's own exceptions aren't taken for FLTK's (FLTKAda-BUGS.md 45).
+        if UD = Null_Pointer then
+            Hook_Exceptions.Save_New
+               (Internal_FLTK_Error'Identity,
+                "User data null pointer passed to Fl_Tree_Item::draw_item_content override hook");
+            return 0;
+        end if;
         Ada_Item := Custom_Convert.To_Pointer (Storage.To_Address (UD));
         return Interfaces.C.int (Ada_Item.Draw_Item_Content (R /= 0));
     exception
-    when Chk.Assertion_Error =>
-        Hook_Exceptions.Save_New
-           (Internal_FLTK_Error'Identity,
-            "User data null pointer passed to Fl_Tree_Item::draw_item_content override hook");
-        return 0;
     when Occurrence : others =>
         Hook_Exceptions.Save (Occurrence);
         return 0;
@@ -111,14 +107,15 @@ package body FLTK.Tree_Items.Custom is
     is
         Ada_Item : access Custom_Item'Class;
     begin
-        pragma Assert (UD /= Null_Pointer);
+        if UD = Null_Pointer then
+            Hook_Exceptions.Save_New
+               (Internal_FLTK_Error'Identity,
+                "User data null pointer passed to Fl_Tree_Item destructor hook");
+            return;
+        end if;
         Ada_Item := Custom_Convert.To_Pointer (Storage.To_Address (UD));
         Ada_Item.Void_Ptr := Null_Pointer;
     exception
-    when Chk.Assertion_Error =>
-        Hook_Exceptions.Save_New
-           (Internal_FLTK_Error'Identity,
-            "User data null pointer passed to Fl_Tree_Item destructor hook");
     when Occurrence : others =>
         Hook_Exceptions.Save (Occurrence);
     end Tree_Item_Gone_Hook;

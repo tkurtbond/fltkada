@@ -796,23 +796,27 @@ package body FLTK.Static is
     is
         Result : Natural;
     begin
-        pragma Assert (I < C and V /= Null_Pointer);
+        --  Checked here, and not by handlers around the call, so that the
+        --  handler's own exceptions aren't taken for FLTK's (FLTKAda-BUGS.md
+        --  45).
+        if V = Null_Pointer or I >= C then
+            Hook_Exceptions.Save_New
+               (Internal_FLTK_Error'Identity,
+                "Args_Handler callback was supplied irregular argc and argv values of " &
+                Interfaces.C.int'Image (C) & " and " & Storage.Integer_Address'Image (V));
+            return 0;
+        end if;
+        if I < 1 then
+            Hook_Exceptions.Save_New
+               (Internal_FLTK_Error'Identity,
+                "Args_Handler callback was supplied unexpected int i value of " &
+                Interfaces.C.int'Image (I));
+            return 0;
+        end if;
         Result := Current_Args_Handler (Positive (I));
         I := I + Interfaces.C.int (Result);
         return Interfaces.C.int (Result);
     exception
-    when Constraint_Error =>
-        Hook_Exceptions.Save_New
-           (Internal_FLTK_Error'Identity,
-            "Args_Handler callback was supplied unexpected int i value of " &
-            Interfaces.C.int'Image (I));
-        return 0;
-    when Chk.Assertion_Error =>
-        Hook_Exceptions.Save_New
-           (Internal_FLTK_Error'Identity,
-            "Args_Handler callback was supplied irregular argc and argv values of " &
-            Interfaces.C.int'Image (C) & " and " & Storage.Integer_Address'Image (V));
-        return 0;
     when Occurrence : others =>
         Hook_Exceptions.Save (Occurrence);
         return 0;
@@ -869,19 +873,27 @@ package body FLTK.Static is
 
     procedure Clipboard_Notify_Hook
            (S : in Interfaces.C.int;
-            U : in Storage.Integer_Address) is
+            U : in Storage.Integer_Address)
+    is
+        --  A copy, so that a handler can add or remove handlers.  Those it
+        --  removes are still called for this notice, and those it adds
+        --  aren't.
+        Current : constant Clipboard_Notify_Vectors.Vector := Current_Clip_Notes;
     begin
-        pragma Assert (S in
-            Buffer_Kind'Pos (Buffer_Kind'First) .. Buffer_Kind'Pos (Buffer_Kind'Last));
-        for Call of Current_Clip_Notes loop
+        --  Checked here, and not by a handler around the calls, so that a
+        --  handler's own exceptions aren't taken for FLTK's (FLTKAda-BUGS.md
+        --  45).
+        if S not in Buffer_Kind'Pos (Buffer_Kind'First) .. Buffer_Kind'Pos (Buffer_Kind'Last) then
+            Hook_Exceptions.Save_New
+               (Internal_FLTK_Error'Identity,
+                "Clipboard_Notify_Hook was passed unexpected Buffer_Kind int value of " &
+                Interfaces.C.int'Image (S));
+            return;
+        end if;
+        for Call of Current loop
             Call.all (Buffer_Kind'Val (S));
         end loop;
     exception
-    when Chk.Assertion_Error =>
-        Hook_Exceptions.Save_New
-           (Internal_FLTK_Error'Identity,
-            "Clipboard_Notify_Hook was passed unexpected Buffer_Kind int value of " &
-            Interfaces.C.int'Image (S));
     when Occurrence : others =>
         Hook_Exceptions.Save (Occurrence);
     end Clipboard_Notify_Hook;
@@ -1063,13 +1075,12 @@ package body FLTK.Static is
            (Storage.To_Integer (Awake_Hook'Address),
             Conv.To_Address (Func));
     begin
-        pragma Assert (Result = 0);
-    exception
-    when Chk.Assertion_Error =>
+        --  Explicit, not pragma Assert, which a release build doesn't
+        --  check (FLTKAda-BUGS.md 28).
         if Result = -1 then
             raise Tasking_Error with
                 "Fl::add_awake_handler_ failed to register Awake_Handler callback";
-        else
+        elsif Result /= 0 then
             raise Internal_FLTK_Error with
                 "Fl::add_awake_handler_ returned unexpected int value of " &
                 Interfaces.C.int'Image (Result);
@@ -1083,18 +1094,17 @@ package body FLTK.Static is
         Hook, Func : Storage.Integer_Address;
         Result : constant Interfaces.C.int := fl_static_get_awake_handler (Hook, Func);
     begin
-        pragma Assert (Result = 0);
-        return Conv.To_Awake_Access (Func);
-    exception
-    when Chk.Assertion_Error =>
+        --  Explicit, so that a release build doesn't return Func unset
+        --  (FLTKAda-BUGS.md 28).
         if Result = -1 then
             raise Tasking_Error with
                 "Fl::get_awake_handler_ invoked without prior awake setup";
-        else
+        elsif Result /= 0 then
             raise Internal_FLTK_Error with
                 "Fl::get_awake_handler_ returned unexpected int value of " &
                 Interfaces.C.int'Image (Result);
         end if;
+        return Conv.To_Awake_Access (Func);
     end Get_Awake_Handler;
 
 
@@ -1105,12 +1115,10 @@ package body FLTK.Static is
            (Storage.To_Integer (Awake_Hook'Address),
             Conv.To_Address (Func));
     begin
-        pragma Assert (Result = 0);
-    exception
-    when Chk.Assertion_Error =>
+        --  Explicit, not pragma Assert (FLTKAda-BUGS.md 28).
         if Result = -1 then
             raise Tasking_Error with "Fl::awake failed to register Awake_Handler callback";
-        else
+        elsif Result /= 0 then
             raise Internal_FLTK_Error with "Fl::awake returned unexpected int value of " &
                 Interfaces.C.int'Image (Result);
         end if;
@@ -1725,15 +1733,16 @@ package body FLTK.Static is
         First_Ptr : Storage.Integer_Address := fl_static_get_first_window;
         Actual_First : access FLTK.Widgets.Groups.Windows.Window'Class;
     begin
+        --  The shim skips the windows FLTK made.
         if First_Ptr /= Null_Pointer then
             First_Ptr := fl_widget_get_user_data (First_Ptr);
-            pragma Assert (First_Ptr /= Null_Pointer);
+            if First_Ptr = Null_Pointer then
+                raise Internal_FLTK_Error with
+                    "Fl::first_window gave a window with no Ada object";
+            end if;
             Actual_First := Window_Convert.To_Pointer (Storage.To_Address (First_Ptr));
         end if;
         return Actual_First;
-    exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "Widget returned by Fl::first_window did not have user_data reference back to Ada";
     end Get_First_Window;
 
 
@@ -1753,13 +1762,13 @@ package body FLTK.Static is
     begin
         if Next_Ptr /= Null_Pointer then
             Next_Ptr := fl_widget_get_user_data (Next_Ptr);
-            pragma Assert (Next_Ptr /= Null_Pointer);
+            if Next_Ptr = Null_Pointer then
+                raise Internal_FLTK_Error with
+                    "Fl::next_window gave a window with no Ada object";
+            end if;
             Actual_Next := Window_Convert.To_Pointer (Storage.To_Address (Next_Ptr));
         end if;
         return Actual_Next;
-    exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "Widget returned by Fl::next_window did not have user_data reference back to Ada";
     end Get_Next_Window;
 
 
@@ -1769,15 +1778,14 @@ package body FLTK.Static is
         Modal_Ptr : Storage.Integer_Address := fl_static_modal;
         Actual_Modal : access FLTK.Widgets.Groups.Windows.Window'Class;
     begin
+        --  A window FLTK made, such as a dialog's, has no Ada object.
         if Modal_Ptr /= Null_Pointer then
             Modal_Ptr := fl_widget_get_user_data (Modal_Ptr);
-            pragma Assert (Modal_Ptr /= Null_Pointer);
-            Actual_Modal := Window_Convert.To_Pointer (Storage.To_Address (Modal_Ptr));
+            if Modal_Ptr /= Null_Pointer then
+                Actual_Modal := Window_Convert.To_Pointer (Storage.To_Address (Modal_Ptr));
+            end if;
         end if;
         return Actual_Modal;
-    exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "Widget returned by Fl::modal did not have user_data reference back to Ada";
     end Get_Top_Modal;
 
 

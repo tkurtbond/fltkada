@@ -66,6 +66,8 @@ extern "C" void fl_menu_set_textsize(MENU m, int s);
 
 extern "C" int fl_menu_get_down_box(MENU m);
 extern "C" void fl_menu_set_down_box(MENU m, int t);
+extern "C" int fl_menu_get_menu_box(MENU m);
+extern "C" void fl_menu_set_menu_box(MENU m, int t);
 extern "C" void fl_menu_global(MENU m);
 extern "C" int fl_menu_measure(MENU m, int i, int *h);
 

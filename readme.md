@@ -99,10 +99,11 @@ For further information on the build tools, consult the
 #### Technical Notes
 
 As part of its normal operation, FLTK calls a Widget's Draw and Handle methods
-from its main loop to deal with draw and input events. Since it's another part
-of the program that is invoking them, even if it's a part the programmer has no
-direct control over, this binding is set up so that if you override Draw or
-Handle the behaviour will change.
+from its main loop to deal with draw and input events, and its Resize method
+as a window or group lays out its children. Since it's another part of the
+program that is invoking them, even if it's a part the programmer has no direct
+control over, this binding is set up so that if you override Draw, Handle or
+Resize the behaviour will change.
 
 On the other hand, something like the Push method in tabbed groups is usually
 invoked from within that same tabbed group widget's Handle method. Therefore,

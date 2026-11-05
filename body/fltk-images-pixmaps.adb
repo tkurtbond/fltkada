@@ -50,6 +50,31 @@ package body FLTK.Images.Pixmaps is
 
 
 
+    --  Data  --
+
+    function fl_pixmap_line_count
+           (P : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_pixmap_line_count, "fl_pixmap_line_count");
+    pragma Inline (fl_pixmap_line_count);
+
+    function fl_pixmap_line_length
+           (P : in Storage.Integer_Address;
+            I : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_pixmap_line_length, "fl_pixmap_line_length");
+    pragma Inline (fl_pixmap_line_length);
+
+    function fl_pixmap_line
+           (P : in Storage.Integer_Address;
+            I : in Interfaces.C.int)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_pixmap_line, "fl_pixmap_line");
+    pragma Inline (fl_pixmap_line);
+
+
+
+
     --  Colors  --
 
     procedure fl_pixmap_color_average
@@ -123,6 +148,7 @@ package body FLTK.Images.Pixmaps is
                 Pixels : in Pixmap_Data)
             return Pixmap is
         begin
+            --  Marshal_Data checks the data against the header (FLTKAda-BUGS.md 77).
             return This : Pixmap do
                 This.Loose_Ptr := Pixmap_Marshal.Marshal_Data (Values, Colors, Pixels);
                 This.Void_Ptr := new_fl_pixmap
@@ -172,6 +198,43 @@ package body FLTK.Images.Pixmaps is
             end if;
         end return;
     end Copy;
+
+
+
+
+    --  Data  --
+
+    function Get_Line_Count
+           (This : in Pixmap)
+        return Natural is
+    begin
+        return Natural (fl_pixmap_line_count (This.Void_Ptr));
+    end Get_Line_Count;
+
+
+    function Get_Line
+           (This  : in Pixmap;
+            Index : in Positive)
+        return String
+    is
+        Length : Integer := -1;
+    begin
+        if Index <= This.Get_Line_Count then
+            Length := Integer (fl_pixmap_line_length (This.Void_Ptr, Interfaces.C.int (Index - 1)));
+        end if;
+        if Length < 0 then
+            raise Constraint_Error with "a Pixmap has no line" & Positive'Image (Index);
+        end if;
+        --  Not Interfaces.C.Strings.Value, which stops at a NUL.
+        declare
+            Line : String (1 .. Length);
+            for Line'Address use Storage.To_Address
+               (fl_pixmap_line (This.Void_Ptr, Interfaces.C.int (Index - 1)));
+            pragma Import (Ada, Line);
+        begin
+            return Line;
+        end;
+    end Get_Line;
 
 
 

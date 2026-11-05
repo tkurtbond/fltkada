@@ -652,6 +652,15 @@ checks that raise (PLAN.md, "Architecture decisions", 1).
 
 **Status.** Open. Applies throughout the fix phases.
 
+Phase 12, 2026-11-04: the awake functions and `Draw_Pixmap` checked
+FLTK's result with `pragma Assert`, and now check it explicitly (84).
+`Pixmaps.Forge.Create`'s and `Draw_Pixmap`'s checks on the data are
+explicit too (77, 84). About 80 `pragma Assert`s remain in 27 bodies.
+They check that FLTK's result is one FLTK documents, such as
+`Result in -3 .. 2` in `fltk-asks.adb`, and they aren't checked in a
+release build. They haven't been sorted into the ones that guard memory
+and the ones that don't. `grep -n 'pragma Assert' body/*.adb` lists them.
+
 
 ## 29. Exceptions raised in callbacks cross FLTK's C++ frames
 
@@ -1303,6 +1312,16 @@ make" instead of answering null. The same question applies to
 `Get_Pushed`, `Get_Focus` and `Get_Below_Mouse`, which can return parts
 of widgets FLTK made, and to `Dispatch_Hook`'s window.
 
+Since Phase 12 (51's fix), the shim knows which widgets have Ada
+objects, so these no longer misread a widget FLTK made whose user data
+isn't 0. They still give null for one in a release build and raise
+`Internal_FLTK_Error` in a debug build. The API question remains.
+
+Since Phase 12 (82), the dispatch function is given such a window as
+null too, but `Handle (Event, null)` and `Handle_Dispatch` from it pass
+the event on to the window FLTK gave. So a program can let FLTK handle
+a pop-up menu's events without an Ada object for its window.
+
 
 ## 45. Hooks that relabel the user's exception as Internal_FLTK_Error
 
@@ -1326,8 +1345,27 @@ seen in a run.
 
 **Found.** Writing 43, 2026-11-03.
 
-**Status.** Open. The fix is to cover only the conversions with these
-handlers, and to call the user's code outside them.
+**Fix.** Phase 12, 2026-11-04. Each hook checks FLTK's values
+explicitly before it calls the program's code, and saves an
+`Internal_FLTK_Error` and returns if one is wrong. Where a conversion
+could still fail, as with a table's context and cell, it is in an inner
+block with its own `Constraint_Error` handler, and the program's code is
+called after it. Only the `when others` handler, which saves whatever
+was raised, covers the call. The hooks changed are the ones listed
+above. `test_hook_exceptions` raises `Constraint_Error` or
+`Assertion_Error` with the message "mine" from a dispatch function, an
+event handler, a clipboard handler and a table's `Draw_Cell`, and checks
+that the same exception arrives. With the old hooks, the first four
+checks failed, each with `FLTK.INTERNAL_FLTK_ERROR` and a message about
+FLTK's values, such as "Event_Dispatch hook received unexpected event
+int value of 8". With a `when Constraint_Error` handler put back in the
+table's hook, the `Draw_Cell` check failed with
+`FLTK.INTERNAL_FLTK_ERROR`. The test passes on Xvfb and on sway, and
+valgrind finds no invalid reads or writes and no FLTKAda leak.
+`Args_Hook` was changed the same way, but isn't tested: the test would
+have to parse its own command line.
+
+**Status.** Fixed.
 
 
 ## 46. A new Menu_Item's label fields are uninitialised
@@ -1496,7 +1534,30 @@ of the chooser's window before `Extra_Final` asks for its parent, so
 finalizing it is safe. `Parent` called while the widget is the
 chooser's extra still misreads. A fix needs a way to know an Ada-made
 widget (for example, a shim-side mark on every `My_` class), which is
-the same decision Bug 44 needs.
+the same decision Bug 44 needs. (This was the status until Phase 12.)
+
+**Fix.** Phase 12, 2026-11-04. The shim keeps a table of the widgets
+with Ada objects (`body/c_fl_widget.cpp`): `fl_widget_set_user_data`,
+which only `Widgets.Extra_Init` calls, puts each widget in with its Ada
+object, and `fl_widget_forget` takes it out, with the parts FLTK made
+that are still its children and go with it. `fl_widget_get_user_data`
+gives the Ada object only for a widget in the table whose user data is
+still that object, and 0 otherwise, so every lookup of a widget FLTK
+made gives null instead of misreading its user data. `Parent` of the
+chooser's extra is now null. `Group.Child` of a part FLTK made, such as
+a terminal's scrollbar, now raises `Internal_FLTK_Error` in every build,
+where it gave a reference to garbage. `Get_First_Window` and
+`Get_Next_Window` skip the windows FLTK made, as pofltk does, and
+`Get_Top_Modal` gives null for one. A part an Ada record wraps but that
+isn't a child, such as a `Value_Input`'s input, stays in the table after
+its C++ object goes; a widget FLTK makes later at the same address
+would also need the same user data to be taken for it.
+
+**Verified.** `test_window_list`: with a file chooser shown, the window
+walk raised `Storage_Error` before the fix. After it, all 8 checks pass,
+with no invalid reads under valgrind, and `test_chooser_extra` stays
+clean. With the shim's skip taken out, the walk raises
+`Internal_FLTK_Error` instead. `make check-headless` passes.
 
 
 ## 52. The sorts compared only a name's first 255 bytes
@@ -2077,5 +2138,254 @@ pushes in the same way. `test_page_finalize` failed two checks.
 call them. `Start_Page` in a page and `End_Page` outside one raise
 `Page_Error` before calling FLTK. `test_page_finalize` checks all of
 this.
+
+**Status.** Fixed.
+
+
+## 76. An image's size and line size could raise Constraint_Error
+
+**Symptom.** For an `Animated_GIF_Image` made with no file, `Get_W`,
+`Get_H`, `Get_Data_W` and `Get_Data_H` raised `Constraint_Error` (a
+range check at `body/fltk-images.adb:393`). `Get_Line_Size` raised it
+for any image that failed to load, such as an animation of a missing or
+broken file, which `Create` doesn't refuse.
+
+**Cause.** Each converted FLTK's `int` to `Natural`. An `Fl_Pixmap`
+with no data is -1 wide (`Fl_Pixmap.H:58-64`; `measure` measures only
+when there is data, `Fl_Pixmap.cxx:35-44`), and FLTK keeps a failed
+image's error code, -1 to -3, in its line size (`Fl_Image.cxx:203-212`).
+Bug 53 fixed `Is_Empty`, which reads the size, but not these.
+
+**Found.** Phase 12, 2026-11-04, while checking `Fail_Code` (F25): a
+scratch program printed the size of an animation never loaded and the
+line size of one of no file, and both raised.
+
+**Fix.** These five functions return 0 for a negative value. The spec
+says so, and that `Fail_Code` gives the error. `test_image_crafted`
+checks both cases, and raises `Constraint_Error` without the fix.
+
+**Status.** Fixed.
+
+
+## 77. Pixmaps.Forge.Create let FLTK read past the data it was given
+
+**Symptom.** In a release build, `Pixmaps.Forge.Create` with a header
+bigger than its data returned a pixmap, and drawing it read past the
+end of the data. Valgrind found 3 invalid reads in `fl_convert_pixmap`
+(`fl_draw_pixmap.cxx:168-171`) for a `(40, 40, 2, 1)` header with two
+colors and 2 by 2 pixels. Separately, `Create` raised
+`Constraint_Error` for pixel data whose second index didn't start at 1,
+such as `Pixmap_Data (1 .. 2, 2 .. 4)`.
+
+**Cause.** The only checks that the header matched the colors and pixels
+were in `Pre`, which a release build doesn't check (PLAN.md,
+Architecture decisions, 1). FLTK reads as many lines, and characters a
+line, as the header says (`fl_draw_pixmap.cxx:103-171`). Nothing
+stopped a size whose image FLTK sizes as an `int` either
+(`Fl_Image.cxx:445`, `new uchar[data_w() * data_h() * d()]`).
+`Marshal_Data` took each line's address at column 1, not
+`Pixels'First (2)`.
+
+**Found.** Phase 12, 2026-11-04, while binding the pixmap's data: the
+`Pre` on `Create` guards memory. A scratch program against the release
+build showed the invalid reads.
+
+**Fix.** `Create` raises `Constraint_Error` when the colors or lines
+aren't as many as the header says, the lines aren't `Width * Per_Pixel`
+long, a color's name isn't `Per_Pixel` long, or `Width * Height * 4` is
+over `int'Last`. `Marshal_Data` uses `Pixels'First (2)`.
+`test_pixmap_data` checks each case. With the checks removed, its five
+refusals raised nothing. With the old index, it raised
+`Constraint_Error` at `fltk-pixmap_marshal.adb:69`.
+
+**Status.** Fixed.
+
+## 78. Text_Buffers.Next_Char and Prev_Char returned a Character
+
+**Symptom.** `Next_Char` and `Prev_Char` returned `Character'Val` of the
+place FLTK gave, so for `"a" & é & "b"` `Next_Char (1)` was the
+character at position 3, not the place 3. A place over 255 raised
+`Constraint_Error`.
+
+**Cause.** FLTK's `next_char` and `prev_char` return the place of the
+next or previous character, not a character (`Fl_Text_Buffer.H:738-744`),
+and the binding converted it. `prev_char (0)` is -1, which a `Position`
+can't hold.
+
+**Found.** Phase 12, 2026-11-04, binding `Text_Buffer`'s missing
+methods. A scratch program under Xvfb showed `Next_Char (299)` raising.
+
+**Fix.** Both return a `Position`. `Prev_Char` calls `prev_char_clipped`,
+which is 0 at 0, from no further than `Length`, since FLTK gives back
+the place it's given past the end (FLTK-issues.md F6).
+`test_text_buffer_methods` checks them.
+
+**Status.** Fixed.
+
+## 79. Text_Buffers.Get_Highlight gave what Set_Highlight last set
+
+**Symptom.** After `Set_Highlight (2, 4)` and inserting 3 bytes at 0,
+`Get_Highlight` still gave 2 and 4, where FLTK had moved the highlight
+to 5 and 7. After `Unhighlight`, it still gave 2 and 4.
+
+**Cause.** `Get_Highlight` returned two components of the Ada record
+that only `Set_Highlight` set, not FLTK's `highlight_position`.
+
+**Found.** Phase 12, 2026-11-04, binding `highlight()`. A scratch
+program under Xvfb showed both stale values.
+
+**Fix.** `Get_Highlight` returns `highlight_position`, 0 and 0 when
+nothing is highlighted, and the record no longer keeps them.
+`Has_Highlight` is new. `test_text_buffer_methods` checks both cases.
+
+**Status.** Fixed.
+
+## 80. A Text_Buffer file error gave the wrong reason
+
+**Symptom.** `Load_File` of a missing file raised `Storage_Error` with
+"Operation not permitted". A file that couldn't be read gave "No such
+file or directory", whatever went wrong.
+
+**Cause.** FLTK returns 1 for a file it can't open and 2 for one it
+can't read or write (`Fl_Text_Buffer.cxx:2005-2064`), not an `errno`.
+The binding passed those to `strerror`.
+
+**Found.** Phase 12, 2026-11-04, while working around F26.
+
+**Fix.** The shim returns `errno`, or `EIO` if it is 0, and the Ada
+side still raises `Storage_Error` with `strerror`'s text.
+`Buffer`, which FLTK reads nothing with when it is 0, is `Positive`.
+`test_text_buffer_methods` checks a missing file, a directory that
+doesn't exist and a directory read as a file. With FLTK's `loadfile`
+and `savefile` in the shim, the three fail.
+
+**Status.** Fixed.
+
+
+## 81. A handler that removed a handler raised Program_Error
+
+**Symptom.** An event handler (`Events.Add_Handler`) that called
+`Events.Remove_Handler`, or a clipboard-notify handler that called
+`Static.Remove_Clipboard_Notify`, raised `Program_Error`: "attempt to
+tamper with cursors". The same was so for a system handler.
+PROBLEMS-OUTSTANDING.md listed the clipboard case.
+
+**Cause.** Each hook looped over the package's vector of handlers, and
+`Ada.Containers.Vectors` doesn't allow the vector to change while it is
+being looped over.
+
+**Found.** Phase 12, 2026-11-04, writing `test_hook_exceptions` for 45.
+
+**Fix.** Each hook loops over a copy of the vector. A handler removed
+during the loop is still called for that event, and one added isn't.
+The next event goes only to the handlers then listed.
+`test_hook_exceptions` has an event handler and a clipboard handler
+remove themselves. It checks that the other handlers are still called,
+and that the removed one isn't called for the next event. With the old
+event hook, it failed with "PROGRAM_ERROR :
+FLTK.Events.Handler_Vectors.Implementation.TC_Check: attempt to tamper
+with cursors". The system handlers aren't tested.
+
+**Status.** Fixed.
+
+
+## 82. A dispatch function given a window FLTK made couldn't pass it on
+
+**Symptom.** While a pop-up menu was up, the function set with
+`Events.Set_Dispatch` was given its window as null, because FLTK made
+that window and it has no Ada object (44). `Handle (Event, null)` then
+gave FLTK a null window. FLTK's `Fl::handle_` needs one, and the program
+crashed: `test_hook_exceptions` got `STORAGE_ERROR :
+s-intman.adb:136 explicit raise` in the release library. In a debug
+build, the window's missing user data raised `Internal_FLTK_Error`
+first, with "Window passed to Event_Dispatch hook did not have user_data
+pointer back to Ada".
+
+**Cause.** `Handle` passed its `Origin`'s FLTK object, or null if
+`Origin` was null. Nothing kept the window FLTK had given the hook.
+
+**Found.** Phase 12, 2026-11-04, writing `test_hook_exceptions` for 45.
+
+**Fix.** `Dispatch_Hook` keeps the window FLTK gave while the dispatch
+function runs, and `Handle` and `Handle_Dispatch` with a null `Origin`
+pass it to FLTK. The window is restored afterwards, so a nested
+dispatch is right. `test_hook_exceptions` sets a dispatch function that
+calls `Handle (Event, Win)` and pops up a menu. It checks that the
+function is given null, that `Show` is among those events, and that the
+Escape the probe sends then closes the menu. With null passed as
+before, it raised the `STORAGE_ERROR` above. Pop-up menus close at once
+on a headless sway, so this part needs X11 and is skipped on sway.
+
+**Status.** Fixed.
+
+
+## 83. A Menu_Item's text could be drawn as an image or a multi-label
+
+**Symptom.** A menu item given `Set_Label_Kind (Image_Label)`,
+`Multi_Label` or `Icon_Label`, or `Set_Label (Kind, Text)` with one of
+them, crashed when the menu was drawn. So did `Set_Label (Text)` on an
+item that showed an image (`Set_Image`). Valgrind found invalid reads in
+`Fl_Image::labeltype` (`Fl_Image.cxx:236`) from `Fl_Menu_Item::draw`
+(`Fl_Menu.cxx:338`), or in `fl_measure` from `multi_measure`
+(`Fl_Multi_Label.cxx:49-50`), then a segmentation fault. For
+`Icon_Label` nothing went wrong, but only because nothing had
+registered FLTK's icon label type.
+
+**Cause.** For those kinds FLTK takes an item's label as a pointer to an
+`Fl_Image` or an `Fl_Multi_Label`, not as text. 73 kept text and pointer
+labels apart for widgets, and for a menu item's `Set_Image` and
+`Set_Multi_Label`, but not for these three calls. FLTK registers its
+image and multi-label drawing functions only when something first uses
+them. Until then a wrong kind draws nothing, which hid the bug.
+
+**Found.** Phase 12, 2026-11-04, checking PROBLEMS-OUTSTANDING.md's
+"Menu_Item Set_Label with an image or multi-label kind is meaningless".
+A scratch program that used an image and a multi-label first showed the
+crashes under valgrind.
+
+**Fix.** In the shim, `Set_Label_Kind` leaves a pointer kind as it is.
+`Set_Label (Text)` frees an item's old text and makes a pointer kind
+`Normal_Label`, and `Set_Label (Kind, Text)` does the same before it
+sets the kind. The spec says so. `test_menu_item_labels` shows a menu
+bar with an image item, a multi-label item, and eight items given the
+calls above. It checks that the eight are plain text and the first two
+keep their kinds. With the old shim it raised `STORAGE_ERROR`. It
+passes on Xvfb and on sway, and valgrind finds no errors.
+
+**Status.** Fixed.
+
+
+## 84. The awake functions and Draw_Pixmap lost their checks in release
+
+**Symptom.** In a release build, `Static.Get_Awake_Handler` with nothing
+waiting returned an unset access value, where a debug build raised
+`Tasking_Error`. `Add_Awake_Handler` and `Awake` raised nothing when
+FLTK failed. `Draw.Draw_Pixmap` raised nothing when FLTK couldn't decode
+the data, and drew data whose header didn't match it, reading past its
+end as 77 did.
+
+**Cause.** FLTK's results were checked with `pragma Assert`, and the
+data with `Pre`, which a release build doesn't check (28).
+`Fl::get_awake_handler_` returns -1 and doesn't set the function when
+the ring is empty (`Fl_lock.cxx:106-107`). `fl_draw_pixmap` returns 0
+for a `Per_Pixel` other than 1 or 2, before it draws anything
+(`fl_draw_pixmap.cxx:64-68`, 187).
+
+**Found.** Phase 12, 2026-11-04, removing the `when Assertion_Error`
+handlers for 45.
+
+**Fix.** The results are checked explicitly: -1 raises `Tasking_Error`,
+and another non-zero result raises `Internal_FLTK_Error`. `Draw_Pixmap`
+raises `Draw_Error` for a result of 0. `Pixmap_Marshal.Marshal_Data`,
+which both `Pixmaps.Forge.Create` and `Draw_Pixmap` call, now makes 77's
+checks. `test_statics_core` checks `Get_Awake_Handler` with nothing
+waiting. It also fills FLTK's ring, which holds 1023 handlers
+(`Fl_lock.cxx:66`, 85-91), and checks that `Add_Awake_Handler` and
+`Awake` then raise `Tasking_Error`, and that `Get_Awake_Handler` gives
+each handler back. Without the checks, the three failed with "raised
+nothing". `test_pixmap_data` checks that `Draw_Pixmap` refuses a header
+with too many lines or colors, and three characters a pixel. Without the
+checks, both mismatches raised `STORAGE_ERROR` and valgrind found 4
+invalid reads.
 
 **Status.** Fixed.

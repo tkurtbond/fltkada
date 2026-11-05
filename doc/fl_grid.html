@@ -54,7 +54,7 @@
 
   <tr>
     <td>Fl_Grid::Cell</td>
-    <td>Not yet bound</td>
+    <td>Cell_Info, a copy, since FLTK frees cells; a cell is named by its widget</td>
   </tr>
 
 </table>
@@ -223,14 +223,43 @@ function Create
 <td><pre>
 Cell *cell(int row, int col) const;
 </pre></td>
-<td>Not yet bound.</td>
+<td><pre>
+--  The widget whose cell's top left is at Row, Column, or null.
+function Cell_Widget
+       (This        : in Grid;
+        Row, Column : in Positive)
+    return access Widget'Class;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 Cell *cell(Fl_Widget *widget) const;
 </pre></td>
-<td>Not yet bound.</td>
+<td><pre>
+function Has_Cell
+       (This : in Grid;
+        Item : in Widget'Class)
+    return Boolean;
+
+--  Row, column, spans, alignment and minimum size.
+function Get_Cell
+       (This : in Grid;
+        Item : in Widget'Class)
+    return Cell_Info;
+
+--  Unlike Cell::align and Cell::minimum_size, these lay
+--  the grid out again (FLTK-issues.md F27).
+procedure Set_Cell_Alignment
+       (This  : in out Grid;
+        Item  : in     Widget'Class;
+        Align : in     Grid_Alignment);
+
+procedure Set_Cell_Minimum_Size
+       (This          : in out Grid;
+        Item          : in     Widget'Class;
+        Width, Height : in     Natural);
+</pre></td>
   </tr>
 
   <tr>
@@ -701,6 +730,52 @@ function Set_Widget
 
 
 <table class="function">
+  <tr><th colspan="2">Fl_Grid::Cell</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Widget *widget() const;
+short row() const;
+short col() const;
+short rowspan() const;
+short colspan() const;
+Fl_Grid_Align align() const;
+void minimum_size(int *w, int *h) const;
+</pre></td>
+<td>The fields of Get_Cell's Cell_Info, and Cell_Widget.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void align(Fl_Grid_Align align);
+void minimum_size(int w, int h);
+</pre></td>
+<td>Set_Cell_Alignment, Set_Cell_Minimum_Size.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+void rowspan(short v);
+void colspan(short v);
+</pre></td>
+<td>Intentionally left unbound: a span past the grid's edge makes
+layout() read past its rows (FLTK-issues.md F27). Set_Widget sets spans,
+and checks them.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+Cell *next();
+void next(Cell *c);
+</pre></td>
+<td>Intentionally left unbound.</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
   <tr><th colspan="2">Protected Functions and Procedures</th></tr>
 
   <tr>
@@ -724,7 +799,7 @@ procedure Draw
 <td><pre>
 virtual void draw_grid();
 </pre></td>
-<td>Not yet bound.</td>
+<td>Intentionally left unbound. Show_Grid draws FLTK's lines; override Draw to draw others.</td>
   </tr>
 
   <tr>

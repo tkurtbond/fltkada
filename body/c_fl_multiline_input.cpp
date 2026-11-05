@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Multiline_Input.H>
 #include "c_fl_multiline_input.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -21,9 +22,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Multiline_Input : public Fl_Multiline_Input {
+class My_Multiline_Input : public Ada_Resizing<Fl_Multiline_Input> {
 public:
-    using Fl_Multiline_Input::Fl_Multiline_Input;
+    using Ada_Resizing<Fl_Multiline_Input>::Ada_Resizing;
 
     friend void fl_multiline_input_draw(MULTILINEINPUT i);
     friend int fl_multiline_input_handle(MULTILINEINPUT i, int e);

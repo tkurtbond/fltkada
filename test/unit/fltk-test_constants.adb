@@ -16,13 +16,19 @@ with
     Checks,
     FLTK.Draw,
     FLTK.Images.File_Icons,
-    FLTK.Screen;
+    FLTK.Screen,
+    FLTK.Widgets.Groups.Tabbed,
+    FLTK.Widgets.Menus.Menu_Bars.Systemwide;
 
 
 procedure FLTK.Test_Constants is
 
 
-    type Value_Array is array (1 .. 300) of Long_Long_Integer;
+    package Tabbed renames FLTK.Widgets.Groups.Tabbed;
+    package Sys_Menu renames FLTK.Widgets.Menus.Menu_Bars.Systemwide;
+
+
+    type Value_Array is array (1 .. 308) of Long_Long_Integer;
     pragma Convention (C, Value_Array);
 
     FLTK_Values : Value_Array;
@@ -950,5 +956,45 @@ begin
        (Long_Long_Integer (Images.File_Icons.Icon_Color),
         300,
         "Long_Long_Integer (Images.File_Icons.Icon_Color) = FL_ICON_COLOR");
+
+    --  Tab overflow (Fl_Tabs::handle_overflow)
+    Same
+       (Tabbed.Overflow_Kind'Pos (Tabbed.Compress_Overflow),
+        301,
+        "Tabbed.Overflow_Kind'Pos (Tabbed.Compress_Overflow) = Fl_Tabs::OVERFLOW_COMPRESS");
+    Same
+       (Tabbed.Overflow_Kind'Pos (Tabbed.Clip_Overflow),
+        302,
+        "Tabbed.Overflow_Kind'Pos (Tabbed.Clip_Overflow) = Fl_Tabs::OVERFLOW_CLIP");
+    Same
+       (Tabbed.Overflow_Kind'Pos (Tabbed.Pulldown_Overflow),
+        303,
+        "Tabbed.Overflow_Kind'Pos (Tabbed.Pulldown_Overflow) = Fl_Tabs::OVERFLOW_PULLDOWN");
+    Same
+       (Tabbed.Overflow_Kind'Pos (Tabbed.Drag_Overflow),
+        304,
+        "Tabbed.Overflow_Kind'Pos (Tabbed.Drag_Overflow) = Fl_Tabs::OVERFLOW_DRAG");
+
+    --  Window menu styles (Fl_Sys_Menu_Bar::window_menu_style_enum)
+    Same
+       (Sys_Menu.Window_Menu_Style_Kind'Pos (Sys_Menu.No_Window_Menu),
+        305,
+        "Sys_Menu.Window_Menu_Style_Kind'Pos (Sys_Menu.No_Window_Menu)" &
+        " = Fl_Sys_Menu_Bar::no_window_menu");
+    Same
+       (Sys_Menu.Window_Menu_Style_Kind'Pos (Sys_Menu.Tabbing_Mode_None),
+        306,
+        "Sys_Menu.Window_Menu_Style_Kind'Pos (Sys_Menu.Tabbing_Mode_None)" &
+        " = Fl_Sys_Menu_Bar::tabbing_mode_none");
+    Same
+       (Sys_Menu.Window_Menu_Style_Kind'Pos (Sys_Menu.Tabbing_Mode_Automatic),
+        307,
+        "Sys_Menu.Window_Menu_Style_Kind'Pos (Sys_Menu.Tabbing_Mode_Automatic)" &
+        " = Fl_Sys_Menu_Bar::tabbing_mode_automatic");
+    Same
+       (Sys_Menu.Window_Menu_Style_Kind'Pos (Sys_Menu.Tabbing_Mode_Preferred),
+        308,
+        "Sys_Menu.Window_Menu_Style_Kind'Pos (Sys_Menu.Tabbing_Mode_Preferred)" &
+        " = Fl_Sys_Menu_Bar::tabbing_mode_preferred");
 
 end FLTK.Test_Constants;

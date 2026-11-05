@@ -44,7 +44,17 @@ package FLTK.Widgets.Menus.Choices.Schemes is
     --  Selection  --
 
     --  Sets the chosen item to match the currently active scheme
+    --  FLTK calls its own Init_Value from Handle, on a show, a push or the
+    --  mouse coming in, so an Ada override of Init_Value is called only by
+    --  Ada code; override Handle to change what those events do.
     procedure Init_Value
+           (This : in out Scheme_Choice);
+
+    --  Switches to the scheme chosen, as FLTK's own callback does, so that
+    --  a callback set in its place can still switch.  With none chosen, it
+    --  does nothing, where FLTK's callback reads before the menu
+    --  (FLTK-issues.md F28).
+    procedure Switch_Scheme
            (This : in out Scheme_Choice);
 
 
@@ -84,6 +94,7 @@ private
 
 
     pragma Inline (Init_Value);
+    pragma Inline (Switch_Scheme);
 
     pragma Inline (Draw);
     pragma Inline (Handle);

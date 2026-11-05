@@ -9,6 +9,7 @@
 #include <FL/Fl_Window.H>
 #include "c_fl_menu_button.h"
 #include "c_fl_menuitem.h"
+#include "c_fl_widget.h"
 #include "c_fl.h"
 
 
@@ -35,9 +36,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Menu_Button : public Fl_Menu_Button {
+class My_Menu_Button : public Ada_Resizing<Fl_Menu_Button> {
 public:
-    using Fl_Menu_Button::Fl_Menu_Button;
+    using Ada_Resizing<Fl_Menu_Button>::Ada_Resizing;
 
     friend void fl_menu_button_draw(MENUBUTTON m);
     friend int fl_menu_button_handle(MENUBUTTON m, int e);
