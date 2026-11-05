@@ -5,8 +5,9 @@
 
 
 --  Binding of Fl_Glut_Window, the window class behind FLTK's GLUT emulation.
---  Windows made by FLTK.GLUT.Create_Window are of this class too, but are
---  owned by FLTK and are only reachable from Ada by window number.
+--  Windows made by FLTK.GLUT.Create_Window and Create_Sub_Window are of this
+--  class too, and are owned by FLTK.  Window_Of gives the Ada object for
+--  any GLUT window.
 
 
 with
@@ -50,6 +51,27 @@ package FLTK.Widgets.Groups.Windows.OpenGL.GLUT is
             return Glut_Window;
 
     end Forge;
+
+
+
+
+    --  GLUT Windows  --
+
+    --  The Ada object for GLUT window Number: the one Forge made, or for a
+    --  window FLTK.GLUT made, one made for it the first time it is asked
+    --  for, which is the same each time after.  Once FLTK.GLUT has
+    --  destroyed the window, a reference to that one is not to be used; it
+    --  is freed when Window_Of next gives a window with that number, or at
+    --  exit.  Raises Constraint_Error if there is no window Number, or it
+    --  is being destroyed.
+    function Window_Of
+           (Number : in FLTK.GLUT.Valid_Window_Number)
+        return Glut_Window_Reference;
+
+    --  The current GLUT window, FLTK's glut_window, as Window_Of gives it.
+    --  Raises Constraint_Error if there is none.
+    function Current_Window
+        return Glut_Window_Reference;
 
 
 

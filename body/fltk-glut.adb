@@ -421,6 +421,74 @@ package body FLTK.GLUT is
 
 
 
+    --  Fonts  --
+
+    function fl_gl_ready
+        return Interfaces.C.int;
+    pragma Import (C, fl_gl_ready, "fl_gl_ready");
+    pragma Inline (fl_gl_ready);
+
+    procedure fl_glut_bitmap_draw
+           (F : in Interfaces.C.int;
+            S : in System.Address;
+            N : in Interfaces.C.int);
+    pragma Import (C, fl_glut_bitmap_draw, "fl_glut_bitmap_draw");
+    pragma Inline (fl_glut_bitmap_draw);
+
+    function fl_glut_bitmap_width
+           (F, C : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_glut_bitmap_width, "fl_glut_bitmap_width");
+    pragma Inline (fl_glut_bitmap_width);
+
+    function fl_glut_bitmap_length
+           (F : in Interfaces.C.int;
+            S : in System.Address;
+            N : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_glut_bitmap_length, "fl_glut_bitmap_length");
+    pragma Inline (fl_glut_bitmap_length);
+
+    function fl_glut_bitmap_height
+           (F : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_glut_bitmap_height, "fl_glut_bitmap_height");
+    pragma Inline (fl_glut_bitmap_height);
+
+    procedure fl_glut_stroke_character
+           (F, C : in Interfaces.C.int);
+    pragma Import (C, fl_glut_stroke_character, "fl_glut_stroke_character");
+    pragma Inline (fl_glut_stroke_character);
+
+    procedure fl_glut_stroke_string
+           (F : in Interfaces.C.int;
+            S : in System.Address;
+            N : in Interfaces.C.int);
+    pragma Import (C, fl_glut_stroke_string, "fl_glut_stroke_string");
+    pragma Inline (fl_glut_stroke_string);
+
+    function fl_glut_stroke_width
+           (F, C : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_glut_stroke_width, "fl_glut_stroke_width");
+    pragma Inline (fl_glut_stroke_width);
+
+    function fl_glut_stroke_length
+           (F : in Interfaces.C.int;
+            S : in System.Address;
+            N : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_glut_stroke_length, "fl_glut_stroke_length");
+    pragma Inline (fl_glut_stroke_length);
+
+    function fl_glut_stroke_height
+           (F : in Interfaces.C.int)
+        return Interfaces.C.C_float;
+    pragma Import (C, fl_glut_stroke_height, "fl_glut_stroke_height");
+    pragma Inline (fl_glut_stroke_height);
+
+
+
 
     ----------------------
     --  Callback State  --
@@ -1511,6 +1579,137 @@ package body FLTK.GLUT is
         Menu_Status_Callback := Func;
         fl_glut_menu_status_func (Hook_Or_Null (Func /= null, Menu_Status_Hook'Address));
     end Menu_Status_Func;
+
+
+
+
+    -------------
+    --  Fonts  --
+    -------------
+
+    --  FL/gl.h's text calls, which the bitmap fonts are, and GL's drawing
+    --  need a GL context (pofltk 111).
+    procedure Check_Ready
+           (Name : in String) is
+    begin
+        if fl_gl_ready = 0 then
+            raise Program_Error with "GLUT." & Name & " needs a GL context: a shown GL window "
+                & "current, as in a display function, or FLTK.Draw.OpenGL.Start";
+        end if;
+    end Check_Ready;
+
+
+    function Font_Number
+           (Font : in Bitmap_Font)
+        return Interfaces.C.int is (Bitmap_Font'Pos (Font));
+
+    function Font_Number
+           (Font : in Stroke_Font)
+        return Interfaces.C.int is (Stroke_Font'Pos (Font));
+
+
+    procedure Bitmap_Character
+           (Font : in Bitmap_Font;
+            Item : in Character)
+    is
+        Code : constant Natural := Character'Pos (Item);
+        Text : String (1 .. 2);
+        Size : Positive := 1;
+    begin
+        Check_Ready ("Bitmap_Character");
+        --  Latin-1 is the first 256 characters of Unicode, so in UTF-8 a
+        --  character past 127 takes two bytes
+        if Code < 16#80# then
+            Text (1) := Item;
+        else
+            Text (1) := Character'Val (16#C0# + Code / 64);
+            Text (2) := Character'Val (16#80# + Code mod 64);
+            Size := 2;
+        end if;
+        fl_glut_bitmap_draw (Font_Number (Font), Text'Address, Interfaces.C.int (Size));
+    end Bitmap_Character;
+
+
+    procedure Bitmap_String
+           (Font : in Bitmap_Font;
+            Text : in String) is
+    begin
+        Check_Ready ("Bitmap_String");
+        fl_glut_bitmap_draw (Font_Number (Font), Text'Address, Text'Length);
+    end Bitmap_String;
+
+
+    function Bitmap_Width
+           (Font : in Bitmap_Font;
+            Item : in Character)
+        return Natural is
+    begin
+        Check_Ready ("Bitmap_Width");
+        return Natural (fl_glut_bitmap_width (Font_Number (Font), Character'Pos (Item)));
+    end Bitmap_Width;
+
+
+    function Bitmap_Length
+           (Font : in Bitmap_Font;
+            Text : in String)
+        return Natural is
+    begin
+        Check_Ready ("Bitmap_Length");
+        return Natural (fl_glut_bitmap_length (Font_Number (Font), Text'Address, Text'Length));
+    end Bitmap_Length;
+
+
+    function Bitmap_Height
+           (Font : in Bitmap_Font)
+        return Natural is
+    begin
+        Check_Ready ("Bitmap_Height");
+        return Natural (fl_glut_bitmap_height (Font_Number (Font)));
+    end Bitmap_Height;
+
+
+    procedure Stroke_Character
+           (Font : in Stroke_Font;
+            Item : in Character) is
+    begin
+        Check_Ready ("Stroke_Character");
+        fl_glut_stroke_character (Font_Number (Font), Character'Pos (Item));
+    end Stroke_Character;
+
+
+    procedure Stroke_String
+           (Font : in Stroke_Font;
+            Text : in String) is
+    begin
+        Check_Ready ("Stroke_String");
+        fl_glut_stroke_string (Font_Number (Font), Text'Address, Text'Length);
+    end Stroke_String;
+
+
+    function Stroke_Width
+           (Font : in Stroke_Font;
+            Item : in Character)
+        return Natural is
+    begin
+        return Natural (fl_glut_stroke_width (Font_Number (Font), Character'Pos (Item)));
+    end Stroke_Width;
+
+
+    function Stroke_Length
+           (Font : in Stroke_Font;
+            Text : in String)
+        return Natural is
+    begin
+        return Natural (fl_glut_stroke_length (Font_Number (Font), Text'Address, Text'Length));
+    end Stroke_Length;
+
+
+    function Stroke_Height
+           (Font : in Stroke_Font)
+        return Float is
+    begin
+        return Float (fl_glut_stroke_height (Font_Number (Font)));
+    end Stroke_Height;
 
 
 

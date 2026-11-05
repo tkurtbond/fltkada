@@ -1322,6 +1322,12 @@ null too, but `Handle (Event, null)` and `Handle_Dispatch` from it pass
 the event on to the window FLTK gave. So a program can let FLTK handle
 a pop-up menu's events without an Ada object for its window.
 
+Since Phase 13, windows that FLTK.GLUT's `Create_Window` and
+`Create_Sub_Window` make get an Ada object on demand, from `Glut_Window`'s
+`Window_Of` and `Current_Window` (`test_glut_window_of`). That answers the
+question for GLUT windows only, which a program names by number. A
+pop-up menu's window has no number, so it isn't covered.
+
 
 ## 45. Hooks that relabel the user's exception as Internal_FLTK_Error
 

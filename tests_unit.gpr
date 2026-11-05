@@ -139,7 +139,9 @@ project Tests_Unit is
         "test_undo_redo.adb",
         "test_layout_methods.adb",
         "test_widget_methods.adb",
-        "test_tree_methods.adb");
+        "test_tree_methods.adb",
+        "test_glut_fonts.adb",
+        "test_glut_window_of.adb");
 
     package Builder is
         for Default_Switches ("Ada") use

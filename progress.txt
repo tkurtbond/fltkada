@@ -539,10 +539,9 @@ FLTK
 FLTK.Devices.Graphics
 FLTK.Static (Option lacks FNFC_Uses_Zenity, FNFC_Uses_Kdialog,
     Printer_Uses_GTK, Show_Scaling and Simple_Zoom_Shortcut)
-FLTK.GLUT (no check yet that a GL context is ready for GLUT text, pofltk 112;
-    the GLUT bitmap/stroke fonts, the geometric models glutWire*/glutSolid*,
-    and the glut_window/glut_menu globals; windows from Create_Window/
-    Create_Sub_Window have no Ada object)
+FLTK.GLUT (the geometric models glutWire*/glutSolid* are not bound, as
+    pofltk doesn't bind them; the glut_menu variable is Get_Menu/Set_Menu,
+    and glut_window is Glut_Window's Current_Window)
 FLTK.Images.Tiled (Tile returns a non-owning view of the tiled image)
 FLTK.Widgets.Groups.Terminals
     Nested helper classes Utf8Char, RingBuffer, CharStyle, Cursor, EscapeSeq,

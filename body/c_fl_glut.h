@@ -30,6 +30,7 @@ extern "C" void fl_glut_swap_buffers();
 extern "C" int fl_glut_get_window();
 extern "C" int fl_glut_window_alive(int n);
 extern "C" int fl_glut_window_ada(int n);
+extern "C" void * fl_glut_window_pointer(int n);
 extern "C" int fl_glut_has_room();
 extern "C" void fl_glut_set_window(int win);
 
@@ -95,6 +96,17 @@ extern "C" int fl_glut_layer_get(unsigned int t);
 extern "C" int fl_glut_get_modifiers();
 extern "C" int fl_glut_extension_supported(const char * n);
 extern "C" void * fl_glut_get_proc_address(const char * n);
+
+
+extern "C" void fl_glut_bitmap_draw(int f, const char * s, int n);
+extern "C" int fl_glut_bitmap_width(int f, int c);
+extern "C" int fl_glut_bitmap_length(int f, const char * s, int n);
+extern "C" int fl_glut_bitmap_height(int f);
+extern "C" void fl_glut_stroke_character(int f, int c);
+extern "C" void fl_glut_stroke_string(int f, const char * s, int n);
+extern "C" int fl_glut_stroke_width(int f, int c);
+extern "C" int fl_glut_stroke_length(int f, const char * s, int n);
+extern "C" float fl_glut_stroke_height(int f);
 
 
 #endif

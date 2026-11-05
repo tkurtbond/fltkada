@@ -16,7 +16,7 @@
 <a href="index.html">Back to Index</a>
 
 
-<p>FLTK's GLUT emulation is bound in two packages: FLTK.GLUT holds the glut* functions, which refer to windows and menus by number as GLUT does, and FLTK.Widgets.Groups.Windows.OpenGL.GLUT holds Fl_Glut_Window. A window made with Create_Window or Create_Sub_Window has no Ada object; a Glut_Window made with Forge.Create is also a GLUT window and can be made current with Make_Current or Set_Window (Get_Number).</p>
+<p>FLTK's GLUT emulation is bound in two packages: FLTK.GLUT holds the glut* functions, which refer to windows and menus by number as GLUT does, and FLTK.Widgets.Groups.Windows.OpenGL.GLUT holds Fl_Glut_Window. Window_Of gives the Glut_Window for a window number, and Current_Window the current one: for a window made with Create_Window or Create_Sub_Window, an object made for it the first time it is asked for. A Glut_Window made with Forge.Create is also a GLUT window and can be made current with Make_Current or Set_Window (Get_Number).</p>
 
 
 <table class="package">
@@ -216,6 +216,16 @@ Get (Window_Parent) is 0 when the parent isn't a GLUT window.</p>
     <td>Menu_Status_Function</td>
   </tr>
 
+  <tr>
+    <td>void * (GLUT_BITMAP_9_BY_15, ...)</td>
+    <td>Bitmap_Font</td>
+  </tr>
+
+  <tr>
+    <td>void * (GLUT_STROKE_ROMAN, GLUT_STROKE_MONO_ROMAN)</td>
+    <td>Stroke_Font</td>
+  </tr>
+
 </table>
 
 
@@ -330,6 +340,32 @@ function Handle
        (This  : in out Glut_Window;
         Event : in     Event_Kind)
     return Event_Outcome;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">GLUT Windows</th></tr>
+
+  <tr>
+<td>&nbsp;</td>
+<td><pre>
+function Window_Of
+       (Number : in FLTK.GLUT.Valid_Window_Number)
+    return Glut_Window_Reference;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Glut_Window *glut_window;
+</pre></td>
+<td><pre>
+function Current_Window
+    return Glut_Window_Reference;
 </pre></td>
   </tr>
 
@@ -1033,29 +1069,136 @@ function Get_Proc_Address
 
 
 <table class="function">
-  <tr><th colspan="2">Not Bound</th></tr>
+  <tr><th colspan="2">Fonts</th></tr>
 
   <tr>
 <td><pre>
 void glutBitmapCharacter(void *font, int character);
-int glutBitmapHeight(void *font);
-int glutBitmapLength(void *font, const unsigned char *string);
+</pre></td>
+<td><pre>
+procedure Bitmap_Character
+       (Font : in Bitmap_Font;
+        Item : in Character);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 void glutBitmapString(void *font, const unsigned char *string);
+</pre></td>
+<td><pre>
+procedure Bitmap_String
+       (Font : in Bitmap_Font;
+        Text : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 int glutBitmapWidth(void *font, int character);
 </pre></td>
-<td>Not bound. Use the FLTK.Draw.OpenGL text procedures instead.</td>
+<td><pre>
+function Bitmap_Width
+       (Font : in Bitmap_Font;
+        Item : in Character)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int glutBitmapLength(void *font, const unsigned char *string);
+</pre></td>
+<td><pre>
+function Bitmap_Length
+       (Font : in Bitmap_Font;
+        Text : in String)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int glutBitmapHeight(void *font);
+</pre></td>
+<td><pre>
+function Bitmap_Height
+       (Font : in Bitmap_Font)
+    return Natural;
+</pre></td>
   </tr>
 
   <tr>
 <td><pre>
 void glutStrokeCharacter(void *font, int character);
-GLfloat glutStrokeHeight(void *font);
-int glutStrokeLength(void *font, const unsigned char *string);
+</pre></td>
+<td><pre>
+procedure Stroke_Character
+       (Font : in Stroke_Font;
+        Item : in Character);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 void glutStrokeString(void *font, const unsigned char *string);
+</pre></td>
+<td><pre>
+procedure Stroke_String
+       (Font : in Stroke_Font;
+        Text : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 int glutStrokeWidth(void *font, int character);
 </pre></td>
-<td>Not bound.</td>
+<td><pre>
+function Stroke_Width
+       (Font : in Stroke_Font;
+        Item : in Character)
+    return Natural;
+</pre></td>
   </tr>
+
+  <tr>
+<td><pre>
+int glutStrokeLength(void *font, const unsigned char *string);
+</pre></td>
+<td><pre>
+function Stroke_Length
+       (Font : in Stroke_Font;
+        Text : in String)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+GLfloat glutStrokeHeight(void *font);
+</pre></td>
+<td><pre>
+function Stroke_Height
+       (Font : in Stroke_Font)
+    return Float;
+</pre></td>
+  </tr>
+
+</table>
+
+<p><b>Note:</b><br /><br />
+The bitmap font subprograms, Stroke_Character and Stroke_String raise
+Program_Error without a GL context (pofltk 111). Bitmap_Character moves the
+raster position by the character's width, not by the width of the texture FLTK
+drew (pofltk 135), and draws a character past 127 as Latin-1, where FLTK reads
+128 to 159 as CP1252 (F29). Text with no width draws nothing, where FLTK
+crashes (pofltk 134).</p>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Not Bound</th></tr>
 
   <tr>
 <td><pre>
@@ -1068,10 +1211,9 @@ void glutSolidSphere(GLdouble radius, GLint slices, GLint stacks);
 
   <tr>
 <td><pre>
-Fl_Glut_Window *glut_window;
-Fl_Menu_Item *glut_menu;
+int glut_menu;
 </pre></td>
-<td>Not bound. Use Get_Window and Get_Menu.</td>
+<td>Not bound as a variable. Get_Menu and Set_Menu are glutGetMenu and glutSetMenu, which read and set it.</td>
   </tr>
 
 </table>

@@ -176,6 +176,7 @@ Each AFFECTED item is assigned to a fix phase below. The detail
 - **HANDLED:** 12, 22, 31, 33, 39, 46, 74, 80, 119, and FLTKAda-BUGS
   #2/#6/#9/#10/#11.
 - **NOT BOUND:** 24, 48, 55, 82, 85, 86, 95, 105–108, 115–118, 135, 137.
+  135 has been bound since Phase 13, with its workaround.
 - **N/A:** 7, 9, 10 (doc), 11, 14, 15, 17–20, 25, 29, 32, 66–71, 77.
   Several of these (14, 17, 18, 29, 32, 68) are test-environment facts
   that Phase 0 must respect.
@@ -905,7 +906,8 @@ headless sway, each seen to fail before its fix:
   `Start` crashed. `Font_Height`, `Width` and `Finish` happened not to
   crash, and are guarded anyway, as pofltk guards them.
   - **Deferred:** pofltk's ready checks for GLUT bitmap and stroke text
-    (`FlGlut.Mod`). They go with issue 112, in Phase 13.
+    (`FlGlut.Mod`). They go with issue 112, in Phase 13. Done there:
+    `test_glut_fonts`.
 - **Issue 124: AFFECTED, done.** pofltk's `on_window` and `on_surface`
   are ported to `c_fl_draw.cpp`.
   - `Overlay_Rect` and `Overlay_Clear` raise `Program_Error` unless a
@@ -1654,6 +1656,7 @@ sway, and under valgrind. Each test was seen to fail before its fix.
   same 5 failures. Ordinary text has a width (13 for "gl" at 14 points),
   so it is drawn as before; the test doesn't read the pixels back.
   The GLUT bitmap fonts aren't bound yet; Phase 13 needs the same check.
+  (Phase 13 added it, in `fl_glut_bitmap_draw`.)
 
   All 9 checks pass on X11 and sway, with no invalid reads and vg=0.
 - **Issue 65** (new test `test_chart_labels`): `Add`, `Insert` and
@@ -2638,7 +2641,7 @@ Decisions and findings:
   `Tasking_Error` for FLTK's -1 (84). `test_statics_core` fills FLTK's
   ring of 1023 to check them.
 
-### Phase 13: GLUT fonts
+### Phase 13: GLUT fonts [done, 2026-11-04]
 
 - `FLTK.GLUT` bitmap and stroke fonts. Issue 135 applies, together with
   the issue 134 width check.
@@ -2647,6 +2650,73 @@ Decisions and findings:
   strings.
 - pofltk doesn't bind the `glutWire*`/`glutSolid*` models either. Leave
   them out.
+
+What was done. Two new unit tests, `test_glut_fonts` (71 checks) and
+`test_glut_window_of` (19 checks), pass on Xvfb and on a headless sway,
+and are clean under valgrind (`vg-check.sh` 0). `test_glut_fonts` also
+passes at `FLTK_SCALING_FACTOR` 1.5 and 2.
+
+- **Fonts.** `FLTK.GLUT` has `Bitmap_Font` and `Stroke_Font` and the
+  ten `glutBitmap*`/`glutStroke*` calls, as `Bitmap_Character`,
+  `Bitmap_String`, `Bitmap_Width`, `Bitmap_Length`, `Bitmap_Height`,
+  `Stroke_Character`, `Stroke_String`, `Stroke_Width`, `Stroke_Length`
+  and `Stroke_Height`. Strings go to the shim with their lengths, so a
+  NUL doesn't end them. The stroke calls drop NULs in a `std::string`,
+  inside `try`/`catch`.
+- **Issue 111: AFFECTED, done.** The bitmap subprograms and the two
+  stroke draws raise `Program_Error` unless `fl_gl_ready` says a GL
+  context is there; the stroke measures need none. Negative control:
+  with the check taken out, the test's out-of-order checks fail. After a
+  display function has run, the GLUT window is still current and shown,
+  so text drawn then is legitimate. The test at first expected
+  `Program_Error` there, which was the test's mistake.
+- **Issue 134: AFFECTED, done.** `fl_glut_bitmap_draw` draws only text
+  `gl_width` gives a width, as the GL `Draw_Text` does. Negative control:
+  without it, a line feed crashed in FLTK, which GNAT reported as
+  `Storage_Error`.
+- **Issue 135: AFFECTED (bound in this phase), done.** Before the fix,
+  `Bitmap_Character` of "A" in Times Roman 24 moved the raster position
+  20 where its width is 17, and two "A"s moved it 40 where "AA" moved it
+  36. The shim now moves the position to where it started plus
+  `gl_width` times the scale, with `glBitmap (0, 0, 0, 0, dx, dy, 0)`.
+  The scale is `pixels_per_unit()` in a GL window, and
+  `Fl::screen_scale` of the window's screen otherwise. A scratch
+  `gl_start` program at scale 2 in a plain window saw the position go
+  from 20 to 300 for a length of 140: the width times the screen scale.
+  Negative controls: without the move, the advance checks fail; without
+  the scale, they fail at scale 2 only.
+- **F29** (FLTK-issues.md): FLTK draws `glutBitmapCharacter`'s byte past
+  127 as Latin-1, but 128 to 159 as CP1252. pofltk 135 calls the byte
+  "bad UTF-8" without saying what is drawn. `Bitmap_Character` encodes
+  the character as UTF-8. Negative control: without it, the 0x80 check
+  fails (the position moved 13, the width of €, where `Bitmap_Width`
+  gives 21), and the é check still passes.
+- **`glut_window`** is `Glut_Window`'s new `Current_Window`, and
+  `Window_Of` gives the object for any window number. A window
+  `Create_Window` or `Create_Sub_Window` made gets an object the first
+  time it is asked for: `Needs_Dealloc` False, its user data set
+  directly, not by `Extra_Init`, which would end the window's group and
+  set its label. Decided: the object is freed when `Window_Of` next
+  gives a window with that number, or at exit by a sentinel, and not by
+  `Destroy_Window`, because a program may still hold the reference.
+  Freeing it never follows a pointer to a window that has gone: its
+  `Void_Ptr` is cleared first, unless the window is still there with it
+  as its object. `settle` also drops a destroyed window from the shim's
+  table of Ada objects. That has no failure to show without it, so it
+  has no control. Negative controls: without the sentinel, valgrind
+  reports the objects (`vg-check.sh` 1); with `Void_Ptr` left, a stale
+  object with an icon label reads freed memory in
+  `Fl_Window::iconlabel`, and the test ends in `Program_Error`.
+- **`glut_menu`** was already bound: it is `FLTK.GLUT.Get_Menu` and
+  `Set_Menu` (glutGetMenu and glutSetMenu, `FL/glut.H:236-238`).
+  `test_glut_window_of` checks that a window's `Get_Menu` is the menu
+  attached to it.
+- **Menu and title strings** were already fixed, as FLTKAda-BUGS.md 37,
+  and moved into the shim for pofltk 112 in Phase 4
+  (`test_glut_strings`). This phase's list above still named them; it
+  was stale. Nothing more was needed.
+- **No constants** go in `tools/gen-constants.py`: `Bitmap_Font` and
+  `Stroke_Font` stand for addresses of FLTK's font objects, not values.
 
 ### Phase 14: Examples and test ports
 

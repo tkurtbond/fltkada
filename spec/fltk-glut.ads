@@ -219,6 +219,22 @@ package FLTK.GLUT is
             X, Y  : in Integer);
 
 
+    --  GLUT's bitmap fonts are FLTK fonts at a size (glut_font.cxx): the
+    --  9 by 15 and 8 by 13 fonts are FLTK's Screen font at 15 and 13, and
+    --  the others Times and Helvetica.  Its stroke fonts are lines, 128
+    --  characters each, with nothing drawn for the first 32.
+    type Bitmap_Font is
+       (Bitmap_9_By_15,
+        Bitmap_8_By_13,
+        Times_Roman_10,
+        Times_Roman_24,
+        Helvetica_10,
+        Helvetica_12,
+        Helvetica_18);
+
+    type Stroke_Font is (Roman, Mono_Roman);
+
+
 
 
     --  Initialisation  --
@@ -455,6 +471,80 @@ package FLTK.GLUT is
 
 
 
+    --  Fonts  --
+
+    --  The bitmap font subprograms need a GL context, as FLTK's gl_font
+    --  does: a shown GL window current, as in a display function, or
+    --  FLTK.Draw.OpenGL.Start.  Without one they raise Program_Error
+    --  (pofltk 111).  So do Stroke_Character and Stroke_String, which draw
+    --  with GL; the stroke measures need none.
+
+    --  Draws Item, a Latin-1 character, at the raster position, and moves
+    --  the position on by its width, which Bitmap_Width gives.  FLTK's
+    --  glutBitmapCharacter moves the position by the width of the texture
+    --  it drew, a multiple of 4 (pofltk 135).  It draws one byte, which
+    --  FLTK reads as Latin-1, except 128 to 159, which it reads as CP1252
+    --  (F29); this draws Item as UTF-8, so it is always Latin-1.  Text
+    --  with no width, such as a line feed, draws nothing, where FLTK
+    --  crashes (pofltk 134).
+    procedure Bitmap_Character
+           (Font : in Bitmap_Font;
+            Item : in Character);
+
+    --  Draws UTF-8 text on one line, as Bitmap_Character does a character,
+    --  moving the raster position on by the text's width.
+    procedure Bitmap_String
+           (Font : in Bitmap_Font;
+            Text : in String);
+
+    --  In pixels, rounded to the nearest.
+    function Bitmap_Width
+           (Font : in Bitmap_Font;
+            Item : in Character)
+        return Natural;
+
+    function Bitmap_Length
+           (Font : in Bitmap_Font;
+            Text : in String)
+        return Natural;
+
+    function Bitmap_Height
+           (Font : in Bitmap_Font)
+        return Natural;
+
+    --  Draws Item with GL lines, from the origin of the modelview matrix,
+    --  and moves the matrix on by its width.  Stroke_Height units are a
+    --  line, so a program scales them to the size it wants.  A character
+    --  past the font's, or before its space, draws nothing.
+    procedure Stroke_Character
+           (Font : in Stroke_Font;
+            Item : in Character);
+
+    --  A line feed in Text moves back to the start of the line and down by
+    --  Stroke_Height.
+    procedure Stroke_String
+           (Font : in Stroke_Font;
+            Text : in String);
+
+    --  Rounded to the nearest unit.  Stroke_Length is that of Text's
+    --  longest line.
+    function Stroke_Width
+           (Font : in Stroke_Font;
+            Item : in Character)
+        return Natural;
+
+    function Stroke_Length
+           (Font : in Stroke_Font;
+            Text : in String)
+        return Natural;
+
+    function Stroke_Height
+           (Font : in Stroke_Font)
+        return Float;
+
+
+
+
     --  State Queries  --
 
     --  Window_Parent is 0 for a window whose parent is not a GLUT window.
@@ -576,6 +666,10 @@ private
     pragma Inline (Remove_Menu_Item);
     pragma Inline (Attach_Menu);
     pragma Inline (Detach_Menu);
+
+    pragma Inline (Stroke_Width);
+    pragma Inline (Stroke_Length);
+    pragma Inline (Stroke_Height);
 
     pragma Inline (Get);
     pragma Inline (Device_Get);

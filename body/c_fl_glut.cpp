@@ -14,6 +14,7 @@
 #include <vector>
 #include "c_fl_glut.h"
 #include "c_fl_gl_window.h"
+#include "c_fl_widget.h"
 
 
 
@@ -95,6 +96,11 @@ int fl_glut_window_ada(int n) {
     return alive(n) && ada_made[n];
 }
 
+//  Window n, even while it is going, or 0.
+void * fl_glut_window_pointer(int n) {
+    return live_window(n);
+}
+
 int fl_glut_has_room() {
     int used = 0;
     for (int n = 1; n <= max_windows; n++) {
@@ -140,6 +146,9 @@ static void settle(void * data) {
                 live_window(i)->visibility = 0;
             }
         }
+        //  Window_Of may have given them Ada objects, which outlive them, so
+        //  the table of Ada objects is not to keep them
+        widget_forget_ada_objects(w);
         Fl::delete_widget(w);
         if (was && w->contains(was)) {
             was = 0;
@@ -655,6 +664,120 @@ int fl_glut_extension_supported(const char * n) {
 
 void * fl_glut_get_proc_address(const char * n) {
     return reinterpret_cast<void*>(glutGetProcAddress(n));
+}
+
+
+
+
+
+//  The fonts (Phase 13)
+
+//  Bitmap_Font'Pos and Stroke_Font'Pos.
+static Fl_Glut_Bitmap_Font * bitmap_font(int f) {
+    static Fl_Glut_Bitmap_Font * const fonts[] = {
+        GLUT_BITMAP_9_BY_15, GLUT_BITMAP_8_BY_13, GLUT_BITMAP_TIMES_ROMAN_10,
+        GLUT_BITMAP_TIMES_ROMAN_24, GLUT_BITMAP_HELVETICA_10, GLUT_BITMAP_HELVETICA_12,
+        GLUT_BITMAP_HELVETICA_18};
+    return fonts[f];
+}
+
+static Fl_Glut_StrokeFont * stroke_font(int f) {
+    return f == 0 ? GLUT_STROKE_ROMAN : GLUT_STROKE_MONO_ROMAN;
+}
+
+//  How many pixels a unit of gl_width is: the GL window's, or with
+//  gl_start the screen's scale, by which gl_font scales the font
+//  (gl_draw.cxx:579).
+static float text_scale() {
+    Fl_Window * c = Fl_Window::current();
+    Fl_Gl_Window * g = c->as_gl_window();
+    if (g != 0) {
+        return g->pixels_per_unit();
+    }
+    return Fl::screen_scale(c->screen_num());
+}
+
+//  glutBitmapString and glutBitmapCharacter are gl_draw, which crashes
+//  on text with no width (pofltk 134), and moves the raster position on
+//  by the width of the texture it drew, a multiple of 4 pixels, not by
+//  the text's (gl_draw.cxx:396, pofltk 135).  So the text is drawn only
+//  if it has a width, and the position is moved on by it.  Ada checks
+//  that there is a GL context.
+void fl_glut_bitmap_draw(int f, const char * s, int n) {
+    Fl_Glut_Bitmap_Font * font = bitmap_font(f);
+    gl_font(font->font, font->size);
+    double w = gl_width(s, n);
+    if (!(w > 0)) {
+        return;
+    }
+    GLint valid;
+    glGetIntegerv(GL_CURRENT_RASTER_POSITION_VALID, &valid);
+    GLfloat before[4];
+    glGetFloatv(GL_CURRENT_RASTER_POSITION, before);
+    gl_draw(s, n);
+    if (!valid) {
+        return;
+    }
+    GLfloat after[4];
+    glGetFloatv(GL_CURRENT_RASTER_POSITION, after);
+    GLfloat target = before[0] + static_cast<GLfloat>(w) * text_scale();
+    glBitmap(0, 0, 0, 0, target - after[0], before[1] - after[1], 0);
+}
+
+int fl_glut_bitmap_width(int f, int c) {
+    return glutBitmapWidth(bitmap_font(f), c);
+}
+
+//  glutBitmapLength stops at a NUL.
+int fl_glut_bitmap_length(int f, const char * s, int n) {
+    Fl_Glut_Bitmap_Font * font = bitmap_font(f);
+    gl_font(font->font, font->size);
+    return int(gl_width(s, n) + .5);
+}
+
+int fl_glut_bitmap_height(int f) {
+    return glutBitmapHeight(bitmap_font(f));
+}
+
+void fl_glut_stroke_character(int f, int c) {
+    glutStrokeCharacter(stroke_font(f), c);
+}
+
+//  glutStrokeString and glutStrokeLength stop at a NUL, which no stroke
+//  font has, so the NULs are left out.
+static std::string without_nuls(const char * s, int n) {
+    std::string t;
+    for (int i = 0; i < n; i++) {
+        if (s[i] != 0) {
+            t += s[i];
+        }
+    }
+    return t;
+}
+
+void fl_glut_stroke_string(int f, const char * s, int n) {
+    try {
+        std::string t = without_nuls(s, n);
+        glutStrokeString(stroke_font(f), reinterpret_cast<const unsigned char *>(t.c_str()));
+    } catch (...) {
+    }
+}
+
+int fl_glut_stroke_width(int f, int c) {
+    return glutStrokeWidth(stroke_font(f), c);
+}
+
+int fl_glut_stroke_length(int f, const char * s, int n) {
+    try {
+        std::string t = without_nuls(s, n);
+        return glutStrokeLength(stroke_font(f), reinterpret_cast<const unsigned char *>(t.c_str()));
+    } catch (...) {
+        return 0;
+    }
+}
+
+float fl_glut_stroke_height(int f) {
+    return glutStrokeHeight(stroke_font(f));
 }
 
 

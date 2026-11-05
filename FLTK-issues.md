@@ -626,3 +626,25 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
   was there. `test_scheme_choice` is clean under valgrind, and with the
   check taken out of the shim, valgrind shows the same invalid read,
   though all 6 checks still pass.
+
+### F29. `glutBitmapCharacter` reads a byte past 127 as Latin-1 or CP1252
+
+- **What happens**: pofltk 135 says a character past 127 reaches
+  `gl_draw` as "one byte of bad UTF-8". FLTK draws that byte anyway.
+  0xA0 to 0xFF draw as Latin-1, so é (0xE9) draws as é. But 0x80 to 0x9F
+  draw as CP1252, so 0x80 draws €, 13 wide, where
+  `glutBitmapWidth(0x80)` measures U+0080, which is 21 wide. Found
+  2026-11-04.
+- **Cause**: `fl_utf8decode` (`src/fl_utf8.cxx:700-735`) is built with
+  `ERRORS_TO_CP1252` set (`:667-668`). It returns a lone byte from
+  0xA0 up as its own code, and one from 0x80 to 0x9F through the
+  `cp1252` table (`:685`). `glutBitmapCharacter` (`src/glut_font.cxx:37-41`)
+  passes `gl_draw` the one byte, but `glutBitmapWidth` passes the
+  number to `gl_width(uchar)`.
+- **Effect on FLTKAda**: `FLTK.GLUT.Bitmap_Character` encodes a
+  character past 127 as UTF-8 before it draws it, so it draws the
+  Latin-1 character that `Bitmap_Width` measures, whatever the byte.
+- **Confirmed**: by `test_glut_fonts` under Xvfb. Its 0x80 check fails
+  with the UTF-8 encoding taken out of `Bitmap_Character`, because the
+  raster position moved 13, not 21. Its é check still passes without
+  the encoding.

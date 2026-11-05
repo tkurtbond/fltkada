@@ -129,6 +129,10 @@ void fl_widget_forget(WIDGET w) {
 
 
 
+void widget_forget_ada_objects(Fl_Widget * w) {
+    forget_ada_object(w);
+}
+
 void * fl_widget_get_user_data(WIDGET w) {
     if (w == 0) {
         return 0;

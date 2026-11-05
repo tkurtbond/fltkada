@@ -15,6 +15,11 @@ extern "C" WIDGET new_fl_widget(int x, int y, int w, int h, char* label);
 extern "C" void free_fl_widget(WIDGET w);
 extern "C" void fl_widget_forget(WIDGET w);
 
+//  For a widget FLTK deletes: takes it and the widgets in it out of the
+//  widgets with Ada objects, as fl_widget_forget does.
+class Fl_Widget;
+void widget_forget_ada_objects(Fl_Widget * w);
+
 
 extern "C" void * fl_widget_get_user_data(WIDGET w);
 extern "C" void fl_widget_set_user_data(WIDGET w, void * d);

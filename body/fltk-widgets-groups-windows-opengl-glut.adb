@@ -6,6 +6,8 @@
 
 with
 
+    Ada.Finalization,
+    Ada.Unchecked_Deallocation,
     Interfaces.C;
 
 use type
@@ -40,6 +42,39 @@ package body FLTK.Widgets.Groups.Windows.OpenGL.GLUT is
            (W : in Storage.Integer_Address);
     pragma Import (C, free_fl_glut_window, "free_fl_glut_window");
     pragma Inline (free_fl_glut_window);
+
+
+
+
+    --  GLUT Windows  --
+
+    function fl_glut_window_alive
+           (N : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_glut_window_alive, "fl_glut_window_alive");
+    pragma Inline (fl_glut_window_alive);
+
+    function fl_glut_window_pointer
+           (N : in Interfaces.C.int)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_glut_window_pointer, "fl_glut_window_pointer");
+    pragma Inline (fl_glut_window_pointer);
+
+    function fl_glut_get_window
+        return Interfaces.C.int;
+    pragma Import (C, fl_glut_get_window, "fl_glut_get_window");
+    pragma Inline (fl_glut_get_window);
+
+    function fl_widget_get_user_data
+           (W : in Storage.Integer_Address)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_widget_get_user_data, "fl_widget_get_user_data");
+    pragma Inline (fl_widget_get_user_data);
+
+    procedure fl_widget_set_user_data
+           (W, D : in Storage.Integer_Address);
+    pragma Import (C, fl_widget_set_user_data, "fl_widget_set_user_data");
+    pragma Inline (fl_widget_set_user_data);
 
 
 
@@ -233,6 +268,114 @@ package body FLTK.Widgets.Groups.Windows.OpenGL.GLUT is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  GLUT Windows  --
+
+    type Glut_Window_Access is access Glut_Window;
+
+    type Glut_Class_Access is access all Glut_Window'Class;
+
+    procedure Free is new Ada.Unchecked_Deallocation (Glut_Window, Glut_Window_Access);
+
+    --  The Ada objects Window_Of made, by window number.  One whose window
+    --  has gone is freed when another is made for its number, or at the end
+    --  of the program.
+    Wrapped : array (FLTK.GLUT.Valid_Window_Number) of Glut_Window_Access;
+
+    function Address_Of
+           (Item : not null access Glut_Window'Class)
+        return Storage.Integer_Address is
+    begin
+        return Storage.To_Integer
+           (Widget_Convert.To_Address (Widget_Convert.Object_Pointer (Item)));
+    end Address_Of;
+
+    --  Frees a wrapper whose window may have gone, without following its
+    --  pointer, unless its window is still there with it as its Ada object.
+    procedure Let_Go
+           (Number : in FLTK.GLUT.Valid_Window_Number)
+    is
+        Old : Glut_Window_Access renames Wrapped (Number);
+        Now : Storage.Integer_Address;
+    begin
+        if Old = null then
+            return;
+        end if;
+        Now := fl_glut_window_pointer (Interfaces.C.int (Number));
+        if Now /= Null_Pointer and then Now = Old.Void_Ptr
+            and then fl_widget_get_user_data (Now) = Address_Of (Old)
+        then
+            fl_widget_set_user_data (Now, Null_Pointer);
+        else
+            Old.Void_Ptr := Null_Pointer;
+        end if;
+        Free (Old);
+    end Let_Go;
+
+    type Sentinel is new Ada.Finalization.Limited_Controlled with null record;
+
+    overriding procedure Finalize
+           (This : in out Sentinel);
+
+    overriding procedure Finalize
+           (This : in out Sentinel)
+    is
+        pragma Unreferenced (This);
+    begin
+        for Number in Wrapped'Range loop
+            Let_Go (Number);
+        end loop;
+    end Finalize;
+
+    Wrapped_Sentinel : Sentinel;
+    pragma Unreferenced (Wrapped_Sentinel);
+
+
+    function Window_Of
+           (Number : in FLTK.GLUT.Valid_Window_Number)
+        return Glut_Window_Reference
+    is
+        Place : constant Storage.Integer_Address :=
+            fl_glut_window_pointer (Interfaces.C.int (Number));
+        Ada_Object : Storage.Integer_Address;
+    begin
+        if Place = Null_Pointer or else fl_glut_window_alive (Interfaces.C.int (Number)) = 0 then
+            raise Constraint_Error with "no GLUT window" & FLTK.GLUT.Window_Number'Image (Number);
+        end if;
+        Ada_Object := fl_widget_get_user_data (Place);
+        if Ada_Object /= Null_Pointer then
+            --  Forge's, or the one made before; one made before for another
+            --  window with this number has gone with it
+            if Wrapped (Number) /= null and then Address_Of (Wrapped (Number)) /= Ada_Object then
+                Let_Go (Number);
+            end if;
+            return (Data => Glut_Class_Access
+               (Widget_Convert.To_Pointer (Storage.To_Address (Ada_Object))));
+        end if;
+        Let_Go (Number);
+        Wrapped (Number) := new Glut_Window;
+        Wrapped (Number).Void_Ptr := Place;
+        Wrapped (Number).Needs_Dealloc := False;
+        --  Not Extra_Init, which would end the window's group and set its
+        --  label
+        fl_widget_set_user_data (Place, Address_Of (Wrapped (Number)));
+        return (Data => Wrapped (Number));
+    end Window_Of;
+
+
+    function Current_Window
+        return Glut_Window_Reference
+    is
+        Number : constant Interfaces.C.int := fl_glut_get_window;
+    begin
+        if Number = 0 then
+            raise Constraint_Error with "no current GLUT window";
+        end if;
+        return Window_Of (FLTK.GLUT.Valid_Window_Number (Number));
+    end Current_Window;
+
+
+
 
     --  GLUT State  --
 
