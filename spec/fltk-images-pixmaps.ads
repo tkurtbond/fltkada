@@ -77,6 +77,18 @@ package FLTK.Images.Pixmaps is
            (This : in Pixmap)
         return Pixmap'Class;
 
+    --  Copy called on an Image'Class, which gives the same as the two
+    --  above (FLTKAda-BUGS.md 101).
+
+    overriding function Copy
+           (This          : in Pixmap;
+            Width, Height : in Natural)
+        return Image'Class;
+
+    overriding function Copy
+           (This : in Pixmap)
+        return Image'Class;
+
 
 
 

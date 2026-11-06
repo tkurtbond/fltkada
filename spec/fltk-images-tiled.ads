@@ -43,6 +43,18 @@ package FLTK.Images.Tiled is
            (This : in Tiled_Image)
         return Tiled_Image'Class;
 
+    --  Copy called on an Image'Class, which gives the same as the two
+    --  above (FLTKAda-BUGS.md 101).
+
+    overriding function Copy
+           (This          : in Tiled_Image;
+            Width, Height : in Natural)
+        return Image'Class;
+
+    overriding function Copy
+           (This : in Tiled_Image)
+        return Image'Class;
+
 
 
 

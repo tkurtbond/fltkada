@@ -46,6 +46,20 @@ project Tests is
         "pixmap_browser.adb",
         "symbols.adb",
         "utf8.adb",
+        "console.adb",
+        "file_inputs.adb",
+        "help_pages.adb",
+        "icons.adb",
+        "menus.adb",
+        "positions.adb",
+        "presets.adb",
+        "scribble.adb",
+        "selections.adb",
+        "shortcuts.adb",
+        "swatch.adb",
+        "tooltips.adb",
+        "trackers.adb",
+        "tree_icons.adb",
         "group_children.adb",
         "hello.adb",
         "page_formats.adb",
@@ -90,6 +104,20 @@ project Tests is
         for Executable ("pixmap_browser.adb")     use "pixmap_browser";
         for Executable ("symbols.adb")            use "symbols";
         for Executable ("utf8.adb")               use "utf8";
+        for Executable ("console.adb")            use "console";
+        for Executable ("file_inputs.adb")        use "file_inputs";
+        for Executable ("help_pages.adb")         use "help_pages";
+        for Executable ("icons.adb")              use "icons";
+        for Executable ("menus.adb")              use "menus";
+        for Executable ("positions.adb")          use "positions";
+        for Executable ("presets.adb")            use "presets";
+        for Executable ("scribble.adb")           use "scribble";
+        for Executable ("selections.adb")         use "selections";
+        for Executable ("shortcuts.adb")          use "shortcuts";
+        for Executable ("swatch.adb")             use "swatch";
+        for Executable ("tooltips.adb")           use "tooltips";
+        for Executable ("trackers.adb")           use "trackers";
+        for Executable ("tree_icons.adb")         use "tree_icons";
         for Executable ("group_children.adb")     use "group_children";
         for Executable ("hello.adb")              use "hello";
         for Executable ("page_formats.adb")       use "page_formats";

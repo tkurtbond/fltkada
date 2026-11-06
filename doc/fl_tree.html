@@ -645,6 +645,102 @@ procedure Set_Margin_Left
 
   <tr>
 <td><pre>
+int margintop() const;
+void margintop(int val);
+</pre></td>
+<td><pre>
+function Get_Margin_Top
+       (This : in Tree)
+    return Integer;
+
+procedure Set_Margin_Top
+       (This : in out Tree;
+        To   : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int marginbottom() const;
+void marginbottom(int val);
+</pre></td>
+<td><pre>
+function Get_Margin_Bottom
+       (This : in Tree)
+    return Integer;
+
+procedure Set_Margin_Bottom
+       (This : in out Tree;
+        To   : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int openchild_marginbottom() const;
+void openchild_marginbottom(int val);
+</pre></td>
+<td><pre>
+function Get_Open_Child_Margin_Bottom
+       (This : in Tree)
+    return Integer;
+
+procedure Set_Open_Child_Margin_Bottom
+       (This : in out Tree;
+        To   : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int usericonmarginleft() const;
+void usericonmarginleft(int val);
+</pre></td>
+<td><pre>
+function Get_User_Icon_Margin_Left
+       (This : in Tree)
+    return Integer;
+
+procedure Set_User_Icon_Margin_Left
+       (This : in out Tree;
+        To   : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int labelmarginleft() const;
+void labelmarginleft(int val);
+</pre></td>
+<td><pre>
+function Get_Label_Margin_Left
+       (This : in Tree)
+    return Integer;
+
+procedure Set_Label_Margin_Left
+       (This : in out Tree;
+        To   : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int connectorwidth() const;
+void connectorwidth(int val);
+</pre></td>
+<td><pre>
+function Get_Connector_Width
+       (This : in Tree)
+    return Integer;
+
+procedure Set_Connector_Width
+       (This : in out Tree;
+        To   : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 int linespacing() const;
 void linespacing(int val);
 </pre></td>

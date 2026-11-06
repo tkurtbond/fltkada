@@ -22,6 +22,7 @@ extern "C" void fl_tree_item_set_label(TREEITEM ti, const char * t);
 extern "C" int fl_tree_item_is_open(TREEITEM ti);
 extern "C" int fl_tree_item_is_selected(TREEITEM ti);
 extern "C" int fl_tree_item_is_active(TREEITEM ti);
+extern "C" void fl_tree_item_activate(TREEITEM ti, int v);
 extern "C" int fl_tree_item_is_visible(TREEITEM ti);
 extern "C" int fl_tree_item_is_root(TREEITEM ti);
 extern "C" int fl_tree_item_has_children(TREEITEM ti);

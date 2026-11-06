@@ -120,6 +120,14 @@ void fl_widget_forget(WIDGET w) {
     if (Fl::selection_owner() == wi) {
         Fl::selection_owner(0);
     }
+    //  Fl::delete_widget hides a widget it queues, and hiding redraws its
+    //  group (Fl.cxx:1827, Fl_Widget.cxx:263-267).  Extra_Final takes the
+    //  widget out of its group before free_fl_widget queues it, so it is
+    //  hidden here, while it still has a group to redraw (FLTKAda-BUGS.md
+    //  104).  Outside a callback FLTK's plain delete hides nothing.
+    if (fl_inside_callback && wi->visible_r()) {
+        wi->hide();
+    }
     //  A widget freed in a callback is deleted later (Fl::delete_widget),
     //  but its Ada object is gone now, so its trackers say so now.
     Fl::clear_widget_pointer(wi);

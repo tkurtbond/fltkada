@@ -263,6 +263,36 @@ package body FLTK.Images.RGB.SVG is
     end Copy;
 
 
+    overriding function Copy
+           (This          : in SVG_Image;
+            Width, Height : in Natural)
+        return Image'Class is
+    begin
+        return Copied : SVG_Image do
+            Copied.Void_Ptr := fl_svg_image_copy
+                   (This.Void_Ptr,
+                    Interfaces.C.int (Width),
+                    Interfaces.C.int (Height));
+            if Copied.Void_Ptr = Null_Pointer then
+                raise Storage_Error with "no memory for an SVG_Image";
+            end if;
+        end return;
+    end Copy;
+
+
+    overriding function Copy
+           (This : in SVG_Image)
+        return Image'Class is
+    begin
+        return Copied : SVG_Image do
+            Copied.Void_Ptr := fl_svg_image_copy2 (This.Void_Ptr);
+            if Copied.Void_Ptr = Null_Pointer then
+                raise Storage_Error with "no memory for an SVG_Image";
+            end if;
+        end return;
+    end Copy;
+
+
 
 
     --  Colors  --

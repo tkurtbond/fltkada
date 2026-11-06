@@ -389,6 +389,54 @@ void fl_tree_set_widget_margin_left(TREE t, int val) {
     static_cast<Fl_Tree*>(t)->widgetmarginleft(val);
 }
 
+int fl_tree_get_margin_top(TREE t) {
+    return static_cast<Fl_Tree*>(t)->margintop();
+}
+
+void fl_tree_set_margin_top(TREE t, int val) {
+    static_cast<Fl_Tree*>(t)->margintop(val);
+}
+
+int fl_tree_get_margin_bottom(TREE t) {
+    return static_cast<Fl_Tree*>(t)->marginbottom();
+}
+
+void fl_tree_set_margin_bottom(TREE t, int val) {
+    static_cast<Fl_Tree*>(t)->marginbottom(val);
+}
+
+int fl_tree_get_open_child_margin_bottom(TREE t) {
+    return static_cast<Fl_Tree*>(t)->openchild_marginbottom();
+}
+
+void fl_tree_set_open_child_margin_bottom(TREE t, int val) {
+    static_cast<Fl_Tree*>(t)->openchild_marginbottom(val);
+}
+
+int fl_tree_get_user_icon_margin_left(TREE t) {
+    return static_cast<Fl_Tree*>(t)->usericonmarginleft();
+}
+
+void fl_tree_set_user_icon_margin_left(TREE t, int val) {
+    static_cast<Fl_Tree*>(t)->usericonmarginleft(val);
+}
+
+int fl_tree_get_label_margin_left(TREE t) {
+    return static_cast<Fl_Tree*>(t)->labelmarginleft();
+}
+
+void fl_tree_set_label_margin_left(TREE t, int val) {
+    static_cast<Fl_Tree*>(t)->labelmarginleft(val);
+}
+
+int fl_tree_get_connector_width(TREE t) {
+    return static_cast<Fl_Tree*>(t)->connectorwidth();
+}
+
+void fl_tree_set_connector_width(TREE t, int val) {
+    static_cast<Fl_Tree*>(t)->connectorwidth(val);
+}
+
 int fl_tree_get_line_spacing(TREE t) {
     return static_cast<Fl_Tree*>(t)->linespacing();
 }

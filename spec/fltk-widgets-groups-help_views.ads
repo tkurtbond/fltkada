@@ -124,6 +124,9 @@ package FLTK.Widgets.Groups.Help_Views is
     --  Name here can be either a ftp/http/https/ipp/mailto/news URL or a filename.
     --  A URL isn't shown here: FLTK hands it to fl_open_uri, which opens it in
     --  the user's web browser (Fl_Help_View.cxx:3353-3361, pofltk 93).
+    --  Raises Load_Help_Error if the file can't be read, or if the link
+    --  callback refuses Name without setting the page itself, by
+    --  Set_Content or Load.
     procedure Load
            (This : in out Help_View;
             Name : in     String);
@@ -145,10 +148,11 @@ package FLTK.Widgets.Groups.Help_Views is
     --  Func is asked what to load, as a page loads or a link is followed,
     --  and where each image is, as a page is laid out.  Its answer is the
     --  name to use, or "" to refuse: a refused page isn't loaded, and a
-    --  refused image is drawn as FLTK's broken image.  Each image is asked
-    --  about once in the view's life, and the answer is kept.  Load or
-    --  Set_Content called from Func while it is asked about an image raises
-    --  Program_Error.
+    --  refused image is drawn as FLTK's broken image.  Func can answer a
+    --  page itself, by calling Set_Content or Load and refusing the name.
+    --  Each image is asked about once in the view's life, and the answer
+    --  is kept.  Load or Set_Content called from Func while it is asked
+    --  about an image raises Program_Error.
     procedure Set_Link_Callback
            (This : in out Help_View;
             Func : in     Link_Callback);

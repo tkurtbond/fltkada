@@ -127,6 +127,12 @@ package body FLTK.Tree_Items is
     pragma Import (C, fl_tree_item_is_active, "fl_tree_item_is_active");
     pragma Inline (fl_tree_item_is_active);
 
+    procedure fl_tree_item_activate
+           (TI : in Storage.Integer_Address;
+            V  : in Interfaces.C.int);
+    pragma Import (C, fl_tree_item_activate, "fl_tree_item_activate");
+    pragma Inline (fl_tree_item_activate);
+
     function fl_tree_item_is_visible
            (TI : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -493,6 +499,20 @@ package body FLTK.Tree_Items is
     begin
         return fl_tree_item_is_active (This.Void_Ptr) /= 0;
     end Is_Active;
+
+
+    procedure Activate
+           (This : in Tree_Item) is
+    begin
+        fl_tree_item_activate (This.Void_Ptr, 1);
+    end Activate;
+
+
+    procedure Deactivate
+           (This : in Tree_Item) is
+    begin
+        fl_tree_item_activate (This.Void_Ptr, 0);
+    end Deactivate;
 
 
     function Is_Visible

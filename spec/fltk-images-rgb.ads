@@ -79,6 +79,18 @@ package FLTK.Images.RGB is
            (This : in RGB_Image)
         return RGB_Image'Class;
 
+    --  Copy called on an Image'Class, which gives the same as the two
+    --  above (FLTKAda-BUGS.md 101).
+
+    overriding function Copy
+           (This          : in RGB_Image;
+            Width, Height : in Natural)
+        return Image'Class;
+
+    overriding function Copy
+           (This : in RGB_Image)
+        return Image'Class;
+
 
 
 

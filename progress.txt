@@ -629,6 +629,12 @@ common ~60% of the Fl_Tree / Fl_Tree_Item API rather than full parity
     FLTK's own docs recommend using instead of Fl_Tree_Prefs directly.
   - load() from Fl_Preferences. (vposition/hposition/scrollbar_size ARE
     bound: Trees.Get/Set_V_Position, _H_Position, _Scrollbar_Size.)
+  - every margin and the connector width ARE bound (Trees.Get/
+    Set_Margin_Left, _Margin_Top, _Margin_Bottom,
+    _Open_Child_Margin_Bottom, _User_Icon_Margin_Left,
+    _Label_Margin_Left, _Widget_Margin_Left, _Connector_Width), as are
+    an item's activate() and deactivate() (Tree_Items.Activate,
+    Deactivate; FLTKAda-BUGS.md 105).
 See test/tree.adb and the examples/tree_*.adb ports for working examples
 of what is bound.
 

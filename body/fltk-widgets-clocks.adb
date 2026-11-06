@@ -303,6 +303,38 @@ package body FLTK.Widgets.Clocks is
     end Draw;
 
 
+
+
+    --  Clock Type  --
+
+    function Get_Kind
+           (This : in Clock)
+        return Clock_Kind
+    is
+        Result : constant Interfaces.C.unsigned_char := fl_widget_get_type (This.Void_Ptr);
+    begin
+        return Clock_Kind'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Clock_Output::type returned unexpected unsigned char value of " &
+        Interfaces.C.unsigned_char'Image (Result);
+    end Get_Kind;
+
+
+    package body Extra is
+
+        procedure Set_Kind
+               (This : in out Clock;
+                To   : in     Clock_Kind) is
+        begin
+            fl_widget_set_type (This.Void_Ptr, Clock_Kind'Pos (To));
+        end Set_Kind;
+
+        pragma Inline (Set_Kind);
+
+    end Extra;
+
+
 end FLTK.Widgets.Clocks;
 
 

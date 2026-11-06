@@ -230,6 +230,10 @@ enum("Sys_Menu.Window_Menu_Style_Kind",
       for a in "No_Window_Menu Tabbing_Mode_None Tabbing_Mode_Automatic Tabbing_Mode_Preferred"
       .split()])
 
+section("Clock faces (Fl_Clock_Output::type)")
+enum("Clocks.Clock_Kind", [("Clocks.Square_Face", "FL_SQUARE_CLOCK"),
+                           ("Clocks.Round_Face", "FL_ROUND_CLOCK")])
+
 
 HEADER = """{c}  Programmed by T. Kurt Bond and Claude Opus 5.5
 {c}  Released into the public domain
@@ -249,7 +253,8 @@ def cpp():
     out = [HEADER.format(c="//"), "",
            "//  FLTK's value of each constant the Ada test, fltk-test_constants.adb,",
            "//  checks, in the same order.", "", "",
-           "#include <FL/Enumerations.H>", "#include <FL/Fl_File_Icon.H>",
+           "#include <FL/Enumerations.H>", "#include <FL/Fl_Clock.H>",
+           "#include <FL/Fl_File_Icon.H>",
            "#include <FL/Fl_Menu_Item.H>", "#include <FL/Fl_Sys_Menu_Bar.H>",
            "#include <FL/Fl_Tabs.H>", "", "",
            'extern "C" const long long c_constants[];', "",
@@ -271,8 +276,9 @@ def ada():
            "--  c_constants.cpp.  A child of FLTK, so it can see the private",
            "--  conversions.  Run by test_constants.adb.", "", "",
            "with", "", "    Checks,", "    FLTK.Draw,", "    FLTK.Images.File_Icons,", "    FLTK.Screen,",
-           "    FLTK.Widgets.Groups.Tabbed,", "    FLTK.Widgets.Menus.Menu_Bars.Systemwide;", "", "",
+           "    FLTK.Widgets.Clocks,", "    FLTK.Widgets.Groups.Tabbed,", "    FLTK.Widgets.Menus.Menu_Bars.Systemwide;", "", "",
            "procedure FLTK.Test_Constants is", "", "",
+           "    package Clocks renames FLTK.Widgets.Clocks;",
            "    package Tabbed renames FLTK.Widgets.Groups.Tabbed;",
            "    package Sys_Menu renames FLTK.Widgets.Menus.Menu_Bars.Systemwide;", "", "",
            f"    type Value_Array is array (1 .. {count}) of Long_Long_Integer;",

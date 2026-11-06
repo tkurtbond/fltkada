@@ -23,6 +23,9 @@ package FLTK.Widgets.Clocks is
 
     type Time_Value is mod 2 ** 32;
 
+    --  FLTK's FL_SQUARE_CLOCK and FL_ROUND_CLOCK.
+    type Clock_Kind is (Square_Face, Round_Face);
+
 
 
 
@@ -102,6 +105,25 @@ package FLTK.Widgets.Clocks is
             X, Y, W, H : in     Integer);
 
 
+
+
+    --  Clock Type  --
+
+    --  The face, square or round.  The default is square, except for a
+    --  Round_Clock, which is round.
+    function Get_Kind
+           (This : in Clock)
+        return Clock_Kind;
+
+    package Extra is
+
+        procedure Set_Kind
+               (This : in out Clock;
+                To   : in     Clock_Kind);
+
+    end Extra;
+
+
 private
 
 
@@ -135,6 +157,8 @@ private
     pragma Inline (Set_Shadow);
 
     pragma Inline (Draw);
+
+    pragma Inline (Get_Kind);
 
 
 end FLTK.Widgets.Clocks;

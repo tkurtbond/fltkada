@@ -79,6 +79,10 @@ int fl_tree_item_is_active(TREEITEM ti) {
     return static_cast<Fl_Tree_Item*>(ti)->is_active();
 }
 
+void fl_tree_item_activate(TREEITEM ti, int v) {
+    static_cast<Fl_Tree_Item*>(ti)->activate(v);
+}
+
 int fl_tree_item_is_visible(TREEITEM ti) {
     return static_cast<Fl_Tree_Item*>(ti)->is_visible();
 }

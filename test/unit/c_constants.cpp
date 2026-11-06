@@ -11,6 +11,7 @@
 
 
 #include <FL/Enumerations.H>
+#include <FL/Fl_Clock.H>
 #include <FL/Fl_File_Icon.H>
 #include <FL/Fl_Menu_Item.H>
 #include <FL/Fl_Sys_Menu_Bar.H>
@@ -375,5 +376,8 @@ extern "C" const long long c_constants[] =
     Fl_Sys_Menu_Bar::no_window_menu,
     Fl_Sys_Menu_Bar::tabbing_mode_none,
     Fl_Sys_Menu_Bar::tabbing_mode_automatic,
-    Fl_Sys_Menu_Bar::tabbing_mode_preferred
+    Fl_Sys_Menu_Bar::tabbing_mode_preferred,
+    //  Clock faces (Fl_Clock_Output::type)
+    FL_SQUARE_CLOCK,
+    FL_ROUND_CLOCK
 };

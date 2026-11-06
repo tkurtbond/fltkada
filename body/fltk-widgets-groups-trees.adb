@@ -360,6 +360,78 @@ package body FLTK.Widgets.Groups.Trees is
     pragma Import (C, fl_tree_set_widget_margin_left, "fl_tree_set_widget_margin_left");
     pragma Inline (fl_tree_set_widget_margin_left);
 
+    function fl_tree_get_margin_top
+           (T : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_get_margin_top, "fl_tree_get_margin_top");
+    pragma Inline (fl_tree_get_margin_top);
+
+    procedure fl_tree_set_margin_top
+           (T   : in Storage.Integer_Address;
+            Val : in Interfaces.C.int);
+    pragma Import (C, fl_tree_set_margin_top, "fl_tree_set_margin_top");
+    pragma Inline (fl_tree_set_margin_top);
+
+    function fl_tree_get_margin_bottom
+           (T : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_get_margin_bottom, "fl_tree_get_margin_bottom");
+    pragma Inline (fl_tree_get_margin_bottom);
+
+    procedure fl_tree_set_margin_bottom
+           (T   : in Storage.Integer_Address;
+            Val : in Interfaces.C.int);
+    pragma Import (C, fl_tree_set_margin_bottom, "fl_tree_set_margin_bottom");
+    pragma Inline (fl_tree_set_margin_bottom);
+
+    function fl_tree_get_open_child_margin_bottom
+           (T : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_get_open_child_margin_bottom, "fl_tree_get_open_child_margin_bottom");
+    pragma Inline (fl_tree_get_open_child_margin_bottom);
+
+    procedure fl_tree_set_open_child_margin_bottom
+           (T   : in Storage.Integer_Address;
+            Val : in Interfaces.C.int);
+    pragma Import (C, fl_tree_set_open_child_margin_bottom, "fl_tree_set_open_child_margin_bottom");
+    pragma Inline (fl_tree_set_open_child_margin_bottom);
+
+    function fl_tree_get_user_icon_margin_left
+           (T : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_get_user_icon_margin_left, "fl_tree_get_user_icon_margin_left");
+    pragma Inline (fl_tree_get_user_icon_margin_left);
+
+    procedure fl_tree_set_user_icon_margin_left
+           (T   : in Storage.Integer_Address;
+            Val : in Interfaces.C.int);
+    pragma Import (C, fl_tree_set_user_icon_margin_left, "fl_tree_set_user_icon_margin_left");
+    pragma Inline (fl_tree_set_user_icon_margin_left);
+
+    function fl_tree_get_label_margin_left
+           (T : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_get_label_margin_left, "fl_tree_get_label_margin_left");
+    pragma Inline (fl_tree_get_label_margin_left);
+
+    procedure fl_tree_set_label_margin_left
+           (T   : in Storage.Integer_Address;
+            Val : in Interfaces.C.int);
+    pragma Import (C, fl_tree_set_label_margin_left, "fl_tree_set_label_margin_left");
+    pragma Inline (fl_tree_set_label_margin_left);
+
+    function fl_tree_get_connector_width
+           (T : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_get_connector_width, "fl_tree_get_connector_width");
+    pragma Inline (fl_tree_get_connector_width);
+
+    procedure fl_tree_set_connector_width
+           (T   : in Storage.Integer_Address;
+            Val : in Interfaces.C.int);
+    pragma Import (C, fl_tree_set_connector_width, "fl_tree_set_connector_width");
+    pragma Inline (fl_tree_set_connector_width);
+
     function fl_tree_get_line_spacing
            (T : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -1031,6 +1103,102 @@ package body FLTK.Widgets.Groups.Trees is
     begin
         fl_tree_set_widget_margin_left (This.Void_Ptr, Interfaces.C.int (To));
     end Set_Widget_Margin_Left;
+
+
+    function Get_Margin_Top
+           (This : in Tree)
+        return Integer is
+    begin
+        return Integer (fl_tree_get_margin_top (This.Void_Ptr));
+    end Get_Margin_Top;
+
+
+    procedure Set_Margin_Top
+           (This : in out Tree;
+            To   : in     Integer) is
+    begin
+        fl_tree_set_margin_top (This.Void_Ptr, Interfaces.C.int (To));
+    end Set_Margin_Top;
+
+
+    function Get_Margin_Bottom
+           (This : in Tree)
+        return Integer is
+    begin
+        return Integer (fl_tree_get_margin_bottom (This.Void_Ptr));
+    end Get_Margin_Bottom;
+
+
+    procedure Set_Margin_Bottom
+           (This : in out Tree;
+            To   : in     Integer) is
+    begin
+        fl_tree_set_margin_bottom (This.Void_Ptr, Interfaces.C.int (To));
+    end Set_Margin_Bottom;
+
+
+    function Get_Open_Child_Margin_Bottom
+           (This : in Tree)
+        return Integer is
+    begin
+        return Integer (fl_tree_get_open_child_margin_bottom (This.Void_Ptr));
+    end Get_Open_Child_Margin_Bottom;
+
+
+    procedure Set_Open_Child_Margin_Bottom
+           (This : in out Tree;
+            To   : in     Integer) is
+    begin
+        fl_tree_set_open_child_margin_bottom (This.Void_Ptr, Interfaces.C.int (To));
+    end Set_Open_Child_Margin_Bottom;
+
+
+    function Get_User_Icon_Margin_Left
+           (This : in Tree)
+        return Integer is
+    begin
+        return Integer (fl_tree_get_user_icon_margin_left (This.Void_Ptr));
+    end Get_User_Icon_Margin_Left;
+
+
+    procedure Set_User_Icon_Margin_Left
+           (This : in out Tree;
+            To   : in     Integer) is
+    begin
+        fl_tree_set_user_icon_margin_left (This.Void_Ptr, Interfaces.C.int (To));
+    end Set_User_Icon_Margin_Left;
+
+
+    function Get_Label_Margin_Left
+           (This : in Tree)
+        return Integer is
+    begin
+        return Integer (fl_tree_get_label_margin_left (This.Void_Ptr));
+    end Get_Label_Margin_Left;
+
+
+    procedure Set_Label_Margin_Left
+           (This : in out Tree;
+            To   : in     Integer) is
+    begin
+        fl_tree_set_label_margin_left (This.Void_Ptr, Interfaces.C.int (To));
+    end Set_Label_Margin_Left;
+
+
+    function Get_Connector_Width
+           (This : in Tree)
+        return Integer is
+    begin
+        return Integer (fl_tree_get_connector_width (This.Void_Ptr));
+    end Get_Connector_Width;
+
+
+    procedure Set_Connector_Width
+           (This : in out Tree;
+            To   : in     Integer) is
+    begin
+        fl_tree_set_connector_width (This.Void_Ptr, Interfaces.C.int (To));
+    end Set_Connector_Width;
 
 
     function Get_Line_Spacing

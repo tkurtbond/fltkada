@@ -68,6 +68,13 @@ public:
     //  followed (pofltk 89).
     unsigned changes = 0;
     unsigned at_push = 0;
+
+    //  A link function that answers a page itself, by setting the page and
+    //  refusing the name, makes load() return -1 (Fl_Help_View.cxx:3411-3412).
+    //  So the page set while load() runs is noted, and load counts it a
+    //  success (FLTKAda-BUGS.md 102, as pofltk's ofl_help_load).
+    bool in_load = false;
+    bool set_in_load = false;
 };
 
 void My_Help_View::draw() {
@@ -186,11 +193,19 @@ const char * fl_help_view_filename(HELPVIEW v) {
 
 int fl_help_view_load(HELPVIEW v, const char * f) {
     My_Help_View * h = static_cast<My_Help_View*>(v);
+    //  A load from the link function, of the load outside it.
+    bool outer = h->in_load;
+    bool outer_set = h->set_in_load;
     ++h->changes;
+    h->in_load = true;
+    h->set_in_load = false;
     h->loading = true;
     int r = h->load(f);
     h->loading = false;
-    return r;
+    bool ok = r == 0 || h->set_in_load;
+    h->in_load = outer;
+    h->set_in_load = outer_set || (outer && ok);
+    return ok ? 0 : r;
 }
 
 const char * fl_help_view_title(HELPVIEW v) {
@@ -204,6 +219,9 @@ const char * fl_help_view_get_value(HELPVIEW v) {
 void fl_help_view_set_value(HELPVIEW v, const char * t) {
     My_Help_View * h = static_cast<My_Help_View*>(v);
     ++h->changes;
+    if (h->in_load) {
+        h->set_in_load = true;
+    }
     h->value(t);
 }
 

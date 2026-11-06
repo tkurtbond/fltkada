@@ -17,6 +17,7 @@ with
     FLTK.Draw,
     FLTK.Images.File_Icons,
     FLTK.Screen,
+    FLTK.Widgets.Clocks,
     FLTK.Widgets.Groups.Tabbed,
     FLTK.Widgets.Menus.Menu_Bars.Systemwide;
 
@@ -24,11 +25,12 @@ with
 procedure FLTK.Test_Constants is
 
 
+    package Clocks renames FLTK.Widgets.Clocks;
     package Tabbed renames FLTK.Widgets.Groups.Tabbed;
     package Sys_Menu renames FLTK.Widgets.Menus.Menu_Bars.Systemwide;
 
 
-    type Value_Array is array (1 .. 331) of Long_Long_Integer;
+    type Value_Array is array (1 .. 333) of Long_Long_Integer;
     pragma Convention (C, Value_Array);
 
     FLTK_Values : Value_Array;
@@ -1097,5 +1099,15 @@ begin
         331,
         "Sys_Menu.Window_Menu_Style_Kind'Pos (Sys_Menu.Tabbing_Mode_Preferred)" &
         " = Fl_Sys_Menu_Bar::tabbing_mode_preferred");
+
+    --  Clock faces (Fl_Clock_Output::type)
+    Same
+       (Clocks.Clock_Kind'Pos (Clocks.Square_Face),
+        332,
+        "Clocks.Clock_Kind'Pos (Clocks.Square_Face) = FL_SQUARE_CLOCK");
+    Same
+       (Clocks.Clock_Kind'Pos (Clocks.Round_Face),
+        333,
+        "Clocks.Clock_Kind'Pos (Clocks.Round_Face) = FL_ROUND_CLOCK");
 
 end FLTK.Test_Constants;

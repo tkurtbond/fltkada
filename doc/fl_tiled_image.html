@@ -123,7 +123,8 @@ function Copy
     return Tiled_Image'Class;
 </pre>A copy of a tiled image whose colours have changed has its own copy
 of the tile, so it outlives the original. Otherwise the copy shares the
-tile, as in FLTK.</td>
+tile, as in FLTK.<p>Both also override Image's Copy, so a Copy
+called on an Image'Class gives the same (FLTKAda-BUGS.md 101).</p></td>
   </tr>
 
   <tr>

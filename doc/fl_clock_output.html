@@ -60,6 +60,11 @@
     <td>Time_Value</td>
   </tr>
 
+  <tr>
+    <td>uchar</td>
+    <td>Clock_Kind</td>
+  </tr>
+
 </table>
 
 
@@ -187,6 +192,26 @@ function Get_Time
        (This : in Clock)
     return Time_Value;
 </pre></td>
+  </tr>
+
+  <tr>
+<td>See type method for Fl_Widget.</td>
+<td><pre>
+function Get_Kind
+       (This : in Clock)
+    return Clock_Kind;
+</pre>
+<p>Square_Face and Round_Face are FL_SQUARE_CLOCK and FL_ROUND_CLOCK (FLTKAda-BUGS.md 103).</p></td>
+  </tr>
+
+  <tr>
+<td>See type method for Fl_Widget.</td>
+<td><pre>
+procedure Extra.Set_Kind
+       (This : in out Clock;
+        To   : in     Clock_Kind);
+</pre>
+<p>In the nested package Extra, so that the clocks derived from Clock don't inherit it.</p></td>
   </tr>
 
 </table>

@@ -171,6 +171,16 @@ package FLTK.Tree_Items is
            (This : in Tree_Item)
         return Boolean;
 
+    --  An inactive item is drawn greyed, with its user deicon if it has
+    --  one, and FLTK doesn't call the tree's callback for a click on its
+    --  label (FL/Fl_Tree_Item.H).  Its widget, if it has one, is activated
+    --  or deactivated with it.  The tree isn't redrawn.
+    procedure Activate
+           (This : in Tree_Item);
+
+    procedure Deactivate
+           (This : in Tree_Item);
+
     function Is_Visible
            (This : in Tree_Item)
         return Boolean;
@@ -391,6 +401,8 @@ private
     pragma Inline (Is_Open);
     pragma Inline (Is_Selected);
     pragma Inline (Is_Active);
+    pragma Inline (Activate);
+    pragma Inline (Deactivate);
     pragma Inline (Is_Visible);
     pragma Inline (Is_Root);
 

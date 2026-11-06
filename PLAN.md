@@ -3014,6 +3014,109 @@ Decisions, as the phase goes:
   the rows, the right-to-left and Arabic inputs and the Japanese label.
   Valgrind finds no memory errors, and `vg-check.sh` no FLTKAda leak,
   after a paste, and the program then exits with status 0.
+- **pofltk's originals** are compared with pofltk's own binaries, run
+  from its `examples/` under the same private Xvfb.
+  - **`console`** gives pofltk's `Console` pixels (AE 0) at each of
+    eight steps. The steps cover:
+    - a coloured `printf` with a UTF-8 character, and errors from `ls`;
+    - `exit 3` and `kill -9 $$`, for an exit status and an unknown one;
+    - a loop that writes for three seconds, with a line typed while the
+      input is inactive;
+    - Enter once the command has ended.
+    Unlike pofltk, it appends what it reads as it comes, not a line at a
+    time: the terminal keeps a character or escape sequence split by a
+    read. Valgrind finds no memory errors, and `vg-check.sh` no FLTKAda
+    leak. The window is closed while `sleep 2` runs, and the program
+    then exits with status 0. On sway it starts and runs.
+  - **`file_inputs`** gives pofltk's pixels (AE 0) as it opens.
+  - **`icons`** gives pofltk's pixels (AE 0) as it opens, after two
+    fixes:
+    - Making a shared image from the pool kept a reference that was
+      never given back (FLTKAda-BUGS.md 100, `test_shared_references`).
+    - `Copy` called on an `Image'Class` gave a plain `Image` with no
+      pixels for every image type (101, `test_image_copy_dispatch`).
+      Each type now overrides it as well (the user's decision,
+      2026-11-06), so the typed `Copy` functions stay.
+  - **`help_pages`** gives pofltk's pixels (AE 0) as it opens, after
+    Back, and after Back with nothing left.
+    - On the views and links pages, and on the linked file, the only
+      differences are the intended ones: the name `Help_View`, and each
+      repository's own `help_dialog.html`.
+    - It needed `Load` to succeed when the link callback sets the page
+      itself, as pofltk's `ofl_help_load` does (102,
+      `test_help_pages_load`; the user's decision, 2026-11-06).
+  - `file_inputs`, `icons` and `help_pages` start and run on sway. Under
+    valgrind, closed by Escape (`help_pages` after following its links
+    and Back), each has no memory errors and no FLTKAda leak.
+  - **`menus`** gives pofltk's pixels (AE 0) on the whole screen at each
+    step:
+    - the File menu, the choice set to Medium and to Large;
+    - Help/About, closed by Enter;
+    - Edit/Color, cancelled;
+    - Ctrl-Q, answered No;
+    - Ctrl-Q after Open, a colour picked and OKed, then Yes, which ends
+      it.
+    The only differences are intended: the About text, the chooser's
+    `*.adb` filter, and the opened file's relative path, which is
+    relative to `test/`. Valgrind, after all of those, finds no memory
+    errors and no FLTKAda leak. On sway it starts and runs.
+  - **`positions`** gives pofltk's pixels (AE 0) as it opens, after two
+    clicks in the positioner, and after a drag. It needed a round clock
+    that shows a time it is given, which FLTKAda couldn't make
+    (FLTKAda-BUGS.md 103, `test_clock_kind`): `Clock_Kind` with
+    `Get_Kind`, and `Set_Kind` in `Extra`, as `Dial`'s is. That is an
+    addition, so INCOMPATIBLE-CHANGES.md has no entry. Valgrind, after
+    the drag, finds no memory errors and no FLTKAda leak. On sway it
+    starts and runs.
+  - **`presets`** gives pofltk's pixels (AE 0) as it opens, after a
+    click in the fill slider, a drag of the hor slider, a click on each
+    of the counter's arrows, and a drag of the fill dial. One of two runs
+    differed by a few grey levels on the dials' antialiased rims after
+    the drag. That varies from run to run, as the motion events fall.
+    Valgrind finds no memory errors and no FLTKAda leak. On sway it
+    starts and runs.
+  - **`scribble`** gives pofltk's pixels (AE 0) as it opens, after two
+    strokes, after a right-click clears them, and after one more stroke.
+    The strokes are a vector of vectors of points in the box's record.
+    Valgrind, after those, finds no memory errors and no FLTKAda leak.
+    On sway it starts and runs.
+  - **`selections`** gives pofltk's pixels (AE 0) at eight steps: as it
+    opens, a selection, To secondary, To highlight, Replace with no
+    primary selection (capitals), Replace from a primary selection, and
+    Clear. Its capitals change only ASCII letters, as Oberon's `CAP`
+    does, so a UTF-8 sequence is left alone. Valgrind, after those,
+    finds no memory errors and no FLTKAda leak. On sway it starts and
+    runs.
+  - **`shortcuts`** gives pofltk's pixels (AE 0) at each step, and the
+    same output: Alt-P presses the button; Ctrl-K, chosen with the
+    shortcut button, then does, and Alt-P no longer does. Valgrind,
+    after those, finds no memory errors and no FLTKAda leak. On sway it
+    starts and runs.
+  - **`swatch`** gives pofltk's pixels (AE 0) as it opens and after each
+    of eight clicks of Next, round FLTK's first eight colours and back to
+    red, apart from its text, "drawn by Ada", which is meant to differ.
+    Valgrind, after those, finds no memory errors and no FLTKAda leak.
+    On sway it starts and runs.
+  - **`tooltips`** gives pofltk's pixels (AE 0) on the whole screen at
+    ten steps: the tip of each half and of the check button, none with
+    tooltips turned off, and the tips back once they are turned on
+    again. Valgrind, after those, finds no memory errors and no FLTKAda
+    leak. On sway it starts and runs.
+  - **`trackers`** found FLTKAda-BUGS.md 104: the button freed in its
+    own callback went on being drawn. Fixed, it gives pofltk's pixels
+    (AE 0) as it opens and after each of four clicks: three count down
+    to 0 and take the button away, and the fourth, on the empty place,
+    does nothing. Valgrind, after those, finds no memory errors and no
+    FLTKAda leak. On sway it starts and runs.
+  - **`tree_icons`** needed FLTKAda-BUGS.md 105, a tree's other margins
+    and an item's `Activate` and `Deactivate`. It gives pofltk's pixels
+    (AE 0) as it opens and after seven clicks: three margin sliders, the
+    item made inactive (its grey deicon), FLTK's own icons, and each
+    check button back again. Valgrind, after those, finds no memory
+    errors and no FLTKAda leak. On sway it starts and runs.
+  - With `tree_icons`, every one of pofltk's own examples that Phase 14
+    takes is ported: `save_as` was already test/saveas.adb, and `rects`
+    went to Phase 16.
 
 ### Phase 15: Documentation
 

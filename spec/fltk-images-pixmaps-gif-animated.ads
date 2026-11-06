@@ -344,6 +344,18 @@ package FLTK.Images.Pixmaps.GIF.Animated is
            (This : in Animated_GIF_Image)
         return Animated_GIF_Image'Class;
 
+    --  Copy called on an Image'Class, which gives the same as the two
+    --  above (FLTKAda-BUGS.md 101).
+
+    overriding function Copy
+           (This          : in Animated_GIF_Image;
+            Width, Height : in Natural)
+        return Image'Class;
+
+    overriding function Copy
+           (This : in Animated_GIF_Image)
+        return Image'Class;
+
 
 
 

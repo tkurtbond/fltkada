@@ -222,7 +222,9 @@ procedure Load
        (This : in out Help_View;
         Name : in     String);
 </pre><p>A URL is opened in the user's web browser with fl_open_uri, not
-shown here (pofltk 93).</p></td>
+shown here (pofltk 93).</p><p>The link callback can answer a name itself, by
+calling Set_Content or Load and refusing the name; Load then succeeds
+(FLTKAda-BUGS.md 102).</p></td>
   </tr>
 
   <tr>

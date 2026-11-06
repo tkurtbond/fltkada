@@ -292,6 +292,60 @@ package FLTK.Widgets.Groups.Trees is
            (This : in out Tree;
             To   : in     Integer);
 
+    --  Space above the first item.
+    function Get_Margin_Top
+           (This : in Tree)
+        return Integer;
+
+    procedure Set_Margin_Top
+           (This : in out Tree;
+            To   : in     Integer);
+
+    --  Space below the last item, when the tree scrolls to its end.
+    function Get_Margin_Bottom
+           (This : in Tree)
+        return Integer;
+
+    procedure Set_Margin_Bottom
+           (This : in out Tree;
+            To   : in     Integer);
+
+    --  Space below the last child of an open item.
+    function Get_Open_Child_Margin_Bottom
+           (This : in Tree)
+        return Integer;
+
+    procedure Set_Open_Child_Margin_Bottom
+           (This : in out Tree;
+            To   : in     Integer);
+
+    --  Space left of an item's user icon.
+    function Get_User_Icon_Margin_Left
+           (This : in Tree)
+        return Integer;
+
+    procedure Set_User_Icon_Margin_Left
+           (This : in out Tree;
+            To   : in     Integer);
+
+    --  Space left of an item's label.
+    function Get_Label_Margin_Left
+           (This : in Tree)
+        return Integer;
+
+    procedure Set_Label_Margin_Left
+           (This : in out Tree;
+            To   : in     Integer);
+
+    --  Width of the connector lines from an item to its children.
+    function Get_Connector_Width
+           (This : in Tree)
+        return Integer;
+
+    procedure Set_Connector_Width
+           (This : in out Tree;
+            To   : in     Integer);
+
     function Get_Line_Spacing
            (This : in Tree)
         return Integer;
@@ -494,6 +548,18 @@ private
     pragma Inline (Set_Margin_Left);
     pragma Inline (Get_Widget_Margin_Left);
     pragma Inline (Set_Widget_Margin_Left);
+    pragma Inline (Get_Margin_Top);
+    pragma Inline (Set_Margin_Top);
+    pragma Inline (Get_Margin_Bottom);
+    pragma Inline (Set_Margin_Bottom);
+    pragma Inline (Get_Open_Child_Margin_Bottom);
+    pragma Inline (Set_Open_Child_Margin_Bottom);
+    pragma Inline (Get_User_Icon_Margin_Left);
+    pragma Inline (Set_User_Icon_Margin_Left);
+    pragma Inline (Get_Label_Margin_Left);
+    pragma Inline (Set_Label_Margin_Left);
+    pragma Inline (Get_Connector_Width);
+    pragma Inline (Set_Connector_Width);
     pragma Inline (Get_Line_Spacing);
     pragma Inline (Set_Line_Spacing);
     pragma Inline (Get_Item_Draw_Mode);

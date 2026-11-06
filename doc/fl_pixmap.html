@@ -155,7 +155,8 @@ Fl_Image * copy();
 function Copy
        (This : in Pixmap)
     return Pixmap'Class;
-</pre></td>
+</pre><p>Both also override Image's Copy, so a Copy
+called on an Image'Class gives the same (FLTKAda-BUGS.md 101).</p></td>
   </tr>
 
   <tr>

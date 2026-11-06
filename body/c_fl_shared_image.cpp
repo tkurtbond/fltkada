@@ -40,7 +40,12 @@ void own_xbm(Fl_Shared_Image * s) {
 //  is held while it is owned and the size asked for is got.
 SHAREDIMAGE fl_shared_image_get(const char * f, int w, int h) {
     try {
-        if (Fl_Shared_Image::find(f, w, h) == 0 && !shared_file_ok(f)) {
+        //  find takes a reference when it finds the image
+        //  (Fl_Shared_Image.cxx:517, 533), so give it back (FLTKAda-BUGS.md 100).
+        Fl_Shared_Image *pooled = Fl_Shared_Image::find(f, w, h);
+        if (pooled != 0) {
+            pooled->release();
+        } else if (!shared_file_ok(f)) {
             return 0;
         }
         Fl_Shared_Image *original = Fl_Shared_Image::get(f, 0, 0);

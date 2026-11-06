@@ -162,7 +162,8 @@ Fl_Image * copy() const;
 function Copy
        (This : in SVG_Image)
     return SVG_Image'Class;
-</pre></td>
+</pre><p>Both also override Image's Copy, so a Copy
+called on an Image'Class gives the same (FLTKAda-BUGS.md 101).</p></td>
   </tr>
 
   <tr>

@@ -200,6 +200,36 @@ package body FLTK.Images.Pixmaps is
     end Copy;
 
 
+    overriding function Copy
+           (This          : in Pixmap;
+            Width, Height : in Natural)
+        return Image'Class is
+    begin
+        return Copied : Pixmap do
+            Copied.Void_Ptr := fl_pixmap_copy
+               (This.Void_Ptr,
+                Interfaces.C.int (Width),
+                Interfaces.C.int (Height));
+            if Copied.Void_Ptr = Null_Pointer then
+                raise Storage_Error with "no memory for a Pixmap";
+            end if;
+        end return;
+    end Copy;
+
+
+    overriding function Copy
+           (This : in Pixmap)
+        return Image'Class is
+    begin
+        return Copied : Pixmap do
+            Copied.Void_Ptr := fl_pixmap_copy2 (This.Void_Ptr);
+            if Copied.Void_Ptr = Null_Pointer then
+                raise Storage_Error with "no memory for a Pixmap";
+            end if;
+        end return;
+    end Copy;
+
+
 
 
     --  Data  --

@@ -70,6 +70,18 @@ package FLTK.Images.Shared is
            (This : in Shared_Image)
         return Shared_Image'Class;
 
+    --  Copy called on an Image'Class, which gives the same as the two
+    --  above (FLTKAda-BUGS.md 101).
+
+    overriding function Copy
+           (This          : in Shared_Image;
+            Width, Height : in Natural)
+        return Image'Class;
+
+    overriding function Copy
+           (This : in Shared_Image)
+        return Image'Class;
+
 
 
 

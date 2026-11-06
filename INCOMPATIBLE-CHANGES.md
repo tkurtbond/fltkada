@@ -61,6 +61,20 @@ come first in each list.
 
 ## Changes that can make a program behave differently
 
+- **A widget freed in a callback run by FLTK is hidden at once**, and
+  its window redrawn without it. Before, the window went on showing it.
+  [FLTKAda-BUGS.md 104](FLTKAda-BUGS.md#104-a-widget-freed-in-a-callback-goes-on-being-drawn).
+- **`Help_View.Load` no longer raises when the link callback answers the
+  page itself**, by `Set_Content` or `Load`, and refuses the name.
+  Before, it raised `Load_Help_Error` with the page shown. A refusal
+  that sets nothing still raises.
+  [FLTKAda-BUGS.md 102](FLTKAda-BUGS.md#102-help_viewload-raises-for-a-page-the-link-callback-answered).
+- **`Copy` on an `Image'Class` copies the image.** Each kind of image
+  overrides `Image`'s `Copy`, so a dispatching call gives a bitmap,
+  pixmap, RGB image and so on, with the data. Before, it gave an empty
+  `Image`. A type of the program's own, derived from one of these, that
+  declares a `Copy` returning `Image'Class` now overrides FLTKAda's.
+  [FLTKAda-BUGS.md 101](FLTKAda-BUGS.md#101-copy-on-an-imageclass-gives-an-empty-image).
 - **`Set_Label ("")` leaves a widget with no label**, as `Forge.Create`
   with `""` does, not with an empty one. FLTK puts an image with an
   empty label above where it puts one with none, so an image in such a

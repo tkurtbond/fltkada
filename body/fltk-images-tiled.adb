@@ -182,6 +182,40 @@ package body FLTK.Images.Tiled is
     end Copy;
 
 
+    overriding function Copy
+           (This          : in Tiled_Image;
+            Width, Height : in Natural)
+        return Image'Class is
+    begin
+        return Copied : Tiled_Image do
+            Copied.Void_Ptr := fl_tiled_image_copy
+               (This.Void_Ptr,
+                Interfaces.C.int (Width),
+                Interfaces.C.int (Height));
+            if Copied.Void_Ptr = Null_Pointer then
+                raise Storage_Error with "no memory for a Tiled_Image";
+            end if;
+            Copied.Dummy.Void_Ptr := fl_tiled_image_get_image (Copied.Void_Ptr);
+            Copied.Dummy.Needs_Dealloc := False;
+        end return;
+    end Copy;
+
+
+    overriding function Copy
+           (This : in Tiled_Image)
+        return Image'Class is
+    begin
+        return Copied : Tiled_Image do
+            Copied.Void_Ptr := fl_tiled_image_copy2 (This.Void_Ptr);
+            if Copied.Void_Ptr = Null_Pointer then
+                raise Storage_Error with "no memory for a Tiled_Image";
+            end if;
+            Copied.Dummy.Void_Ptr := fl_tiled_image_get_image (Copied.Void_Ptr);
+            Copied.Dummy.Needs_Dealloc := False;
+        end return;
+    end Copy;
+
+
 
 
     --  Miscellaneous  --

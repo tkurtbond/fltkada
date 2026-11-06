@@ -2891,3 +2891,164 @@ comments are what most users will see. The six test programs that used
 the old names, and test/symbols.adb, now call `Set_Step`.
 test/unit/test_valuator_step.adb checks the step each name gives, old
 and new, and that a counter's `Set_Step` leaves its long step alone.
+
+
+## 100. A shared image made a second time is never released
+
+**Symptom.** `FLTK.Images.Shared.Forge.Create` of an image already in
+the pool took two references, and `Finalize` gave back one. An image
+made twice stayed in the pool until the program ended, and
+`Reference_Count` was too high. Three buttons showing one image at
+64x32 gave a count of 5, not 3, plus one for the `Find` that asked.
+Seen in test/icons.adb, against pofltk's Icons, and with a scratch
+program under Xvfb, 2026-11-06.
+
+**Cause.** `fl_shared_image_get` (body/c_fl_shared_image.cpp) called
+`Fl_Shared_Image::find` only to ask whether the image was in the pool,
+and kept the reference `find` takes when it finds it
+(Fl_Shared_Image.cxx:517, 533). The code was added in Phase 5
+(af60997), when the shim began checking files before FLTK reads them.
+It isn't in upstream FLTKAda.
+
+**Found.** Phase 14, 2026-11-06, porting pofltk's Icons.
+
+**Fixed.** The shim releases the reference `find` gives it.
+test/unit/test_shared_references.adb checks the count after each
+`Create` and after each `Finalize`, for the file and for a size of it,
+and that both leave the pool.
+
+
+## 101. `Copy` on an `Image'Class` gives an empty image
+
+**Symptom.** `Pic.Copy (W, H)` or `Pic.Copy`, with `Pic` an
+`Image'Class` holding a bitmap, pixmap, RGB, SVG, shared, tiled or
+animated GIF image, gave a plain `Image` with no data, which FLTK draws
+as a crossed box. Its tag was `FLTK.Images.Image`, and copied to a size
+it was empty. Seen in test/icons.adb, whose enlarged XBM, bitmap and
+ICO images were crossed boxes, with their labels black, not blue. A
+scratch program under Xvfb, 2026-11-06, gave depth 0 and that tag for a
+copied XBM.
+
+**Cause.** Each of those seven types declares `Copy` returning its own
+class, such as `Bitmap'Class`. That isn't the profile of `Image`'s
+`Copy`, which returns `Image'Class`, so it is a new function, not an
+override. A call on an `Image'Class` dispatched to `Image`'s `Copy`,
+which calls `Fl_Image::copy` with dispatch turned off
+(body/c_fl_image.cpp). It comes from upstream FLTKAda. A call on the
+specific type, such as `Bitmap'Class'(B.Copy)`, was always right.
+
+**Found.** Phase 14, 2026-11-06, porting pofltk's Icons.
+
+**Fixed.** The user chose to keep the typed `Copy` functions and add
+overrides. Each of the seven types also overrides both forms of
+`Image`'s `Copy`, with the same body as its own. The overload set is
+unchanged, as the program saw the inherited `Image'Class` form
+already, so no call that compiled before stops compiling.
+`Animated_GIF_Image` has its own overrides, or it would inherit
+`Pixmap`'s and copy as a still pixmap. The types below these, such as
+PNG or XBM, copy as their parent does, as FLTK's do.
+test/unit/test_image_copy_dispatch.adb copies one of each through
+`Image'Class` and checks the copy's type, size and data.
+
+
+## 102. `Help_View.Load` raises for a page the link callback answered
+
+**Symptom.** A link callback can answer a page itself: it sets the
+view's content and returns `""`, so FLTK loads nothing. A link clicked
+in the view does that well. But `Load` of such a name raised
+`Load_Help_Error`, with the page shown. test/help_pages.adb, ported
+from pofltk's HelpPages, raised at its first `Load ("page:home")`.
+A callback that answered by calling `Load` of a file got the same.
+
+**Cause.** `Fl_Help_View::load` returns -1 when the link function
+returns NULL, at once and leaving the view alone
+(Fl_Help_View.cxx:3411-3412), and `Load` raises on -1. FLTK can't tell a
+refusal from a page answered another way. pofltk's `ofl_help_load`
+counts a page set during the load a success. It comes from upstream
+FLTKAda, whose `Load` raised on -1 too.
+
+**Found.** Phase 14, 2026-11-06, porting pofltk's HelpPages.
+
+**Fixed.** The user chose pofltk's behaviour. The shim notes a
+`Set_Content` or a successful `Load` made while `load()` runs, and
+`fl_help_view_load` then returns 0. A refusal that sets nothing still
+raises. A nested `Load` keeps the outer load's note.
+test/unit/test_help_pages_load.adb checks a page set, a page loaded, and
+refusals before and after each.
+
+
+## 103. A `Clock` can't be made round
+
+**Symptom.** A `Clock` shows a time it is given, but it could only be
+square. FLTK's `Fl_Clock_Output` is drawn round when its `type()` is
+`FL_ROUND_CLOCK`, and FLTKAda bound no way to set it.
+`Round_Clock` is round, but it is an `Updated` clock, which runs.
+test/positions.adb, ported from pofltk's Positions, needs a round
+clock that shows the positioner's time.
+
+**Cause.** Upstream FLTKAda bound `Fl_Widget::type()` only for the
+widgets whose kinds it named, such as `Dial`, and never for the clock.
+
+**Found.** Phase 14, 2026-11-06, porting pofltk's Positions.
+
+**Fixed.** `Clock_Kind` is `(Square_Face, Round_Face)`, FLTK's
+`FL_SQUARE_CLOCK` and `FL_ROUND_CLOCK`, and tools/gen-constants.py
+checks both. `Get_Kind` is a primitive, and `Set_Kind` is in a nested
+`Extra` package, as `Dial`'s is, so that the clocks derived from
+`Clock` don't inherit it. test/unit/test_clock_kind.adb checks that a
+clock starts square, can be made round and square again, and that a
+`Round_Clock` is round.
+
+
+## 104. A widget freed in a callback goes on being drawn
+
+**Symptom.** A widget freed inside a callback leaves its group, and
+FLTK deletes it later, but its window isn't redrawn, so the window goes
+on showing it until something else redraws that part.
+test/trackers.adb, ported from pofltk's Trackers, frees its button on
+the third click, and the button stayed on the screen.
+
+**Cause.** `Fl::delete_widget` hides a widget it queues, and
+`Fl_Widget::hide` redraws the widget's group (FLTK 1.4.5,
+Fl.cxx:1827, Fl_Widget.cxx:263-267). `Widget`'s `Extra_Final` takes the
+widget out of its group first, and only then does `free_fl_widget`
+call `Fl::delete_widget`, so there was no group to redraw. Upstream
+FLTKAda (2c15b31) removed the widget first too.
+
+**Found.** Phase 14, 2026-11-06, porting pofltk's Trackers.
+
+**Fixed.** `fl_widget_forget`, which `Extra_Final` calls while the
+widget is still in its group, hides it when the shim will queue it
+(`fl_inside_callback`), as `Fl::delete_widget` would. A widget freed
+outside a callback is deleted at once, and FLTK's plain `delete` hides
+nothing, so that is unchanged. `Handle` was already sent `FL_HIDE`
+during `Finalize`, by `Fl::delete_widget`'s own `hide`; it is now sent a
+few calls earlier. test/unit/test_callback_free.adb frees a button in a
+callback run by FLTK and checks that its window is damaged; without the
+fix it fails. test/trackers.adb then gives pofltk's pixels.
+
+
+## 105. A tree's margins and an item's activation can't be set
+
+**Symptom.** Of `Fl_Tree`'s margins FLTKAda bound only the left one and
+the widget margin, and it could tell whether a tree item was active but
+not make it active or inactive. test/tree_icons.adb, ported from
+pofltk's TreeIcons, sets the margin below the tree, below an open
+item's children, and left of the user icon and of the label, and
+deactivates an item to show its deicon.
+
+**Cause.** Upstream FLTKAda bound about 60% of `Fl_Tree` and
+`Fl_Tree_Item` (progress.txt), and these were left out.
+
+**Found.** Phase 14, 2026-11-06, porting pofltk's TreeIcons.
+
+**Fixed.** `Trees` has `Get_`/`Set_Margin_Top`, `_Margin_Bottom`,
+`_Open_Child_Margin_Bottom`, `_User_Icon_Margin_Left`,
+`_Label_Margin_Left` and `_Connector_Width`, as pofltk has, and
+`Tree_Items` has `Activate` and `Deactivate`. Neither redraws the tree,
+as FLTK's don't. test/unit/test_tree_margins.adb checks FLTK's starting
+values (Fl_Tree_Prefs.cxx:96-116), then that each margin moves an item's
+label where FLTK draws it by as much as it changed (the bottom margin,
+which only changes how far the tree scrolls, is read back), and that
+`Deactivate` and `Activate` change the item and its widget and no other
+item.

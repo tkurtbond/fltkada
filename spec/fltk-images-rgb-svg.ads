@@ -63,6 +63,18 @@ package FLTK.Images.RGB.SVG is
            (This : in SVG_Image)
         return SVG_Image'Class;
 
+    --  Copy called on an Image'Class, which gives the same as the two
+    --  above (FLTKAda-BUGS.md 101).
+
+    overriding function Copy
+           (This          : in SVG_Image;
+            Width, Height : in Natural)
+        return Image'Class;
+
+    overriding function Copy
+           (This : in SVG_Image)
+        return Image'Class;
+
 
 
 
