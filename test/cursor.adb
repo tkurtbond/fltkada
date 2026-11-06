@@ -99,7 +99,7 @@ begin
     The_Choices.Set_Chosen (1);
 
     The_Slider.Set_Alignment (FLTK.Align_Left);
-    The_Slider.Set_Step_Bottom (1);
+    The_Slider.Set_Step (1);
     The_Slider.Set_Precision (0);
     The_Slider.Set_Bounds (Cursor_Index_Low, Cursor_Index_High);
     The_Slider.Set_Value (Cursor_Index_Low);

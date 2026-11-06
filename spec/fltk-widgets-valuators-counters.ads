@@ -46,9 +46,13 @@ package FLTK.Widgets.Valuators.Counters is
            (This : in Counter)
         return Long_Float;
 
+    --  Set the step for the single arrows with Set_Step (This, To), from
+    --  Valuator.  This is the same, and the name is wrong: it sets the
+    --  whole step (FLTKAda-BUGS.md 99).
     procedure Set_Step_Top
            (This : in out Counter;
-            To   : in     Long_Float);
+            To   : in     Long_Float)
+    with Obsolescent => "use Set_Step";
 
     function Get_Long_Step
            (This : in Counter)

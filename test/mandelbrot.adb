@@ -511,7 +511,7 @@ is
                 Owner => This, Which => Which);
             Slider.Set_Box (FLTK.Thin_Down_Box);
             Slider.Set_Label_Size (10);
-            Slider.Set_Step_Top (1.0);
+            Slider.Set_Step (1.0);
             Slider.Set_Slide_Size (0.1);
             Slider.Set_Callback (Control_CB'Unrestricted_Access);
             Slider.Set_Alignment (FLTK.Align_Left);

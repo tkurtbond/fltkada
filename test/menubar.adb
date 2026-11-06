@@ -347,7 +347,7 @@ begin
     Spacing.Set_Selection_Color (1);
     Spacing.Set_Alignment (Align_Left);
     Spacing.Set_Range (0.1, 50.0);
-    Spacing.Set_Step_Top (1.0);
+    Spacing.Set_Step (1.0);
     Spacing.Set_Callback (Line_Spacing_CB'Unrestricted_Access);
 
     Win.Show_With_Args;

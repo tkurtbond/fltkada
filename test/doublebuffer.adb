@@ -135,7 +135,7 @@ begin
     W1.Set_Background_Color (FLTK.Black_Color);
     W1.Set_Resizable (W1);
     Slider0.Set_Range (2.0, 30.0);
-    Slider0.Set_Step_Top (1.0);
+    Slider0.Set_Step (1.0);
     Slider0.Set_Value (20.0);
     Slider0.Set_Callback (Slider0_CB'Unrestricted_Access);
 
@@ -144,7 +144,7 @@ begin
     W2.Set_Background_Color (FLTK.Black_Color);
     W2.Set_Resizable (W2);
     Slider1.Set_Range (2.0, 30.0);
-    Slider1.Set_Step_Top (1.0);
+    Slider1.Set_Step (1.0);
     Slider1.Set_Value (20.0);
     Slider1.Set_Callback (Slider1_CB'Unrestricted_Access);
 

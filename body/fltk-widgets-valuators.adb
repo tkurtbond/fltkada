@@ -416,13 +416,31 @@ package body FLTK.Widgets.Valuators is
     end Get_Step;
 
 
-    procedure Set_Step_Top
+    procedure Set_Step
            (This : in out Valuator;
             To   : in     Long_Float) is
     begin
         fl_valuator_set_step_top
            (This.Void_Ptr,
             Interfaces.C.double (To));
+    end Set_Step;
+
+
+    procedure Set_Step
+           (This : in out Valuator;
+            To   : in     Integer) is
+    begin
+        fl_valuator_set_step_bottom
+           (This.Void_Ptr,
+            Interfaces.C.int (To));
+    end Set_Step;
+
+
+    procedure Set_Step_Top
+           (This : in out Valuator;
+            To   : in     Long_Float) is
+    begin
+        This.Set_Step (To);
     end Set_Step_Top;
 
 
@@ -430,9 +448,7 @@ package body FLTK.Widgets.Valuators is
            (This : in out Valuator;
             To   : in     Integer) is
     begin
-        fl_valuator_set_step_bottom
-           (This.Void_Ptr,
-            Interfaces.C.int (To));
+        This.Set_Step (To);
     end Set_Step_Bottom;
 
 

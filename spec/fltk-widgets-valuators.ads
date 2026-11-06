@@ -91,18 +91,36 @@ package FLTK.Widgets.Valuators is
            (This : in Valuator)
         return Long_Float;
 
-    procedure Set_Step_Top
-           (This : in out Valuator;
-            To   : in     Long_Float);
-
-    procedure Set_Step_Bottom
-           (This : in out Valuator;
-            To   : in     Integer);
-
+    --  The step is Top / Bottom.
     procedure Set_Step
            (This   : in out Valuator;
             Top    : in     Long_Float;
             Bottom : in     Integer);
+
+    --  FLTK's step (double): the step is To, kept as the nearest fraction
+    --  with a power of ten below it.
+    procedure Set_Step
+           (This : in out Valuator;
+            To   : in     Long_Float);
+
+    --  FLTK's step (int): the step is To.
+    procedure Set_Step
+           (This : in out Valuator;
+            To   : in     Integer);
+
+    --  The same as Set_Step (This, To) with a Long_Float.  Despite the
+    --  name, it sets the whole step, not the top of it (FLTKAda-BUGS.md 99).
+    procedure Set_Step_Top
+           (This : in out Valuator;
+            To   : in     Long_Float)
+    with Obsolescent => "use Set_Step";
+
+    --  The same as Set_Step (This, To) with an Integer.  Despite the
+    --  name, it sets the whole step, not the bottom of it (FLTKAda-BUGS.md 99).
+    procedure Set_Step_Bottom
+           (This : in out Valuator;
+            To   : in     Integer)
+    with Obsolescent => "use Set_Step";
 
     function Get_Value
            (This : in Valuator)

@@ -2979,6 +2979,21 @@ Decisions, as the phase goes:
   Xvfb doesn't isolate. On sway it tiles and the image stays centred.
   Valgrind is clean, with an animated gif and the file chooser opened
   and closed, closed by Escape.
+- **`symbols`** gives the C++'s pixels (AE 0) under a private Xvfb at
+  eight steps: as it opens, then after each of seven clicks on the two
+  sliders, which turn, grow and shrink the symbols (every step differs
+  from the first). Creating the two sliders before the boxes, at
+  elaboration, left about 15 pixels at the top-right corners of the
+  sliders' frames dark where the C++'s are the window's grey, though
+  `Get_Box`, the colours and the kind matched the C++'s. Creating them
+  after the boxes, so that they are the window's last children as in the
+  C++, made every step match; why the order changes those pixels was not
+  looked into. The C++'s `step (1)` found FLTKAda-BUGS.md 99:
+  `Set_Step_Bottom` sets the whole step and not its denominator, and
+  `Set_Step_Top` the whole step too. Decided with the user 2026-11-06 to
+  add `Set_Step (This, To)` for both and keep the old names as
+  obsolescent; the port calls `Set_Step (1)`. On sway it tiles and the cells grow with the window.
+  Valgrind is clean, after three clicks on the sliders, closed by Escape.
 
 ### Phase 15: Documentation
 

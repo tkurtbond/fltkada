@@ -232,6 +232,11 @@ procedure Set_Step
 void step(double s);
 </pre></td>
 <td><pre>
+procedure Set_Step
+       (This : in out Valuator;
+        To   : in     Long_Float);
+
+--  Obsolescent, the same:
 procedure Set_Step_Top
        (This : in out Valuator;
         To   : in     Long_Float);
@@ -243,6 +248,11 @@ procedure Set_Step_Top
 void step(int a);
 </pre></td>
 <td><pre>
+procedure Set_Step
+       (This : in out Valuator;
+        To   : in     Integer);
+
+--  Obsolescent, the same:
 procedure Set_Step_Bottom
        (This : in out Valuator;
         To   : in     Integer);

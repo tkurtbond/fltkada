@@ -7,6 +7,16 @@ come first in each list.
 
 ## Changes that can stop a program compiling
 
+- **`Valuators.Set_Step_Top` and `Set_Step_Bottom`, and
+  `Counters.Set_Step_Top`, are obsolescent.** They still work, and do
+  what they did; `Set_Step (This, To)` is the new name for both, with a
+  `Long_Float` or an `Integer`. GNAT warns of a call to them only with
+  `-gnatwj`, and only on a `Valuator` or `Counter` object, not on a
+  type derived from one, so this stops a compile only with `-gnatwe` too.
+  A type of the program's own, derived from `Valuator`, that declares its
+  own `Set_Step (This, To)` now overrides FLTKAda's.
+  [FLTKAda-BUGS.md 99](FLTKAda-BUGS.md#99-set_step_top-and-set_step_bottom-each-set-the-whole-step).
+
 - **`Input_Choice.Set_Item` takes a `Menus.Index`, counting from 1**, as
   `Has_Item` and `Item` do, not an `Integer` counting from 0. Its
   parameter is `Place`, not `Num`. A call with a literal still compiles,

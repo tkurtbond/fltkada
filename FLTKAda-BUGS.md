@@ -2853,3 +2853,41 @@ and is unchanged. test/unit/test_label_null.adb checks the image's row
 after `Create` with `""`, after `Set_Label ("")`, and after another
 label then `""`. examples/draggable_group.adb, whose C++ passes `""`,
 clears a box with no image, where both draw nothing.
+
+
+## 99. `Set_Step_Top` and `Set_Step_Bottom` each set the whole step
+
+**Symptom.** The names say that `Set_Step_Top` sets the numerator of the
+step and `Set_Step_Bottom` the denominator, as `Set_Step (Top, Bottom)`
+sets both. They don't. `Set_Step_Bottom (4)` makes the step 4, not 1/4,
+and `Set_Step_Top (0.25)` makes it 0.25, whatever the denominator was.
+Seen with a scratch program under Xvfb, 2026-11-06: `Get_Step` gave
+4.0 and 0.25. `Set_Step (1.0, 4)` gave 0.25, as it should.
+
+**Cause.** `fl_valuator_set_step_bottom` calls `Fl_Valuator::step (int)`
+and `fl_valuator_set_step_top` calls `step (double)`
+(body/c_fl_valuator.cpp). FLTK's `step (int a)` sets A = a and B = 1
+(Fl_Valuator.H:106), and `step (double s)` finds the A/B nearest s
+(Fl_Valuator.cxx). Each sets the step, A/B, as a whole. A counter's
+`Set_Step_Top` (body/c_fl_counter.cpp) calls `Fl_Counter::step (double)`,
+which is the same. The behaviour is FLTK's; only the names are wrong.
+It comes from upstream FLTKAda. The programs that use them, test/arc,
+curve, cursor, menubar, doublebuffer and mandelbrot, all pass 1 or 1.0,
+where the step comes out right either way.
+
+**Found.** Phase 14, 2026-11-06, porting test/symbols.cxx, whose
+`step (1)` looked like a call for `Set_Step_Bottom`.
+
+**Fixed.** The user chose to add names and keep the old ones.
+`Set_Step (This, To)`, with a `Long_Float` or an `Integer`, is FLTK's
+`step (double)` or `step (int)`, beside `Set_Step (This, Top, Bottom)`.
+A counter inherits them; `Fl_Counter::step (double)` only calls
+`Fl_Valuator::step (double)` (Fl_Counter.H:85). `Set_Step_Top` and
+`Set_Step_Bottom` stay, call `Set_Step`, and have the `Obsolescent`
+aspect and comments saying what they really do. Checked with a scratch
+program, 2026-11-06: GNAT warns of the aspect only with `-gnatwj`, and
+not on a call through a derived type, such as a `Slider`, so the
+comments are what most users will see. The six test programs that used
+the old names, and test/symbols.adb, now call `Set_Step`.
+test/unit/test_valuator_step.adb checks the step each name gives, old
+and new, and that a counter's `Set_Step` leaves its long step alone.

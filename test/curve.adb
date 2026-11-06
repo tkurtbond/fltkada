@@ -146,7 +146,7 @@ begin
         else
             Sliders (Place).Set_Maximum (280.0);
         end if;
-        Sliders (Place).Set_Step_Bottom (1);
+        Sliders (Place).Set_Step (1);
         Sliders (Place).Set_Value (Arg_Values (Place));
         Sliders (Place).Set_Alignment (FLTK.Align_Left);
         Sliders (Place).Set_Callback (Slider_Callback'Unrestricted_Access);

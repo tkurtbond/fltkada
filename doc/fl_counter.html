@@ -132,6 +132,12 @@ function Get_Step
 void step(double a);
 </pre></td>
 <td><pre>
+--  Inherited from Valuator:
+procedure Set_Step
+       (This : in out Counter;
+        To   : in     Long_Float);
+
+--  Obsolescent, the same:
 procedure Set_Step_Top
        (This : in out Counter;
         To   : in     Long_Float);
