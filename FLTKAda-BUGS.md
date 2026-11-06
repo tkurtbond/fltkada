@@ -2800,3 +2800,30 @@ upstream FLTKAda.
 **Fixed.** `Has_Item (Cursor)` is false for an index outside `Index`.
 test/unit/test_menu_has_item.adb iterates both ways, over a menu with
 items and over an empty one.
+
+## 97. `FLTK.Screen` numbers screens from 1 in some calls and from 0 in others
+
+**Symptom.** `Get_Scale (Containing (X, Y))` raises `Constraint_Error`
+on a display of one screen. `Containing (10, 10)` and
+`Containing (10, 10, 5, 5)` return 0 there, while `Count` is 1, and
+`Get_Scale` takes 1 .. `Count`. `Work_Area (X, Y, W, H, Screen_Num)`
+gives 640 by 480 for both 0 and 1 under Xvfb, since FLTK clamps a number
+out of range, so a wrong number goes unnoticed. Seen in a scratch program
+under Xvfb, 2026-11-05, and in test/unit/test_screen_numbers.adb before
+the fix.
+
+**Cause.** body/fltk-screen.adb passed `Screen_Number - 1` to FLTK in
+`DPI`, `Get_Scale` and `Set_Scale`, but passed FLTK's own numbers
+through unchanged in `Containing` and in the `Screen_Num` forms of
+`Work_Area` and `Bounding_Rect`. Upstream FLTKAda had `DPI` counting
+from 1 and the others from 0 (d5fd390); Phase 8 added `Get_Scale` and
+`Set_Scale` counting from 1. `DPI` didn't check its number either.
+
+**Found.** Phase 14, 2026-11-05, porting test/offscreen.cxx, which
+needs the scale of the screen a window is on.
+
+**Fixed.** Every screen number in `FLTK.Screen` is 1 .. `Count`, the
+user's choice: `Containing` returns FLTK's number plus 1, and `DPI`,
+`Work_Area` and `Bounding_Rect` raise `Constraint_Error` for a number
+outside 1 .. `Count`, as `Get_Scale` and `Set_Scale` do.
+test/unit/test_screen_numbers.adb checks each, under X11 and Wayland.

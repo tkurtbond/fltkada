@@ -151,7 +151,8 @@ project Tests_Unit is
         "test_gl_overlay.adb",
         "test_input_choice_item.adb",
         "test_menu_has_item.adb",
-        "test_slider_box.adb");
+        "test_slider_box.adb",
+        "test_screen_numbers.adb");
 
     package Builder is
         for Default_Switches ("Ada") use

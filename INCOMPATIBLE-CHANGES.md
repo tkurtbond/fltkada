@@ -51,6 +51,12 @@ come first in each list.
 
 ## Changes that can make a program behave differently
 
+- **`FLTK.Screen` numbers every screen 1 .. `Count`.** `Containing`
+  returns one more than it did, and the `Screen_Num` forms of
+  `Work_Area` and `Bounding_Rect` take 1 for the first screen, not 0.
+  These three, and `DPI`, raise `Constraint_Error` for a number outside
+  1 .. `Count`. `DPI` counted from 1 already.
+  [FLTKAda-BUGS.md 97](FLTKAda-BUGS.md#97-fltkscreen-numbers-screens-from-1-in-some-calls-and-from-0-in-others).
 - **A slider's `Set_Box` and `Get_Box` are the frame's, and the knob's
   box is `Set_Slider_Box` and `Get_Slider_Box`.** This holds for every
   slider, `Value_Slider` and `Scrollbar` among them. A call to `Set_Box`

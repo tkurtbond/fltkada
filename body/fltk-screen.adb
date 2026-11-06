@@ -279,11 +279,21 @@ package body FLTK.Screen is
     end Count;
 
 
-    --  Screen numbers in the range 1 .. Get_Count
+    procedure Check_Screen
+           (Screen_Number : in Integer) is
+    begin
+        if Screen_Number not in 1 .. Count then
+            raise Constraint_Error with
+                "screen" & Integer'Image (Screen_Number) & " of" & Integer'Image (Count);
+        end if;
+    end Check_Screen;
+
+
     procedure DPI
            (Horizontal, Vertical :    out Float;
             Screen_Number        : in     Integer := 1) is
     begin
+        Check_Screen (Screen_Number);
         fl_screen_dpi
            (Interfaces.C.C_float (Horizontal),
             Interfaces.C.C_float (Vertical),
@@ -306,16 +316,6 @@ package body FLTK.Screen is
         "Fl::screen_scaling_supported returned unexpected int value of " &
         Interfaces.C.int'Image (Result);
     end Scaling_Support;
-
-
-    procedure Check_Screen
-           (Screen_Number : in Integer) is
-    begin
-        if Screen_Number not in 1 .. Count then
-            raise Constraint_Error with
-                "screen" & Integer'Image (Screen_Number) & " of" & Integer'Image (Count);
-        end if;
-    end Check_Screen;
 
 
     function Get_Scale
@@ -353,7 +353,7 @@ package body FLTK.Screen is
     begin
         return Integer (fl_screen_num
            (Interfaces.C.int (X),
-            Interfaces.C.int (Y)));
+            Interfaces.C.int (Y))) + 1;
     end Containing;
 
 
@@ -365,7 +365,7 @@ package body FLTK.Screen is
            (Interfaces.C.int (X),
             Interfaces.C.int (Y),
             Interfaces.C.int (W),
-            Interfaces.C.int (H)));
+            Interfaces.C.int (H))) + 1;
     end Containing;
 
 
@@ -391,12 +391,13 @@ package body FLTK.Screen is
            (X, Y, W, H :    out Integer;
             Screen_Num : in     Integer) is
     begin
+        Check_Screen (Screen_Num);
         fl_screen_work_area2
            (Interfaces.C.int (X),
             Interfaces.C.int (Y),
             Interfaces.C.int (W),
             Interfaces.C.int (H),
-            Interfaces.C.int (Screen_Num));
+            Interfaces.C.int (Screen_Num) - 1);
     end Work_Area;
 
 
@@ -429,12 +430,13 @@ package body FLTK.Screen is
            (X, Y, W, H :    out Integer;
             Screen_Num : in     Integer) is
     begin
+        Check_Screen (Screen_Num);
         fl_screen_xywh2
            (Interfaces.C.int (X),
             Interfaces.C.int (Y),
             Interfaces.C.int (W),
             Interfaces.C.int (H),
-            Interfaces.C.int (Screen_Num));
+            Interfaces.C.int (Screen_Num) - 1);
     end Bounding_Rect;
 
 

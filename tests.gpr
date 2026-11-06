@@ -41,6 +41,8 @@ project Tests is
         "input_choice.adb",
         "mandelbrot.adb",
         "menubar.adb",
+        "offscreen.adb",
+        "overlay.adb",
         "group_children.adb",
         "hello.adb",
         "page_formats.adb",
@@ -80,6 +82,8 @@ project Tests is
         for Executable ("input_choice.adb")       use "input_choice";
         for Executable ("mandelbrot.adb")         use "mandelbrot";
         for Executable ("menubar.adb")            use "menubar";
+        for Executable ("offscreen.adb")          use "offscreen";
+        for Executable ("overlay.adb")            use "overlay";
         for Executable ("group_children.adb")     use "group_children";
         for Executable ("hello.adb")              use "hello";
         for Executable ("page_formats.adb")       use "page_formats";

@@ -53,7 +53,10 @@ package FLTK.Screen is
     function Count
         return Integer;
 
-    --  Screen numbers in the range 1 .. Count
+    --  FLTK.Screen numbers the screens 1 .. Count, where FLTK numbers them
+    --  0 .. Count - 1.  A screen number outside 1 .. Count raises
+    --  Constraint_Error (FLTKAda-BUGS.md 97).
+
     procedure DPI
            (Horizontal, Vertical :    out Float;
             Screen_Number        : in     Integer := 1);
@@ -95,10 +98,14 @@ package FLTK.Screen is
 
     --  Position Lookup  --
 
+    --  The number, in 1 .. Count, of the screen containing the point, or 1
+    --  when none does (Fl_Screen_Driver.cxx:143-157).
     function Containing
            (X, Y : in Integer)
         return Integer;
 
+    --  The number, in 1 .. Count, of the screen the rectangle overlaps most,
+    --  or 1 when it overlaps none (Fl_Screen_Driver.cxx:174-189).
     function Containing
            (X, Y, W, H : in Integer)
         return Integer;

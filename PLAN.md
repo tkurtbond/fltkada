@@ -2929,6 +2929,37 @@ Decisions, as the phase goes:
   system menu bar and About item are left out, as pofltk leaves them
   out. On sway it tiles, and closing it runs the window callback.
   Valgrind is clean.
+- **`offscreen`** gives the C++'s pixels (AE 0) under a private Xvfb,
+  after 1, 10, 100, 300 and 302 lines (302 is past the clearing at
+  301), after a short drag, after a long drag that hits the clamp, and
+  after Ctrl-+ twice, which rescales the offscreen. Both use C's `rand`,
+  imported, as the C++ does, and the comparison runs both with an
+  LD_PRELOAD library that fixes `srand`'s seed and stops the process at
+  the first `rand` of line N + 1. The C++ asks
+  `Fl_Graphics_Driver::default_driver().scale()`, which isn't bound; the
+  port reads the same value from `Draw.Override_Scale` and puts it back
+  with `Restore_Scale`. pofltk looks up the scale of the screen at the
+  window's position instead, and doing that here found FLTKAda-BUGS.md
+  97: `Screen.Containing` counted from 0 and `Get_Scale` from 1.
+  Decided with the user 2026-11-05: every `FLTK.Screen` number counts
+  from 1 (an incompatible change). The offscreen is a limited object, so
+  the box keeps an access to it, made by the first `Draw` and freed when
+  `Run` returns. On sway it tiles and the box grows with the window.
+  Valgrind is clean, with the window closed by Escape after a drag and
+  a rescale.
+- **`overlay`** gives the C++'s pixels (AE 0) under a private Xvfb at
+  each of seven steps: the start, the keys a a a, c c, a click on
+  "narrower", one on "taller", six on "shorter" (which take the height
+  below 0; FLTK then draws nothing, Fl_Graphics_Driver.cxx:810 and
+  Fl_Cairo_Graphics_Driver.cxx:155, in both), and
+  b b b b. It does too with the arguments 3, abc, -1, 0 and 95, and the
+  two print the same. The colour argument is read with C's `atoi`,
+  imported, so that "abc" gives 0 and -1 a large unsigned colour as in
+  the C++. `Fl::args` with a handler stops at an argument it doesn't
+  know and says nothing, but `Static.Parse_Args` raises
+  `Argument_Error`, so the port catches and ignores it. On sway it tiles
+  and the rectangle stays centred. Valgrind is clean, with argument 3,
+  after keys and a click, closed by Escape.
 
 ### Phase 15: Documentation
 
