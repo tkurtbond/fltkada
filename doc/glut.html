@@ -38,6 +38,11 @@
 Glut_Window's Make_Current raises Program_Error if the window is not shown.</p>
 
 <p><b>Note:</b><br /><br />
+The per-window callback setters, Display_Func to Overlay_Display_Func, raise
+Program_Error when there is no current window, where FLTK drops the callback.
+Idle_Func, Timer_Func, Menu_State_Func and Menu_Status_Func are global.</p>
+
+<p><b>Note:</b><br /><br />
 FLTK indexes its window and menu tables without checking (pofltk 112), so
 every subprogram given a window or menu number that isn't live raises
 Constraint_Error. Window_Exists and Menu_Exists say which are. GLUT has 31

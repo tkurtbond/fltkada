@@ -274,7 +274,7 @@ package body FLTK.Widgets.Valuators.Counters is
            (This : in Counter)
         return Font_Kind is
     begin
-        return Font_Kind'Val (fl_counter_get_textfont (This.Void_Ptr));
+        return Font_Kind (fl_counter_get_textfont (This.Void_Ptr));
     end Get_Text_Font;
 
 
@@ -282,7 +282,7 @@ package body FLTK.Widgets.Valuators.Counters is
            (This : in out Counter;
             To   : in     Font_Kind) is
     begin
-        fl_counter_set_textfont (This.Void_Ptr, Font_Kind'Pos (To));
+        fl_counter_set_textfont (This.Void_Ptr, To_C (To));
     end Set_Text_Font;
 
 

@@ -1307,7 +1307,7 @@ package body FLTK.Widgets is
            (This : in Widget)
         return Font_Kind is
     begin
-        return Font_Kind'Val (fl_widget_get_labelfont (This.Void_Ptr));
+        return Font_Kind (fl_widget_get_labelfont (This.Void_Ptr));
     end Get_Label_Font;
 
 
@@ -1315,7 +1315,7 @@ package body FLTK.Widgets is
            (This : in out Widget;
             Font : in     Font_Kind) is
     begin
-        fl_widget_set_labelfont (This.Void_Ptr, Font_Kind'Pos (Font));
+        fl_widget_set_labelfont (This.Void_Ptr, To_C (Font));
     end Set_Label_Font;
 
 

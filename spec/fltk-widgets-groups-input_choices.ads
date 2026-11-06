@@ -128,9 +128,14 @@ package FLTK.Widgets.Groups.Input_Choices is
            (This : in out Input_Choice;
             To   : in     String);
 
+    --  Chooses the item at Place, counting from 1 as Has_Item and Item do,
+    --  and shows its text in the input.  Raises Constraint_Error when there
+    --  is no item there with text, as for a terminator, which Has_Item is
+    --  false for (FLTKAda-BUGS.md 93).  FLTK reads the item with no range check
+    --  (Fl_Input_Choice.cxx:286-289; FLTKAda-BUGS.md 92).
     procedure Set_Item
-           (This : in out Input_Choice;
-            Num  : in     Integer);
+           (This  : in out Input_Choice;
+            Place : in     FLTK.Widgets.Menus.Index);
 
 
 

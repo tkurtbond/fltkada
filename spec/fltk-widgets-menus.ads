@@ -180,6 +180,10 @@ package FLTK.Widgets.Menus is
 
     --  Item Query  --
 
+    --  True when there is an item at Place.  An index is a place in FLTK's
+    --  array of items, where a terminator ends each submenu and the menu
+    --  itself.  Has_Item is false for a terminator, and iteration steps over
+    --  them, but Item and Number_Of_Items count them (FLTKAda-BUGS.md 93).
     function Has_Item
            (This  : in Menu;
             Place : in Index)
@@ -233,7 +237,8 @@ package FLTK.Widgets.Menus is
             Item : in FLTK.Menu_Items.Menu_Item)
         return String;
 
-    --  May not be what you expect due to submenu terminators
+    --  FLTK's size (): the highest index, counting each submenu's terminator
+    --  and the menu's own.  Not the number of items Has_Item is true for.
     function Number_Of_Items
            (This : in Menu)
         return Natural;

@@ -169,7 +169,7 @@ procedure Set_Down_Box
   </tr>
 
   <tr>
-<td>Check index values against the size method of menubutton manually.</td>
+<td>Check menubutton()-&gt;menu()[index].text isn't null, and index &lt; size(). False for a terminator.</td>
 <td><pre>
 function Has_Item
        (This  : in Input_Choice;
@@ -323,8 +323,8 @@ void value(int val);
 </pre></td>
 <td><pre>
 procedure Set_Item
-       (This : in out Input_Choice;
-        Num  : in     Integer);
+       (This  : in out Input_Choice;
+        Place : in     FLTK.Widgets.Menus.Index);
 </pre></td>
   </tr>
 

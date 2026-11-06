@@ -39,11 +39,13 @@ first, because every later fix is meant to start from a failing test.
 Where findings go:
 
 - **FLTKAda-BUGS.md**: bugs in FLTKAda's own code. Sections 1–14 are
-  fixed; 17–21, 23–26, 28, 29, 41 and 44 are open;
-  22, 27, 30 to 40, 42, 43 and 45 to 84 are fixed.
+  fixed; 17–21, 23–26, 28, 29, 41, 44 and 85 are open;
+  22, 27, 30 to 40, 42, 43, 45 to 84 and 86 to 96 are fixed.
 - **FLTK-issues.md**: FLTK issues pofltk's list doesn't have (F1, F2, …).
 - **PLAN.md**: FLTKAda's verdict on each of pofltk's numbered issues, and
   every decision.
+- **INCOMPATIBLE-CHANGES.md**: every change that can break a program
+  written for upstream FLTKAda (see Conventions).
 
 ## Build, install, test
 
@@ -276,6 +278,13 @@ line rhythm) and will disturb them if run unattended.
   ```
 - **Keep progress.txt and doc/*.html in step** with what is bound
   (Workflow above).
+- **Keep INCOMPATIBLE-CHANGES.md up to date.** Add an entry for any
+  change that can stop a program written against upstream FLTKAda
+  compiling, or make it behave differently: a removed, renamed or
+  retyped declaration, a new enumeration literal, a narrowed range, or a
+  call that now raises or gives a different result. Give it a sentence
+  or two, and link the FLTKAda-BUGS.md section or PLAN.md entry that has
+  the details.
 - **A constant or enumerator that stands for an FLTK value** goes in
   `tools/gen-constants.py` too. Rerun the script with
   `python3 tools/gen-constants.py`, so that `test_constants` checks it.

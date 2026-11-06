@@ -361,14 +361,14 @@ package body FLTK.Tooltips is
     function Get_Text_Font
         return Font_Kind is
     begin
-        return Font_Kind'Val (fl_tooltip_get_font);
+        return Font_Kind (fl_tooltip_get_font);
     end Get_Text_Font;
 
 
     procedure Set_Text_Font
            (To : in Font_Kind) is
     begin
-        fl_tooltip_set_font (Font_Kind'Pos (To));
+        fl_tooltip_set_font (To_C (To));
     end Set_Text_Font;
 
 

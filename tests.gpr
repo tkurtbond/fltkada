@@ -19,6 +19,7 @@ project Tests is
        ("adjuster.adb",
         "ask.adb",
         "bitmap.adb",
+        "boxtype.adb",
         "button.adb",
         "buttons.adb",
         "clear_image_chosen.adb",
@@ -26,9 +27,20 @@ project Tests is
         "clock.adb",
         "color_chooser.adb",
         "column_widths.adb",
+        "cube.adb",
         "cursor.adb",
+        "device.adb",
         "dirlist.adb",
+        "doublebuffer.adb",
+        "file_chooser.adb",
         "filename.adb",
+        "fonts.adb",
+        "gl_overlay.adb",
+        "glut_test.adb",
+        "help_dialog.adb",
+        "input_choice.adb",
+        "mandelbrot.adb",
+        "menubar.adb",
         "group_children.adb",
         "hello.adb",
         "page_formats.adb",
@@ -46,6 +58,7 @@ project Tests is
         for Executable ("adjuster.adb")           use "adjuster";
         for Executable ("ask.adb")                use "ask";
         for Executable ("bitmap.adb")             use "bitmap";
+        for Executable ("boxtype.adb")            use "boxtype";
         for Executable ("button.adb")             use "button";
         for Executable ("buttons.adb")            use "buttons";
         for Executable ("clear_image_chosen.adb") use "clear_image_chosen";
@@ -53,9 +66,20 @@ project Tests is
         for Executable ("clock.adb")              use "clock";
         for Executable ("color_chooser.adb")      use "color_chooser";
         for Executable ("column_widths.adb")      use "column_widths";
+        for Executable ("cube.adb")               use "cube";
         for Executable ("cursor.adb")             use "cursor";
+        for Executable ("device.adb")             use "device";
         for Executable ("dirlist.adb")            use "dirlist";
+        for Executable ("doublebuffer.adb")       use "doublebuffer";
+        for Executable ("file_chooser.adb")       use "file_chooser";
         for Executable ("filename.adb")           use "filename";
+        for Executable ("fonts.adb")              use "fonts";
+        for Executable ("gl_overlay.adb")         use "gl_overlay";
+        for Executable ("glut_test.adb")          use "glut_test";
+        for Executable ("help_dialog.adb")        use "help_dialog";
+        for Executable ("input_choice.adb")       use "input_choice";
+        for Executable ("mandelbrot.adb")         use "mandelbrot";
+        for Executable ("menubar.adb")            use "menubar";
         for Executable ("group_children.adb")     use "group_children";
         for Executable ("hello.adb")              use "hello";
         for Executable ("page_formats.adb")       use "page_formats";

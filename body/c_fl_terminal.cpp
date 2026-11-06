@@ -52,7 +52,8 @@ public:
     //  Under PER_WRITE, display_modified redraws only while
     //  redraw_modified_ is false, and only the RATE_LIMITED timer sets it
     //  false again: after one write the terminal never redraws, under
-    //  either style (F23).  draw and the style setter clear it here.
+    //  either style (F23).  draw, under PER_WRITE, and the style setter
+    //  clear it here.
     struct Modified {
         typedef bool Fl_Terminal::*type;
         friend type member(Modified);
@@ -673,11 +674,15 @@ void fl_terminal_free_text(char * s) {
 
 
 //  Drawn, the terminal is no longer modified, so the next change under
-//  PER_WRITE redraws again (F23)
+//  PER_WRITE redraws again (F23).  Not under RATE_LIMITED, whose timer
+//  clears it: this draw may be clipped to a scrollbar the write changed,
+//  and the timer's redraw is then the only one (FLTKAda-BUGS.md 87).
 void fl_terminal_draw(TERMINAL n) {
     My_Terminal *m = static_cast<My_Terminal*>(n);
     m->Fl_Terminal::draw();
-    m->*member(My_Terminal::Modified()) = false;
+    if (m->redraw_style() == Fl_Terminal::PER_WRITE) {
+        m->*member(My_Terminal::Modified()) = false;
+    }
 }
 
 int fl_terminal_handle(TERMINAL n, int e) {

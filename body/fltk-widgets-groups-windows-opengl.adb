@@ -8,7 +8,8 @@ with
 
     FLTK.Args_Marshal,
     FLTK.Hook_Exceptions,
-    Interfaces.C;
+    Interfaces.C,
+    System.Address_To_Access_Conversions;
 
 use type
 
@@ -242,6 +243,31 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
         return Interfaces.C.int;
     pragma Import (C, fl_gl_window_handle, "fl_gl_window_handle");
     pragma Inline (fl_gl_window_handle);
+
+
+
+
+    ----------------------
+    --  Exported Hooks  --
+    ----------------------
+
+    package GL_Convert is new System.Address_To_Access_Conversions (GL_Window'Class);
+
+    procedure GL_Window_Draw_Overlay_Hook
+           (U : in Storage.Integer_Address);
+    pragma Export (C, GL_Window_Draw_Overlay_Hook, "gl_window_draw_overlay_hook");
+
+    procedure GL_Window_Draw_Overlay_Hook
+           (U : in Storage.Integer_Address)
+    is
+        GL_Widget : constant access GL_Window'Class :=
+            GL_Convert.To_Pointer (Storage.To_Address (U));
+    begin
+        GL_Widget.Draw_Overlay;
+    exception
+    when Occurrence : others =>
+        Hook_Exceptions.Save (Occurrence);
+    end GL_Window_Draw_Overlay_Hook;
 
 
 
@@ -608,6 +634,13 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
     begin
         Window (This).Draw;
     end Draw;
+
+
+    procedure Draw_Overlay
+           (This : in out GL_Window) is
+    begin
+        null;
+    end Draw_Overlay;
 
 
     function Handle

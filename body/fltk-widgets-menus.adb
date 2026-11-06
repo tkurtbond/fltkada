@@ -177,6 +177,13 @@ package body FLTK.Widgets.Menus is
     pragma Import (C, fl_menu_size, "fl_menu_size");
     pragma Inline (fl_menu_size);
 
+    function fl_menu_is_item
+           (M : in Storage.Integer_Address;
+            I : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_menu_is_item, "fl_menu_is_item");
+    pragma Inline (fl_menu_is_item);
+
 
 
 
@@ -856,7 +863,8 @@ package body FLTK.Widgets.Menus is
             Place : in Index)
         return Boolean is
     begin
-        return Place in 1 .. This.Number_Of_Items;
+        return Place <= This.Number_Of_Items
+            and then fl_menu_is_item (This.Void_Ptr, Interfaces.C.int (Place) - 1) /= 0;
     end Has_Item;
 
 
@@ -864,7 +872,8 @@ package body FLTK.Widgets.Menus is
            (Place : in Cursor)
         return Boolean is
     begin
-        return Place.My_Container.Has_Item (Place.My_Index);
+        return Place.My_Index in Index
+            and then Place.My_Container.Has_Item (Place.My_Index);
     end Has_Item;
 
 
@@ -1039,13 +1048,44 @@ package body FLTK.Widgets.Menus is
     end Iterate;
 
 
+    --  The cursors step over the terminators, which Has_Item is false for,
+    --  and stop past the end, at Number_Of_Items + 1, or before the start,
+    --  at 0 (FLTKAda-BUGS.md 93).
+
+    function Forward_From
+           (Place : in Cursor)
+        return Cursor
+    is
+        Result : Cursor := Place;
+        Size   : constant Natural := Place.My_Container.Number_Of_Items;
+    begin
+        while Result.My_Index <= Size and then not Has_Item (Result) loop
+            Result.My_Index := Result.My_Index + 1;
+        end loop;
+        return Result;
+    end Forward_From;
+
+
+    function Backward_From
+           (Place : in Cursor)
+        return Cursor
+    is
+        Result : Cursor := Place;
+    begin
+        while Result.My_Index >= Index'First and then not Has_Item (Result) loop
+            Result.My_Index := Result.My_Index - 1;
+        end loop;
+        return Result;
+    end Backward_From;
+
+
     function First
            (Object : in Iterator)
         return Cursor is
     begin
-        return Cu : constant Cursor :=
-           (My_Container => Object.My_Container,
-            My_Index     => 1);
+        return Forward_From
+           ((My_Container => Object.My_Container,
+             My_Index     => Index'First));
     end First;
 
 
@@ -1054,9 +1094,9 @@ package body FLTK.Widgets.Menus is
             Place  : in Cursor)
         return Cursor is
     begin
-        return Cu : constant Cursor :=
-           (My_Container => Place.My_Container,
-            My_Index     => Place.My_Index + 1);
+        return Forward_From
+           ((My_Container => Place.My_Container,
+             My_Index     => Place.My_Index + 1));
     end Next;
 
 
@@ -1064,9 +1104,9 @@ package body FLTK.Widgets.Menus is
            (Object : in Iterator)
         return Cursor is
     begin
-        return Cu : constant Cursor :=
-           (My_Container => Object.My_Container,
-            My_Index     => Object.My_Container.Number_Of_Items);
+        return Backward_From
+           ((My_Container => Object.My_Container,
+             My_Index     => Object.My_Container.Number_Of_Items));
     end Last;
 
 
@@ -1075,9 +1115,9 @@ package body FLTK.Widgets.Menus is
             Place  : in Cursor)
         return Cursor is
     begin
-        return Cu : constant Cursor :=
-           (My_Container => Place.My_Container,
-            My_Index     => Place.My_Index - 1);
+        return Backward_From
+           ((My_Container => Place.My_Container,
+             My_Index     => Place.My_Index - 1));
     end Previous;
 
 
@@ -1293,7 +1333,7 @@ package body FLTK.Widgets.Menus is
     is
         Result : constant Interfaces.C.int := fl_menu_get_textfont (This.Void_Ptr);
     begin
-        return Font_Kind'Val (Result);
+        return Font_Kind (Result);
     exception
     when Constraint_Error => raise Internal_FLTK_Error with
         "Fl_Menu_::textfont returned unexpected Font value of " &
@@ -1305,7 +1345,7 @@ package body FLTK.Widgets.Menus is
            (This : in out Menu;
             To   : in     Font_Kind) is
     begin
-        fl_menu_set_textfont (This.Void_Ptr, Font_Kind'Pos (To));
+        fl_menu_set_textfont (This.Void_Ptr, To_C (To));
     end Set_Text_Font;
 
 

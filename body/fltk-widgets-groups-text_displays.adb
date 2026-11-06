@@ -1423,7 +1423,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
            (This : in Text_Display)
         return Font_Kind is
     begin
-        return Font_Kind'Val (fl_text_display_get_text_font (This.Void_Ptr));
+        return Font_Kind (fl_text_display_get_text_font (This.Void_Ptr));
     end Get_Text_Font;
 
 
@@ -1431,7 +1431,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
            (This : in out Text_Display;
             Font : in     Font_Kind) is
     begin
-        fl_text_display_set_text_font (This.Void_Ptr, Font_Kind'Pos (Font));
+        fl_text_display_set_text_font (This.Void_Ptr, To_C (Font));
     end Set_Text_Font;
 
 
@@ -1907,7 +1907,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
            (This : in Text_Display)
         return Font_Kind is
     begin
-        return Font_Kind'Val (fl_text_display_get_linenumber_font (This.Void_Ptr));
+        return Font_Kind (fl_text_display_get_linenumber_font (This.Void_Ptr));
     end Get_Linenumber_Font;
 
 
@@ -1917,7 +1917,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
     begin
         fl_text_display_set_linenumber_font
            (This.Void_Ptr,
-            Font_Kind'Pos (To));
+            To_C (To));
     end Set_Linenumber_Font;
 
 

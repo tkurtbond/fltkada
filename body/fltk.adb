@@ -394,6 +394,14 @@ package body FLTK is
     end Press;
 
 
+    function Character_Key
+           (Item : in Wide_Character)
+        return Keypress is
+    begin
+        return Wide_Character'Pos (Item);
+    end Character_Key;
+
+
     function Is_Keypad
            (Key : in Keypress)
         return Boolean is
@@ -408,6 +416,30 @@ package body FLTK is
     begin
         return Character'Val (Key - 16#ff80#);
     end Keypad_Character;
+
+
+    function Function_Key
+           (Number : in Function_Key_Number)
+        return Keypress is
+    begin
+        return 16#ffbd# + Keypress (Number);
+    end Function_Key;
+
+
+    function Is_Function_Key
+           (Key : in Keypress)
+        return Boolean is
+    begin
+        return Key in 16#ffbe# .. 16#ffe0#;
+    end Is_Function_Key;
+
+
+    function Function_Number
+           (Key : in Keypress)
+        return Function_Key_Number is
+    begin
+        return Function_Key_Number (Key - 16#ffbd#);
+    end Function_Number;
 
 
     function Press
@@ -508,6 +540,23 @@ package body FLTK is
     end "+";
 
 
+
+
+    function fl_static_font_end
+        return Interfaces.C.int;
+    pragma Import (C, fl_static_font_end, "fl_static_font_end");
+    pragma Inline (fl_static_font_end);
+
+    function To_C
+           (Font : in Font_Kind)
+        return Interfaces.C.int is
+    begin
+        if Font >= Font_Kind (fl_static_font_end) then
+            raise Constraint_Error with "font" & Font_Kind'Image (Font)
+                & " is past the last," & Interfaces.C.int'Image (fl_static_font_end - 1);
+        end if;
+        return Interfaces.C.int (Font);
+    end To_C;
 
 
     function To_C

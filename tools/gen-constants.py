@@ -51,6 +51,11 @@ def enum(typ, pairs):
         add(f"{typ}'Pos ({ada})", c)
 
 
+def consts(pairs):
+    for ada, c in pairs:
+        add(f"Long_Long_Integer ({ada})", c)
+
+
 def upper(names):
     return [(n, "FL_" + n.upper()) for n in names.split()]
 
@@ -79,7 +84,7 @@ enum("Box_Kind", [(b, ("FL_" if b in PLAIN_BOXES else "_FL_") + b.upper()) for b
      + [("Free_Box", "FL_FREE_BOXTYPE")])
 
 section("Fonts (Fl_Font)")
-enum("Font_Kind", upper("""Helvetica Helvetica_Bold Helvetica_Italic
+consts(upper("""Helvetica Helvetica_Bold Helvetica_Italic
 Helvetica_Bold_Italic Courier Courier_Bold Courier_Italic Courier_Bold_Italic
 Times Times_Bold Times_Italic Times_Bold_Italic Symbol""")
      + [("Monospace", "FL_SCREEN"), ("Monospace_Bold", "FL_SCREEN_BOLD"),
@@ -145,8 +150,18 @@ for a, c in [("Enter", "Enter"), ("Keypad_Enter", "KP_Enter"), ("Backspace", "Ba
              ("Insert", "Insert"), ("Delete", "Delete"), ("Home", "Home"), ("End", "End"),
              ("Page_Down", "Page_Down"), ("Page_Up", "Page_Up"), ("Down", "Down"),
              ("Left", "Left"), ("Right", "Right"), ("Up", "Up"), ("Escape", "Escape"),
-             ("Tab", "Tab")]:
+             ("Tab", "Tab"), ("ISO", "Iso_Key"), ("Pause", "Pause"),
+             ("Scroll_Lock", "Scroll_Lock"), ("Kana", "Kana"), ("Eisu", "Eisu"),
+             ("Yen", "Yen"), ("JIS_Underscore", "JIS_Underscore"), ("Print", "Print"),
+             ("Menu", "Menu"), ("Help", "Help"), ("Num_Lock", "Num_Lock"),
+             ("Left_Shift", "Shift_L"), ("Right_Shift", "Shift_R"),
+             ("Left_Control", "Control_L"), ("Right_Control", "Control_R"),
+             ("Caps_Lock", "Caps_Lock"), ("Left_Meta", "Meta_L"), ("Right_Meta", "Meta_R"),
+             ("Left_Alt", "Alt_L"), ("Right_Alt", "Alt_R")]:
     add(f"Long_Long_Integer (To_C ({a}_Key))", "FL_" + c)
+add("Long_Long_Integer (To_C (Function_Key (1)))", "FL_F + 1")
+add("Long_Long_Integer (To_C (Function_Key (12)))", "FL_F + 12")
+add("Long_Long_Integer (To_C (Function_Key (Function_Key_Number'Last)))", "FL_F_Last")
 
 section("Shift keys held (Fl::event_state); Mod_Command is Ctrl, or Meta on macOS")
 for a, c in [("None", "0"), ("Shift", "FL_SHIFT"), ("Caps_Lock", "FL_CAPS_LOCK"),

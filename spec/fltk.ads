@@ -245,6 +245,14 @@ package FLTK is
 
     function Press (Key : in Pressable_Key) return Keypress;
 
+    --  The key that types Item, for a key FLTK gives the character's code
+    --  point, such as Latin_Small_Letter_A_With_Diaeresis, the Euro sign or
+    --  a control character such as CR.  The code points from 16#FF00# up
+    --  are FLTK's named keys, so Item there gives the key that has the
+    --  same number: Character_Key (Wide_Character'Val (16#FF0D#)) is
+    --  Enter_Key, not the fullwidth carriage return.
+    function Character_Key (Item : in Wide_Character) return Keypress;
+
     --  Keys on the numeric keypad, and the character each one stands for
     --  when NumLock is on, such as '7' for the key also marked Home.
     function Is_Keypad (Key : in Keypress) return Boolean;
@@ -266,6 +274,37 @@ package FLTK is
     Up_Key           : constant Keypress;
     Escape_Key       : constant Keypress;
     Tab_Key          : constant Keypress;
+
+    --  More of FLTK's named keys.  The ISO key is the extra one on ISO
+    --  keyboards; Kana, Eisu, Yen and JIS_Underscore are on JIS keyboards.
+    ISO_Key            : constant Keypress;
+    Pause_Key          : constant Keypress;
+    Scroll_Lock_Key    : constant Keypress;
+    Kana_Key           : constant Keypress;
+    Eisu_Key           : constant Keypress;
+    Yen_Key            : constant Keypress;
+    JIS_Underscore_Key : constant Keypress;
+    Print_Key          : constant Keypress;
+    Menu_Key           : constant Keypress;
+    Help_Key           : constant Keypress;
+    Num_Lock_Key       : constant Keypress;
+    Left_Shift_Key     : constant Keypress;
+    Right_Shift_Key    : constant Keypress;
+    Left_Control_Key   : constant Keypress;
+    Right_Control_Key  : constant Keypress;
+    Caps_Lock_Key      : constant Keypress;
+    Left_Meta_Key      : constant Keypress;
+    Right_Meta_Key     : constant Keypress;
+    Left_Alt_Key       : constant Keypress;
+    Right_Alt_Key      : constant Keypress;
+
+    --  The function keys, F1 to F35 (FL_F + n).
+    subtype Function_Key_Number is Positive range 1 .. 35;
+
+    function Function_Key (Number : in Function_Key_Number) return Keypress;
+    function Is_Function_Key (Key : in Keypress) return Boolean;
+    function Function_Number (Key : in Keypress) return Function_Key_Number
+        with Pre => Is_Function_Key (Key);
 
 
     type Mouse_Button is
@@ -401,24 +440,29 @@ package FLTK is
 
     --  Fonts  --
 
-    type Font_Kind is
-       (Helvetica,
-        Helvetica_Bold,
-        Helvetica_Italic,
-        Helvetica_Bold_Italic,
-        Courier,
-        Courier_Bold,
-        Courier_Italic,
-        Courier_Bold_Italic,
-        Times,
-        Times_Bold,
-        Times_Italic,
-        Times_Bold_Italic,
-        Symbol,
-        Monospace,
-        Monospace_Bold,
-        Zapf_Dingbats,
-        Free_Font);
+    --  FLTK's font number.  The 16 built-in fonts and Free_Font are named
+    --  here; FLTK.Static.Setup_Fonts and Set_Font_Kind add more, up to
+    --  FLTK.Static.Last_Font.  A font past Last_Font raises Constraint_Error
+    --  (FLTKAda-BUGS.md 88, pofltk 130).
+    type Font_Kind is new Natural;
+
+    Helvetica             : constant Font_Kind := 0;
+    Helvetica_Bold        : constant Font_Kind := 1;
+    Helvetica_Italic      : constant Font_Kind := 2;
+    Helvetica_Bold_Italic : constant Font_Kind := 3;
+    Courier               : constant Font_Kind := 4;
+    Courier_Bold          : constant Font_Kind := 5;
+    Courier_Italic        : constant Font_Kind := 6;
+    Courier_Bold_Italic   : constant Font_Kind := 7;
+    Times                 : constant Font_Kind := 8;
+    Times_Bold            : constant Font_Kind := 9;
+    Times_Italic          : constant Font_Kind := 10;
+    Times_Bold_Italic     : constant Font_Kind := 11;
+    Symbol                : constant Font_Kind := 12;
+    Monospace             : constant Font_Kind := 13;
+    Monospace_Bold        : constant Font_Kind := 14;
+    Zapf_Dingbats         : constant Font_Kind := 15;
+    Free_Font             : constant Font_Kind := 16;
 
     type Font_Size is new Natural;
     Normal_Size : constant Font_Size := 14;
@@ -755,6 +799,11 @@ private
         Mousecode : Mouse_Button;
     end record;
 
+    --  Raises Constraint_Error if Font is past FLTK.Static.Last_Font.
+    function To_C
+           (Font : in Font_Kind)
+        return Interfaces.C.int;
+
     function To_C
            (Key : in Key_Combo)
         return Interfaces.C.unsigned;
@@ -819,6 +868,26 @@ private
     Up_Key           : constant Keypress := 16#ff52#;
     Escape_Key       : constant Keypress := 16#ff1b#;
     Tab_Key          : constant Keypress := 16#ff09#;
+    ISO_Key            : constant Keypress := 16#ff0c#;
+    Pause_Key          : constant Keypress := 16#ff13#;
+    Scroll_Lock_Key    : constant Keypress := 16#ff14#;
+    Kana_Key           : constant Keypress := 16#ff2e#;
+    Eisu_Key           : constant Keypress := 16#ff2f#;
+    Yen_Key            : constant Keypress := 16#ff30#;
+    JIS_Underscore_Key : constant Keypress := 16#ff31#;
+    Print_Key          : constant Keypress := 16#ff61#;
+    Menu_Key           : constant Keypress := 16#ff67#;
+    Help_Key           : constant Keypress := 16#ff68#;
+    Num_Lock_Key       : constant Keypress := 16#ff7f#;
+    Left_Shift_Key     : constant Keypress := 16#ffe1#;
+    Right_Shift_Key    : constant Keypress := 16#ffe2#;
+    Left_Control_Key   : constant Keypress := 16#ffe3#;
+    Right_Control_Key  : constant Keypress := 16#ffe4#;
+    Caps_Lock_Key      : constant Keypress := 16#ffe5#;
+    Left_Meta_Key      : constant Keypress := 16#ffe7#;
+    Right_Meta_Key     : constant Keypress := 16#ffe8#;
+    Left_Alt_Key       : constant Keypress := 16#ffe9#;
+    Right_Alt_Key      : constant Keypress := 16#ffea#;
 
 
 

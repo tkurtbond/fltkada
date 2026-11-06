@@ -92,6 +92,8 @@ extern "C" void fl_static_set_color3(unsigned int c,
 extern "C" void fl_static_grow_fonts(int f);
 extern "C" const char * fl_static_get_font(int f);
 extern "C" const char * fl_static_get_font_name(int f);
+extern "C" int fl_static_get_font_attributes(int f);
+extern "C" int fl_static_font_end();
 extern "C" void fl_static_set_font(int t, int f);
 extern "C" void fl_static_set_font2(int t, char * s);
 extern "C" int fl_static_get_font_sizes(int f, int * &a);

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Help_Dialog test - FLTKAda</title>
+  <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+</head>
+<body>
+<!--
+  Programmed by T. Kurt Bond and Claude Opus 5.5
+  Released into the public domain
+
+  The page test/help_dialog.adb shows by default.  It tries the HTML
+  Fl_Help_View knows, as FLTK's test/help_dialog.html does.  The wide
+  table is 90%, not 100%: FLTK lays a 100% one out under the scrollbar
+  (FLTK-issues.md F31).
+-->
+<H1>Help_Dialog Tests</H1>
+<UL>
+    <LI> <A HREF="#Text">Text styles</A>
+    <LI> <A HREF="#Entities">Entities</A>
+    <LI> <A HREF="#Pre">Preformatted text</A>
+    <LI> <A HREF="#Headings">Headings</A>
+    <LI> <A HREF="#Lists">Lists</A>
+    <LI> <A HREF="#Tables">Tables</A>
+    <LI> <A HREF="#Center">Centred text</A>
+    <LI> <A HREF="#Rules">Rules</A>
+    <LI> <A HREF="#Images">Images</A>
+</UL>
+
+<A NAME="Text"></A>
+<H2>Text styles</H2>
+<P>
+A plain paragraph.  FLTK's help widget lays out its own subset of HTML:
+paragraphs, line breaks, fonts, colours, lists, tables and images, and
+links to other pages and to anchors in this one.
+</P>
+<P>
+<I>Italic.</I> <B>Bold.</B> <BIG>Big.</BIG> <SMALL>Small.</SMALL>
+<U>Underlined.</U> <STRIKE>Struck out.</STRIKE> <TT>Typewriter.</TT>
+<CODE>Code.</CODE> <KBD>Keyboard.</KBD>
+</P>
+<P>
+<FONT COLOR=RED>Red.</FONT> <FONT COLOR='#ff8800'>Orange, #ff8800.</FONT>
+<FONT COLOR=GREEN>Green.</FONT> <FONT COLOR=BLUE>Blue.</FONT>
+<BR>
+<FONT FACE="Helvetica">Helvetica 0123456789</FONT><BR>
+<FONT FACE="Times">Times 0123456789</FONT><BR>
+<FONT FACE="Courier">Courier 0123456789</FONT><BR>
+<FONT SIZE=+2>Two sizes bigger.</FONT> <FONT SIZE=-1>One size smaller.</FONT>
+</P>
+
+<A NAME="Entities"></A>
+<H2>Entities</H2>
+<P>
+&lt;tag&gt; &amp; &quot;quotes&quot; &copy; &reg; &deg; &plusmn; &frac12;
+&eacute;l&egrave;ve, na&iuml;ve, &Uuml;ber, &ntilde;, &szlig;.
+And UTF-8 itself: café, Ωμέγα, ∑.
+</P>
+
+<A NAME="Pre"></A>
+<H2>Preformatted text</H2>
+<PRE>
+with Ada.Text_IO;
+procedure Hello is
+begin
+    Ada.Text_IO.Put_Line ("Hello, <B>bold</B> world");
+end Hello;
+	A tab indents to the next multiple of eight.
+	&lt;Entities&gt; are still entities here.
+</PRE>
+
+<A NAME="Headings"></A>
+<H1>Heading 1</H1>
+<H2>Heading 2</H2>
+<H3>Heading 3</H3>
+<H4>Heading 4</H4>
+<H5>Heading 5</H5>
+<H6>Heading 6</H6>
+
+<A NAME="Lists"></A>
+<H2>Lists</H2>
+<UL>
+    <LI>An unordered list.
+    <LI>Its second item, with a list inside:
+    <UL>
+        <LI>A nested item.
+        <LI>Another.
+    </UL>
+    <LI>Its last item.
+</UL>
+<OL>
+    <LI>An ordered list.
+    <LI>Its second item.
+    <LI>Its third.
+</OL>
+<DL>
+    <DT>Term</DT>
+    <DD>Its definition.</DD>
+    <DT>Another term</DT>
+    <DD>Another definition, long enough that it should wrap onto a second
+    line in a help window of the usual width.</DD>
+</DL>
+
+<A NAME="Tables"></A>
+<H2>Tables</H2>
+<TABLE BORDER=1 CELLPADDING=4>
+    <TR><TH>Widget</TH><TH>Package</TH><TH ALIGN=RIGHT>Count</TH></TR>
+    <TR><TD>Button</TD><TD>FLTK.Widgets.Buttons</TD><TD ALIGN=RIGHT>1</TD></TR>
+    <TR><TD>Help view</TD><TD>FLTK.Widgets.Groups.Help_Views</TD><TD ALIGN=RIGHT>22</TD></TR>
+    <TR BGCOLOR='#ddeeff'><TD COLSPAN=2>Two columns, coloured</TD><TD ALIGN=RIGHT>333</TD></TR>
+</TABLE>
+<P>
+<TABLE WIDTH=90% BORDER=0 BGCOLOR='#eeeeee'>
+    <TR><TD ALIGN=LEFT>Left</TD><TD ALIGN=CENTER>Centre</TD><TD ALIGN=RIGHT>Right</TD></TR>
+</TABLE>
+</P>
+
+<A NAME="Center"></A>
+<H2>Centred text</H2>
+<CENTER>
+This paragraph is centred.<BR>
+So is this line.
+</CENTER>
+<P ALIGN=RIGHT>This paragraph is aligned right.</P>
+
+<A NAME="Rules"></A>
+<H2>Rules</H2>
+<HR>
+<P>Between two rules.</P>
+<HR>
+
+<A NAME="Images"></A>
+<H2>Images</H2>
+<P>
+A GIF that moves, if the program animates GIFs:
+<IMG SRC="images/circles.gif" WIDTH=48 HEIGHT=48 ALT="circles">
+</P>
+<P>
+PNG, scaled up: <IMG SRC="images/rb.png" WIDTH=32 HEIGHT=16 ALT="rb.png">
+GIF: <IMG SRC="images/rb.gif" WIDTH=32 HEIGHT=16 ALT="rb.gif">
+XPM: <IMG SRC="images/rb.xpm" WIDTH=32 HEIGHT=16 ALT="rb.xpm">
+</P>
+<P>
+A missing image shows its ALT text:
+<IMG SRC="images/no-such-image.png" WIDTH=32 HEIGHT=16 ALT="missing">
+</P>
+<P><A HREF="#Text">Back to the top.</A></P>
+</body>
+</html>

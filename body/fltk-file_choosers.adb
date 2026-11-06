@@ -708,7 +708,7 @@ package body FLTK.File_Choosers is
                 This.Void_Ptr := new_fl_file_chooser
                    (Interfaces.C.To_C (Pathname),
                     Interfaces.C.To_C (Pattern),
-                    Chooser_Kind'Pos (Kind),
+                    Interfaces.C.int (Kind),
                     This.My_Label);
                 Extra_Init (This);
             end return;
@@ -1180,7 +1180,7 @@ package body FLTK.File_Choosers is
            (This : in File_Chooser)
         return Font_Kind is
     begin
-        return Font_Kind'Val (fl_file_chooser_get_textfont (This.Void_Ptr));
+        return Font_Kind (fl_file_chooser_get_textfont (This.Void_Ptr));
     end Get_Text_Font;
 
 
@@ -1188,7 +1188,7 @@ package body FLTK.File_Choosers is
            (This : in out File_Chooser;
             Font : in     Font_Kind) is
     begin
-        fl_file_chooser_set_textfont (This.Void_Ptr, Font_Kind'Pos (Font));
+        fl_file_chooser_set_textfont (This.Void_Ptr, To_C (Font));
     end Set_Text_Font;
 
 
@@ -1208,18 +1208,43 @@ package body FLTK.File_Choosers is
     end Set_Text_Size;
 
 
+    function "+"
+           (Left, Right : in Chooser_Kind)
+        return Chooser_Kind is
+    begin
+        return Left or Right;
+    end "+";
+
+
+    function "-"
+           (Left, Right : in Chooser_Kind)
+        return Chooser_Kind is
+    begin
+        return Left and not Right;
+    end "-";
+
+
+    function Includes
+           (Kind : in Chooser_Kind;
+            Item : in Chooser_Kind)
+        return Boolean is
+    begin
+        return (Kind and Item) = Item;
+    end Includes;
+
+
     function Get_Kind
            (This : in File_Chooser)
         return Chooser_Kind
     is
         Ret : constant Interfaces.C.int := fl_file_chooser_get_type (This.Void_Ptr);
     begin
-        pragma Assert (Ret in 0 .. Chooser_Kind'Pos (Chooser_Kind'Last));
-        return Chooser_Kind'Val (Ret);
-    exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "Fl_File_Chooser::type returned unexpected int value of " &
-        Interfaces.C.int'Image (Ret);
+        if Ret not in 0 .. 7 then
+            raise Internal_FLTK_Error with
+                "Fl_File_Chooser::type returned unexpected int value of " &
+                Interfaces.C.int'Image (Ret);
+        end if;
+        return Chooser_Kind (Ret);
     end Get_Kind;
 
 
@@ -1227,7 +1252,7 @@ package body FLTK.File_Choosers is
            (This : in out File_Chooser;
             Kind : in     Chooser_Kind) is
     begin
-        fl_file_chooser_set_type (This.Void_Ptr, Chooser_Kind'Pos (Kind));
+        fl_file_chooser_set_type (This.Void_Ptr, Interfaces.C.int (Kind));
     end Set_Kind;
 
 

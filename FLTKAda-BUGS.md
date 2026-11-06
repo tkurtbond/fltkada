@@ -2395,3 +2395,408 @@ checks, both mismatches raised `STORAGE_ERROR` and valgrind found 4
 invalid reads.
 
 **Status.** Fixed.
+
+
+## 85. A Printer's Start_Job can't tell a cancel from a failure
+
+**Symptom.** `Printers.Start_Job`, both forms, raises `Page_Error`
+whether the user cancelled the print dialog or the print command
+couldn't be run, and the exception has no message. A program can't
+ignore a cancel and report a failure, as FLTK's `test/device.cxx` does
+with `fl_alert` and FLTK's message.
+
+**Cause.** On X11 and Wayland, `Fl_Posix_Printer_Driver::begin_job`
+returns 1 when the user clicks Cancel (`Fl_Posix_Printer_Driver.cxx:293`),
+and 2 when `popen` of the print command fails, with "could not run
+command: ..." in `*perr_message`, allocated with `new[]` (lines 366-372).
+Printing to a file returns `Fl_PostScript_File_Device::begin_job`'s
+result: 1 for a cancelled file chooser, 2 when the file can't be opened
+(`Fl_PostScript.cxx:69`, 72). The shim's `fl_printer_start_job` and
+`fl_printer_start_job2` pass no `perr_message`, and the Ada bodies raise
+`Page_Error` for any result other than 0. The PostScript and PDF devices
+already tell the two apart, with `User_Cancel_Error` and
+`File_Open_Error` with FLTK's message.
+
+**Found.** Phase 14, 2026-11-04, porting `test/device.cxx`. Its Ada port,
+`test/device.adb`, ignores `Page_Error` for now, and says why. Found by
+reading FLTK's source; not yet shown by a test, which would need
+`FLTK.Probe.Modal` to answer the print dialog.
+
+**Fix.** Not yet. The shim should pass `perr_message`, copy it and free
+it with `delete[]`, and `Start_Job` should raise `User_Cancel_Error` for
+1 and `Page_Error` with the message otherwise.
+
+**Status.** Open.
+
+
+## 86. A File_Chooser's kind was an enumeration, not FLTK's bit mask
+
+**Symptom.** `Set_Kind (Directory)` made a chooser that could create
+files and pick several, not one that picks directories, and no kind
+could combine two of FLTK's, such as `MULTI | CREATE`.
+
+**Cause.** FLTK's `Fl_File_Chooser` type is a bit mask: `SINGLE` 0,
+`MULTI` 1, `CREATE` 2 and `DIRECTORY` 4 (Fl_File_Chooser.H:50-55), and
+`Fl_File_Chooser::type` tests each bit (Fl_File_Chooser.cxx:422-436).
+FLTKAda declared `type Chooser_Kind is (Single, Multi, Create,
+Directory)` and passed `Chooser_Kind'Pos`, so `Directory` went to FLTK as
+3. `Get_Kind` turned 3 back into `Directory`, so the round trip hid the
+error, and it raised `Internal_FLTK_Error` for 4 or any combination.
+
+**Found.** Phase 14, 2026-11-04, porting FLTK's test/file_chooser.cxx,
+whose check buttons toggle the kind's bits one at a time.
+
+**Test.** test/unit/test_chooser_kind.adb uses the New button, which
+`Fl_File_Chooser::type` activates exactly when `CREATE` is in the kind
+(Fl_File_Chooser.cxx:428-431). Against the old code:
+
+```
+ok   - Create: the New button is active
+FAIL - Directory: the New button is inactive
+ok   - Directory: Get_Kind gives it back
+ 1 check(s) failed.
+```
+
+**Fix.** `Chooser_Kind` is now a private flag set, like
+`FLTK.Native_File_Choosers.Chooser_Option`: `"+"`, `"-"` and `Includes`,
+with `Single`, `Multi`, `Create` and `Directory` as constants holding
+FLTK's values. `Forge.Create` and `Set_Kind` pass the mask itself, and
+`Get_Kind` checks the result with an explicit test instead of
+`pragma Assert`. The test, extended to `Create + Directory`, passes.
+The constants are not in tools/gen-constants.py, which can only check
+visible constants; `Chooser_Option`'s aren't there either. The New
+button check covers `Create` and `Directory` instead.
+
+**Status.** Fixed.
+
+## 87. A Terminal write that scrolled was sometimes never drawn
+
+**Symptom.** In the port of FLTK's test/file_chooser.cxx, the lines a
+pick appends to the Terminal ("Picked: 'a.c'" and so on) were in its
+buffer but not on the screen until something else redrew it. FLTK's C++
+`file_chooser`, driven the same way, shows them.
+
+**Cause.** FLTKAda's workaround for F23 cleared `Fl_Terminal`'s private
+`redraw_modified_` flag after every `Fl_Terminal::draw`, under every
+redraw style. Under `RATE_LIMITED`, the default, a write only sets the
+flag and starts a timer; the timer redraws the terminal if the flag is
+still set (src/Fl_Terminal.cxx:2964-2972, 3365-3376). A write that
+scrolls also changes the vertical scrollbar, and `set_scrollbar_params`
+damages only the scrollbar's rectangle, so the next flush draws the
+terminal clipped to that rectangle. The workaround then cleared the flag,
+and the timer, finding it clear, stopped without redrawing. gdb on the
+test below showed exactly that: one damage, 382,2 16x196 from
+`set_scrollbar_params` under `cursor_down`, then a draw, then the timer
+doing nothing. In file_chooser, gdb showed the C++ drawing twice after
+the appends and FLTKAda once.
+
+**Found.** Phase 14, 2026-11-04, comparing screenshots of the
+file_chooser port with the C++ under one Xvfb.
+
+**Test.** test/unit/test_terminal_expose.adb scrolls a terminal with
+empty lines, writes a line that scrolls it again, and counts the pixels
+in the text area that differ from the background. Against the old code:
+
+```
+ok   - the style is Rate_Limited
+FAIL - a write that scrolls is shown: 281 -> 281
+ 1 check(s) failed.
+```
+
+**Fix.** `fl_terminal_draw` clears the flag only under `PER_WRITE`,
+whose first write calls `redraw()` on the whole terminal, so that draw is
+never clipped short. Under `RATE_LIMITED` the timer clears it, as FLTK
+means it to. The test passes on X11 and sway (281 -> 941), and
+test_terminal_cursor's F23 checks still pass. file_chooser's screen after
+a pick now matches the C++ pixel for pixel (AE 0).
+
+**Status.** Fixed.
+
+
+## 88. Font_Kind could name only the 17 built-in fonts
+
+**Symptom.** `FLTK.Static.Setup_Fonts` (`Fl::set_fonts`) added the
+system's fonts, 1788 of them under Xvfb here, but a program couldn't
+name, list, size, draw or label in any of them. `Set_Font_Kind` could
+only replace one of the 17 built-in fonts, and the font getters would
+have raised `Constraint_Error` on reading back a font set in C++.
+
+**Cause.** FLTK's font (`Fl_Font`) is an `int`, and `Fl::set_fonts` and
+`Fl::set_font` add fonts from `FL_FREE_FONT` (16) up, growing the table
+(fl_set_font.cxx:45-68). FLTKAda declared `Font_Kind` as an enumeration
+of `Helvetica` to `Zapf_Dingbats` and `Free_Font`, and passed
+`Font_Kind'Pos` and read back with `Font_Kind'Val`, 33 and 23 times in
+22 bodies. The getters' `Constraint_Error` is inferred from the range
+checks, which both builds keep; it wasn't run. FONT_KIND_ISSUE.md has
+the analysis and the options.
+
+**Found.** Phase 14, 2026-11-05, porting FLTK's test/fonts.cxx, which
+lists every font `Fl::set_fonts` finds.
+
+**Test.** test/unit/test_font_numbers.adb sets up the system fonts and
+names, sizes, measures and labels a box in font 17, reads it back, and
+checks the attributes and the bounds below. Against the old code it
+didn't compile: the old API has no way to name font 17.
+
+**Fix.** `Font_Kind` is now `new Natural`, FLTK's font number, and the
+built-in fonts are constants with FLTK's values, so every call that
+names a font is unchanged. Because FLTK doesn't check a font against its
+table (pofltk 130), the shim keeps `font_end`, as pofltk's does:
+`Setup_Fonts` and `Set_Font_Kind` raise it, and it starts past
+`Free_Font`, which `fl_static_grow_fonts` already made safe.
+`FLTK.Static.Last_Font` returns it less one. Every font argument goes
+through `FLTK.To_C`, which raises `Constraint_Error` on a font past
+`Last_Font`; that covers the widget setters too, which pofltk leaves
+unchecked. `Set_Font_Kind (Target, Name)` takes a `Target` up to
+`Max_Font` (65535, pofltk's `MaxFont`), and the fonts in the gap are
+empty. The names it keeps are now in an ordered map, not an array
+indexed by `Font_Kind`. New: `Font_Family_Attributes`, the attributes
+`Fl::get_font_name` gives, which fonts.cxx shows. tools/gen-constants.py
+checks the constants. The test's 25 checks pass on X11 and sway, with
+vg=0 and no invalid reads.
+
+**Status.** Fixed.
+
+
+## 89. Keypress had no function keys
+
+**Symptom.** A program couldn't recognise F1, or any function key, nor
+Pause, Print, Menu, Help, Num Lock, Caps Lock, the shift, control, meta
+and alt keys themselves, or the ISO and JIS keyboards' extra keys.
+`FLTK.Events.Last_Key` returned them, but there was no `Keypress` to
+compare it with, and `Keypress` is private.
+
+**Cause.** `spec/fltk.ads` declared 15 of FLTK's named keys (Enter to
+Tab) and the keypad, but not `FL_F + n` or the 20 others in
+Enumerations.H:487-525.
+
+**Found.** Phase 14, 2026-11-05, porting FLTK's test/fonts.cxx, whose
+main window opens its editor on F1.
+
+**Test.** test/unit/test_function_keys.adb checks `Function_Key`,
+`Is_Function_Key` and `Function_Number` for F1 to F35, and sends F1 to a
+window whose `Handle` compares `Last_Key` with `Function_Key (1)`.
+Against the old code it didn't compile. tools/gen-constants.py checks
+the 20 new keys, F1, F12 and F35 against FLTK's values.
+
+**Fix.** The 20 keys are constants, and `Function_Key (N)` is `FL_F + N`,
+for `N` in `Function_Key_Number`, 1 to 35 (`FL_F_Last` is `FL_F + 35`).
+`Is_Function_Key` and `Function_Number` go the other way, as
+`Is_Keypad` and `Keypad_Character` do for the keypad. The test passes on
+X11 and sway, and test_constants passes.
+
+**Status.** Fixed.
+
+
+## 90. GL_Window had no Draw_Overlay
+
+**Symptom.** A program could call `Redraw_Overlay` on a `GL_Window`, but
+couldn't draw the overlay, because there was nothing to override.
+FLTK's test/gl_overlay.cxx draws its red outline that way.
+
+**Cause.** `Fl_Gl_Window::draw_overlay` is virtual, and FLTK calls it
+when it flushes a shown GL window after `redraw_overlay`
+(Fl_Gl_Window.cxx:238, 275-285). The shim's `My_Gl_Window` passed
+`draw` and `handle` to Ada, but not `draw_overlay`, and the Ada side had
+no `Draw_Overlay`. pofltk passes it (`Overlaid<Fl_Gl_Window>`,
+src/pofltk.h).
+
+**Found.** Phase 14, 2026-11-05, porting FLTK's test/gl_overlay.cxx.
+
+**Test.** test/unit/test_gl_overlay.adb overrides `Draw_Overlay` and
+counts its calls: none before `Redraw_Overlay`, then one after each,
+after `Draw`. A GL window that doesn't override it still draws. Against
+the old code it didn't compile.
+
+**Fix.** `My_Gl_Window::draw_overlay` calls
+`gl_window_draw_overlay_hook`, which dispatches to `Draw_Overlay`, and
+counts as drawing for the pofltk 111 guard, as `draw` does. The Ada
+`Draw_Overlay` does nothing, as FLTK's does, so it need not be
+overridden, unlike `Overlay_Window`'s. A GLUT window keeps FLTK's own,
+which calls GLUT's overlay display function. The test passes on X11
+and sway.
+
+**Status.** Fixed.
+
+## 91. GLUT's overlay calls refused a window not shown
+
+**Symptom.** `FLTK.GLUT.Establish_Overlay`, and `Use_Layer` of
+`Overlay_Layer`, raised `Program_Error` when the current window was
+hidden. FLTK's test/glut_test.cxx calls `glutEstablishOverlay` right
+after `glutHideWindow`, so its port stopped there.
+
+**Cause.** The shim refused them, on the strength of a comment copied
+from pofltk (src/gl/FlGlut.cpp:332): "make_overlay_current crashes on a
+window not shown". Nothing backs that claim, and pofltk's issue list
+doesn't have it. `Fl_Gl_Window::make_overlay_current` is
+`make_overlay` and then the driver's `make_overlay_current`
+(Fl_Gl_Overlay.cxx:69-72), and on X11 and Wayland that is just
+`glDrawBuffer(GL_FRONT)` (Fl_X11_Gl_Window_Driver.cxx:230,
+Fl_Wayland_Gl_Window_Driver.cxx:255). `glutCreateWindow` always shows
+the window (glut_compatibility.cxx:247-250), so the only GLUT window not
+shown is a hidden one. A scratch C++ program called both on a hidden
+GLUT window, and on an `Fl_Glut_Window` never shown, made `glut_window`
+by hand. It ran to the end on Xvfb and on sway, with no errors under
+valgrind.
+
+**Found.** Phase 14, 2026-11-05, porting FLTK's test/glut_test.cxx.
+
+**Test.** test/unit/test_glut_overlay.adb makes the overlay calls on a
+GLUT window that is shown, hidden, shown again, and with no current
+window. Against the old code the hidden case failed with
+`Program_Error`.
+
+**Fix.** The shim calls `glutEstablishOverlay` and `glutUseLayer`
+directly, and the Ada side no longer raises. The test passes on X11 and
+sway, with no invalid reads or leaks. FLTK.GLUT is new since upstream,
+so this isn't an incompatible change. pofltk's copy of the guard skips
+the call silently instead, which is the same mistake, but harmless.
+
+**Status.** Fixed.
+
+## 92. `Input_Choice.Set_Item` read past the menu, and counted from 0
+
+**Symptom.** `Input_Choice.Set_Item (-1)` was an invalid read under
+valgrind, at Fl_Input_Choice.cxx:288. `Set_Item (5)` on three items read
+past them, and `Set_Item` on an input choice with no items raised
+`Storage_Error`, from a null pointer. `Set_Item` also counted from 0,
+where `Has_Item` and `Item` in the same package, and `Choice.Set_Chosen`,
+count from 1, so `Set_Item (1)` chose the second item.
+
+**Cause.** `Set_Item (Num : Integer)` passed `Num` straight to
+`Fl_Input_Choice::value (int)`, which calls `menu_->value (i)`, which
+checks the range, and then `inp_->value (menu_->text (i))`
+(Fl_Input_Choice.cxx:286-289). `Fl_Menu_::text (int)` is
+`menu_[i].text`, with no check (Fl_Menu_.H:214). The menu's terminators
+are inside `size ()` but have no text, so a number in range can still
+clear the input.
+
+**Found.** Phase 14, 2026-11-05, porting FLTK's test/input_choice.cxx,
+which calls `in->value (0)`. pofltk checks the number first
+(src/FlInputs.Mod, `SetValueIndex`).
+
+**Test.** test/unit/test_input_choice_item.adb sets the first and last
+of three items, then item 4, the terminator, and item 1 of no items.
+Against the old code, 7 of its checks failed, the last with
+`Storage_Error`.
+
+**Fix.** Decided with the user: `Set_Item (Place : Menus.Index)` counts
+from 1, like the rest of the package. The shim's
+`fl_input_choice_set_value2` now returns 0, and calls nothing, unless
+the item exists and has text, and `Set_Item` then raises
+`Constraint_Error`. The test passes on X11 and sway, with no valgrind
+errors. This is an incompatible change.
+
+**Status.** Fixed.
+
+## 93. `Menu.Has_Item` counts the terminator
+
+**Symptom.** On a `Choice` with three items, `Number_Of_Items` is 4 and
+`Has_Item (4)` is True, though item 4 is the terminator that ends the
+menu, with no text. On one with no items both are 0 and False. Checked
+with a scratch program under Xvfb, 2026-11-05. `Choice.Set_Chosen (4)`
+refuses it and returns False, so it isn't a memory error there.
+
+**Cause.** `Number_Of_Items` is `Fl_Menu_::size ()`, which counts the
+last terminator, and those of any submenus (Fl_Menu.cxx:58-70).
+`Has_Item` is `Place in 1 .. Number_Of_Items`
+(body/fltk-widgets-menus.adb:854-860). The spec warns only that
+`Number_Of_Items` "may not be what you expect due to submenu
+terminators".
+
+**Found.** Phase 14, 2026-11-05, fixing bug 92: a first fix that used
+`Has_Item` didn't refuse `Set_Item (4)` of three items.
+
+**Status.** ~~Open. Changing what `Has_Item` and `Number_Of_Items` count
+would change every menu, so it wants a decision of its own.~~ Decided
+with the user 2026-11-05, and fixed. `Set_Item` doesn't depend on it
+(bug 92).
+
+**Iteration.** The menu iterator is `Ada.Iterator_Interfaces (Cursor,
+Has_Item)`, and `Next` added 1, so a `for` loop over a menu visited each
+terminator too: one with `sub/a` and `sub/b` gave the labels
+`one,sub,a,b,,two,` and then the menu's terminator.
+
+**Fixed.** `Has_Item` is true only where FLTK's entry has text, which is
+how FLTK tells a terminator (`Fl_Menu_Item::next`, Fl_Menu.cxx:87-104),
+through the new shim function `fl_menu_is_item`. The cursors' `First`,
+`Next`, `Last` and `Previous` step over the terminators. A submenu's
+title is an item. `Number_Of_Items` and `Item` are unchanged: an index
+is still a place in FLTK's array, and `Number_Of_Items` is the highest
+one. `Input_Choice.Has_Item` forwards to the menu's, so it changes too.
+test/unit/test_menu_has_item.adb checks each place in a menu with a
+submenu, iteration both ways, an empty menu, and an `Input_Choice`.
+
+## 94. `Slider.Set_Box` sets the knob, even through `Widget'Class`
+
+**Symptom.** A slider's frame box can't be set with `Set_Box` in the
+usual way. A slider's own `Set_Box` and `Get_Box` set and get the box of
+the knob, FLTK's `Fl_Slider::slider (Fl_Boxtype)`. They override
+`Widget.Set_Box` and `Widget.Get_Box`, so a dispatching call does the
+same: `Set_Box (Thin_Down_Box)` on a horizontal slider held as a
+`Widget'Class` leaves its frame `Down_Box` and changes the knob from
+`No_Box` to `Thin_Down_Box`. Code that sets the box of each child of a
+group sets a slider's knob. The frame can be set only with a view
+conversion, `Widgets.Widget (S).Set_Box`. Checked with a scratch program
+under Xvfb, 2026-11-05.
+
+**Cause.** spec/fltk-widgets-valuators-sliders.ads:65-71 declares
+`Get_Box` and `Set_Box` for `Slider` with the same profile as Widget's,
+and body/fltk-widgets-valuators-sliders.adb:279 calls
+`fl_slider_set_slider`. They come from upstream FLTKAda.
+
+**Found.** Phase 14, 2026-11-05, porting test/mandelbrot.cxx, whose
+sliders set both: `box (FL_THIN_DOWN_BOX)` and `slider (FL_UP_BOX)`.
+test/mandelbrot.adb uses the view conversion for the frame.
+
+**Status.** ~~Open. Renaming the knob's pair (to `Get_Slider_Box` and
+`Set_Slider_Box`, say) would change what every program that uses them
+does, so it wants the user's decision.~~ Decided with the user
+2026-11-05, and fixed.
+
+**Fixed.** The knob's pair is now `Get_Slider_Box` and `Set_Slider_Box`.
+`Slider` no longer overrides `Get_Box` and `Set_Box`, so on a slider and
+everything derived from it, `Value_Slider` and `Scrollbar` among them,
+they set and get the frame, as FLTK's `box ()` does. A program that
+called `Set_Box` for the knob still compiles, but now sets the frame.
+test/unit/test_slider_box.adb checks a `Slider`, a `Value_Slider` and a
+`Scrollbar`: before the fix a dispatching `Set_Box` left each frame as it
+was (`Down_Box`, `Down_Box` and `Flat_Box`). test/mandelbrot.adb calls
+`Set_Box` and `Set_Slider_Box`, and still gives the C++'s pixels.
+
+## 95. A `Keypress` can't be a non-ASCII character or a control character
+
+**Symptom.** A shortcut on a key that types a-umlaut, the Euro sign,
+Hangul cieuc or CR can't be written. FLTK's test/menubar.cxx has all of
+them: `0xe4`, `FL_COMMAND+0x20ac`, `0x3148` and `'\r'`. `Press` takes
+only a `Pressable_Key`, `Character` 32 .. 126, and the named keys are
+FLTK's codes from 0xff00 up.
+
+**Cause.** `Keypress` is private (spec/fltk.ads), and nothing else
+makes one. It comes from upstream FLTKAda.
+
+**Found.** Phase 14, 2026-11-05, porting test/menubar.cxx.
+
+**Fixed.** `Character_Key (Item : Wide_Character) return Keypress`
+gives the key by its code point. It is an addition, so nothing that
+compiled before changes. test/unit/test_character_keys.adb checks that a
+menu's shortcuts on all four are picked, given the character as the
+window system's text, and checks their labels.
+
+## 96. Reverse iteration over a menu raises `Constraint_Error`
+
+**Symptom.** `for Place in reverse Menu.Iterate loop` raises
+`Constraint_Error` (a range check at body/fltk-widgets-menus.adb:867)
+when it steps past the first item, after visiting them all. Seen in
+test/unit/test_menu_has_item.adb under Xvfb, 2026-11-05, before the fix.
+
+**Cause.** `Previous` of the cursor at item 1 makes one at index 0,
+which its `Index'Base` component allows. `Has_Item (Cursor)` passed that
+to `Has_Item (Menu, Index)`, and `Index` is `Positive`. It comes from
+upstream FLTKAda.
+
+**Found.** Phase 14, 2026-11-05, testing the fix for bug 93.
+
+**Fixed.** `Has_Item (Cursor)` is false for an index outside `Index`.
+test/unit/test_menu_has_item.adb iterates both ways, over a menu with
+items and over an empty one.

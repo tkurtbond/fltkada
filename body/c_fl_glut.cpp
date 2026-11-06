@@ -417,30 +417,19 @@ void fl_glut_warp_pointer(int x, int y) {
 
 //  Overlays
 
-//  make_overlay_current crashes on a window not shown.  These return 0,
-//  and do nothing, if the current window isn't shown.
-static bool can_overlay() {
-    return !glut_window || glut_window->shown();
-}
+//  make_overlay_current works on a window not shown: on X11 and Wayland
+//  it is glDrawBuffer(GL_FRONT) (FLTKAda-BUGS.md 91).
 
-int fl_glut_establish_overlay() {
-    if (!can_overlay()) {
-        return 0;
-    }
+void fl_glut_establish_overlay() {
     glutEstablishOverlay();
-    return 1;
 }
 
 void fl_glut_remove_overlay() {
     glutRemoveOverlay();
 }
 
-int fl_glut_use_layer(unsigned int l) {
-    if (l != GLUT_NORMAL && !can_overlay()) {
-        return 0;
-    }
+void fl_glut_use_layer(unsigned int l) {
     glutUseLayer(l);
-    return 1;
 }
 
 void fl_glut_post_overlay_redisplay() {

@@ -380,7 +380,7 @@ package body FLTK.Widgets.Groups.Spinners is
            (This : in Spinner)
         return Font_Kind is
     begin
-        return Font_Kind'Val (fl_spinner_get_textfont (This.Void_Ptr));
+        return Font_Kind (fl_spinner_get_textfont (This.Void_Ptr));
     end Get_Text_Font;
 
 
@@ -388,7 +388,7 @@ package body FLTK.Widgets.Groups.Spinners is
            (This : in out Spinner;
             To   : in     Font_Kind) is
     begin
-        fl_spinner_set_textfont (This.Void_Ptr, Font_Kind'Pos (To));
+        fl_spinner_set_textfont (This.Void_Ptr, To_C (To));
     end Set_Text_Font;
 
 

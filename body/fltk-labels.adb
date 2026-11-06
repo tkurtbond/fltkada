@@ -186,7 +186,7 @@ package body FLTK.Labels is
                 This.My_Text := Interfaces.C.Strings.New_String (Value);
                 This.Void_Ptr := new_fl_label
                    (This.My_Text,           --  Interfaces.C.Strings.chars_ptr
-                    Font_Kind'Pos (Font),   --  Interfaces.C.int
+                    To_C (Font),   --  Interfaces.C.int
                     Interfaces.C.int (Size),
                     Interfaces.C.unsigned (Hue),
                     Label_Kind'Pos (Kind),  --  Interfaces.C.int
@@ -236,7 +236,7 @@ package body FLTK.Labels is
            (This : in Label)
         return Font_Kind is
     begin
-        return Font_Kind'Val (fl_label_get_font (This.Void_Ptr));
+        return Font_Kind (fl_label_get_font (This.Void_Ptr));
     end Get_Font;
 
 
@@ -244,7 +244,7 @@ package body FLTK.Labels is
            (This : in out Label;
             Font : in     Font_Kind) is
     begin
-        fl_label_set_font (This.Void_Ptr, Font_Kind'Pos (Font));
+        fl_label_set_font (This.Void_Ptr, To_C (Font));
     end Set_Font;
 
 

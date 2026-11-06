@@ -158,8 +158,15 @@ void fl_input_choice_set_value(INPUTCHOICE n, const char * t) {
     static_cast<Fl_Input_Choice*>(n)->value(t);
 }
 
-void fl_input_choice_set_value2(INPUTCHOICE n, int t) {
+//  value(int) reads menu_->text(t) with no range check, and size() counts
+//  the terminators, which have no text (FLTKAda-BUGS.md 92).
+int fl_input_choice_set_value2(INPUTCHOICE n, int t) {
+    Fl_Menu_Button * m = static_cast<Fl_Input_Choice*>(n)->menubutton();
+    if (t < 0 || t >= m->size() || m->text(t) == 0) {
+        return 0;
+    }
     static_cast<Fl_Input_Choice*>(n)->value(t);
+    return 1;
 }
 
 

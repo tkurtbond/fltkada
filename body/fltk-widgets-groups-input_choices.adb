@@ -143,9 +143,10 @@ package body FLTK.Widgets.Groups.Input_Choices is
     pragma Import (C, fl_input_choice_set_value, "fl_input_choice_set_value");
     pragma Inline (fl_input_choice_set_value);
 
-    procedure fl_input_choice_set_value2
+    function fl_input_choice_set_value2
            (N : in Storage.Integer_Address;
-            T : in Interfaces.C.int);
+            T : in Interfaces.C.int)
+        return Interfaces.C.int;
     pragma Import (C, fl_input_choice_set_value2, "fl_input_choice_set_value2");
     pragma Inline (fl_input_choice_set_value2);
 
@@ -420,7 +421,7 @@ package body FLTK.Widgets.Groups.Input_Choices is
            (This : in Input_Choice)
         return Font_Kind is
     begin
-        return Font_Kind'Val (fl_input_choice_get_textfont (This.Void_Ptr));
+        return Font_Kind (fl_input_choice_get_textfont (This.Void_Ptr));
     end Get_Text_Font;
 
 
@@ -428,7 +429,7 @@ package body FLTK.Widgets.Groups.Input_Choices is
            (This : in out Input_Choice;
             To   : in     Font_Kind) is
     begin
-        fl_input_choice_set_textfont (This.Void_Ptr, Font_Kind'Pos (To));
+        fl_input_choice_set_textfont (This.Void_Ptr, To_C (To));
     end Set_Text_Font;
 
 
@@ -472,10 +473,12 @@ package body FLTK.Widgets.Groups.Input_Choices is
 
 
     procedure Set_Item
-           (This : in out Input_Choice;
-            Num  : in     Integer) is
+           (This  : in out Input_Choice;
+            Place : in     FLTK.Widgets.Menus.Index) is
     begin
-        fl_input_choice_set_value2 (This.Void_Ptr, Interfaces.C.int (Num));
+        if fl_input_choice_set_value2 (This.Void_Ptr, Interfaces.C.int (Place) - 1) = 0 then
+            raise Constraint_Error with "Input_Choice has no item" & Integer'Image (Place);
+        end if;
     end Set_Item;
 
 

@@ -147,7 +147,7 @@ package body FLTK.Devices.Graphics is
            (This : in Graphics_Driver)
         return Font_Kind is
     begin
-        return Font_Kind'Val (fl_graphics_driver_get_font (This.Void_Ptr));
+        return Font_Kind (fl_graphics_driver_get_font (This.Void_Ptr));
     end Get_Font_Kind;
 
 
@@ -164,7 +164,7 @@ package body FLTK.Devices.Graphics is
             Face : in Font_Kind;
             Size : in Font_Size) is
     begin
-        fl_graphics_driver_set_font (This.Void_Ptr, Font_Kind'Pos (Face), Interfaces.C.int (Size));
+        fl_graphics_driver_set_font (This.Void_Ptr, To_C (Face), Interfaces.C.int (Size));
     end Set_Font;
 
 

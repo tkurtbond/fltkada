@@ -365,7 +365,7 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
            (This : in Value_Input)
         return Font_Kind is
     begin
-        return Font_Kind'Val (fl_value_input_get_text_font (This.Void_Ptr));
+        return Font_Kind (fl_value_input_get_text_font (This.Void_Ptr));
     end Get_Text_Font;
 
 
@@ -373,7 +373,7 @@ package body FLTK.Widgets.Valuators.Value_Inputs is
            (This : in out Value_Input;
             Font : in     Font_Kind) is
     begin
-        fl_value_input_set_text_font (This.Void_Ptr, Font_Kind'Pos (Font));
+        fl_value_input_set_text_font (This.Void_Ptr, To_C (Font));
     end Set_Text_Font;
 
 

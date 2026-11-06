@@ -525,7 +525,10 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
 - **Effect on FLTKAda**: the shim reaches the private flag, as it does
   `escseq` (pofltk 96), and clears it after `Fl_Terminal::draw` and when
   `Set_Redraw_Style` changes the style; a change still waiting then is
-  drawn, unless the new style is `No_Redraw`.
+  drawn, unless the new style is `No_Redraw`. It first cleared it after
+  every draw; that was wrong under `RATE_LIMITED`, where a draw clipped to
+  the scrollbar then cancelled the timer's redraw (FLTKAda-BUGS.md 87).
+  It now clears it after a draw only under `PER_WRITE`.
 - **Confirmed**: a scratch C++ program under Xvfb (2026-11-04): three
   appends under `PER_WRITE` drew 1, 0 and 0 times, and an append under
   `RATE_LIMITED` after them 0 times. `test_terminal_cursor`, whose
@@ -648,3 +651,71 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
   with the UTF-8 encoding taken out of `Bitmap_Character`, because the
   raster position moved 13, not 21. Its é check still passes without
   the encoding.
+
+### F30. `test/fonts.cxx`'s editor can't record the top left dot
+
+- **What happens**: in the vector font editor that F1 opens, a click on
+  the top left dot adds nothing. A stroke begun there starts at the
+  second dot clicked. Found 2026-11-05, porting `fonts`.
+- **Cause**: each letter's strokes are a row of `vec[255][128]`, ended
+  by a 0 byte (`test/fonts.cxx:103`, read by `LetterBox::draw` at
+  `:122-128`). A dot is stored as `i*8+j`, column then row
+  (`create_editor`, `:245`), so the top left dot is 0, and `add_point_cb`
+  (`:151-157`) writes it as the end of the row. By reading the source,
+  also: `add_point_cb` doesn't stop at the row's 128 bytes, and `->`
+  past character 254 indexes `vec[255]`, past the array.
+- **Effect on FLTKAda**: only on `test/fonts.adb`. It keeps each letter's
+  strokes in a vector, which could hold the dot. It leaves the dot out
+  anyway, because `save_cb`'s table is a C string per letter, which a 0
+  would end.
+- **Confirmed**: under Xvfb, driven with xdotool. A stroke begun at the
+  top left dot differed from the C++ by 951 pixels, the missing left
+  edge, until the port left the dot out (AE 0). Begun at the next dot
+  along, the two matched before the change.
+
+### F31. `Fl_Help_View` lays a `WIDTH=100%` table out under its scrollbar
+
+- **What happens**: a table with `WIDTH=100%` is as wide whether or not
+  the page needs a vertical scrollbar. When it does, the scrollbar
+  covers the table's right end, and the text of a right-aligned last
+  cell is clipped ("Right" shows as "Rig"). Found 2026-11-05, porting
+  `help_dialog`.
+- **Cause**: in part. `format` sets the document width once, as
+  `w() - scrollsize - Fl::box_dw(b)` (`src/Fl_Help_View.cxx:1255`),
+  whether the scrollbar will show or not, and `get_length` makes a
+  percentage of `hsize_ - scrollsize` (`:2834-2835`). The scrollbar is
+  shown or hidden only after the layout (`:2005-2031`), and nothing lays
+  the table out again for the narrower view. Why the table then reaches
+  about 8 pixels past the scrollbar's left edge, when the scrollbar's
+  width is taken off twice, wasn't traced.
+- **Effect on FLTKAda**: none on the binding. FLTKAda's
+  `test/help_dialog.html` uses `WIDTH=90%`.
+- **Confirmed**: with FLTK's own `test/help_dialog` (C++) under Xvfb,
+  in a 530x300 window at 0,0, with a page holding only a bordered
+  `WIDTH=100%` table, and the same page with 60 paragraphs after it.
+  In both, the table's right border is at x 511. In the long one the
+  scrollbar starts at x 503 and covers it. FLTKAda's port gives the same
+  pixels (AE 0).
+
+### F32. A shortcut's label depends on the backend
+
+- **What happens**: `fl_shortcut_label` gives a different label for the
+  same shortcut under X11 and under Wayland. `FL_COMMAND+0x20ac` is
+  "Ctrl+EuroSign" under X11 and "Ctrl+€" under Wayland; `'\r'` is
+  "Enter" under X11, and under Wayland a carriage return, which shows as
+  nothing. Found 2026-11-05, porting `menubar`.
+- **Cause**: the label's key name comes from the screen driver.
+  `Fl_X11_Screen_Driver::shortcut_add_key_name` writes "Enter" for
+  `FL_Enter` and `'\r'`, the character itself for 33 to 0xff, and
+  otherwise `XKeysymToString (key)`, which is "EuroSign" for 0x20ac
+  (`src/drivers/X11/Fl_X11_Screen_Driver.cxx:137-155`). The default,
+  which the Wayland driver doesn't override, looks the key up in
+  `key_table` and otherwise encodes `fl_toupper (key)` as UTF-8
+  (`src/fl_shortcut.cxx:381-416`), and the table has `FL_Enter` but not
+  `'\r'`.
+- **Effect on FLTKAda**: none on the binding. `FLTK.Draw.Shortcut_Label`
+  gives what FLTK gives. test/unit/test_character_keys.adb expects each
+  backend's label.
+- **Confirmed**: a C++ program printing `fl_shortcut_label` for each of
+  menubar.cxx's international shortcuts, run under Xvfb and on a headless
+  sway. The two runs differ only in these two labels.

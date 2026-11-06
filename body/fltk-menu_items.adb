@@ -475,7 +475,7 @@ package body FLTK.Menu_Items is
     is
         Result : constant Interfaces.C.int := fl_menu_item_get_labelfont (This.Void_Ptr);
     begin
-        return Font_Kind'Val (Result);
+        return Font_Kind (Result);
     exception
     when Constraint_Error => raise Internal_FLTK_Error with
         "Fl_Menu_Item::labelfont returned unexpected Font value of " &
@@ -487,7 +487,7 @@ package body FLTK.Menu_Items is
            (This : in out Menu_Item;
             To   : in     Font_Kind) is
     begin
-        fl_menu_item_set_labelfont (This.Void_Ptr, Font_Kind'Pos (To));
+        fl_menu_item_set_labelfont (This.Void_Ptr, To_C (To));
     end Set_Label_Font;
 
 

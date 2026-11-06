@@ -376,7 +376,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item)
         return Font_Kind is
     begin
-        return Font_Kind'Val (fl_tree_item_get_labelfont (This.Void_Ptr));
+        return Font_Kind (fl_tree_item_get_labelfont (This.Void_Ptr));
     end Get_Label_Font;
 
 
@@ -384,7 +384,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item;
             Font : in Font_Kind) is
     begin
-        fl_tree_item_set_labelfont (This.Void_Ptr, Font_Kind'Pos (Font));
+        fl_tree_item_set_labelfont (This.Void_Ptr, To_C (Font));
     end Set_Label_Font;
 
 

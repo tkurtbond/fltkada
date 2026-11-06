@@ -37,6 +37,7 @@ extern "C" int fl_menu_find_index2(MENU m, void * i);
 extern "C" int fl_menu_find_index3(MENU m, void * cb);
 extern "C" int fl_menu_item_pathname(MENU m, char * buf, int len, void * mi);
 extern "C" int fl_menu_size(MENU m);
+extern "C" int fl_menu_is_item(MENU m, int i);
 
 
 //  mvalue is subsumed by value

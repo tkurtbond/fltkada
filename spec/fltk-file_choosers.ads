@@ -23,7 +23,22 @@ package FLTK.File_Choosers is
     type File_Chooser_Reference (Data : not null access File_Chooser'Class) is
         limited null record with Implicit_Dereference => Data;
 
-    type Chooser_Kind is (Single, Multi, Create, Directory);
+    --  FLTK's Fl_File_Chooser type is a bit mask, so a kind combines with
+    --  "+", as Multi + Create does.  Single is the empty set.
+    type Chooser_Kind is private;
+
+    function "+" (Left, Right : in Chooser_Kind) return Chooser_Kind;
+    function "-" (Left, Right : in Chooser_Kind) return Chooser_Kind;
+
+    function Includes
+           (Kind : in Chooser_Kind;
+            Item : in Chooser_Kind)
+        return Boolean;
+
+    Single    : constant Chooser_Kind;
+    Multi     : constant Chooser_Kind;
+    Create    : constant Chooser_Kind;
+    Directory : constant Chooser_Kind;
 
     type Chooser_Callback is access procedure
            (Item : in out File_Chooser'Class);
@@ -331,6 +346,14 @@ package FLTK.File_Choosers is
 private
 
 
+    type Chooser_Kind is new Interfaces.C.unsigned;
+
+    Single    : constant Chooser_Kind := 0;
+    Multi     : constant Chooser_Kind := 1;
+    Create    : constant Chooser_Kind := 2;
+    Directory : constant Chooser_Kind := 4;
+
+
     type File_Chooser is new Wrapper with record
         New_Butt     : aliased Widgets.Buttons.Button;
         Preview_Butt : aliased Widgets.Buttons.Light.Check.Check_Button;
@@ -358,6 +381,10 @@ private
     New_Directory_Tooltip,  Preview_Label,
     Save_Label,             Show_Label          : Interfaces.C.Strings.chars_ptr;
 
+
+    pragma Inline ("+");
+    pragma Inline ("-");
+    pragma Inline (Includes);
 
     pragma Inline (New_Button);
     pragma Inline (Preview_Button);

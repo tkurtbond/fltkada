@@ -1460,7 +1460,7 @@ package body FLTK.Widgets.Groups.Terminals is
     is
         Result : constant Interfaces.C.int := fl_terminal_get_textfont (This.Void_Ptr);
     begin
-        return Font_Kind'Val (Result);
+        return Font_Kind (Result);
     exception
     when Constraint_Error => raise Internal_FLTK_Error with
         "Fl_Terminal::textfont returned unexpected int value of " &
@@ -1472,7 +1472,7 @@ package body FLTK.Widgets.Groups.Terminals is
            (This : in out Terminal;
             To   : in     Font_Kind) is
     begin
-        fl_terminal_set_textfont (This.Void_Ptr, Font_Kind'Pos (To));
+        fl_terminal_set_textfont (This.Void_Ptr, To_C (To));
     end Set_Text_Font;
 
 

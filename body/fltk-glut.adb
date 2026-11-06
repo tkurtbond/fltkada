@@ -185,8 +185,7 @@ package body FLTK.GLUT is
 
     --  Overlays  --
 
-    function fl_glut_establish_overlay
-        return Interfaces.C.int;
+    procedure fl_glut_establish_overlay;
     pragma Import (C, fl_glut_establish_overlay, "fl_glut_establish_overlay");
     pragma Inline (fl_glut_establish_overlay);
 
@@ -194,9 +193,8 @@ package body FLTK.GLUT is
     pragma Import (C, fl_glut_remove_overlay, "fl_glut_remove_overlay");
     pragma Inline (fl_glut_remove_overlay);
 
-    function fl_glut_use_layer
-           (L : in Interfaces.C.unsigned)
-        return Interfaces.C.int;
+    procedure fl_glut_use_layer
+           (L : in Interfaces.C.unsigned);
     pragma Import (C, fl_glut_use_layer, "fl_glut_use_layer");
     pragma Inline (fl_glut_use_layer);
 
@@ -1266,9 +1264,7 @@ package body FLTK.GLUT is
 
     procedure Establish_Overlay is
     begin
-        if fl_glut_establish_overlay = 0 then
-            raise Program_Error with "Establish_Overlay on a GLUT window not shown";
-        end if;
+        fl_glut_establish_overlay;
     end Establish_Overlay;
 
 
@@ -1281,9 +1277,7 @@ package body FLTK.GLUT is
     procedure Use_Layer
            (Layer : in Layer_Kind) is
     begin
-        if fl_glut_use_layer (Layer_Kind'Pos (Layer)) = 0 then
-            raise Program_Error with "Use_Layer (Overlay) on a GLUT window not shown";
-        end if;
+        fl_glut_use_layer (Layer_Kind'Pos (Layer));
     end Use_Layer;
 
 

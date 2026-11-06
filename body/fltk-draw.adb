@@ -671,7 +671,7 @@ package body FLTK.Draw is
             Size       : in Font_Size) is
     begin
         fl_draw_set_spot
-           (Font_Kind'Pos (Font),
+           (To_C (Font),
             Interfaces.C.int (Size),
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
@@ -688,7 +688,7 @@ package body FLTK.Draw is
             Pane       : in FLTK.Widgets.Groups.Windows.Window'Class) is
     begin
         fl_draw_set_spot
-           (Font_Kind'Pos (Font),
+           (To_C (Font),
             Interfaces.C.int (Size),
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
@@ -926,7 +926,7 @@ package body FLTK.Draw is
     function Get_Font
         return Font_Kind is
     begin
-        return Font_Kind'Val (fl_draw_get_font);
+        return Font_Kind (fl_draw_get_font);
     end Get_Font;
 
 
@@ -941,7 +941,7 @@ package body FLTK.Draw is
            (Kind : in Font_Kind;
             Size : in Font_Size) is
     begin
-        fl_draw_set_font (Font_Kind'Pos (Kind), Interfaces.C.int (Size));
+        fl_draw_set_font (Interfaces.C.unsigned (To_C (Kind)), Interfaces.C.int (Size));
     end Set_Font;
 
 
@@ -964,7 +964,8 @@ package body FLTK.Draw is
             Size : in Font_Size)
         return Natural is
     begin
-        return Natural (fl_draw_height2 (Font_Kind'Pos (Kind), Interfaces.C.int (Size)));
+        return Natural (fl_draw_height2
+           (Interfaces.C.unsigned (To_C (Kind)), Interfaces.C.int (Size)));
     end Font_Height;
 
 

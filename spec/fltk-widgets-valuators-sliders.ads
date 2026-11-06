@@ -62,11 +62,13 @@ package FLTK.Widgets.Valuators.Sliders is
            (This     : in out Slider;
             Min, Max : in     Long_Float);
 
-    function Get_Box
+    --  The box of the part that slides, FLTK's slider ().  Get_Box and
+    --  Set_Box are the frame's, as for any widget (FLTKAda-BUGS.md 94).
+    function Get_Slider_Box
            (This : in Slider)
         return Box_Kind;
 
-    procedure Set_Box
+    procedure Set_Slider_Box
            (This : in out Slider;
             To   : in     Box_Kind);
 
@@ -149,8 +151,8 @@ private
 
 
     pragma Inline (Set_Bounds);
-    pragma Inline (Get_Box);
-    pragma Inline (Set_Box);
+    pragma Inline (Get_Slider_Box);
+    pragma Inline (Set_Slider_Box);
     pragma Inline (Get_Slide_Size);
     pragma Inline (Set_Slide_Size);
     pragma Inline (Set_Scrollvalue);

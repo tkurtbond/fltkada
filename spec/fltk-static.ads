@@ -11,6 +11,7 @@ with
 
 private with
 
+    Ada.Containers.Ordered_Maps,
     Ada.Finalization,
     Ada.Unchecked_Conversion,
     FLTK.Args_Marshal,
@@ -403,9 +404,28 @@ package FLTK.Static is
 
     --  Custom Fonts  --
 
+    --  Fonts are numbered from 0 to Last_Font.  Every subprogram that takes
+    --  a font, here and elsewhere, raises Constraint_Error on one past
+    --  Last_Font (pofltk 130).  Setup_Fonts and Set_Font_Kind (Target, ...)
+    --  raise Last_Font, and Set_Font_Kind takes a Target up to Max_Font;
+    --  the fonts in any gap this leaves are empty.
+
     --  Free_Font is empty, and its images are "", until it is set.  Using
     --  it here, or in FLTK.Draw, first opens the display.  A widget's font
-    --  isn't checked: set Free_Font before a widget draws in it (pofltk 130).
+    --  is checked only against Last_Font: set Free_Font before a widget
+    --  draws in it (pofltk 130).
+
+    Max_Font : constant Font_Kind := 65_535;
+
+    function Last_Font
+        return Font_Kind;
+
+    --  What Fl::get_font_name gives as the font's attributes.
+    type Font_Attributes is record
+        Bold   : Boolean := False;
+        Italic : Boolean := False;
+    end record;
+
     function Font_Image
            (Kind : in Font_Kind)
         return String;
@@ -414,11 +434,18 @@ package FLTK.Static is
            (Kind : in Font_Kind)
         return String;
 
+    --  Plain for an empty font.
+    function Font_Family_Attributes
+           (Kind : in Font_Kind)
+        return Font_Attributes;
+
+    --  Target gets its own copy of Source's name.
     procedure Set_Font_Kind
            (Target, Source : in Font_Kind);
 
     --  Source is cut to 126 bytes, before any UTF-8 character that would
-    --  cross that (pofltk 130).
+    --  cross that (pofltk 130).  Raises Constraint_Error if Target is past
+    --  Max_Font.
     procedure Set_Font_Kind
            (Target : in Font_Kind;
             Source : in String);
@@ -727,7 +754,13 @@ private
     Help_Message : constant String := Interfaces.C.Strings.Value (help_usage_string_ptr);
 
 
-    Font_Overrides : array (Font_Kind) of Interfaces.C.Strings.chars_ptr;
+    --  The names given to Set_Font_Kind, which FLTK keeps (bug 33).
+    package Font_Name_Maps is new Ada.Containers.Ordered_Maps
+       (Key_Type     => Font_Kind,
+        Element_Type => Interfaces.C.Strings.chars_ptr,
+        "="          => Interfaces.C.Strings."=");
+
+    Font_Overrides : Font_Name_Maps.Map;
 
 
     pragma Import (C, Open_Display, "fl_static_open_display");
@@ -782,8 +815,10 @@ private
     pragma Inline (Set_Alt_Background);
     pragma Inline (System_Colors);
 
+    pragma Inline (Last_Font);
     pragma Inline (Font_Image);
     pragma Inline (Font_Family_Image);
+    pragma Inline (Font_Family_Attributes);
     pragma Inline (Set_Font_Kind);
     pragma Inline (Font_Sizes);
     pragma Inline (Setup_Fonts);

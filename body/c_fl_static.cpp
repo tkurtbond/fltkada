@@ -317,6 +317,22 @@ void fl_static_grow_fonts(int f) {
     }
 }
 
+//  One past the last font set.  FLTK's table has a private size, and
+//  nothing tests a font against it (pofltk 130), so FLTKAda keeps this
+//  itself and tests each font against it (FLTK::To_C).  Free_Font counts
+//  as set, because fl_static_grow_fonts makes it an empty font.
+static int font_end = FL_FREE_FONT + 1;
+
+int fl_static_font_end() {
+    return font_end;
+}
+
+static void fl_static_note_font(int f) {
+    if (f >= font_end) {
+        font_end = f + 1;
+    }
+}
+
 //  An empty slot's name is NULL, and Fl_Cairo_Graphics_Driver::get_font_name
 //  copies it before it tests it (Fl_Cairo_Graphics_Driver.cxx:1176).
 
@@ -335,15 +351,27 @@ const char * fl_static_get_font_name(int f) {
     return Fl::get_font_name(f);
 }
 
+int fl_static_get_font_attributes(int f) {
+    fl_static_grow_fonts(f);
+    const char * n = Fl::get_font(f);
+    int a = 0;
+    if (n != 0 && *n != 0) {
+        Fl::get_font_name(f, &a);
+    }
+    return a;
+}
+
 void fl_static_set_font(int t, int f) {
     fl_static_grow_fonts(t);
     fl_static_grow_fonts(f);
     Fl::set_font(static_cast<Fl_Font>(t), static_cast<Fl_Font>(f));
+    fl_static_note_font(t);
 }
 
 void fl_static_set_font2(int t, char * s) {
     fl_static_grow_fonts(t);
     Fl::set_font(static_cast<Fl_Font>(t), s);
+    fl_static_note_font(t);
 }
 
 int fl_static_get_font_sizes(int f, int * &a) {
@@ -357,7 +385,11 @@ int fl_static_font_size_array_get(int * a, int i) {
 
 int fl_static_set_fonts() {
     fl_static_grow_fonts(FL_FREE_FONT);
-    return Fl::set_fonts();
+    int n = Fl::set_fonts();
+    if (n > 0) {
+        fl_static_note_font(n - 1);
+    }
+    return n;
 }
 
 

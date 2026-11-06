@@ -198,7 +198,7 @@ package body FLTK.Widgets.Valuators.Sliders.Value is
            (This : in Value_Slider)
         return Font_Kind is
     begin
-        return Font_Kind'Val (fl_value_slider_get_textfont (This.Void_Ptr));
+        return Font_Kind (fl_value_slider_get_textfont (This.Void_Ptr));
     end Get_Text_Font;
 
 
@@ -206,7 +206,7 @@ package body FLTK.Widgets.Valuators.Sliders.Value is
            (This : in out Value_Slider;
             To   : in     Font_Kind) is
     begin
-        fl_value_slider_set_textfont (This.Void_Ptr, Font_Kind'Pos (To));
+        fl_value_slider_set_textfont (This.Void_Ptr, To_C (To));
     end Set_Text_Font;
 
 

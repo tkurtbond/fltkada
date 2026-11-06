@@ -39,6 +39,7 @@ project Tests_Unit is
         "test_printer_labels.adb",
         "test_glut_strings.adb",
         "test_glut_live.adb",
+        "test_glut_overlay.adb",
         "test_group_clear.adb",
         "test_grid_range.adb",
         "test_grid_cells.adb",
@@ -52,9 +53,13 @@ project Tests_Unit is
         "test_image_names.adb",
         "test_filenames.adb",
         "test_free_font.adb",
+        "test_font_numbers.adb",
+        "test_function_keys.adb",
+        "test_character_keys.adb",
         "test_dashes.adb",
         "test_terminal_fit.adb",
         "test_terminal_cursor.adb",
+        "test_terminal_expose.adb",
         "test_ps_errors.adb",
         "test_page_misuse.adb",
         "test_image_reentry.adb",
@@ -104,6 +109,7 @@ project Tests_Unit is
         "test_help_held.adb",
         "test_chooser_close.adb",
         "test_chooser_extra.adb",
+        "test_chooser_kind.adb",
         "test_table_children.adb",
         "test_buffer_life.adb",
         "test_browser_icons.adb",
@@ -141,7 +147,11 @@ project Tests_Unit is
         "test_widget_methods.adb",
         "test_tree_methods.adb",
         "test_glut_fonts.adb",
-        "test_glut_window_of.adb");
+        "test_glut_window_of.adb",
+        "test_gl_overlay.adb",
+        "test_input_choice_item.adb",
+        "test_menu_has_item.adb",
+        "test_slider_box.adb");
 
     package Builder is
         for Default_Switches ("Ada") use

@@ -320,6 +320,17 @@ package body FLTK.Static is
     pragma Import (C, fl_static_get_font_name, "fl_static_get_font_name");
     pragma Inline (fl_static_get_font_name);
 
+    function fl_static_get_font_attributes
+           (K : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_static_get_font_attributes, "fl_static_get_font_attributes");
+    pragma Inline (fl_static_get_font_attributes);
+
+    function fl_static_font_end
+        return Interfaces.C.int;
+    pragma Import (C, fl_static_font_end, "fl_static_font_end");
+    pragma Inline (fl_static_font_end);
+
     procedure fl_static_set_font2
            (T : in Interfaces.C.int;
             S : in Interfaces.C.Strings.chars_ptr);
@@ -1444,12 +1455,19 @@ package body FLTK.Static is
 
     --  Custom Fonts  --
 
+    function Last_Font
+        return Font_Kind is
+    begin
+        return Font_Kind (fl_static_font_end - 1);
+    end Last_Font;
+
+
     function Font_Image
            (Kind : in Font_Kind)
         return String is
     begin
         --  The shim gives "" for an empty slot, never null.
-        return Interfaces.C.Strings.Value (fl_static_get_font (Font_Kind'Pos (Kind)));
+        return Interfaces.C.Strings.Value (fl_static_get_font (To_C (Kind)));
     end Font_Image;
 
 
@@ -1458,8 +1476,19 @@ package body FLTK.Static is
         return String is
     begin
         --  The shim gives "" for an empty slot, never null.
-        return Interfaces.C.Strings.Value (fl_static_get_font_name (Font_Kind'Pos (Kind)));
+        return Interfaces.C.Strings.Value (fl_static_get_font_name (To_C (Kind)));
     end Font_Family_Image;
+
+
+    function Font_Family_Attributes
+           (Kind : in Font_Kind)
+        return Font_Attributes
+    is
+        --  FL_BOLD and FL_ITALIC (Enumerations.H:1083-1084)
+        Bits : constant Interfaces.C.int := fl_static_get_font_attributes (To_C (Kind));
+    begin
+        return (Bold => Bits mod 2 = 1, Italic => Bits / 2 mod 2 = 1);
+    end Font_Family_Attributes;
 
 
     --  FLTK keeps the name pointer, and compares the next name with it
@@ -1485,9 +1514,17 @@ package body FLTK.Static is
            (Target : in Font_Kind;
             Source : in String)
     is
-        Old  : Interfaces.C.Strings.chars_ptr := Font_Overrides (Target);
+        Old  : Interfaces.C.Strings.chars_ptr := Interfaces.C.Strings.Null_Ptr;
+        Name : Interfaces.C.Strings.chars_ptr;
         Last : Natural := Source'Last;
     begin
+        if Target > Max_Font then
+            raise Constraint_Error with "font" & Font_Kind'Image (Target)
+                & " is past Max_Font," & Font_Kind'Image (Max_Font);
+        end if;
+        if Font_Overrides.Contains (Target) then
+            Old := Font_Overrides.Element (Target);
+        end if;
         if Source'Length > Longest_Font_Name then
             Last := Source'First + Longest_Font_Name - 1;
             while Last >= Source'First
@@ -1496,9 +1533,9 @@ package body FLTK.Static is
                 Last := Last - 1;
             end loop;
         end if;
-        Font_Overrides (Target) := Interfaces.C.Strings.New_String
-            (Source (Source'First .. Last));
-        fl_static_set_font2 (Font_Kind'Pos (Target), Font_Overrides (Target));
+        Name := Interfaces.C.Strings.New_String (Source (Source'First .. Last));
+        Font_Overrides.Include (Target, Name);
+        fl_static_set_font2 (Interfaces.C.int (Target), Name);
         Interfaces.C.Strings.Free (Old);
     end Set_Font_Kind;
 
@@ -1509,7 +1546,7 @@ package body FLTK.Static is
     is
         Ptr : Storage.Integer_Address;
         Arr : Font_Size_Array
-            (1 .. Integer (fl_static_get_font_sizes (Font_Kind'Pos (Kind), Ptr)));
+            (1 .. Integer (fl_static_get_font_sizes (To_C (Kind), Ptr)));
     begin
         --  This array copying avoids any worry that the static buffer will be overwritten.
         for I in 1 .. Arr'Length loop

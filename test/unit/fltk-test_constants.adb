@@ -28,7 +28,7 @@ procedure FLTK.Test_Constants is
     package Sys_Menu renames FLTK.Widgets.Menus.Menu_Bars.Systemwide;
 
 
-    type Value_Array is array (1 .. 308) of Long_Long_Integer;
+    type Value_Array is array (1 .. 331) of Long_Long_Integer;
     pragma Convention (C, Value_Array);
 
     FLTK_Values : Value_Array;
@@ -211,41 +211,53 @@ begin
     Same (Box_Kind'Pos (Free_Box), 69, "Box_Kind'Pos (Free_Box) = FL_FREE_BOXTYPE");
 
     --  Fonts (Fl_Font)
-    Same (Font_Kind'Pos (Helvetica), 70, "Font_Kind'Pos (Helvetica) = FL_HELVETICA");
+    Same (Long_Long_Integer (Helvetica), 70, "Long_Long_Integer (Helvetica) = FL_HELVETICA");
     Same
-       (Font_Kind'Pos (Helvetica_Bold),
+       (Long_Long_Integer (Helvetica_Bold),
         71,
-        "Font_Kind'Pos (Helvetica_Bold) = FL_HELVETICA_BOLD");
+        "Long_Long_Integer (Helvetica_Bold) = FL_HELVETICA_BOLD");
     Same
-       (Font_Kind'Pos (Helvetica_Italic),
+       (Long_Long_Integer (Helvetica_Italic),
         72,
-        "Font_Kind'Pos (Helvetica_Italic) = FL_HELVETICA_ITALIC");
+        "Long_Long_Integer (Helvetica_Italic) = FL_HELVETICA_ITALIC");
     Same
-       (Font_Kind'Pos (Helvetica_Bold_Italic),
+       (Long_Long_Integer (Helvetica_Bold_Italic),
         73,
-        "Font_Kind'Pos (Helvetica_Bold_Italic) = FL_HELVETICA_BOLD_ITALIC");
-    Same (Font_Kind'Pos (Courier), 74, "Font_Kind'Pos (Courier) = FL_COURIER");
-    Same (Font_Kind'Pos (Courier_Bold), 75, "Font_Kind'Pos (Courier_Bold) = FL_COURIER_BOLD");
+        "Long_Long_Integer (Helvetica_Bold_Italic) = FL_HELVETICA_BOLD_ITALIC");
+    Same (Long_Long_Integer (Courier), 74, "Long_Long_Integer (Courier) = FL_COURIER");
     Same
-       (Font_Kind'Pos (Courier_Italic),
+       (Long_Long_Integer (Courier_Bold),
+        75,
+        "Long_Long_Integer (Courier_Bold) = FL_COURIER_BOLD");
+    Same
+       (Long_Long_Integer (Courier_Italic),
         76,
-        "Font_Kind'Pos (Courier_Italic) = FL_COURIER_ITALIC");
+        "Long_Long_Integer (Courier_Italic) = FL_COURIER_ITALIC");
     Same
-       (Font_Kind'Pos (Courier_Bold_Italic),
+       (Long_Long_Integer (Courier_Bold_Italic),
         77,
-        "Font_Kind'Pos (Courier_Bold_Italic) = FL_COURIER_BOLD_ITALIC");
-    Same (Font_Kind'Pos (Times), 78, "Font_Kind'Pos (Times) = FL_TIMES");
-    Same (Font_Kind'Pos (Times_Bold), 79, "Font_Kind'Pos (Times_Bold) = FL_TIMES_BOLD");
-    Same (Font_Kind'Pos (Times_Italic), 80, "Font_Kind'Pos (Times_Italic) = FL_TIMES_ITALIC");
+        "Long_Long_Integer (Courier_Bold_Italic) = FL_COURIER_BOLD_ITALIC");
+    Same (Long_Long_Integer (Times), 78, "Long_Long_Integer (Times) = FL_TIMES");
+    Same (Long_Long_Integer (Times_Bold), 79, "Long_Long_Integer (Times_Bold) = FL_TIMES_BOLD");
     Same
-       (Font_Kind'Pos (Times_Bold_Italic),
+       (Long_Long_Integer (Times_Italic),
+        80,
+        "Long_Long_Integer (Times_Italic) = FL_TIMES_ITALIC");
+    Same
+       (Long_Long_Integer (Times_Bold_Italic),
         81,
-        "Font_Kind'Pos (Times_Bold_Italic) = FL_TIMES_BOLD_ITALIC");
-    Same (Font_Kind'Pos (Symbol), 82, "Font_Kind'Pos (Symbol) = FL_SYMBOL");
-    Same (Font_Kind'Pos (Monospace), 83, "Font_Kind'Pos (Monospace) = FL_SCREEN");
-    Same (Font_Kind'Pos (Monospace_Bold), 84, "Font_Kind'Pos (Monospace_Bold) = FL_SCREEN_BOLD");
-    Same (Font_Kind'Pos (Zapf_Dingbats), 85, "Font_Kind'Pos (Zapf_Dingbats) = FL_ZAPF_DINGBATS");
-    Same (Font_Kind'Pos (Free_Font), 86, "Font_Kind'Pos (Free_Font) = FL_FREE_FONT");
+        "Long_Long_Integer (Times_Bold_Italic) = FL_TIMES_BOLD_ITALIC");
+    Same (Long_Long_Integer (Symbol), 82, "Long_Long_Integer (Symbol) = FL_SYMBOL");
+    Same (Long_Long_Integer (Monospace), 83, "Long_Long_Integer (Monospace) = FL_SCREEN");
+    Same
+       (Long_Long_Integer (Monospace_Bold),
+        84,
+        "Long_Long_Integer (Monospace_Bold) = FL_SCREEN_BOLD");
+    Same
+       (Long_Long_Integer (Zapf_Dingbats),
+        85,
+        "Long_Long_Integer (Zapf_Dingbats) = FL_ZAPF_DINGBATS");
+    Same (Long_Long_Integer (Free_Font), 86, "Long_Long_Integer (Free_Font) = FL_FREE_FONT");
     Same (Long_Long_Integer (Normal_Size), 87, "Long_Long_Integer (Normal_Size) = FL_NORMAL_SIZE");
 
     --  Label types (Fl_Labeltype)
@@ -652,348 +664,437 @@ begin
         227,
         "Long_Long_Integer (To_C (Escape_Key)) = FL_Escape");
     Same (Long_Long_Integer (To_C (Tab_Key)), 228, "Long_Long_Integer (To_C (Tab_Key)) = FL_Tab");
+    Same
+       (Long_Long_Integer (To_C (ISO_Key)),
+        229,
+        "Long_Long_Integer (To_C (ISO_Key)) = FL_Iso_Key");
+    Same
+       (Long_Long_Integer (To_C (Pause_Key)),
+        230,
+        "Long_Long_Integer (To_C (Pause_Key)) = FL_Pause");
+    Same
+       (Long_Long_Integer (To_C (Scroll_Lock_Key)),
+        231,
+        "Long_Long_Integer (To_C (Scroll_Lock_Key)) = FL_Scroll_Lock");
+    Same
+       (Long_Long_Integer (To_C (Kana_Key)),
+        232,
+        "Long_Long_Integer (To_C (Kana_Key)) = FL_Kana");
+    Same
+       (Long_Long_Integer (To_C (Eisu_Key)),
+        233,
+        "Long_Long_Integer (To_C (Eisu_Key)) = FL_Eisu");
+    Same (Long_Long_Integer (To_C (Yen_Key)), 234, "Long_Long_Integer (To_C (Yen_Key)) = FL_Yen");
+    Same
+       (Long_Long_Integer (To_C (JIS_Underscore_Key)),
+        235,
+        "Long_Long_Integer (To_C (JIS_Underscore_Key)) = FL_JIS_Underscore");
+    Same
+       (Long_Long_Integer (To_C (Print_Key)),
+        236,
+        "Long_Long_Integer (To_C (Print_Key)) = FL_Print");
+    Same
+       (Long_Long_Integer (To_C (Menu_Key)),
+        237,
+        "Long_Long_Integer (To_C (Menu_Key)) = FL_Menu");
+    Same
+       (Long_Long_Integer (To_C (Help_Key)),
+        238,
+        "Long_Long_Integer (To_C (Help_Key)) = FL_Help");
+    Same
+       (Long_Long_Integer (To_C (Num_Lock_Key)),
+        239,
+        "Long_Long_Integer (To_C (Num_Lock_Key)) = FL_Num_Lock");
+    Same
+       (Long_Long_Integer (To_C (Left_Shift_Key)),
+        240,
+        "Long_Long_Integer (To_C (Left_Shift_Key)) = FL_Shift_L");
+    Same
+       (Long_Long_Integer (To_C (Right_Shift_Key)),
+        241,
+        "Long_Long_Integer (To_C (Right_Shift_Key)) = FL_Shift_R");
+    Same
+       (Long_Long_Integer (To_C (Left_Control_Key)),
+        242,
+        "Long_Long_Integer (To_C (Left_Control_Key)) = FL_Control_L");
+    Same
+       (Long_Long_Integer (To_C (Right_Control_Key)),
+        243,
+        "Long_Long_Integer (To_C (Right_Control_Key)) = FL_Control_R");
+    Same
+       (Long_Long_Integer (To_C (Caps_Lock_Key)),
+        244,
+        "Long_Long_Integer (To_C (Caps_Lock_Key)) = FL_Caps_Lock");
+    Same
+       (Long_Long_Integer (To_C (Left_Meta_Key)),
+        245,
+        "Long_Long_Integer (To_C (Left_Meta_Key)) = FL_Meta_L");
+    Same
+       (Long_Long_Integer (To_C (Right_Meta_Key)),
+        246,
+        "Long_Long_Integer (To_C (Right_Meta_Key)) = FL_Meta_R");
+    Same
+       (Long_Long_Integer (To_C (Left_Alt_Key)),
+        247,
+        "Long_Long_Integer (To_C (Left_Alt_Key)) = FL_Alt_L");
+    Same
+       (Long_Long_Integer (To_C (Right_Alt_Key)),
+        248,
+        "Long_Long_Integer (To_C (Right_Alt_Key)) = FL_Alt_R");
+    Same
+       (Long_Long_Integer (To_C (Function_Key (1))),
+        249,
+        "Long_Long_Integer (To_C (Function_Key (1))) = FL_F + 1");
+    Same
+       (Long_Long_Integer (To_C (Function_Key (12))),
+        250,
+        "Long_Long_Integer (To_C (Function_Key (12))) = FL_F + 12");
+    Same
+       (Long_Long_Integer (To_C (Function_Key (Function_Key_Number'Last))),
+        251,
+        "Long_Long_Integer (To_C (Function_Key (Function_Key_Number'Last))) = FL_F_Last");
 
     --  Shift keys held (Fl::event_state); Mod_Command is Ctrl, or Meta on macOS
-    Same (Long_Long_Integer (To_C (Mod_None)), 229, "Long_Long_Integer (To_C (Mod_None)) = 0");
+    Same (Long_Long_Integer (To_C (Mod_None)), 252, "Long_Long_Integer (To_C (Mod_None)) = 0");
     Same
        (Long_Long_Integer (To_C (Mod_Shift)),
-        230,
+        253,
         "Long_Long_Integer (To_C (Mod_Shift)) = FL_SHIFT");
     Same
        (Long_Long_Integer (To_C (Mod_Caps_Lock)),
-        231,
+        254,
         "Long_Long_Integer (To_C (Mod_Caps_Lock)) = FL_CAPS_LOCK");
     Same
        (Long_Long_Integer (To_C (Mod_Ctrl)),
-        232,
+        255,
         "Long_Long_Integer (To_C (Mod_Ctrl)) = FL_CTRL");
-    Same (Long_Long_Integer (To_C (Mod_Alt)), 233, "Long_Long_Integer (To_C (Mod_Alt)) = FL_ALT");
+    Same (Long_Long_Integer (To_C (Mod_Alt)), 256, "Long_Long_Integer (To_C (Mod_Alt)) = FL_ALT");
     Same
        (Long_Long_Integer (To_C (Mod_Num_Lock)),
-        234,
+        257,
         "Long_Long_Integer (To_C (Mod_Num_Lock)) = FL_NUM_LOCK");
     Same
        (Long_Long_Integer (To_C (Mod_Meta)),
-        235,
+        258,
         "Long_Long_Integer (To_C (Mod_Meta)) = FL_META");
     Same
        (Long_Long_Integer (To_C (Mod_Scroll_Lock)),
-        236,
+        259,
         "Long_Long_Integer (To_C (Mod_Scroll_Lock)) = FL_SCROLL_LOCK");
     Same
        (Long_Long_Integer (To_C (Mod_Command)),
-        237,
+        260,
         "Long_Long_Integer (To_C (Mod_Command)) = FL_COMMAND");
 
     --  When a widget calls back (Fl_When)
     Same
        (Long_Long_Integer (Flag_To_UChar (Call_Never)),
-        238,
+        261,
         "Long_Long_Integer (Flag_To_UChar (Call_Never)) = FL_WHEN_NEVER");
     Same
        (Long_Long_Integer (Flag_To_UChar (When_Changed)),
-        239,
+        262,
         "Long_Long_Integer (Flag_To_UChar (When_Changed)) = FL_WHEN_CHANGED");
     Same
        (Long_Long_Integer (Flag_To_UChar (When_Interact)),
-        240,
+        263,
         "Long_Long_Integer (Flag_To_UChar (When_Interact)) = FL_WHEN_NOT_CHANGED");
     Same
        (Long_Long_Integer (Flag_To_UChar (When_Release)),
-        241,
+        264,
         "Long_Long_Integer (Flag_To_UChar (When_Release)) = FL_WHEN_RELEASE");
     Same
        (Long_Long_Integer (Flag_To_UChar (When_Release_Always)),
-        242,
+        265,
         "Long_Long_Integer (Flag_To_UChar (When_Release_Always)) = FL_WHEN_RELEASE_ALWAYS");
     Same
        (Long_Long_Integer (Flag_To_UChar (When_Enter_Key)),
-        243,
+        266,
         "Long_Long_Integer (Flag_To_UChar (When_Enter_Key)) = FL_WHEN_ENTER_KEY");
     Same
        (Long_Long_Integer (Flag_To_UChar (When_Enter_Key_Always)),
-        244,
+        267,
         "Long_Long_Integer (Flag_To_UChar (When_Enter_Key_Always)) = FL_WHEN_ENTER_KEY_ALWAYS");
 
     --  Menu item flags (Fl_Menu_Item::flags)
     Same
        (Long_Long_Integer (MFlag_To_Cint (Flag_Normal)),
-        245,
+        268,
         "Long_Long_Integer (MFlag_To_Cint (Flag_Normal)) = 0");
     Same
        (Long_Long_Integer (MFlag_To_Cint (Flag_Inactive)),
-        246,
+        269,
         "Long_Long_Integer (MFlag_To_Cint (Flag_Inactive)) = FL_MENU_INACTIVE");
     Same
        (Long_Long_Integer (MFlag_To_Cint (Flag_Toggle)),
-        247,
+        270,
         "Long_Long_Integer (MFlag_To_Cint (Flag_Toggle)) = FL_MENU_TOGGLE");
     Same
        (Long_Long_Integer (MFlag_To_Cint (Flag_Value)),
-        248,
+        271,
         "Long_Long_Integer (MFlag_To_Cint (Flag_Value)) = FL_MENU_VALUE");
     Same
        (Long_Long_Integer (MFlag_To_Cint (Flag_Radio)),
-        249,
+        272,
         "Long_Long_Integer (MFlag_To_Cint (Flag_Radio)) = FL_MENU_RADIO");
     Same
        (Long_Long_Integer (MFlag_To_Cint (Flag_Invisible)),
-        250,
+        273,
         "Long_Long_Integer (MFlag_To_Cint (Flag_Invisible)) = FL_MENU_INVISIBLE");
     Same
        (Long_Long_Integer (MFlag_To_Cint (Flag_Submenu)),
-        251,
+        274,
         "Long_Long_Integer (MFlag_To_Cint (Flag_Submenu)) = FL_SUBMENU");
     Same
        (Long_Long_Integer (MFlag_To_Cint (Flag_Divider)),
-        252,
+        275,
         "Long_Long_Integer (MFlag_To_Cint (Flag_Divider)) = FL_MENU_DIVIDER");
 
     --  What needs redrawing (Fl_Damage)
     Same
        (Long_Long_Integer (Mask_To_UChar (Damage_None)),
-        253,
+        276,
         "Long_Long_Integer (Mask_To_UChar (Damage_None)) = 0");
     Same
        (Long_Long_Integer (Mask_To_UChar (Damage_Child)),
-        254,
+        277,
         "Long_Long_Integer (Mask_To_UChar (Damage_Child)) = FL_DAMAGE_CHILD");
     Same
        (Long_Long_Integer (Mask_To_UChar (Damage_Expose)),
-        255,
+        278,
         "Long_Long_Integer (Mask_To_UChar (Damage_Expose)) = FL_DAMAGE_EXPOSE");
     Same
        (Long_Long_Integer (Mask_To_UChar (Damage_Scroll)),
-        256,
+        279,
         "Long_Long_Integer (Mask_To_UChar (Damage_Scroll)) = FL_DAMAGE_SCROLL");
     Same
        (Long_Long_Integer (Mask_To_UChar (Damage_Overlay)),
-        257,
+        280,
         "Long_Long_Integer (Mask_To_UChar (Damage_Overlay)) = FL_DAMAGE_OVERLAY");
     Same
        (Long_Long_Integer (Mask_To_UChar (Damage_User_1)),
-        258,
+        281,
         "Long_Long_Integer (Mask_To_UChar (Damage_User_1)) = FL_DAMAGE_USER1");
     Same
        (Long_Long_Integer (Mask_To_UChar (Damage_User_2)),
-        259,
+        282,
         "Long_Long_Integer (Mask_To_UChar (Damage_User_2)) = FL_DAMAGE_USER2");
     Same
        (Long_Long_Integer (Mask_To_UChar (Damage_Full)),
-        260,
+        283,
         "Long_Long_Integer (Mask_To_UChar (Damage_Full)) = FL_DAMAGE_ALL");
 
     --  Contrast modes (fl_contrast_mode)
     Same
        (Contrast_Mode'Pos (No_Contrast),
-        261,
+        284,
         "Contrast_Mode'Pos (No_Contrast) = FL_CONTRAST_NONE");
     Same
        (Contrast_Mode'Pos (Legacy_Contrast),
-        262,
+        285,
         "Contrast_Mode'Pos (Legacy_Contrast) = FL_CONTRAST_LEGACY");
     Same
        (Contrast_Mode'Pos (CIELAB_Contrast),
-        263,
+        286,
         "Contrast_Mode'Pos (CIELAB_Contrast) = FL_CONTRAST_CIELAB");
     Same
        (Contrast_Mode'Pos (Custom_Contrast),
-        264,
+        287,
         "Contrast_Mode'Pos (Custom_Contrast) = FL_CONTRAST_CUSTOM");
 
     --  Callback reasons (Fl_Callback_Reason)
     Same
        (Long_Long_Integer (Reason_Unknown),
-        265,
+        288,
         "Long_Long_Integer (Reason_Unknown) = FL_REASON_UNKNOWN");
     Same
        (Long_Long_Integer (Reason_Selected),
-        266,
+        289,
         "Long_Long_Integer (Reason_Selected) = FL_REASON_SELECTED");
     Same
        (Long_Long_Integer (Reason_Deselected),
-        267,
+        290,
         "Long_Long_Integer (Reason_Deselected) = FL_REASON_DESELECTED");
     Same
        (Long_Long_Integer (Reason_Reselected),
-        268,
+        291,
         "Long_Long_Integer (Reason_Reselected) = FL_REASON_RESELECTED");
     Same
        (Long_Long_Integer (Reason_Opened),
-        269,
+        292,
         "Long_Long_Integer (Reason_Opened) = FL_REASON_OPENED");
     Same
        (Long_Long_Integer (Reason_Closed),
-        270,
+        293,
         "Long_Long_Integer (Reason_Closed) = FL_REASON_CLOSED");
     Same
        (Long_Long_Integer (Reason_Dragged),
-        271,
+        294,
         "Long_Long_Integer (Reason_Dragged) = FL_REASON_DRAGGED");
     Same
        (Long_Long_Integer (Reason_Cancelled),
-        272,
+        295,
         "Long_Long_Integer (Reason_Cancelled) = FL_REASON_CANCELLED");
     Same
        (Long_Long_Integer (Reason_Changed),
-        273,
+        296,
         "Long_Long_Integer (Reason_Changed) = FL_REASON_CHANGED");
     Same
        (Long_Long_Integer (Reason_Got_Focus),
-        274,
+        297,
         "Long_Long_Integer (Reason_Got_Focus) = FL_REASON_GOT_FOCUS");
     Same
        (Long_Long_Integer (Reason_Lost_Focus),
-        275,
+        298,
         "Long_Long_Integer (Reason_Lost_Focus) = FL_REASON_LOST_FOCUS");
     Same
        (Long_Long_Integer (Reason_Released),
-        276,
+        299,
         "Long_Long_Integer (Reason_Released) = FL_REASON_RELEASED");
     Same
        (Long_Long_Integer (Reason_Enter_Key),
-        277,
+        300,
         "Long_Long_Integer (Reason_Enter_Key) = FL_REASON_ENTER_KEY");
     Same
        (Long_Long_Integer (Reason_User),
-        278,
+        301,
         "Long_Long_Integer (Reason_User) = FL_REASON_USER");
 
     --  Screen scaling support (Fl::screen_scaling_supported); FLTK's enum is
     --  private to Fl_Screen_Driver, so these are its values (Fl_Screen_Driver.H:228-231)
     Same
        (Screen.Scaling_Kind'Pos (Screen.No_Scaling),
-        279,
+        302,
         "Screen.Scaling_Kind'Pos (Screen.No_Scaling) = 0");
     Same
        (Screen.Scaling_Kind'Pos (Screen.Systemwide_Scaling),
-        280,
+        303,
         "Screen.Scaling_Kind'Pos (Screen.Systemwide_Scaling) = 1");
     Same
        (Screen.Scaling_Kind'Pos (Screen.Per_Screen_Scaling),
-        281,
+        304,
         "Screen.Scaling_Kind'Pos (Screen.Per_Screen_Scaling) = 2");
 
     --  Arrow types (Fl_Arrow_Type); FLTK.Draw passes Pos + 1
     Same
        (Long_Long_Integer (Draw.Arrow_Kind'Pos (Draw.Single_Arrow) + 1),
-        282,
+        305,
         "Long_Long_Integer (Draw.Arrow_Kind'Pos (Draw.Single_Arrow) + 1) = FL_ARROW_SINGLE");
     Same
        (Long_Long_Integer (Draw.Arrow_Kind'Pos (Draw.Double_Arrow) + 1),
-        283,
+        306,
         "Long_Long_Integer (Draw.Arrow_Kind'Pos (Draw.Double_Arrow) + 1) = FL_ARROW_DOUBLE");
     Same
        (Long_Long_Integer (Draw.Arrow_Kind'Pos (Draw.Choice_Arrow) + 1),
-        284,
+        307,
         "Long_Long_Integer (Draw.Arrow_Kind'Pos (Draw.Choice_Arrow) + 1) = FL_ARROW_CHOICE");
     Same
        (Long_Long_Integer (Draw.Arrow_Kind'Pos (Draw.Return_Arrow) + 1),
-        285,
+        308,
         "Long_Long_Integer (Draw.Arrow_Kind'Pos (Draw.Return_Arrow) + 1) = FL_ARROW_RETURN");
 
     --  Orientations (Fl_Orientation)
     Same
        (Draw.Orientation_Kind'Pos (Draw.Orient_Right),
-        286,
+        309,
         "Draw.Orientation_Kind'Pos (Draw.Orient_Right) = FL_ORIENT_RIGHT");
     Same
        (Draw.Orientation_Kind'Pos (Draw.Orient_NE),
-        287,
+        310,
         "Draw.Orientation_Kind'Pos (Draw.Orient_NE) = FL_ORIENT_NE");
     Same
        (Draw.Orientation_Kind'Pos (Draw.Orient_Up),
-        288,
+        311,
         "Draw.Orientation_Kind'Pos (Draw.Orient_Up) = FL_ORIENT_UP");
     Same
        (Draw.Orientation_Kind'Pos (Draw.Orient_NW),
-        289,
+        312,
         "Draw.Orientation_Kind'Pos (Draw.Orient_NW) = FL_ORIENT_NW");
     Same
        (Draw.Orientation_Kind'Pos (Draw.Orient_Left),
-        290,
+        313,
         "Draw.Orientation_Kind'Pos (Draw.Orient_Left) = FL_ORIENT_LEFT");
     Same
        (Draw.Orientation_Kind'Pos (Draw.Orient_SW),
-        291,
+        314,
         "Draw.Orientation_Kind'Pos (Draw.Orient_SW) = FL_ORIENT_SW");
     Same
        (Draw.Orientation_Kind'Pos (Draw.Orient_Down),
-        292,
+        315,
         "Draw.Orientation_Kind'Pos (Draw.Orient_Down) = FL_ORIENT_DOWN");
     Same
        (Draw.Orientation_Kind'Pos (Draw.Orient_SE),
-        293,
+        316,
         "Draw.Orientation_Kind'Pos (Draw.Orient_SE) = FL_ORIENT_SE");
 
     --  File icons (Fl_File_Icon)
     Same
        (Images.File_Icons.File_Kind'Pos (Images.File_Icons.Any_File),
-        294,
+        317,
         "Images.File_Icons.File_Kind'Pos (Images.File_Icons.Any_File) = Fl_File_Icon::ANY");
     Same
        (Images.File_Icons.File_Kind'Pos (Images.File_Icons.Plain_File),
-        295,
+        318,
         "Images.File_Icons.File_Kind'Pos (Images.File_Icons.Plain_File) = Fl_File_Icon::PLAIN");
     Same
        (Images.File_Icons.File_Kind'Pos (Images.File_Icons.Fifo_File),
-        296,
+        319,
         "Images.File_Icons.File_Kind'Pos (Images.File_Icons.Fifo_File) = Fl_File_Icon::FIFO");
     Same
        (Images.File_Icons.File_Kind'Pos (Images.File_Icons.Device_File),
-        297,
+        320,
         "Images.File_Icons.File_Kind'Pos (Images.File_Icons.Device_File) = Fl_File_Icon::DEVICE");
     Same
        (Images.File_Icons.File_Kind'Pos (Images.File_Icons.Link_File),
-        298,
+        321,
         "Images.File_Icons.File_Kind'Pos (Images.File_Icons.Link_File) = Fl_File_Icon::LINK");
     Same
        (Images.File_Icons.File_Kind'Pos (Images.File_Icons.Directory_File),
-        299,
+        322,
         "Images.File_Icons.File_Kind'Pos (Images.File_Icons.Directory_File)" &
         " = Fl_File_Icon::DIRECTORY");
     Same
        (Long_Long_Integer (Images.File_Icons.Icon_Color),
-        300,
+        323,
         "Long_Long_Integer (Images.File_Icons.Icon_Color) = FL_ICON_COLOR");
 
     --  Tab overflow (Fl_Tabs::handle_overflow)
     Same
        (Tabbed.Overflow_Kind'Pos (Tabbed.Compress_Overflow),
-        301,
+        324,
         "Tabbed.Overflow_Kind'Pos (Tabbed.Compress_Overflow) = Fl_Tabs::OVERFLOW_COMPRESS");
     Same
        (Tabbed.Overflow_Kind'Pos (Tabbed.Clip_Overflow),
-        302,
+        325,
         "Tabbed.Overflow_Kind'Pos (Tabbed.Clip_Overflow) = Fl_Tabs::OVERFLOW_CLIP");
     Same
        (Tabbed.Overflow_Kind'Pos (Tabbed.Pulldown_Overflow),
-        303,
+        326,
         "Tabbed.Overflow_Kind'Pos (Tabbed.Pulldown_Overflow) = Fl_Tabs::OVERFLOW_PULLDOWN");
     Same
        (Tabbed.Overflow_Kind'Pos (Tabbed.Drag_Overflow),
-        304,
+        327,
         "Tabbed.Overflow_Kind'Pos (Tabbed.Drag_Overflow) = Fl_Tabs::OVERFLOW_DRAG");
 
     --  Window menu styles (Fl_Sys_Menu_Bar::window_menu_style_enum)
     Same
        (Sys_Menu.Window_Menu_Style_Kind'Pos (Sys_Menu.No_Window_Menu),
-        305,
+        328,
         "Sys_Menu.Window_Menu_Style_Kind'Pos (Sys_Menu.No_Window_Menu)" &
         " = Fl_Sys_Menu_Bar::no_window_menu");
     Same
        (Sys_Menu.Window_Menu_Style_Kind'Pos (Sys_Menu.Tabbing_Mode_None),
-        306,
+        329,
         "Sys_Menu.Window_Menu_Style_Kind'Pos (Sys_Menu.Tabbing_Mode_None)" &
         " = Fl_Sys_Menu_Bar::tabbing_mode_none");
     Same
        (Sys_Menu.Window_Menu_Style_Kind'Pos (Sys_Menu.Tabbing_Mode_Automatic),
-        307,
+        330,
         "Sys_Menu.Window_Menu_Style_Kind'Pos (Sys_Menu.Tabbing_Mode_Automatic)" &
         " = Fl_Sys_Menu_Bar::tabbing_mode_automatic");
     Same
        (Sys_Menu.Window_Menu_Style_Kind'Pos (Sys_Menu.Tabbing_Mode_Preferred),
-        308,
+        331,
         "Sys_Menu.Window_Menu_Style_Kind'Pos (Sys_Menu.Tabbing_Mode_Preferred)" &
         " = Fl_Sys_Menu_Bar::tabbing_mode_preferred");
 

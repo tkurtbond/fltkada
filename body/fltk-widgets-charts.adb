@@ -464,7 +464,7 @@ package body FLTK.Widgets.Charts is
            (This : in Chart)
         return Font_Kind is
     begin
-        return Font_Kind'Val (fl_chart_get_textfont (This.Void_Ptr));
+        return Font_Kind (fl_chart_get_textfont (This.Void_Ptr));
     end Get_Text_Font;
 
 
@@ -472,7 +472,7 @@ package body FLTK.Widgets.Charts is
            (This : in out Chart;
             To   : in     Font_Kind) is
     begin
-        fl_chart_set_textfont (This.Void_Ptr, Font_Kind'Pos (To));
+        fl_chart_set_textfont (This.Void_Ptr, To_C (To));
     end Set_Text_Font;
 
 

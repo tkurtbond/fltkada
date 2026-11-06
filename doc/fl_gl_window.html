@@ -366,7 +366,7 @@ function Pixels_Per_Unit
 
   <tr>
 <td><pre>
-void Redraw_Overlay();
+void redraw_overlay();
 </pre></td>
 <td><pre>
 procedure Redraw_Overlay
@@ -472,6 +472,16 @@ virtual void draw();
 </pre></td>
 <td><pre>
 procedure Draw
+       (This : in out GL_Window);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual void draw_overlay();
+</pre></td>
+<td><pre>
+procedure Draw_Overlay
        (This : in out GL_Window);
 </pre></td>
   </tr>

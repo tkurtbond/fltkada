@@ -223,6 +223,14 @@ possibly this hasn't been noticed because it's only visible to doxygen
 Menus: the one-string Add, FLTK's add (const char *), which splits on '|',
 is now Add_Items: as Add, no call to it compiled (FLTKAda-BUGS.md 65)
 
+Sliders: the knob's box is Get_Slider_Box and Set_Slider_Box, FLTK's slider ();
+Get_Box and Set_Box are the frame's, as on any widget (FLTKAda-BUGS.md 94)
+
+Menus: Has_Item is false for the terminators that end each submenu and the
+menu, and iteration steps over them; Number_Of_Items still counts them
+(FLTKAda-BUGS.md 93); reverse iteration no longer raises Constraint_Error
+at the start (FLTKAda-BUGS.md 96)
+
 an event, system or clipboard handler can now remove handlers, itself
 included, while FLTK calls them; this raised Program_Error (FLTKAda-BUGS.md 81)
 
@@ -396,6 +404,22 @@ since FLTK's abort, loop for ever, or overrun (pofltk 120 to 122)
 Fonts: Free_Font and the fonts after it are empty until set, rather than
 read past the end of FLTK's table, and a font name is cut to 126 bytes, at
 a whole UTF-8 character (pofltk 130, PLAN.md Phase 5)
+
+Fonts: Font_Kind is FLTK's font number, not an enumeration, so the fonts
+Setup_Fonts and Set_Font_Kind add can be used; a font past
+FLTK.Static.Last_Font raises Constraint_Error; Font_Family_Attributes
+gives get_font_name's attributes (FLTKAda-BUGS.md 88)
+
+Keys: Keypress has FLTK's function keys, Function_Key (1 .. 35), with
+Is_Function_Key and Function_Number, and its other named keys, Pause_Key
+to Right_Alt_Key (FLTKAda-BUGS.md 89)
+
+Keys: Character_Key gives the Keypress for any character, by its code
+point, such as a shortcut on an a-umlaut, the Euro sign or CR, which
+Press, taking only Character 32 .. 126, can't (FLTKAda-BUGS.md 95)
+
+GL_Window: Draw_Overlay can be overridden, as Fl_Gl_Window's draw_overlay;
+it draws nothing by default (FLTKAda-BUGS.md 90)
 
 Draw: Restore_Clip is documented as dropping a pushed clip where FLTK
 draws with Cairo (pofltk 128); kept, not worked around

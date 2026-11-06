@@ -18,6 +18,7 @@
 
 extern "C" void widget_draw_hook(void * ud);
 extern "C" int widget_handle_hook(void * ud, int e);
+extern "C" void gl_window_draw_overlay_hook(void * ud);
 
 
 
@@ -34,6 +35,7 @@ public:
     friend int fl_gl_window_handle(GLWINDOW n, int e);
 
     void draw();
+    void draw_overlay();
     int handle(int e);
 };
 
@@ -45,6 +47,14 @@ int gl_window_drawing = 0;
 void My_Gl_Window::draw() {
     gl_window_drawing++;
     widget_draw_hook(this->user_data());
+    gl_window_drawing--;
+}
+
+//  Fl_Gl_Window::draw_overlay isn't pure, and does nothing, as the Ada
+//  GL_Window's does (FLTKAda-BUGS.md 90).  It draws in the GL context too.
+void My_Gl_Window::draw_overlay() {
+    gl_window_drawing++;
+    gl_window_draw_overlay_hook(this->user_data());
     gl_window_drawing--;
 }
 

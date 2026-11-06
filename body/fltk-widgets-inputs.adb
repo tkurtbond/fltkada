@@ -960,7 +960,7 @@ package body FLTK.Widgets.Inputs is
            (This : in Input)
         return Font_Kind is
     begin
-        return Font_Kind'Val (fl_input_get_textfont (This.Void_Ptr));
+        return Font_Kind (fl_input_get_textfont (This.Void_Ptr));
     end Get_Text_Font;
 
 
@@ -968,7 +968,7 @@ package body FLTK.Widgets.Inputs is
            (This : in out Input;
             To   : in     Font_Kind) is
     begin
-        fl_input_set_textfont (This.Void_Ptr, Font_Kind'Pos (To));
+        fl_input_set_textfont (This.Void_Ptr, To_C (To));
     end Set_Text_Font;
 
 

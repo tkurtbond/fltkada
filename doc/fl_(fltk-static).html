@@ -710,7 +710,8 @@ and FLTK reads garbage there (pofltk 130).  The binding grows the table
 the first time Free_Font is used here, by Font_Family_Image, Font_Sizes,
 Set_Font_Kind, Setup_Fonts or FLTK.Draw, which opens the display.  Free_Font
 is then empty, and its image and family image are "".  A widget's font
-isn't checked: set Free_Font before a widget draws in it.</p></td>
+is checked only against Last_Font: set Free_Font before a widget draws in
+it.</p></td>
   </tr>
 
   <tr>
@@ -722,7 +723,18 @@ static const char * get_font_name(Fl_Font,
 function Font_Family_Image
        (Kind : in Font_Kind)
     return String;
-</pre></td>
+
+type Font_Attributes is record
+    Bold   : Boolean := False;
+    Italic : Boolean := False;
+end record;
+
+function Font_Family_Attributes
+       (Kind : in Font_Kind)
+    return Font_Attributes;
+</pre>
+<p>Font_Family_Attributes gives get_font_name's attributes, FL_BOLD and
+FL_ITALIC, as a record.  An empty font is plain.</p></td>
   </tr>
 
   <tr>
@@ -1325,7 +1337,19 @@ static Fl_Font set_fonts(const char *=0);
 <td><pre>
 procedure Setup_Fonts
        (How_Many_Set_Up : out Natural);
-</pre></td>
+
+Max_Font : constant Font_Kind := 65_535;
+
+function Last_Font
+    return Font_Kind;
+</pre>
+<p>FLTK doesn't check a font number against its table (pofltk 130), so
+the binding keeps Last_Font, the last font set, which starts at
+Free_Font.  Setup_Fonts, and Set_Font_Kind on a font past it, raise it.
+Every subprogram in the binding that takes a font raises
+Constraint_Error on one past Last_Font, and Set_Font_Kind on a Target
+past Max_Font.  The fonts in a gap that Set_Font_Kind leaves are empty
+(FLTKAda-BUGS.md 88).</p></td>
   </tr>
 
   <tr>

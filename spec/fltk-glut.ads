@@ -339,8 +339,6 @@ package FLTK.GLUT is
 
     --  Overlays  --
 
-    --  Establish_Overlay and Use_Layer raise Program_Error when the current
-    --  window is not shown, since FLTK's overlay needs a shown window.
     procedure Establish_Overlay;
 
     procedure Remove_Overlay;
@@ -419,6 +417,9 @@ package FLTK.GLUT is
 
     --  Callbacks For the Current Window  --
 
+    --  These raise Program_Error when there is no current window, where
+    --  FLTK drops the callback (glut.H:258-314).  Idle_Func, Timer_Func,
+    --  Menu_State_Func and Menu_Status_Func are global and need none.
     procedure Display_Func
            (Func : in not null Display_Function);
 

@@ -234,7 +234,7 @@ package body FLTK.Draw.OpenGL is
             Size : in Font_Size) is
     begin
         Check_Ready ("OpenGL.Set_Font");
-        fl_gl_font (Font_Kind'Pos (Kind), Interfaces.C.int (Size));
+        fl_gl_font (To_C (Kind), Interfaces.C.int (Size));
     end Set_Font;
 
 

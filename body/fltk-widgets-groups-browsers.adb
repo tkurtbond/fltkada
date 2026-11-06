@@ -1141,7 +1141,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (This : in Browser)
         return Font_Kind is
     begin
-        return Font_Kind'Val (fl_abstract_browser_get_textfont (This.Void_Ptr));
+        return Font_Kind (fl_abstract_browser_get_textfont (This.Void_Ptr));
     end Get_Text_Font;
 
 
@@ -1149,7 +1149,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (This : in out Browser;
             Font : in     Font_Kind) is
     begin
-        fl_abstract_browser_set_textfont (This.Void_Ptr, Font_Kind'Pos (Font));
+        fl_abstract_browser_set_textfont (This.Void_Ptr, To_C (Font));
     end Set_Text_Font;
 
 

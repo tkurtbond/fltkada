@@ -683,7 +683,7 @@ package body FLTK.Widgets.Groups.Help_Views is
            (This : in Help_View)
         return Font_Kind is
     begin
-        return Font_Kind'Val (fl_help_view_get_textfont (This.Void_Ptr));
+        return Font_Kind (fl_help_view_get_textfont (This.Void_Ptr));
     end Get_Text_Font;
 
 
@@ -691,7 +691,7 @@ package body FLTK.Widgets.Groups.Help_Views is
            (This : in out Help_View;
             Font : in     Font_Kind) is
     begin
-        fl_help_view_set_textfont (This.Void_Ptr, Font_Kind'Pos (Font));
+        fl_help_view_set_textfont (This.Void_Ptr, To_C (Font));
     end Set_Text_Font;
 
 

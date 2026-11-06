@@ -49,9 +49,9 @@ extern "C" void fl_glut_set_cursor(int c);
 extern "C" void fl_glut_warp_pointer(int x, int y);
 
 
-extern "C" int fl_glut_establish_overlay();
+extern "C" void fl_glut_establish_overlay();
 extern "C" void fl_glut_remove_overlay();
-extern "C" int fl_glut_use_layer(unsigned int l);
+extern "C" void fl_glut_use_layer(unsigned int l);
 extern "C" void fl_glut_post_overlay_redisplay();
 extern "C" void fl_glut_show_overlay();
 extern "C" void fl_glut_hide_overlay();

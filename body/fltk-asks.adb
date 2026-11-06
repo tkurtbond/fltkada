@@ -746,7 +746,7 @@ package body FLTK.Asks is
            (Font : in Font_Kind;
             Size : in Font_Size) is
     begin
-        fl_ask_message_font (Font_Kind'Pos (Font), Interfaces.C.int (Size));
+        fl_ask_message_font (To_C (Font), Interfaces.C.int (Size));
     end Set_Message_Font;
 
 

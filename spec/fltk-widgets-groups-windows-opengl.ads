@@ -216,6 +216,15 @@ package FLTK.Widgets.Groups.Windows.OpenGL is
     procedure Draw
            (This : in out GL_Window);
 
+    --  Override this to draw the overlay, as Draw draws the window.  FLTK
+    --  calls it after Redraw_Overlay, in the window's GL context, after
+    --  Draw.  Without a hardware overlay, which is usual, FLTK draws it in
+    --  the front buffer over what Draw drew.  This one draws nothing, as
+    --  FLTK's does.  A GLUT window draws its overlay with GLUT's overlay
+    --  display function instead, and doesn't call this.
+    procedure Draw_Overlay
+           (This : in out GL_Window);
+
     function Handle
            (This  : in out GL_Window;
             Event : in     Event_Kind)

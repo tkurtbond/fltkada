@@ -1250,8 +1250,10 @@ sway, and under valgrind. Each test was seen to fail before its fix.
     counts, since FLTK's asks `glutGet(GL_RGBA)` (:421). A query of 100 or
     more goes to GL. `Window_Parent` uses `dynamic_cast`, which fixes
     FLTKAda-BUGS.md 30. `Display_Mode_Possible` opens the display first.
-  - **Overlays.** `Establish_Overlay` and `Use_Layer` raise
-    `Program_Error` for a window not shown.
+  - **Overlays.** ~~`Establish_Overlay` and `Use_Layer` raise
+    `Program_Error` for a window not shown.~~ Corrected 2026-11-05: the
+    claim behind it, that `make_overlay_current` crashes on such a window,
+    was wrong, and both now work on a hidden window (FLTKAda-BUGS.md 91).
 
   Before the fix, the test failed 10 checks. Every call with a dead
   number raised `Storage_Error` from FLTK's freed window, or nothing at
@@ -2757,6 +2759,177 @@ Use pofltk's checks as the checklist of what to assert.
 Done when `make smoke-headless` covers every program, and `make
 check-headless` and `make check-sway` pass.
 
+Decisions, as the phase goes:
+
+- **`cairo_test`, `forms` and `rects` move to Phase 16** (2026-11-04).
+  `cairo_test` draws with cairo's own calls, which FLTKAda doesn't bind
+  until Phase 16's `FLTK.Cairo`, and Phase 16 already ports pofltk's
+  `CairoTest`, so it is the same program. Writing it now would mean
+  cairo imports private to a test program, which the binding would then
+  replace. `forms` needs Phase 16's Forms classes (Open question 1
+  decided for it), and `rects` needs `Fl_Rect`, also Phase 16.
+- **`boxtype`** matches FLTK's C++ `boxtype` pixel for pixel
+  (`compare -metric AE` 0 under one Xvfb), with no scheme and with
+  `-s gtk+`. AGENTS.md's `xwd` isn't installed here; `import -window
+  root` is.
+- **`cube`** matches FLTK's C++ `cube` pixel for pixel (AE 0), and its
+  statistics line is printed in the same form. The fixed-function OpenGL
+  calls the GL demos need are imported in `test/gl1.ads`, private to the
+  test programs, not a binding (Scope).
+- **`device`** matches FLTK's C++ `device` pixel for pixel except the
+  clock's second hand, which moved between the two screenshots. GO with
+  `Fl_Image_Surface`, `fl_capture_window()` and
+  `Fl_Image_Surface::mask()`, on each of the three targets, gives the same
+  screen as the C++, apart from the clock. `Fl_Copy_Surface`,
+  `Fl_Printer`, `Fl_PostScript_File_Device`, `Fl_PDF_File_Surface` and
+  `Fl_SVG_File_Surface` open the same dialogs as the C++, and Escape
+  leaves both programs running. Under valgrind, two GOs (the second frees
+  the first one's closed copy window) and closing every window leave no
+  invalid reads or writes, and `vg-check.sh` passes. Porting it found
+  FLTKAda-BUGS.md 85: a `Printer` can't tell a cancelled job from a
+  failed one, so `device` ignores `Page_Error`.
+- **Every `new` in a test program is freed when `Run` returns**, so that
+  `vg-check.sh` can be run on it. `boxtype` didn't free its buttons;
+  valgrind showed the 48 lost from `fltk.widgets.buttons.forge.create`,
+  and freeing them after `Run` cleared it.
+- **`doublebuffer`** matches FLTK's C++ pixel for pixel (AE 0): both
+  windows at the start, and each after a click on its slider, which
+  changes only its own star.
+- **`file_chooser`** matches FLTK's C++ pixel for pixel (AE 0): the
+  start, the Directory toggle, the chooser with the Extra encodings group,
+  a PDF's preview made by gs, and the files list and terminal after a
+  pick. Both exit 0 from Close. Under valgrind, a pick leaves no invalid
+  reads or writes, and `vg-check.sh` passes. The chooser keeps its
+  Preview setting in FLTK's user preferences, so runs to be compared need
+  their own `HOME` and `XDG_CONFIG_HOME`, or the first run changes what
+  the second shows. Porting it found two FLTKAda bugs:
+  - FLTKAda-BUGS.md 86: `Chooser_Kind` was an enumeration, so
+    `Directory` reached FLTK as 3, `MULTI | CREATE`. It is now FLTK's bit
+    mask, combined with `"+"`.
+  - FLTKAda-BUGS.md 87: the F23 workaround cleared `Fl_Terminal`'s
+    modified flag after every draw. A write that scrolled was drawn
+    clipped to the scrollbar, and the rate-limited timer then found
+    nothing to redraw, so the picked files never appeared. It now clears
+    the flag after a draw only under `Per_Write`.
+- **`Font_Kind` is FLTK's font number, an integer type** (2026-11-05,
+  the user's choice of option 1 in FONT_KIND_ISSUE.md; FLTKAda-BUGS.md
+  88). The enumeration named only the 17 built-in fonts, so the fonts
+  `Setup_Fonts` added couldn't be used, which blocked `fonts`. The 17
+  are now constants, so every call that names one is unchanged, and
+  every program in the repository compiled as it was. FLTK doesn't check
+  a font against its table (pofltk 130), so the shim keeps `font_end` as
+  pofltk's does, and `FLTK.Static.Last_Font` reports it. The private
+  `FLTK.To_C (Font_Kind)` raises `Constraint_Error` past it, and replaced
+  every `Font_Kind'Pos`. Unlike pofltk, that checks the widget setters
+  too. `Set_Font_Kind` takes a target up to `Max_Font`, 65535 as in
+  pofltk. `Font_Family_Attributes` is new, for `get_font_name`'s
+  attributes. The new test `test_font_numbers` (25 checks) passes on X11
+  and sway with vg=0. `check-headless` and `check-sway` pass.
+- **`fonts`** matches FLTK's C++ pixel for pixel (AE 0) in every state
+  driven under Xvfb: the start; a system font picked after paging down;
+  Monospace Bold at size 11, whose sample differs from the start (AE
+  4370); the editor from F1; and the editor after a stroke, a gap, a lone
+  dot, and `->` then `<-`. It differs from the C++ in three ways, none
+  visible:
+  - **Font sizes** are asked for when a font is picked, as pofltk does.
+    The C++ asks for every font's sizes at the start.
+  - **The editor** is made when the program starts, and shown on F1. The
+    C++ makes it on the first F1.
+  - **Each letter's strokes** are an `Ada.Containers.Vectors`, not a
+    128-byte row. The C++'s 0 byte, which ends a row, is also the top
+    left dot, so the C++ can't record that dot (FLTK-issues.md F30). The
+    port leaves it out too, because the saved table is a C string per
+    letter, which a 0 would end. Without that, the first stroke from the
+    top left dot differed from the C++ by 951 pixels.
+
+  F1 needed a function key, which `Keypress` didn't have (FLTKAda-BUGS.md
+  89). Some names `Setup_Fonts` gives under Xvfb, such as "Latin Modern
+  Mono Prop 10 Regular", fall back to Noto Sans in fontconfig. The C++
+  draws them the same way.
+- **`gl_overlay`** matches FLTK's C++ pixel for pixel (AE 0) under Xvfb:
+  at the start, after a click on the Sides slider, and after one on the
+  Overlay slider. Both print "Can do overlay = 0"; Xvfb's Mesa has no
+  hardware overlay, so FLTK draws it in the front buffer. It needed
+  `GL_Window.Draw_Overlay`, which wasn't bound (FLTKAda-BUGS.md 90).
+- **`glut_test`** prints what FLTK's C++ prints, line for line, on Xvfb
+  and on sway. Two things differ in the code, not the output: the menu
+  it attaches has an entry, since `Attach_Menu` refuses an empty one,
+  and with no current window it skips `Destroy_Window` and the ten
+  per-window `*_Func` setters. Those raise `Program_Error` with no
+  current window, where FLTK drops the callback (glut.H:258-314).
+  Decided: they keep raising, like FLTK.GLUT's other calls in the wrong
+  state, and the spec now says so. The overlay calls on a hidden window
+  raised `Program_Error` too, which was FLTKAda's mistake
+  (FLTKAda-BUGS.md 91). It ends by itself, so it is in the Makefile's
+  `ONCE`.
+- **`help_dialog`** gives the C++'s pixels (AE 0) under a private Xvfb.
+  It was checked on FLTK's own page, at its top, `#Table` and `#Center`,
+  and on FLTKAda's page, at its top, `#Lists` and `#Images`. Its animated
+  GIF moves as the C++'s does. FLTK's `test/help_dialog.html` is under
+  FLTK's licence, so `test/help_dialog.html` is FLTKAda's own page. It
+  tries the same HTML, and `test/images/circles.gif` is its animated
+  GIF. The C++ redraws `Fl::first_window()` to animate the GIF. FLTK
+  made the help window, so it has no Ada object (FLTKAda-BUGS.md 51),
+  and the port calls `FLTK.Screen.Redraw` instead, as pofltk does.
+  Writing the page found F31: a `WIDTH=100%` table runs under the
+  scrollbar. The page uses 90%. It runs on sway, and valgrind is clean.
+- **`input_choice`** gives the C++'s pixels (AE 0) under a private Xvfb.
+  That holds both as it starts and after the same clicks and keys sent
+  to each with xdotool: the check button off and on, `ccc` from the
+  Choice, an item from the Input_Choice's menu, and an edit of its
+  input. Each callback's terminal line matches. The C++'s `in->value (0)`
+  found FLTKAda-BUGS.md 92. Decided with the user 2026-11-05:
+  `Input_Choice.Set_Item` takes a `Menus.Index` counting from 1, like
+  `Has_Item` and `Item`, and raises for an item that doesn't exist (an
+  incompatible change). Fixing it found bug 93, `Menu.Has_Item` counting
+  the terminator. Decided with the user 2026-11-05: `Has_Item` is false
+  for the terminators and iteration steps over them, while
+  `Number_Of_Items` and `Index` still count FLTK's array (an
+  incompatible change). Testing that found bug 96, reverse iteration
+  raising at the start. The Choice callback prints
+  `Chosen_Index - 1`, FLTK's number, so the terminal matches. It runs on
+  sway, and valgrind is clean.
+- **`mandelbrot`** gives the C++'s pixels (AE 0) under a private Xvfb.
+  That holds as it starts, and after each of the same steps sent to
+  both with xdotool: a zoom-in drag, Ctrl-M, a zoom-out click, a right
+  click that opens the Julia window, values typed into the x and w
+  inputs (`-` among them, which atof reads as 0), and a click on each
+  slider. The coordinates and the Julia window's title are written with
+  C's snprintf, imported with `Convention => C_Variadic_3`, since Ada's
+  `Put` rounds halfway cases away from zero where printf rounds to even
+  (%.2g of 0.125: 0.13 against 0.12). A scratch comparison of the two
+  over many values found 12381 that differ. Float_Input's `Get_Value` raises
+  Constraint_Error on a partial number such as `-`, so the callback uses 0, as
+  atof does. The sliders' `box (FL_THIN_DOWN_BOX)` found FLTKAda-BUGS.md
+  94, `Slider.Set_Box` setting the knob even through `Widget'Class`.
+  ~~Left open; the port sets the frame with a view conversion.~~ Decided
+  with the user 2026-11-05: the knob's pair is now `Get_Slider_Box` and
+  `Set_Slider_Box`, and `Set_Box` sets the frame (an incompatible
+  change). The port calls `Set_Box` and `Set_Slider_Box`, and still gives
+  AE 0 at each of the steps above. It runs on sway,
+  where the tiled window resizes the area and the picture is worked out
+  again at the new size. Valgrind is clean, with both windows closed and
+  everything freed.
+- **`menubar`** gives the C++'s pixels (AE 0) under a private Xvfb, as
+  it starts and after each of the same steps sent to both with xdotool.
+  The steps opened each submenu that holds something new (File, Edit by
+  its F2 shortcut, Checkbox, Radio, Font, International and Huge), the
+  menu button, the choice and the pop-up. They also picked items from
+  each, typed shortcuts (Alt+Z, Ctrl+A, Return, F1 with modifiers, F4,
+  Ctrl+Return), and moved the line-spacing slider and opened a menu.
+  Alt+Q ends both with status 0. As in pofltk, the items are added one
+  by one. An item that shares its label is added under a unique one and
+  renamed, and the Invisible submenu is filled before it is hidden.
+  Huge is an ordinary submenu. The pop-up removes item 2, and the three
+  menus choose item 1, as FLTK's table would. Its shortcuts on ß, Ä,
+  ä, € and ㅈ, and on `'\r'`, found FLTKAda-BUGS.md 95: `Keypress` had
+  no constructor for them. It was fixed with `Character_Key`, an
+  addition. Their labels found FLTK-issues.md F32: X11 writes
+  "EuroSign" and "Enter" where Wayland writes the characters. The macOS
+  system menu bar and About item are left out, as pofltk leaves them
+  out. On sway it tiles, and closing it runs the window callback.
+  Valgrind is clean.
+
 ### Phase 15: Documentation
 
 - `doc/<header>.html` for every newly bound header, linked from
@@ -2803,8 +2976,11 @@ the classes off `progress.txt`'s "Never" list as they are bound.
   used after the draw raises `Program_Error`. FLTKAda's existing
   `FLTK.Widgets.Groups.Windows.Double.Cairo` is checked against it and
   either kept for FLTKs built with Cairo or folded in. Port pofltk's
-  `CairoDrawX` and `CairoTest` examples.
-- `Fl_Rect`.
+  `CairoDrawX` and `CairoTest` examples. `CairoTest` is FLTK's
+  `cairo_test`, moved here from Phase 14.
+- `Fl_Rect`, and pofltk's `Rects` example, moved here from Phase 14.
+- FLTK's `forms` test, moved here from Phase 14, with the Forms
+  examples.
 
 Each part gets its own `test/unit/` tests, run by `make check` only when
 the library is built.

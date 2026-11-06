@@ -953,7 +953,7 @@ package body FLTK.Widgets.Groups.Trees is
     is
         Result : constant Interfaces.C.int := fl_tree_get_item_label_font (This.Void_Ptr);
     begin
-        return Font_Kind'Val (Result);
+        return Font_Kind (Result);
     exception
     when Constraint_Error => raise Internal_FLTK_Error with
         "Fl_Tree::item_labelfont returned unexpected int value of " &
@@ -965,7 +965,7 @@ package body FLTK.Widgets.Groups.Trees is
            (This : in out Tree;
             Kind : in     Font_Kind) is
     begin
-        fl_tree_set_item_label_font (This.Void_Ptr, Interfaces.C.int (Font_Kind'Pos (Kind)));
+        fl_tree_set_item_label_font (This.Void_Ptr, To_C (Kind));
     end Set_Item_Label_Font;
 
 

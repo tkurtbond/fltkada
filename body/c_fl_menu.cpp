@@ -338,6 +338,14 @@ int fl_menu_size(MENU m) {
     return static_cast<Fl_Menu_*>(m)->size();
 }
 
+//  An entry whose text is null is a terminator, ending the menu or a submenu
+//  (Fl_Menu_Item::next and size, Fl_Menu.cxx:58-70, 87-104).  Any other entry
+//  in 0 .. size () - 1 is an item.  FLTKAda-BUGS.md 93.
+int fl_menu_is_item(MENU m, int i) {
+    Fl_Menu_ * menu = static_cast<Fl_Menu_*>(m);
+    return i >= 0 && i < menu->size() && menu->menu()[i].text != 0;
+}
+
 
 
 

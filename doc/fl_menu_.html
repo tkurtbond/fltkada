@@ -394,7 +394,7 @@ procedure Make_Global
   </tr>
 
   <tr>
-<td>Check index values against the size method manually.</td>
+<td>Check that menu()[index].text isn't null, and index &lt; size(). False for a terminator.</td>
 <td><pre>
 function Has_Item
        (This  : in Menu;

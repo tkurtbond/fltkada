@@ -104,7 +104,8 @@
 
   <tr>
     <td>Fl_Font</td>
-    <td>Font_Kind</td>
+    <td>Font_Kind
+<p>An integer type, FLTK's font number, not an enumeration: Helvetica to Zapf_Dingbats and Free_Font are constants, and FLTK.Static.Setup_Fonts and Set_Font_Kind add fonts up to FLTK.Static.Last_Font. A font past Last_Font raises Constraint_Error (FLTKAda-BUGS.md 88, pofltk 130).</p></td>
   </tr>
 
   <tr>
@@ -353,6 +354,72 @@ NumLock is on, eg. '7' for the key also marked Home.
 <td><pre>
 function Keypad_Character (Key : in Keypress) return Character
     with Pre => Is_Keypad (Key);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>A key that types a character, given as its Unicode code point, such
+as a shortcut on &auml;, the Euro sign or '\r'.  The code points from
+0xff00 up are FLTK's named keys.
+<pre>
+0xe4
+0x20ac
+'\r'
+</pre></td>
+<td><pre>
+function Character_Key (Item : in Wide_Character) return Keypress;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>The function keys, F1 to F35.
+<pre>
+#define FL_F      0xffbd
+#define FL_F_Last 0xffe0
+
+FL_F + n
+</pre></td>
+<td><pre>
+subtype Function_Key_Number is Positive range 1 .. 35;
+
+function Function_Key (Number : in Function_Key_Number) return Keypress;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>No function in FLTK; the range check on the function keys.
+<pre>
+(key &gt; FL_F &amp;&amp; key &lt;= FL_F_Last)
+</pre></td>
+<td><pre>
+function Is_Function_Key (Key : in Keypress) return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>No function in FLTK; which function key it is.
+<pre>
+key - FL_F
+</pre></td>
+<td><pre>
+function Function_Number (Key : in Keypress) return Function_Key_Number
+    with Pre => Is_Function_Key (Key);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>The other named keys.
+<pre>
+FL_Iso_Key  FL_Pause  FL_Scroll_Lock  FL_Kana  FL_Eisu  FL_Yen
+FL_JIS_Underscore  FL_Print  FL_Menu  FL_Help  FL_Num_Lock
+FL_Shift_L  FL_Shift_R  FL_Control_L  FL_Control_R  FL_Caps_Lock
+FL_Meta_L  FL_Meta_R  FL_Alt_L  FL_Alt_R
+</pre></td>
+<td><pre>
+ISO_Key  Pause_Key  Scroll_Lock_Key  Kana_Key  Eisu_Key  Yen_Key
+JIS_Underscore_Key  Print_Key  Menu_Key  Help_Key  Num_Lock_Key
+Left_Shift_Key  Right_Shift_Key  Left_Control_Key  Right_Control_Key
+Caps_Lock_Key  Left_Meta_Key  Right_Meta_Key  Left_Alt_Key  Right_Alt_Key
 </pre></td>
   </tr>
 

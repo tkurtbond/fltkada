@@ -264,20 +264,20 @@ package body FLTK.Widgets.Valuators.Sliders is
     end Set_Bounds;
 
 
-    function Get_Box
+    function Get_Slider_Box
            (This : in Slider)
         return Box_Kind is
     begin
         return Box_Kind'Val (fl_slider_get_slider (This.Void_Ptr));
-    end Get_Box;
+    end Get_Slider_Box;
 
 
-    procedure Set_Box
+    procedure Set_Slider_Box
            (This : in out Slider;
             To   : in     Box_Kind) is
     begin
         fl_slider_set_slider (This.Void_Ptr, Box_Kind'Pos (To));
-    end Set_Box;
+    end Set_Slider_Box;
 
 
     function Get_Slide_Size
