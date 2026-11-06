@@ -321,6 +321,8 @@ package FLTK.Widgets.Menus is
             Place : in Index)
         return Menu_Flag;
 
+    --  Submenu is the menu's shape, not a setting:  a title keeps it and
+    --  another item doesn't get it (FLTKAda-BUGS.md 106).
     procedure Set_Flags
            (This  : in out Menu;
             Place : in     Index;

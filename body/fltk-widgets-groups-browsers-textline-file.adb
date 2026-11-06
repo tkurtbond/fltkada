@@ -422,9 +422,18 @@ package body FLTK.Widgets.Groups.Browsers.Textline.File is
 
     procedure Load
            (This : in out File_Browser;
+            Dir  : in     String)
+    is
+        Ignore : constant Natural := This.Load (Dir, FLTK.Filenames.Numeric_Sort'Access);
+    begin
+        null;
+    end Load;
+
+
+    procedure Load
+           (This : in out File_Browser;
             Dir  : in     String;
-            Sort : in not null FLTK.Filenames.Compare_Function :=
-                FLTK.Filenames.Numeric_Sort'Access)
+            Sort : in not null FLTK.Filenames.Compare_Function)
     is
         Ignore : constant Natural := This.Load (Dir, Sort);
     begin

@@ -1193,6 +1193,42 @@ package body FLTK.Draw is
         end if;
     end Check_Not_In_Image_Line;
 
+    --  FLTK reads pixel (PX, PY) at Buf + PX * D + PY * L.  With D or L
+    --  negative, Buf must be the last pixel of the first row or the first
+    --  pixel of the last row, so the start moves to match, and the data
+    --  must hold every row (FLTKAda-BUGS.md 117).  The check is an explicit
+    --  raise, as release builds don't check a Pre.
+    procedure Image_Start
+           (W, H            : in     Integer;
+            Data            : in     Color_Component_Array;
+            Depth           : in     Positive;
+            Line_Size       : in     Natural;
+            Flip_Horizontal : in     Boolean;
+            Flip_Vertical   : in     Boolean;
+            Start           :    out Storage.Integer_Address;
+            Real_Depth      :    out Integer;
+            Real_Line_Size  :    out Integer)
+    is
+        Stride : constant Long_Long_Integer :=
+            (if Line_Size = 0
+             then Long_Long_Integer (W) * Long_Long_Integer (Depth)
+             else Long_Long_Integer (Line_Size));
+        Needed : constant Long_Long_Integer :=
+            Long_Long_Integer (H - 1) * Stride
+                + Long_Long_Integer (W) * Long_Long_Integer (Depth);
+        Offset : constant Long_Long_Integer :=
+            (if Flip_Horizontal then Long_Long_Integer (W - 1) * Long_Long_Integer (Depth) else 0)
+                + (if Flip_Vertical then Long_Long_Integer (H - 1) * Stride else 0);
+    begin
+        if Long_Long_Integer (Data'Length) < Needed then
+            raise Constraint_Error with "image data too short:" & Data'Length'Image
+                & " bytes, not" & Needed'Image;
+        end if;
+        Start := Storage.To_Integer (Data (Data'First + Size_Type (Offset))'Address);
+        Real_Depth := (if Flip_Horizontal then -Depth else Depth);
+        Real_Line_Size := (if Flip_Vertical then Integer (-Stride) else Line_Size);
+    end Image_Start;
+
 
     procedure Draw_Image
            (X, Y, W, H      : in Integer;
@@ -1202,24 +1238,17 @@ package body FLTK.Draw is
             Flip_Horizontal : in Boolean := False;
             Flip_Vertical   : in Boolean := False)
     is
-        Real_Depth : Integer := Depth;
-        Real_Line_Data : Integer := Line_Size;
+        Start : Storage.Integer_Address;
+        Real_Depth, Real_Line_Data : Integer;
     begin
         Check_Not_In_Image_Line;
-        if Flip_Horizontal then
-            Real_Depth := Real_Depth * (-1);
+        if W < 1 or H < 1 then
+            return;
         end if;
-        if Flip_Vertical then
-            if Real_Line_Data = 0 then
-                Real_Line_Data := W * Depth * (-1);
-            else
-                Real_Line_Data := Real_Line_Data * (-1);
-            end if;
-        end if;
+        Image_Start (W, H, Data, Depth, Line_Size, Flip_Horizontal, Flip_Vertical,
+            Start, Real_Depth, Real_Line_Data);
         fl_draw_draw_image
-           ((if Data'Length > 0
-             then Storage.To_Integer (Data (Data'First)'Address)
-             else Null_Pointer),
+           (Start,
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
             Interfaces.C.int (W),
@@ -1275,6 +1304,11 @@ package body FLTK.Draw is
             Depth      : in Positive := 3) is
     begin
         Check_Not_In_Image_Line;
+        --  FLTK's Cairo drawing allocates W * Depth * H bytes, and a
+        --  negative size throws (FLTK-issues.md F34).
+        if W < 1 or H < 1 then
+            return;
+        end if;
         Image_Func_Ptr := Callback;
         Image_Depth := Depth;
         Line_Raised := False;
@@ -1298,24 +1332,17 @@ package body FLTK.Draw is
             Flip_Horizontal : Boolean := False;
             Flip_Vertical   : Boolean := False)
     is
-        Real_Depth : Integer := Depth;
-        Real_Line_Data : Integer := Line_Size;
+        Start : Storage.Integer_Address;
+        Real_Depth, Real_Line_Data : Integer;
     begin
         Check_Not_In_Image_Line;
-        if Flip_Horizontal then
-            Real_Depth := Real_Depth * (-1);
+        if W < 1 or H < 1 then
+            return;
         end if;
-        if Flip_Vertical then
-            if Real_Line_Data = 0 then
-                Real_Line_Data := W * Depth * (-1);
-            else
-                Real_Line_Data := Real_Line_Data * (-1);
-            end if;
-        end if;
+        Image_Start (W, H, Data, Depth, Line_Size, Flip_Horizontal, Flip_Vertical,
+            Start, Real_Depth, Real_Line_Data);
         fl_draw_draw_image_mono
-           ((if Data'Length > 0
-             then Storage.To_Integer (Data (Data'First)'Address)
-             else Null_Pointer),
+           (Start,
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
             Interfaces.C.int (W),
@@ -1365,6 +1392,11 @@ package body FLTK.Draw is
             Depth      : in Positive := 1) is
     begin
         Check_Not_In_Image_Line;
+        --  FLTK's Cairo drawing allocates W * Depth * H bytes, and a
+        --  negative size throws (FLTK-issues.md F34).
+        if W < 1 or H < 1 then
+            return;
+        end if;
         Mono_Image_Func_Ptr := Callback;
         Mono_Image_Depth := Depth;
         Line_Raised := False;

@@ -181,7 +181,16 @@ package FLTK.Tree_Items is
     procedure Deactivate
            (This : in Tree_Item);
 
+    --  FLTK's own visible flag, which FLTK 1.4 sets for every item and
+    --  gives no public way to clear, so this is always True.  Whether the
+    --  item would be shown, its parents all open, is Is_Tree_Visible.
     function Is_Visible
+           (This : in Tree_Item)
+        return Boolean;
+
+    --  True if the item and all its parents are open and visible
+    --  (Fl_Tree_Item::is_visible_r).
+    function Is_Tree_Visible
            (This : in Tree_Item)
         return Boolean;
 
@@ -202,6 +211,7 @@ package FLTK.Tree_Items is
            (This : in Tree_Item)
         return Natural;
 
+    --  Raises Constraint_Error if Place is past the last child.
     function Child
            (This  : in Tree_Item;
             Place : in Positive)

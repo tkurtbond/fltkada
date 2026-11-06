@@ -4,6 +4,11 @@
 --  Released into the public domain
 
 
+with
+
+    FLTK.Draw;
+
+
 package body Scroll_Areas is
 
 
@@ -12,6 +17,10 @@ package body Scroll_Areas is
     begin
         Calls := Calls + 1;
         Last := (X, Y, W, H);
+        if Fill then
+            FLTK.Draw.Set_Color (Hue);
+            FLTK.Draw.Rect_Fill (X, Y, W, H);
+        end if;
     end Draw;
 
 

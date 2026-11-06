@@ -419,8 +419,13 @@ unsigned long fl_menu_get_mode(MENU m, int i) {
     return static_cast<Fl_Menu_*>(m)->mode(i);
 }
 
+//  FL_SUBMENU and FL_SUBMENU_POINTER give the array its shape, so setting
+//  them on an item in a menu, or clearing them on a title, makes FLTK read
+//  the items in a different way (FLTKAda-BUGS.md 106).  They are kept.
 void fl_menu_set_mode(MENU m, int i, unsigned long f) {
-    static_cast<Fl_Menu_*>(m)->mode(i, f);
+    Fl_Menu_ * menu = static_cast<Fl_Menu_*>(m);
+    const unsigned long shape = FL_SUBMENU | FL_SUBMENU_POINTER;
+    menu->mode(i, (menu->mode(i) & shape) | (f & ~shape));
 }
 
 

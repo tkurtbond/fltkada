@@ -1238,14 +1238,20 @@ package body FLTK.Widgets.Groups.Tables is
             Column : in Positive)
         return Positive
     is
-        Result : constant Interfaces.C.int := fl_table_get_col_width
-            (This.Void_Ptr, Interfaces.C.int (Column) - 1);
     begin
-        return Positive (Result);
-    exception
-    when Constraint_Error => raise Internal_FLTK_Error with
-        "Fl_Table::col_width returned unexpected int value of " &
-        Interfaces.C.int'Image (Result);
+        if Column > Integer (fl_table_get_cols (This.Void_Ptr)) then
+            raise Range_Error with "Column = " & Positive'Image (Column);
+        end if;
+        declare
+            Result : constant Interfaces.C.int := fl_table_get_col_width
+                (This.Void_Ptr, Interfaces.C.int (Column) - 1);
+        begin
+            return Positive (Result);
+        exception
+        when Constraint_Error => raise Internal_FLTK_Error with
+            "Fl_Table::col_width returned unexpected int value of " &
+            Interfaces.C.int'Image (Result);
+        end;
     end Get_Column_Width;
 
 
@@ -1254,6 +1260,9 @@ package body FLTK.Widgets.Groups.Tables is
             Column : in     Positive;
             Value  : in     Positive) is
     begin
+        if Column > Integer (fl_table_get_cols (This.Void_Ptr)) then
+            raise Range_Error with "Column = " & Positive'Image (Column);
+        end if;
         fl_table_set_col_width
            (This.Void_Ptr,
             Interfaces.C.int (Column) - 1,
@@ -1425,14 +1434,20 @@ package body FLTK.Widgets.Groups.Tables is
             Row  : in Positive)
         return Positive
     is
-        Result : constant Interfaces.C.int := fl_table_get_row_height
-            (This.Void_Ptr, Interfaces.C.int (Row) - 1);
     begin
-        return Positive (Result);
-    exception
-    when Constraint_Error => raise Internal_FLTK_Error with
-        "Fl_Table::row_height returned unexpected int value of " &
-        Interfaces.C.int'Image (Result);
+        if Row > Integer (fl_table_get_rows (This.Void_Ptr)) then
+            raise Range_Error with "Row = " & Positive'Image (Row);
+        end if;
+        declare
+            Result : constant Interfaces.C.int := fl_table_get_row_height
+                (This.Void_Ptr, Interfaces.C.int (Row) - 1);
+        begin
+            return Positive (Result);
+        exception
+        when Constraint_Error => raise Internal_FLTK_Error with
+            "Fl_Table::row_height returned unexpected int value of " &
+            Interfaces.C.int'Image (Result);
+        end;
     end Get_Row_Height;
 
 
@@ -1441,6 +1456,9 @@ package body FLTK.Widgets.Groups.Tables is
             Row   : in     Positive;
             Value : in     Positive) is
     begin
+        if Row > Integer (fl_table_get_rows (This.Void_Ptr)) then
+            raise Range_Error with "Row = " & Positive'Image (Row);
+        end if;
         fl_table_set_row_height
            (This.Void_Ptr,
             Interfaces.C.int (Row) - 1,
@@ -1973,6 +1991,10 @@ package body FLTK.Widgets.Groups.Tables is
             Context    : in     Table_Context;
             X, Y, W, H :    out Integer) is
     begin
+        if Context not in Row_Header | Column_Header | Dead_Zone then
+            raise Constraint_Error with
+                "Bounding_Region: no region for " & Table_Context'Image (Context);
+        end if;
         fl_table_get_bounds
            (This.Void_Ptr,
             To_Cint (Context),

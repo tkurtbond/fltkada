@@ -257,10 +257,21 @@ package body FLTK.Devices.Surface.Paged.Postscript is
     end Finalize;
 
 
+    --  A job not ended is ended, as the PDF surface's is, after its page,
+    --  or Cairo's surface is never finished and the file stays empty
+    --  (FLTKAda-BUGS.md 121).  Errors are ignored, as Finalize can't raise.
     procedure Finalize
-           (This : in out Postscript_File_Device) is
+           (This : in out Postscript_File_Device)
+    is
+        Ignore : Interfaces.C.int;
     begin
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
+            if This.In_Page then
+                This.In_Page := False;
+                This.Shifts := 0;
+                Ignore := fl_postscript_file_device_end_page (This.Void_Ptr);
+                Pop_Bookkeep;
+            end if;
             if Release_Current (This) then
                 free_fl_postscript_file_device (This.Void_Ptr);
             end if;

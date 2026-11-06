@@ -1161,7 +1161,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
            (This.Void_Ptr,
             Interfaces.C.int (Pos),
             Interfaces.C.int (X),
-            Interfaces.C.int (Y)) /= 0;
+            Interfaces.C.int (Y)) = 0;
     end Position_To_XY;
 
 

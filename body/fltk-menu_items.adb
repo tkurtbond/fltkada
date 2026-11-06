@@ -204,8 +204,8 @@ package body FLTK.Menu_Items is
     pragma Inline (fl_menu_item_get_flags);
 
     procedure fl_menu_item_set_flags
-           (MI : in Storage.Integer_Address;
-            F  : in Interfaces.C.int);
+           (MI            : in Storage.Integer_Address;
+            F, Keep_Shape : in Interfaces.C.int);
     pragma Import (C, fl_menu_item_set_flags, "fl_menu_item_set_flags");
     pragma Inline (fl_menu_item_set_flags);
 
@@ -567,7 +567,10 @@ package body FLTK.Menu_Items is
            (This : in out Menu_Item;
             To   : in     Menu_Flag) is
     begin
-        fl_menu_item_set_flags (This.Void_Ptr, MFlag_To_Cint (To));
+        fl_menu_item_set_flags
+           (This.Void_Ptr,
+            MFlag_To_Cint (To),
+            Boolean'Pos (not This.Needs_Dealloc));
     end Set_Flags;
 
 

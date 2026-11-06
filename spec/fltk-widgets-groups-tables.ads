@@ -214,11 +214,13 @@ package FLTK.Widgets.Groups.Tables is
            (This  : in out Table;
             Value : in     Positive);
 
+    --  Raises Range_Error if Column is past Get_Columns.
     function Get_Column_Width
            (This   : in Table;
             Column : in Positive)
         return Positive;
 
+    --  Raises Range_Error if Column is past Get_Columns.
     procedure Set_Column_Width
            (This   : in out Table;
             Column : in     Positive;
@@ -294,11 +296,13 @@ package FLTK.Widgets.Groups.Tables is
            (This  : in out Table;
             Value : in     Positive);
 
+    --  Raises Range_Error if Row is past Get_Rows.
     function Get_Row_Height
            (This : in Table;
             Row  : in Positive)
         return Positive;
 
+    --  Raises Range_Error if Row is past Get_Rows.
     procedure Set_Row_Height
            (This  : in out Table;
             Row   : in     Positive;
@@ -493,6 +497,10 @@ package FLTK.Widgets.Groups.Tables is
             Row, Column : in     Positive;
             X, Y, W, H  :    out Integer);
 
+    --  Row_Header and Column_Header give the headers' regions, and
+    --  Dead_Zone the region inside the box around the cells
+    --  (Fl_Table::get_bounds with CONTEXT_TABLE).  Any other Context
+    --  raises Constraint_Error, since FLTK has no region for it.
     procedure Bounding_Region
            (This       : in     Table;
             Context    : in     Table_Context;

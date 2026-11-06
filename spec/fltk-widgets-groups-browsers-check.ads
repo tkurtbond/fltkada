@@ -101,9 +101,10 @@ package FLTK.Widgets.Groups.Browsers.Check is
             Index : in Positive)
         return String;
 
+    --  0 when no item is selected (FLTKAda-BUGS.md 107).
     function Selected_Index
            (This : in Check_Browser)
-        return Positive;
+        return Natural;
 
 
 

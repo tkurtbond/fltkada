@@ -390,7 +390,7 @@ package body FLTK.Widgets.Groups.Scrolls is
            (This : in out Scroll;
             Mode : in     Scroll_Kind) is
     begin
-        fl_widget_set_type (This.Void_Ptr, Scroll_Kind'Pos (Mode));
+        fl_widget_set_type (This.Void_Ptr, Scroll_Kind'Pos (Mode) + 1);
     end Set_Kind;
 
 

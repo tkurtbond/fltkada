@@ -598,6 +598,8 @@ common ~60% of the Fl_Tree / Fl_Tree_Item API rather than full parity
     Set_Label_Font, Get/Set_Label_Size), along with label_x/y/w/h;
     labelfgcolor/labelbgcolor are bound too (Tree_Items.Get/
     Set_Label_FG_Color, Get/Set_Label_BG_Color).
+  - is_visible() is Tree_Items.Is_Visible, always True in FLTK 1.4;
+    is_visible_r() is Tree_Items.Is_Tree_Visible.
   - widget() embedding IS bound (Tree_Items.Set_Widget/Has_Widget/
     Get_Widget), along with item_draw_mode() (Tree_Items.Item_Draw_Mode,
     Trees.Get/Set_Item_Draw_Mode) and widgetmarginleft()

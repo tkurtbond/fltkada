@@ -259,6 +259,16 @@ extern "C" int fl_probe_close_modal() {
     return 1;
 }
 
+//  What the window system's close button does: Fl::handle (FL_CLOSE),
+//  which sets Fl::event (Fl.cxx:1393-1396).
+extern "C" int fl_probe_close_modal_window() {
+    Fl_Window *modal = Fl::modal();
+    if (modal == 0) {
+        return 0;
+    }
+    return Fl::handle(FL_CLOSE, modal);
+}
+
 static int has_text(Fl_Widget * w, const char * t) {
     if ((w->label() != 0 && strcmp(w->label(), t) == 0)
         || (w->tooltip() != 0 && strcmp(w->tooltip(), t) == 0)) {

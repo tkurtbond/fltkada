@@ -87,6 +87,10 @@ int fl_tree_item_is_visible(TREEITEM ti) {
     return static_cast<Fl_Tree_Item*>(ti)->is_visible();
 }
 
+int fl_tree_item_is_visible_r(TREEITEM ti) {
+    return static_cast<Fl_Tree_Item*>(ti)->is_visible_r();
+}
+
 int fl_tree_item_is_root(TREEITEM ti) {
     return static_cast<Fl_Tree_Item*>(ti)->is_root();
 }

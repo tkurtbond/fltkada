@@ -89,8 +89,9 @@ public:
 
     FILE *stream;  //  the Sink's stream, given to FLTK, or 0
     Sink sink;
+    bool in_job;   //  a job started, not yet ended
 
-    My_PostScript_File_Device() : stream(0) {
+    My_PostScript_File_Device() : stream(0), in_job(false) {
         sink.fd = -1;
         sink.failed = sink.closed = false;
     }
@@ -112,7 +113,20 @@ public:
         return result;
     }
 
+    //  Ends the job, if one is started.  FLTK's destructor doesn't, so
+    //  Cairo's surface would never be finished, and the file would stay
+    //  empty (FLTKAda-BUGS.md 121).
+    int finish() {
+        if (!in_job) {
+            return 0;
+        }
+        in_job = false;
+        end_job();
+        return close_stream();
+    }
+
     ~My_PostScript_File_Device() {
+        finish();
         close_stream();
     }
 };
@@ -192,25 +206,28 @@ int fl_postscript_file_device_start_job3(POSTSCRIPTFILEDEVICE p, void * o, int c
         d->close_stream();
         return 3;
     }
-    return d->start_job
+    int r = d->start_job
         (d->stream,
          c,
          static_cast<Fl_Paged_Device::Page_Format>(f),
          static_cast<Fl_Paged_Device::Page_Layout>(l));
+    d->in_job = r == 0;
+    return r;
 }
 
 int fl_postscript_file_device_start_job4(POSTSCRIPTFILEDEVICE p, int c, int f, int l) {
-    return static_cast<Fl_PostScript_File_Device*>(p)->start_job
+    My_PostScript_File_Device *d = static_cast<My_PostScript_File_Device*>(p);
+    int r = d->start_job
        (c,
         static_cast<Fl_Paged_Device::Page_Format>(f),
         static_cast<Fl_Paged_Device::Page_Layout>(l));
+    d->in_job = r == 0;
+    return r;
 }
 
 //  For a job given a file, 1 if a write failed, 2 if Cairo had an error.
 int fl_postscript_file_device_end_job(POSTSCRIPTFILEDEVICE p) {
-    My_PostScript_File_Device *d = static_cast<My_PostScript_File_Device*>(p);
-    d->end_job();
-    return d->close_stream();
+    return static_cast<My_PostScript_File_Device*>(p)->finish();
 }
 
 int fl_postscript_file_device_start_page(POSTSCRIPTFILEDEVICE p) {

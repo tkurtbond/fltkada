@@ -220,6 +220,8 @@ package FLTK.Widgets.Groups.Text_Displays is
             Pos      : in     Integer;
             X, Y     :    out Integer;
             Vert_Out :    out Boolean);
+    --  Vert_Out is True when Pos is above or below the lines shown, and
+    --  then X and Y are 0 (FLTKAda-BUGS.md 109).
 
     procedure Find_Line_End
            (This                    : in     Text_Display;

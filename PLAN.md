@@ -2720,7 +2720,7 @@ passes at `FLTK_SCALING_FACTOR` 1.5 and 2.
 - **No constants** go in `tools/gen-constants.py`: `Bitmap_Font` and
   `Stroke_Font` stand for addresses of FLTK's font objects, not values.
 
-### Phase 14: Examples and test ports
+### Phase 14: Examples and test ports [done, 2026-11-06]
 
 **Demo programs.** These go in `test/`, built by `tests.gpr`, one file
 each.
@@ -3117,6 +3117,240 @@ Decisions, as the phase goes:
   - With `tree_icons`, every one of pofltk's own examples that Phase 14
     takes is ported: `save_as` was already test/saveas.adb, and `rects`
     went to Phase 16.
+- **Unit tests, first six areas** (2026-11-06): `test_widget`,
+  `test_button`, `test_input`, `test_valuator` and `test_menu` port
+  pofltk's TestWidgets, TestButtons, TestInputs, TestValuators and
+  TestMenus, with FLTKAda's 1-based menu indexes. Each passes on Xvfb and
+  sway, and `vg-check.sh` passes it under valgrind. What other unit tests
+  already check (global menus, the scheme choice, undo, the shortcut
+  button) is left to them. `test_menu` found FLTKAda-BUGS.md 106:
+  `Set_Flags` could take `Submenu` off a title or give it to an item.
+  pofltk checks that FLTKAda can't make, since the API isn't bound, so
+  they are left out or skipped, to be decided with the user:
+  - `FLTK.Normal_Size` is a constant, so FLTK's default label size
+    can't be set.
+  - Buttons have no `type ()`, so a check button can't be made a radio
+    button.
+  - `Input_Choice` lacks `update_menubutton` (Fl_Input_Choice.H:177).
+  - `Spinner` lacks `wrap` (Fl_Spinner.H:133-139).
+  - `Counters.Get_Kind` takes `in out` where `in` would do.
+- **Unit test for browsers** (2026-11-06): `test_browser` ports pofltk's
+  TestBrowsers (lines, sorting, selection, hiding, columns, scrolling,
+  hold, multi, file and check browsers, clicked through `FLTK.Probe`).
+  Loading, the top line, directory order and icons are left to the
+  existing tests. It passes on Xvfb, sway and valgrind. It found
+  FLTKAda-BUGS.md 107 (`Check_Browser.Selected_Index` raised with
+  nothing selected; fixed) and 108 (`File_Browser.Load` as a procedure
+  is ambiguous without `Dir =>`; fixed 2026-11-06 by the user's
+  choice, an overriding `Load (Dir)` and no default `Sort` on the
+  procedure). Not bound, so
+  left out: `FL_SORT_CASEINSENSITIVE` (Fl_Browser_.H:38), since
+  `Sort_Order` is just `Ascending` and `Descending`.
+- **Unit test for text** (2026-11-06): `test_text` ports pofltk's
+  TestText (buffer text and UTF-8, the three selections, lines, words,
+  searching, files, the modify callback, a display's cursor, wrapping
+  and styles, and typing in an editor). What test_buffer_life,
+  test_undo_redo, test_text_search, test_highlight_data and
+  test_text_buffer_methods already check is left to them. It passes on
+  Xvfb, sway and valgrind. It found FLTKAda-BUGS.md 109
+  (`Position_To_XY`'s `Vert_Out` inverted) and 110 (the shim's
+  `FLTK_ABI_VERSION` guards, a 1.3 name, made eleven shim functions do nothing;
+  test_abi_guards), both fixed.
+- **Unit test for tree** (2026-11-06): `test_tree` ports pofltk's
+  TestTree and the first part of TestTreeItems (items, paths and their
+  escapes, Child and Swap_Children by place, Next/Prev, Insert,
+  sorting, Clear_Children, open and close, selection by the program and
+  by the mouse, a program's `Custom_Item` drawn, replaced and clicked,
+  Clear). Removal, widgets, icons and margins are left to
+  test_tree_remove, test_tree_widgets, test_tree_icons and
+  test_tree_margins, and pofltk's IsLive checks have no counterpart, a
+  `Tree_Item` being a plain handle. It passes on Xvfb, sway and
+  valgrind. It found FLTKAda-BUGS.md 111 (`Child` read past FLTK's
+  array), fixed. Also:
+  - `Tree_Items.Is_Visible` binds `is_visible()`, FLTK's VISIBLE flag,
+    which FLTK 1.4.5 sets in the constructor (Fl_Tree_Item.cxx:57) and
+    changes only through the protected `set_flag`, so it is always True
+    (checked after `Close` of the parent). pofltk's IsVisible is
+    `is_visible_r()`. Added `Tree_Items.Is_Tree_Visible` for it, named
+    as `Widgets.Is_Tree_Visible` is for `visible_r()`.
+  - Checked in the test: `Select_Item` and `Deselect` call back (FLTK's
+    default `docallback`), unlike pofltk's Select. `Select_All` starts
+    at `first()`, the root, so it selects the root too, shown or not
+    (Fl_Tree.cxx:1892-1905); it calls back once for each item changed.
+  - `Insert` with a place past the end adds at the end:
+    `Fl_Tree_Item_Array::insert` clamps it
+    (Fl_Tree_Item_Array.cxx:114-117).
+- **Unit test for table** (2026-11-06): `test_table` ports pofltk's
+  TestTable but for its widgets in cells, which test_table_children
+  already covers (rows, columns, headers, sizes, colours, resizing,
+  `Draw_Cell` counts and pixels, `Cell_Dimensions`, a click and its
+  callback, row selection in each mode, cell selection, Tab with
+  `Navigate_Cells`, `Set_Row_Position`). It passes on Xvfb, sway and
+  valgrind. It found FLTK-issues.md F33 (`row_height` past the last row
+  writes past its array) and FLTKAda-BUGS.md 112 (the four size
+  calls took any row or column) and 113 (`Bounding_Region` returned
+  uninitialised values for most contexts), all fixed. Also:
+  - pofltk's Area reads three of Fl_Table's protected boxes. FLTK's
+    `get_bounds` gives only the inner one (`Dead_Zone`, which is
+    `CONTEXT_TABLE`) and the two headers', but those give the edges of
+    the other two, so the test checks pofltk's values through them.
+  - pofltk's "every widget deleted" check has no counterpart; valgrind
+    covers it.
+- **Unit test for layout** (2026-11-06): `test_layout` ports pofltk's
+  TestLayout: a flex column and row, a 2x2 grid (cells counted from 1),
+  a pack, a scroll, tabs, a wizard, a tile and a spinner's `Clear`. It
+  passes on Xvfb, sway and valgrind. It found FLTKAda-BUGS.md 114
+  (`Scroll.Set_Kind` was off by one), fixed. pofltk's checks that
+  `Clear` deleted the children become checks that it removed them,
+  since Ada owns them; valgrind covers the rest.
+- **Unit test for images** (2026-11-06): `test_images` ports pofltk's
+  TestImages: images from pixels at depths 2, 3 and 4, `Copy` and
+  `Scale`; files in PNG, JPEG, BMP, PNM, SVG, GIF and XPM, and the
+  errors for a missing file and one that isn't an image; PNG and SVG
+  from memory; `Desaturate` and `Color_Average`; an image drawn in
+  `Draw`, label and inactive images; image surfaces, their masks and
+  `Draw_Decorated_Window`; tiled images; image cursors. It passes on
+  Xvfb, sway and valgrind. It found FLTKAda-BUGS.md 115 (`Data_Size`
+  of a scaled image) and 116 (the data of an undrawn SVG), both fixed.
+  test/images/rb.png is the ICO tests' image, not red and blue, so the
+  PNG checks use a PNG that `Write_PNG` writes from the test's own
+  image; test/images/rb.jpg is new, copied from pofltk. pofltk's checks
+  that widgets, browsers, trees and menus keep the images they show
+  have no counterpart, since the Ada program owns its images.
+- **Unit tests for drawing** (2026-11-06): `test_draw` ports pofltk's
+  TestDraw (Draw overrides and FLTK.Draw, by their pixels) and
+  `test_draw_more` its TestDrawMore: transforms, rounded and odd shapes,
+  dashes, symbols and their table, text extents and angles, the
+  charset conversions, `Draw_Image` in every form, offscreens, scrolling
+  a surface, and, in a shown window, the overlay, `Scroll`, `Set_Spot`,
+  `Capture_Window` and `Read_Image`. Both pass on Xvfb, sway and
+  valgrind. `test_draw_more` found FLTKAda-BUGS.md 117 (flipped images,
+  and the length check only a `Pre`) and FLTK-issues.md F34 (a negative
+  image size throws), both dealt with. pofltk's checks of what FLTKAda
+  doesn't have are left out, as its header lists: a `Frame` of several
+  lines, `Measure_Pixmap`, counted and closed offscreens, and
+  conversions into a buffer too short.
+- **Unit test for events** (2026-11-06): `test_events` ports pofltk's
+  TestEvents: Push, Drag, Release, Move, the wheel and Keydown, sent
+  through `FLTK.Probe` to a box whose `Handle` records what the
+  `FLTK.Events` queries say; the pushed, below-mouse and focus widgets;
+  `Resize` overrides; and FLTK showing a window clicked where no widget
+  takes the click. It passes on Xvfb, sway and valgrind, and found no
+  bug. Not bound, so left out: clearing the focus, since
+  `Events.Set_Focus` takes a widget and FLTK's `Fl::focus` takes null
+  (src/Fl.cxx:1046), to be decided with the user.
+- **Unit test for clipboard** (2026-11-06): `test_clipboard` ports
+  pofltk's TestClipboard: no paste before anything is copied, text
+  copied and pasted to a widget's `Handle` and to an input at its
+  cursor, the selection buffer (apart from the clipboard on X11;
+  on Wayland, pasting from it delivers nothing), images put on the clipboard by a `Copy_Surface` and
+  pasted with `Paste_Image`, a copy surface inside an image surface,
+  `Draw_Decorated_Window`, and drag and drop as FLTK routes it. It
+  passes on Xvfb, sway and valgrind, and found no bug. Not bound, so
+  left out: copying to both buffers at once, since `Static.Buffer_Kind`
+  has no `Both` (FLTK's `Fl::copy` destination 2), to be decided with
+  the user.
+- **Unit test for timers** (2026-11-06): `test_timer` ports pofltk's
+  TestTimer: a timeout fires once, repeats from its handler, and is
+  removed. pofltk's timers are objects and adding a pending one moves
+  it; FLTKAda's, like FLTK's, are procedures, and adding one twice gives
+  two (Fl_Timeout.cxx, `add_timeout`), which the test checks, along
+  with `Remove_Timeout` removing all of a handler's and no other's. It
+  also checks file descriptors through a pipe, which pofltk doesn't
+  test. It passes on Xvfb, sway and valgrind, and found no bug.
+- **Unit test for preferences** (2026-11-06): `test_preferences` ports
+  pofltk's TestPreferences: entries of each kind, defaults, limits,
+  groups and their paths, deletion, and a file written and read back
+  with text FLTK escapes. Groups deleted while in use stay with
+  `test_pref_groups` (pofltk 51). It found FLTKAda-BUGS.md 118
+  (`Binary_Data` sizes divided by the pointer size) and 119 (`Get` of
+  a `String` with `Max_Length` one short), both fixed. It passes on
+  Xvfb, sway and valgrind. Kept as it was: `Delete_Entry` and
+  `Delete_Group` of one that isn't there raise `Preference_Error`,
+  where pofltk returns FALSE; the test checks that it raises.
+- **Unit test for dialogs** (2026-11-06): `test_dialogs` ports pofltk's
+  TestDialogs. Each `FLTK.Asks` dialog is answered by keys sent to the
+  modal window: `Message_Box`, `Alert`, `Choice` (Enter, Escape, `&`
+  shortcuts, an empty label), `Extended_Choice` (Escape is `Escaped`,
+  the close button `Closed`), `Text_Input`, `Password`, the one-time
+  and default titles, `Color_Chooser`, `Show_Colormap`, FLTK's own
+  `File_Chooser` with `Set_File_Chooser_Callback`, and `Dir_Chooser`.
+  Placement and the icon's text stay with `test_ask_placement`; the
+  native file chooser is left out, as it can reach the desktop. Found,
+  in FLTK's source and then the test: a `Choice` with only its first
+  button can't be answered by Enter, since that button's shortcut is
+  Escape and no button has the focus (Fl_Message.cxx:183-187, 359-360);
+  the test checks Escape. `FLTK.Probe` gained `Close_Modal_Window`,
+  which sends `FL_CLOSE` as the close button does; `Close_Modal` acts
+  as an Escape, so `Extended_Choice` gave `Escaped` for it. It passes
+  on Xvfb, sway and valgrind. Gaps for the user to decide: `Text_Input`,
+  `Password` and the choosers give "" when cancelled, so cancelling
+  can't be told from an empty answer, and there is no
+  `Get_Message_Font`.
+- **Unit test for help** (2026-11-06): `test_help` ports the rest of
+  pofltk's TestHelp: a view's settings, scrolling, `Find`, selection
+  and `Copy`, the callback scrolling calls, the file and directory, a
+  file that can't be read, and the help dialog. Links, images, clicks,
+  held links and the dialog's group were already
+  `test_help_links`, `test_help_held`, `test_help_pages_load` and
+  `test_help_dialog_group`. It found FLTKAda-BUGS.md 120
+  (`Current_Directory` and `Current_File` raised when FLTK had none),
+  fixed. It passes on Xvfb, sway and valgrind.
+- **Unit test for terminal** (2026-11-06): `test_terminal` ports the
+  rest of pofltk's TestTerminal: the settings and their defaults, the
+  group a terminal leaves current, output and the clearing calls, the
+  output translations, UTF-8 and the error character, escape
+  sequences, the history, sizes, drawing, selecting with the mouse, a
+  subclass's `Draw`, `Handle` and `Resize`, and a terminal finalized
+  with a redraw pending. The cursor's moves, the redraw rate and the
+  cursor kept on a smaller screen were already `test_terminal_cursor`,
+  `test_terminal_expose` and `test_terminal_fit`. Found while writing
+  it, in FLTK 1.4.5's source and checked by the test: a drag selects
+  nothing until a second one, as the first only starts the selection
+  where the button went down (`Fl_Terminal::handle_selection`;
+  pofltk's test got past this with a double click, which selects a
+  word). No bugs. It passes on Xvfb, sway and valgrind.
+- **Unit test for print** (2026-11-06): `test_print` ports the parts of
+  pofltk's TestPrint not already in `test_eps_surface`,
+  `test_pdf_surface`, `test_svg_surface`, `test_ps_errors`,
+  `test_page_misuse`, `test_page_finalize`, `test_print_font`,
+  `test_printer_labels` and `test_print_support`: a PostScript job of
+  three pages, its margins, origin, translation, scale and rotation,
+  landscape and reversed jobs, `Print_Widget`, a device finalized
+  halfway, surfaces nested three deep, and a window drawn on an EPS
+  surface before and after it is shown. pofltk's printer dialog,
+  cancelled, is left out, as a native dialog can reach the desktop.
+  Found: FLTKAda-BUGS.md 121, a PostScript device finalized in a job
+  left its file empty; fixed. It passes on Xvfb, sway and valgrind.
+- **Unit test for gl** (2026-11-06): `test_gl` ports the parts of
+  pofltk's TestGl not already in `test_gl_overlay`,
+  `test_gl_text_width` and `test_gl_window_group`: the default mode and
+  `Can_Do`, a mode set before and after showing, drawing red and reading
+  it back, validity at the first and later draws, after a resize and
+  after `Invalidate`, GL calls outside `Draw` after `Make_Current`, the
+  swap interval, hiding and showing again, `FLTK.Draw.OpenGL`'s text
+  metrics and rectangles, a GL window with a child inside a plain
+  window, and `Start` in a plain window (skipped on Wayland, pofltk
+  109). pofltk's check that a deleted GL window deletes its child has no
+  counterpart, as the child is an Ada object of its own. No bug found.
+  It passes on Xvfb, sway and valgrind.
+- **Unit test for glut** (2026-11-06): `test_glut` ports the parts of
+  pofltk's TestGlut not already in `test_glut_live`, `test_glut_fonts`,
+  `test_glut_overlay`, `test_glut_strings` and `test_glut_window_of`:
+  the state, device and layer queries, the display, reshape and
+  visibility functions, a window reshaped, retitled and given a cursor,
+  a subwindow and `Set_Window`, a window hidden and destroyed, the
+  window calls with no current window, a `Glut_Window`'s mouse, motion,
+  wheel, entry, keyboard and special keys, callbacks set to null, menu
+  items changed and the menu state heard (X11 only), timers, the idle
+  function, and the stroke fonts' sizes. Where pofltk calls
+  `MakeCurrent` on a window not yet shown, FLTKAda's raises
+  Program_Error (pofltk 111), so the test checks that and uses
+  `Set_Window`. No bug found. It passes on Xvfb, sway and valgrind.
+- **Phase 14 done** (2026-11-06): every unit test listed is ported, and
+  `make smoke-headless` covers every program. After the last change,
+  check-headless, check-sway, smoke-headless, smoke-sway,
+  valgrind-headless and valgrind-sway all exit 0.
 
 ### Phase 15: Documentation
 

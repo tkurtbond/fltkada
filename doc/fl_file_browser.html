@@ -170,12 +170,18 @@ function Load
 
 procedure Load
        (This : in out File_Browser;
+        Dir  : in     String);
+
+procedure Load
+       (This : in out File_Browser;
         Dir  : in     String;
-        Sort : in not null FLTK.Filenames.Compare_Function :=
-            FLTK.Filenames.Numeric_Sort'Access);
+        Sort : in not null FLTK.Filenames.Compare_Function);
 </pre><p>The function returns the number of the directory's entries, with
 ./ and those the filter hides, not of the lines listed (pofltk 40).
-Load ("") lists the mount points.</p></td>
+Load ("") lists the mount points. The one-argument procedure overrides
+Textline_Browser's Load, as C++'s load hides Fl_Browser::load, and
+sorts with Numeric_Sort; so even through Textline_Browser'Class it lists
+a directory (FLTKAda-BUGS.md 108).</p></td>
   </tr>
 
   <tr>

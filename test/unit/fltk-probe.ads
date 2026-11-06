@@ -170,6 +170,11 @@ package FLTK.Probe is
     function Close_Modal
         return Boolean;
 
+    --  Closes the modal window as its close button does, by FL_CLOSE; False
+    --  if none is shown.
+    function Close_Modal_Window
+        return Boolean;
+
     --  Whether a widget in a shown window has Text as its label or tooltip.
     --  For a widget the binding doesn't expose, such as a chooser's parts.
     function Has_Label

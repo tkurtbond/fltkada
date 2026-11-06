@@ -128,6 +128,10 @@ package body FLTK.Probe is
         return C.int;
     pragma Import (C, fl_probe_close_modal, "fl_probe_close_modal");
 
+    function fl_probe_close_modal_window
+        return C.int;
+    pragma Import (C, fl_probe_close_modal_window, "fl_probe_close_modal_window");
+
     function fl_probe_has_label
            (T : in C.char_array)
         return C.int;
@@ -507,6 +511,17 @@ package body FLTK.Probe is
         Hook_Exceptions.Reraise;
         return Result;
     end Close_Modal;
+
+
+    function Close_Modal_Window
+        return Boolean
+    is
+        Result : Boolean;
+    begin
+        Result := fl_probe_close_modal_window /= 0;
+        Hook_Exceptions.Reraise;
+        return Result;
+    end Close_Modal_Window;
 
 
     function Has_Label

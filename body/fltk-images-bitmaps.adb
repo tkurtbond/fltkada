@@ -238,7 +238,7 @@ package body FLTK.Images.Bitmaps is
            (This : in Bitmap)
         return Size_Type is
     begin
-        return Size_Type (Bytes_Needed (This.Get_W)) * Size_Type (This.Get_H);
+        return Size_Type (Bytes_Needed (This.Get_Data_W)) * Size_Type (This.Get_Data_H);
     end Data_Size;
 
 

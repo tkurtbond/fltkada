@@ -7,6 +7,15 @@ come first in each list.
 
 ## Changes that can stop a program compiling
 
+- **`File_Browser`'s `Load` procedure with a `Sort` has no default for
+  it, and the one-argument `Load` lists a directory.** `File_Browser`
+  overrides the `Load (File)` it inherits from `Textline_Browser` with
+  `Load (Dir)`, as C++'s `Fl_File_Browser::load` hides `Fl_Browser::load`.
+  `Load ("dir")`, `Load (Dir => "dir")` and `Load ("dir", Sort)` all
+  compile; `Load (File => ...)` on a file browser does not. A dispatching
+  call through `Textline_Browser'Class` on a file browser now lists the
+  directory instead of reading it as a text file.
+  [FLTKAda-BUGS.md 108](FLTKAda-BUGS.md#108-file_browserload-couldnt-be-called-as-a-procedure-with-its-default-sort).
 - **`Valuators.Set_Step_Top` and `Set_Step_Bottom`, and
   `Counters.Set_Step_Top`, are obsolescent.** They still work, and do
   what they did; `Set_Step (This, To)` is the new name for both, with a
@@ -61,6 +70,78 @@ come first in each list.
 
 ## Changes that can make a program behave differently
 
+- **A `Postscript_File_Device` finalized in a job ends the job**, and
+  its page if one is open, as a PDF surface does. The file is then
+  complete. Before, nothing was written to it.
+  [FLTKAda-BUGS.md 121](FLTKAda-BUGS.md#121-a-postscript-device-finalized-in-a-job-left-its-file-empty).
+- **`Text_Display.Position_To_XY` gives `Vert_Out` the right way
+  round:** True when the position is out of view, False when it is
+  shown. Before, it was the opposite.
+  [FLTKAda-BUGS.md 109](FLTKAda-BUGS.md#109-text_displayposition_to_xy-gave-vert_out-the-wrong-way-round).
+- **Some setters that did nothing now work:** `Text_Editor.Set_Tab_Mode`,
+  `Table.Set_Tab_Mode`, `Table.Set_Scrollbar_Size`, the three
+  `Tooltips` margin and wrap setters, and `System_Menu_Bar.Update`. Their
+  getters, and `Scroll.Recalculate_Scrollbars`, now give FLTK's values.
+  [FLTKAda-BUGS.md 110](FLTKAda-BUGS.md#110-the-shims-fltk_abi_version-guards-made-some-calls-do-nothing).
+- **`Tree_Items.Child` raises `Constraint_Error` for a place past the
+  last child.** Before, it read past FLTK's array and returned a bad
+  handle.
+  [FLTKAda-BUGS.md 111](FLTKAda-BUGS.md#111-tree_itemschild-read-past-fltks-array).
+- **`Table.Get_Row_Height`, `Set_Row_Height`, `Get_Column_Width` and
+  `Set_Column_Width` raise `Range_Error` for a row past `Get_Rows` or a
+  column past `Get_Columns`.** Before, the getters raised
+  `Internal_FLTK_Error`, `Set_Column_Width` grew FLTK's widths silently,
+  and `Set_Row_Height` wrote past FLTK's array.
+  [FLTKAda-BUGS.md 112](FLTKAda-BUGS.md#112-a-tables-row-heights-and-column-widths-took-any-row-or-column).
+- **`Table.Bounding_Region` raises `Constraint_Error` for a context
+  other than `Row_Header`, `Column_Header` and `Dead_Zone`.** Before,
+  it printed a message from FLTK and returned uninitialised values.
+  [FLTKAda-BUGS.md 113](FLTKAda-BUGS.md#113-tablebounding_region-gave-uninitialised-values-for-most-contexts).
+- **`Scroll.Set_Kind` sets the kind it is given.** Before, it set the
+  next one down, so `Vertical` gave a horizontal scrollbar and
+  `Horizontal` none. A program that compensated will now get the wrong
+  scrollbars.
+  [FLTKAda-BUGS.md 114](FLTKAda-BUGS.md#114-scrollset_kind-set-the-wrong-kind-of-scrollbars).
+- **`Environment` stores and reads `Binary_Data` by the byte.** Before,
+  its length was divided by the size of a pointer, so short data was
+  stored as nothing and longer data cut short; a preferences file
+  written by the old binding holds those shortened values. A `Get` of a
+  missing entry now gives its default.
+  [FLTKAda-BUGS.md 118](FLTKAda-BUGS.md#118-preferences-binary_data-entries-counted-bytes-in-pointers).
+- **`Environment.Get` of a `String` with `Max_Length` gives up to
+  `Max_Length` characters**, one more than before, and cuts a default
+  to that length too.
+  [FLTKAda-BUGS.md 119](FLTKAda-BUGS.md#119-preferences-get-of-a-string-with-max_length-gave-one-character-fewer).
+- **`Help_Views.Current_Directory` and `Current_File` give "" when there
+  is none**, where they raised `Interfaces.C.Strings.Dereference_Error`.
+  [FLTKAda-BUGS.md 120](FLTKAda-BUGS.md#120-help_view-current_directory-and-current_file-raised-with-no-file).
+- **`Draw.Draw_Image` and `Draw_Image_Mono` flip correctly, raise
+  `Constraint_Error` for too little data, and draw nothing for a width
+  or height below 1.** Before, a flipped image drew the wrong pixels,
+  too little data raised `Assertion_Error` only in a build with
+  assertions, and a negative size raised `Foreign_Exception`. The data
+  now needs `(H - 1) * Line_Size + W * Depth` bytes, a little less than
+  the old check's `Line_Size * H`.
+  [FLTKAda-BUGS.md 117](FLTKAda-BUGS.md#117-flipped-images-drew-the-wrong-pixels-and-read-before-their-data),
+  [FLTK-issues.md F34](FLTK-issues.md#f34-fl_draw_image-with-a-negative-width-or-height-throws).
+- **`Data_Size` of an RGB image or bitmap is the size of its data**,
+  `Get_Data_W` by `Get_Data_H`, not the size it is drawn at, which
+  `Scale` changes. `All_Data` of a scaled image is shorter accordingly.
+  [FLTKAda-BUGS.md 115](FLTKAda-BUGS.md#115-data_size-of-a-scaled-image-was-its-drawn-size).
+- **The pixel data of an SVG image rasterizes it**, if it hasn't been
+  drawn, and `Data_Size` raises `No_Image_Error` if an RGB image has no
+  data. Before, reading an undrawn SVG's data crashed.
+  [FLTKAda-BUGS.md 116](FLTKAda-BUGS.md#116-the-pixel-data-of-an-svg-image-not-yet-drawn).
+- **`Check_Browser.Selected_Index` returns `Natural`, and 0 when no
+  item is selected.** Before, it returned `Positive` and raised
+  `Constraint_Error` then. A call still compiles; an `'Access` with the
+  old profile no longer matches.
+  [FLTKAda-BUGS.md 107](FLTKAda-BUGS.md#107-check_browserselected_index-raised-when-nothing-was-selected).
+- **`Set_Flags` leaves `Submenu` as it was on an item in a menu.**
+  `Menus.Set_Flags`, `System_Menu_Bar.Set_Flags`, and `Menu_Item.Set_Flags`
+  on an item in a menu no longer take a title's `Submenu` flag away, or
+  give it to another item. An item not yet in a menu still sets it.
+  [FLTKAda-BUGS.md 106](FLTKAda-BUGS.md#106-set_flags-could-change-a-menus-shape).
 - **A widget freed in a callback run by FLTK is hidden at once**, and
   its window redrawn without it. Before, the window went on showing it.
   [FLTKAda-BUGS.md 104](FLTKAda-BUGS.md#104-a-widget-freed-in-a-callback-goes-on-being-drawn).

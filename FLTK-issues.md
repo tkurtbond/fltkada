@@ -719,3 +719,45 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
 - **Confirmed**: a C++ program printing `fl_shortcut_label` for each of
   menubar.cxx's international shortcuts, run under Xvfb and on a headless
   sway. The two runs differ only in these two labels.
+
+### F33. `Fl_Table::row_height` past the last row writes past its array
+
+- **What happens**: `row_height (row, h)` with `row` at or past
+  `rows ()` writes one `int` past the end of the row heights. Found
+  2026-11-06, writing FLTKAda's table unit test.
+- **Cause**: to grow the array it calls `_rowheights->size (row)`, or
+  `resize (row, height)` with `FLTK_USE_STD`, which makes `row`
+  elements, numbered 0 to `row - 1`, and then writes
+  `(*_rowheights)[row]` (src/Fl_Table.cxx:232-252).
+  `Fl_Int_Vector::operator[]` doesn't check its index
+  (src/Fl_Int_Vector.H:124-127). `col_width` grows its array to
+  `col + 1` and is right (src/Fl_Table.cxx:263-273).
+- **Effect on FLTKAda**: `Table.Set_Row_Height` passed any row through.
+  It now raises `Range_Error` for a row past `Get_Rows`, as pofltk's
+  SetRowHeight halts (FLTKAda-BUGS.md 112).
+- **Confirmed**: a C++ program that calls `rows (5)`, then
+  `row_height (5, 20)` and `row_height (9, 30)`, run under valgrind on
+  Xvfb: "Invalid write of size 4" at `Fl_Table::row_height`
+  (Fl_Table.cxx:248) for each, into the block `Fl_Int_Vector::size`
+  had just reallocated. `row_height (5)` then gave 30.
+
+### F34. `fl_draw_image` with a negative width or height throws
+
+- **What happens**: `fl_draw_image` and `fl_draw_image_mono`, both the
+  forms with data and those with a line callback, throw
+  `std::bad_alloc` when the width or height is negative, on the Cairo
+  drawing FLTK uses on X11 and Wayland alike. Found 2026-11-06, writing
+  FLTKAda's second draw unit test.
+- **Cause**: `Fl_Cairo_Graphics_Driver::draw_image` allocates
+  `new uchar[iw * D * ih]` without checking the sizes
+  (src/drivers/Cairo/Fl_Cairo_Graphics_Driver.cxx:651); the data forms
+  reach it through `draw_image_cb` (line 745).
+- **Effect on FLTKAda**: the exception reached Ada as
+  `System.Exceptions.Foreign_Exception`, which the shim must never let
+  through. `FLTK.Draw.Draw_Image` and `Draw_Image_Mono`, all four, now
+  draw nothing for a width or height below 1, as pofltk's do.
+- **Confirmed**: a C++ program drawing into an `Fl_Image_Surface` with
+  height -1, then width -2, caught `std::bad_alloc` from each of the
+  three calls it tried, under Xvfb and on a headless sway.
+  test/unit/test_draw_more.adb raised `Foreign_Exception` before the
+  fix.

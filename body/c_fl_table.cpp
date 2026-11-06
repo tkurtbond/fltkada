@@ -405,21 +405,11 @@ int fl_table_move_cursor(TABLE t, int r, int c, int s) {
 }
 
 int fl_table_get_tab_cell_nav(TABLE t) {
-#if FLTK_ABI_VERSION >= 10303
     return static_cast<Fl_Table*>(t)->tab_cell_nav();
-#else
-    (void)(t);
-    return 0;
-#endif
 }
 
 void fl_table_set_tab_cell_nav(TABLE t, int v) {
-#if FLTK_ABI_VERSION >= 10303
     static_cast<Fl_Table*>(t)->tab_cell_nav(v);
-#else
-    (void)(t);
-    (void)(v);
-#endif
 }
 
 int fl_table_get_table_box(TABLE t) {
@@ -434,21 +424,11 @@ void fl_table_set_table_box(TABLE t, int v) {
 
 
 int fl_table_get_scrollbar_size(TABLE t) {
-#if FLTK_ABI_VERSION >= 10301
     return static_cast<Fl_Table*>(t)->scrollbar_size();
-#else
-    (void)(t);
-    return 0;
-#endif
 }
 
 void fl_table_set_scrollbar_size(TABLE t, int v) {
-#if FLTK_ABI_VERSION >= 10301
     static_cast<Fl_Table*>(t)->scrollbar_size(v);
-#else
-    (void)(t);
-    (void)(v);
-#endif
 }
 
 void fl_table_resize(TABLE t, int x, int y, int w, int h) {

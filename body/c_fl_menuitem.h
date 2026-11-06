@@ -46,7 +46,7 @@ extern "C" void fl_menu_item_set_labeltype(MENUITEM mi, int t);
 extern "C" int fl_menu_item_get_shortcut(MENUITEM mi);
 extern "C" void fl_menu_item_set_shortcut(MENUITEM mi, int s);
 extern "C" int fl_menu_item_get_flags(MENUITEM mi);
-extern "C" void fl_menu_item_set_flags(MENUITEM mi, int f);
+extern "C" void fl_menu_item_set_flags(MENUITEM mi, int f, int keep_shape);
 
 
 extern "C" void fl_menu_item_image(MENUITEM mi, void * i);

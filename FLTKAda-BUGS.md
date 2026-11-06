@@ -3052,3 +3052,384 @@ label where FLTK draws it by as much as it changed (the bottom margin,
 which only changes how far the tree scrolls, is read back), and that
 `Deactivate` and `Activate` change the item and its widget and no other
 item.
+
+
+## 106. `Set_Flags` could change a menu's shape
+
+**Symptom.** `Menus.Set_Flags (Menu, Place, Flags)` set the item's
+flags to exactly `Flags`. Setting them on a submenu's title without
+`Flag_Submenu` made the title a plain item, so a later `Clear_Submenu`
+of it raised `No_Reference_Error`, and its items became items of the
+level above. Setting `Flag_Submenu` on a plain item made the items after
+it its submenu: in a menu of eight entries ("File/Open", "File/Save",
+"Edit/Copy"), `Set_Flags (2, Flag_Submenu)` made `Number_Of_Items` 9, one
+past the array's last terminator, and `Find_Index ("Edit/Copy")` found
+nothing. `System_Menu_Bar.Set_Flags` and `Menu_Item.Set_Flags` on an
+item in a menu did the same.
+
+**Cause.** `Fl_Menu_::mode (i, fl)` sets `menu_[i].flags = fl` (Fl_Menu_.H:157), and
+`FL_SUBMENU` is what `Fl_Menu_Item::next` and `size` read to find where
+a submenu ends. The shim passed the flags straight through. pofltk's
+`ofl_menu_set_flags` keeps `FL_SUBMENU` and `FL_SUBMENU_POINTER`.
+
+**Found.** Phase 14, 2026-11-06, porting pofltk's TestMenus, whose
+"SetItemFlags keeps Submenu" check failed. The `Number_Of_Items` and
+`Find_Index` effects were seen with a scratch program run headless.
+Valgrind reported no invalid read in that program.
+
+**Fixed.** `fl_menu_set_mode`, `fl_sys_menu_bar_set_mode` and
+`fl_menu_item_set_flags` keep the item's `FL_SUBMENU` and
+`FL_SUBMENU_POINTER` and set the rest. `Menu_Item.Set_Flags` does this
+only for an item in a menu (one FLTKAda didn't allocate), so an item
+made with `Menu_Items.Forge.Create` for `Set_Items` can still be made a
+title. test/unit/test_menu.adb checks all three, and that a free item
+can still be made a title.
+
+
+## 107. `Check_Browser.Selected_Index` raised when nothing was selected
+
+**Symptom.** `Check_Browser.Selected_Index` raised `Constraint_Error`
+for a check browser with no item selected, such as a new one or one
+just cleared.
+
+**Cause.** It returned `Positive`, converting
+`Fl_Check_Browser::value ()` (Fl_Check_Browser.H:103), which is 0 when
+no item is selected. `Textline_Browser.Selected_Index` returns
+`Natural`.
+
+**Found.** Phase 14, 2026-11-06, by test/unit/test_browser.adb, which
+asks for it after `Clear`.
+
+**Fixed.** It returns `Natural`. test_browser checks that it gives 0
+after `Clear`, and the item's number after a click.
+
+
+## 108. `File_Browser.Load` couldn't be called as a procedure with its default sort
+
+**Symptom.** `Files.Load ("dir");`, for a `File_Browser`, doesn't
+compile: GNAT reports an ambiguous call to `Load`. One must write
+`Files.Load (Dir => "dir");` or pass `Sort`. The function form,
+`Count := Files.Load ("dir");`, is not ambiguous.
+
+**Cause.** `File_Browser` inherits `Textline_Browser`'s
+`procedure Load (This; File : String)`, which loads a text file, and
+declares `procedure Load (This; Dir : String; Sort := Numeric_Sort'Access)`.
+With `Sort` left out, both match. In C++, `Fl_File_Browser::load
+(directory, sort = fl_numericsort)` (Fl_File_Browser.H:74) hides
+`Fl_Browser::load`, so the question doesn't arise.
+
+**Found.** Phase 14, 2026-11-06, writing test/unit/test_browser.adb
+(GNAT's error message).
+
+**Fixed** (the user's choice, 2026-11-06, of three: this; renaming the
+directory `Load`; or leaving it and documenting `Dir =>`).
+`File_Browser` overrides the inherited `Load (This; Dir : String)`,
+its parameter renamed `Dir`, to list the directory with
+`Numeric_Sort`, and `Sort` has no default on the other procedure. The
+function keeps its default, since a function call was never ambiguous.
+So `Files.Load ("dir")`, `Files.Load (Dir => "dir")` and
+`Files.Load ("dir", Sort)` all compile and list the directory. Unlike
+C++, where `load` isn't virtual, a dispatching call through
+`Textline_Browser'Class` on a file browser lists the directory too,
+rather than reading it as a text file. A call naming `File =>` on a
+`File_Browser` no longer compiles. test_browser checks the plain call,
+the call with a sort, and the class-wide call; every program still
+builds.
+
+
+## 109. `Text_Display.Position_To_XY` gave `Vert_Out` the wrong way round
+
+**Symptom.** `Position_To_XY` set `Vert_Out` to True for a position
+shown in the display, and to False for one scrolled out of view.
+
+**Cause.** `Fl_Text_Display::position_to_xy` returns 0 when the
+position is vertically out of view, setting X and Y to 0
+(Fl_Text_Display.cxx:1098, 1105-1109). The binding set
+`Vert_Out := ... /= 0`.
+
+**Found.** Phase 14, 2026-11-06, reading the body while porting pofltk's
+TestText, and confirmed under Xvfb by test/unit/test_text.adb: for the
+first line of a 20-line buffer in a 100-pixel display `Vert_Out` was
+True, for the last False with X and Y 0.
+
+**Fixed.** `Vert_Out := ... = 0`, and the spec says what it means.
+test_text checks both lines, and uses the X and Y it gives for a
+visible position to find a style's background.
+
+
+## 110. The shim's `FLTK_ABI_VERSION` guards made some calls do nothing
+
+**Symptom.** `Text_Editor.Set_Tab_Mode`, `Table.Set_Tab_Mode`,
+`Table.Set_Scrollbar_Size`, `Tooltips.Set_Margin_Height`,
+`Set_Margin_Width` and `Set_Wrap_Width`, and
+`System_Menu_Bar.Update` did nothing. `Text_Editor.Get_Tab_Mode` and
+`Table.Get_Tab_Mode` always gave the first literal,
+`Table.Get_Scrollbar_Size` always 0, and `Scroll.Recalculate_Scrollbars`
+left its result unset.
+
+**Cause.** In body/c_fl_text_editor.cpp, c_fl_table.cpp,
+c_fl_tooltip.cpp, c_fl_sys_menu_bar.cpp and c_fl_scroll.cpp each of
+these calls was inside `#if FLTK_ABI_VERSION >= 103xx`, with an `#else`
+that did nothing. FLTK 1.3 called the macro `FLTK_ABI_VERSION`; FLTK
+1.4 calls it `FL_ABI_VERSION` (FL/Enumerations.H:149) and doesn't define
+the old name, so the preprocessor took it as 0 and compiled the `#else`.
+All these methods are always there in 1.4. `Fl_Scroll::recalc_scrollbars`
+and `ScrollInfo` are protected, so the unused branch didn't even compile.
+
+**Found.** Phase 14, 2026-11-06: test/unit/test_text.adb's
+`Set_Tab_Mode` check failed.
+
+**Fixed.** The guards and their `#else` branches are gone, and
+`Friend_Scroll` makes `recalc_scrollbars` and `ScrollInfo` visible, as
+it does `bbox`. test/unit/test_abi_guards.adb checks each setter by its
+getter and a scroll's scrollbars. It fails five checks when built
+against the old shim files. `Fl_Sys_Menu_Bar::update` has no effect to
+see off macOS, so it isn't checked. The two `FL_ABI_VERSION >= 10303`
+guards in c_fl_help_view.cpp use the right name, and are kept.
+examples/table_spreadsheet.adb calls `Set_Tab_Mode (Navigate_Cells)`,
+as table-spreadsheet.cxx calls `tab_cell_nav (1)`; until now the call
+did nothing there.
+
+## 111. `Tree_Items.Child` read past FLTK's array
+
+**Symptom.** `Tree_Items.Child (Item, Place)` with `Place` past the
+last child returned whatever pointer lay beyond the children, which
+any later use of the handle followed.
+
+**Cause.** `Fl_Tree_Item::child (int)` is `return _children[index]`
+(src/Fl_Tree_Item.cxx:170-172, FL/Fl_Tree_Item.H:208), and
+`Fl_Tree_Item_Array::operator[]` doesn't check its index
+(FL/Fl_Tree_Item_Array.H:60-62). The binding passed `Place - 1`
+straight through. `Swap_Children` by place already checked, and
+`Deparent` and `Reparent` are checked by FLTK, which returns an error.
+
+**Found.** Phase 14, 2026-11-06: test/unit/test_tree.adb's check that
+`Child (Root, 5)` of four children raises failed.
+
+**Fixed.** `Child` raises `Constraint_Error` when `Place` is past
+`Number_Of_Children`. test_tree checks it.
+
+
+## 112. A table's row heights and column widths took any row or column
+
+**Symptom.** `Table.Set_Row_Height` with a row past `Get_Rows` made FLTK
+write past its array (FLTK-issues.md F33). `Set_Column_Width` with a
+column past `Get_Columns` grew FLTK's array of widths without adding
+columns. `Get_Row_Height` and `Get_Column_Width` with either raised
+`Internal_FLTK_Error`, "unexpected int value of 0", since FLTK gives 0
+and the binding converted it to `Positive`.
+
+**Cause.** The four passed `Row - 1` or `Column - 1` to FLTK unchecked.
+FLTK's setters grow their arrays for an index past the end
+(src/Fl_Table.cxx:232-273), and its getters give 0 for one
+(`row_height (int)` and `col_width (int)` in FL/Fl_Table.H). pofltk checks the row or column first (CheckRow,
+CheckCol in FlTable.Mod).
+
+**Found.** Phase 14, 2026-11-06, writing test/unit/test_table.adb, while
+reading the table body for its checks.
+
+**Fixed.** All four raise `Range_Error`, the package's exception for a
+row or column out of range, when the row is past `Get_Rows` or the
+column past `Get_Columns`. test_table checks each; with the old body
+its first check raised `Internal_FLTK_Error`.
+
+## 113. `Table.Bounding_Region` gave uninitialised values for most contexts
+
+**Symptom.** `Bounding_Region` with `Within_Cell`, `No_Context`,
+`Start_Page`, `End_Page` or `Row_Column_Resize` printed
+"Fl_Table::get_bounds(): context 16 unimplemented" (or the context's
+number) on standard error and returned whatever was in its four `out`
+integers.
+
+**Cause.** `Fl_Table::get_bounds` handles only `CONTEXT_COL_HEADER`,
+`CONTEXT_ROW_HEADER` and `CONTEXT_TABLE` (FLTKAda's `Dead_Zone`, which
+gives the region inside the cells' box); for any other context it prints
+the message and returns without setting its arguments
+(src/Fl_Table.cxx:325-354).
+
+**Found.** Phase 14, 2026-11-06: test/unit/test_table.adb, porting
+pofltk's checks of the cells' area with `Within_Cell`, got the message
+and wrong values.
+
+**Fixed.** `Bounding_Region` raises `Constraint_Error` for a context
+other than `Row_Header`, `Column_Header` and `Dead_Zone`, and the spec
+says which region each gives. test_table checks the three regions and
+the exception.
+
+## 114. `Scroll.Set_Kind` set the wrong kind of scrollbars
+
+**Symptom.** `Set_Kind (Vertical)` gave a scroll a horizontal
+scrollbar, and `Get_Kind` then returned `Horizontal`; `Set_Kind
+(Horizontal)` gave it no scrollbars at all, and `Get_Kind` then raised
+`Internal_FLTK_Error` ("Fl_Scroll::type returned unexpected unsigned
+char value of 0"). Each kind was off by one.
+
+**Cause.** FLTK's scroll types count from 1 (`HORIZONTAL` = 1 to
+`BOTH_ALWAYS` = 7, FL/Fl_Scroll.H). `Get_Kind` subtracted 1 from FLTK's
+value, but `Set_Kind` passed `Scroll_Kind'Pos (Mode)` without adding it.
+
+**Found.** Phase 14, 2026-11-06: test/unit/test_layout.adb, porting
+pofltk's TestLayout. Nothing in test/ or examples/ called `Set_Kind`.
+
+**Fixed.** `Set_Kind` passes `Scroll_Kind'Pos (Mode) + 1`. test_layout
+checks that `Set_Kind` and `Get_Kind` agree for `Vertical` and
+`Horizontal`, and that a vertical scroll, drawn, shows only its vertical
+scrollbar; those checks failed before the fix.
+
+
+## 115. `Data_Size` of a scaled image was its drawn size
+
+**Symptom.** After `Scale`, an RGB image's or a bitmap's `Data_Size`
+was the size it is drawn at, not the size of its pixel data, and
+`Get_Datum`, `Set_Datum`, `Slice`, `Overwrite` and `All_Data`, which
+overlay an array of `Data_Size` elements on FLTK's data, read and wrote
+past it. A 4x2 RGB image scaled to 8x4 gave `Data_Size` 96 instead of
+24, and `All_Data` read 72 bytes past the data (valgrind: invalid
+reads). An 8x2 bitmap scaled to 64x64 gave 512 instead of 2.
+
+**Cause.** `Data_Size` in fltk-images-rgb.adb and fltk-images-bitmaps.adb
+used `Get_W` and `Get_H`, FLTK's `w()` and `h()`, which `scale()`
+changes. The data's size is `data_w()` by `data_h()`.
+
+**Found.** Phase 14, 2026-11-06: writing test/unit/test_images.adb, and
+confirmed with scratch programs under valgrind.
+
+**Fixed.** Both use `Get_Data_W` and `Get_Data_H`. test_images checks
+`Data_Size` and `All_Data'Length` of a scaled RGB image and `Data_Size`
+and `Get_Datum` of a scaled bitmap; those checks failed before the fix.
+
+## 116. The pixel data of an SVG image not yet drawn
+
+**Symptom.** `Get_Datum`, `All_Data` and the other data operations on
+an `SVG_Image` that hadn't been drawn, resized or normalized raised
+`Storage_Error` (a segmentation fault reading address 0).
+
+**Cause.** `Fl_SVG_Image` rasterizes only in `draw()`, `resize()` or
+`normalize()` (FL/Fl_SVG_Image.H, src/Fl_SVG_Image.cxx), and until then
+its `array` is null. The data operations overlaid an array on
+`fl_rgb_image_data`, FLTK's `array`, without checking it.
+
+**Found.** Phase 14, 2026-11-06: test/unit/test_images.adb, whose
+first check of an SVG file read its pixels.
+
+**Fixed.** `fl_rgb_image_data` calls FLTK's virtual `normalize()`
+first, which rasterizes an SVG image and does nothing to other RGB
+images. `Data_Size` calls it before reading the sizes, since
+rasterizing can set them, and raises `No_Image_Error` if there is still
+no data. test_images checks the pixels of SVG images made from a file,
+from text and from bytes, none of them drawn first.
+
+## 117. Flipped images drew the wrong pixels, and read before their data
+
+**Symptom.** `FLTK.Draw.Draw_Image` and `Draw_Image_Mono` with
+`Flip_Horizontal` or `Flip_Vertical` didn't draw the image mirrored or
+upside down. A 2x2 image flipped either way drew pixels from outside its
+data. A 2x8 image flipped vertically read before the start of its data
+(valgrind: invalid reads in FLTK's `draw_image_cb`). The checks that
+the data is long enough were a `Pre`, which release builds don't check,
+so too little data was read past too.
+
+**Cause.** FLTK reads pixel (x, y) at `buf + x * D + y * L`. With `D`
+or `L` negative, `buf` must point at the last pixel of the first row or
+the first pixel of the last row. The binding negated the depth or the
+line size but always passed the first byte of the data. The `Pre`
+also asked for `Line_Size * H` bytes where `(H - 1) * Line_Size + W *
+Depth` is enough.
+
+**Found.** Phase 14, 2026-11-06: test/unit/test_draw_more.adb, porting
+pofltk's TestDrawMore, whose flip checks failed; confirmed with valgrind
+and a 2x8 image.
+
+**Fixed.** Both move the start to the far end of the row or the last
+row as they flip, and raise `Constraint_Error` when the data is
+shorter than `(H - 1) * Stride + W * Depth`, an explicit check in place
+of the `Pre`. A width or height below 1 draws nothing (FLTK-issues.md
+F34). test_draw_more checks each flip, both, and the mono forms, by
+their pixels, and the too-short data; those checks failed before the
+fix.
+
+## 118. Preferences: Binary_Data entries counted bytes in pointers
+
+**Symptom.** `FLTK.Environment.Set` of a `Binary_Data` of 3 bytes
+stored nothing, and `Get` read it back as no bytes. A `Get` with a
+default ignored the default when the entry was missing and returned
+no bytes.
+
+**Cause.** Every `Binary_Data` call divided its length by the size of
+a pointer before passing it to FLTK, and multiplied `Value_Size` by
+it to find how many bytes it got. FLTK's `set (key, data, dsize)` and
+`get (key, data, default, defaultSize, maxSize)` take sizes in bytes,
+and FLTK keeps the data as hexadecimal text, two characters a byte
+(Fl_Preferences.cxx, `set` and `decodeHex`), so `Value_Size` is twice
+the number of bytes. So 3 bytes stored as 0 (3 / 8), 16 as 2, and a
+`Get` without a limit read eight times as many bytes as FLTK's
+`decodeHex` returned, past the end of its buffer (from the source; not
+run under valgrind before the fix). The form with a default took its
+length from `Value_Size` of the missing entry, which is 0.
+
+**Found.** Phase 14, 2026-11-06: test/unit/test_preferences.adb,
+porting pofltk's TestPreferences; its 3-byte check failed.
+
+**Fixed.** The sizes are passed in bytes, the length read back is
+`Value_Size / 2`, and a missing entry gives the default, cut to
+`Max_Length` in the limited form. test_preferences checks 3 and 16
+bytes, the hexadecimal text FLTK keeps, the limit, the default and a
+file read back, and passes under valgrind.
+
+## 119. Preferences: Get of a String with Max_Length gave one character fewer
+
+**Symptom.** `Get (Key, Default, Max_Length => 3)` of `"hello"` gave
+`"he"`, and of a missing entry the whole default, however long.
+
+**Cause.** FLTK's `get (key, text, default, maxSize)` counts the
+trailing nul in `maxSize` (Fl_Preferences.cxx, `strlcpy (text, v,
+maxSize)`); the binding passed `Max_Length`. When the default was used
+it returned `Default` itself, not limited.
+
+**Found.** Phase 14, 2026-11-06: test/unit/test_preferences.adb.
+
+**Fixed.** It passes `Max_Length + 1`, the size of its buffer, and
+cuts a default to `Max_Length`. test_preferences checks both; they
+failed before the fix.
+
+
+## 120. Help_View: Current_Directory and Current_File raised with no file
+
+**Symptom.** `Current_Directory` or `Current_File` of a help view with
+no file loaded, or a file named without a directory, raised
+`Interfaces.C.Strings.Dereference_Error`.
+
+**Cause.** FLTK's `directory()` and `filename()` return NULL when the
+name is empty (Fl_Help_View.H:299-303), and the binding passed it to
+`Interfaces.C.Strings.Value` unchecked. `load()` leaves the directory
+empty for a name with no `/` (Fl_Help_View.cxx:3378-3385).
+
+**Found.** Phase 14, 2026-11-06: test/unit/test_help.adb.
+
+**Fixed.** Both give "" for NULL. test_help checks a new view, a name
+with no directory and one with; it raised before the fix.
+
+
+## 121. A PostScript device finalized in a job left its file empty
+
+**Symptom.** A `Postscript_File_Device` finalized after `Start_Job` and
+before `End_Job` left its file empty, with nothing written, and Cairo's
+surface and context were never freed. A PDF surface and an EPS surface
+finalized unfinished write their files.
+
+**Cause.** Under Pango, a job's PostScript is written when `end_job`
+finishes Cairo's surface (Fl_PostScript.cxx:1946-1953).
+`~Fl_PostScript_File_Device` only deletes its driver (:101-104), and
+`~Fl_PostScript_Graphics_Driver` only frees the file name (:165-167),
+so a job not ended is never finished. The binding's `Finalize` freed
+the device without ending it.
+
+**Found.** Phase 14, 2026-11-06: test/unit/test_print.adb, porting
+pofltk's TestPrint, whose `Close` ends the page and the job.
+
+**Fixed.** The shim remembers a job that `start_job` started, and the
+destructor ends it, as the PDF surface's does. `Finalize` first ends an
+open page, as the PDF surface's does. Errors are ignored, as `Finalize`
+can't raise. test_print checks that the file of a device finalized in a
+translated page is PostScript and ends with `%%EOF`; before the fix it
+was empty.

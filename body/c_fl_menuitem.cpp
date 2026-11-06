@@ -374,8 +374,13 @@ int fl_menu_item_get_flags(MENUITEM mi) {
     return static_cast<Fl_Menu_Item*>(mi)->flags;
 }
 
-void fl_menu_item_set_flags(MENUITEM mi, int f) {
-    static_cast<Fl_Menu_Item*>(mi)->flags = f;
+//  An item in a menu keeps FL_SUBMENU and FL_SUBMENU_POINTER, which give
+//  the array its shape (FLTKAda-BUGS.md 106).  An item not yet in one may
+//  set them.
+void fl_menu_item_set_flags(MENUITEM mi, int f, int keep_shape) {
+    Fl_Menu_Item * item = static_cast<Fl_Menu_Item*>(mi);
+    const int shape = FL_SUBMENU | FL_SUBMENU_POINTER;
+    item->flags = keep_shape ? (item->flags & shape) | (f & ~shape) : f;
 }
 
 

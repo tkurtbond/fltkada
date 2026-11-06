@@ -420,9 +420,9 @@ package body FLTK.Widgets.Groups.Browsers.Check is
 
     function Selected_Index
            (This : in Check_Browser)
-        return Positive is
+        return Natural is
     begin
-        return Positive (fl_check_browser_value (This.Void_Ptr));
+        return Natural (fl_check_browser_value (This.Void_Ptr));
     end Selected_Index;
 
 

@@ -357,12 +357,19 @@ package body FLTK.Images.RGB is
            (This : in RGB_Image)
         return Size_Type
     is
-        Per_Line : constant Natural := This.Get_Line_Size;
+        Per_Line : Natural;
     begin
+        --  This rasterizes an SVG image that hasn't been drawn yet, so
+        --  the sizes below are those of the array.
+        if fl_rgb_image_data (This.Void_Ptr) = Null_Pointer then
+            raise No_Image_Error with "image has no pixel data";
+        end if;
+        Per_Line := This.Get_Line_Size;
         if Per_Line = 0 then
-            return Size_Type (This.Get_W) * Size_Type (This.Get_D) * Size_Type (This.Get_H);
+            return Size_Type (This.Get_Data_W) * Size_Type (This.Get_D) *
+                Size_Type (This.Get_Data_H);
         else
-            return Size_Type (Per_Line) * Size_Type (This.Get_H);
+            return Size_Type (Per_Line) * Size_Type (This.Get_Data_H);
         end if;
     end Data_Size;
 

@@ -5,8 +5,13 @@
 
 
 --  An area drawing procedure for FLTK.Draw.Scroll that records its calls,
---  for test_wrong_state.  The binding calls it through its address, so it
---  is at library level, with no static link.
+--  for test_wrong_state and test_draw_more.  The binding calls it through
+--  its address, so it is at library level, with no static link.
+
+
+with
+
+    FLTK;
 
 
 package Scroll_Areas is
@@ -16,6 +21,10 @@ package Scroll_Areas is
 
     Calls : Natural     := 0;
     Last  : Area_Record := (others => -1);
+
+    --  If Fill, Draw fills the area in Hue too.
+    Fill : Boolean    := False;
+    Hue  : FLTK.Color := FLTK.Black_Color;
 
     procedure Draw
            (X, Y, W, H : in Integer);

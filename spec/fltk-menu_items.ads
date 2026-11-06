@@ -160,6 +160,8 @@ package FLTK.Menu_Items is
            (This : in Menu_Item)
         return Menu_Flag;
 
+    --  An item in a menu keeps Submenu as it is, since it is the menu's
+    --  shape (FLTKAda-BUGS.md 106).  An item not yet in one sets it.
     procedure Set_Flags
            (This : in out Menu_Item;
             To   : in     Menu_Flag);

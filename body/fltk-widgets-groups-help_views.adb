@@ -526,19 +526,37 @@ package body FLTK.Widgets.Groups.Help_Views is
 
     --  Content  --
 
+    --  FLTK gives NULL when no file is loaded (Fl_Help_View.H:299-303).
     function Current_Directory
            (This : in Help_View)
-        return String is
+        return String
+    is
+        Raw_Chars : constant Interfaces.C.Strings.chars_ptr :=
+            fl_help_view_directory (This.Void_Ptr);
+        use type Interfaces.C.Strings.chars_ptr;
     begin
-        return Interfaces.C.Strings.Value (fl_help_view_directory (This.Void_Ptr));
+        if Raw_Chars = Interfaces.C.Strings.Null_Ptr then
+            return "";
+        else
+            return Interfaces.C.Strings.Value (Raw_Chars);
+        end if;
     end Current_Directory;
 
 
+    --  FLTK gives NULL when no file is loaded (Fl_Help_View.H:299-303).
     function Current_File
            (This : in Help_View)
-        return String is
+        return String
+    is
+        Raw_Chars : constant Interfaces.C.Strings.chars_ptr :=
+            fl_help_view_filename (This.Void_Ptr);
+        use type Interfaces.C.Strings.chars_ptr;
     begin
-        return Interfaces.C.Strings.Value (fl_help_view_filename (This.Void_Ptr));
+        if Raw_Chars = Interfaces.C.Strings.Null_Ptr then
+            return "";
+        else
+            return Interfaces.C.Strings.Value (Raw_Chars);
+        end if;
     end Current_File;
 
 

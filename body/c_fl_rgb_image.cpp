@@ -100,6 +100,8 @@ void fl_rgb_image_uncache(RGBIMAGE i) {
 
 
 const void * fl_rgb_image_data(RGBIMAGE i) {
+    //  virtual: an Fl_SVG_Image has no array until it is rasterized
+    static_cast<Fl_RGB_Image*>(i)->normalize();
     return static_cast<const void*>(static_cast<Fl_RGB_Image*>(i)->array);
 }
 

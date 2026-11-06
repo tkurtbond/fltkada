@@ -930,10 +930,11 @@ package body FLTK.Environment is
             Interfaces.C.To_C (Key),
             Text,
             Interfaces.C.To_C (Default),
-            Interfaces.C.int (Max_Length));
+            Interfaces.C.int (Max_Length + 1));
     begin
         if Check = 0 then
-            return Default;
+            return Default
+               (Default'First .. Default'First - 1 + Natural'Min (Default'Length, Max_Length));
         else
             return Interfaces.C.To_Ada (Text);
         end if;
@@ -959,7 +960,9 @@ package body FLTK.Environment is
             raise Preference_Error;
         end if;
         declare
-            Length : constant Natural := This.Value_Size (Key) * Natural (c_pointer_size);
+            --  FLTK keeps the data as hexadecimal text (Fl_Preferences.cxx,
+            --  decodeHex), two characters a byte.
+            Length : constant Natural := This.Value_Size (Key) / 2;
             Actual : Binary_Data (1 .. Length);
             for Actual'Address use Storage.To_Address (Thing);
             pragma Import (Ada, Actual);
@@ -977,21 +980,28 @@ package body FLTK.Environment is
             Default : in Binary_Data)
         return Binary_Data
     is
-        Thing  : Storage.Integer_Address;
-        Ignore : Interfaces.C.int := fl_preferences_get_void
+        Thing : Storage.Integer_Address;
+        Found : constant Interfaces.C.int := fl_preferences_get_void
            (Group_Ptr (This),
             Interfaces.C.To_C (Key),
             Thing,
             Storage.To_Integer (Default'Address),
-            Default'Length / Interfaces.C.int (c_pointer_size));
-        Length : constant Natural := This.Value_Size (Key) * Natural (c_pointer_size);
-        Actual : Binary_Data (1 .. Length);
-        for Actual'Address use Storage.To_Address (Thing);
-        pragma Import (Ada, Actual);
+            Default'Length);
     begin
-        return Result : constant Binary_Data := Actual do
+        if Found = 0 then
             free_fl_preferences_void_data (Thing);
-        end return;
+            return Default;
+        end if;
+        declare
+            Length : constant Natural := This.Value_Size (Key) / 2;
+            Actual : Binary_Data (1 .. Length);
+            for Actual'Address use Storage.To_Address (Thing);
+            pragma Import (Ada, Actual);
+        begin
+            return Result : constant Binary_Data := Actual do
+                free_fl_preferences_void_data (Thing);
+            end return;
+        end;
     end Get;
 
 
@@ -1003,16 +1013,17 @@ package body FLTK.Environment is
         return Binary_Data
     is
         Actual : Binary_Data (1 .. Max_Length);
-        Ignore : Interfaces.C.int := fl_preferences_get_void_limit
+        Found  : constant Interfaces.C.int := fl_preferences_get_void_limit
            (Group_Ptr (This),
             Interfaces.C.To_C (Key),
             Storage.To_Integer (Actual'Address),
             Storage.To_Integer (Default'Address),
-            Default'Length / Interfaces.C.int (c_pointer_size),
-            Interfaces.C.int (Max_Length) / Interfaces.C.int (c_pointer_size));
-        Length : constant Natural := This.Value_Size (Key) * Natural (c_pointer_size);
+            Default'Length,
+            Interfaces.C.int (Max_Length));
+        Length : constant Natural :=
+            (if Found = 0 then Default'Length else This.Value_Size (Key) / 2);
     begin
-        return Actual (1 .. Length);
+        return Actual (1 .. Natural'Min (Length, Max_Length));
     end Get;
 
 
@@ -1123,7 +1134,7 @@ package body FLTK.Environment is
            (Group_Ptr (This),
             Interfaces.C.To_C (Key),
             Storage.To_Integer (Value'Address),
-            Value'Length / Interfaces.C.int (c_pointer_size)) = 0
+            Value'Length) = 0
         then
             raise Preference_Error;
         end if;

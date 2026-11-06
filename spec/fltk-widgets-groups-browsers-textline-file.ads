@@ -72,11 +72,19 @@ package FLTK.Widgets.Groups.Browsers.Textline.File is
                 FLTK.Filenames.Numeric_Sort'Access)
         return Natural;
 
+    --  Lists a directory with Numeric_Sort, as Fl_File_Browser::load hides
+    --  Fl_Browser::load, instead of reading a text file as a
+    --  Textline_Browser's Load does; through Textline_Browser'Class too
+    --  (FLTKAda-BUGS.md 108).
+    overriding procedure Load
+           (This : in out File_Browser;
+            Dir  : in     String);
+
+    --  Sort has no default here, or Load ("dir") would match both.
     procedure Load
            (This : in out File_Browser;
             Dir  : in     String;
-            Sort : in not null FLTK.Filenames.Compare_Function :=
-                FLTK.Filenames.Numeric_Sort'Access);
+            Sort : in not null FLTK.Filenames.Compare_Function);
 
 
 

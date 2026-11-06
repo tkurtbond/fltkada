@@ -321,16 +321,18 @@ package FLTK.Draw is
     --  in statics, which the inner image would spoil, or free while the
     --  outer one writes to them (pofltk 133).  The outer Draw_Image then
     --  raises it, once FLTK returns.
+    --
+    --  A W or H below 1 draws nothing (FLTK-issues.md F34).  Data must hold
+    --  (H - 1) * Line_Size + W * Depth bytes (Line_Size 0 means W * Depth),
+    --  or Constraint_Error is raised.  The flips read the same Data the
+    --  other way round (FLTKAda-BUGS.md 117).
     procedure Draw_Image
            (X, Y, W, H      : in Integer;
             Data            : in Color_Component_Array;
             Depth           : in Positive := 3;
             Line_Size       : in Natural := 0;
             Flip_Horizontal : in Boolean := False;
-            Flip_Vertical   : in Boolean := False)
-    with Pre => (if Line_Size = 0
-        then Data'Length >= Size_Type (W) * Size_Type (H) * Size_Type (Depth)
-        else Data'Length >= Size_Type (Line_Size) * Size_Type (H));
+            Flip_Vertical   : in Boolean := False);
 
     procedure Draw_Image
            (X, Y, W, H : in Integer;
@@ -343,10 +345,7 @@ package FLTK.Draw is
             Depth           : in Positive := 1;
             Line_Size       : in Natural := 0;
             Flip_Horizontal : Boolean := False;
-            Flip_Vertical   : Boolean := False)
-    with Pre => (if Line_Size = 0
-        then Data'Length >= Size_Type (W) * Size_Type (H) * Size_Type (Depth)
-        else Data'Length >= Size_Type (Line_Size) * Size_Type (H));
+            Flip_Vertical   : Boolean := False);
 
     procedure Draw_Image_Mono
            (X, Y, W, H : in Integer;

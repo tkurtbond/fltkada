@@ -139,6 +139,12 @@ package body FLTK.Tree_Items is
     pragma Import (C, fl_tree_item_is_visible, "fl_tree_item_is_visible");
     pragma Inline (fl_tree_item_is_visible);
 
+    function fl_tree_item_is_visible_r
+           (TI : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_item_is_visible_r, "fl_tree_item_is_visible_r");
+    pragma Inline (fl_tree_item_is_visible_r);
+
     function fl_tree_item_is_root
            (TI : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -523,6 +529,14 @@ package body FLTK.Tree_Items is
     end Is_Visible;
 
 
+    function Is_Tree_Visible
+           (This : in Tree_Item)
+        return Boolean is
+    begin
+        return fl_tree_item_is_visible_r (This.Void_Ptr) /= 0;
+    end Is_Tree_Visible;
+
+
     function Is_Root
            (This : in Tree_Item)
         return Boolean is
@@ -556,6 +570,9 @@ package body FLTK.Tree_Items is
             Place : in Positive)
         return Tree_Item is
     begin
+        if Place > Number_Of_Children (This) then
+            raise Constraint_Error;
+        end if;
         return (Void_Ptr => fl_tree_item_child (This.Void_Ptr, Interfaces.C.int (Place - 1)));
     end Child;
 

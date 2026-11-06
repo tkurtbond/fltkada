@@ -35,6 +35,8 @@ extern "C" int widget_handle_hook(void * ud, int e);
 class Friend_Scroll : Fl_Scroll {
 public:
     using Fl_Scroll::bbox;
+    using Fl_Scroll::ScrollInfo;
+    using Fl_Scroll::recalc_scrollbars;
 };
 
 
@@ -134,9 +136,8 @@ void fl_scroll_recalc_scrollbars(SCROLL s,
     int &vs_size, int &vs_total, int &vs_first, int &vs_pos,
     int &ssize)
 {
-#if FLTK_ABI_VERSION >= 10303
-    Fl_Scroll::ScrollInfo my_info;
-    static_cast<Fl_Scroll*>(s)->recalc_scrollbars(my_info);
+    Friend_Scroll::ScrollInfo my_info;
+    (static_cast<Fl_Scroll*>(s)->*(&Friend_Scroll::recalc_scrollbars))(my_info);
 
     cb_x = my_info.child.l;
     cb_y = my_info.child.t;
@@ -175,18 +176,6 @@ void fl_scroll_recalc_scrollbars(SCROLL s,
     vs_pos   = my_info.vscroll.pos;
 
     ssize = my_info.scrollsize;
-#else
-    (void)(s);
-    (void)(cb_x); (void)(cb_y); (void)(cb_w); (void)(cb_h);
-    (void)(ib_x); (void)(ib_y); (void)(ib_w); (void)(ib_h);
-    (void)(ic_x); (void)(ic_y); (void)(ic_w); (void)(ic_h);
-    (void)(chneed); (void)(cvneed);
-    (void)(hs_x); (void)(hs_y); (void)(hs_w); (void)(hs_h);
-    (void)(hs_size); (void)(hs_total); (void)(hs_first); (void)(hs_pos);
-    (void)(vs_x); (void)(vs_y); (void)(vs_w); (void)(vs_h);
-    (void)(vs_size); (void)(vs_total); (void)(vs_first); (void)(vs_pos);
-    (void)(ssize);
-#endif
 }
 
 

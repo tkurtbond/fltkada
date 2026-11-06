@@ -118,11 +118,7 @@ int fl_tooltip_get_margin_height(void) {
 }
 
 void fl_tooltip_set_margin_height(int v) {
-#if FLTK_ABI_VERSION >= 10301
     Fl_Tooltip::margin_height(v);
-#else
-    (void)(v);
-#endif
 }
 
 int fl_tooltip_get_margin_width(void) {
@@ -130,11 +126,7 @@ int fl_tooltip_get_margin_width(void) {
 }
 
 void fl_tooltip_set_margin_width(int v) {
-#if FLTK_ABI_VERSION >= 10301
     Fl_Tooltip::margin_width(v);
-#else
-    (void)(v);
-#endif
 }
 
 int fl_tooltip_get_wrap_width(void) {
@@ -142,11 +134,7 @@ int fl_tooltip_get_wrap_width(void) {
 }
 
 void fl_tooltip_set_wrap_width(int v) {
-#if FLTK_ABI_VERSION >= 10301
     Fl_Tooltip::wrap_width(v);
-#else
-    (void)(v);
-#endif
 }
 
 
