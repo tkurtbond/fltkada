@@ -45,6 +45,7 @@ project Tests is
         "overlay.adb",
         "pixmap_browser.adb",
         "symbols.adb",
+        "utf8.adb",
         "group_children.adb",
         "hello.adb",
         "page_formats.adb",
@@ -88,6 +89,7 @@ project Tests is
         for Executable ("overlay.adb")            use "overlay";
         for Executable ("pixmap_browser.adb")     use "pixmap_browser";
         for Executable ("symbols.adb")            use "symbols";
+        for Executable ("utf8.adb")               use "utf8";
         for Executable ("group_children.adb")     use "group_children";
         for Executable ("hello.adb")              use "hello";
         for Executable ("page_formats.adb")       use "page_formats";

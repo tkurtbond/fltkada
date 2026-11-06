@@ -2994,6 +2994,26 @@ Decisions, as the phase goes:
   add `Set_Step (This, To)` for both and keep the old names as
   obsolescent; the port calls `Set_Step (1)`. On sway it tiles and the cells grow with the window.
   Valgrind is clean, after three clicks on the sliders, closed by Escape.
+- **`utf8`** gives the C++'s pixels (AE 0) under a private Xvfb for both
+  windows as they open; with the arguments 0x10000, 0, -1, abc, 0xD7F0,
+  0xD900, 0x10FFF0, 017, 0x20, -0x20, -0x100000, 0x7ffeffff and
+  0x7fffffff; and after every step of four driven scripts: picking fonts
+  and sizes, Select (stdout identical, 1788 fonts listed), Self on and
+  off, editing i7 (and so i8), a double-click and a middle-click paste in
+  the inputs, Refresh, a drag from i2 to the drop box, and pastes into
+  the drop box of a 4-byte character, a lone 16#FF#, 16#80#, 16#81#,
+  16#9F# (FLTK reads 16#80# .. 16#9F# as CP1252), U+10FFFF, F4 90 80 80
+  (past U+10FFFF), the overlong F0 80 80 80, E0 80 80 and C1 81, and C2
+  without a continuation byte, each step differing from the last.
+  The C++ reads its argument with `(int) strtoul` and does its sums in
+  int, so above 0x7ffeffff it makes no rows; the port wraps at 32 bits
+  the same way. `Fl_Window::show (argc, argv)` is emulated by
+  `System_Colors`, `Set_X_Class ("utf8")`, `Set_Scheme (Get_Scheme)` and
+  `Show`. GNAT reads the source as Latin-1, so the non-ASCII text is
+  written as code points and encoded. On sway both windows open and draw
+  the rows, the right-to-left and Arabic inputs and the Japanese label.
+  Valgrind finds no memory errors, and `vg-check.sh` no FLTKAda leak,
+  after a paste, and the program then exits with status 0.
 
 ### Phase 15: Documentation
 
