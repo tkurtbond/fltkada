@@ -268,6 +268,9 @@ package FLTK.Widgets is
            (This : in Widget)
         return String;
 
+    --  "" leaves no label, as Forge.Create with "" does.  FLTK counts an
+    --  empty label as a line of text, and puts an image above it
+    --  (fl_draw.cxx:254-263, 290); FLTKAda-BUGS.md 98.
     procedure Set_Label
            (This : in out Widget;
             Text : in     String);

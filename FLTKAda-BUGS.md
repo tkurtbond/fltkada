@@ -2827,3 +2827,29 @@ user's choice: `Containing` returns FLTK's number plus 1, and `DPI`,
 `Work_Area` and `Bounding_Rect` raise `Constraint_Error` for a number
 outside 1 .. `Count`, as `Get_Scale` and `Set_Scale` do.
 test/unit/test_screen_numbers.adb checks each, under X11 and Wayland.
+
+## 98. `Set_Label ("")` gives a widget an empty label, not a null one
+
+**Symptom.** A box with an image and `Set_Label ("")` draws the image
+10 pixels higher than one made by `Forge.Create` with the label `""`
+(rows 35 and 45 of a 100-pixel box with a 10-pixel image, centred).
+test/pixmap_browser.adb, which clears the label after setting the image
+as the C++ does with `label (NULL)`, differed from FLTK's C++ by the
+image's position. Seen under Xvfb, 2026-11-06, and in
+test/unit/test_label_null.adb before the fix.
+
+**Cause.** `Extra_Init` stores an empty label as null
+(body/fltk-widgets.adb), but `Set_Label` passed `Interfaces.C.To_C ("")`,
+an empty string. FLTK counts a non-null string as at least one line of
+text and a null one as none (fl_draw.cxx:254-263), and centres the image
+and the lines together (fl_draw.cxx:290). It comes from upstream FLTKAda.
+
+**Found.** Phase 14, 2026-11-06, porting test/pixmap_browser.cxx.
+
+**Fixed.** The user chose that `""` means null. `Set_Label ("")` clears
+the label, through FLTK's `copy_label (NULL)` (Fl_Widget.cxx:306-311),
+and `Get_Label` still gives `""`. A window's `Set_Label` has its own body
+and is unchanged. test/unit/test_label_null.adb checks the image's row
+after `Create` with `""`, after `Set_Label ("")`, and after another
+label then `""`. examples/draggable_group.adb, whose C++ passes `""`,
+clears a box with no image, where both draw nothing.

@@ -51,6 +51,11 @@ come first in each list.
 
 ## Changes that can make a program behave differently
 
+- **`Set_Label ("")` leaves a widget with no label**, as `Forge.Create`
+  with `""` does, not with an empty one. FLTK puts an image with an
+  empty label above where it puts one with none, so an image in such a
+  widget now sits lower, centred. A window's `Set_Label` is unchanged.
+  [FLTKAda-BUGS.md 98](FLTKAda-BUGS.md#98-set_label--gives-a-widget-an-empty-label-not-a-null-one).
 - **`FLTK.Screen` numbers every screen 1 .. `Count`.** `Containing`
   returns one more than it did, and the `Screen_Num` forms of
   `Work_Area` and `Bounding_Rect` take 1 for the first screen, not 0.

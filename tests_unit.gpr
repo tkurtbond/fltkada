@@ -152,7 +152,8 @@ project Tests_Unit is
         "test_input_choice_item.adb",
         "test_menu_has_item.adb",
         "test_slider_box.adb",
-        "test_screen_numbers.adb");
+        "test_screen_numbers.adb",
+        "test_label_null.adb");
 
     package Builder is
         for Default_Switches ("Ada") use

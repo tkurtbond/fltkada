@@ -1271,7 +1271,12 @@ package body FLTK.Widgets is
            (This : in out Widget;
             Text : in     String) is
     begin
-        fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
+        --  "" is null, as Extra_Init makes it (FLTKAda-BUGS.md 98).
+        if Text = "" then
+            fl_widget_clear_label (This.Void_Ptr, Interfaces.C.Strings.Null_Ptr);
+        else
+            fl_widget_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
+        end if;
     end Set_Label;
 
 

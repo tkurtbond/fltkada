@@ -2960,6 +2960,25 @@ Decisions, as the phase goes:
   `Argument_Error`, so the port catches and ignores it. On sway it tiles
   and the rectangle stays centred. Valgrind is clean, with argument 3,
   after keys and a click, closed by Escape.
+- **`pixmap_browser`** gives the C++'s pixels (AE 0) under a private
+  Xvfb with no argument and with -a, -8, a directory, a missing file, a
+  text file and a png, gif, jpg, xpm, xbm, svg and animated gif, and the
+  two print the same. Through FLTK's file chooser too, at six steps:
+  opening it, the previews of four files picked in turn (an animated
+  gif, a png, an svg and a jpg), and a double click on an xpm, which both
+  print. An animated gif shows the same four frames in the same order.
+  It found FLTKAda-BUGS.md 98: `Set_Label ("")` left an empty label, so
+  the image sat 10 pixels high; decided with the user 2026-11-06 that
+  `""` means null (an incompatible change). Two differences are kept on
+  purpose. A truncated png shows FLTK's empty-document symbol, where
+  the C++ shows the 0-wide image `Fl_Shared_Image::get` returns, since
+  `Shared.Forge.Create` raises `No_Image_Error`. And the C++ crashes on
+  test/images/colors.bmp, pofltk 87, where FLTKAda refuses the file.
+  "save as SVG" and "Print" were not driven: the native file chooser and
+  the print dialog may reach the desktop through D-Bus, which a private
+  Xvfb doesn't isolate. On sway it tiles and the image stays centred.
+  Valgrind is clean, with an animated gif and the file chooser opened
+  and closed, closed by Escape.
 
 ### Phase 15: Documentation
 
