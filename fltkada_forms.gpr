@@ -1,0 +1,44 @@
+
+
+--  Programmed by T. Kurt Bond and Claude Opus 5.5
+--  Released into the public domain
+
+
+--  FLTK's Forms classes, FLTK.Widgets.Forms, as a library of their own
+--  beside fltkada, as FLTK has them in fltk_forms (PLAN.md, Phase 16).
+--  It builds only where FLTK has its Forms library; the Makefile checks
+--  for it before building this.
+
+
+with
+
+    "fltkada",
+    "proj/common";
+
+
+library project FLTKAda_Forms is
+
+
+    for Languages use ("Ada", "C++");
+
+    for Source_Dirs  use ("forms/body", "forms/spec");
+    for Object_Dir   use "obj/forms";
+    for Library_Dir  use "lib/forms";
+    for Library_Name use "fltkada_forms";
+    for Library_Kind use FLTKAda.Kind;
+
+    package Builder        renames Common.Builder;
+    package Binder         renames Common.Binder;
+    package Pretty_Printer renames Common.Pretty_Printer;
+
+    --  The shim includes the main library's c_fl_widget.h and c_fl.h.
+    package Compiler is
+        for Default_Switches ("Ada") use Common.Compiler'Default_Switches ("Ada");
+        for Default_Switches ("C++") use
+            Common.Compiler'Default_Switches ("C++") & ("-I" & FLTKAda'Project_Dir & "body");
+    end Compiler;
+
+
+end FLTKAda_Forms;
+
+

@@ -40,7 +40,7 @@ Where findings go:
 
 - **FLTKAda-BUGS.md**: bugs in FLTKAda's own code. Sections 1–14 are
   fixed; 17–21, 23–26, 28, 29, 41, 44 and 85 are open;
-  22, 27, 30 to 40, 42, 43, 45 to 84 and 86 to 123 are fixed.
+  22, 27, 30 to 40, 42, 43, 45 to 84 and 86 to 124 are fixed.
 - **FLTK-issues.md**: FLTK issues pofltk's list doesn't have (F1, F2, …).
 - **PLAN.md**: FLTKAda's verdict on each of pofltk's numbered issues, and
   every decision.
@@ -57,6 +57,14 @@ gprbuild tests.gpr                # build the test/example programs
 gprbuild tests_2022.gpr           # build the Ada-2022-only test/example programs
 gprbuild examples.gpr             # build the ports of FLTK 1.4.5's examples/ (bin/examples/)
 gprbuild tools.gpr                # build tool/ (template.adb, a codegen helper)
+gprbuild fltkada_forms.gpr        # the Forms library (needs FLTK's fltk_forms)
+gprbuild tests_forms.gpr          # its unit tests, into bin/unit/
+gprbuild tests_forms_programs.gpr # its demo programs, into bin/
+gprbuild fltkada_cairo.gpr        # the Cairo library (needs cairo; pass
+                                  # -XCAIRO_INCLUDE=dir if its headers aren't
+                                  # in /usr/include/cairo)
+gprbuild tests_cairo.gpr          # its unit tests, into bin/unit/
+gprbuild tests_cairo_programs.gpr # its demo programs, into bin/
 ```
 
 Built test executables land in `bin/`, the unit tests in `bin/unit/`.
@@ -173,6 +181,10 @@ component of the Ada record.
 | `test/unit/` | Unit tests, `Checks` and `FLTK.Probe` (built by `tests_unit.gpr` into `bin/unit/`) |
 | `test/desktop/` | Tests only the user can answer, on the desktop (built and run by `make check-desktop`; ask first) |
 | `test/controls/` | Programs that test the tests: the negative controls, which must fail, and the N12 experiment (built by `test/controls/controls.gpr` into `bin/controls/`) |
+| `forms/spec/`, `forms/body/` | The Forms library, `FLTK.Widgets.Forms.*` and its shim (`fltkada_forms.gpr`), built only where FLTK has `fltk_forms` |
+| `test/forms/`, `test/unit/forms/` | The Forms library's programs (`tests_forms_programs.gpr`) and unit tests (`tests_forms.gpr`), which the Makefile builds and runs only with that library |
+| `cairo/spec/`, `cairo/body/` | The Cairo library, `FLTK.Cairo` and `FLTK.Widgets.Groups.Windows.Double.Cairo_Drawn` and their shim (`fltkada_cairo.gpr`), built only where `pkg-config` finds cairo |
+| `test/cairo/`, `test/unit/cairo/` | The Cairo library's programs (`tests_cairo_programs.gpr`) and unit tests (`tests_cairo.gpr`), which the Makefile builds and runs only with cairo |
 | `examples/` | Ada ports of every program in FLTK 1.4.5's `examples/` (built by `examples.gpr`, executables named after the C++ originals) |
 | `tool/` | `template.adb`, an unrelated text-substitution codegen helper — not a widget template |
 | `proj/common.gpr` | Shared `gprbuild` switches (style checks, warnings, `Pretty_Printer` config) for all the other `.gpr` files |

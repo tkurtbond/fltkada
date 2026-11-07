@@ -3485,3 +3485,22 @@ the page and ends with `%%EOF`. Before the fix, the two checks of the
 current surface failed. The `Printer` fix is the same code, unrun:
 starting a printer's job opens the print dialog, which the tests don't
 drive.
+
+## 124. Get_Listing of a directory that can't be listed
+
+**Symptom.** `Filenames.Get_Listing` of a missing directory, a file, or
+a directory that can't be read returned a list whose `Length` raised
+`Constraint_Error` (fltk-filenames.adb, "range check failed").
+
+**Cause.** `fl_filename_list` returns -1, and leaves the list unset, when
+`scandir` fails (drivers/Unix/Fl_Unix_System_Driver.cxx:592-640). The
+binding stored the -1 as the list's count, and `Length` converted it to
+`Natural`.
+
+**Found.** 2026-11-06, while planning `Plugins.Load_All` (Phase 16) on
+`Get_Listing`. A scratch program listing `/no/such/dir/`, run under
+Xvfb, raised `Constraint_Error` at `Length`.
+
+**Fixed.** `Get_Listing` raises `Ada.IO_Exceptions.Name_Error` when
+FLTK can't list the directory. test/unit/test_filenames.adb lists a
+missing directory and a file, and checks for `Name_Error`.

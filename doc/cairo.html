@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>cairo.h Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>cairo.h Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<p>Part of the separate library fltkada_cairo (fltkada_cairo.gpr), built only where pkg-config finds cairo, after pofltk's FlCairo. FLTK.Cairo binds the cairo calls FLTK's programs use, and a few as simple. A Cairo_Drawn_Window is a double window whose Draw_Cairo draws on it with cairo, after its box and widgets. It isn't FLTK's Fl_Cairo_Window (<a href="fl_cairo_window.html">FLTK.Widgets.Groups.Windows.Double.Cairo</a>), which only an FLTK built with cairo support has: it draws on any FLTK with X11 or Wayland, and its Forge raises FLTK.Unsupported_Error on one with neither.</p>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>cairo.h</td>
+    <td>FLTK.Cairo</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>FLTK.Widgets.Groups.Windows.Double.Cairo_Drawn</td>
+  </tr>
+
+</table>
+
+<p><b>Note:</b><br /><br />
+A Context is good only for the Draw_Cairo that was given it. Every call on a Context raises
+Program_Error unless it is the context of a Draw_Cairo still running: one kept and used later,
+or one no draw gave, raises. Each draw has a new context, so a cairo error, or a Save without
+its Restore, lasts that draw alone. A call cairo refuses makes Is_Ok False. Draw_Cairo is called
+only on the display: on another surface, such as an image surface or a printer, the window
+shows its widgets without it. An exception raised in Draw_Cairo is raised again once control is
+back in Ada. A Pattern is closed (cairo_pattern_destroy) by Close or when it is finalized; any
+call on a closed one but Close and Is_Closed raises Program_Error. Cairo keeps a pattern set as a
+source, so it may be closed while it is. The enumerations replace cairo's int constants, so a
+value cairo hasn't can't be passed.</p>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>cairo_t</td>
+    <td>Context</td>
+  </tr>
+
+  <tr>
+    <td>cairo_pattern_t</td>
+    <td>Pattern</td>
+  </tr>
+
+  <tr>
+    <td>cairo_text_extents_t</td>
+    <td>Text_Extents</td>
+  </tr>
+
+  <tr>
+    <td>cairo_font_slant_t</td>
+    <td>Font_Slant</td>
+  </tr>
+
+  <tr>
+    <td>cairo_font_weight_t</td>
+    <td>Font_Weight</td>
+  </tr>
+
+  <tr>
+    <td>cairo_antialias_t</td>
+    <td>Antialias_Mode</td>
+  </tr>
+
+  <tr>
+    <td>cairo_extend_t</td>
+    <td>Extend_Mode</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Cairo_Drawn_Window</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Cairo_Drawn_Window_Reference</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+cairo_pattern_t *cairo_pattern_create_linear(double x0, double y0,
+    double x1, double y1);
+</pre></td>
+<td><pre>
+function Create_Linear
+       (X0, Y0, X1, Y1 : in Long_Float)
+    return Pattern;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+cairo_pattern_t *cairo_pattern_create_radial(double cx0, double cy0, double radius0,
+    double cx1, double cy1, double radius1);
+</pre></td>
+<td><pre>
+function Create_Radial
+       (X0, Y0, R0, X1, Y1, R1 : in Long_Float)
+    return Pattern;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+&nbsp;
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return Cairo_Drawn_Window;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+&nbsp;
+</pre></td>
+<td><pre>
+function Create
+       (Parent     : in out Groups.Group'Class;
+        X, Y, W, H : in     Integer;
+        Text       : in     String := "")
+    return Cairo_Drawn_Window;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+&nbsp;
+</pre></td>
+<td><pre>
+function Create
+       (W, H : in Integer;
+        Text : in String := "")
+    return Cairo_Drawn_Window;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+&nbsp;
+</pre></td>
+<td><pre>
+function Create
+       (Parent : in out Groups.Group'Class;
+        W, H   : in     Integer;
+        Text   : in     String := "")
+    return Cairo_Drawn_Window;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+cairo_status_t cairo_status(cairo_t *cr);
+</pre></td>
+<td><pre>
+function Is_Ok
+       (This : in Context)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_save(cairo_t *cr);
+</pre></td>
+<td><pre>
+procedure Save
+       (This : in Context);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_restore(cairo_t *cr);
+</pre></td>
+<td><pre>
+procedure Restore
+       (This : in Context);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_translate(cairo_t *cr, double tx, double ty);
+</pre></td>
+<td><pre>
+procedure Translate
+       (This : in Context;
+        X, Y : in Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_scale(cairo_t *cr, double sx, double sy);
+</pre></td>
+<td><pre>
+procedure Scale
+       (This : in Context;
+        X, Y : in Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_rotate(cairo_t *cr, double angle);
+</pre></td>
+<td><pre>
+procedure Rotate
+       (This  : in Context;
+        Angle : in Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_set_line_width(cairo_t *cr, double width);
+</pre></td>
+<td><pre>
+procedure Set_Line_Width
+       (This  : in Context;
+        Width : in Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_set_antialias(cairo_t *cr, cairo_antialias_t antialias);
+</pre></td>
+<td><pre>
+procedure Set_Antialias
+       (This : in Context;
+        Mode : in Antialias_Mode);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_set_source_rgb(cairo_t *cr, double red, double green, double blue);
+</pre></td>
+<td><pre>
+procedure Set_Source_RGB
+       (This    : in Context;
+        R, G, B : in Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_set_source_rgba(cairo_t *cr,
+    double red, double green, double blue, double alpha);
+</pre></td>
+<td><pre>
+procedure Set_Source_RGBA
+       (This       : in Context;
+        R, G, B, A : in Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_set_source(cairo_t *cr, cairo_pattern_t *source);
+</pre></td>
+<td><pre>
+procedure Set_Source
+       (This   : in Context;
+        Source : in Pattern'Class);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_new_path(cairo_t *cr);
+</pre></td>
+<td><pre>
+procedure New_Path
+       (This : in Context);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_close_path(cairo_t *cr);
+</pre></td>
+<td><pre>
+procedure Close_Path
+       (This : in Context);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_move_to(cairo_t *cr, double x, double y);
+</pre></td>
+<td><pre>
+procedure Move_To
+       (This : in Context;
+        X, Y : in Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_line_to(cairo_t *cr, double x, double y);
+</pre></td>
+<td><pre>
+procedure Line_To
+       (This : in Context;
+        X, Y : in Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_curve_to(cairo_t *cr, double x1, double y1,
+    double x2, double y2, double x3, double y3);
+</pre></td>
+<td><pre>
+procedure Curve_To
+       (This                   : in Context;
+        X1, Y1, X2, Y2, X3, Y3 : in Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_rectangle(cairo_t *cr,
+    double x, double y, double width, double height);
+</pre></td>
+<td><pre>
+procedure Rectangle
+       (This : in Context;
+        X, Y : in Long_Float;
+        W, H : in Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_arc(cairo_t *cr, double xc, double yc, double radius,
+    double angle1, double angle2);
+</pre></td>
+<td><pre>
+procedure Arc
+       (This     : in Context;
+        X, Y     : in Long_Float;
+        Radius   : in Long_Float;
+        From, To : in Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_stroke(cairo_t *cr);
+</pre></td>
+<td><pre>
+procedure Stroke
+       (This : in Context);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_stroke_preserve(cairo_t *cr);
+</pre></td>
+<td><pre>
+procedure Stroke_Preserve
+       (This : in Context);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_fill(cairo_t *cr);
+</pre></td>
+<td><pre>
+procedure Fill
+       (This : in Context);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_fill_preserve(cairo_t *cr);
+</pre></td>
+<td><pre>
+procedure Fill_Preserve
+       (This : in Context);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_paint(cairo_t *cr);
+</pre></td>
+<td><pre>
+procedure Paint
+       (This : in Context);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_clip(cairo_t *cr);
+</pre></td>
+<td><pre>
+procedure Clip
+       (This : in Context);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_select_font_face(cairo_t *cr, const char *family,
+    cairo_font_slant_t slant, cairo_font_weight_t weight);
+</pre></td>
+<td><pre>
+procedure Select_Font_Face
+       (This   : in Context;
+        Family : in String;
+        Slant  : in Font_Slant  := Normal_Slant;
+        Weight : in Font_Weight := Normal_Weight);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_set_font_size(cairo_t *cr, double size);
+</pre></td>
+<td><pre>
+procedure Set_Font_Size
+       (This : in Context;
+        Size : in Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_show_text(cairo_t *cr, const char *utf8);
+</pre></td>
+<td><pre>
+procedure Show_Text
+       (This : in Context;
+        Text : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_text_path(cairo_t *cr, const char *utf8);
+</pre></td>
+<td><pre>
+procedure Text_Path
+       (This : in Context;
+        Text : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_text_extents(cairo_t *cr, const char *utf8,
+    cairo_text_extents_t *extents);
+</pre></td>
+<td><pre>
+function Get_Text_Extents
+       (This : in Context;
+        Text : in String)
+    return Text_Extents;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+cairo_pattern_t *cairo_pattern_add_color_stop_rgb(cairo_pattern_t *pattern,
+    double offset, double red, double green, double blue);
+</pre></td>
+<td><pre>
+procedure Add_Color_Stop_RGB
+       (This    : in out Pattern;
+        Offset  : in     Long_Float;
+        R, G, B : in     Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_pattern_add_color_stop_rgba(cairo_pattern_t *pattern,
+    double offset, double red, double green, double blue, double alpha);
+</pre></td>
+<td><pre>
+procedure Add_Color_Stop_RGBA
+       (This       : in out Pattern;
+        Offset     : in     Long_Float;
+        R, G, B, A : in     Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_pattern_set_extend(cairo_pattern_t *pattern, cairo_extend_t extend);
+</pre></td>
+<td><pre>
+procedure Set_Extend
+       (This : in out Pattern;
+        Mode : in     Extend_Mode);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+cairo_status_t cairo_pattern_status(cairo_pattern_t *pattern);
+</pre></td>
+<td><pre>
+function Is_Ok
+       (This : in Pattern)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void cairo_pattern_destroy(cairo_pattern_t *pattern);
+</pre></td>
+<td><pre>
+procedure Close
+       (This : in out Pattern);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+&nbsp;
+</pre></td>
+<td><pre>
+function Is_Closed
+       (This : in Pattern)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+&nbsp;
+</pre></td>
+<td><pre>
+function Is_Supported
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+&nbsp;
+</pre></td>
+<td><pre>
+procedure Draw_Cairo
+       (This    : in out Cairo_Drawn_Window;
+        Context : in     FLTK.Cairo.Context)
+is null;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Cairo_Drawn_Window);
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+
+  </body>
+</html>

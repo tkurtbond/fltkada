@@ -18,6 +18,7 @@ with
 
     Ada.Environment_Variables,
     Ada.Exceptions,
+    Ada.IO_Exceptions,
     Checks,
     FLTK.Filenames;
 
@@ -32,6 +33,18 @@ procedure Test_Filenames is
     package Fnm renames FLTK.Filenames;
 
     Changed : Boolean;
+
+    procedure List_Missing is
+        List : constant Fnm.File_List := Fnm.Get_Listing ("/tmp/no-such-directory/");
+    begin
+        Check (False, "listed a missing directory:" & Natural'Image (List.Length));
+    end List_Missing;
+
+    procedure List_File is
+        List : constant Fnm.File_List := Fnm.Get_Listing ("/etc/passwd");
+    begin
+        Check (False, "listed a file:" & Natural'Image (List.Length));
+    end List_File;
 
 begin
 
@@ -79,6 +92,12 @@ begin
     end loop;
     Check (Fnm.Match ("ab.c", "*.[ch]") and then not Fnm.Match ("ab.o", "*.[ch]")
         and then Fnm.Match ("x.ads", "*.{adb,ads}"), "patterns that are closed");
+
+    --  FLTKAda-BUGS.md 124: a directory that can't be listed.
+    Raises (List_Missing'Access, Ada.IO_Exceptions.Name_Error'Identity,
+        "Get_Listing of a missing directory");
+    Raises (List_File'Access, Ada.IO_Exceptions.Name_Error'Identity,
+        "Get_Listing of a file");
 
     Summary;
 

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Rect Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Rect Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Rect</td>
+    <td>FLTK.Rects</td>
+  </tr>
+
+</table>
+
+<p><b>Note:</b><br /><br />
+FLTK's Fl_Rect is all inline code, so FLTK.Rects is plain Ada, with nothing from the
+shim, and a Rect is a record with public components. Nothing is checked: a rectangle
+can be inset until its width or height is negative, as FLTK's can. Right and Bottom
+are the first coordinates outside the rectangle.</p>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Rect</td>
+    <td>Rect</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Rect();
+</pre></td>
+<td><pre>
+Rect'(others => 0)  --  the default of a Rect object
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Rect(int W, int H);
+</pre></td>
+<td><pre>
+function Create
+       (W, H : in Integer)
+    return Rect;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Rect(int X, int Y, int W, int H);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer)
+    return Rect;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Rect(int X, int Y, int W, int H, Fl_Boxtype bt);
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Box        : in Box_Kind)
+    return Rect;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Rect(const Fl_Widget &amp;widget);
+Fl_Rect(const Fl_Widget *const widget);
+</pre></td>
+<td><pre>
+function Create
+       (Item : in FLTK.Widgets.Widget'Class)
+    return Rect;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+int x() const;
+int y() const;
+int w() const;
+int h() const;
+void x(int X);
+void y(int Y);
+void w(int W);
+void h(int H);
+</pre></td>
+<td><pre>
+X, Y, W, H : Integer  --  the record's components
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int r() const;
+</pre></td>
+<td><pre>
+function Get_Right
+       (This : in Rect)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int b() const;
+</pre></td>
+<td><pre>
+function Get_Bottom
+       (This : in Rect)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void r(int R);
+</pre></td>
+<td><pre>
+procedure Set_Right
+       (This  : in out Rect;
+        Right : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void b(int B);
+</pre></td>
+<td><pre>
+procedure Set_Bottom
+       (This   : in out Rect;
+        Bottom : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void inset(int d);
+</pre></td>
+<td><pre>
+procedure Inset
+       (This : in out Rect;
+        D    : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void inset(int left, int top, int right, int bottom);
+</pre></td>
+<td><pre>
+procedure Inset
+       (This                     : in out Rect;
+        Left, Top, Right, Bottom : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void inset(Fl_Boxtype bt);
+</pre></td>
+<td><pre>
+procedure Inset
+       (This : in out Rect;
+        Box  : in     Box_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+bool operator==(const Fl_Rect &amp;lhs, const Fl_Rect &amp;rhs);
+bool operator!=(const Fl_Rect &amp;lhs, const Fl_Rect &amp;rhs);
+</pre></td>
+<td><pre>
+function "=" (Left, Right : in Rect) return Boolean;  --  predefined
+function "/=" (Left, Right : in Rect) return Boolean;  --  predefined
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>

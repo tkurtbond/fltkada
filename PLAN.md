@@ -218,7 +218,8 @@ Each AFFECTED item is assigned to a fix phase below. The detail
 - **HANDLED:** 12, 22, 31, 33, 39, 46, 74, 80, 119, and FLTKAda-BUGS
   #2/#6/#9/#10/#11.
 - **NOT BOUND:** 24, 48, 55, 82, 85, 86, 95, 105–108, 115–118, 135, 137.
-  135 has been bound since Phase 13, with its workaround.
+  135 has been bound since Phase 13, with its workaround. 105–108 have
+  been bound since Phase 16, with their workarounds.
 - **N/A:** 7, 9, 10 (doc), 11, 14, 15, 17–20, 25, 29, 32, 66–71, 77.
   Several of these (14, 17, 18, 29, 32, 68) are test-environment facts
   that Phase 0 must respect.
@@ -3513,7 +3514,7 @@ Decisions and findings:
   and the make targets, and says which ones open windows on the desktop
   and what each needs.
 
-### Phase 16: Forms, plugins and Cairo
+### Phase 16: Forms, plugins and Cairo [done, 2026-11-07]
 
 Decided 2026-11-03 (Open question 1): bind all three, following pofltk.
 Each is a separate library, as in pofltk, so a program using only
@@ -3522,7 +3523,8 @@ widgets isn't linked with what it doesn't use. Each raises
 the classes off `progress.txt`'s "Never" list as they are bound.
 
 - **Forms** (`~/Repos/Oberon/pofltk/src/forms/FlForms.Mod`/`.cpp`), as
-  `fltkada_forms.gpr` and `FLTK.Forms.*`:
+  `fltkada_forms.gpr` and ~~`FLTK.Forms.*`~~ `FLTK.Widgets.Forms.*`
+  (see "Forms [done]" below for why):
   - `Fl_Free`, with issue 105.
   - `Fl_Timer`, with issue 107.
   - `Fl_FormsBitmap` and `Fl_FormsPixmap`, with issue 106.
@@ -3543,7 +3545,10 @@ the classes off `progress.txt`'s "Never" list as they are bound.
   `Fl_Cairo_Window`, which only an FLTK built for it has. It is a double
   window whose `Draw_Cairo` draws over its widgets with a context good
   for that call alone. It works on any FLTK, on X11 and Wayland. It binds
-  the cairo calls FLTK's programs use (pofltk's 75 procedures), with
+  the cairo calls FLTK's programs use (~~pofltk's 75 procedures~~
+  **wrong:** `FlCairo.Mod` has 74 `PROCEDURE`s, 33 of them C imports;
+  it gives programs 35 cairo operations and two window constructors;
+  counted 2026-11-07), with
   `tools/gen-constants.py` generating the constants. A context kept and
   used after the draw raises `Program_Error`. FLTKAda's existing
   `FLTK.Widgets.Groups.Windows.Double.Cairo` is checked against it and
@@ -3556,6 +3561,175 @@ the classes off `progress.txt`'s "Never" list as they are bound.
 
 Each part gets its own `test/unit/` tests, run by `make check` only when
 the library is built.
+
+**`Fl_Rect` [done, 2026-11-06].** `FLTK.Rects`: FLTK's class is all
+inline code, so `Rect` is a plain Ada record (`X`, `Y`, `W`, `H`), with
+`Forge.Create` for each of FLTK's constructors, `Get_Right`,
+`Get_Bottom`, `Set_Right`, `Set_Bottom` and the three `Inset`s; `=` is
+the predefined one. There is no shim and no separate library. test_rects
+checks each against the values FLTK 1.4.5's `Fl_Rect` gave in a C++
+program. `test/rects.adb` ports pofltk's `Rects`; under Xvfb its window
+is pixel for pixel the same as the C++ equivalent's (`compare -metric
+AE` 0). The C++ must call `show()`, not `show(argc, argv)`, which loads
+the system colours and moves one grey of the ramp by one level.
+
+**Plugins [done, 2026-11-06].** `FLTK.Environment.Plugins`
+(`body/c_fl_plugin.cpp`). `Plugin` derives from `Wrapper`, and a program
+derives its own type from it. It is made closed; `Open (Class, Name)`
+makes a shim `My_Plugin : Fl_Plugin` holding the Ada object's address,
+and `Close`, or finalization, deletes it. A `Plugin_Manager` gives back
+`access Plugin'Class`: the shim's `dynamic_cast<My_Plugin*>` gives the
+Ada object, or null for a plugin a C++ library made, which still has a
+name and is counted. Issue 108, each part confirmed by a C++ scratch
+program under Xvfb and valgrind and then by test_plugins:
+- A second plugin of one class and name: valgrind showed the invalid
+  read and write of a use after free as the two were deleted
+  (`Fl_Preferences.cxx:1902`, `:1918`). `Open` raises `Program_Error`
+  instead, as it does for a plugin open already.
+- `plugin(5)` in a class of one plugin made a group named with a UUID,
+  and the count went from 1 to 2. `Plugin_At` and `Plugin_Name` raise
+  `Constraint_Error` beyond the count.
+- A class or name that is empty or has a `/` raises `Constraint_Error`.
+- `Load_All` is in Ada, with `FLTK.Filenames.Get_Listing`,
+  `Numeric_Sort` and `Match` (issue 63). It adds the final `/` FLTK's
+  `loadAll` needs, and passes over what isn't a library, as FLTK does.
+  Writing it found bug 124: `Get_Listing` of a directory that can't be
+  listed raised `Constraint_Error`; now it raises `Name_Error`, as
+  `Load_All` does.
+- With FLTK linked statically (`libfltk.a`), `dlopen` of a C++ plugin
+  library failed with "undefined symbol: _ZTI9Fl_Plugin"; linked
+  `-rdynamic`, it loaded and the class had 1 plugin. The spec says so.
+
+test_plugins (51 checks) ports pofltk's `TestPlugins` and its three halt
+tests as `Raises` checks, and loads two C++ plugin libraries the
+Makefile builds from `test/plugins/c_plugin.cpp` into
+`bin/unit/plugins/`; under valgrind it has no errors, and vg-check
+passes. `test/plugins.adb` ports pofltk's `Plugins`: clicking each line
+under Xvfb (xdotool) drew the red disc and the blue cross. Not tested:
+an Ada plugin opened by an Ada library loaded with `Load`, which needs
+the library and the program to share one FLTKAda; the spec doesn't
+claim it. Plugins are in the main library: they need nothing but
+`Fl_Preferences`, which it binds already, so there is no separate
+library and no `Unsupported_Error`. `Fl_Device_Plugin` is left unbound,
+and on progress.txt's "Never" list: in FLTK 1.4.5 its one use is FLTK's
+own hook into the OpenGL library (`Fl_Device.cxx:160`, the
+`opengl.device.fltk.org` plugin, `Fl_Gl_Device_Plugin.cxx`), which
+`Fl_Widget_Surface` and the screen driver use to print and capture an
+`Fl_Gl_Window`. A program has no use for it.
+
+**Forms [done, 2026-11-07].** `fltkada_forms.gpr`, a library of its own
+(`lib/forms`, `libfltkada_forms`) linked with `-lfltk_forms`, with its
+sources in `forms/spec` and `forms/body`. The packages are
+`FLTK.Widgets.Forms.Timers`, `.Frees`, `.Bitmaps`, `.Pixmaps` and
+`.Texts`, not the `FLTK.Forms.*` planned above: each widget's body needs
+the private part of `FLTK.Widgets` (`Widget_Convert`, the hooks), which
+only a child of `FLTK.Widgets` can see. The issues:
+- **105** (`Fl_Free`): the shim's one handler turns FLTK's step,
+  `handle(0)`, into `FL_STEP`, and drops `FL_FREEMEM`, which comes from
+  inside `~Fl_Free` once the Ada object is finalized. It passes neither
+  the key cut to a `char` nor `4 - event_button()`: `Handle_Free` gets
+  the event, its X and Y, and a `Free_Event_Kind` (`FLTK_Event`,
+  `Draw_Event`, `Step_Event`), and asks `FLTK.Events` for the rest. A
+  Free deleted in a callback has its user data cleared at once, so its
+  timer can't step into a finalized object. An exception raised in
+  `Handle_Free` comes out of the draw or event that called it (checked
+  with `Capture`).
+- **106** (`Fl_FormsBitmap`, `Fl_FormsPixmap`): `set` isn't bound.
+  `Set_Bitmap` and `Set_Pixmap` keep only an access to the caller's
+  image, and `Clear_*` shows none, so the widget never deletes or leaks
+  an image. pofltk's `HaltFormsBitmap` and `HaltFormsPixmap` (a pixmap
+  given to a bitmap widget, RGB pixels given to a pixmap widget) are
+  compile-time errors here: `Set_Bitmap` takes `Bitmap'Class` and
+  `Set_Pixmap` `Pixmap'Class`, and `RGB_Image` and `Pixmap` aren't
+  `Bitmap`s, nor `RGB_Image` a `Pixmap`. A GIF is a `Pixmap`, and an
+  animated one shows, and goes on, after its widget is gone.
+- **107** (`Fl_Timer`): `Counts_Up` and `Set_Counts_Up` say what the
+  timer shows. test_forms confirms a new value timer shows the time
+  left (its ink, 196, is more than with `Set_Counts_Up (True)`, 116).
+  A timer finalized while running stops; one may free itself in its
+  callback.
+- `HaltFormsFreeKind` and `HaltFormsTimerKind` need no port: the kinds
+  are the enumerations `Free_Kind` and `Timer_Kind`, with their FLTK
+  values in `tools/gen-constants.py`, checked by test_forms_constants
+  (8 checks).
+
+There is no `Unsupported_Error` at run time: without FLTK's `fltk_forms`
+the library can't be linked at all. The Makefile instead checks for it
+(`HAVE_FORMS`, linking an empty program with `fltk-config --use-forms
+--ldflags`) and builds and runs the Forms library, its unit tests
+(`tests_forms.gpr`, `test/unit/forms`) and its programs
+(`tests_forms_programs.gpr`, `test/forms`) only where it is found.
+test_forms (60 checks) ports pofltk's `TestForms`; it passes under Xvfb
+and sway, and under valgrind vg-check passes. `test/forms/forms.adb`
+ports pofltk's `Forms`, itself FLTK's `test/forms.cxx`; under one Xvfb,
+with the clock and the timer masked, its window is pixel for pixel the
+C++ `forms`'s (`compare -metric AE` 0). That needed two fixes to the
+port: its input was `FLTK.Widgets.Inputs.Input`, FLTK's `Fl_Input_`,
+which draws nothing, and is now `Inputs.Text.Text_Input`, `Fl_Input`;
+and it shows the form with `Show_With_Args`, as `fl_show_form` calls
+`show(argc, argv)` (`forms_compatibility.cxx:115`), which loads the
+system colours (`Fl_arg.cxx:290`), moving one grey by one level, as
+with Rects. `test/forms/free_form.adb` ports pofltk's `FreeForm`. Both
+programs run for the smoke test, under Xvfb and sway.
+
+**Cairo [done, 2026-11-07].** `fltkada_cairo.gpr`, a library of its own
+(`lib/cairo`, `libfltkada_cairo`) linked with `-lcairo`, with its
+sources in `cairo/spec` and `cairo/body`. The C++ needs cairo's headers:
+the project's `CAIRO_INCLUDE` (default `/usr/include/cairo`), which the
+Makefile sets from `pkg-config --variable=includedir cairo`. The
+Makefile builds and tests the library only where `pkg-config --exists
+cairo` (`HAVE_CAIRO`), as it does Forms.
+- **Two packages, not one.** The window is
+  `FLTK.Widgets.Groups.Windows.Double.Cairo_Drawn` (`Cairo_Drawn_Window`),
+  since its body needs the private parts of `FLTK.Widgets` (`Draw_Ptr`,
+  `Handle_Ptr`) and of `Double` (`Extra_Init`), which only a child can
+  see. `FLTK.Cairo` has `Context`, `Pattern` and the calls, and its
+  body has the draw hook, the one place a `Context` is made. The name
+  `Cairo_Drawn` keeps it apart from `Double.Cairo`, FLTK's
+  `Fl_Cairo_Window`.
+- **The window** (`c_fl_cairo_drawn_window.cpp`, from pofltk's
+  `FlCairo.cpp`) is an `Fl_Double_Window` whose `draw()` draws the box
+  and widgets and then, on the display only, makes a cairo context on
+  FLTK's buffer (X11: `cairo_xlib_surface_create` on `fl_window`;
+  Wayland: on `fl_wl_gc()`'s target, with its matrix), calls
+  `Draw_Cairo`, and destroys it. So `Draw_Cairo` is reached through the
+  inherited `Draw`, and a type overriding `Draw` has it only by calling
+  its parent's. `Is_Supported` is whether the shim was compiled with
+  `FLTK_USE_X11` or `FLTK_USE_WAYLAND`; without either, `Forge` raises
+  `Unsupported_Error`.
+- **pofltk's halts.** `HaltCairoStale`: a `Context` holds the draw's
+  serial number (a `mod 2**64` count that skips 0, saved and restored
+  around a nested draw), and every call raises `Program_Error` unless
+  it is the current one, so a copy kept after its draw, or a `Context`
+  no draw gave, raises. `HaltCairoClosed`: `Pattern` is
+  `Limited_Controlled`; `Close` is idempotent and finalization closes
+  it, and every other call on a closed one raises `Program_Error`.
+  `HaltCairoAntialias`, `HaltCairoSlant` and `HaltCairoExtend` can't be
+  written: the modes are enumerations (`Antialias_Mode`, `Font_Slant`,
+  `Font_Weight`, `Extend_Mode`) passed as `'Pos`, their cairo values in
+  `tools/gen-constants.py` and checked by test_cairo_constants (16
+  checks). `HaltCairoNil` can't be either: `Set_Source` takes
+  `Pattern'Class`. An exception raised in `Draw_Cairo` is kept by
+  `Hook_Exceptions` and raised again from the `Wait`, as from `Draw`.
+- **`Double.Cairo` is kept**, in the main library, unchanged: removing
+  it would break programs written for upstream FLTKAda, and it is the
+  faithful binding of `Fl_Cairo_Window` for an FLTK built with Cairo.
+  Its callback gets cairo's own `cairo_t` as an address, which
+  `FLTK.Cairo` can't wrap, since a `Context` is made only by the hook;
+  `examples/cairo_draw_x.adb`, a port of FLTK's program, still imports
+  the cairo calls it uses (its comment, which said FLTKAda had no Cairo
+  binding, now points to `test/cairo`). test_cairo_support is
+  unchanged.
+- **Tests.** test_cairo (`tests_cairo.gpr`, `test/unit/cairo`, 46
+  checks) ports pofltk's `TestCairo` with its pixel checks, and adds the
+  stale and closed checks as `Raises` and one for an exception from
+  `Draw_Cairo`; without X11 and Wayland it checks that `Forge` raises
+  and skips the rest. It passes under Xvfb and sway.
+  `tests_cairo_programs.gpr` builds `test/cairo/cairo_draw_x.adb` and
+  `cairo_test.adb`, pofltk's `CairoDrawX` and `CairoTest`, which are
+  FLTK's `examples/cairo-draw-x.cxx` and `test/cairo_test.cxx`. Under
+  one Xvfb each window is pixel for pixel the C++ program's (`compare
+  -metric AE` 0, this FLTK having `FLTK_HAVE_CAIRO`).
 
 ### Phase 17: BSD and 32-bit hosts
 

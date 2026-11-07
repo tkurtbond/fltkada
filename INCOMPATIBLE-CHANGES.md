@@ -81,6 +81,10 @@ come first in each list.
 
 ## Changes that can make a program behave differently
 
+- **`Filenames.Get_Listing` raises `Ada.IO_Exceptions.Name_Error`** for
+  a directory it can't list. Before, it returned a list whose `Length`
+  raised `Constraint_Error`.
+  [FLTKAda-BUGS.md 124](FLTKAda-BUGS.md#124-get_listing-of-a-directory-that-cant-be-listed).
 - **A callback, `Draw` or other hook that raises has what it pushed
   undone** as the exception leaves it: clips (`Push_Clip`,
   `Push_No_Clip`), matrices, current surfaces, begun offscreens,

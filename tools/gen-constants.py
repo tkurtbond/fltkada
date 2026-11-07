@@ -22,7 +22,12 @@
 #                                  private conversions (To_C,
 #                                  Flag_To_UChar, Cursor_Values, ...)
 #
-# test/unit/test_constants.adb, written by hand, runs it.  The C++ is
+# test/unit/test_constants.adb, written by hand, runs it.  The Forms
+# library's constants get the same two files in test/unit/forms, named
+# c_forms_constants.cpp and fltk-test_forms_constants.adb, run by
+# test_forms_constants.adb there, and the Cairo library's, in
+# test/unit/cairo, c_cairo_constants.cpp and
+# fltk-test_cairo_constants.adb, run by test_cairo_constants.adb.  The C++ is
 # compiled against the installed headers, so an FLTK upgrade needs no new
 # run of this script; rerun it only when the list below changes, such as
 # when FLTKAda gains an enumerator.  pofltk's gen-constants.py writes the
@@ -254,44 +259,54 @@ def write(path, text):
         f.write(text)
 
 
-def cpp():
+class Suite:
+    """One generated test: the checks, the files and the names it uses."""
+
+    def __init__(self, checks, directory, prefix, unit, includes, withs, renames):
+        self.checks = checks
+        self.directory = directory
+        self.symbol = f"c_{prefix}constants"
+        self.unit = unit
+        self.includes = includes
+        self.withs = withs
+        self.renames = renames
+
+
+def cpp(suite):
     out = [HEADER.format(c="//"), "",
-           "//  FLTK's value of each constant the Ada test, fltk-test_constants.adb,",
-           "//  checks, in the same order.", "", "",
-           "#include <FL/Enumerations.H>", "#include <FL/Fl_Button.H>",
-           "#include <FL/Fl_Clock.H>",
-           "#include <FL/Fl_File_Icon.H>",
-           "#include <FL/Fl_Menu_Item.H>", "#include <FL/Fl_Sys_Menu_Bar.H>",
-           "#include <FL/Fl_Tabs.H>", "", "",
-           'extern "C" const long long c_constants[];', "",
-           'extern "C" const long long c_constants[] =', "{"]
-    for item in CHECKS:
+           f"//  FLTK's value of each constant the Ada test, {suite.unit.lower().replace('.', '-')}.adb,",
+           "//  checks, in the same order.", "", ""]
+    out += [f"#include <FL/{h}>" if h.endswith(".H") else f"#include <{h}>"
+            for h in suite.includes]
+    out += ["", "",
+           f'extern "C" const long long {suite.symbol}[];', "",
+           f'extern "C" const long long {suite.symbol}[] =', "{"]
+    for item in suite.checks:
         if isinstance(item, str):
             out.append("    //  " + item.replace("\n--  ", "\n    //  "))
         else:
             out.append(f"    {item[1]},")
     out[-1] = out[-1].rstrip(",")
     out += ["};", ""]
-    write("test/unit/c_constants.cpp", "\n".join(out))
+    write(f"{suite.directory}/{suite.symbol}.cpp", "\n".join(out))
 
 
-def ada():
-    count = sum(1 for item in CHECKS if not isinstance(item, str))
+def ada(suite):
+    count = sum(1 for item in suite.checks if not isinstance(item, str))
     out = [HEADER.format(c="--"), "",
            "--  Checks each of FLTKAda's constants against FLTK's value, from",
-           "--  c_constants.cpp.  A child of FLTK, so it can see the private",
-           "--  conversions.  Run by test_constants.adb.", "", "",
-           "with", "", "    Checks,", "    FLTK.Draw,", "    FLTK.Images.File_Icons,", "    FLTK.Screen,",
-           "    FLTK.Widgets.Buttons,", "    FLTK.Widgets.Clocks,", "    FLTK.Widgets.Groups.Tabbed,", "    FLTK.Widgets.Menus.Menu_Bars.Systemwide;", "", "",
-           "procedure FLTK.Test_Constants is", "", "",
-           "    package Buttons renames FLTK.Widgets.Buttons;",
-           "    package Clocks renames FLTK.Widgets.Clocks;",
-           "    package Tabbed renames FLTK.Widgets.Groups.Tabbed;",
-           "    package Sys_Menu renames FLTK.Widgets.Menus.Menu_Bars.Systemwide;", "", "",
+           f"--  {suite.symbol}.cpp.  A child of FLTK, so it can see the private",
+           f"--  conversions.  Run by {suite.unit[5:].lower()}.adb.", "", "",
+           "with", "", "    Checks,"]
+    out += [f"    {w}," for w in suite.withs]
+    out[-1] = out[-1].rstrip(",") + ";"
+    out += ["", "", f"procedure {suite.unit} is", "", ""]
+    out += [f"    package {a} renames {b};" for a, b in suite.renames]
+    out += ["", "",
            f"    type Value_Array is array (1 .. {count}) of Long_Long_Integer;",
            "    pragma Convention (C, Value_Array);", "",
            "    FLTK_Values : Value_Array;",
-           '    pragma Import (C, FLTK_Values, "c_constants");', "", "",
+           f'    pragma Import (C, FLTK_Values, "{suite.symbol}");', "", "",
            "    procedure Same",
            "           (Ada_Value : in Long_Long_Integer;",
            "            Index     : in Positive;",
@@ -309,7 +324,7 @@ def ada():
            "    end Same;", "", "",
            "begin", ""]
     index = 0
-    for item in CHECKS:
+    for item in suite.checks:
         if isinstance(item, str):
             if index > 0:
                 out.append("")
@@ -324,9 +339,74 @@ def ada():
                     label = f'        "{ada_expr}" &\n        " = {c_expr}");'
                 call = f"    Same\n       ({ada_expr},\n        {index},\n{label}"
             out.append(call)
-    out += ["", "end FLTK.Test_Constants;", ""]
-    write("test/unit/fltk-test_constants.adb", "\n".join(out))
+    out += ["", f"end {suite.unit};", ""]
+    write(f"{suite.directory}/{suite.unit.lower().replace('.', '-')}.adb", "\n".join(out))
 
 
-cpp()
-ada()
+MAIN = Suite(
+    CHECKS, "test/unit", "", "FLTK.Test_Constants",
+    ["Enumerations.H", "Fl_Button.H", "Fl_Clock.H", "Fl_File_Icon.H", "Fl_Menu_Item.H",
+     "Fl_Sys_Menu_Bar.H", "Fl_Tabs.H"],
+    ["FLTK.Draw", "FLTK.Images.File_Icons", "FLTK.Screen", "FLTK.Widgets.Buttons",
+     "FLTK.Widgets.Clocks", "FLTK.Widgets.Groups.Tabbed", "FLTK.Widgets.Menus.Menu_Bars.Systemwide"],
+    [("Buttons", "FLTK.Widgets.Buttons"), ("Clocks", "FLTK.Widgets.Clocks"),
+     ("Tabbed", "FLTK.Widgets.Groups.Tabbed"),
+     ("Sys_Menu", "FLTK.Widgets.Menus.Menu_Bars.Systemwide")])
+
+
+#  The Forms library's constants, checked by a test of their own, which is
+#  built only with that library (tests_forms.gpr).
+FORMS_CHECKS = []
+CHECKS = FORMS_CHECKS
+
+section("Timer kinds (Fl_Timer::type)")
+enum("Timers.Timer_Kind", [("Timers.Normal_Timer", "FL_NORMAL_TIMER"),
+                           ("Timers.Value_Timer", "FL_VALUE_TIMER"),
+                           ("Timers.Hidden_Timer", "FL_HIDDEN_TIMER")])
+
+section("Free kinds (Fl_Free::type); a representation clause gives FLTK's values")
+for a in "Normal Sleeping Input Continuous All".split():
+    add(f"Long_Long_Integer (Frees.Free_Kind'Enum_Rep (Frees.{a}_Free))",
+        f"FL_{a.upper()}_FREE")
+
+FORMS = Suite(
+    FORMS_CHECKS, "test/unit/forms", "forms_", "FLTK.Test_Forms_Constants",
+    ["Fl_Free.H", "Fl_Timer.H"],
+    ["FLTK.Widgets.Forms.Frees", "FLTK.Widgets.Forms.Timers"],
+    [("Frees", "FLTK.Widgets.Forms.Frees"), ("Timers", "FLTK.Widgets.Forms.Timers")])
+
+
+#  The Cairo library's constants: cairo's, not FLTK's, which FLTK.Cairo
+#  passes as each enumerator's position.  Built only with that library
+#  (tests_cairo.gpr).
+CAIRO_CHECKS = []
+CHECKS = CAIRO_CHECKS
+
+section("Font slants (cairo_font_slant_t)")
+enum("Cairo.Font_Slant", [(f"Cairo.{a}_Slant", f"CAIRO_FONT_SLANT_{a.upper()}")
+                          for a in "Normal Italic Oblique".split()])
+
+section("Font weights (cairo_font_weight_t)")
+enum("Cairo.Font_Weight", [(f"Cairo.{a}_Weight", f"CAIRO_FONT_WEIGHT_{a.upper()}")
+                           for a in "Normal Bold".split()])
+
+section("Antialiasing (cairo_antialias_t)")
+enum("Cairo.Antialias_Mode",
+     [(f"Cairo.{'No' if a == 'None' else a}_Antialias", f"CAIRO_ANTIALIAS_{a.upper()}")
+      for a in "Default None Gray Subpixel Fast Good Best".split()])
+
+section("Pattern extends (cairo_extend_t)")
+enum("Cairo.Extend_Mode",
+     [(f"Cairo.{'No' if a == 'None' else a}_Extend", f"CAIRO_EXTEND_{a.upper()}")
+      for a in "None Repeat Reflect Pad".split()])
+
+CAIRO = Suite(
+    CAIRO_CHECKS, "test/unit/cairo", "cairo_", "FLTK.Test_Cairo_Constants",
+    ["cairo.h"],
+    ["FLTK.Cairo"],
+    [("Cairo", "FLTK.Cairo")])
+
+
+for suite in (MAIN, FORMS, CAIRO):
+    cpp(suite)
+    ada(suite)

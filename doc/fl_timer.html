@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Timer Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Timer Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<p>Part of the separate library fltkada_forms (fltkada_forms.gpr), which binds FLTK's fltk_forms library and is built only where FLTK has it.</p>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Timer</td>
+    <td>FLTK.Widgets.Forms.Timers</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Timer</td>
+    <td>Timer</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Timer_Reference</td>
+  </tr>
+
+  <tr>
+    <td>FL_NORMAL_TIMER, FL_VALUE_TIMER, FL_HIDDEN_TIMER</td>
+    <td>Timer_Kind</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Timer(uchar t, int x, int y, int w, int h, const char *l);
+</pre></td>
+<td><pre>
+function Create
+       (Kind       : in Timer_Kind;
+        X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return Timer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Rely on the automatic use of begin when a group is created, or use begin/end
+explicitly, or add each widget to its intended parent group manually.
+</pre></td>
+<td><pre>
+function Create
+       (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+        Kind       : in     Timer_Kind;
+        X, Y, W, H : in     Integer;
+        Text       : in     String := "")
+    return Timer;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+double value() const;
+</pre></td>
+<td><pre>
+function Get_Value
+       (This : in Timer)
+    return Long_Float;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void value(double);
+</pre></td>
+<td><pre>
+procedure Set_Value
+       (This  : in out Timer;
+        Value : in     Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+char direction() const;
+</pre></td>
+<td><pre>
+function Counts_Up
+       (This : in Timer)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void direction(char d);
+</pre></td>
+<td><pre>
+procedure Set_Counts_Up
+       (This  : in out Timer;
+        Value : in     Boolean);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+char suspended() const;
+</pre></td>
+<td><pre>
+function Is_Suspended
+       (This : in Timer)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void suspended(char d);
+</pre></td>
+<td><pre>
+procedure Set_Suspended
+       (This  : in out Timer;
+        Value : in     Boolean);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual int handle(int);
+</pre></td>
+<td><pre>
+function Handle
+       (This  : in out Timer;
+        Event : in     Event_Kind)
+    return Event_Outcome;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Timer);
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>

@@ -7,10 +7,13 @@
 --  Ada port of FLTK's examples/cairo-draw-x.cxx: an orange "X" drawn with
 --  Cairo to the four corners of a resizable window.
 --
---  FLTKAda has no Cairo binding, so the few Cairo functions used are
---  imported directly, and examples.gpr links this program with -lcairo.
---  If FLTK was built without Cairo support the draw callback is never
---  called, and the window stays black.
+--  FLTK's program uses Fl_Cairo_Window, and so does this port, which
+--  imports the few cairo functions it uses directly, since Cairo_Window
+--  gives its callback cairo's own context; examples.gpr links it with
+--  -lcairo.  Without an FLTK built with Cairo support, Set_Cairo_Draw
+--  raises Unsupported_Error.  test/cairo/cairo_draw_x.adb draws the same
+--  with FLTK.Cairo's Cairo_Drawn_Window, which works on any FLTK with X11
+--  or Wayland.
 
 
 with

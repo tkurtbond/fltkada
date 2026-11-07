@@ -299,7 +299,8 @@ begin
             This.Load ("names");
         end Load_Class_Wide;
 
-        All_Dirs : Boolean := True;
+        All_Dirs  : Boolean := True;
+        Has_Names : Boolean := False;
     begin
         Check (Files.Get_File_Kind = Fil.Files, "a file browser lists files");
         Check (Files.Get_Filter = "*", "with the filter *");
@@ -330,9 +331,11 @@ begin
                 Name : constant String := Files.Get_Line_Text (L);
             begin
                 All_Dirs := All_Dirs and Name (Name'Last) = '/';
+                Has_Names := Has_Names or Name = "names/";
             end;
         end loop;
-        Check (All_Dirs and Is_Line (Files, 1, "../") and Is_Line (Files, 2, "names/"),
+        --  test/unit has other directories besides names/, such as cairo/
+        Check (All_Dirs and Is_Line (Files, 1, "../") and Has_Names,
             "or the directories alone");
         Files.Set_File_Kind (Fil.Files);
         begin

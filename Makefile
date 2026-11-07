@@ -43,7 +43,23 @@ XVFB := env -u WAYLAND_DISPLAY xvfb-run -a -s '-screen 0 1280x1024x24'
 #  The programs, from the project files, so the lists can't drift apart.
 gpr-mains = $(sort $(patsubst "%.adb",%,$(shell grep -o '"[a-z_0-9]*\.adb"' $(1))))
 UNITTESTS := $(call gpr-mains,tests_unit.gpr)
+
+#  The separate libraries (PLAN.md, Phase 16) are built and tested only
+#  where FLTK has what they bind.  Forms needs FLTK's fltk_forms library.
+HAVE_FORMS := $(shell echo 'int main () { return 0; }' \
+    | $(CXX) -x c++ - $$(fltk-config --use-forms --ldflags) -o /dev/null 2>/dev/null && echo yes)
 PROGRAMS  := $(call gpr-mains,tests.gpr) $(call gpr-mains,tests_2022.gpr)
+ifeq ($(HAVE_FORMS),yes)
+UNITTESTS += $(call gpr-mains,tests_forms.gpr)
+PROGRAMS  += $(call gpr-mains,tests_forms_programs.gpr)
+endif
+#  Cairo needs cairo's headers and library, which pkg-config finds.
+HAVE_CAIRO := $(shell pkg-config --exists cairo && echo yes)
+CAIRO_FLAGS := -XCAIRO_INCLUDE=$(shell pkg-config --variable=includedir cairo 2>/dev/null)/cairo
+ifeq ($(HAVE_CAIRO),yes)
+UNITTESTS += $(call gpr-mains,tests_cairo.gpr)
+PROGRAMS  += $(call gpr-mains,tests_cairo_programs.gpr)
+endif
 EXAMPLES  := $(shell sed -n 's/.*for Executable ("[a-z_0-9]*\.adb") use "\([^"]*\)";.*/\1/p' examples.gpr)
 
 #  Programs in test/ that check their own results and set the exit status.
@@ -57,17 +73,39 @@ ARGS := dirlist=. filename=../test/images/anim.gif \
     animgifimage-resize=../test/images/anim.gif \
     animgifimage-simple=../test/images/anim.gif
 
+#  The C++ plugins test_plugins loads.  They aren't linked with FLTK: they
+#  use the program's.
+PLUGINS := bin/unit/plugins/one.so bin/unit/plugins/two.so
+
+bin/unit/plugins/%.so: test/plugins/c_plugin.cpp
+	@mkdir -p bin/unit/plugins
+	$(CXX) -shared -fPIC -DPLUGIN='"$*"' $$(fltk-config --cxxflags) -o $@ $<
+
 .PHONY: programs display check valgrind smoke \
     check-headless valgrind-headless smoke-headless \
     check-sway valgrind-sway smoke-sway check-desktop
 .NOTPARALLEL:
 
-programs:
+programs: $(PLUGINS)
 	gprbuild -p -q fltkada.gpr
 	gprbuild -p -q tests_unit.gpr
 	gprbuild -p -q tests.gpr
 	gprbuild -p -q tests_2022.gpr
 	gprbuild -p -q examples.gpr
+ifeq ($(HAVE_FORMS),yes)
+	gprbuild -p -q fltkada_forms.gpr
+	gprbuild -p -q tests_forms.gpr
+	gprbuild -p -q tests_forms_programs.gpr
+else
+	@echo "FLTK has no Forms library: FLTKAda's Forms isn't built or tested."
+endif
+ifeq ($(HAVE_CAIRO),yes)
+	gprbuild -p -q $(CAIRO_FLAGS) fltkada_cairo.gpr
+	gprbuild -p -q $(CAIRO_FLAGS) tests_cairo.gpr
+	gprbuild -p -q $(CAIRO_FLAGS) tests_cairo_programs.gpr
+else
+	@echo "pkg-config finds no cairo: FLTKAda's Cairo isn't built or tested."
+endif
 
 #  Every FLTK program needs a display.
 display:

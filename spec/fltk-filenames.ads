@@ -137,6 +137,8 @@ package FLTK.Filenames is
            (Name : in String)
         return Boolean;
 
+    --  Raises Ada.IO_Exceptions.Name_Error when Name can't be listed: it
+    --  is missing, isn't a directory, or can't be read.
     function Get_Listing
            (Name : in Path_String;
             Sort : in not null Compare_Function := Numeric_Sort'Access)

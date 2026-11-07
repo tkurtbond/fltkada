@@ -7,6 +7,7 @@
 with
 
     Ada.Assertions,
+    Ada.IO_Exceptions,
     FLTK.Hook_Exceptions,
     Interfaces.C.Strings;
 
@@ -612,6 +613,13 @@ package body FLTK.Filenames is
                 This.Void_Ptr,
                 Storage.To_Integer (Compare_Hook'Address));
             Hook_Exceptions.Reraise;
+            --  fl_filename_list gives -1, and no list, when it can't read
+            --  the directory (FLTKAda-BUGS.md 124).
+            if This.Entries < 0 then
+                This.Entries := 0;
+                raise Ada.IO_Exceptions.Name_Error with
+                    "Get_Listing: can't list " & Name;
+            end if;
         end return;
     end Get_Listing;
 

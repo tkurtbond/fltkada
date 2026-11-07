@@ -1,0 +1,50 @@
+
+
+--  Programmed by T. Kurt Bond and Claude Opus 5.5
+--  Released into the public domain
+
+
+--  The Forms library's unit tests, in test/unit/forms, built only with
+--  that library (fltkada_forms.gpr), into bin/unit with the others.  They
+--  use Checks and FLTK.Probe from test/unit, compiled again here.
+
+
+with
+
+    "fltkada_forms",
+    "proj/common";
+
+
+project Tests_Forms is
+
+
+    for Languages use ("Ada", "C++");
+
+    for Source_Dirs use ("test/unit/forms", "test/unit");
+    for Object_Dir  use "obj/unit_forms";
+    for Exec_Dir    use "bin/unit";
+
+    for Main use
+       ("test_forms_constants.adb",
+        "test_forms.adb");
+
+    package Builder is
+        for Default_Switches ("Ada") use
+            Common.Builder'Default_Switches ("Ada");
+        for Global_Compilation_Switches ("Ada") use
+            Common.Builder'Global_Compilation_Switches ("Ada");
+    end Builder;
+
+    package Compiler is
+        for Default_Switches ("Ada") use
+            Common.Compiler'Default_Switches ("Ada") & "-gnata";
+        for Default_Switches ("C++") use
+            Common.Compiler'Default_Switches ("C++");
+    end Compiler;
+
+    package Binder         renames Common.Binder;
+    package Linker         renames Common.Linker;
+    package Pretty_Printer renames Common.Pretty_Printer;
+
+
+end Tests_Forms;

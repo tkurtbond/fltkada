@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_FormsText Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_FormsText Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<p>Part of the separate library fltkada_forms (fltkada_forms.gpr), which binds FLTK's fltk_forms library and is built only where FLTK has it.</p>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_FormsText</td>
+    <td>FLTK.Widgets.Forms.Texts</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_FormsText</td>
+    <td>Forms_Text</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Forms_Text_Reference</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+The box starts as No_Box; set another with Set_Box.
+<pre>
+Fl_FormsText(Fl_Boxtype b, int X, int Y, int W, int H, const char* l=0);
+</pre>
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return Forms_Text;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Rely on the automatic use of begin when a group is created, or use begin/end
+explicitly, or add each widget to its intended parent group manually.
+</pre></td>
+<td><pre>
+function Create
+       (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+        X, Y, W, H : in     Integer;
+        Text       : in     String := "")
+    return Forms_Text;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+virtual int handle(int);
+</pre></td>
+<td><pre>
+function Handle
+       (This  : in out Forms_Text;
+        Event : in     Event_Kind)
+    return Event_Outcome;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Forms_Text);
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>

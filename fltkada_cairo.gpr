@@ -1,0 +1,47 @@
+
+
+--  Programmed by T. Kurt Bond and Claude Opus 5.5
+--  Released into the public domain
+
+
+--  FLTK.Cairo and the window that draws with it,
+--  FLTK.Widgets.Groups.Windows.Double.Cairo_Drawn, as a library of their
+--  own beside fltkada, so that a program using only widgets isn't linked
+--  with libcairo (PLAN.md, Phase 16).  The Makefile checks for cairo
+--  before building this.  Cairo_Include is the directory of cairo.h, as
+--  pkg-config's cairo includedir with "/cairo" added.
+
+
+with
+
+    "fltkada",
+    "proj/common";
+
+
+library project FLTKAda_Cairo is
+
+
+    Cairo_Include := external ("CAIRO_INCLUDE", "/usr/include/cairo");
+
+    for Languages use ("Ada", "C++");
+
+    for Source_Dirs  use ("cairo/body", "cairo/spec");
+    for Object_Dir   use "obj/cairo";
+    for Library_Dir  use "lib/cairo";
+    for Library_Name use "fltkada_cairo";
+    for Library_Kind use FLTKAda.Kind;
+
+    package Builder        renames Common.Builder;
+    package Binder         renames Common.Binder;
+    package Pretty_Printer renames Common.Pretty_Printer;
+
+    --  The shim includes the main library's c_fl_widget.h and c_fl.h.
+    package Compiler is
+        for Default_Switches ("Ada") use Common.Compiler'Default_Switches ("Ada");
+        for Default_Switches ("C++") use
+            Common.Compiler'Default_Switches ("C++") &
+            ("-I" & FLTKAda'Project_Dir & "body", "-I" & Cairo_Include);
+    end Compiler;
+
+
+end FLTKAda_Cairo;

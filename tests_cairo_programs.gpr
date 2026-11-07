@@ -1,0 +1,47 @@
+
+
+--  Programmed by T. Kurt Bond and Claude Opus 5.5
+--  Released into the public domain
+
+
+--  The Cairo library's demo programs, in test/cairo, built only with that
+--  library (fltkada_cairo.gpr), into bin with the other programs, where
+--  make smoke runs them.
+
+
+with
+
+    "fltkada_cairo",
+    "proj/common";
+
+
+project Tests_Cairo_Programs is
+
+
+    for Languages use ("Ada");
+
+    for Source_Dirs use ("test/cairo");
+    for Object_Dir  use "obj/cairo_programs";
+    for Exec_Dir    use "bin";
+
+    for Main use
+       ("cairo_draw_x.adb",
+        "cairo_test.adb");
+
+    package Builder is
+        for Executable ("cairo_draw_x.adb") use "cairo_draw_x";
+        for Executable ("cairo_test.adb")   use "cairo_test";
+
+        for Default_Switches ("Ada") use
+            Common.Builder'Default_Switches ("Ada");
+        for Global_Compilation_Switches ("Ada") use
+            Common.Builder'Global_Compilation_Switches ("Ada");
+    end Builder;
+
+    package Compiler       renames Common.Compiler;
+    package Binder         renames Common.Binder;
+    package Linker         renames Common.Linker;
+    package Pretty_Printer renames Common.Pretty_Printer;
+
+
+end Tests_Cairo_Programs;

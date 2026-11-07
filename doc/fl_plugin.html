@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_Plugin Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_Plugin Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_Plugin.H</td>
+    <td>FLTK.Environment.Plugins</td>
+  </tr>
+
+</table>
+
+<p><b>Note:</b><br /><br />
+A plugin is an object of a type of the program's own, derived from Plugin. Instead of
+being made with a class and name, as an Fl_Plugin is, it is made closed and then opened
+under a class and a name, and it is taken out of its class by Close or as it is
+finalized. A Plugin_Manager gives back the Ada object itself, or null for a plugin made
+in C++ by a loaded library, which has a name but no Ada object.<br /><br />
+Open raises Constraint_Error for a class or name that is empty or has a "/" in it, and
+Program_Error for a name its class has already, which FLTK would keep in one node and
+remove twice (pofltk 108). Plugin_At and Plugin_Name raise Constraint_Error beyond the
+last plugin, where FLTK's plugin(int) would make a new, empty group.<br /><br />
+A library loaded with Load shares the program's plugins only if the two share one FLTK.
+A program that links FLTK statically must be linked with -rdynamic, or loading a C++
+plugin fails with "undefined symbol: _ZTI9Fl_Plugin".<br /><br />
+Load_All is written in Ada: the directory needn't end in "/", the sort reads only the
+names (pofltk 63), and a directory that can't be listed raises
+Ada.IO_Exceptions.Name_Error.</p>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_Plugin</td>
+    <td>Plugin</td>
+  </tr>
+
+  <tr>
+    <td>Fl_Plugin_Manager</td>
+    <td>Plugin_Manager</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Plugin(const char *klass, const char *name);
+</pre></td>
+<td><pre>
+--  A Plugin object, then
+procedure Open
+       (This        : in out Plugin;
+        Class, Name : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Plugin_Manager(const char *klass);
+</pre></td>
+<td><pre>
+function Create
+       (Class : in String)
+    return Plugin_Manager;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+virtual ~Fl_Plugin();
+static void removePlugin(Fl_Preferences::ID id);
+</pre></td>
+<td><pre>
+procedure Close
+       (This : in out Plugin);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Preferences::ID addPlugin(const char *name, Fl_Plugin *plugin);
+</pre></td>
+<td><pre>
+--  Open
+</pre></td>
+  </tr>
+
+  <tr>
+<td>&nbsp;</td>
+<td><pre>
+function Is_Open
+       (This : in Plugin)
+    return Boolean;
+
+function Get_Class
+       (This : in Plugin)
+    return String;
+
+function Get_Name
+       (This : in Plugin)
+    return String;
+
+function Get_Class
+       (This : in Plugin_Manager)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int plugins();
+</pre></td>
+<td><pre>
+function Number_Of_Plugins
+       (This : in Plugin_Manager)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Plugin *plugin(int index);
+</pre></td>
+<td><pre>
+function Plugin_At
+       (This  : in Plugin_Manager;
+        Index : in Positive)
+    return access Plugin'Class;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Plugin *plugin(const char *name);
+</pre></td>
+<td><pre>
+function Plugin_Named
+       (This : in Plugin_Manager;
+        Name : in String)
+    return access Plugin'Class;
+
+function Has_Plugin
+       (This : in Plugin_Manager;
+        Name : in String)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char *Fl_Preferences::group(int num_group);
+</pre></td>
+<td><pre>
+function Plugin_Name
+       (This  : in Plugin_Manager;
+        Index : in Positive)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int load(const char *filename);
+</pre></td>
+<td><pre>
+function Load
+       (File : in String)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static int loadAll(const char *dirpath, const char *pattern=0);
+</pre></td>
+<td><pre>
+procedure Load_All
+       (Directory : in String;
+        Pattern   : in String := "");
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>

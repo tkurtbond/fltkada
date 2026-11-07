@@ -11,6 +11,7 @@ Done:
 
 FLTK
 FLTK.Asks
+FLTK.Cairo (cairo.h, in fltkada_cairo.gpr, built where pkg-config finds cairo)
 FLTK.Devices
 FLTK.Devices.Surface
 FLTK.Devices.Surface.Copy
@@ -26,6 +27,7 @@ FLTK.Draw
 FLTK.Draw.Offscreens
 FLTK.Draw.OpenGL
 FLTK.Environment
+FLTK.Environment.Plugins
 FLTK.Errors
 FLTK.Events
 FLTK.File_Choosers
@@ -53,6 +55,7 @@ FLTK.Labels
 FLTK.Menu_Items
 FLTK.Multi_Labels
 FLTK.Native_File_Choosers
+FLTK.Rects
 FLTK.Screen
 FLTK.Static
 FLTK.Text_Buffers
@@ -78,6 +81,12 @@ FLTK.Widgets.Charts
 FLTK.Widgets.Clocks
 FLTK.Widgets.Clocks.Updated
 FLTK.Widgets.Clocks.Updated.Round
+FLTK.Widgets.Forms (in fltkada_forms.gpr, built where FLTK has fltk_forms)
+FLTK.Widgets.Forms.Bitmaps (Fl_FormsBitmap)
+FLTK.Widgets.Forms.Frees (Fl_Free)
+FLTK.Widgets.Forms.Pixmaps (Fl_FormsPixmap)
+FLTK.Widgets.Forms.Texts (Fl_FormsText)
+FLTK.Widgets.Forms.Timers (Fl_Timer)
 FLTK.Widgets.Groups
 FLTK.Widgets.Groups.Browsers
 FLTK.Widgets.Groups.Browsers.Check
@@ -105,6 +114,7 @@ FLTK.Widgets.Groups.Trees
 FLTK.Widgets.Groups.Windows
 FLTK.Widgets.Groups.Windows.Double
 FLTK.Widgets.Groups.Windows.Double.Cairo
+FLTK.Widgets.Groups.Windows.Double.Cairo_Drawn (in fltkada_cairo.gpr)
 FLTK.Widgets.Groups.Windows.Double.Overlay
 FLTK.Widgets.Groups.Windows.OpenGL
 FLTK.Widgets.Groups.Windows.OpenGL.GLUT
@@ -185,17 +195,10 @@ Fl_SVG_File_Surface (internal Fl_SVG_Graphics_Driver)
 
 Never:
 
-(C++ binary plugins) (I have no idea how to bind these)
+(C++ binary plugins) (Fl_Plugin and Fl_Plugin_Manager are bound as
+FLTK.Environment.Plugins; Fl_Device_Plugin is FLTK-internal, left
+unbound: PLAN.md, Phase 16, Plugins)
 Fl_Device_Plugin
-Fl_Plugin
-Fl_Plugin_Manager
-
-(XForms legacy compatibility) (why did I bind Fl_Chart/Fl_Clock/Fl_Positioner then?)
-Fl_FormsBitmap
-Fl_FormsPixmap
-Fl_FormsText
-Fl_Free
-Fl_Timer
 
 (docs explicitly say to use Fl_Printer instead)
 Fl_Postscript_Printer

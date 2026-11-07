@@ -141,6 +141,8 @@ project Tests_Unit is
         "test_buffer_life.adb",
         "test_browser_icons.adb",
         "test_draw_state.adb",
+        "test_rects.adb",
+        "test_plugins.adb",
         "test_exceptions.adb",
         "test_first_calls.adb",
         "test_wrong_state.adb",

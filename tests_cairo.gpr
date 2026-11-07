@@ -1,0 +1,51 @@
+
+
+--  Programmed by T. Kurt Bond and Claude Opus 5.5
+--  Released into the public domain
+
+
+--  The Cairo library's unit tests, in test/unit/cairo, built only with
+--  that library (fltkada_cairo.gpr), into bin/unit with the others.  They
+--  use Checks and FLTK.Probe from test/unit, compiled again here.
+
+
+with
+
+    "fltkada_cairo",
+    "proj/common";
+
+
+project Tests_Cairo is
+
+
+    for Languages use ("Ada", "C++");
+
+    for Source_Dirs use ("test/unit/cairo", "test/unit");
+    for Object_Dir  use "obj/unit_cairo";
+    for Exec_Dir    use "bin/unit";
+
+    for Main use
+       ("test_cairo_constants.adb",
+        "test_cairo.adb");
+
+    package Builder is
+        for Default_Switches ("Ada") use
+            Common.Builder'Default_Switches ("Ada");
+        for Global_Compilation_Switches ("Ada") use
+            Common.Builder'Global_Compilation_Switches ("Ada");
+    end Builder;
+
+    package Compiler is
+        for Default_Switches ("Ada") use
+            Common.Compiler'Default_Switches ("Ada") & "-gnata";
+        for Default_Switches ("C++") use
+            Common.Compiler'Default_Switches ("C++") &
+            ("-I" & Fltkada_Cairo.Cairo_Include);
+    end Compiler;
+
+    package Binder         renames Common.Binder;
+    package Linker         renames Common.Linker;
+    package Pretty_Printer renames Common.Pretty_Printer;
+
+
+end Tests_Cairo;

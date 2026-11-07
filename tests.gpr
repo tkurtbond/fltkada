@@ -57,6 +57,8 @@ project Tests is
         "selections.adb",
         "shortcuts.adb",
         "swatch.adb",
+        "plugins.adb",
+        "rects.adb",
         "tooltips.adb",
         "trackers.adb",
         "tree_icons.adb",
@@ -115,6 +117,8 @@ project Tests is
         for Executable ("selections.adb")         use "selections";
         for Executable ("shortcuts.adb")          use "shortcuts";
         for Executable ("swatch.adb")             use "swatch";
+        for Executable ("plugins.adb")            use "plugins";
+        for Executable ("rects.adb")              use "rects";
         for Executable ("tooltips.adb")           use "tooltips";
         for Executable ("trackers.adb")           use "trackers";
         for Executable ("tree_icons.adb")         use "tree_icons";

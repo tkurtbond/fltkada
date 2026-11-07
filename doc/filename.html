@@ -214,7 +214,9 @@ function Get_Listing
         Sort : in not null Compare_Function :=
             Numeric_Sort'Access)
     return File_List;
-</pre></td>
+</pre>
+<p>Raises Ada.IO_Exceptions.Name_Error when FLTK can't list Name: it is
+missing, isn't a directory, or can't be read (FLTKAda-BUGS.md 124).</p></td>
   </tr>
 
   <tr>

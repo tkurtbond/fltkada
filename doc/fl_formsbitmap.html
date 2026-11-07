@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fl_FormsBitmap Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>Fl_FormsBitmap Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<p>Part of the separate library fltkada_forms (fltkada_forms.gpr), which binds FLTK's fltk_forms library and is built only where FLTK has it.</p>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>Fl_FormsBitmap</td>
+    <td>FLTK.Widgets.Forms.Bitmaps</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>Fl_FormsBitmap</td>
+    <td>Forms_Bitmap</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Forms_Bitmap_Reference</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+The box starts as No_Box; set another with Set_Box.
+<pre>
+Fl_FormsBitmap(Fl_Boxtype, int, int, int, int, const char * = 0);
+</pre>
+</pre></td>
+<td><pre>
+function Create
+       (X, Y, W, H : in Integer;
+        Text       : in String := "")
+    return Forms_Bitmap;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Rely on the automatic use of begin when a group is created, or use begin/end
+explicitly, or add each widget to its intended parent group manually.
+</pre></td>
+<td><pre>
+function Create
+       (Parent     : in out FLTK.Widgets.Groups.Group'Class;
+        X, Y, W, H : in     Integer;
+        Text       : in     String := "")
+    return Forms_Bitmap;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+Fl_Bitmap *bitmap() const;
+</pre></td>
+<td><pre>
+function Get_Bitmap
+       (This : in Forms_Bitmap)
+    return access FLTK.Images.Bitmaps.Bitmap'Class;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void bitmap(Fl_Bitmap *B);
+</pre></td>
+<td><pre>
+procedure Set_Bitmap
+       (This : in out Forms_Bitmap;
+        Pic  : in out FLTK.Images.Bitmaps.Bitmap'Class);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>bitmap(0)</td>
+<td><pre>
+procedure Clear_Bitmap
+       (This : in out Forms_Bitmap);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Not bound: it deletes a bitmap it didn't make (pofltk 106).
+<pre>
+void set(int W, int H, const uchar *bits);
+</pre>
+</pre></td>
+<td><pre>
+&nbsp;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+virtual int handle(int);
+</pre></td>
+<td><pre>
+function Handle
+       (This  : in out Forms_Bitmap;
+        Event : in     Event_Kind)
+    return Event_Outcome;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Protected Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void draw();
+</pre></td>
+<td><pre>
+procedure Draw
+       (This : in out Forms_Bitmap);
+</pre></td>
+  </tr>
+
+</table>
+
+
+  </body>
+</html>
