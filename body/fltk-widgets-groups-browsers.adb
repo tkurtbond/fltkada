@@ -370,13 +370,14 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr : in Storage.Integer_Address)
         return Interfaces.C.int
     is
+        Mark       : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Interfaces.C.int (Ada_Object.Full_List_Width);
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
         return 0;
     end Full_Width_Hook;
 
@@ -390,13 +391,14 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr : in Storage.Integer_Address)
         return Interfaces.C.int
     is
+        Mark       : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Interfaces.C.int (Ada_Object.Full_List_Height);
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
         return 0;
     end Full_Height_Hook;
 
@@ -410,13 +412,14 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr : in Storage.Integer_Address)
         return Interfaces.C.int
     is
+        Mark       : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Interfaces.C.int (Ada_Object.Average_Item_Height);
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
         return 0;
     end Average_Item_Height_Hook;
 
@@ -430,13 +433,14 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address)
         return Interfaces.C.int
     is
+        Mark       : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Interfaces.C.int (Ada_Object.Item_Quick_Height (Address_To_Cursor (Item_Ptr)));
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
         return 0;
     end Item_Quick_Height_Hook;
 
@@ -450,13 +454,14 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address)
         return Interfaces.C.int
     is
+        Mark       : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Interfaces.C.int (Ada_Object.Item_Width (Address_To_Cursor (Item_Ptr)));
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
         return 0;
     end Item_Width_Hook;
 
@@ -470,13 +475,14 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address)
         return Interfaces.C.int
     is
+        Mark       : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Interfaces.C.int (Ada_Object.Item_Height (Address_To_Cursor (Item_Ptr)));
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
         return 0;
     end Item_Height_Hook;
 
@@ -490,13 +496,14 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr : in Storage.Integer_Address)
         return Storage.Integer_Address
     is
+        Mark       : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Cursor_To_Address (Ada_Object.Item_First);
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
         return Null_Pointer;
     end Item_First_Hook;
 
@@ -510,13 +517,14 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr : in Storage.Integer_Address)
         return Storage.Integer_Address
     is
+        Mark       : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Cursor_To_Address (Ada_Object.Item_Last);
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
         return Null_Pointer;
     end Item_Last_Hook;
 
@@ -530,13 +538,14 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address)
         return Storage.Integer_Address
     is
+        Mark       : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Cursor_To_Address (Ada_Object.Item_Next (Address_To_Cursor (Item_Ptr)));
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
         return Null_Pointer;
     end Item_Next_Hook;
 
@@ -550,13 +559,14 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address)
         return Storage.Integer_Address
     is
+        Mark       : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Cursor_To_Address (Ada_Object.Item_Previous (Address_To_Cursor (Item_Ptr)));
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
         return Null_Pointer;
     end Item_Previous_Hook;
 
@@ -572,6 +582,7 @@ package body FLTK.Widgets.Groups.Browsers is
             Index    : in Interfaces.C.int)
         return Storage.Integer_Address
     is
+        Mark       : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
         use type Interfaces.C.int;
@@ -579,7 +590,7 @@ package body FLTK.Widgets.Groups.Browsers is
         return Cursor_To_Address (Ada_Object.Item_At (Positive (Index + 1)));
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
         return Null_Pointer;
     end Item_At_Hook;
 
@@ -593,6 +604,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address;
             Int_State          : in Interfaces.C.int)
     is
+        Mark       : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
         use type Interfaces.C.int;
@@ -602,7 +614,7 @@ package body FLTK.Widgets.Groups.Browsers is
             Int_State /= 0);
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Item_Select_Hook;
 
 
@@ -615,13 +627,14 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address)
         return Interfaces.C.int
     is
+        Mark       : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         return Boolean'Pos (Ada_Object.Item_Selected (Address_To_Cursor (Item_Ptr)));
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
         return 0;
     end Item_Selected_Hook;
 
@@ -633,13 +646,14 @@ package body FLTK.Widgets.Groups.Browsers is
     procedure Item_Swap_Hook
            (Ada_Addr, A_Ptr, B_Ptr : in Storage.Integer_Address)
     is
+        Mark       : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
         Ada_Object.Item_Swap (Address_To_Cursor (A_Ptr), Address_To_Cursor (B_Ptr));
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Item_Swap_Hook;
 
 
@@ -667,6 +681,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address)
         return Interfaces.C.Strings.chars_ptr
     is
+        Mark       : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
@@ -683,7 +698,7 @@ package body FLTK.Widgets.Groups.Browsers is
         end return;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
         return Interfaces.C.Strings.To_Chars_Ptr (Empty_Text'Access);
     end Item_Text_Hook;
 
@@ -697,6 +712,7 @@ package body FLTK.Widgets.Groups.Browsers is
            (Ada_Addr, Item_Ptr : in Storage.Integer_Address;
             X, Y, W, H         : in Interfaces.C.int)
     is
+        Mark       : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Object : constant access Browser'Class :=
             Browser_Convert.To_Pointer (Storage.To_Address (Ada_Addr));
     begin
@@ -708,7 +724,7 @@ package body FLTK.Widgets.Groups.Browsers is
             Integer (H));
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Item_Draw_Hook;
 
 

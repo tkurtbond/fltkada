@@ -71,6 +71,11 @@
     <td>File_Chooser_Callback</td>
   </tr>
 
+  <tr>
+    <td>int (fl_message_position's result)</td>
+    <td>Message_Position_Kind</td>
+  </tr>
+
 </table>
 
 
@@ -400,6 +405,62 @@ void fl_message_title(const char *title);
 <td><pre>
 procedure Set_Message_Title
        (To : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void fl_message_icon_label(const char *str);
+</pre></td>
+<td><pre>
+procedure Set_Message_Icon_Label
+       (To : in String);
+</pre><p>The next dialog's icon only. An empty string leaves the dialog
+its own.</p></td>
+  </tr>
+
+  <tr>
+<td>No function in FLTK; the label of the icon every dialog copies.
+<pre>
+fl_message_icon()-&gt;copy_label(str);
+</pre></td>
+<td><pre>
+procedure Set_Message_Icon_Label_Default
+       (To : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void fl_message_position(const int x, const int y,
+    const int center = 0);
+</pre></td>
+<td><pre>
+procedure Set_Message_Position
+       (X, Y     : in Integer;
+        Centered : in Boolean := False);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void fl_message_position(Fl_Widget *widget);
+void fl_message_position(Fl_Widget &amp;widget);
+</pre></td>
+<td><pre>
+procedure Set_Message_Position_Over
+       (Item : in FLTK.Widgets.Widget'Class);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fl_message_position(int *x = 0, int *y = 0);
+</pre></td>
+<td><pre>
+procedure Get_Message_Position
+       (X, Y : out Integer;
+        Kind : out Message_Position_Kind);
 </pre></td>
   </tr>
 

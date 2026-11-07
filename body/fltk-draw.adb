@@ -7,6 +7,7 @@
 with
 
     Ada.Assertions,
+    FLTK.Drawing_State,
     FLTK.Hook_Exceptions,
     FLTK.Pixmap_Marshal,
     Interfaces.C.Pointers,
@@ -21,6 +22,14 @@ package body FLTK.Draw is
 
 
     package Chk renames Ada.Assertions;
+
+    --  Pop the clip or matrix a Push_Clip, Push_No_Clip or Push_Matrix
+    --  recorded in FLTK.Drawing_State.
+    procedure Undo_Clip
+           (Item : in System.Address);
+
+    procedure Undo_Matrix
+           (Item : in System.Address);
 
     --  Oh no... Anyway, this is just used for Expand_Text.
     package Char_Pointers is new Interfaces.C.Pointers
@@ -102,6 +111,14 @@ package body FLTK.Draw is
            (X, Y, W, H : in Interfaces.C.int);
     pragma Import (C, fl_draw_push_clip, "fl_draw_push_clip");
     pragma Inline (fl_draw_push_clip);
+
+    procedure fl_draw_push_no_clip;
+    pragma Import (C, fl_draw_push_no_clip, "fl_draw_push_no_clip");
+    pragma Inline (fl_draw_push_no_clip);
+
+    procedure fl_draw_pop_clip;
+    pragma Import (C, fl_draw_pop_clip, "fl_draw_pop_clip");
+    pragma Inline (fl_draw_pop_clip);
 
 
 
@@ -218,6 +235,14 @@ package body FLTK.Draw is
 
 
     --  Matrix Operations  --
+
+    procedure fl_draw_push_matrix;
+    pragma Import (C, fl_draw_push_matrix, "fl_draw_push_matrix");
+    pragma Inline (fl_draw_push_matrix);
+
+    procedure fl_draw_pop_matrix;
+    pragma Import (C, fl_draw_pop_matrix, "fl_draw_pop_matrix");
+    pragma Inline (fl_draw_pop_matrix);
 
     procedure fl_draw_mult_matrix
            (A, B, C, D, X, Y : in Interfaces.C.double);
@@ -848,7 +873,71 @@ package body FLTK.Draw is
             Interfaces.C.int (Y),
             Interfaces.C.int (W),
             Interfaces.C.int (H));
+        Drawing_State.Remember (Undo_Clip'Access);
     end Push_Clip;
+
+
+    procedure Push_No_Clip is
+    begin
+        fl_draw_push_no_clip;
+        Drawing_State.Remember (Undo_Clip'Access);
+    end Push_No_Clip;
+
+
+    procedure Pop_Clip is
+    begin
+        fl_draw_pop_clip;
+        Drawing_State.Forget (Undo_Clip'Access);
+    end Pop_Clip;
+
+
+    procedure Undo_Clip
+           (Item : in System.Address)
+    is
+        pragma Unreferenced (Item);
+    begin
+        Pop_Clip;
+    end Undo_Clip;
+
+
+    procedure Initialize
+           (This : in out Clip_Guard) is
+    begin
+        Push_Clip (This.X, This.Y, This.W, This.H);
+    end Initialize;
+
+
+    procedure Finalize
+           (This : in out Clip_Guard)
+    is
+        pragma Unreferenced (This);
+    begin
+        Pop_Clip;
+    exception
+    when others =>
+        null;
+    end Finalize;
+
+
+    procedure Initialize
+           (This : in out No_Clip_Guard)
+    is
+        pragma Unreferenced (This);
+    begin
+        Push_No_Clip;
+    end Initialize;
+
+
+    procedure Finalize
+           (This : in out No_Clip_Guard)
+    is
+        pragma Unreferenced (This);
+    begin
+        Pop_Clip;
+    exception
+    when others =>
+        null;
+    end Finalize;
 
 
 
@@ -1053,6 +1142,50 @@ package body FLTK.Draw is
 
 
     --  Matrix Operations  --
+
+    procedure Push_Matrix is
+    begin
+        fl_draw_push_matrix;
+        Drawing_State.Remember (Undo_Matrix'Access);
+    end Push_Matrix;
+
+
+    procedure Pop_Matrix is
+    begin
+        fl_draw_pop_matrix;
+        Drawing_State.Forget (Undo_Matrix'Access);
+    end Pop_Matrix;
+
+
+    procedure Undo_Matrix
+           (Item : in System.Address)
+    is
+        pragma Unreferenced (Item);
+    begin
+        Pop_Matrix;
+    end Undo_Matrix;
+
+
+    procedure Initialize
+           (This : in out Matrix_Guard)
+    is
+        pragma Unreferenced (This);
+    begin
+        Push_Matrix;
+    end Initialize;
+
+
+    procedure Finalize
+           (This : in out Matrix_Guard)
+    is
+        pragma Unreferenced (This);
+    begin
+        Pop_Matrix;
+    exception
+    when others =>
+        null;
+    end Finalize;
+
 
     procedure Mult_Matrix
            (A, B, C, D, X, Y : in Long_Float) is
@@ -1278,6 +1411,7 @@ package body FLTK.Draw is
             X, Y, W : in Interfaces.C.int;
             Buf_Ptr : in Storage.Integer_Address)
     is
+        Mark        : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         --  FLTK's line holds W pixels of Depth bytes each.
         Data_Buffer : Color_Component_Array (1 .. Size_Type (W) * Size_Type (Image_Depth));
         for Data_Buffer'Address use Storage.To_Address (Buf_Ptr);
@@ -1295,7 +1429,7 @@ package body FLTK.Draw is
         In_Image_Line := False;
         Line_Raised := True;
         Data_Buffer := (others => 0);
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Draw_Image_Hook;
 
     procedure Draw_Image
@@ -1366,6 +1500,7 @@ package body FLTK.Draw is
             X, Y, W : in Interfaces.C.int;
             Buf_Ptr : in Storage.Integer_Address)
     is
+        Mark        : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         --  FLTK's line holds W pixels of Depth bytes each.
         Data_Buffer : Color_Component_Array (1 .. Size_Type (W) * Size_Type (Mono_Image_Depth));
         for Data_Buffer'Address use Storage.To_Address (Buf_Ptr);
@@ -1383,7 +1518,7 @@ package body FLTK.Draw is
         In_Image_Line := False;
         Line_Raised := True;
         Data_Buffer := (others => 0);
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Draw_Image_Mono_Hook;
 
     procedure Draw_Image_Mono
@@ -1579,6 +1714,7 @@ package body FLTK.Draw is
            (Ptr       : in Storage.Integer_Address;
             N, X0, Y0 : in Interfaces.C.int)
     is
+        Mark : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Data : String (1 .. Integer (N));
         for Data'Address use Storage.To_Address (Ptr);
         pragma Import (Ada, Data);
@@ -1586,7 +1722,7 @@ package body FLTK.Draw is
         Text_Func_Ptr (Integer (X0), Integer (Y0), Data);
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Draw_Text_Hook;
 
     procedure Draw_Text
@@ -1787,6 +1923,7 @@ package body FLTK.Draw is
            (Ptr        : in Storage.Integer_Address;
             X, Y, W, H : in Interfaces.C.int)
     is
+        Mark : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         procedure my_area_draw
                (X, Y, W, H : in Integer);
         for my_area_draw'Address use Storage.To_Address (Ptr);
@@ -1795,7 +1932,7 @@ package body FLTK.Draw is
         my_area_draw (Integer (X), Integer (Y), Integer (W), Integer (H));
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Scroll_Hook;
 
     procedure Scroll

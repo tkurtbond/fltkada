@@ -11,6 +11,10 @@ with
     FLTK.Images.RGB,
     FLTK.Widgets.Groups.Windows;
 
+private with
+
+    Ada.Finalization;
+
 
 package FLTK.Draw is
 
@@ -161,12 +165,28 @@ package FLTK.Draw is
 
     procedure Pop_Clip;
 
-    --  A clip pushed in a Draw that raises before Pop_Clip stays pushed,
-    --  so pop it in a handler there before re-raising (FLTK-issues.md F3).
+    --  A clip pushed in a hook (an overridden Draw, a callback, ...) that
+    --  then raises before Pop_Clip is popped as the exception leaves the
+    --  hook, as are Push_No_Clip and Push_Matrix (FLTK-issues.md F3).  A
+    --  Clip_Guard pops it however its scope is left.
     procedure Push_Clip
            (X, Y, W, H : in Integer);
 
     procedure Push_No_Clip;
+
+    --  Pushes the clip X, Y, W, H as it's declared, and pops it as it's
+    --  finalized:
+    --
+    --      declare
+    --          Clip : FLTK.Draw.Clip_Guard (X, Y, W, H);
+    --      begin
+    --          ...
+    --      end;
+    type Clip_Guard
+           (X, Y, W, H : Integer) is tagged limited private;
+
+    --  Push_No_Clip as it's declared, and Pop_Clip as it's finalized.
+    type No_Clip_Guard is tagged limited private;
 
     --  Not needed by Ada programs, which can't change the clip behind
     --  FLTK's back; use Push_Clip and Pop_Clip.  Where FLTK draws with
@@ -276,6 +296,9 @@ package FLTK.Draw is
     procedure Pop_Matrix;
 
     procedure Push_Matrix;
+
+    --  Push_Matrix as it's declared, and Pop_Matrix as it's finalized.
+    type Matrix_Guard is tagged limited private;
 
     procedure Rotate
            (Angle : in Long_Float);
@@ -663,18 +686,42 @@ package FLTK.Draw is
 private
 
 
+    type Clip_Guard
+           (X, Y, W, H : Integer) is new Ada.Finalization.Limited_Controlled with null record;
+
+    overriding procedure Initialize
+           (This : in out Clip_Guard);
+
+    overriding procedure Finalize
+           (This : in out Clip_Guard);
+
+
+    type No_Clip_Guard is new Ada.Finalization.Limited_Controlled with null record;
+
+    overriding procedure Initialize
+           (This : in out No_Clip_Guard);
+
+    overriding procedure Finalize
+           (This : in out No_Clip_Guard);
+
+
+    type Matrix_Guard is new Ada.Finalization.Limited_Controlled with null record;
+
+    overriding procedure Initialize
+           (This : in out Matrix_Guard);
+
+    overriding procedure Finalize
+           (This : in out Matrix_Guard);
+
+
     pragma Convention (C, Symbol_Draw_Function);
 
 
     pragma Import (C, Reset_Spot,    "fl_draw_reset_spot");
 
-    pragma Import (C, Pop_Clip,      "fl_draw_pop_clip");
-    pragma Import (C, Push_No_Clip,  "fl_draw_push_no_clip");
     pragma Import (C, Restore_Clip,  "fl_draw_restore_clip");
 
 
-    pragma Import (C, Pop_Matrix,    "fl_draw_pop_matrix");
-    pragma Import (C, Push_Matrix,   "fl_draw_push_matrix");
 
     pragma Import (C, Begin_Complex_Polygon, "fl_draw_begin_complex_polygon");
     pragma Import (C, Begin_Line,    "fl_draw_begin_line");

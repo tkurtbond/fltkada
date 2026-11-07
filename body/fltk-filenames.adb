@@ -588,6 +588,7 @@ package body FLTK.Filenames is
            (DA, DB : in Storage.Integer_Address)
         return Interfaces.C.int
     is
+        Mark   : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Result : constant Comparison := Current_Sort
            (Interfaces.C.Strings.Value (filename_dname (DA, 0)),
             Interfaces.C.Strings.Value (filename_dname (DB, 0)));
@@ -595,7 +596,7 @@ package body FLTK.Filenames is
         return Comparison'Pos (Result) - 1;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
         return 0;
     end Compare_Hook;
 

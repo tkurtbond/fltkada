@@ -28,6 +28,13 @@
 
 
 
+<p><b>Note:</b><br /><br />
+A surface made current with Push_Current in a hook FLTK calls (a Draw, a callback) that
+raises before Pop_Current is popped as the exception leaves the hook. A Current_Guard
+pushes its surface as it is declared, and pops it as it is finalized.</p>
+
+
+
 <table class="type">
   <tr><th colspan="2">Types</th></tr>
 
@@ -39,6 +46,11 @@
   <tr>
     <td>&nbsp;</td>
     <td>Surface_Device_Reference</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Current_Guard</td>
   </tr>
 
 </table>

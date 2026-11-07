@@ -136,7 +136,9 @@ package body FLTK.Box_Draw_Marshal is
 
     procedure Generic_Box_Draw_Hook
            (X, Y, W, H : in Interfaces.C.int;
-            Tone       : in Interfaces.C.unsigned) is
+            Tone       : in Interfaces.C.unsigned)
+    is
+        Mark : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
     begin
         --  Checked here, and not by a handler around the call, so that the
         --  program's own exceptions aren't taken for FLTK's (FLTKAda-BUGS.md 45).
@@ -152,7 +154,7 @@ package body FLTK.Box_Draw_Marshal is
             Color (Tone));
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Generic_Box_Draw_Hook;
 
     procedure No_Box_Hook                 is new Generic_Box_Draw_Hook (No_Box);

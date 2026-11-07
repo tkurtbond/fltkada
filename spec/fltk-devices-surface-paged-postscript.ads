@@ -137,6 +137,8 @@ package FLTK.Devices.Surface.Paged.Postscript is
     --  binding doesn't refuse first (Fl_PostScript.cxx:1980-1983, pofltk 102).
     procedure End_Job
            (This : in out Postscript_File_Device);
+    --  End_Job in a page ends the page first; if that raises Page_Error, the
+    --  job is not ended (FLTKAda-BUGS.md 123).
     --  A device finalized in a job ends its page and the job, ignoring any
     --  error (FLTKAda-BUGS.md 121).
 

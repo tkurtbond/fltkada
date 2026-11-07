@@ -34,7 +34,22 @@ Each text call (Set_Font, Font_Height, Font_Descent, Width, Draw_Text, Measure) 
 Program_Error unless a GL context is there: a shown GL_Window current, or between Start and
 Finish. Start raises Program_Error unless a shown window is current, and on Wayland raises
 FLTK.Unsupported_Error, since FLTK 1.4.5's gl_start crashes there whatever is current. Finish
-raises Program_Error with no Start before it.</p>
+raises Program_Error with no Start before it. A Start in a hook FLTK calls (a Draw) that raises
+before Finish is finished as the exception leaves the hook, since gl_start leaves the display
+drawing at scale 1 until gl_finish. A Start_Guard calls Start as it is declared, and Finish as
+it is finalized.</p>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Start_Guard</td>
+  </tr>
+
+</table>
 
 
 

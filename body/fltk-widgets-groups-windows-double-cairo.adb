@@ -85,6 +85,7 @@ package body FLTK.Widgets.Groups.Windows.Double.Cairo is
     procedure Cairo_Draw_Hook
            (C_Addr, Cairo_Addr : in Storage.Integer_Address)
     is
+        Mark     : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Addr : constant System.Address :=
             Storage.To_Address (fl_widget_get_user_data (C_Addr));
         Ada_Object : constant access Cairo_Window'Class :=
@@ -104,7 +105,7 @@ package body FLTK.Widgets.Groups.Windows.Double.Cairo is
         end if;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Cairo_Draw_Hook;
 
 

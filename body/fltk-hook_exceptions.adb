@@ -59,6 +59,15 @@ package body FLTK.Hook_Exceptions is
     end Save;
 
 
+    procedure Save
+           (Occurrence : in Ada.Exceptions.Exception_Occurrence;
+            Since      : in Mark) is
+    begin
+        FLTK.Drawing_State.Undo_To (Since);
+        Kept.Save (Occurrence);
+    end Save;
+
+
     procedure Save_New
            (Id      : in Ada.Exceptions.Exception_Id;
             Message : in String) is

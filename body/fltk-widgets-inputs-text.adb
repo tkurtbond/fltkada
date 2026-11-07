@@ -92,6 +92,7 @@ package body FLTK.Widgets.Inputs.Text is
             X, Y, W, H : in Interfaces.C.int;
             C_Str      : in Interfaces.C.Strings.chars_ptr)
     is
+        Mark          : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         My_Text_Input : Text_Input;
         for My_Text_Input'Address use Storage.To_Address (Ada_Obj);
         pragma Import (Ada, My_Text_Input);
@@ -103,7 +104,7 @@ package body FLTK.Widgets.Inputs.Text is
             Interfaces.C.Strings.Value (C_Str));
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end text_input_extra_init_hook;
 
 

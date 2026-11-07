@@ -833,6 +833,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
            (C : in Interfaces.C.int;
             D : in Storage.Integer_Address)
     is
+        Mark       : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         use Styles;  --  for maximum stylin'
 
         Ada_Widget : constant access Text_Display'Class :=
@@ -843,7 +844,7 @@ package body FLTK.Widgets.Groups.Text_Displays is
         end if;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Style_Hook;
 
 

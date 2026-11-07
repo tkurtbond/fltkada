@@ -618,26 +618,28 @@ package body FLTK.Widgets is
     procedure Callback_Hook
            (W, U : in Storage.Integer_Address)
     is
+        Mark       : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Widget : constant access Widget'Class :=
             Widget_Convert.To_Pointer (Storage.To_Address (U));
     begin
         Ada_Widget.Callback.all (Ada_Widget.all);
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Callback_Hook;
 
 
     procedure Draw_Hook
            (U : in Storage.Integer_Address)
     is
+        Mark       : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Widget : constant access Widget'Class :=
             Widget_Convert.To_Pointer (Storage.To_Address (U));
     begin
         Ada_Widget.Draw;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Draw_Hook;
 
 
@@ -651,6 +653,7 @@ package body FLTK.Widgets is
             E : in Interfaces.C.int)
         return Interfaces.C.int
     is
+        Mark       : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Widget : constant access Widget'Class :=
             Widget_Convert.To_Pointer (Storage.To_Address (U));
         Is_Paste   : constant Boolean := E = Event_Kind'Pos (Paste);
@@ -663,7 +666,7 @@ package body FLTK.Widgets is
             Result := Ada_Widget.Handle (Event_Kind'Val (E));
         exception
         when Occurrence : others =>
-            Hook_Exceptions.Save (Occurrence);
+            Hook_Exceptions.Save (Occurrence, Mark);
             Result := Not_Handled;
         end;
         if Is_Paste then
@@ -680,13 +683,14 @@ package body FLTK.Widgets is
            (U          : in Storage.Integer_Address;
             X, Y, W, H : in Interfaces.C.int)
     is
+        Mark       : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Widget : constant access Widget'Class :=
             Widget_Convert.To_Pointer (Storage.To_Address (U));
     begin
         Ada_Widget.Resize (Integer (X), Integer (Y), Integer (W), Integer (H));
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Resize_Hook;
 
 

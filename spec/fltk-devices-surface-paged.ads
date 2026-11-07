@@ -10,6 +10,7 @@ with
 
 private with
 
+    Ada.Finalization,
     Ada.Strings.Unbounded;
 
 
@@ -99,6 +100,12 @@ package FLTK.Devices.Surface.Paged is
     procedure End_Page
            (This : in out Paged_Device);
 
+    --  Start_Page (Target) as it's declared, and End_Page as it's finalized,
+    --  if Target is still in a page.  An exception from End_Page there is
+    --  dropped.
+    type Page_Guard
+           (Target : not null access Paged_Device'Class) is tagged limited private;
+
 
 
 
@@ -178,6 +185,25 @@ private
         Shifts  : Natural := 0;      --  Translates on this page not undone
         In_Page : Boolean := False;  --  Between Start_Page and End_Page
     end record;
+
+    type Page_Guard
+           (Target : not null access Paged_Device'Class)
+    is new Ada.Finalization.Limited_Controlled with null record;
+
+    overriding procedure Initialize
+           (This : in out Page_Guard);
+
+    overriding procedure Finalize
+           (This : in out Page_Guard);
+
+
+    --  Record a started page in FLTK.Drawing_State, and forget it when it
+    --  ends, so a hook that raises inside a page ends the page.
+    procedure Remember_Page
+           (This : in Paged_Device'Class);
+
+    procedure Forget_Page
+           (This : in Paged_Device'Class);
 
     --  Raise Constraint_Error for what Cairo refuses (pofltk 101).
     procedure Check_Rotation

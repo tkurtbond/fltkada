@@ -805,6 +805,7 @@ package body FLTK.Static is
             I : in out Interfaces.C.int)
         return Interfaces.C.int
     is
+        Mark   : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Result : Natural;
     begin
         --  Checked here, and not by handlers around the call, so that the
@@ -829,7 +830,7 @@ package body FLTK.Static is
         return Interfaces.C.int (Result);
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
         return 0;
     end Args_Hook;
 
@@ -839,14 +840,16 @@ package body FLTK.Static is
     pragma Convention (C, Awake_Hook);
 
     procedure Awake_Hook
-           (U : in Storage.Integer_Address) is
+           (U : in Storage.Integer_Address)
+    is
+        Mark : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
     begin
         if U /= Null_Pointer then
             Conv.To_Awake_Access (U).all;
         end if;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Awake_Hook;
 
 
@@ -855,12 +858,14 @@ package body FLTK.Static is
     pragma Convention (C, Timeout_Hook);
 
     procedure Timeout_Hook
-           (U : in Storage.Integer_Address) is
+           (U : in Storage.Integer_Address)
+    is
+        Mark : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
     begin
         Conv.To_Timeout_Access (U).all;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Timeout_Hook;
 
 
@@ -886,6 +891,7 @@ package body FLTK.Static is
            (S : in Interfaces.C.int;
             U : in Storage.Integer_Address)
     is
+        Mark    : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         --  A copy, so that a handler can add or remove handlers.  Those it
         --  removes are still called for this notice, and those it adds
         --  aren't.
@@ -906,7 +912,7 @@ package body FLTK.Static is
         end loop;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Clipboard_Notify_Hook;
 
 
@@ -917,12 +923,14 @@ package body FLTK.Static is
 
     procedure FD_Hook
            (FD : in Interfaces.C.int;
-            U  : in Storage.Integer_Address) is
+            U  : in Storage.Integer_Address)
+    is
+        Mark : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
     begin
         Conv.To_File_Access (U).all (File_Descriptor (FD));
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end FD_Hook;
 
 
@@ -931,12 +939,14 @@ package body FLTK.Static is
     pragma Convention (C, Idle_Hook);
 
     procedure Idle_Hook
-           (U : in Storage.Integer_Address) is
+           (U : in Storage.Integer_Address)
+    is
+        Mark : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
     begin
         Conv.To_Idle_Access (U).all;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Idle_Hook;
 
 
@@ -951,6 +961,7 @@ package body FLTK.Static is
     procedure Window_Close_Hook
            (W, U : in Storage.Integer_Address)
     is
+        Mark    : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Ptr : constant Storage.Integer_Address :=
             (if W = Null_Pointer then Null_Pointer else fl_widget_get_user_data (W));
     begin
@@ -961,7 +972,7 @@ package body FLTK.Static is
         end if;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Window_Close_Hook;
 
 
@@ -976,13 +987,15 @@ package body FLTK.Static is
     function Contrast_Hook
            (F, B : in Interfaces.C.unsigned;
             C, S : in Interfaces.C.int)
-        return Interfaces.C.unsigned is
+        return Interfaces.C.unsigned
+    is
+        Mark : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
     begin
         return Interfaces.C.unsigned (Current_Contrast
            (Color (F), Color (B), Integer (C), Integer (S)));
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
         return F;
     end Contrast_Hook;
 

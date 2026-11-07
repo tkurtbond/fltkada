@@ -48,12 +48,14 @@ package body FLTK.Errors is
     pragma Export (C, Warning_Hook, "error_warning_hook");
 
     procedure Warning_Hook
-           (C_Mess : in Interfaces.C.Strings.chars_ptr) is
+           (C_Mess : in Interfaces.C.Strings.chars_ptr)
+    is
+        Mark : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
     begin
         Current_Warning (Interfaces.C.Strings.Value (C_Mess));
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Warning_Hook;
 
 
@@ -62,12 +64,14 @@ package body FLTK.Errors is
     pragma Export (C, Error_Hook, "error_error_hook");
 
     procedure Error_Hook
-           (C_Mess : in Interfaces.C.Strings.chars_ptr) is
+           (C_Mess : in Interfaces.C.Strings.chars_ptr)
+    is
+        Mark : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
     begin
         Current_Error (Interfaces.C.Strings.Value (C_Mess));
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Error_Hook;
 
 

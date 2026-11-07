@@ -17,6 +17,7 @@
 
 private with
 
+    Ada.Finalization,
     FLTK.Devices.Surface.Image;
 
 
@@ -77,6 +78,12 @@ package FLTK.Draw.Offscreens is
            (This : in Offscreen)
         return Boolean;
 
+    --  Begin_Drawing (Target) as it's declared, and End_Drawing as it's
+    --  finalized, if Target is still begun.  An exception from End_Drawing
+    --  there is dropped.
+    type Drawing_Guard
+           (Target : not null access Offscreen) is tagged limited private;
+
 
 
 
@@ -99,11 +106,26 @@ package FLTK.Draw.Offscreens is
 private
 
 
-    type Offscreen is tagged limited record
+    type Offscreen is new Ada.Finalization.Limited_Controlled with record
         Surface : FLTK.Devices.Surface.Image.Image_Surface;
         W, H    : Integer := 0;
         Begun   : Boolean := False;
     end record;
+
+    overriding procedure Finalize
+           (This : in out Offscreen);
+
+
+    type Drawing_Guard
+           (Target : not null access Offscreen)
+    is new Ada.Finalization.Limited_Controlled with null record;
+
+    overriding procedure Initialize
+           (This : in out Drawing_Guard);
+
+    overriding procedure Finalize
+           (This : in out Drawing_Guard);
+
 
 
     pragma Inline (Is_Valid);

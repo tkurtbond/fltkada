@@ -735,6 +735,7 @@ package body FLTK.GLUT is
 
     procedure Display_Hook
     is
+        Mark   : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Number : constant Window_Number := Current_Window;
     begin
         if Number /= No_Window and then Window_Table (Number).Display /= null then
@@ -742,7 +743,7 @@ package body FLTK.GLUT is
         end if;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Display_Hook;
 
 
@@ -751,6 +752,7 @@ package body FLTK.GLUT is
 
     procedure Overlay_Display_Hook
     is
+        Mark   : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Number : constant Window_Number := Current_Window;
     begin
         if Number /= No_Window and then Window_Table (Number).Overlay_Display /= null then
@@ -758,7 +760,7 @@ package body FLTK.GLUT is
         end if;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Overlay_Display_Hook;
 
 
@@ -769,6 +771,7 @@ package body FLTK.GLUT is
     procedure Reshape_Hook
            (W, H : in Interfaces.C.int)
     is
+        Mark   : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Number : constant Window_Number := Current_Window;
     begin
         if Number /= No_Window and then Window_Table (Number).Reshape /= null then
@@ -776,7 +779,7 @@ package body FLTK.GLUT is
         end if;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Reshape_Hook;
 
 
@@ -789,6 +792,7 @@ package body FLTK.GLUT is
            (Key  : in Interfaces.C.unsigned_char;
             X, Y : in Interfaces.C.int)
     is
+        Mark   : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Number : constant Window_Number := Current_Window;
     begin
         if Number /= No_Window and then Window_Table (Number).Keyboard /= null then
@@ -797,7 +801,7 @@ package body FLTK.GLUT is
         end if;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Keyboard_Hook;
 
 
@@ -808,6 +812,7 @@ package body FLTK.GLUT is
     procedure Mouse_Hook
            (B, S, X, Y : in Interfaces.C.int)
     is
+        Mark   : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Number : constant Window_Number := Current_Window;
     begin
         if Number /= No_Window and then Window_Table (Number).Mouse /= null
@@ -819,7 +824,7 @@ package body FLTK.GLUT is
         end if;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Mouse_Hook;
 
 
@@ -830,6 +835,7 @@ package body FLTK.GLUT is
     procedure Motion_Hook
            (X, Y : in Interfaces.C.int)
     is
+        Mark   : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Number : constant Window_Number := Current_Window;
     begin
         if Number /= No_Window and then Window_Table (Number).Motion /= null then
@@ -837,7 +843,7 @@ package body FLTK.GLUT is
         end if;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Motion_Hook;
 
 
@@ -848,6 +854,7 @@ package body FLTK.GLUT is
     procedure Passive_Motion_Hook
            (X, Y : in Interfaces.C.int)
     is
+        Mark   : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Number : constant Window_Number := Current_Window;
     begin
         if Number /= No_Window and then Window_Table (Number).Passive_Motion /= null then
@@ -855,7 +862,7 @@ package body FLTK.GLUT is
         end if;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Passive_Motion_Hook;
 
 
@@ -866,6 +873,7 @@ package body FLTK.GLUT is
     procedure Entry_Hook
            (S : in Interfaces.C.int)
     is
+        Mark   : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Number : constant Window_Number := Current_Window;
     begin
         if Number /= No_Window and then Window_Table (Number).Entering /= null
@@ -875,7 +883,7 @@ package body FLTK.GLUT is
         end if;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Entry_Hook;
 
 
@@ -886,6 +894,7 @@ package body FLTK.GLUT is
     procedure Visibility_Hook
            (S : in Interfaces.C.int)
     is
+        Mark   : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Number : constant Window_Number := Current_Window;
     begin
         if Number /= No_Window and then Window_Table (Number).Visibility /= null
@@ -895,7 +904,7 @@ package body FLTK.GLUT is
         end if;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Visibility_Hook;
 
 
@@ -906,6 +915,7 @@ package body FLTK.GLUT is
     procedure Special_Hook
            (K, X, Y : in Interfaces.C.int)
     is
+        Mark   : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Number : constant Window_Number := Current_Window;
     begin
         if Number /= No_Window and then Window_Table (Number).Special /= null then
@@ -913,21 +923,23 @@ package body FLTK.GLUT is
         end if;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Special_Hook;
 
 
     procedure Idle_Hook;
     pragma Convention (C, Idle_Hook);
 
-    procedure Idle_Hook is
+    procedure Idle_Hook
+    is
+        Mark : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
     begin
         if Idle_Callback /= null then
             Idle_Callback.all;
         end if;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Idle_Hook;
 
 
@@ -938,13 +950,14 @@ package body FLTK.GLUT is
     procedure Timer_Hook
            (Data : in Timer_Closure_Access)
     is
+        Mark    : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Closure : Timer_Closure_Access := Data;
     begin
         Closure.Func (Closure.Value);
         Free (Closure);
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Timer_Hook;
 
 
@@ -955,6 +968,7 @@ package body FLTK.GLUT is
     procedure Menu_Hook
            (V : in Interfaces.C.int)
     is
+        Mark   : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Number : constant Interfaces.C.int := fl_glut_get_menu;
     begin
         if Number in 1 .. Interfaces.C.int (Menu_Number'Last)
@@ -964,7 +978,7 @@ package body FLTK.GLUT is
         end if;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Menu_Hook;
 
 
@@ -973,14 +987,16 @@ package body FLTK.GLUT is
     pragma Convention (C, Menu_State_Hook);
 
     procedure Menu_State_Hook
-           (S : in Interfaces.C.int) is
+           (S : in Interfaces.C.int)
+    is
+        Mark : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
     begin
         if Menu_State_Callback /= null and then S in 0 .. 1 then
             Menu_State_Callback (Menu_State'Val (S));
         end if;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Menu_State_Hook;
 
 
@@ -989,14 +1005,16 @@ package body FLTK.GLUT is
     pragma Convention (C, Menu_Status_Hook);
 
     procedure Menu_Status_Hook
-           (S, X, Y : in Interfaces.C.int) is
+           (S, X, Y : in Interfaces.C.int)
+    is
+        Mark : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
     begin
         if Menu_Status_Callback /= null and then S in 0 .. 1 then
             Menu_Status_Callback (Menu_State'Val (S), Integer (X), Integer (Y));
         end if;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Menu_Status_Hook;
 
 

@@ -704,6 +704,7 @@ package body FLTK.Widgets.Groups.Tables is
            (UD                  : in Storage.Integer_Address;
             E, R, C, X, Y, W, H : in Interfaces.C.int)
     is
+        Mark      : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Table : access Table'Class;
         Context : Table_Context;
         Row, Column : Natural;
@@ -747,7 +748,7 @@ package body FLTK.Widgets.Groups.Tables is
             Integer (X), Integer (Y), Integer (W), Integer (H));
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Table_Draw_Cell_Hook;
 
 

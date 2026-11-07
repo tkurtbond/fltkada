@@ -226,11 +226,12 @@ function Selected_Index
 int handle(int);
 </pre></td>
 <td><pre>
+--  Inherited from Group:
 function Handle
-       (This  : in out Check_Browser;
+       (This  : in out Group;
         Event : in     Event_Kind)
     return Event_Outcome;
-</pre></td>
+</pre><p>Calls Fl_Check_Browser::handle.</p></td>
   </tr>
 
   <tr>

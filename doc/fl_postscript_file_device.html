@@ -145,7 +145,8 @@ procedure End_Job
 <p>For a job given a File_Type, raises File_Write_Error if the PostScript couldn't all be written. The job writes to the file through a stream of the binding's, so that FLTK, which under Pango closes the file it was given on a Cairo error and then writes to it, never touches the File_Type's file (pofltk 101).</p>
 <p>FLTK reports any other error only with an alert, which waits for the
 user: a failed write in a job FLTK opened the file for, or a Cairo error
-the binding doesn't refuse first (pofltk 102).</p></td>
+the binding doesn't refuse first (pofltk 102).</p>
+<p>In a page, ends the page first. FLTK's end_job doesn't, and leaves the device the surface drawn on. If that raises Page_Error, the job is not ended (FLTKAda-BUGS.md 123).</p></td>
   </tr>
 
   <tr>
@@ -311,6 +312,44 @@ procedure Untranslate
        (This : in out Postscript_File_Device);
 </pre>
 <p>Raises Constraint_Error unless a Translate on this page is still to be undone. Cairo refuses an untranslate too many (pofltk 101).</p></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures (File_Type)</th></tr>
+
+  <tr>
+<td><pre>
+FILE *fopen(const char *pathname, const char *mode);
+</pre></td>
+<td><pre>
+procedure Open
+       (File : in out File_Type;
+        Name : in     String);
+</pre><p>Raises File_Open_Error. Closes the file first if it is open. A
+File_Type closes itself when it goes out of scope.</p></td>
+  </tr>
+
+  <tr>
+<td>&nbsp;</td>
+<td><pre>
+function Is_Open
+       (File : in File_Type)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int fclose(FILE *stream);
+</pre></td>
+<td><pre>
+procedure Close
+       (File : in out File_Type);
+</pre><p>Raises File_Close_Error. Does nothing if the file is closed.</p></td>
   </tr>
 
 </table>

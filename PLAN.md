@@ -143,6 +143,48 @@ These apply to every fix phase below.
    `FLTK.Environment`.
 6. **Test-only C++ stays out of the library.** `Probe`'s shim is compiled
    by the test project only.
+7. **A hook that raises undoes the drawing state it pushed** (decided by
+   the user, 2026-11-06, superseding the N12 note that left clips to the
+   user). FLTK goes on drawing with what a hook pushed after the hook
+   returns, so the rest of the window would be clipped, transformed,
+   drawn into an offscreen or another surface, or drawn at scale 1. The
+   paired calls, checked in FLTK 1.4.5's source:
+   - `fl_push_clip`/`fl_push_no_clip` and `fl_pop_clip`. The clip stack
+     is the driver's own (`rstack` in Xlib, GDI and Quartz; the `clip_`
+     list in Cairo, PostScript and SVG), so FLTK has no depth to read.
+     `pop_clip` with nothing pushed only warns.
+   - `fl_push_matrix`/`fl_pop_matrix` (`fl_vertex.cxx:45-58`, which
+     report over- and underflow with `Fl::error`).
+   - `Fl_Surface_Device::push_current`/`pop_current`, and through them
+     `Offscreens.Begin_Drawing`/`End_Drawing`.
+   - `Fl_Paged_Device::begin_page`/`end_page`, which push and pop the
+     current surface (`Fl_Paged_Device.cxx:43-100`, pofltk 103).
+   - `gl_start`/`gl_finish`: `gl_start` sets the display driver's scale
+     to 1 and `gl_finish` restores it (`gl_start.cxx:86, 93`); the shim's
+     own flag also makes every later `Start` raise.
+   - Not `fl_begin_line` and the other shapes: each resets the vertex
+     count, so an unfinished one is harmless.
+
+   How: the private package `FLTK.Drawing_State` keeps one log, latest
+   last, of what FLTKAda's calls pushed, each entry an undo procedure
+   and an address. A pop forgets its entry. Each hook notes the log's
+   length as it starts, and `Hook_Exceptions.Save (Occurrence, Mark)`
+   undoes every entry above it, latest first, before saving. So a hook
+   nested in another (a child's `Draw` in a group's) undoes only its own,
+   and the order of interleaved pushes (a clip inside an offscreen) is
+   kept. An object that is finalized forgets its entries. The log holds
+   256 entries; a push past that isn't recorded. A hook run directly from
+   Ada (`Do_Callback`) is plain Ada, so nothing is undone there.
+
+   Also, for code that wants the pop however its scope is left: scoped
+   guards, controlled types that push as they're declared and pop as
+   they're finalized: `Draw.Clip_Guard`, `No_Clip_Guard`,
+   `Matrix_Guard`, `Offscreens.Drawing_Guard`, `Surface.Current_Guard`,
+   `Paged.Page_Guard` and `OpenGL.Start_Guard`.
+
+   `test/unit/test_draw_state.adb` checks both, on X11 and Wayland
+   (OpenGL on X11 only, pofltk 109). With the undo taken out of `Save`,
+   every unguarded case fails.
 
 ## The issue triage
 
@@ -431,6 +473,12 @@ Everything after this phase is test-first. This phase adds:
   - a clip the user's own `Draw` pushed and didn't pop before raising
     stays pushed. That is the user's to fix with a handler. Document it
     (Phase 15), and perhaps add a controlled clip guard.
+    (Phase 15: it is documented, before `Push_Clip` in
+    `spec/fltk-draw.ads`. No guard was added: that would be new public
+    API, and it is left as an open question for the user.)
+    (~~Left to the user~~: on 2026-11-06 the user decided that a hook
+    undoes what it pushed, clips and the other paired calls, and asked
+    for guards too. See "Architecture decisions", 7.)
 
   This was recommended by the agent; the user can overturn it.
   `test_exceptions` encodes it, so it failed until Phase 2 and was not
@@ -3392,7 +3440,7 @@ Decisions, as the phase goes:
   check-headless, check-sway, smoke-headless, smoke-sway,
   valgrind-headless and valgrind-sway all exit 0.
 
-### Phase 15: Documentation
+### Phase 15: Documentation [done, 2026-11-06]
 
 - `doc/<header>.html` for every newly bound header, linked from
   `doc/index.html`.
@@ -3402,6 +3450,68 @@ Decisions, as the phase goes:
   pitfalls this plan found, such as N8's `user_data` collision with FLTK's
   internal callbacks, and N12.
 - `readme.md`: the new make targets.
+
+Decisions and findings:
+
+- **The doc pages.** Every public package has a page, and every page is
+  linked from `doc/index.html`'s C++ and Ada lists. The two packages
+  without one, `FLTK.Hook_Exceptions` and `FLTK.Tree_Icons`, are private.
+  Three throwaway scripts compared each page with the spec of the
+  package its "Package name" table names: public subprograms missing
+  from the page, public types, subtypes and exceptions missing, and
+  names on the page that the spec no longer has. Added:
+  - `fl_ask.html`: `Set_Message_Icon_Label`, `_Default`,
+    `Set_Message_Position`, `_Over`, `Get_Message_Position` and
+    `Message_Position_Kind`.
+  - `fl_postscript_file_device.html`: `File_Type`'s `Open`, `Is_Open`
+    and `Close`.
+  - `fl_paged_device.html`: `Page_Format_Info`'s `Name`, `Width` and
+    `Height`.
+  - `fl_pdf_file_surface.html`: an Errors table (`File_Open_Error`,
+    `File_Write_Error`, `User_Cancel_Error`).
+  - `fl_tiled_image.html`: `Inactive`. `fl_image_surface.html`:
+    `Is_Highres`.
+  - `enumerations.html`: `Pressable_Key` and the four `Press`es.
+  - The `_Reference` types of EPS, PDF and SVG surfaces and ICO images,
+    `RGB_Image_Array`, and `File_Icons.Coordinate`.
+  - "Ada-only Additions" tables for the internal `Address_Of`,
+    `Widget_At` and `Tree_Items.Cast`, which say application code never
+    needs them.
+  - `fl_browser_.html`'s `Draw` and `Handle` and `fl_check_browser.html`'s
+    `Handle` named `Browser` and `Check_Browser` overrides that upstream
+    removed (547e538). They are now marked as inherited from `Group`,
+    which still reaches `Fl_Browser_::draw`, `handle` and
+    `Fl_Check_Browser::handle` through `Draw_Ptr` and `Handle_Ptr` (set in
+    each package's `Extra_Init`). No bug.
+  After the changes, the missing-subprogram and missing-type checks find
+  nothing. The stale-name check finds only prose words and those three
+  inherited rows.
+- **progress.txt.** Done listed `FLTK.Event`; the package is
+  `FLTK.Events`. Otherwise every public package is in Done, except
+  `FLTK.Devices.Graphics` (Partially Done). To-Do, Never and the Option
+  gap under Incomplete APIs are still accurate. The Option gap is
+  FNFC_Uses_Zenity, FNFC_Uses_Kdialog, Printer_Uses_GTK, Show_Scaling
+  and Simple_Zoom_Shortcut, checked against `spec/fltk-static.ads`.
+- **binding_architecture.md.**
+  - §7.1: the tree binding is on main now.
+  - §7.2: `Fl_Shortcut_Button`, `Fl_ICO_Image` and `Fl_File_Icon` are
+    struck through, bound in Phase 10.
+  - §7.4 no longer counts the packages under Incomplete APIs: it said
+    four, and there are seven.
+  - A new §8.1 lists the binding pitfalls this plan found: the parts'
+    `user_data` (N8), exceptions through FLTK's frames (N12), kept
+    pointers, removing what FLTK holds of an Ada object (N10, N11), a
+    group's FLTK children (N9), explicit guards, C++ exceptions in the
+    shim, and the boundary arithmetic (N1–N3).
+- **Phase 0's note on clips** (the N12 decision): a clip pushed in a
+  `Draw` that raises stays pushed. It is documented before `Push_Clip`
+  in `spec/fltk-draw.ads`. A controlled clip guard was not added: it
+  would be new public API, so it is left for the user to decide.
+  (Decided the same day: hooks undo what they pushed, and there are
+  guards. "Architecture decisions", 7.)
+- **readme.md.** A new Testing section lists the four test project files
+  and the make targets, and says which ones open windows on the desktop
+  and what each needs.
 
 ### Phase 16: Forms, plugins and Cairo
 

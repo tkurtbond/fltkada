@@ -27,7 +27,7 @@ FLTK.Draw.Offscreens
 FLTK.Draw.OpenGL
 FLTK.Environment
 FLTK.Errors
-FLTK.Event
+FLTK.Events
 FLTK.File_Choosers
 FLTK.Filenames
 FLTK.GLUT

@@ -202,6 +202,7 @@ package body FLTK.Widgets.Valuators is
             Buffer   : in Interfaces.C.Strings.chars_ptr)
         return Interfaces.C.int
     is
+        Mark    : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Obj : access Valuator'Class;
     begin
         --  Checked here, and not by a handler around the call, so that the
@@ -231,7 +232,7 @@ package body FLTK.Widgets.Valuators is
         end;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
         Interfaces.C.Strings.Update (Buffer, 0, Interfaces.C.To_C (""), False);
         return 0;
     end Valuator_Format_Hook;

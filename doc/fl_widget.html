@@ -1316,6 +1316,31 @@ void y(int v);
 </table>
 
 
+
+<table class="function">
+  <tr><th colspan="2">Ada-only Additions</th></tr>
+
+  <tr>
+<td>&nbsp;</td>
+<td><pre>
+function Address_Of
+       (This : in Widget'Class)
+    return System.Address;
+</pre><p>For FLTKAda's own child packages; application code should never need it.</p></td>
+  </tr>
+
+  <tr>
+<td>&nbsp;</td>
+<td><pre>
+function Widget_At
+       (Addr : in System.Address)
+    return access Widget'Class;
+</pre><p>Null if Addr isn't a live FLTK widget with an Ada twin. For FLTKAda's own child packages; application code should never need it.</p></td>
+  </tr>
+
+</table>
+
+
   </body>
 </html>
 

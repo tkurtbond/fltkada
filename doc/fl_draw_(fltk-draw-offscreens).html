@@ -28,12 +28,24 @@
 
 
 
+<p><b>Note:</b><br /><br />
+An offscreen begun in a hook FLTK calls (a Draw, a callback) that raises before
+End_Drawing is ended as the exception leaves the hook. A Drawing_Guard begins its
+offscreen as it is declared, and ends it as it is finalized.</p>
+
+
+
 <table class="type">
   <tr><th colspan="2">Types</th></tr>
 
   <tr>
     <td>Fl_Offscreen</td>
     <td>Offscreen</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Drawing_Guard</td>
   </tr>
 
 </table>

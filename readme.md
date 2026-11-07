@@ -96,6 +96,37 @@ For further information on the build tools, consult the
 
 
 
+#### Testing
+
+The test and demonstration programs are built by these project files:
+
+```
+gprbuild tests.gpr        # demos and FLTK test ports, in bin/
+gprbuild tests_2022.gpr   # the ones that need Ada 2022, in bin/
+gprbuild tests_unit.gpr   # the unit tests, in bin/unit/
+gprbuild examples.gpr     # ports of FLTK's examples/, in bin/examples/
+```
+
+The Makefile builds them all and runs them:
+
+| Target | What it does |
+|---|---|
+| `make check` | The unit tests in `test/unit`, and the programs in `test/` that check their own results. Fails if any fails. |
+| `make valgrind` | The same under valgrind. A memory error fails a test, and so does a leak of memory FLTKAda allocated (`test/vg-check.sh`); FLTK and the libraries under it leak some by design. |
+| `make smoke` | Starts every program in `bin/` and `bin/examples/`, and checks that it is still running a few seconds later, or ends by itself with status 0. |
+| `make check-headless`, `valgrind-headless`, `smoke-headless` | The same, on a virtual X server (`xvfb-run`, with the X11 back end). |
+| `make check-sway`, `valgrind-sway`, `smoke-sway` | The same, on a headless sway, a Wayland compositor with no screen (`tools/with-sway.sh`). |
+| `make check-desktop` | The few tests only a person can answer, such as the native file chooser and print dialog. They open on the desktop and wait. |
+
+The plain `check`, `valgrind` and `smoke` targets use whatever display
+is set, so their windows open on your desktop, where your typing and
+clicks can disturb them. The `-headless` targets need Xvfb (`xvfb-run`),
+the `-sway` targets need sway, and the `valgrind` ones need valgrind.
+`TIMEOUT` (default 60) sets the seconds a test may run before it counts
+as hung.
+
+
+
 #### Technical Notes
 
 As part of its normal operation, FLTK calls a Widget's Draw and Handle methods

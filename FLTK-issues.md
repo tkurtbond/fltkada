@@ -130,12 +130,18 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
 - **Effect on FLTKAda**: no hook may let an exception escape into FLTK.
   Each one catches it, saves the occurrence, returns normally, and the
   binding re-raises it when control comes back to Ada (PLAN.md N12,
-  Phase 2). A clip the user's own `Draw` pushed is still the user's to
-  pop.
+  Phase 2). What the hook's own code pushed and didn't pop before it
+  raised is undone, latest first, before the exception is saved: a clip,
+  a matrix, a current surface, a begun offscreen, a started page, or
+  `OpenGL.Start`, which sets the display driver's scale to 1 until
+  `gl_finish` (`src/gl_start.cxx:86, 93`). Left alone, each would have
+  FLTK draw the rest of the window clipped, transformed, into the wrong
+  surface or at the wrong scale (PLAN.md, "Architecture decisions", 7).
 - **Confirmed**: `test/controls/n12.adb` (one case per hook, release
   and debug builds, under Xvfb and headless sway, and valgrind on X11),
   and `test/unit/test_exceptions.adb`, which checks the recovery FLTKAda
-  promises. It failed until Phase 2, and now passes (FLTKAda-BUGS.md
+  promises. `test/unit/test_draw_state.adb` checks the undo: with it
+  taken out, every case but the guards' fails. It failed until Phase 2, and now passes (FLTKAda-BUGS.md
   43). In the menu case valgrind shows
   invalid reads in `Fl::grab()`'s callers and `Fl_Tooltip::current`,
   then `Storage_Error` (release) or "terminate called without an active

@@ -77,6 +77,11 @@
   </tr>
 
   <tr>
+    <td>char (' ' .. '~')</td>
+    <td>Pressable_Key</td>
+  </tr>
+
+  <tr>
     <td>
       #define FL_BUTTON1 0x01000000<br />
       #define FL_BUTTON2 0x02000000<br />
@@ -349,6 +354,22 @@ inline Fl_Color fl_rgb_color(uchar r, uchar g, uchar b);
 function RGB_Color
        (R, G, B : in Color_Component)
     return Color;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>No function in FLTK; a printable ASCII character is its own key code,
+alone or with modifiers.
+<pre>
+'a'
+FL_CTRL + 'a'
+</pre></td>
+<td><pre>
+function Press (Key : in Pressable_Key) return Keypress;
+
+function Press (Key : in Pressable_Key) return Key_Combo;
+function Press (Key : in Keypress) return Key_Combo;
+function Press (Key : in Mouse_Button) return Key_Combo;
 </pre></td>
   </tr>
 

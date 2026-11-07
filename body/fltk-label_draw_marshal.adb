@@ -38,6 +38,7 @@ package body FLTK.Label_Draw_Marshal is
             X, Y, W, H : in Interfaces.C.int;
             A          : in Interfaces.Unsigned_16)
     is
+        Mark     : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         My_Label : access FLTK.Labels.Label'Class;
     begin
         --  Checked here, and not by a handler around the call, so that the
@@ -56,7 +57,7 @@ package body FLTK.Label_Draw_Marshal is
             Alignment (A));
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Label_Draw_Hook;
 
 
@@ -69,6 +70,7 @@ package body FLTK.Label_Draw_Marshal is
            (L    : in     Storage.Integer_Address;
             W, H :    out Interfaces.C.int)
     is
+        Mark     : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         My_Label : access FLTK.Labels.Label'Class;
     begin
         W := 0;
@@ -85,7 +87,7 @@ package body FLTK.Label_Draw_Marshal is
             Integer (W), Integer (H));
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Label_Measure_Hook;
 
 

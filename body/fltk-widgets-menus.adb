@@ -469,6 +469,7 @@ package body FLTK.Widgets.Menus is
     procedure Item_Hook
            (C_Obj, User_Data : in Storage.Integer_Address)
     is
+        Mark    : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Ptr : constant Storage.Integer_Address := fl_widget_get_user_data (C_Obj);
         Ada_Widget : access Widget'Class;
         Action : constant Widget_Callback := Callback_Convert.To_Access (User_Data);
@@ -485,7 +486,7 @@ package body FLTK.Widgets.Menus is
         Action.all (Ada_Widget.all);
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Item_Hook;
 
 

@@ -441,6 +441,7 @@ package body FLTK.Events is
            (Num : in Interfaces.C.int)
         return Interfaces.C.int
     is
+        Mark    : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         --  A copy, so that a handler can add or remove handlers.  Those it
         --  removes are still called for this event, and those it adds
         --  aren't.
@@ -461,7 +462,7 @@ package body FLTK.Events is
         return Event_Outcome'Pos (Not_Handled);
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
         return 0;
     end Event_Handler_Hook;
 
@@ -485,6 +486,7 @@ package body FLTK.Events is
            (E, U : in Storage.Integer_Address)
         return Interfaces.C.int
     is
+        Mark    : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         --  A copy, as in Event_Handler_Hook.
         Current : constant System_Handler_Vectors.Vector := System_Handlers;
     begin
@@ -496,7 +498,7 @@ package body FLTK.Events is
         return Event_Outcome'Pos (Not_Handled);
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
         return 0;
     end System_Handler_Hook;
 
@@ -511,6 +513,7 @@ package body FLTK.Events is
             Ptr : in Storage.Integer_Address)
         return Interfaces.C.int
     is
+        Mark    : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Ptr : Storage.Integer_Address := Null_Pointer;
         Actual_Window : access FLTK.Widgets.Groups.Windows.Window'Class;
         Outer : constant Storage.Integer_Address := Dispatch_Window;
@@ -536,7 +539,7 @@ package body FLTK.Events is
     exception
     when Occurrence : others =>
         Dispatch_Window := Outer;
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
         return 0;
     end Dispatch_Hook;
 

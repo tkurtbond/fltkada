@@ -105,6 +105,7 @@ package body FLTK.Widgets.Boxes is
             X, Y, W, H : in Interfaces.C.int;
             C_Str      : in Interfaces.C.Strings.chars_ptr)
     is
+        Mark   : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         My_Box : Box;
         for My_Box'Address use Storage.To_Address (Ada_Obj);
         pragma Import (Ada, My_Box);
@@ -116,7 +117,7 @@ package body FLTK.Widgets.Boxes is
             Interfaces.C.Strings.Value (C_Str));
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end box_extra_init_hook;
 
 

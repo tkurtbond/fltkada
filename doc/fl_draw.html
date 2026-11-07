@@ -28,9 +28,11 @@
 
 <p><b>Note:</b><br /><br />
 An exception raised in a Draw goes back to the program when control returns to Ada
-(from Wait, Check, Run and the like), but a clip that Draw pushed with Push_Clip or
-Push_No_Clip and didn't pop before raising stays pushed, and later redraws miss part
-of the window. Pop it in a handler in Draw, then re-raise.</p>
+(from Wait, Check, Run and the like). A clip or matrix that Draw, or another hook FLTK
+calls, pushed with Push_Clip, Push_No_Clip or Push_Matrix and didn't pop before raising
+is popped as the exception leaves the hook, so later drawing isn't clipped or
+transformed. Clip_Guard, No_Clip_Guard and Matrix_Guard push as they are declared and
+pop as they are finalized, however their scope is left.</p>
 
 <p>Overlay_Rect and Overlay_Clear raise Program_Error unless a shown window is current and
 drawing goes to the screen. Scroll raises Program_Error with neither a surface nor a shown
@@ -100,6 +102,21 @@ the callback, since there are no pixels to move.</p>
   <tr>
     <td>void(*draw_area)(void *, int, int, int, int)</td>
     <td>Area_Draw_Function</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Clip_Guard</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>No_Clip_Guard</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Matrix_Guard</td>
   </tr>
 
 </table>

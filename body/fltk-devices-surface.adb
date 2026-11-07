@@ -7,6 +7,7 @@
 with
 
     Ada.Unchecked_Deallocation,
+    FLTK.Drawing_State,
     Interfaces.C,
     System;
 
@@ -98,6 +99,7 @@ package body FLTK.Devices.Surface is
             end if;
             This.Void_Ptr := Null_Pointer;
         end if;
+        Drawing_State.Forget_All (This'Address);
     end Finalize;
 
 
@@ -166,6 +168,11 @@ package body FLTK.Devices.Surface is
     end Set_Current_Bookkeep;
 
 
+    --  Pops the surface a Push_Bookkeep recorded in FLTK.Drawing_State.
+    procedure Undo_Surface
+           (Item : in System.Address);
+
+
     procedure Push_Bookkeep
            (This : in out Surface_Device'Class) is
     begin
@@ -174,6 +181,7 @@ package body FLTK.Devices.Surface is
             Surface_Stack (Stack_Height) := Surface_Access (Current_Surface);
         end if;
         Current_Surface := This'Unchecked_Access;
+        Drawing_State.Remember (Undo_Surface'Access, This'Address);
     end Push_Bookkeep;
 
 
@@ -183,8 +191,18 @@ package body FLTK.Devices.Surface is
             Current_Surface := Surface_Stack (Stack_Height);
             Stack_Height := Stack_Height - 1;
         end if;
+        Drawing_State.Forget (Undo_Surface'Access);
         Reclaim;
     end Pop_Bookkeep;
+
+
+    procedure Undo_Surface
+           (Item : in System.Address)
+    is
+        pragma Unreferenced (Item);
+    begin
+        Pop_Current;
+    end Undo_Surface;
 
 
     --  Whether Item is This.
@@ -292,6 +310,25 @@ package body FLTK.Devices.Surface is
         fl_surface_device_push_current (This.Void_Ptr);
         Push_Bookkeep (This);
     end Push_Current;
+
+
+    procedure Initialize
+           (This : in out Current_Guard) is
+    begin
+        Push_Current (This.Target.all);
+    end Initialize;
+
+
+    procedure Finalize
+           (This : in out Current_Guard) is
+    begin
+        if Is_Top (This.Target.all) then
+            Pop_Current;
+        end if;
+    exception
+    when others =>
+        null;
+    end Finalize;
 
 
     function Is_Current

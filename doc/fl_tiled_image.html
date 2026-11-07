@@ -162,6 +162,17 @@ procedure Draw
 
   <tr>
 <td><pre>
+void inactive();  // from Fl_Image
+</pre></td>
+<td><pre>
+procedure Inactive
+       (This : in out Tiled_Image);
+</pre>FLTK's calls <code>color_average</code>, which Fl_Tiled_Image
+overrides to work on its own copy of the tile.</td>
+  </tr>
+
+  <tr>
+<td><pre>
 Fl_Image * image();
 </pre></td>
 <td><pre>

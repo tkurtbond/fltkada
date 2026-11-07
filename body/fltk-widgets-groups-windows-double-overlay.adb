@@ -126,13 +126,14 @@ package body FLTK.Widgets.Groups.Windows.Double.Overlay is
     procedure Overlay_Window_Draw_Overlay_Hook
            (U : in Storage.Integer_Address)
     is
+        Mark           : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Overlay_Widget : constant access Overlay_Window'Class :=
             Over_Convert.To_Pointer (Storage.To_Address (U));
     begin
         Overlay_Widget.Draw_Overlay;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Overlay_Window_Draw_Overlay_Hook;
 
 

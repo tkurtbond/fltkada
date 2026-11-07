@@ -233,6 +233,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
     procedure About_Callback_Hook
            (Widget_Ptr, User_Data : in Storage.Integer_Address)
     is
+        Mark : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         pragma Unreferenced (Widget_Ptr, User_Data);
     begin
         if About_Func /= null then
@@ -240,7 +241,7 @@ package body FLTK.Widgets.Menus.Menu_Bars.Systemwide is
         end if;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end About_Callback_Hook;
 
 

@@ -1262,7 +1262,10 @@ a new private package, `FLTK.Hook_Exceptions`:
   and give FLTK zero lines for the rest of the image.
 - `Fatal_Hook` is left alone, since FLTK's fatal handler must not return.
 - A clip that the user's own `Draw` pushed and didn't pop before raising
-  is still pushed. That is documented at `Push_Clip`.
+  is still pushed. That is documented at `Push_Clip`. (Superseded
+  2026-11-06: the hook now undoes what it pushed, clips and the rest, as
+  the exception leaves it. PLAN.md, "Architecture decisions", 7;
+  `test/unit/test_draw_state.adb`.)
 
 **Test.** `test/unit/test_exceptions.adb`, now in `tests_unit.gpr`. For
 each kind of hook, it checks that the exception reaches the Ada call
@@ -3451,3 +3454,34 @@ pofltk's TestWidgets, which sets it. The user called the constant a bug.
 variable; `Labels`' default size is `Get_Normal_Size`. test_widget
 checks that it starts at 14 and that a box made after
 `Set_Normal_Size (20)` has label size 20.
+
+
+## 123. End_Job in a page left the device current
+
+**Symptom.** `End_Job` of a `Postscript_File_Device` or a `Printer`
+called between `Start_Page` and `End_Page` left the device the current
+surface, so later drawing, including the program's windows, went to the
+ended job. The page and its surface stayed in the drawing-state log
+(PLAN.md, Architecture decisions, 7) until the device was finalized.
+
+**Cause.** FLTK's `begin_page` pushes the device as the current surface,
+and `end_page` pops it (Fl_Paged_Device.cxx:43-100).
+`Fl_PostScript_File_Device::end_job` (Fl_PostScript.cxx:1946-1985)
+finishes Cairo's surface and closes the file, but doesn't pop it. On
+Linux, `Fl_Printer::end_job` calls the `Fl_PostScript_Printer`'s, which
+is the same function (Fl_Printer.cxx:212-214). The binding's `End_Job`
+set `In_Page` to False without popping its own record of the surface
+or forgetting the page. A PDF surface's `End_Job` already raised
+`Page_Error` in a page.
+
+**Found.** 2026-11-06, while writing test/unit/test_draw_state.adb,
+by reading the binding's `End_Job` and FLTK's `end_job`.
+
+**Fixed.** `End_Job` in a page calls `End_Page` first, as `Finalize`
+already did. If that raises `Page_Error`, the job is not ended.
+test/unit/test_page_misuse.adb ends a job inside a page and checks
+that the device isn't current and the screen is, and that the file has
+the page and ends with `%%EOF`. Before the fix, the two checks of the
+current surface failed. The `Printer` fix is the same code, unrun:
+starting a printer's job opens the print dialog, which the tests don't
+drive.

@@ -26,6 +26,11 @@
 
 </table>
 
+<p><b>Note:</b><br /><br />
+A page started in a hook FLTK calls (a callback, a Draw) that raises before End_Page is
+ended as the exception leaves the hook, which also pops the current surface Start_Page
+pushed. A Page_Guard starts a page as it is declared, and ends it as it is finalized.</p>
+
 
 
 <table class="type">
@@ -61,6 +66,11 @@
     <td>Page_Format_Info_Array</td>
   </tr>
 
+  <tr>
+    <td>&nbsp;</td>
+    <td>Page_Guard</td>
+  </tr>
+
 </table>
 
 
@@ -93,6 +103,29 @@ static const page_format page_formats[NO_PAGE_FORMATS];
 </pre></td>
 <td><pre>
 Page_Formats : constant Page_Format_Info_Array (A0 .. Envelope);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+typedef struct {
+  int width;
+  int height;
+  const char *name;
+} page_format;
+</pre></td>
+<td><pre>
+function Name
+       (This : in Page_Format_Info)
+    return String;
+
+function Width
+       (This : in Page_Format_Info)
+    return Natural;
+
+function Height
+       (This : in Page_Format_Info)
+    return Natural;
 </pre></td>
   </tr>
 

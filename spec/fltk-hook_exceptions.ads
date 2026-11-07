@@ -15,19 +15,38 @@
 --
 --  Only the first exception is kept.  Any raised before it is raised again
 --  are dropped.
+--
+--  A hook also takes a Mark as it starts, and passes it to Save, which
+--  first undoes the clips, matrices, current surfaces, offscreens, pages
+--  and OpenGL.Start the hook's code pushed and didn't pop
+--  (FLTK.Drawing_State).
 
 
 with
 
-    Ada.Exceptions;
+    Ada.Exceptions,
+    FLTK.Drawing_State;
 
 
 private package FLTK.Hook_Exceptions is
 
 
+    subtype Mark is FLTK.Drawing_State.Mark;
+
+    --  The mark a hook takes as it starts.
+    function Entry_Mark
+        return Mark
+    renames FLTK.Drawing_State.Current;
+
     --  Keeps Occurrence, unless an exception is kept already.
     procedure Save
            (Occurrence : in Ada.Exceptions.Exception_Occurrence);
+
+    --  Undoes the drawing state pushed since Since, and keeps Occurrence,
+    --  unless an exception is kept already.
+    procedure Save
+           (Occurrence : in Ada.Exceptions.Exception_Occurrence;
+            Since      : in Mark);
 
     --  Keeps a new occurrence of Id, with Message, unless an exception is
     --  kept already.

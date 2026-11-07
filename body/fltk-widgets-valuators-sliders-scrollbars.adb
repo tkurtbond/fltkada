@@ -127,6 +127,7 @@ package body FLTK.Widgets.Valuators.Sliders.Scrollbars is
             X, Y, W, H : in Interfaces.C.int;
             C_Str      : in Interfaces.C.Strings.chars_ptr)
     is
+        Mark         : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         My_Scrollbar : Scrollbar;
         for My_Scrollbar'Address use Storage.To_Address (Ada_Obj);
         pragma Import (Ada, My_Scrollbar);
@@ -138,7 +139,7 @@ package body FLTK.Widgets.Valuators.Sliders.Scrollbars is
             Interfaces.C.Strings.Value (C_Str));
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end scrollbar_extra_init_hook;
 
 

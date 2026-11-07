@@ -190,6 +190,7 @@ package body FLTK.Widgets.Groups.Scrolls is
             X, Y, W, H : in Interfaces.C.int;
             C_Str      : in Interfaces.C.Strings.chars_ptr)
     is
+        Mark      : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         My_Scroll : Scroll;
         for My_Scroll'Address use Storage.To_Address (Ada_Obj);
         pragma Import (Ada, My_Scroll);
@@ -201,7 +202,7 @@ package body FLTK.Widgets.Groups.Scrolls is
             Interfaces.C.Strings.Value (C_Str));
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end scroll_extra_init_hook;
 
 

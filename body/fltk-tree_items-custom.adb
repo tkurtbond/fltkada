@@ -77,6 +77,7 @@ package body FLTK.Tree_Items.Custom is
             R  : in Interfaces.C.int)
         return Interfaces.C.int
     is
+        Mark     : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         use type Interfaces.C.int;
         Ada_Item : access Custom_Item'Class;
     begin
@@ -92,7 +93,7 @@ package body FLTK.Tree_Items.Custom is
         return Interfaces.C.int (Ada_Item.Draw_Item_Content (R /= 0));
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
         return 0;
     end Tree_Item_Draw_Content_Hook;
 
@@ -105,6 +106,7 @@ package body FLTK.Tree_Items.Custom is
     procedure Tree_Item_Gone_Hook
            (UD : in Storage.Integer_Address)
     is
+        Mark     : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Item : access Custom_Item'Class;
     begin
         if UD = Null_Pointer then
@@ -117,7 +119,7 @@ package body FLTK.Tree_Items.Custom is
         Ada_Item.Void_Ptr := Null_Pointer;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Tree_Item_Gone_Hook;
 
 

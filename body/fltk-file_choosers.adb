@@ -536,14 +536,16 @@ package body FLTK.File_Choosers is
 
     function File_Chooser_Sort_Hook
            (A, B : in Interfaces.C.Strings.chars_ptr)
-        return Interfaces.C.int is
+        return Interfaces.C.int
+    is
+        Mark : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
     begin
         return Filenames.Comparison'Pos (Sort_Method
            (Interfaces.C.Strings.Value (A),
             Interfaces.C.Strings.Value (B))) - 1;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
         return 0;
     end File_Chooser_Sort_Hook;
 
@@ -555,6 +557,7 @@ package body FLTK.File_Choosers is
     procedure File_Chooser_Callback_Hook
            (Ignore, User_Data : in Storage.Integer_Address)
     is
+        Mark    : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Obj : constant access File_Chooser'Class :=
             File_Chooser_Convert.To_Pointer (Storage.To_Address (User_Data));
     begin
@@ -563,7 +566,7 @@ package body FLTK.File_Choosers is
         end if;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end File_Chooser_Callback_Hook;
 
 

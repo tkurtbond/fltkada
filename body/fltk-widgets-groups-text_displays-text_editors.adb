@@ -476,6 +476,7 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
             E : in Storage.Integer_Address)
         return Interfaces.C.int
     is
+        Mark       : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Editor_Ptr : constant Storage.Integer_Address := fl_widget_get_user_data (E);
         Ada_Editor : access Text_Editor'Class;
 
@@ -519,7 +520,7 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
         return Event_Outcome'Pos (Not_Handled);
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
         return 0;
     end Key_Func_Hook;
 

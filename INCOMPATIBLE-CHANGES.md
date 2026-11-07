@@ -81,10 +81,23 @@ come first in each list.
 
 ## Changes that can make a program behave differently
 
+- **A callback, `Draw` or other hook that raises has what it pushed
+  undone** as the exception leaves it: clips (`Push_Clip`,
+  `Push_No_Clip`), matrices, current surfaces, begun offscreens,
+  started pages and `OpenGL.Start`. Before, they stayed pushed, and FLTK
+  drew the rest of the window with them. A program that popped them in
+  its own handler before re-raising still works.
+  [PLAN.md, Architecture decisions, 7](PLAN.md#architecture-decisions).
 - **A `Postscript_File_Device` finalized in a job ends the job**, and
   its page if one is open, as a PDF surface does. The file is then
   complete. Before, nothing was written to it.
   [FLTKAda-BUGS.md 121](FLTKAda-BUGS.md#121-a-postscript-device-finalized-in-a-job-left-its-file-empty).
+- **`End_Job` of a `Postscript_File_Device` or a `Printer` in a page
+  ends the page first.** The device stops being the surface drawn on,
+  and drawing goes back to where it went before the page. Before, the
+  device stayed current, and later drawing went to the ended job. If
+  ending the page raises `Page_Error`, the job is not ended.
+  [FLTKAda-BUGS.md 123](FLTKAda-BUGS.md#123-end_job-in-a-page-left-the-device-current).
 - **`Text_Display.Position_To_XY` gives `Vert_Out` the right way
   round:** True when the position is out of view, False when it is
   shown. Before, it was the opposite.

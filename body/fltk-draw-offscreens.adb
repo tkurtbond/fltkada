@@ -8,10 +8,20 @@
 
 with
 
-    Interfaces.C;
+    FLTK.Drawing_State,
+    Interfaces.C,
+    System.Address_To_Access_Conversions;
 
 
 package body FLTK.Draw.Offscreens is
+
+
+    package Offscreen_Convert is new System.Address_To_Access_Conversions (Offscreen);
+
+
+    --  Ends the drawing a Begin_Drawing recorded in FLTK.Drawing_State.
+    procedure Undo_Drawing
+           (Item : in System.Address);
 
 
     ------------------------
@@ -56,7 +66,8 @@ package body FLTK.Draw.Offscreens is
                 raise Constraint_Error with "Offscreen of a size below 1";
             end if;
             return
-               (Surface => FLTK.Devices.Surface.Image.Forge.Create (W, H, Highres => True),
+               (Ada.Finalization.Limited_Controlled with
+                Surface => FLTK.Devices.Surface.Image.Forge.Create (W, H, Highres => True),
                 W       => W,
                 H       => H,
                 Begun   => False);
@@ -108,6 +119,7 @@ package body FLTK.Draw.Offscreens is
         end if;
         FLTK.Devices.Surface.Push_Current (This.Surface);
         This.Begun := True;
+        Drawing_State.Remember (Undo_Drawing'Access, This'Address);
     end Begin_Drawing;
 
 
@@ -120,7 +132,45 @@ package body FLTK.Draw.Offscreens is
         end if;
         FLTK.Devices.Surface.Pop_Current;
         This.Begun := False;
+        Drawing_State.Forget (Undo_Drawing'Access, This'Address);
     end End_Drawing;
+
+
+    procedure Undo_Drawing
+           (Item : in System.Address)
+    is
+        This : constant access Offscreen := Offscreen_Convert.To_Pointer (Item);
+    begin
+        End_Drawing (This.all);
+    exception
+    when others =>
+        --  Not the surface drawn on: Set_Current changed it.
+        This.Begun := False;
+        Drawing_State.Forget (Undo_Drawing'Access, Item);
+    end Undo_Drawing;
+
+
+    overriding procedure Finalize
+           (This : in out Offscreen) is
+    begin
+        Drawing_State.Forget_All (This'Address);
+    end Finalize;
+
+
+    procedure Initialize
+           (This : in out Drawing_Guard) is
+    begin
+        Begin_Drawing (This.Target.all);
+    end Initialize;
+
+
+    procedure Finalize
+           (This : in out Drawing_Guard) is
+    begin
+        if This.Target.Begun then
+            Undo_Drawing (This.Target.all'Address);
+        end if;
+    end Finalize;
 
 
     function Is_Drawing

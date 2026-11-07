@@ -261,14 +261,16 @@ package body FLTK.Asks is
     pragma Convention (C, File_Chooser_Callback_Hook);
 
     procedure File_Chooser_Callback_Hook
-           (C_Str : in Interfaces.C.Strings.chars_ptr) is
+           (C_Str : in Interfaces.C.Strings.chars_ptr)
+    is
+        Mark : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
     begin
         if Chooser_Func /= null then
             Chooser_Func (Interfaces.C.Strings.Value (C_Str));
         end if;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end File_Chooser_Callback_Hook;
 
 

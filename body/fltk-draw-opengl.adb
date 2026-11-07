@@ -6,6 +6,7 @@
 
 with
 
+    FLTK.Drawing_State,
     Interfaces.C;
 
 use type
@@ -170,6 +171,11 @@ package body FLTK.Draw.OpenGL is
 
     --  Drawing into a Normal Window  --
 
+    --  Finishes the Start recorded in FLTK.Drawing_State.
+    procedure Undo_Start
+           (Item : in System.Address);
+
+
     procedure Start is
     begin
         case fl_gl_start is
@@ -179,7 +185,7 @@ package body FLTK.Draw.OpenGL is
                 raise Program_Error with "OpenGL.Start needs a shown window to be current, "
                     & "and no Start without its Finish";
             when others =>
-                null;
+                Drawing_State.Remember (Undo_Start'Access);
         end case;
     end Start;
 
@@ -189,7 +195,38 @@ package body FLTK.Draw.OpenGL is
         if fl_gl_finish = 0 then
             raise Program_Error with "OpenGL.Finish without OpenGL.Start";
         end if;
+        Drawing_State.Forget (Undo_Start'Access);
     end Finish;
+
+
+    procedure Undo_Start
+           (Item : in System.Address)
+    is
+        pragma Unreferenced (Item);
+    begin
+        Finish;
+    end Undo_Start;
+
+
+    procedure Initialize
+           (This : in out Start_Guard)
+    is
+        pragma Unreferenced (This);
+    begin
+        Start;
+    end Initialize;
+
+
+    procedure Finalize
+           (This : in out Start_Guard)
+    is
+        pragma Unreferenced (This);
+    begin
+        Finish;
+    exception
+    when others =>
+        null;
+    end Finalize;
 
 
 

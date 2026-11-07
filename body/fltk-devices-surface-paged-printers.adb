@@ -6,6 +6,7 @@
 
 with
 
+    FLTK.Drawing_State,
     Ada.Unchecked_Deallocation,
     Interfaces.C;
 
@@ -392,6 +393,7 @@ package body FLTK.Devices.Surface.Paged.Printers is
             end if;
             This.Void_Ptr := Null_Pointer;
         end if;
+        Drawing_State.Forget_All (This'Address);
     end Finalize;
 
 
@@ -851,7 +853,11 @@ package body FLTK.Devices.Surface.Paged.Printers is
     procedure End_Job
            (This : in out Printer) is
     begin
-        This.In_Page := False;
+        --  FLTK's end_job doesn't pop the device that begin_page pushed
+        --  (FLTKAda-BUGS.md 123).
+        if This.In_Page then
+            End_Page (This);
+        end if;
         This.Shifts := 0;
         fl_printer_end_job (This.Void_Ptr);
     end End_Job;
@@ -870,6 +876,7 @@ package body FLTK.Devices.Surface.Paged.Printers is
         --  FLTK's begin_page pushed the device (FLTKAda-BUGS.md 75).
         Push_Bookkeep (This);
         This.In_Page := True;
+        Remember_Page (This);
     end Start_Page;
 
 
@@ -882,6 +889,7 @@ package body FLTK.Devices.Surface.Paged.Printers is
             raise Page_Error with "no page is started";
         end if;
         This.In_Page := False;
+        Forget_Page (This);
         This.Shifts := 0;
         declare
             Result : constant Interfaces.C.int := fl_printer_end_page (This.Void_Ptr);

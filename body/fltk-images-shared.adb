@@ -204,6 +204,7 @@ package body FLTK.Images.Shared is
             N      : in Interfaces.C.int)
         return Storage.Integer_Address
     is
+        Mark   : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Length : constant Size_Type := Size_Type (Interfaces.C.int'Max (0, N));
         Bytes  : Color_Component_Array (1 .. Length);
         for Bytes'Address use Header;
@@ -229,7 +230,7 @@ package body FLTK.Images.Shared is
         return Null_Pointer;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
         return Null_Pointer;
     end Ask_Hook;
 

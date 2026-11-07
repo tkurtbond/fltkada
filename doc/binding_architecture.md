@@ -686,8 +686,8 @@ and `glut.H` were also on this list; they're now bound as
 
 `Fl_Tree`, `Fl_Tree_Item`, `Fl_Tree_Item_Array`, and `Fl_Tree_Prefs` were
 on this list as of the original writing of this document; they're now
-bound (`FLTK.Tree_Items`, `FLTK.Widgets.Groups.Trees`) on the
-`experimental/fl-tree-binding` branch, deliberately covering a pragmatic
+bound (`FLTK.Tree_Items`, `FLTK.Widgets.Groups.Trees`), first on the
+`experimental/fl-tree-binding` branch and now on main, deliberately covering a pragmatic
 core of the API rather than full parity — see the "Incomplete APIs"
 note for `FLTK.Tree_Items` in `progress.txt` for exactly what was left
 out and why, and `test/tree.adb` for a working example. It's a useful
@@ -728,9 +728,9 @@ needed no closure registration: FLTK's own timer redraws the canvas.
 
 | Class | Parent (C++) | Suggested Ada package | What it is |
 |---|---|---|---|
-| `Fl_Shortcut_Button` | `Fl_Button` | `FLTK.Widgets.Buttons.Shortcut` | Button that records a key-combo typed into it; small, self-contained. |
-| `Fl_ICO_Image` | `Fl_BMP_Image` | `FLTK.Images.RGB.BMP.ICO` | Windows `.ico` icon files. |
-| `Fl_File_Icon` | (standalone) | `FLTK.Images.File_Icons` (or similar) | Icon images used as labels/in file browsers; check whether the already-bound `FLTK.Widgets.Groups.Browsers.Textline.File` (`Fl_File_Browser`) already needs this to be useful. |
+| `Fl_Shortcut_Button` | `Fl_Button` | `FLTK.Widgets.Buttons.Shortcut` | ~~Button that records a key-combo typed into it; small, self-contained.~~ Now bound as `FLTK.Widgets.Buttons.Shortcut` (PLAN.md Phase 10). |
+| `Fl_ICO_Image` | `Fl_BMP_Image` | `FLTK.Images.RGB.BMP.ICO` | ~~Windows `.ico` icon files.~~ Now bound as `FLTK.Images.RGB.BMP.ICO` (PLAN.md Phase 10). |
+| `Fl_File_Icon` | (standalone) | `FLTK.Images.File_Icons` (or similar) | ~~Icon images used as labels/in file browsers; check whether the already-bound `FLTK.Widgets.Groups.Browsers.Textline.File` (`Fl_File_Browser`) already needs this to be useful.~~ Now bound as `FLTK.Images.File_Icons` (PLAN.md Phase 10). |
 | `Fl_Scheme` | (standalone) | extend `FLTK.Static` or new `FLTK.Schemes` | New class-based scheme-registration API. `FLTK.Static` already binds the older string-based `Get_Scheme`/`Set_Scheme`/`Is_Scheme`/`Reload_Scheme` (`Fl::scheme()` etc.) — this is the newer, richer API layered on top, not a replacement. Its three public calls, `num_schemes`, `names` and `add_scheme_name`, are now bound in `FLTK.Static` as `Scheme_Count`, `Scheme_Name` and `Add_Scheme_Name` (PLAN.md Phase 8). |
 | `Fl_EPS_File_Surface`, `Fl_PDF_File_Surface`, `Fl_SVG_File_Surface` | `Fl_Widget_Surface`/`Fl_Paged_Device` | `FLTK.Devices.Surface.EPS`/`.PDF`/`.SVG` (or `.Paged.PDF` for the `Fl_Paged_Device`-derived one) | New vector-output drawing surfaces, parallel to the already-bound `.Copy`/`.Image`/`.Paged.Postscript`/`.Paged.Printers`. See §7.3 for the hierarchy wrinkle. Now bound as `FLTK.Devices.Surface.EPS`, `.SVG` and `.Paged.PDF` (PLAN.md Phase 11). |
 
@@ -781,8 +781,8 @@ shared.
 
 Several To-Do items in both §7.1 and the platform-driver items in
 `progress.txt` are gated on `FLTK.Devices.Graphics`
-(`Fl_Graphics_Driver`), listed as only "Partially Done" and one of the
-four packages under "Incomplete APIs." Finishing that binding first
+(`Fl_Graphics_Driver`), listed as only "Partially Done" and under
+"Incomplete APIs." Finishing that binding first
 would unblock `Fl_GDI_*`, `Fl_Quartz_Graphics_Driver`,
 `Fl_Xlib_Graphics_Driver`, and `Fl_Postscript_Graphics_Driver` — none of
 which can be bound meaningfully on their own.
@@ -815,3 +815,62 @@ the binding:
   `FLTK.Widgets.Groups.Tables`.
 * Several "Incomplete APIs" remain deliberately partial:
   see `progress.txt`.
+
+### 8.1 Pitfalls found while bringing FLTKAda level with pofltk
+
+PLAN.md has the details of each; FLTK-issues.md and pofltk's
+`doc/fltk-issues.md` have the FLTK side.
+
+* **A widget's parts may need their `user_data` (PLAN.md N8).**
+  `Extra_Init` sets every wrapped widget's `user_data` to its Ada record
+  (§2.3). Some composite widgets give their parts the parent as
+  `user_data` instead, and the parts' FLTK callbacks cast it back:
+  `Fl_Value_Input`'s and `Fl_Input_Choice`'s input and menu button did,
+  so a keystroke in either crashed. Their shims now keep FLTK's callback
+  for each part (`callback()` returns it) and install a thunk that calls
+  it with `w->parent()`. `Fl_Spinner`, `Fl_Tree`, `Fl_Text_Display` and
+  `Fl_Terminal` do the same with parts FLTKAda doesn't wrap yet; wrapping
+  one needs the same thunk.
+* **No exception may unwind through FLTK's frames (PLAN.md N12,
+  FLTK-issues.md F3).** GNAT can unwind an Ada exception through C++
+  frames, but FLTK keeps state across a hook call that only a normal
+  return restores. Every Ada subprogram FLTK calls (a callback, an
+  overridden `Draw` or `Handle`, a timeout, a comparator, a line
+  function...) ends with `when Occurrence : others =>
+  Hook_Exceptions.Save (Occurrence);` and returns a harmless value. Every
+  Ada call into C that can run hooks is followed by
+  `Hook_Exceptions.Reraise`. A new hook or a new hook-running call needs
+  both (`spec/fltk-hook_exceptions.ads`). If the body has its own
+  handler for `Constraint_Error` or `Assertion_Error`, put the old
+  statements in a nested block after `Reraise`, so that handler doesn't
+  relabel the user's exception (FLTKAda-BUGS.md 45). The hook's first
+  declaration is `Mark : constant Hook_Exceptions.Mark :=
+  Hook_Exceptions.Entry_Mark;`, and its handler passes it to `Save`, which
+  undoes the clips, matrices, surfaces, pages and `OpenGL.Start` pushed
+  since (PLAN.md, "Architecture decisions", 7). A new call that pushes
+  drawing state FLTK keeps records it with `FLTK.Drawing_State.Remember`,
+  and its pop calls `Forget`.
+* **Find out whether FLTK keeps a pointer before binding it** (PLAN.md,
+  "Architecture decisions", 4). Strings, images and arrays FLTK keeps
+  must outlive the call: use FLTK's `copy_*` method, or keep the copy in
+  the Ada record (freed in `Extra_Final`) or in the shim. An
+  `Interfaces.C.To_C` temporary is right only for a pointer FLTK copies
+  (N5: `File_Chooser`'s title was such a temporary, kept as the window
+  label).
+* **Remove what FLTK holds of an Ada object when it goes** (N10, N11).
+  A callback registered with the record's address (a text buffer's
+  modify callback) must be removed in `Finalize`, and an image FLTK
+  draws (a browser line's icon) must be kept alive, and kept in step
+  when FLTK's lines move.
+* **A group's FLTK children aren't always its Ada children** (N9).
+  `Fl_Table` puts cell widgets in an inner group, so `Extra_Final` must
+  detach them there, or `~Fl_Scroll` deletes widgets Ada frees again.
+* **Guards against memory errors are explicit raises** (PLAN.md,
+  "Architecture decisions", 1). The release build has no `-gnata`, so a
+  `Pre` or predicate guards nothing there.
+* **No C++ exception may escape the shim.** Wrap image loaders and any
+  `new` sized from a file in `try`/`catch`, and return an error code.
+* **Check the arithmetic at the boundary** (N1, N2, N3): an `int *`
+  indexed in bytes, a line buffer `W` long where FLTK writes
+  `W * abs (Depth)`, a `maxbuf` of 0. Test such a binding against the
+  actual values, not only that it doesn't crash.

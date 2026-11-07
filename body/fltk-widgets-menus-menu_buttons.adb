@@ -127,6 +127,7 @@ package body FLTK.Widgets.Menus.Menu_Buttons is
             X, Y, W, H : in Interfaces.C.int;
             C_Str      : in Interfaces.C.Strings.chars_ptr)
     is
+        Mark           : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         My_Menu_Button : Menu_Button;
         for My_Menu_Button'Address use Storage.To_Address (Ada_Obj);
         pragma Import (Ada, My_Menu_Button);
@@ -138,7 +139,7 @@ package body FLTK.Widgets.Menus.Menu_Buttons is
             Interfaces.C.Strings.Value (C_Str));
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end menu_button_extra_init_hook;
 
 

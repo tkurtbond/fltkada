@@ -16,6 +16,8 @@ with
 
     Ada.Directories,
     Ada.Exceptions,
+    Ada.Strings.Unbounded,
+    Ada.Text_IO,
     Checks,
     FLTK.Devices.Surface.Paged.Postscript,
     FLTK.Devices.Surface.Paged.Printers,
@@ -201,6 +203,40 @@ begin
     for C of Cases loop
         Outside (C.Bad, C.What.all, No_Job);
     end loop;
+
+    --  End_Job in a page ends the page first: the device is no longer the
+    --  surface drawn on, and the page is in the file (FLTKAda-BUGS.md 123).
+    declare
+        package Srf renames FLTK.Devices.Surface;
+        Device : PS.Postscript_File_Device := PS.Forge.Create;
+        Output : PS.File_Type;
+        Text   : Ada.Strings.Unbounded.Unbounded_String;
+    begin
+        Output.Open (Name);
+        Device.Start_Job (Output, 1);
+        Device.Start_Page;
+        Dr.Line (10, 10, 100, 100);
+        Device.End_Job;
+        Output.Close;
+        Check (not Device.Is_Current, "after End_Job in a page, the device isn't current");
+        Check (Srf.Get_Original.Is_Current,
+            "after End_Job in a page, the screen is current again");
+        declare
+            File : Ada.Text_IO.File_Type;
+        begin
+            Ada.Text_IO.Open (File, Ada.Text_IO.In_File, Name);
+            while not Ada.Text_IO.End_Of_File (File) loop
+                Ada.Strings.Unbounded.Append (Text, Ada.Text_IO.Get_Line (File));
+                Ada.Strings.Unbounded.Append (Text, ASCII.LF);
+            end loop;
+            Ada.Text_IO.Close (File);
+        end;
+        Check (Ada.Strings.Unbounded.Index (Text, "showpage") > 0,
+            "after End_Job in a page, the page is in the file");
+        Check (Ada.Strings.Unbounded.Index (Text, "%%EOF") > 0,
+            "after End_Job in a page, the file is ended");
+        Ada.Directories.Delete_File (Name);
+    end;
 
     --  A printer with no job, checked before any job, so without a dialog.
     declare

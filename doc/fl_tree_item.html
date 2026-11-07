@@ -695,5 +695,25 @@ function Draw_Background_Color
 </table>
 
 
+
+<table class="function">
+  <tr><th colspan="2">Ada-only Additions</th></tr>
+
+  <tr>
+<td>&nbsp;</td>
+<td><pre>
+function Cast
+       (Addr : in System.Address)
+    return Tree_Item;
+
+function Address_Of
+       (This : in Tree_Item)
+    return System.Address;
+</pre><p>For FLTKAda's own child packages; application code should never need them.</p></td>
+  </tr>
+
+</table>
+
+
   </body>
 </html>

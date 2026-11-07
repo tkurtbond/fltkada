@@ -260,13 +260,14 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
     procedure GL_Window_Draw_Overlay_Hook
            (U : in Storage.Integer_Address)
     is
+        Mark      : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         GL_Widget : constant access GL_Window'Class :=
             GL_Convert.To_Pointer (Storage.To_Address (U));
     begin
         GL_Widget.Draw_Overlay;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end GL_Window_Draw_Overlay_Hook;
 
 

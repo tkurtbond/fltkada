@@ -182,6 +182,8 @@ package FLTK.Devices.Surface.Paged.Printers is
             Count    : in     Natural := 0;
             From, To :    out Positive);
 
+    --  End_Job in a page ends the page first; if that raises Page_Error, the
+    --  job is not ended (FLTKAda-BUGS.md 123).
     procedure End_Job
            (This : in out Printer);
 

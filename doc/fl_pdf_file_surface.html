@@ -37,8 +37,35 @@
   </tr>
 
   <tr>
+    <td>&nbsp;</td>
+    <td>PDF_File_Surface_Reference</td>
+  </tr>
+
+  <tr>
     <td></td>
     <td>Dialog_Text</td>
+  </tr>
+
+</table>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Errors</th></tr>
+
+  <tr>
+    <td>int (begin_document, begin_job)</td>
+    <td>File_Open_Error</td>
+  </tr>
+
+  <tr>
+    <td>No error in FLTK; FLTK alerts and waits (pofltk 102).</td>
+    <td>File_Write_Error</td>
+  </tr>
+
+  <tr>
+    <td>int (begin_job)</td>
+    <td>User_Cancel_Error</td>
   </tr>
 
 </table>
@@ -103,7 +130,7 @@ procedure Start_Document
         Name   : in     String;
         Format : in     Page_Format := A4;
         Layout : in     Page_Layout := Portrait);
-</pre></td>
+</pre><p>Raises File_Open_Error, with the reason, if Name can't be written.</p></td>
   </tr>
 
   <tr>

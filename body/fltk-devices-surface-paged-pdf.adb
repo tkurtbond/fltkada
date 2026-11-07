@@ -8,6 +8,7 @@
 
 with
 
+    FLTK.Drawing_State,
     Interfaces.C.Strings;
 
 use type
@@ -194,6 +195,7 @@ package body FLTK.Devices.Surface.Paged.PDF is
             end if;
             This.Void_Ptr := Null_Pointer;
         end if;
+        Drawing_State.Forget_All (This'Address);
     end Finalize;
 
 
@@ -394,6 +396,7 @@ package body FLTK.Devices.Surface.Paged.PDF is
         --  FLTK's begin_page pushed the device (FLTKAda-BUGS.md 75).
         Push_Bookkeep (This);
         This.In_Page := True;
+        Remember_Page (This);
     end Start_Page;
 
 
@@ -404,6 +407,7 @@ package body FLTK.Devices.Surface.Paged.PDF is
             raise Page_Error with "no page is started";
         end if;
         This.In_Page := False;
+        Forget_Page (This);
         This.Shifts := 0;
         declare
             Result : constant Interfaces.C.int := fl_pdf_file_surface_end_page (This.Void_Ptr);

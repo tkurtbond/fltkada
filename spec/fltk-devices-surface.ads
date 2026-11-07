@@ -8,6 +8,10 @@ with
 
     FLTK.Devices.Graphics;
 
+private with
+
+    Ada.Finalization;
+
 
 package FLTK.Devices.Surface is
 
@@ -49,6 +53,11 @@ package FLTK.Devices.Surface is
 
     procedure Pop_Current;
 
+    --  Push_Current (Target) as it's declared, and Pop_Current as it's
+    --  finalized, if Target is still the surface last made current.
+    type Current_Guard
+           (Target : not null access Surface_Device'Class) is tagged limited private;
+
     --  Whether This is the surface drawn on now.
     function Is_Current
            (This : in Surface_Device)
@@ -81,6 +90,18 @@ private
 
     overriding procedure Finalize
            (This : in out Surface_Device);
+
+
+    type Current_Guard
+           (Target : not null access Surface_Device'Class)
+    is new Ada.Finalization.Limited_Controlled with null record;
+
+    overriding procedure Initialize
+           (This : in out Current_Guard);
+
+    overriding procedure Finalize
+           (This : in out Current_Guard);
+
 
 
     procedure Set_Current_Bookkeep

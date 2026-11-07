@@ -351,7 +351,8 @@ void end_job(void);
 <td><pre>
 procedure End_Job
        (This : in out Printer);
-</pre></td>
+</pre>
+<p>In a page, ends the page first. FLTK's end_job doesn't, and leaves the device the surface drawn on. If that raises Page_Error, the job is not ended (FLTKAda-BUGS.md 123).</p></td>
   </tr>
 
   <tr>

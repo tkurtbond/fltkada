@@ -167,11 +167,12 @@ procedure Display
 int handle(int event);
 </pre></td>
 <td><pre>
+--  Inherited from Group:
 function Handle
-       (This  : in out Browser;
+       (This  : in out Group;
         Event : in     Event_Kind)
     return Event_Outcome;
-</pre></td>
+</pre><p>Calls Fl_Browser_::handle, or the subclass's.</p></td>
   </tr>
 
   <tr>
@@ -469,9 +470,10 @@ function Is_Displayed
 void draw();
 </pre></td>
 <td><pre>
+--  Inherited from Group:
 procedure Draw
-       (This : in out Browser);
-</pre></td>
+       (This : in out Group);
+</pre><p>Calls Fl_Browser_::draw, or the subclass's.</p></td>
   </tr>
 
   <tr>

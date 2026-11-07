@@ -7,7 +7,9 @@
 with
 
     Ada.Assertions,
-    Interfaces.C.Strings;
+    FLTK.Drawing_State,
+    Interfaces.C.Strings,
+    System.Address_To_Access_Conversions;
 
 use type
 
@@ -600,6 +602,50 @@ package body FLTK.Devices.Surface.Paged is
             raise Constraint_Error with "Untranslate with no Translate on this page to undo";
         end if;
     end Check_Untranslate;
+
+
+    package Paged_Convert is new System.Address_To_Access_Conversions (Paged_Device'Class);
+
+
+    --  Ends the page a Remember_Page recorded.
+    procedure Undo_Page
+           (Item : in System.Address) is
+    begin
+        Paged_Convert.To_Pointer (Item).End_Page;
+    end Undo_Page;
+
+
+    procedure Remember_Page
+           (This : in Paged_Device'Class) is
+    begin
+        Drawing_State.Remember (Undo_Page'Access, This'Address);
+    end Remember_Page;
+
+
+    procedure Forget_Page
+           (This : in Paged_Device'Class) is
+    begin
+        Drawing_State.Forget (Undo_Page'Access, This'Address);
+    end Forget_Page;
+
+
+    procedure Initialize
+           (This : in out Page_Guard) is
+    begin
+        This.Target.Start_Page;
+    end Initialize;
+
+
+    procedure Finalize
+           (This : in out Page_Guard) is
+    begin
+        if This.Target.In_Page then
+            This.Target.End_Page;
+        end if;
+    exception
+    when others =>
+        null;
+    end Finalize;
 
 
     procedure Check_In_Page

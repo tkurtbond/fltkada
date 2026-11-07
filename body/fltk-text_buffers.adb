@@ -589,6 +589,7 @@ package body FLTK.Text_Buffers is
             Text                        : in Interfaces.C.Strings.chars_ptr;
             UD                          : in Storage.Integer_Address)
     is
+        Mark   : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Action : Modification;
         Place  : constant Position := Position (Pos);
         Length : Natural;
@@ -633,7 +634,7 @@ package body FLTK.Text_Buffers is
         end if;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Modify_Callback_Hook;
 
 
@@ -641,6 +642,7 @@ package body FLTK.Text_Buffers is
            (Pos, Deleted : in Interfaces.C.int;
             UD           : in Storage.Integer_Address)
     is
+        Mark   : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Place  : constant Position := Position (Pos);
         Length : constant Natural  := Natural (Deleted);
 
@@ -654,7 +656,7 @@ package body FLTK.Text_Buffers is
         end if;
     exception
     when Occurrence : others =>
-        Hook_Exceptions.Save (Occurrence);
+        Hook_Exceptions.Save (Occurrence, Mark);
     end Predelete_Callback_Hook;
 
 

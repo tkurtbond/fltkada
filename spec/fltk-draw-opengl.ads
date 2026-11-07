@@ -8,6 +8,11 @@
 --  things (colors, rectangles, text, images) inside an OpenGL window.
 
 
+private with
+
+    Ada.Finalization;
+
+
 package FLTK.Draw.OpenGL is
 
 
@@ -20,6 +25,10 @@ package FLTK.Draw.OpenGL is
     procedure Start;
 
     procedure Finish;
+
+    --  Start as it's declared, and Finish as it's finalized.  An exception
+    --  from Finish there is dropped.
+    type Start_Guard is tagged limited private;
 
 
 
@@ -119,6 +128,15 @@ package FLTK.Draw.OpenGL is
 
 
 private
+
+
+    type Start_Guard is new Ada.Finalization.Limited_Controlled with null record;
+
+    overriding procedure Initialize
+           (This : in out Start_Guard);
+
+    overriding procedure Finalize
+           (This : in out Start_Guard);
 
 
     pragma Inline (Start);
