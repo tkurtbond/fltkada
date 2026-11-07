@@ -478,7 +478,10 @@ static void copy
 procedure Copy
        (Text : in String;
         Dest : in Buffer_Kind);
-</pre><p>Wayland has no selection buffer: copying to and pasting from Selection do nothing useful there (pofltk 50).</p></td>
+
+procedure Copy_To_Both
+       (Text : in String);
+</pre><p>Copy_To_Both is destination 2, both buffers; on Wayland FLTK makes it the clipboard. Wayland has no selection buffer: copying to and pasting from Selection do nothing useful there (pofltk 50).</p></td>
   </tr>
 
   <tr>

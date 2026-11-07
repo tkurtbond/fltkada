@@ -36,6 +36,7 @@ extern "C" void fl_input_choice_set_textsize(INPUTCHOICE n, int t);
 extern "C" const char * fl_input_choice_get_value(INPUTCHOICE n);
 extern "C" void fl_input_choice_set_value(INPUTCHOICE n, const char * t);
 extern "C" int fl_input_choice_set_value2(INPUTCHOICE n, int t);
+extern "C" int fl_input_choice_update_menubutton(INPUTCHOICE n);
 
 
 extern "C" void fl_input_choice_resize(INPUTCHOICE n, int x, int y, int w, int h);

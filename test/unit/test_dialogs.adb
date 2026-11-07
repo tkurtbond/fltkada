@@ -11,15 +11,16 @@
 --  title, types text into it a key at a time, and sends a last key.
 --  Where the next dialog goes and its icon's text are
 --  test_ask_placement's; FLTK's own file chooser is FLTK.File_Choosers's
---  tests'.  pofltk's native file chooser is left out, as a native dialog
---  can reach the desktop; so are the color chooser widget, the
---  directory listing and the filename functions, which are in other
---  FLTKAda packages and their tests.
+--  tests'.  pofltk's native file chooser is test/desktop's, as a native
+--  dialog can reach the desktop.  The color chooser widget, the
+--  directory listing and the filename functions are left to the tests
+--  of the other FLTKAda packages they are in.
 
 
 with
 
     Ada.Directories,
+    Ada.Strings.Unbounded,
     Checks,
     FLTK.Asks,
     FLTK.Probe,
@@ -37,6 +38,9 @@ procedure Test_Dialogs is
     package Ask renames FLTK.Asks;
     package Prb renames FLTK.Probe;
     package Sta renames FLTK.Static;
+    package SU renames Ada.Strings.Unbounded;
+
+    use type SU.Unbounded_String;
 
     use type Ask.Choice_Result;
     use type Ask.Extended_Choice_Result;
@@ -192,7 +196,11 @@ begin
     Check (Ask.Get_Message_Hotspot, "dialogs are shown under the mouse to start with");
     Ask.Set_Message_Hotspot (False);
     Check (not Ask.Get_Message_Hotspot, "Set_Message_Hotspot");
+    Check (Ask.Get_Message_Font = Helvetica and Ask.Get_Message_Size = 14,
+        "the message font is Helvetica 14 to start with");
     Ask.Set_Message_Font (Courier, 16);
+    Check (Ask.Get_Message_Font = Courier and Ask.Get_Message_Size = 16,
+        "Set_Message_Font, Get_Message_Font and Get_Message_Size");
     Ask.Set_Message_Font (Helvetica, 14);
 
     Enter;
@@ -243,6 +251,28 @@ begin
     Check (Ask.Text_Input ("Name:", "abc") = "", "cancelled, it gives """"");
     Reply ("secret", Enter_Key, ASCII.CR);
     Check (Ask.Password ("Password:") = "secret", "Password");
+    declare
+        Answer : SU.Unbounded_String := SU.To_Unbounded_String ("abc");
+    begin
+        Reply ("", Enter_Key, ASCII.CR);
+        C := Ask.Text_Input ("Name:", Answer);
+        Check (C = Ask.Confirm and Answer = "abc", "Text_Input with an Answer: OK on the default");
+        Answer := SU.Null_Unbounded_String;
+        Reply ("", Enter_Key, ASCII.CR);
+        C := Ask.Text_Input ("Name:", Answer);
+        Check (C = Ask.Confirm and Answer = "", "an empty answer is Confirm, not Cancel");
+        Answer := SU.To_Unbounded_String ("kept");
+        Escape;
+        C := Ask.Text_Input ("Name:", Answer);
+        Check (C = Ask.Cancel and Answer = "kept", "cancelled, Cancel, Answer unchanged");
+        Answer := SU.Null_Unbounded_String;
+        Reply ("pw", Enter_Key, ASCII.CR);
+        C := Ask.Password ("Password:", Answer);
+        Check (C = Ask.Confirm and Answer = "pw", "Password with an Answer");
+        Escape;
+        C := Ask.Password ("Password:", Answer);
+        Check (C = Ask.Cancel and Answer = "pw", "cancelled, unchanged");
+    end;
 
     Ask.Set_Message_Title ("Once");
     Enter;
@@ -301,6 +331,27 @@ begin
         "a file that doesn't exist");
     Escape;
     Check (Ask.File_Chooser ("Save", "", "New.txt", True) = "", "cancelled, """"");
+    declare
+        Answer : SU.Unbounded_String := SU.To_Unbounded_String ("New.txt");
+    begin
+        Enter;
+        C := Ask.File_Chooser ("Save", "", Answer, True);
+        Check (C = Ask.Confirm and Answer = "New.txt", "File_Chooser with an Answer");
+        Escape;
+        C := Ask.File_Chooser ("Save", "", Answer, True);
+        Check (C = Ask.Cancel and Answer = "New.txt", "cancelled, Cancel, Answer unchanged");
+        Answer := SU.To_Unbounded_String ("..");
+        Enter;
+        C := Ask.Dir_Chooser ("Folder", Answer);
+        Check (C = Ask.Confirm
+                and SU.To_String (Answer) = Ada.Directories.Containing_Directory (Here) & "/",
+            "Dir_Chooser with an Answer: " & SU.To_String (Answer));
+        Escape;
+        C := Ask.Dir_Chooser ("Folder", Answer);
+        Check (C = Ask.Cancel
+                and SU.To_String (Answer) = Ada.Directories.Containing_Directory (Here) & "/",
+            "cancelled, unchanged");
+    end;
     Enter;
     declare
         Got : constant String := Ask.Dir_Chooser ("Folder", "..");

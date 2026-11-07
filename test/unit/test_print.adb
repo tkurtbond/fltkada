@@ -15,7 +15,7 @@
 --  test_page_misuse and test_page_finalize, text with no font in
 --  test_print_font, the dialogs' texts in test_printer_labels, and a
 --  FLTK that can't print in test_print_support.  pofltk's printer dialog,
---  cancelled, is left out, as a native dialog can reach the desktop.
+--  cancelled, is test/desktop's, as a native dialog can reach the desktop.
 
 
 with

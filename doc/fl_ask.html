@@ -257,7 +257,13 @@ function Dir_Chooser
        (Message, Default : in String;
         Relative         : in Boolean := False)
     return String;
-</pre></td>
+
+function Dir_Chooser
+       (Message  : in     String;
+        Answer   : in out Ada.Strings.Unbounded.Unbounded_String;
+        Relative : in     Boolean := False)
+    return Confirm_Result;
+</pre><p>The second gives Cancel, leaving Answer as it was, when cancelled; the first gives "" then, as for an empty answer.</p></td>
   </tr>
 
   <tr>
@@ -270,7 +276,13 @@ function File_Chooser
        (Message, Filter_Pattern, Default : in String;
         Relative                         : in Boolean := False)
     return String;
-</pre></td>
+
+function File_Chooser
+       (Message, Filter_Pattern : in     String;
+        Answer                  : in out Ada.Strings.Unbounded.Unbounded_String;
+        Relative                : in     Boolean := False)
+    return Confirm_Result;
+</pre><p>As for Dir_Chooser.</p></td>
   </tr>
 
   <tr>
@@ -302,7 +314,12 @@ function Text_Input
        (Message : in String;
         Default : in String := "")
     return String;
-</pre></td>
+
+function Text_Input
+       (Message : in     String;
+        Answer  : in out Ada.Strings.Unbounded.Unbounded_String)
+    return Confirm_Result;
+</pre><p>As for Dir_Chooser.</p></td>
   </tr>
 
   <tr>
@@ -324,6 +341,26 @@ procedure Set_Message_Font
        (Font : in Font_Kind;
         Size : in Font_Size);
 </pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+extern Fl_Font fl_message_font_;
+</pre></td>
+<td><pre>
+function Get_Message_Font
+    return Font_Kind;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+extern Fl_Fontsize fl_message_size_;
+</pre></td>
+<td><pre>
+function Get_Message_Size
+    return Font_Size;
+</pre><p>FLTK's -1, its value to start with, is given as Get_Normal_Size, the size a dialog then uses.</p></td>
   </tr>
 
   <tr>
@@ -385,7 +422,12 @@ function Password
        (Message : in String;
         Default : in String := "")
     return String;
-</pre></td>
+
+function Password
+       (Message : in     String;
+        Answer  : in out Ada.Strings.Unbounded.Unbounded_String)
+    return Confirm_Result;
+</pre><p>As for Dir_Chooser.</p></td>
   </tr>
 
   <tr>

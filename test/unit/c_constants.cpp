@@ -11,6 +11,7 @@
 
 
 #include <FL/Enumerations.H>
+#include <FL/Fl_Button.H>
 #include <FL/Fl_Clock.H>
 #include <FL/Fl_File_Icon.H>
 #include <FL/Fl_Menu_Item.H>
@@ -379,5 +380,10 @@ extern "C" const long long c_constants[] =
     Fl_Sys_Menu_Bar::tabbing_mode_preferred,
     //  Clock faces (Fl_Clock_Output::type)
     FL_SQUARE_CLOCK,
-    FL_ROUND_CLOCK
+    FL_ROUND_CLOCK,
+    //  Button kinds (Fl_Button::type); a representation clause gives FLTK's values
+    FL_NORMAL_BUTTON,
+    FL_TOGGLE_BUTTON,
+    FL_HIDDEN_BUTTON,
+    FL_RADIO_BUTTON
 };

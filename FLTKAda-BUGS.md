@@ -3433,3 +3433,21 @@ open page, as the PDF surface's does. Errors are ignored, as `Finalize`
 can't raise. test_print checks that the file of a device finalized in a
 translated page is PostScript and ends with `%%EOF`; before the fix it
 was empty.
+
+
+## 122. Normal_Size was a constant
+
+**Symptom.** `FLTK.Normal_Size` was `constant Font_Size := 14`, so a
+program couldn't change the size FLTK gives a new widget's label and
+text, as a C++ program does by assigning `FL_NORMAL_SIZE`.
+
+**Cause.** `FL_NORMAL_SIZE` is a variable, `extern Fl_Fontsize`
+(FL/Enumerations.H), 14 to start with. The binding copied its value.
+
+**Found.** Phase 14, 2026-11-06: test/unit/test_widget.adb, porting
+pofltk's TestWidgets, which sets it. The user called the constant a bug.
+
+**Fixed.** `Get_Normal_Size` and `Set_Normal_Size` read and set FLTK's
+variable; `Labels`' default size is `Get_Normal_Size`. test_widget
+checks that it starts at 14 and that a box made after
+`Set_Normal_Size (20)` has label size 20.

@@ -89,7 +89,7 @@ Helvetica_Bold_Italic Courier Courier_Bold Courier_Italic Courier_Bold_Italic
 Times Times_Bold Times_Italic Times_Bold_Italic Symbol""")
      + [("Monospace", "FL_SCREEN"), ("Monospace_Bold", "FL_SCREEN_BOLD"),
         ("Zapf_Dingbats", "FL_ZAPF_DINGBATS"), ("Free_Font", "FL_FREE_FONT")])
-add("Long_Long_Integer (Normal_Size)", "FL_NORMAL_SIZE")
+add("Long_Long_Integer (Get_Normal_Size)", "FL_NORMAL_SIZE")
 
 section("Label types (Fl_Labeltype)")
 enum("Label_Kind", [("Normal_Label", "FL_NORMAL_LABEL"), ("No_Label", "FL_NO_LABEL")]
@@ -234,6 +234,11 @@ section("Clock faces (Fl_Clock_Output::type)")
 enum("Clocks.Clock_Kind", [("Clocks.Square_Face", "FL_SQUARE_CLOCK"),
                            ("Clocks.Round_Face", "FL_ROUND_CLOCK")])
 
+section("Button kinds (Fl_Button::type); a representation clause gives FLTK's values")
+for a, c in [("Normal", "NORMAL"), ("Toggle", "TOGGLE"), ("Hidden", "HIDDEN"), ("Radio", "RADIO")]:
+    add(f"Long_Long_Integer (Buttons.Button_Kind'Enum_Rep (Buttons.{a}_Kind))",
+        f"FL_{c}_BUTTON")
+
 
 HEADER = """{c}  Programmed by T. Kurt Bond and Claude Opus 5.5
 {c}  Released into the public domain
@@ -253,7 +258,8 @@ def cpp():
     out = [HEADER.format(c="//"), "",
            "//  FLTK's value of each constant the Ada test, fltk-test_constants.adb,",
            "//  checks, in the same order.", "", "",
-           "#include <FL/Enumerations.H>", "#include <FL/Fl_Clock.H>",
+           "#include <FL/Enumerations.H>", "#include <FL/Fl_Button.H>",
+           "#include <FL/Fl_Clock.H>",
            "#include <FL/Fl_File_Icon.H>",
            "#include <FL/Fl_Menu_Item.H>", "#include <FL/Fl_Sys_Menu_Bar.H>",
            "#include <FL/Fl_Tabs.H>", "", "",
@@ -276,8 +282,9 @@ def ada():
            "--  c_constants.cpp.  A child of FLTK, so it can see the private",
            "--  conversions.  Run by test_constants.adb.", "", "",
            "with", "", "    Checks,", "    FLTK.Draw,", "    FLTK.Images.File_Icons,", "    FLTK.Screen,",
-           "    FLTK.Widgets.Clocks,", "    FLTK.Widgets.Groups.Tabbed,", "    FLTK.Widgets.Menus.Menu_Bars.Systemwide;", "", "",
+           "    FLTK.Widgets.Buttons,", "    FLTK.Widgets.Clocks,", "    FLTK.Widgets.Groups.Tabbed,", "    FLTK.Widgets.Menus.Menu_Bars.Systemwide;", "", "",
            "procedure FLTK.Test_Constants is", "", "",
+           "    package Buttons renames FLTK.Widgets.Buttons;",
            "    package Clocks renames FLTK.Widgets.Clocks;",
            "    package Tabbed renames FLTK.Widgets.Groups.Tabbed;",
            "    package Sys_Menu renames FLTK.Widgets.Menus.Menu_Bars.Systemwide;", "", "",

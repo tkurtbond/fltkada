@@ -42,6 +42,8 @@ extern "C" void fl_ask_file_chooser_ok_label(const char *l);
 extern "C" int fl_ask_get_message_hotspot(void);
 extern "C" void fl_ask_set_message_hotspot(int v);
 extern "C" void fl_ask_message_font(int f, int s);
+extern "C" int fl_ask_get_message_font();
+extern "C" int fl_ask_get_message_size();
 extern "C" void * fl_ask_message_icon(void);
 extern "C" void fl_ask_message_title(const char * t);
 extern "C" void fl_ask_message_title_default(const char * t);

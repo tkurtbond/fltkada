@@ -7,6 +7,17 @@ come first in each list.
 
 ## Changes that can stop a program compiling
 
+- **`FLTK.Normal_Size` is gone.** It was a constant; FLTK's
+  `FL_NORMAL_SIZE` is a variable. Use `Get_Normal_Size` and
+  `Set_Normal_Size`.
+  [FLTKAda-BUGS.md 122](FLTKAda-BUGS.md#122-normal_size-was-a-constant).
+- **`Browsers.Sort` has a third parameter, `Ignore_Case`, defaulting to
+  False**, and **`Counters.Get_Kind` takes its `This` as `in`**, not
+  `in out`. Calls compile as before, but a type of the program's own
+  that overrides either with the old profile no longer overrides it.
+  [PLAN.md, Phase 14](PLAN.md#phase-14-examples-and-test-ports-done-2026-11-06),
+  the unit tests for widgets and browsers.
+
 - **`File_Browser`'s `Load` procedure with a `Sort` has no default for
   it, and the one-argument `Load` lists a directory.** `File_Browser`
   overrides the `Load (File)` it inherits from `Textline_Browser` with

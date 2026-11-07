@@ -161,6 +161,18 @@ package FLTK.Widgets.Groups.Spinners is
            (This : in out Spinner;
             To   : in     Spinner_Kind);
 
+    --  Whether the buttons and the Up and Down keys take the value past one
+    --  bound round to the other, True to start with; if not, they stop at
+    --  the bound.  A value typed in is clipped to the range either way
+    --  (Fl_Spinner.H:111-139).
+    function Get_Wrap
+           (This : in Spinner)
+        return Boolean;
+
+    procedure Set_Wrap
+           (This : in out Spinner;
+            To   : in     Boolean);
+
 
 
 
@@ -229,6 +241,8 @@ private
 
     pragma Inline (Get_Kind);
     pragma Inline (Set_Kind);
+    pragma Inline (Get_Wrap);
+    pragma Inline (Set_Wrap);
 
     pragma Inline (Resize);
 

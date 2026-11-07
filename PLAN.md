@@ -3127,13 +3127,34 @@ Decisions, as the phase goes:
   `Set_Flags` could take `Submenu` off a title or give it to an item.
   pofltk checks that FLTKAda can't make, since the API isn't bound, so
   they are left out or skipped, to be decided with the user:
-  - `FLTK.Normal_Size` is a constant, so FLTK's default label size
-    can't be set.
-  - Buttons have no `type ()`, so a check button can't be made a radio
-    button.
-  - `Input_Choice` lacks `update_menubutton` (Fl_Input_Choice.H:177).
-  - `Spinner` lacks `wrap` (Fl_Spinner.H:133-139).
-  - `Counters.Get_Kind` takes `in out` where `in` would do.
+  - ~~`FLTK.Normal_Size` is a constant, so FLTK's default label size
+    can't be set.~~ **Decided 2026-11-06:** the user called it a bug
+    (FLTKAda-BUGS.md 122). It is now `Get_Normal_Size` and
+    `Set_Normal_Size`; test_widget checks that a box made after
+    `Set_Normal_Size (20)` has label size 20.
+  - ~~Buttons have no `type ()`, so a check button can't be made a radio
+    button. The user asked why (2026-11-06): upstream FLTKAda models
+    FLTK's button types as subclasses (`Toggle_Button`, `Radio_Button`,
+    `Light.Radio`, `Light.Round.Radio`) and never bound `type ()` for
+    buttons, so a radio check button or a toggle return button can't be
+    made. Still open: whether to add a `Button_Kind`.~~ **Decided
+    2026-11-06:** the user asked for it. `Buttons.Button_Kind`
+    (`Normal_Kind`, `Toggle_Kind`, `Hidden_Kind`, `Radio_Kind`, with a
+    representation clause giving FLTK's 0, 1, 3 and 102) and public
+    `Get_Kind` and `Set_Kind` on `Button`. The literals end in `_Kind`
+    so they can't clash with the `Toggle_Button` and `Radio_Button`
+    types under use clauses. test_button checks each class's kind, a
+    push button made a toggle, and two check buttons made radio, as
+    FLTK's test/radio.cxx does; test_constants checks the four values.
+  - ~~`Input_Choice` lacks `update_menubutton` (Fl_Input_Choice.H:177).~~
+    **Decided 2026-11-06:** bound as `Update_Menu_Button`, a function
+    giving True if an item matched; test_input checks both.
+  - ~~`Spinner` lacks `wrap` (Fl_Spinner.H:133-139).~~ **Decided
+    2026-11-06:** bound as `Get_Wrap` and `Set_Wrap`; test_valuator
+    checks Up and Down at the bounds, with and without it.
+  - ~~`Counters.Get_Kind` takes `in out` where `in` would do.~~
+    **Decided 2026-11-06:** it takes `in`; test_valuator calls it on a
+    constant.
 - **Unit test for browsers** (2026-11-06): `test_browser` ports pofltk's
   TestBrowsers (lines, sorting, selection, hiding, columns, scrolling,
   hold, multi, file and check browsers, clicked through `FLTK.Probe`).
@@ -3145,7 +3166,9 @@ Decisions, as the phase goes:
   choice, an overriding `Load (Dir)` and no default `Sort` on the
   procedure). Not bound, so
   left out: `FL_SORT_CASEINSENSITIVE` (Fl_Browser_.H:38), since
-  `Sort_Order` is just `Ascending` and `Descending`.
+  `Sort_Order` is just `Ascending` and `Descending`. **Decided
+  2026-11-06:** bound as `Sort`'s `Ignore_Case`, default False;
+  test_browser checks both orders.
 - **Unit test for text** (2026-11-06): `test_text` ports pofltk's
   TestText (buffer text and UTF-8, the three selections, lines, words,
   searching, files, the modify callback, a display's cursor, wrapping
@@ -3238,7 +3261,9 @@ Decisions, as the phase goes:
   takes the click. It passes on Xvfb, sway and valgrind, and found no
   bug. Not bound, so left out: clearing the focus, since
   `Events.Set_Focus` takes a widget and FLTK's `Fl::focus` takes null
-  (src/Fl.cxx:1046), to be decided with the user.
+  (src/Fl.cxx:1046), to be decided with the user. **Decided
+  2026-11-06:** `Events.Clear_Focus`; test_events checks it leaves no
+  focus and unfocuses the widget that had it.
 - **Unit test for clipboard** (2026-11-06): `test_clipboard` ports
   pofltk's TestClipboard: no paste before anything is copied, text
   copied and pasted to a widget's `Handle` and to an input at its
@@ -3249,7 +3274,11 @@ Decisions, as the phase goes:
   passes on Xvfb, sway and valgrind, and found no bug. Not bound, so
   left out: copying to both buffers at once, since `Static.Buffer_Kind`
   has no `Both` (FLTK's `Fl::copy` destination 2), to be decided with
-  the user.
+  the user. **Decided 2026-11-06:** `Static.Copy_To_Both`, with
+  `Buffer_Kind` unchanged, so no new literal. test_clipboard checks
+  that both buffers paste it on X11, and the clipboard on Wayland,
+  where FLTK makes destination 2 the clipboard
+  (fl_wayland_clipboard_dnd.cxx:663-664).
 - **Unit test for timers** (2026-11-06): `test_timer` ports pofltk's
   TestTimer: a timeout fires once, repeats from its handler, and is
   removed. pofltk's timers are objects and adding a pending one moves
@@ -3286,7 +3315,18 @@ Decisions, as the phase goes:
   on Xvfb, sway and valgrind. Gaps for the user to decide: `Text_Input`,
   `Password` and the choosers give "" when cancelled, so cancelling
   can't be told from an empty answer, and there is no
-  `Get_Message_Font`.
+  `Get_Message_Font`. **Decided 2026-11-06:** overloads of the four
+  that take an `in out Unbounded_String` Answer and return
+  `Confirm_Result`, leaving Answer as it was on Cancel; and
+  `Get_Message_Font` and `Get_Message_Size`. FLTK's size starts at -1,
+  meaning `FL_NORMAL_SIZE` when a dialog is made (Fl_Message.cxx:333-334),
+  so `Get_Message_Size` gives the normal size then. test_dialogs checks
+  an empty answer, a cancel and the font.
+- **Tests that need the user's screen** (decided 2026-11-06): the user
+  asked that a test which can only be checked on the desktop, such as
+  one driving the native file chooser or the print dialog, go in a
+  Makefile target of its own, `make check-desktop`, and that an agent
+  run it only after asking the user, at the time, and getting a yes.
 - **Unit test for help** (2026-11-06): `test_help` ports the rest of
   pofltk's TestHelp: a view's settings, scrolling, `Find`, selection
   and `Copy`, the callback scrolling calls, the file and directory, a

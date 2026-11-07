@@ -17,6 +17,7 @@ with
     FLTK.Draw,
     FLTK.Images.File_Icons,
     FLTK.Screen,
+    FLTK.Widgets.Buttons,
     FLTK.Widgets.Clocks,
     FLTK.Widgets.Groups.Tabbed,
     FLTK.Widgets.Menus.Menu_Bars.Systemwide;
@@ -25,12 +26,13 @@ with
 procedure FLTK.Test_Constants is
 
 
+    package Buttons renames FLTK.Widgets.Buttons;
     package Clocks renames FLTK.Widgets.Clocks;
     package Tabbed renames FLTK.Widgets.Groups.Tabbed;
     package Sys_Menu renames FLTK.Widgets.Menus.Menu_Bars.Systemwide;
 
 
-    type Value_Array is array (1 .. 333) of Long_Long_Integer;
+    type Value_Array is array (1 .. 337) of Long_Long_Integer;
     pragma Convention (C, Value_Array);
 
     FLTK_Values : Value_Array;
@@ -260,7 +262,10 @@ begin
         85,
         "Long_Long_Integer (Zapf_Dingbats) = FL_ZAPF_DINGBATS");
     Same (Long_Long_Integer (Free_Font), 86, "Long_Long_Integer (Free_Font) = FL_FREE_FONT");
-    Same (Long_Long_Integer (Normal_Size), 87, "Long_Long_Integer (Normal_Size) = FL_NORMAL_SIZE");
+    Same
+       (Long_Long_Integer (Get_Normal_Size),
+        87,
+        "Long_Long_Integer (Get_Normal_Size) = FL_NORMAL_SIZE");
 
     --  Label types (Fl_Labeltype)
     Same (Label_Kind'Pos (Normal_Label), 88, "Label_Kind'Pos (Normal_Label) = FL_NORMAL_LABEL");
@@ -1109,5 +1114,26 @@ begin
        (Clocks.Clock_Kind'Pos (Clocks.Round_Face),
         333,
         "Clocks.Clock_Kind'Pos (Clocks.Round_Face) = FL_ROUND_CLOCK");
+
+    --  Button kinds (Fl_Button::type); a representation clause gives FLTK's values
+    Same
+       (Long_Long_Integer (Buttons.Button_Kind'Enum_Rep (Buttons.Normal_Kind)),
+        334,
+        "Long_Long_Integer (Buttons.Button_Kind'Enum_Rep (Buttons.Normal_Kind))" &
+        " = FL_NORMAL_BUTTON");
+    Same
+       (Long_Long_Integer (Buttons.Button_Kind'Enum_Rep (Buttons.Toggle_Kind)),
+        335,
+        "Long_Long_Integer (Buttons.Button_Kind'Enum_Rep (Buttons.Toggle_Kind))" &
+        " = FL_TOGGLE_BUTTON");
+    Same
+       (Long_Long_Integer (Buttons.Button_Kind'Enum_Rep (Buttons.Hidden_Kind)),
+        336,
+        "Long_Long_Integer (Buttons.Button_Kind'Enum_Rep (Buttons.Hidden_Kind))" &
+        " = FL_HIDDEN_BUTTON");
+    Same
+       (Long_Long_Integer (Buttons.Button_Kind'Enum_Rep (Buttons.Radio_Kind)),
+        337,
+        "Long_Long_Integer (Buttons.Button_Kind'Enum_Rep (Buttons.Radio_Kind)) = FL_RADIO_BUTTON");
 
 end FLTK.Test_Constants;

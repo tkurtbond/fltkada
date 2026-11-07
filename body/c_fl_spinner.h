@@ -42,6 +42,8 @@ extern "C" const char * fl_spinner_get_format(SPINNER n);
 extern "C" void fl_spinner_set_format(SPINNER n, const char * f);
 extern "C" unsigned char fl_spinner_get_type(SPINNER n);
 extern "C" void fl_spinner_set_type(SPINNER n, unsigned char t);
+extern "C" int fl_spinner_get_wrap(SPINNER n);
+extern "C" void fl_spinner_set_wrap(SPINNER n, int t);
 
 
 extern "C" void fl_spinner_resize(SPINNER n, int x, int y, int w, int h);

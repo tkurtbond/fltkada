@@ -123,6 +123,10 @@ package FLTK.Events is
     procedure Set_Focus
            (To : in FLTK.Widgets.Widget'Class);
 
+    --  Leaves no widget with the focus, as Fl::focus (nullptr) does.  Like
+    --  Set_Focus, it does nothing while a window has the grab.
+    procedure Clear_Focus;
+
     function Has_Visible_Focus
         return Boolean;
 
@@ -343,6 +347,7 @@ private
     pragma Inline (Set_Below_Mouse);
     pragma Inline (Get_Focus);
     pragma Inline (Set_Focus);
+    pragma Inline (Clear_Focus);
     pragma Inline (Has_Visible_Focus);
     pragma Inline (Set_Visible_Focus);
 

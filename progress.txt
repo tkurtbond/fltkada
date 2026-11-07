@@ -555,6 +555,16 @@ depth or line size (FLTKAda-BUGS.md 71); a shortcut with a key reads back
 one (FLTKAda-BUGS.md 73, pofltk 55); Measure_Label no longer wraps at a
 random width (FLTKAda-BUGS.md 74)
 
+Added while porting pofltk's unit tests (PLAN.md Phase 14): Get_Normal_Size
+and Set_Normal_Size for FL_NORMAL_SIZE, which was a constant
+(FLTKAda-BUGS.md 122); Events.Clear_Focus (Fl::focus (nullptr));
+Static.Copy_To_Both (Fl::copy destination 2); Asks.Text_Input, Password,
+File_Chooser and Dir_Chooser overloads that tell a cancel from an empty
+answer, and Get_Message_Font and Get_Message_Size; Input_Choice's
+Update_Menu_Button; Spinner's Get_Wrap and Set_Wrap; Browser Sort's
+Ignore_Case (FL_SORT_CASEINSENSITIVE); Buttons.Button_Kind, with Get_Kind
+and Set_Kind (Fl_Button's type ()).
+
 
 
 Incomplete APIs:

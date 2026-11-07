@@ -10,6 +10,7 @@ with
 
 use type
 
+    Interfaces.C.int,
     Interfaces.C.unsigned_char,
     Interfaces.C.Strings.chars_ptr;
 
@@ -187,6 +188,18 @@ package body FLTK.Widgets.Groups.Spinners is
             T : in Interfaces.C.unsigned_char);
     pragma Import (C, fl_spinner_set_type, "fl_spinner_set_type");
     pragma Inline (fl_spinner_set_type);
+
+    function fl_spinner_get_wrap
+           (S : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_spinner_get_wrap, "fl_spinner_get_wrap");
+    pragma Inline (fl_spinner_get_wrap);
+
+    procedure fl_spinner_set_wrap
+           (S : in Storage.Integer_Address;
+            T : in Interfaces.C.int);
+    pragma Import (C, fl_spinner_set_wrap, "fl_spinner_set_wrap");
+    pragma Inline (fl_spinner_set_wrap);
 
 
 
@@ -628,6 +641,22 @@ package body FLTK.Widgets.Groups.Spinners is
     begin
         fl_spinner_set_type (This.Void_Ptr, Spinner_Kind'Pos (To) + 1);
     end Set_Kind;
+
+
+    function Get_Wrap
+           (This : in Spinner)
+        return Boolean is
+    begin
+        return fl_spinner_get_wrap (This.Void_Ptr) /= 0;
+    end Get_Wrap;
+
+
+    procedure Set_Wrap
+           (This : in out Spinner;
+            To   : in     Boolean) is
+    begin
+        fl_spinner_set_wrap (This.Void_Ptr, Boolean'Pos (To));
+    end Set_Wrap;
 
 
 

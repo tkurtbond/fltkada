@@ -99,8 +99,17 @@ begin
         and A.Get_Label_Kind = FLTK.Engraved_Label,
         "box, label font, size, colour and kind read back");
     Check (B.Get_Box = FLTK.No_Box and B.Get_Label_Font = FLTK.Helvetica
-        and B.Get_Label_Size = FLTK.Normal_Size and B.Get_Label_Kind = FLTK.Normal_Label,
+        and B.Get_Label_Size = FLTK.Get_Normal_Size and B.Get_Label_Kind = FLTK.Normal_Label,
         "a box's defaults: no box, Helvetica, the normal size, a normal label");
+    Check (FLTK.Get_Normal_Size = 14, "the normal size is 14 to start with");
+    FLTK.Set_Normal_Size (20);
+    declare
+        D : constant Bx.Box := Bx.Forge.Create (20, 20, 10, 10);
+    begin
+        Check (FLTK.Get_Normal_Size = 20 and D.Get_Label_Size = 20,
+            "Set_Normal_Size: a box made after it takes the size");
+    end;
+    FLTK.Set_Normal_Size (14);
     A.Set_Alignment (FLTK.Align_Top_Left + FLTK.Align_Inside + FLTK.Align_Wrap);
     Check (A.Get_Alignment = FLTK.Align_Top_Left + FLTK.Align_Inside + FLTK.Align_Wrap,
         "an alignment set reads back");

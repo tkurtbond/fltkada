@@ -1,0 +1,53 @@
+--  Programmed by T. Kurt Bond and Claude Opus 5.5
+--  Released into the public domain
+
+
+--  Tests that can only be checked on the user's own desktop: they open a
+--  native dialog (GTK's file chooser, GTK's print dialog), which a test
+--  can't answer by itself, and which can reach the desktop even from a
+--  headless display.  Kept out of make check; make check-desktop builds
+--  and runs them, on the display that is set.  An agent runs that target
+--  only after asking the user, at the time, and getting a yes (AGENTS.md).
+
+
+with
+
+    "../../fltkada",
+    "../../proj/common";
+
+
+project Desktop is
+
+
+    for Languages use ("Ada", "C++");
+
+    for Source_Dirs use (".", "../unit");
+    for Excluded_Source_Files use
+       ("c_constants.cpp",
+        "fltk-test_constants.adb");
+    for Object_Dir  use "../../obj/desktop";
+    for Exec_Dir    use "../../bin/desktop";
+
+    for Main use
+       ("test_native_dialogs.adb");
+
+    package Builder is
+        for Default_Switches ("Ada") use
+            Common.Builder'Default_Switches ("Ada");
+        for Global_Compilation_Switches ("Ada") use
+            Common.Builder'Global_Compilation_Switches ("Ada");
+    end Builder;
+
+    package Compiler is
+        for Default_Switches ("Ada") use
+            Common.Compiler'Default_Switches ("Ada") & "-gnata";
+        for Default_Switches ("C++") use
+            Common.Compiler'Default_Switches ("C++");
+    end Compiler;
+
+    package Binder         renames Common.Binder;
+    package Linker         renames Common.Linker;
+    package Pretty_Printer renames Common.Pretty_Printer;
+
+
+end Desktop;

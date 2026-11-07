@@ -1683,6 +1683,13 @@ package body FLTK.Static is
     end Copy;
 
 
+    procedure Copy_To_Both
+           (Text : in String) is
+    begin
+        fl_static_copy (Interfaces.C.To_C (Text), Text'Length, 2);
+    end Copy_To_Both;
+
+
     procedure Paste
            (Receiver : in FLTK.Widgets.Widget'Class;
             Source   : in Buffer_Kind) is

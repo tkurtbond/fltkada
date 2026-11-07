@@ -192,6 +192,26 @@ function Color_Average
 
   <tr>
 <td><pre>
+Fl_Fontsize FL_NORMAL_SIZE;
+</pre></td>
+<td><pre>
+function Get_Normal_Size
+    return Font_Size;
+</pre><p>Was the constant Normal_Size (FLTKAda-BUGS.md 122).</p></td>
+  </tr>
+
+  <tr>
+<td><pre>
+FL_NORMAL_SIZE = s;
+</pre></td>
+<td><pre>
+procedure Set_Normal_Size
+       (To : in Font_Size);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 inline Fl_Color fl_color_cube(int r, int g, int b);
 </pre></td>
 <td><pre>

@@ -114,7 +114,7 @@ package FLTK.Widgets.Valuators.Counters is
     --  Counter Type  --
 
     function Get_Kind
-           (This : in out Counter)
+           (This : in Counter)
         return Counter_Kind;
 
     package Extra is

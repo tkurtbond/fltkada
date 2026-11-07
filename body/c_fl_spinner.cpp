@@ -160,6 +160,14 @@ void fl_spinner_set_type(SPINNER n, unsigned char t) {
     static_cast<Fl_Spinner*>(n)->type(t);
 }
 
+int fl_spinner_get_wrap(SPINNER n) {
+    return static_cast<Fl_Spinner*>(n)->wrap();
+}
+
+void fl_spinner_set_wrap(SPINNER n, int t) {
+    static_cast<Fl_Spinner*>(n)->wrap(t);
+}
+
 
 
 

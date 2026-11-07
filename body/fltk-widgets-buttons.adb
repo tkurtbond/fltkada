@@ -59,6 +59,18 @@ package body FLTK.Widgets.Buttons is
 
     --  Settings  --
 
+    function fl_widget_get_type
+           (W : in Storage.Integer_Address)
+        return Interfaces.C.unsigned_char;
+    pragma Import (C, fl_widget_get_type, "fl_widget_get_type");
+    pragma Inline (fl_widget_get_type);
+
+    procedure fl_widget_set_type
+           (W : in Storage.Integer_Address;
+            T : in Interfaces.C.unsigned_char);
+    pragma Import (C, fl_widget_set_type, "fl_widget_set_type");
+    pragma Inline (fl_widget_set_type);
+
     function fl_button_get_down_box
            (B : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -260,6 +272,28 @@ package body FLTK.Widgets.Buttons is
 
 
     --  Settings  --
+
+    function Get_Kind
+           (This : in Button)
+        return Button_Kind
+    is
+        Result : constant Interfaces.C.unsigned_char := fl_widget_get_type (This.Void_Ptr);
+    begin
+        return Button_Kind'Enum_Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Button::type returned unexpected unsigned char value of " &
+        Interfaces.C.unsigned_char'Image (Result);
+    end Get_Kind;
+
+
+    procedure Set_Kind
+           (This : in out Button;
+            To   : in     Button_Kind) is
+    begin
+        fl_widget_set_type (This.Void_Ptr, Button_Kind'Enum_Rep (To));
+    end Set_Kind;
+
 
     function Get_Down_Box
            (This : in Button)

@@ -152,6 +152,16 @@ void fl_ask_message_font(int f, int s) {
     fl_message_font(f, s);
 }
 
+int fl_ask_get_message_font() {
+    return fl_message_font_;
+}
+
+int fl_ask_get_message_size() {
+    //  -1, FLTK's to start with, means FL_NORMAL_SIZE when a dialog is made
+    //  (Fl_Message.cxx).
+    return fl_message_size_ == -1 ? FL_NORMAL_SIZE : fl_message_size_;
+}
+
 void * fl_ask_message_icon(void) {
     return fl_message_icon();
 }

@@ -6,6 +6,7 @@
 
 with
 
+    Ada.Strings.Unbounded,
     FLTK.Widgets.Boxes,
     FLTK.Widgets.Groups.Color_Choosers;
 
@@ -123,6 +124,20 @@ package FLTK.Asks is
             Default : in String := "")
         return String;
 
+    --  The Text_Input and Password above give "" when the user cancels, as
+    --  for an empty answer.  These tell the two apart, as Color_Chooser
+    --  does: Answer is the default to start with, and after Confirm the
+    --  text entered; Cancel leaves it as it was.
+    function Text_Input
+           (Message : in     String;
+            Answer  : in out Ada.Strings.Unbounded.Unbounded_String)
+        return Confirm_Result;
+
+    function Password
+           (Message : in     String;
+            Answer  : in out Ada.Strings.Unbounded.Unbounded_String)
+        return Confirm_Result;
+
 
 
 
@@ -156,6 +171,22 @@ package FLTK.Asks is
             Relative                         : in Boolean := False)
         return String;
 
+    --  The Dir_Chooser and File_Chooser above give "" when the user
+    --  cancels.  These tell that apart from a choice, as Text_Input does:
+    --  Answer is the default to start with, and after Confirm the name
+    --  chosen; Cancel leaves it as it was.
+    function Dir_Chooser
+           (Message  : in     String;
+            Answer   : in out Ada.Strings.Unbounded.Unbounded_String;
+            Relative : in     Boolean := False)
+        return Confirm_Result;
+
+    function File_Chooser
+           (Message, Filter_Pattern : in     String;
+            Answer                  : in out Ada.Strings.Unbounded.Unbounded_String;
+            Relative                : in     Boolean := False)
+        return Confirm_Result;
+
     procedure Set_File_Chooser_Callback
            (Func : in File_Chooser_Callback);
 
@@ -172,6 +203,14 @@ package FLTK.Asks is
 
     procedure Set_Message_Hotspot
            (To : in Boolean);
+
+    --  The font and size of a dialog's message.  Until Set_Message_Font is
+    --  called the size follows Get_Normal_Size, as FLTK's does.
+    function Get_Message_Font
+        return Font_Kind;
+
+    function Get_Message_Size
+        return Font_Size;
 
     procedure Set_Message_Font
            (Font : in Font_Kind;

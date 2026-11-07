@@ -10,9 +10,9 @@
 --  buffer, images on the clipboard from a Copy_Surface, and drag and drop
 --  as FLTK routes it.  What test_paste_image (taking a pasted image, and
 --  refusing one), test_clipboard_kinds and test_selection_buffer check is
---  left to them.  pofltk's Copy to both buffers at once has no
---  counterpart, as Static.Buffer_Kind has no Both, nor its
---  Image.CopyToClipboard, which is pofltk's own; images reach the
+--  left to them.  pofltk's Copy to both buffers at once is
+--  Copy_To_Both.  Its Image.CopyToClipboard has no counterpart, as it is
+--  pofltk's own, which is pofltk's own; images reach the
 --  clipboard here through a Copy_Surface.  Nor have its counts of open
 --  surfaces, images and widgets: Ada finalizes them, and valgrind covers
 --  it.
@@ -311,6 +311,14 @@ begin
         St.Paste (Receiver, St.Selection);
         Check (Receiver.Pastes = 1, "no selection buffer (Wayland)");
         St.Paste (Receiver, St.Clipboard);
+    end if;
+    St.Copy_To_Both ("both");
+    St.Paste (Receiver, St.Clipboard);
+    Check (Starts (Receiver.Text, "both"), "Copy_To_Both: the clipboard");
+    if not Prb.On_Wayland then
+        Receiver.Text := (others => ' ');
+        St.Paste (Receiver, St.Selection);
+        Check (Starts (Receiver.Text, "both"), "and the selection buffer (X11)");
     end if;
 
     --  Images.

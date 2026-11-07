@@ -10,6 +10,7 @@
 
 extern "C" const int fl_sort_ascending;
 extern "C" const int fl_sort_descending;
+extern "C" const int fl_sort_caseinsensitive;
 
 
 typedef void* ABSTRACTBROWSER;

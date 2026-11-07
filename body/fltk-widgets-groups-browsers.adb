@@ -30,6 +30,9 @@ package body FLTK.Widgets.Groups.Browsers is
     fl_sort_descending : constant Interfaces.C.int;
     pragma Import (C, fl_sort_descending, "fl_sort_descending");
 
+    fl_sort_caseinsensitive : constant Interfaces.C.int;
+    pragma Import (C, fl_sort_caseinsensitive, "fl_sort_caseinsensitive");
+
 
 
 
@@ -1017,15 +1020,21 @@ package body FLTK.Widgets.Groups.Browsers is
 
 
     procedure Sort
-           (This  : in out Browser;
-            Order : in     Sort_Order)
+           (This        : in out Browser;
+            Order       : in     Sort_Order;
+            Ignore_Case : in     Boolean := False)
     is
         Code : constant Interfaces.C.int :=
            (case Order is
             when Ascending  => fl_sort_ascending,
             when Descending => fl_sort_descending);
     begin
-        fl_abstract_browser_sort (This.Void_Ptr, Code);
+        if Ignore_Case then
+            fl_abstract_browser_sort
+               (This.Void_Ptr, Interfaces.C."+" (Code, fl_sort_caseinsensitive));
+        else
+            fl_abstract_browser_sort (This.Void_Ptr, Code);
+        end if;
     end Sort;
 
 

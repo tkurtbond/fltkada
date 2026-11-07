@@ -19,6 +19,13 @@ package FLTK.Widgets.Buttons is
 
     type State is (Off, On);
 
+    --  How a button behaves when pushed (Fl_Button::type).  A normal button
+    --  is on only while held down; a toggle button changes state at each
+    --  push; a radio button turns on, and turns off the other radio buttons
+    --  in its group.  A hidden button, kept for Forms, is not drawn.  The
+    --  Toggle_Button and Radio_Button types set their kind themselves.
+    type Button_Kind is (Normal_Kind, Toggle_Kind, Hidden_Kind, Radio_Kind);
+
 
 
 
@@ -61,6 +68,14 @@ package FLTK.Widgets.Buttons is
 
 
     --  Settings  --
+
+    function Get_Kind
+           (This : in Button)
+        return Button_Kind;
+
+    procedure Set_Kind
+           (This : in out Button;
+            To   : in     Button_Kind);
 
     function Get_Down_Box
            (This : in Button)
@@ -105,6 +120,12 @@ private
 
     type Button is new Widget with null record;
 
+    for Button_Kind use
+       (Normal_Kind => 0,       --  FL_NORMAL_BUTTON
+        Toggle_Kind => 1,       --  FL_TOGGLE_BUTTON
+        Hidden_Kind => 3,       --  FL_HIDDEN_BUTTON
+        Radio_Kind  => 102);    --  FL_RADIO_BUTTON
+
     overriding procedure Initialize
            (This : in out Button);
 
@@ -127,6 +148,8 @@ private
     pragma Inline (Set_State);
     pragma Inline (Set_Only);
 
+    pragma Inline (Get_Kind);
+    pragma Inline (Set_Kind);
     pragma Inline (Get_Down_Box);
     pragma Inline (Set_Down_Box);
     pragma Inline (Get_Shortcut);

@@ -80,6 +80,10 @@ extern "C" unsigned int fl_enum_inactive(unsigned int c);
 extern "C" unsigned int fl_enum_color_average(unsigned int c1, unsigned int c2, float w);
 
 
+extern "C" int fl_get_normal_size();
+extern "C" void fl_set_normal_size(int s);
+
+
 extern "C" int fl_enum_box(int b);
 extern "C" int fl_enum_frame(int b);
 extern "C" int fl_enum_down(int b);

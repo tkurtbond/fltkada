@@ -217,7 +217,14 @@ begin
     Check (Choice.Get_Input = "two" and Choice.Button_Menu.Chosen_Index = 2 and Calls = 0,
         "Set_Item chooses an item and sets the text, without a callback");
     Choice.Set_Input ("four");
-    Check (Choice.Get_Input = "four" and Choice.Button_Menu.Chosen_Index = 2,
+    Check (not Choice.Update_Menu_Button and Choice.Button_Menu.Chosen_Index = 2,
+        "Update_Menu_Button: no item is ""four"", so it leaves the menu as it was");
+    Choice.Set_Input ("three");
+    Check (Choice.Update_Menu_Button and Choice.Button_Menu.Chosen_Index = 3
+            and Calls = 0,
+        "an item that is the input's text is chosen, with no callback");
+    Choice.Set_Input ("four");
+    Check (Choice.Get_Input = "four" and Choice.Button_Menu.Chosen_Index = 3,
         "Set_Input leaves the menu alone");
     Choice.Set_Changed (True);
     Check (Choice.Has_Changed, "Set_Changed reaches the input");

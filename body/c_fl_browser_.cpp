@@ -14,6 +14,7 @@
 
 const int fl_sort_ascending = FL_SORT_ASCENDING;
 const int fl_sort_descending = FL_SORT_DESCENDING;
+const int fl_sort_caseinsensitive = FL_SORT_CASEINSENSITIVE;
 
 
 

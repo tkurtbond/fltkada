@@ -7,8 +7,8 @@
 --  author releases this derived work into the public domain, as FLTKAda is.
 
 
---  Buttons:  values, kinds, radio groups, shortcuts and repeating, after
---  pofltk's test/TestButtons.Mod.  Clicks and keys are sent as from the
+--  Buttons:  values, kinds (Get_Kind, Set_Kind), radio groups, shortcuts
+--  and repeating, after pofltk's test/TestButtons.Mod.  Clicks and keys are sent as from the
 --  window system (FLTK.Probe), to a window never shown.  The shortcut
 --  button is test_shortcut_button's.
 
@@ -51,6 +51,8 @@ procedure Test_Button is
     package Grp renames FLTK.Widgets.Groups;
     package Win renames FLTK.Widgets.Groups.Windows;
 
+    use type Btn.Button_Kind;
+
     Window : Win.Window := Win.Forge.Create (0, 0, 400, 300, "Test_Button");
     Push   : Btn.Button := Btn.Forge.Create (Window, 10, 10, 80, 25, "push");
     Toggle : Tgl.Toggle_Button := Tgl.Forge.Create (Window, 100, 10, 80, 25, "toggle");
@@ -63,6 +65,9 @@ procedure Test_Button is
     R1     : Rad.Radio_Button := Rad.Forge.Create (Group, 10, 100, 80, 25, "r1");
     R2     : RLt.Radio_Light_Button := RLt.Forge.Create (Group, 100, 100, 80, 25, "r2");
     R3     : constant RRd.Radio_Round_Button := RRd.Forge.Create (Group, 190, 100, 80, 25, "r3");
+    Group2 : Grp.Group := Grp.Forge.Create (Window, 10, 150, 380, 40);
+    C1     : Chk.Check_Button := Chk.Forge.Create (Group2, 10, 150, 80, 25, "c1");
+    C2     : Chk.Check_Button := Chk.Forge.Create (Group2, 100, 150, 80, 25, "c2");
 
     Calls        : Natural := 0;
     Push_Calls   : Natural := 0;
@@ -165,6 +170,29 @@ begin
         "Set_Only is a click without the callback");
     R2.Set_State (Btn.On);
     Check (R1.Is_On and R2.Is_On, "Set_State on a radio button leaves the others");
+
+    --  Kinds.
+    Check (Push.Get_Kind = Btn.Normal_Kind and Toggle.Get_Kind = Btn.Toggle_Kind and
+        Check_B.Get_Kind = Btn.Toggle_Kind and R1.Get_Kind = Btn.Radio_Kind and
+        R2.Get_Kind = Btn.Radio_Kind and R3.Get_Kind = Btn.Radio_Kind,
+        "each button type has its kind");
+    Push.Set_Kind (Btn.Toggle_Kind);
+    Click (Push);
+    Check (Push.Get_Kind = Btn.Toggle_Kind and Push.Is_On,
+        "a push button made a toggle stays on after a click");
+    Click (Push);
+    Check (not Push.Is_On, "and goes off at the next");
+    Push.Set_Kind (Btn.Hidden_Kind);
+    Check (Push.Get_Kind = Btn.Hidden_Kind, "Hidden_Kind reads back");
+    Push.Set_Kind (Btn.Normal_Kind);
+    C1.Set_Kind (Btn.Radio_Kind);
+    C2.Set_Kind (Btn.Radio_Kind);
+    Click (C1);
+    Check (C1.Is_On and not C2.Is_On, "check buttons made radio (FLTK's test/radio):  one on");
+    Click (C2);
+    Check (not C1.Is_On and C2.Is_On, "and clicking the other turns the first off");
+    Click (C2);
+    Check (C2.Is_On, "and clicking it again leaves it on");
 
     --  Shortcuts.
     Push.Set_Shortcut (Mod_Ctrl + 'x');

@@ -169,6 +169,10 @@ int fl_input_choice_set_value2(INPUTCHOICE n, int t) {
     return 1;
 }
 
+int fl_input_choice_update_menubutton(INPUTCHOICE n) {
+    return static_cast<Fl_Input_Choice*>(n)->update_menubutton();
+}
+
 
 
 

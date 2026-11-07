@@ -40,7 +40,7 @@ Where findings go:
 
 - **FLTKAda-BUGS.md**: bugs in FLTKAda's own code. Sections 1–14 are
   fixed; 17–21, 23–26, 28, 29, 41, 44 and 85 are open;
-  22, 27, 30 to 40, 42, 43, 45 to 84 and 86 to 121 are fixed.
+  22, 27, 30 to 40, 42, 43, 45 to 84 and 86 to 122 are fixed.
 - **FLTK-issues.md**: FLTK issues pofltk's list doesn't have (F1, F2, …).
 - **PLAN.md**: FLTKAda's verdict on each of pofltk's numbered issues, and
   every decision.
@@ -71,6 +71,14 @@ make smoke-headless       # every program starts and survives; also smoke-sway
 
 Never run plain `make check`, `make valgrind` or `make smoke`: they use
 whatever display is set, which is the user's desktop.
+
+`make check-desktop` runs `test/desktop/`: tests only the user can
+answer, such as the native file chooser and GTK's print dialog. They
+open on the desktop and wait for the user. Run it only after asking the
+user, at the time, whether now is all right, and getting a yes; an
+earlier yes doesn't carry over. A new test that can't be checked
+headless goes there (in `Main` in `test/desktop/desktop.gpr`), not in
+`test/unit/`.
 
 A unit test is a `test/unit/test_<area>.adb` using `Checks` and
 `FLTK.Probe` (see `test_probe.adb`), listed in `Main` in
@@ -163,6 +171,7 @@ component of the Ada record.
 | `body/c_fl_*.h`, `body/c_fl_*.cpp` | The C++ shim, one pair per bound FLTK class |
 | `test/`, `test/.dir-locals.el` | Example/test programs (built by `tests.gpr`/`tests_2022.gpr`) |
 | `test/unit/` | Unit tests, `Checks` and `FLTK.Probe` (built by `tests_unit.gpr` into `bin/unit/`) |
+| `test/desktop/` | Tests only the user can answer, on the desktop (built and run by `make check-desktop`; ask first) |
 | `test/controls/` | Programs that test the tests: the negative controls, which must fail, and the N12 experiment (built by `test/controls/controls.gpr` into `bin/controls/`) |
 | `examples/` | Ada ports of every program in FLTK 1.4.5's `examples/` (built by `examples.gpr`, executables named after the C++ originals) |
 | `tool/` | `template.adb`, an unrelated text-substitution codegen helper — not a widget template |

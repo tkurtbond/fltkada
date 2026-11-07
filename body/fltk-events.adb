@@ -794,6 +794,12 @@ package body FLTK.Events is
     end Set_Focus;
 
 
+    procedure Clear_Focus is
+    begin
+        fl_event_set_focus (Null_Pointer);
+    end Clear_Focus;
+
+
     function Has_Visible_Focus
         return Boolean is
     begin

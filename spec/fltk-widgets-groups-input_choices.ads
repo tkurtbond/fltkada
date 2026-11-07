@@ -137,6 +137,14 @@ package FLTK.Widgets.Groups.Input_Choices is
            (This  : in out Input_Choice;
             Place : in     FLTK.Widgets.Menus.Index);
 
+    --  Set_Input changes only the input.  This makes the menu's chosen item
+    --  the first, not a submenu, whose text is the input's, and is True if
+    --  there is one; if not, the menu's choice is left as it was
+    --  (Fl_Input_Choice.cxx:334-346).
+    function Update_Menu_Button
+           (This : in out Input_Choice)
+        return Boolean;
+
 
 
 
@@ -191,6 +199,7 @@ private
     pragma Inline (Get_Input);
     pragma Inline (Set_Input);
     pragma Inline (Set_Item);
+    pragma Inline (Update_Menu_Button);
 
     pragma Inline (Resize);
 

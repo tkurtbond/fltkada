@@ -136,7 +136,7 @@ procedure Test_Valuator is
             VSl.Horizontal.Forge.Create (0, 0, 100, 20);
         F_Dial : constant Dls.Fill.Fill_Dial := Dls.Fill.Forge.Create (0, 0, 50, 50);
         L_Dial : constant Dls.Line.Line_Dial := Dls.Line.Forge.Create (0, 0, 50, 50);
-        Simple : Cnt.Simple.Simple_Counter :=
+        Simple : constant Cnt.Simple.Simple_Counter :=
             Cnt.Simple.Forge.Create (0, 0, 100, 25);
     begin
         Check (Fill.Get_Kind = Sld.Vertical_Fill_Slider, "Fill_Slider");
@@ -335,6 +335,27 @@ begin
     Spinner.Set_Text_Size (18);
     Check (Spinner.Get_Text_Size = 18, "its text size, its field's");
     Check (Spinner.Number_Of_Children = 3, "it is a group of three widgets FLTK made");
+    declare
+        Outcome : Event_Outcome;
+    begin
+        Check (Spinner.Get_Wrap, "a spinner wraps to start with");
+        Spinner.Set_Value (1.0);
+        Prb.Set_Key (Up_Key);
+        Outcome := Spinner.Handle (Keydown);
+        Check (Outcome = Handled and Spinner.Get_Value = 0.0,
+            "Up at the maximum wraps to the minimum");
+        Spinner.Set_Wrap (False);
+        Check (not Spinner.Get_Wrap, "Set_Wrap");
+        Spinner.Set_Value (1.0);
+        Outcome := Spinner.Handle (Keydown);
+        Check (Outcome = Handled and Spinner.Get_Value = 1.0,
+            "without it, Up stops at the maximum");
+        Prb.Set_Key (Down_Key);
+        Spinner.Set_Value (0.0);
+        Outcome := Spinner.Handle (Keydown);
+        Check (Outcome = Handled and Spinner.Get_Value = 0.0, "and Down at the minimum");
+        Spinner.Set_Wrap (True);
+    end;
 
     --  A progress bar.
     Check (Progress.Get_Value = 0.0 and Progress.Get_Minimum = 0.0

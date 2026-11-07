@@ -535,6 +535,13 @@ package FLTK.Static is
            (Text : in String;
             Dest : in Buffer_Kind);
 
+    --  Copies Text to the clipboard and the selection buffer at once, as
+    --  Fl::copy's destination 2 does.  On Wayland, which has no selection
+    --  buffer, it is Copy to Clipboard (fl_wayland_clipboard_dnd.cxx:663-664;
+    --  Fl_x.cxx:830-833).
+    procedure Copy_To_Both
+           (Text : in String);
+
     procedure Paste
            (Receiver : in FLTK.Widgets.Widget'Class;
             Source   : in Buffer_Kind);
@@ -836,6 +843,7 @@ private
     pragma Inline (Set_Label_Draw_Function);
 
     pragma Inline (Copy);
+    pragma Inline (Copy_To_Both);
     pragma Inline (Paste);
     pragma Inline (Selection);
     pragma Inline (Clipboard_Contains);

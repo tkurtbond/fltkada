@@ -130,9 +130,13 @@ package FLTK.Widgets.Groups.Browsers is
 
     --  Not task safe due to internal issues with converting Ada Strings to char* in C.
     --  Unsure how much that matters since unsure how task safe FLTK is anyway.
+    --  Ignore_Case compares the items as FLTK's fl_utf_strcasecmp does
+    --  (FL_SORT_CASEINSENSITIVE), so "a" comes before "B"; otherwise they
+    --  are compared byte by byte, and "B" comes first.
     procedure Sort
-           (This  : in out Browser;
-            Order : in     Sort_Order);
+           (This        : in out Browser;
+            Order       : in     Sort_Order;
+            Ignore_Case : in     Boolean := False);
 
 
 

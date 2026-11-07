@@ -133,6 +133,16 @@ package body FLTK is
     pragma Import (C, fl_enum_inactive, "fl_enum_inactive");
     pragma Inline (fl_enum_inactive);
 
+    function fl_get_normal_size
+        return Interfaces.C.int;
+    pragma Import (C, fl_get_normal_size, "fl_get_normal_size");
+    pragma Inline (fl_get_normal_size);
+
+    procedure fl_set_normal_size
+           (S : in Interfaces.C.int);
+    pragma Import (C, fl_set_normal_size, "fl_set_normal_size");
+    pragma Inline (fl_set_normal_size);
+
     function fl_enum_color_average
            (T1, T2 : in Interfaces.C.unsigned;
             W      : in Interfaces.C.C_float)
@@ -360,6 +370,20 @@ package body FLTK is
             Interfaces.C.unsigned (Tone2),
             Interfaces.C.C_float (Weight)));
     end Color_Average;
+
+
+    function Get_Normal_Size
+        return Font_Size is
+    begin
+        return Font_Size (fl_get_normal_size);
+    end Get_Normal_Size;
+
+
+    procedure Set_Normal_Size
+           (To : in Font_Size) is
+    begin
+        fl_set_normal_size (Interfaces.C.int (To));
+    end Set_Normal_Size;
 
 
 

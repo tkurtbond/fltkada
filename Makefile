@@ -27,6 +27,10 @@ install-static: build-static
 #    make smoke            every program in bin/ and bin/examples/ starts
 #    make check-headless   (and valgrind-, smoke-) under Xvfb, X11 back end
 #    make check-sway       (and valgrind-, smoke-) on a headless sway, Wayland
+#    make check-desktop    the tests only the user can answer, in
+#                          test/desktop: native dialogs, on the desktop.
+#                          An agent runs it only after asking the user, at
+#                          the time, and getting a yes.
 
 VALGRIND ?= valgrind --leak-check=full --show-leak-kinds=all \
     --errors-for-leak-kinds=none --error-exitcode=99
@@ -55,7 +59,7 @@ ARGS := dirlist=. filename=../test/images/anim.gif \
 
 .PHONY: programs display check valgrind smoke \
     check-headless valgrind-headless smoke-headless \
-    check-sway valgrind-sway smoke-sway
+    check-sway valgrind-sway smoke-sway check-desktop
 .NOTPARALLEL:
 
 programs:
@@ -120,6 +124,18 @@ smoke: programs display
 	  (cd $$d && timeout $$t $$bin $$args) > obj/check/$$n.smoke 2>&1; got=$$?; \
 	  if [ $$got -eq $$want ]; then echo "ok   - $$n"; \
 	  else cat obj/check/$$n.smoke; echo "FAIL - $$n exited with $$got, not $$want"; status=1; fi; \
+	done; \
+	exit $$status
+
+#  Native dialogs, which open on the user's desktop and wait for the user
+#  (test/desktop/desktop.gpr).  Never headless: no one could answer them.
+check-desktop: display
+	gprbuild -p -q fltkada.gpr
+	gprbuild -p -q -P test/desktop/desktop.gpr
+	@status=0; \
+	for t in $(call gpr-mains,test/desktop/desktop.gpr); do \
+	  echo "== $$t"; \
+	  (cd test/desktop && $(CURDIR)/bin/desktop/$$t) || { echo "FAIL - $$t exited with $$?"; status=1; }; \
 	done; \
 	exit $$status
 

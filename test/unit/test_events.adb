@@ -10,9 +10,9 @@
 --  FLTK.Events queries, and the focus.  Events are sent to the window as
 --  from the window system (FLTK.Probe), and FLTK delivers them to the
 --  widgets as it would the user's; the window is never shown, until FLTK
---  shows it at the end.  pofltk's Set_Focus (NIL) has no counterpart, as
---  FLTKAda's Set_Focus takes a widget, and its check that every widget is
---  deleted none either: Ada finalizes them, and valgrind covers it.
+--  shows it at the end.  pofltk's Set_Focus (NIL) is Clear_Focus.  Its
+--  check that every widget is deleted has no counterpart: Ada finalizes
+--  them, and valgrind covers it.
 
 
 with
@@ -200,6 +200,10 @@ begin
     Ev.Set_Focus (Other);
     Check (Same (Ev.Get_Focus, Other) and Pad.Last = Unfocus,
         "Set_Focus moves it, unfocusing the pad");
+    Ev.Set_Focus (Pad);
+    Check (Same (Ev.Get_Focus, Pad), "and back");
+    Ev.Clear_Focus;
+    Check (Ev.Get_Focus = null and Pad.Last = Unfocus, "Clear_Focus leaves none, unfocusing it");
     Pad.Set_Visible_Focus (False);
     Check (not Pad.Has_Visible_Focus and not Pad.Take_Focus,
         "a widget without visible focus doesn't take it");

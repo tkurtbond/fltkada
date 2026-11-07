@@ -327,7 +327,7 @@ package body FLTK.Widgets.Valuators.Counters is
     --  Counter Type  --
 
     function Get_Kind
-           (This : in out Counter)
+           (This : in Counter)
         return Counter_Kind
     is
         Result : constant Interfaces.C.unsigned_char := fl_widget_get_type (This.Void_Ptr);

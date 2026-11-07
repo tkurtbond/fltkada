@@ -45,6 +45,11 @@
     <td>State</td>
   </tr>
 
+  <tr>
+    <td>uchar (FL_NORMAL_BUTTON, FL_TOGGLE_BUTTON, FL_HIDDEN_BUTTON, FL_RADIO_BUTTON)</td>
+    <td>Button_Kind</td>
+  </tr>
+
 </table>
 
 
@@ -196,6 +201,28 @@ procedure Set_Shortcut
 void shortcut(const char *s);
 </pre></td>
 <td>See shortcut / Set_Shortcut.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+uchar type() const;  // from Fl_Widget
+</pre></td>
+<td><pre>
+function Get_Kind
+       (This : in Button)
+    return Button_Kind;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void type(uchar t);  // from Fl_Widget
+</pre></td>
+<td><pre>
+procedure Set_Kind
+       (This : in out Button;
+        To   : in     Button_Kind);
+</pre></td>
   </tr>
 
   <tr>

@@ -167,6 +167,17 @@ unsigned int fl_enum_color_average(unsigned int c1, unsigned int c2, float w) {
 
 
 
+int fl_get_normal_size() {
+    return FL_NORMAL_SIZE;
+}
+
+void fl_set_normal_size(int s) {
+    FL_NORMAL_SIZE = s;
+}
+
+
+
+
 int fl_enum_box(int b) {
     return static_cast<int>(fl_box(static_cast<Fl_Boxtype>(b)));
 }

@@ -150,6 +150,12 @@ package body FLTK.Widgets.Groups.Input_Choices is
     pragma Import (C, fl_input_choice_set_value2, "fl_input_choice_set_value2");
     pragma Inline (fl_input_choice_set_value2);
 
+    function fl_input_choice_update_menubutton
+           (N : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_input_choice_update_menubutton, "fl_input_choice_update_menubutton");
+    pragma Inline (fl_input_choice_update_menubutton);
+
 
 
 
@@ -480,6 +486,14 @@ package body FLTK.Widgets.Groups.Input_Choices is
             raise Constraint_Error with "Input_Choice has no item" & Integer'Image (Place);
         end if;
     end Set_Item;
+
+
+    function Update_Menu_Button
+           (This : in out Input_Choice)
+        return Boolean is
+    begin
+        return fl_input_choice_update_menubutton (This.Void_Ptr) /= 0;
+    end Update_Menu_Button;
 
 
 

@@ -179,6 +179,12 @@ begin
         "Sort, by bytes");
     Lines.Sort (Brw.Descending);
     Check (Is_Line (Lines, 1, "three") and Is_Line (Lines, 4, "TWO"), "Sort, descending");
+    Lines.Sort (Brw.Ascending, Ignore_Case => True);
+    Check (Is_Line (Lines, 1, "four") and Is_Line (Lines, 2, "one") and Is_Line (Lines, 3, "three")
+            and Is_Line (Lines, 4, "TWO"),
+        "Sort, ignoring case");
+    Lines.Sort (Brw.Descending, Ignore_Case => True);
+    Check (Is_Line (Lines, 1, "TWO") and Is_Line (Lines, 4, "four"), "and descending");
 
     --  Selection.
     Check (Lines.Selected_Index = 0, "no line selected");

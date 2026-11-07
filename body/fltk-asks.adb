@@ -197,6 +197,16 @@ package body FLTK.Asks is
     pragma Import (C, fl_ask_message_font, "fl_ask_message_font");
     pragma Inline (fl_ask_message_font);
 
+    function fl_ask_get_message_font
+        return Interfaces.C.int;
+    pragma Import (C, fl_ask_get_message_font, "fl_ask_get_message_font");
+    pragma Inline (fl_ask_get_message_font);
+
+    function fl_ask_get_message_size
+        return Interfaces.C.int;
+    pragma Import (C, fl_ask_get_message_size, "fl_ask_get_message_size");
+    pragma Inline (fl_ask_get_message_size);
+
     function fl_ask_message_icon
         return Storage.Integer_Address;
     pragma Import (C, fl_ask_message_icon, "fl_ask_message_icon");
@@ -585,6 +595,50 @@ package body FLTK.Asks is
     end Password;
 
 
+    --  Confirm, with Answer set to the text FLTK gave, or Cancel for none.
+    function To_Answer
+           (Result : in     Interfaces.C.Strings.chars_ptr;
+            Answer : in out Ada.Strings.Unbounded.Unbounded_String)
+        return Confirm_Result is
+    begin
+        if Result = Interfaces.C.Strings.Null_Ptr then
+            return Cancel;
+        end if;
+        Answer := Ada.Strings.Unbounded.To_Unbounded_String (Interfaces.C.Strings.Value (Result));
+        return Confirm;
+    end To_Answer;
+
+
+    function Text_Input
+           (Message : in     String;
+            Answer  : in out Ada.Strings.Unbounded.Unbounded_String)
+        return Confirm_Result
+    is
+        Result : constant Interfaces.C.Strings.chars_ptr := fl_ask_input
+               (Interfaces.C.To_C (Message),
+                Interfaces.C.To_C (Ada.Strings.Unbounded.To_String (Answer)));
+    begin
+        Hook_Exceptions.Reraise;
+        --  Result does not need dealloc
+        return To_Answer (Result, Answer);
+    end Text_Input;
+
+
+    function Password
+           (Message : in     String;
+            Answer  : in out Ada.Strings.Unbounded.Unbounded_String)
+        return Confirm_Result
+    is
+        Result : constant Interfaces.C.Strings.chars_ptr := fl_ask_password
+               (Interfaces.C.To_C (Message),
+                Interfaces.C.To_C (Ada.Strings.Unbounded.To_String (Answer)));
+    begin
+        Hook_Exceptions.Reraise;
+        --  Result does not need dealloc
+        return To_Answer (Result, Answer);
+    end Password;
+
+
 
 
     --  Choosers  --
@@ -708,6 +762,41 @@ package body FLTK.Asks is
     end File_Chooser;
 
 
+    function Dir_Chooser
+           (Message  : in     String;
+            Answer   : in out Ada.Strings.Unbounded.Unbounded_String;
+            Relative : in     Boolean := False)
+        return Confirm_Result
+    is
+        Result : constant Interfaces.C.Strings.chars_ptr := fl_ask_dir_chooser
+               (Interfaces.C.To_C (Message),
+                Interfaces.C.To_C (Ada.Strings.Unbounded.To_String (Answer)),
+                Boolean'Pos (Relative));
+    begin
+        Hook_Exceptions.Reraise;
+        --  Result does not need dealloc
+        return To_Answer (Result, Answer);
+    end Dir_Chooser;
+
+
+    function File_Chooser
+           (Message, Filter_Pattern : in     String;
+            Answer                  : in out Ada.Strings.Unbounded.Unbounded_String;
+            Relative                : in     Boolean := False)
+        return Confirm_Result
+    is
+        Result : constant Interfaces.C.Strings.chars_ptr := fl_ask_file_chooser
+               (Interfaces.C.To_C (Message),
+                Interfaces.C.To_C (Filter_Pattern),
+                Interfaces.C.To_C (Ada.Strings.Unbounded.To_String (Answer)),
+                Boolean'Pos (Relative));
+    begin
+        Hook_Exceptions.Reraise;
+        --  Result does not need dealloc
+        return To_Answer (Result, Answer);
+    end File_Chooser;
+
+
     procedure Set_File_Chooser_Callback
            (Func : in File_Chooser_Callback) is
     begin
@@ -740,6 +829,20 @@ package body FLTK.Asks is
     begin
         fl_ask_set_message_hotspot (Boolean'Pos (To));
     end Set_Message_Hotspot;
+
+
+    function Get_Message_Font
+        return Font_Kind is
+    begin
+        return Font_Kind (fl_ask_get_message_font);
+    end Get_Message_Font;
+
+
+    function Get_Message_Size
+        return Font_Size is
+    begin
+        return Font_Size (fl_ask_get_message_size);
+    end Get_Message_Size;
 
 
     procedure Set_Message_Font

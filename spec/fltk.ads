@@ -465,7 +465,16 @@ package FLTK is
     Free_Font             : constant Font_Kind := 16;
 
     type Font_Size is new Natural;
-    Normal_Size : constant Font_Size := 14;
+
+    --  FL_NORMAL_SIZE, the size of a new widget's label and text, 14 to
+    --  start with.  It is a variable in FLTK (Enumerations.H), so a
+    --  program can change it before it makes its widgets (FLTKAda-BUGS.md
+    --  122).
+    function Get_Normal_Size
+        return Font_Size;
+
+    procedure Set_Normal_Size
+           (To : in Font_Size);
 
     type Font_Size_Array is array (Positive range <>) of Font_Size;
 
