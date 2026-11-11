@@ -72,7 +72,8 @@ turns out to be wrong, say so here; don't silently drop it.
 
 **Out of scope:**
 
-- Raw OpenGL calls.
+- Raw OpenGL calls, except GLU, which Phase 20 binds as an optional
+  library (Open question 8).
 
 ## Target versions
 
@@ -289,6 +290,66 @@ Phase 1:
 - `Fl::redraw`: bound as `FLTK.Screen.Redraw` (`c_fl_screen.cpp:121`).
 - Clearing a widget's image: bound as `FLTK.Widgets.Clear_Image` (commit
   7e2cf82).
+
+### Issues 139 to 159, added to pofltk after 2026-11-03
+
+Triaged 2026-11-11, against pofltk at f67277a (its Phase 32), by
+reading code; the four AFFECTED verdicts were checked in FLTKAda's
+source as well. Each is to be confirmed by a failing test before it is
+fixed (Phase 19).
+
+- **FLTKAda's own findings, re-recorded by pofltk:** 139 (F6), 140
+  (F24), 141 (F26), 142 (F23), 143 (F5), 144 (FLTKAda-BUGS 36), 146
+  (F30). Nothing to do, apart from F30 (Phase 18).
+- **HANDLED:**
+  - 145: `Display_Func` and `Overlay_Display_Func` take `not null`
+    (`spec/fltk-glut.ads:423`, `:450`), and the shim's `run` skips a
+    null one.
+  - 152: `Set_Texture_Pile_Height` takes `Positive`.
+- **AFFECTED:**
+  - 150: `Menu.Popup`, `Menu.Pulldown` and `Menu_Button.Popup` with no
+    window to pop up over. `fl_menu_popup` (`body/c_fl_menu.cpp:527`)
+    calls FLTK whatever `wait_for_parent` finds, and FLTK then calls
+    `screen_num()` through NULL (`Fl_Menu.cxx:1000`).
+  - 151: `Wrapped_Row` and `Wrapped_Column` pass a row equal to the
+    visible lines straight to FLTK (`c_fl_text_display.cpp:306`), which
+    reads one past `mLineStarts`.
+  - 153: `Set_Linenumber_Format` takes any string, and FLTK uses it as a
+    `snprintf` format with one `int`.
+  - 155: `Inputs.Index` (`body/fltk-widgets-inputs.adb:792`) has no
+    bounds check. It also returns `Character'Val` of a code point, so
+    any character above U+00FF raises `Constraint_Error`. That second
+    bug is FLTKAda's own (FLTKAda-BUGS 125).
+- **PROBABLY AFFECTED:** 157. `Userdata_Path`'s `FL_PATH_MAX` buffer
+  makes a cut-short name unlikely, but a directory FLTK fails to make
+  is still reported as made (`fl_make_path` ignores `fl_mkdir`).
+- **Doc only:**
+  - 147: FLTKAda's Ada-side bindings are reached through FLTK's default
+    key function, after `Fl::compose`, so a key that types text never
+    reaches one.
+  - 149: `Fullscreen_On`, `Fullscreen_Screens` and `Iconify` have no
+    comments. `Fullscreen_Screens` takes `Natural`, so FLTK's -1 (the
+    window's own screen) can't be passed.
+  - 154: FLTKAda found this one itself (Phase 16). Its ports are
+    already right, but `Show_With_Args`' comment should say it.
+  - 156: `Set_Scheme` writes `FLTK_SCHEME`.
+  - 158: `Forge.From_Scope (User)`.
+- **A related FLTK quirk, from the source** (`Fl_Text_Editor.cxx:824`):
+  `tab_nav(1)` adds a `kf_ignore` binding of Tab each time it is called.
+  Two `Set_Tab_Mode (Widget_Focus)` calls then need two
+  `Set_Tab_Mode (Insert_Char)` calls before Tab inserts again. It is
+  close to pofltk 148, which doesn't affect FLTKAda as such, since a
+  program's own bindings live in Ada. To be recorded as F35 once a test
+  shows it.
+- **NOT BOUND:** 159 (`Fl_Browser_::linespacing`). It is bound in
+  Phase 20, with pofltk's remeasure.
+- **Older entries pofltk changed since a6f5607:**
+  - 75, 116 and 135 now agree with FLTKAda (F4, the U+FFFD correction,
+    and F29). The sentence in Phase 9 that quotes pofltk's U+FFFD claim
+    can now say that pofltk corrected it.
+  - 28 gains a note: a tooltip over a window not yet exposed dies the
+    same way on Wayland. Check FLTKAda's tooltip tests for a `Show`
+    with no wait for the expose.
 
 ## Build and test (target state, built in Phase 0)
 
@@ -3744,6 +3805,239 @@ yishana are i386; artos, jherek, alerik and rackhir run FreeBSD):
 - The 32-bit builds exercise `c_pointer_size` and the `Address`
   conversions. Issue 68 applies to `Valuator.Get_Step` on i386.
 
+### Phases 18 to 28: catching up with pofltk's Phases 24 to 32
+
+Planned 2026-11-11. Since FLTKAda's last comparison (pofltk 1850d01,
+2026-11-06), pofltk has done the following, up to f67277a on
+2026-11-08:
+
+- added issues 147 to 159 (triaged above, under "Issues 139 to 159");
+- bound what its ports of FLTK's `test/` programs needed (its Phases 24
+  to 32);
+- ported 79 of FLTK's 103 `test/` programs, each matching FLTK's build
+  with no fuzz;
+- added `TestKeys` and 13 halt tests, and new checks in about twenty
+  test modules.
+
+These phases bring FLTKAda level again. They are independent of Phase
+17, which stays on hold. Each phase ends with the usual routine: all
+six headless and sway targets after the last change, plus PLAN.md,
+progress.txt, doc/*.html and INCOMPATIBLE-CHANGES.md kept in step. The
+next FLTKAda bug is 125 and the next FLTK issue is F35.
+
+#### Phase 18: Records
+
+- **FLTKAda-BUGS.md 15 to 30.** Most were fixed in Phases 2 and 6
+  under PLAN.md's N numbers, but their Status lines still say "Open",
+  and AGENTS.md's list of open bugs copies them. For example, 21 (N1,
+  `a[i-1]`, 2c800b8) and 25 and 26 (0309c5f) are fixed in the code.
+  For each one, find the N number or pofltk issue in Phases 2 and 6
+  and the unit test that covers it. Run that test, then replace the
+  Status with Fix and Verified, as in sections 1 to 14. Then do the
+  same for 28, 29, 41, 44 and 85; only those still really open stay
+  open. Correct the file's opening paragraph and AGENTS.md's Status.
+- **F30.** pofltk fixed its `Fonts` editor by storing each command plus
+  1, with an alert when the top left dot can't be saved. Do the same
+  in `test/fonts.adb` (Open question 10, decided 2026-11-11), and note
+  in F30 that FLTKAda's port no longer copies the bug.
+- **GlutCube** (pofltk, 2026-10-31) was missed in Phase 14's list of
+  pofltk's originals. Port it into `test/`.
+
+#### Phase 19: Fixes for pofltk 147 to 159
+
+Each fix starts from a failing unit test (Phase 0).
+
+- **150:** the shim returns an error code when there is no window to
+  pop up over. `Menu.Popup`, `Menu.Pulldown` and `Menu_Button.Popup`
+  then raise; pick the exception by analogy with Phase 3's "refuse
+  calls missing their window". `Menu.Popup` and `Menu.Pulldown` keep
+  FLTK's behaviour (Open question 7, decided 2026-11-11): their spec
+  says they only return the chosen item, so no toggle or radio item
+  changes and no callback runs, unlike `Menu_Button.Popup`, and that
+  `Picked` does all of that. A unit test checks that a callback isn't
+  run and a toggle isn't flipped, then that `Picked` does both. The
+  window test is pofltk's `HaltPopup`, as an exception test.
+- **151:** `Wrapped_Row` and `Wrapped_Column` return the row or column
+  they were given when `row >= mNVisibleLines`, reaching the protected
+  count through the shim's friend class. Test under
+  `make valgrind-headless`, as `TestText` does, after a draw of the
+  display.
+- **153:** `Set_Linenumber_Format` accepts `%%` and at most one
+  `d i o u x X` conversion, with flags, width and precision, and
+  raises otherwise (the `Spinner.Set_Format` check, FLTKAda-BUGS 27).
+  Document that line numbers are drawn only in a shown window. Port
+  `HaltLineNumberFormat`.
+- **155 and FLTKAda-BUGS 125:** `Index` keeps returning `Character`
+  (Open question 6, decided 2026-11-11). It raises for a position
+  outside `0 .. Size`, and raises an explicit, documented
+  `Constraint_Error` for a code point above 255, where today it raises
+  one by accident. A new `Wide_Wide_Index` returns any character. Port
+  `TestInputs`' "aé" checks and `HaltInputIndex`. The bounds check
+  needs an INCOMPATIBLE-CHANGES.md entry.
+- **157:** `Userdata_Path` checks that the directory exists, and raises
+  `Preference_Error` if it doesn't. Port `TestPreferences`' check.
+- **Tab navigation (F35, if confirmed):** make `Set_Tab_Mode`
+  idempotent by testing `tab_nav()` first, with a test that sets it
+  twice.
+- **149:** let `Fullscreen_Screens` reset to the window's own screen
+  (FLTK's -1). Add comments to `Fullscreen_On`, `Fullscreen_Screens`
+  and `Iconify`, then port `TestWidget`'s checks. Iconify of a shown
+  window needs a window manager on X11, so that check is skipped on
+  plain Xvfb.
+- **Doc comments** for 144 (no comment yet says a printer text set
+  after the first dialog isn't shown), 147, 154, 156 and 158, and the
+  pofltk 28 Wayland tooltip check (above).
+- Record each verdict in "Issues 139 to 159", and anything new in
+  FLTK-issues.md.
+
+#### Phase 20: API that pofltk's ports needed
+
+Each of these is unbound in FLTKAda, checked by grepping `spec/` and
+the shim on 2026-11-11. Bind each with its own unit test, ported from
+pofltk's check where there is one:
+
+- `Fl_Button::compact` (`TestButtons`' CompactKeys).
+- `Fl_Window`:
+  - `maximize`, `un_maximize`, `maximize_active`, `free_position`,
+    and `screen_num` get and set (raise off the screens; pofltk's
+    `HaltScreenNum`);
+  - reading back `size_range` (`get_size_range`).
+  Under Wayland, maximizing is the compositor's job, so those checks
+  are skipped on sway, as pofltk skips them.
+- `Fl_Widget::horizontal_label_margin`, `vertical_label_margin` and
+  `label_image_spacing`: subtypes `-128 .. 127` and `0 .. 255`,
+  checked explicitly (decision 1; pofltk's `HaltLabelMargin`).
+- `fl_input` and `fl_password` with a maximum length (in `FLTK.Asks`,
+  with the cancel-aware overloads of Phase 14).
+- `Fl::scheme(NULL)` as `Set_System_Scheme`, with 156 in its comment.
+- `Fl_Scroll::scrollbar` alignment, as a call of its own. Through
+  `Scrollbar_Reference` it is untested.
+- The header versions `FL_VERSION`, `FL_API_VERSION` and
+  `FL_ABI_VERSION`, as the shim was compiled, beside the run-time
+  `Version` (for `fltk-versions`).
+- `FL/names.h`: event names, font names and callback-reason names, as
+  functions over the Ada enumerations (pofltk's `TestEvents` checks).
+  Include `names.h` in one `.cpp` file only.
+- `Fl_Tree`: `last_selected_item`, `next_selected_item (item, FL_Up)`,
+  `select_toggle`, `show_item_bottom` and `show_item_middle`.
+  `open_toggle` and `show_self` are bound already.
+- `Fl_Input_`'s cut, copy and paste menu texts. FLTK keeps these
+  pointers, so FLTKAda keeps copies (decision 4).
+- `Fl_Gl_Window::draw_begin` and `draw_end`, as a guard or a pair that
+  raises when nested (pofltk's `HaltGlDrawBegin`).
+- `Fl_Browser_::linespacing`, recounting the full height (pofltk 159,
+  `TestBrowsers`' two checks).
+- `Fl_Terminal`: the ring's rows and columns, its offset, the history
+  and display bounds, the style flags, and a cell's text, attributes
+  and colours. A cell outside the ring raises (`HaltTerminalCell`).
+  The `terminal` port's ring debug window needs these.
+- GLUT's solid and wire shapes (`FL/glut.H` declares them), with
+  counts checked as pofltk checks them (`HaltGlutShape`).
+- **GLU, as an optional library** (Open question 8, decided
+  2026-11-11): `fltkada_glu.gpr`, built only where `pkg-config` finds
+  `glu`, in the way `fltkada_forms.gpr` and `fltkada_cairo.gpr` are,
+  with its own unit tests (pofltk's `TestGlu`, `TestGluConstants`,
+  `HaltGluClosed`, `HaltGluPickMatrix`) and Makefile targets that skip
+  it where GLU is missing. Bind what pofltk's GLU module binds, which
+  is what `fractals` and `glpuzzle` use. Scope's "Raw OpenGL calls"
+  exclusion gains this exception.
+- Still not to bind, following Scope: GL display lists, lights,
+  materials and selection. The GL ports (Phase 26) import what they
+  need in `test/gl1.ads`, as `cube` does.
+
+Phase 24's other additions in pofltk (key bindings, `measure_label`,
+`redraw_label`, icons, `popup` and `pulldown` at a place, wrapped
+rows, `redisplay_range`, line-number format and alignment, texture
+pile, `draw_children`, `test_shortcut`, the three-point `fl_line`, the
+stepped `xyline` and `yxline`, `Userdata_Path`, `Set_Damage`,
+`Set_Visible`, output-only, `Nearest_Window`, `Hotspot`, the
+`size_range` steps) were already in FLTKAda.
+
+**Unit-test checks to port where FLTKAda has none** (found by name
+grep, so look again in each file before writing):
+
+- `TestKeys`: the newest binding wins, removal uncovers the older one,
+  a global binding comes before an editor's, the default key function,
+  147's typed keys, a binding that deletes its editor (under valgrind),
+  and a binding that changes the bindings while it runs.
+- `TestWidget`: `Set_Damage` with an area, `Redraw_Label`,
+  `Measure_Label`, a window added to another group (`Set_Visible`),
+  full screen and iconify (149).
+- `TestImages`: window icons (`Set_Icons`, `Set_Default_Icons`). On
+  Wayland, check only that nothing breaks.
+- `TestMenus`: `Pulldown`.
+- `TestText`: `Wrapped_Row`, `Redisplay_Range`, and the line-number
+  format and alignment.
+- `TestTree`: the `show_item_*` calls.
+- `TestDraw`: the three-point `Line` and the 3- and 4-coordinate
+  stepped lines, by their pixels.
+- `TestTerminal`: ring and cells.
+- `TestUtf8`: the CP1252 bad-byte checks.
+- `TestTooltips`: the empty text, and a window not shown.
+
+#### Phases 21 to 28: FLTK's `test/` programs
+
+FLTK 1.4.5's `test/CMakeLists.txt` creates 113 targets. Leaving out
+the `-shared` builds and the 31 FLTKAda already has (including
+`forms` and `cairo_test`), 69 remain. `list_visuals` (plain Xlib) and
+`shadow_variables` (a compile test) are left out, as pofltk leaves
+them out. `threads` can be ported, which pofltk couldn't do: Ada has
+tasks, and `Lock`, `Unlock` and `Awake` are bound.
+
+Ported as Phase 14's ports were. Each port is compared with FLTK's own
+build under one private Xvfb, driven by `xdotool`, with no fuzz
+(`compare -metric AE` 0). Where FLTK's program calls
+`show(argc, argv)`, the port calls `Show_With_Args` (pofltk 154). A
+program that FLUID wrote is ported from the generated C++. Every `new`
+is freed when `Run` returns, so that the port passes valgrind. pofltk's
+port of each program is a guide to the traps it hit; its PLAN.md
+Phases 25 to 32 lists them.
+
+- **Phase 21, widgets and windows (26):** `adjuster`†, `ask`†,
+  `browser`, `button`†, `buttons`†, `colbrowser`, `fast_slow`,
+  `iconize` (with openbox on Xvfb), `inactive`, `input`, `message`,
+  `minimum`, `native-filechooser` (not driven: see the memory on
+  native dialogs), `navigation`, `output`, `pack`, `radio`, `resize`,
+  `resizebox`, `scroll`, `tabs`, `tile`, `twowin`, `valuators`,
+  `windowfocus`, `wizard`.
+- **Phase 22, layout (17):** `resize-example1` to `5c` (10), sharing
+  `resize-arrows.cxx` as a package; `flex_demo`, `flex_login`,
+  `grid_alignment`, `grid_buttons`, `grid_dialog`, `grid_login`,
+  `fltk-versions`.
+- **Phase 23, drawing and images (14):** `animated`†, `arc`†,
+  `clipboard`, `contrast`, `coordinates`, `curve`†, `icon`, `image`,
+  `label`, `line_style`, `line_style_docs`, `pixmap`†, `rotated_text`,
+  `tiled_image`.
+- **Phase 24, events and keys (3):** `handle_keys`, `keyboard`,
+  `subwindow`.
+- **Phase 25, large programs (4):** `editor`, `preferences`, `table`,
+  `tree`. FLTKAda's own `test/preferences` and `test/tree` are renamed
+  first, so the ports get FLTK's names (Open question 9, decided
+  2026-11-11): for example `preferences_check` and `tree_binding`.
+  `preferences` is one of the self-checking programs `make check` runs,
+  so the Makefile, AGENTS.md and readme.md change with it, and the
+  rename goes in INCOMPATIBLE-CHANGES.md only if a program outside
+  `test/` could depend on it (it can't, so probably not).
+- **Phase 26, OpenGL (6):** `CubeView`, `fractals` (with
+  `fracviewer`), `fullscreen`, `glpuzzle`, `handle_events`, `shape`.
+  `fractals` and `glpuzzle` use the GLU library of Phase 20, and are
+  built only with it. Compare them as
+  pofltk did, with a preloaded shim fixing `time()` and
+  `gettimeofday`.
+- **Phase 27, games (3):** `blocks`, `checkers`, `sudoku`, with `time()`
+  fixed the same way. Note pofltk 158: these write preferences, so
+  their `XDG_CONFIG_HOME` must contain `fltk.org/`, or FLTK writes to
+  `~/.fltk`.
+- **Phase 28, the unit tests, the terminal, the demo and threads (4):**
+  `unittests` (14 pages, with `--core` as a self-checking program run
+  by `make check`), `terminal`, `demo` (last, with a menu file naming
+  the ports), and `threads`.
+
+† FLTKAda already has a program of this name, from upstream. It was
+never compared with FLTK's build: compare it, and rewrite it as a
+port if it differs. The same goes for `bitmap`, `clock`,
+`color_chooser`, `cursor` and `hello`, which are in no phase above.
+
 ## Open questions
 
 All five were decided by the user on 2026-11-03.
@@ -3769,3 +4063,37 @@ All five were decided by the user on 2026-11-03.
 5. ~~**`Unsupported_Error`.** A new exception, or `Program_Error`?~~
    **Decided:** a new exception, `FLTK.Unsupported_Error` (decision 2,
    Phase 1).
+
+Questions 6 to 10 come from the 2026-11-11 plan (Phases 18 to 28). All five
+were decided by the user the same day.
+
+6. ~~**`Inputs.Index`'s result (Phase 19, 155).** It returns
+   `Character`, so a code point above 255 can't be returned. Either
+   change it to return `Wide_Wide_Character` (incompatible: a program
+   that stores the result in a `Character` stops compiling), or keep it
+   and add a `Wide_Wide_Index`.~~ **Decided:** keep `Index` and add
+   `Wide_Wide_Index`.
+7. **Pop-up callbacks (Phase 19, 150).** FLTK's `Fl_Menu_Item::popup`
+   and `pulldown` return the chosen item without calling its callback.
+   ~~pofltk keeps FLTK's behaviour and documents it.~~ (Wrong: pofltk
+   150 says its shim calls the menu's `picked`, so pofltk's `Popup`
+   and `Pulldown` do the callback. Corrected 2026-11-11.) Keep FLTK's
+   behaviour, or have `Menu.Popup` call `picked` as `Menu_Button.Popup`
+   does? **Decided** (2026-11-11): keep FLTK's behaviour and document
+   it. FLTK's own programs call the item's callback themselves
+   (`checkers.cxx:1098`), ports stay close to the C++, nothing breaks,
+   and `Picked` is already bound for a program that wants the toggle,
+   radio, value and callback handling.
+8. ~~**GLU (Phases 20 and 26).** `fractals` and `glpuzzle` need GLU.
+   Either keep GLU out of the binding and import what the two ports
+   need privately (as `test/gl1.ads` does for `cube`), or bind it as an
+   optional library like Forms and Cairo, as pofltk did.~~
+   **Decided:** bind it as an optional library (Phase 20).
+9. ~~**Names for the `tree` and `preferences` ports (Phase 25).**
+   FLTKAda's `test/tree` and `test/preferences` are its own programs,
+   and `preferences` is run by `make check`. Rename those two so the
+   ports get FLTK's names, or give the ports other names?~~
+   **Decided:** rename FLTKAda's two programs.
+10. ~~**F30 in `test/fonts.adb` (Phase 18).** Follow pofltk's fix, or
+    leave the port as a faithful copy of FLTK's bug?~~ **Decided:**
+    follow pofltk's fix.
