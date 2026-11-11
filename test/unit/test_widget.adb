@@ -19,6 +19,7 @@ with
     Checks,
     FLTK.Filenames,
     FLTK.Screen,
+    FLTK.Draw,
     FLTK.Static,
     FLTK.Widgets.Boxes,
     FLTK.Widgets.Groups.Windows.Single.Menu,
@@ -45,6 +46,7 @@ procedure Test_Widget is
     use type FLTK.Callback_Flag;
     use type FLTK.Color;
     use type FLTK.Color_Component;
+    use type FLTK.Damage_Mask;
     use type FLTK.Font_Kind;
     use type FLTK.Label_Kind;
     use type FLTK.Font_Size;
@@ -204,6 +206,35 @@ begin
     Window.Set_Modal;
     Check (Window.Is_Modal, "modal");
 
+    --  Damage to an area.
+    declare
+        D : Bx.Box := Bx.Forge.Create (20, 20, 10, 10);
+    begin
+        G.Add (D);
+        Settle;
+        Window.Clear_Damage;
+        G.Clear_Damage;
+        D.Clear_Damage;
+        D.Set_Damage (FLTK.Damage_User_1, 20, 20, 10, 10);
+        Check (D.Get_Damage = FLTK.Damage_User_1 and G.Get_Damage = FLTK.Damage_Child
+            and Window.Get_Damage = FLTK.Damage_Child,
+            "Set_Damage of an area:  the widget's, its group's and window's");
+        Settle;
+        Window.Clear_Damage;
+        Window.Set_Damage (FLTK.Damage_User_1, 1000, 1000, 10, 10);
+        Check (Window.Get_Damage = FLTK.Damage_None, "none outside the window");
+        Window.Set_Damage (FLTK.Damage_User_1, 5, 5, 10, 10);
+        Check (Window.Get_Damage = FLTK.Damage_User_1, "a window's own");
+        Settle;
+        G.Clear;
+    end;
+    declare
+        Hidden : Win.Window := Win.Forge.Create (0, 0, 100, 80);
+    begin
+        Hidden.Set_Damage (FLTK.Damage_User_1, 5, 5, 10, 10);
+        Check (Hidden.Get_Damage = FLTK.Damage_None, "none for a window not shown");
+    end;
+
     --  A window's title is its label.
     Window.Set_Label ("retitled");
     Check (Window.Get_Label = "retitled", "a shown window's title");
@@ -283,6 +314,65 @@ begin
         Raises (Add_Thirteen'Access, Constraint_Error'Identity,
             "nor one over twelve bytes");
         Check (Sta.Scheme_Count = N + 1, "so none of those counted");
+    end;
+
+    --  Measuring and redrawing a label.
+    declare
+        L      : Bx.Box := Bx.Forge.Create (Window, 220, 20, 50, 20, "Hello world");
+        LW, LH : Integer;
+        FW, FH : Integer;
+        DW, DH : Natural;
+    begin
+        L.Set_Label_Font (FLTK.Courier);
+        L.Set_Label_Size (14);
+        L.Measure_Label (LW, LH);
+        FLTK.Draw.Set_Font (FLTK.Courier, 14);
+        FLTK.Draw.Measure ("Hello world", DW, DH);
+        Check (LW = DW and LH = DH and LW > 0, "Measure_Label, as FLTK.Draw.Measure");
+        L.Measure_Label (FW, FH, Wrap => LW / 2);
+        Check (FW <= LW / 2 and FH = 2 * LH, "Measure_Label wrapped");
+        L.Set_Label ("");
+        L.Measure_Label (LW, LH);
+        Check (LW = 0 and LH = 0, "Measure_Label of no label");
+        L.Set_Label ("c");
+        L.Set_Alignment (FLTK.Align_Bottom);
+        Settle;
+        L.Redraw_Label;
+        Check (Window.Get_Damage /= FLTK.Damage_None and L.Get_Damage = FLTK.Damage_None,
+            "Redraw_Label of a label outside its box damages the window");
+        L.Set_Box (FLTK.Flat_Box);
+        L.Set_Alignment (FLTK.Align_Center);
+        Settle;
+        L.Redraw_Label;
+        Check (L.Get_Damage /= FLTK.Damage_None,
+            "Redraw_Label of a label inside its box damages the box");
+        Window.Remove (L);
+    end;
+
+    --  A window added to another, from pofltk's Visibility.
+    declare
+        Outer : Win.Window := Win.Forge.Create (60, 60, "outer");
+        Sub   : Win.Window := Win.Forge.Create (10, 10, 20, 20);
+        D     : Bx.Box := Bx.Forge.Create (0, 0, 10, 10);
+    begin
+        Outer.Add (D);
+        D.Set_Visible (False);
+        Check (not D.Is_Visible, "Set_Visible (False)");
+        D.Set_Visible (True);
+        Check (D.Is_Visible, "Set_Visible (True)");
+        Check (not Sub.Is_Visible, "a top-level window isn't visible");
+        Outer.Add (Sub);
+        Check (not Sub.Is_Visible, "nor once added to a window");
+        Sub.Set_Visible (True);
+        Outer.Show;
+        for N in 1 .. 100 loop
+            exit when Sub.Is_Shown;
+            exit when FLTK.Wait (0.02) < 0.0;
+        end loop;
+        Check (Sub.Is_Shown, "set visible, it is shown with the window");
+        Outer.Hide;
+        Outer.Remove (Sub);
+        Outer.Remove (D);
     end;
 
     --  The other windows.

@@ -24,9 +24,9 @@ extern "C" void fl_ask_alert(const char * m);
 extern "C" void fl_ask_beep(int b);
 extern "C" int fl_ask_choice(const char * m, const char * a, const char * b, const char * c);
 extern "C" int fl_ask_choice_n(const char * m, const char * a, const char * b, const char * c);
-extern "C" const char * fl_ask_input(const char * m, const char * d);
+extern "C" const char * fl_ask_input(int x, const char * m, const char * d);
 extern "C" void fl_ask_message(const char * m);
-extern "C" const char * fl_ask_password(const char * m, const char * d);
+extern "C" const char * fl_ask_password(int x, const char * m, const char * d);
 
 
 extern "C" int fl_ask_color_chooser(const char * n, double & r, double & g, double & b, int m);

@@ -392,6 +392,40 @@ begin
             & Ada.Exceptions.Exception_Name (Occurrence));
     end;
 
+    --  Line spacing:  lines set apart after they are added are measured
+    --  again (pofltk 159), so a browser scrolls as far as one whose
+    --  spacing was set first.  FLTK's position stops at the lines' height
+    --  less the browser's.
+    declare
+        Before : Txl.Textline_Browser := Txl.Forge.Create (0, 0, 100, 100);
+        After  : Txl.Textline_Browser := Txl.Forge.Create (0, 0, 100, 100);
+    begin
+        Check (After.Get_Line_Spacing = 0, "Get_Line_Spacing is 0 at first");
+        Before.Set_Line_Spacing (10);
+        for K in 1 .. 20 loop
+            Before.Add ("line");
+            After.Add ("line");
+        end loop;
+        After.Set_Line_Spacing (10);
+        Check (After.Get_Line_Spacing = 10, "Set_Line_Spacing");
+        Before.Set_Bottom_Line (20);
+        After.Set_Bottom_Line (20);
+        Check (After.Get_V_Position = Before.Get_V_Position and After.Get_V_Position > 0,
+            "Set_Line_Spacing after the lines are added measures them again:"
+            & After.Get_V_Position'Image & Before.Get_V_Position'Image);
+        for K in 1 .. 20 loop
+            After.Remove (1);
+        end loop;
+        for K in 1 .. 20 loop
+            After.Add ("line");
+        end loop;
+        After.Set_V_Position (0);
+        After.Set_Bottom_Line (20);
+        Check (After.Get_V_Position = Before.Get_V_Position,
+            "and their removal leaves no height behind:"
+            & After.Get_V_Position'Image & Before.Get_V_Position'Image);
+    end;
+
     Summary;
 
 exception

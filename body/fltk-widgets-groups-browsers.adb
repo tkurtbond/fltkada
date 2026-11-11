@@ -200,6 +200,20 @@ package body FLTK.Widgets.Groups.Browsers is
         "fl_abstract_browser_set_scrollbar_size");
     pragma Inline (fl_abstract_browser_set_scrollbar_size);
 
+    function fl_abstract_browser_get_linespacing
+           (B : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_abstract_browser_get_linespacing,
+        "fl_abstract_browser_get_linespacing");
+    pragma Inline (fl_abstract_browser_get_linespacing);
+
+    procedure fl_abstract_browser_set_linespacing
+           (B : in Storage.Integer_Address;
+            S : in Interfaces.C.int);
+    pragma Import (C, fl_abstract_browser_set_linespacing,
+        "fl_abstract_browser_set_linespacing");
+    pragma Inline (fl_abstract_browser_set_linespacing);
+
 
 
 
@@ -1140,6 +1154,22 @@ package body FLTK.Widgets.Groups.Browsers is
            (This.Void_Ptr,
             Interfaces.C.int (Value));
     end Set_Scrollbar_Size;
+
+
+    function Get_Line_Spacing
+           (This : in Browser)
+        return Natural is
+    begin
+        return Natural (fl_abstract_browser_get_linespacing (This.Void_Ptr));
+    end Get_Line_Spacing;
+
+
+    procedure Set_Line_Spacing
+           (This  : in out Browser;
+            Value : in     Natural) is
+    begin
+        fl_abstract_browser_set_linespacing (This.Void_Ptr, Interfaces.C.int (Value));
+    end Set_Line_Spacing;
 
 
 

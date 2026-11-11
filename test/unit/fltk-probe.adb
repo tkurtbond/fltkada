@@ -92,6 +92,17 @@ package body FLTK.Probe is
         return C.int;
     pragma Import (C, fl_probe_grabbed, "fl_probe_grabbed");
 
+    function fl_probe_shown_windows
+        return C.int;
+    pragma Import (C, fl_probe_shown_windows, "fl_probe_shown_windows");
+
+    type Int_Array is array (1 .. 4) of C.int with Convention => C;
+
+    function fl_probe_grab
+           (R : out Int_Array)
+        return C.int;
+    pragma Import (C, fl_probe_grab, "fl_probe_grab");
+
     function fl_probe_modal_title
         return CS.chars_ptr;
     pragma Import (C, fl_probe_modal_title, "fl_probe_modal_title");
@@ -143,6 +154,11 @@ package body FLTK.Probe is
             N   : in     C.int)
         return C.int;
     pragma Import (C, fl_probe_x11_title, "fl_probe_x11_title");
+
+    function fl_probe_icon_words
+           (W : in Storage.Integer_Address)
+        return C.int;
+    pragma Import (C, fl_probe_icon_words, "fl_probe_icon_words");
 
     procedure fl_probe_printer_uses_gtk
            (On : in C.int);
@@ -441,6 +457,27 @@ package body FLTK.Probe is
     end Grabbed;
 
 
+    function Shown_Windows
+        return Natural is
+    begin
+        return Natural (fl_probe_shown_windows);
+    end Shown_Windows;
+
+
+    procedure Get_Grab
+           (Found      :    out Boolean;
+            X, Y, W, H :    out Integer)
+    is
+        R : Int_Array := (others => 0);
+    begin
+        Found := fl_probe_grab (R) /= 0;
+        X := Integer (R (1));
+        Y := Integer (R (2));
+        W := Integer (R (3));
+        H := Integer (R (4));
+    end Get_Grab;
+
+
     function Modal_Title
         return String is
     begin
@@ -544,6 +581,14 @@ package body FLTK.Probe is
         end if;
         return C.To_Ada (Buf);
     end X11_Title;
+
+
+    function Icon_Words
+           (Item : in FLTK.Widgets.Groups.Windows.Window'Class)
+        return Integer is
+    begin
+        return Integer (fl_probe_icon_words (Ptr (Item)));
+    end Icon_Words;
 
 
     procedure Set_Printer_Uses_GTK

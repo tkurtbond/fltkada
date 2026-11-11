@@ -471,6 +471,21 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
     --  Callback Hooks  --
     ----------------------
 
+    --  The function of the newest binding of Key in List, or null.
+    function Newest
+           (List : in Key_Binding_Vectors.Vector;
+            Key  : in Key_Combo)
+        return Key_Func is
+    begin
+        for I in reverse 1 .. Integer (List.Length) loop
+            if List.Element (I).Key = Key and List.Element (I).Func /= null then
+                return List.Element (I).Func;
+            end if;
+        end loop;
+        return null;
+    end Newest;
+
+
     function Key_Func_Hook
            (K : in Interfaces.C.int;
             E : in Storage.Integer_Address)
@@ -490,6 +505,9 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
         --  give you the key code, but if a default key function is used instead it
         --  will give you the first character in the textual representation, which
         --  is not ideal. This is why we have to grab the Last_Key manually.
+
+        Func    : Key_Func;
+        Default : Default_Key_Func;
     begin
         --  Checked here, and not by a handler around the call, so that the
         --  program's own exceptions aren't taken for FLTK's (FLTKAda-BUGS.md 45).
@@ -501,20 +519,21 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
             return 0;
         end if;
         Ada_Editor := Editor_Convert.To_Pointer (Storage.To_Address (Editor_Ptr));
-        for B of Global_Key_Bindings loop
-            if B.Key = Ada_Key and B.Func /= null then
-                B.Func (Ada_Editor.all);
-                return Event_Outcome'Pos (Handled);
-            end if;
-        end loop;
-        for B of Ada_Editor.Bindings loop
-            if B.Key = Ada_Key then
-                B.Func (Ada_Editor.all);
-                return Event_Outcome'Pos (Handled);
-            end if;
-        end loop;
-        if Ada_Editor.Default_Func /= null and Extra_Keys = Mod_None then
-            Ada_Editor.Default_Func (Ada_Editor.all, Ada_Key);
+        --  The global bindings come first, and the newest binding of a key
+        --  wins, as in FLTK (FLTKAda-BUGS.md 128).  The function is found
+        --  first and called after, so that it may change the bindings or
+        --  free the editor (FLTKAda-BUGS.md 129).
+        Func := Newest (Global_Key_Bindings, Ada_Key);
+        if Func = null then
+            Func := Newest (Ada_Editor.Bindings, Ada_Key);
+        end if;
+        if Func /= null then
+            Func (Ada_Editor.all);
+            return Event_Outcome'Pos (Handled);
+        end if;
+        Default := Ada_Editor.Default_Func;
+        if Default /= null and Extra_Keys = Mod_None then
+            Default (Ada_Editor.all, Ada_Key);
             return Event_Outcome'Pos (Handled);
         end if;
         return Event_Outcome'Pos (Not_Handled);
@@ -1121,12 +1140,7 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
             Key  : in Key_Combo)
         return Key_Func is
     begin
-        for I in 1 .. Integer (This.Bindings.Length) loop
-            if This.Bindings.Element (I).Key = Key then
-                return This.Bindings.Element (I).Func;
-            end if;
-        end loop;
-        return null;
+        return Newest (This.Bindings, Key);
     end Get_Bound_Key_Function;
 
 
@@ -1149,6 +1163,7 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
         for I in reverse 1 .. Integer (This.Bindings.Length) loop
             if This.Bindings.Element (I).Key = Key then
                 This.Bindings.Delete (I);
+                return;
             end if;
         end loop;
     end Remove_Key_Binding;

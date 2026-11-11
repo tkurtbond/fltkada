@@ -309,6 +309,25 @@ package body FLTK.Tree_Items is
 
 
     -----------------------
+    --  Item Validation  --
+    -----------------------
+
+    --  Every Fl_Tree_Item call dereferences the item, so a null one would
+    --  crash; bug 127.
+    function Live
+           (This : in Tree_Item)
+        return Storage.Integer_Address is
+    begin
+        if This.Void_Ptr = Null_Pointer then
+            raise Constraint_Error with "No_Tree_Item";
+        end if;
+        return This.Void_Ptr;
+    end Live;
+
+
+
+
+    -----------------------
     --  API Subprograms  --
     -----------------------
 
@@ -366,7 +385,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item)
         return String
     is
-        Ptr : constant Interfaces.C.Strings.chars_ptr := fl_tree_item_get_label (This.Void_Ptr);
+        Ptr : constant Interfaces.C.Strings.chars_ptr := fl_tree_item_get_label (Live (This));
     begin
         if Ptr = Interfaces.C.Strings.Null_Ptr then
             return "";
@@ -380,7 +399,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item;
             Text : in String) is
     begin
-        fl_tree_item_set_label (This.Void_Ptr, Interfaces.C.To_C (Text));
+        fl_tree_item_set_label (Live (This), Interfaces.C.To_C (Text));
     end Set_Label;
 
 
@@ -388,7 +407,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item)
         return Font_Kind is
     begin
-        return Font_Kind (fl_tree_item_get_labelfont (This.Void_Ptr));
+        return Font_Kind (fl_tree_item_get_labelfont (Live (This)));
     end Get_Label_Font;
 
 
@@ -396,7 +415,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item;
             Font : in Font_Kind) is
     begin
-        fl_tree_item_set_labelfont (This.Void_Ptr, To_C (Font));
+        fl_tree_item_set_labelfont (Live (This), To_C (Font));
     end Set_Label_Font;
 
 
@@ -404,7 +423,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item)
         return Font_Size is
     begin
-        return Font_Size (fl_tree_item_get_labelsize (This.Void_Ptr));
+        return Font_Size (fl_tree_item_get_labelsize (Live (This)));
     end Get_Label_Size;
 
 
@@ -412,14 +431,14 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item;
             Size : in Font_Size) is
     begin
-        fl_tree_item_set_labelsize (This.Void_Ptr, Interfaces.C.int (Size));
+        fl_tree_item_set_labelsize (Live (This), Interfaces.C.int (Size));
     end Set_Label_Size;
 
     function Get_Label_FG_Color
            (This : in Tree_Item)
         return Color is
     begin
-        return Color (fl_tree_item_get_labelfgcolor (This.Void_Ptr));
+        return Color (fl_tree_item_get_labelfgcolor (Live (This)));
     end Get_Label_FG_Color;
 
 
@@ -427,7 +446,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item;
             Hue  : in Color) is
     begin
-        fl_tree_item_set_labelfgcolor (This.Void_Ptr, Interfaces.C.unsigned (Hue));
+        fl_tree_item_set_labelfgcolor (Live (This), Interfaces.C.unsigned (Hue));
     end Set_Label_FG_Color;
 
 
@@ -435,7 +454,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item)
         return Color is
     begin
-        return Color (fl_tree_item_get_labelbgcolor (This.Void_Ptr));
+        return Color (fl_tree_item_get_labelbgcolor (Live (This)));
     end Get_Label_BG_Color;
 
 
@@ -443,7 +462,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item;
             Hue  : in Color) is
     begin
-        fl_tree_item_set_labelbgcolor (This.Void_Ptr, Interfaces.C.unsigned (Hue));
+        fl_tree_item_set_labelbgcolor (Live (This), Interfaces.C.unsigned (Hue));
     end Set_Label_BG_Color;
 
 
@@ -451,7 +470,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item)
         return Integer is
     begin
-        return Integer (fl_tree_item_label_x (This.Void_Ptr));
+        return Integer (fl_tree_item_label_x (Live (This)));
     end Label_X;
 
 
@@ -459,7 +478,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item)
         return Integer is
     begin
-        return Integer (fl_tree_item_label_y (This.Void_Ptr));
+        return Integer (fl_tree_item_label_y (Live (This)));
     end Label_Y;
 
 
@@ -467,7 +486,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item)
         return Integer is
     begin
-        return Integer (fl_tree_item_label_w (This.Void_Ptr));
+        return Integer (fl_tree_item_label_w (Live (This)));
     end Label_W;
 
 
@@ -475,7 +494,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item)
         return Integer is
     begin
-        return Integer (fl_tree_item_label_h (This.Void_Ptr));
+        return Integer (fl_tree_item_label_h (Live (This)));
     end Label_H;
 
 
@@ -487,7 +506,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item)
         return Boolean is
     begin
-        return fl_tree_item_is_open (This.Void_Ptr) /= 0;
+        return fl_tree_item_is_open (Live (This)) /= 0;
     end Is_Open;
 
 
@@ -495,7 +514,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item)
         return Boolean is
     begin
-        return fl_tree_item_is_selected (This.Void_Ptr) /= 0;
+        return fl_tree_item_is_selected (Live (This)) /= 0;
     end Is_Selected;
 
 
@@ -503,21 +522,21 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item)
         return Boolean is
     begin
-        return fl_tree_item_is_active (This.Void_Ptr) /= 0;
+        return fl_tree_item_is_active (Live (This)) /= 0;
     end Is_Active;
 
 
     procedure Activate
            (This : in Tree_Item) is
     begin
-        fl_tree_item_activate (This.Void_Ptr, 1);
+        fl_tree_item_activate (Live (This), 1);
     end Activate;
 
 
     procedure Deactivate
            (This : in Tree_Item) is
     begin
-        fl_tree_item_activate (This.Void_Ptr, 0);
+        fl_tree_item_activate (Live (This), 0);
     end Deactivate;
 
 
@@ -525,7 +544,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item)
         return Boolean is
     begin
-        return fl_tree_item_is_visible (This.Void_Ptr) /= 0;
+        return fl_tree_item_is_visible (Live (This)) /= 0;
     end Is_Visible;
 
 
@@ -533,7 +552,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item)
         return Boolean is
     begin
-        return fl_tree_item_is_visible_r (This.Void_Ptr) /= 0;
+        return fl_tree_item_is_visible_r (Live (This)) /= 0;
     end Is_Tree_Visible;
 
 
@@ -541,7 +560,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item)
         return Boolean is
     begin
-        return fl_tree_item_is_root (This.Void_Ptr) /= 0;
+        return fl_tree_item_is_root (Live (This)) /= 0;
     end Is_Root;
 
 
@@ -553,7 +572,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item)
         return Boolean is
     begin
-        return fl_tree_item_children (This.Void_Ptr) > 0;
+        return fl_tree_item_children (Live (This)) > 0;
     end Has_Children;
 
 
@@ -561,7 +580,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item)
         return Natural is
     begin
-        return Natural (fl_tree_item_children (This.Void_Ptr));
+        return Natural (fl_tree_item_children (Live (This)));
     end Number_Of_Children;
 
 
@@ -573,7 +592,7 @@ package body FLTK.Tree_Items is
         if Place > Number_Of_Children (This) then
             raise Constraint_Error;
         end if;
-        return (Void_Ptr => fl_tree_item_child (This.Void_Ptr, Interfaces.C.int (Place - 1)));
+        return (Void_Ptr => fl_tree_item_child (Live (This), Interfaces.C.int (Place - 1)));
     end Child;
 
 
@@ -581,7 +600,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item)
         return Tree_Item is
     begin
-        return (Void_Ptr => fl_tree_item_parent (This.Void_Ptr));
+        return (Void_Ptr => fl_tree_item_parent (Live (This)));
     end Parent;
 
 
@@ -589,7 +608,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item)
         return Natural is
     begin
-        return Natural (fl_tree_item_depth (This.Void_Ptr));
+        return Natural (fl_tree_item_depth (Live (This)));
     end Depth;
 
 
@@ -597,7 +616,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item)
         return Tree_Item is
     begin
-        return (Void_Ptr => fl_tree_item_next (This.Void_Ptr));
+        return (Void_Ptr => fl_tree_item_next (Live (This)));
     end Next;
 
 
@@ -605,7 +624,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item)
         return Tree_Item is
     begin
-        return (Void_Ptr => fl_tree_item_prev (This.Void_Ptr));
+        return (Void_Ptr => fl_tree_item_prev (Live (This)));
     end Prev;
 
 
@@ -618,7 +637,7 @@ package body FLTK.Tree_Items is
             Target : in Tree_Item)
         return Boolean is
     begin
-        return fl_tree_item_move_above (This.Void_Ptr, Target.Void_Ptr) = 0;
+        return fl_tree_item_move_above (Live (This), Live (Target)) = 0;
     end Move_Above;
 
 
@@ -627,7 +646,7 @@ package body FLTK.Tree_Items is
             Target : in Tree_Item)
         return Boolean is
     begin
-        return fl_tree_item_move_below (This.Void_Ptr, Target.Void_Ptr) = 0;
+        return fl_tree_item_move_below (Live (This), Live (Target)) = 0;
     end Move_Below;
 
 
@@ -639,7 +658,7 @@ package body FLTK.Tree_Items is
     begin
         return
             fl_tree_item_move_into
-               (This.Void_Ptr, Target.Void_Ptr, Interfaces.C.int (Place)) = 0;
+               (Live (This), Live (Target), Interfaces.C.int (Place)) = 0;
     end Move_Into;
 
 
@@ -650,7 +669,7 @@ package body FLTK.Tree_Items is
     begin
         return
            (Void_Ptr =>
-                fl_tree_item_deparent (This.Void_Ptr, Interfaces.C.int (Place - 1)));
+                fl_tree_item_deparent (Live (This), Interfaces.C.int (Place - 1)));
     end Deparent;
 
 
@@ -662,7 +681,7 @@ package body FLTK.Tree_Items is
     begin
         return
             fl_tree_item_reparent
-               (This.Void_Ptr, Child_Item.Void_Ptr, Interfaces.C.int (Place)) = 0;
+               (Live (This), Live (Child_Item), Interfaces.C.int (Place)) = 0;
     end Reparent;
 
 
@@ -671,7 +690,7 @@ package body FLTK.Tree_Items is
             First, Second : in Tree_Item)
         return Boolean is
     begin
-        return fl_tree_item_swap_children (This.Void_Ptr, First.Void_Ptr, Second.Void_Ptr) = 0;
+        return fl_tree_item_swap_children (Live (This), Live (First), Live (Second)) = 0;
     end Swap_Children;
 
 
@@ -683,7 +702,7 @@ package body FLTK.Tree_Items is
             raise Constraint_Error;
         end if;
         fl_tree_item_swap_children2
-           (This.Void_Ptr,
+           (Live (This),
             Interfaces.C.int (First) - 1,
             Interfaces.C.int (Second) - 1);
     end Swap_Children;
@@ -694,9 +713,9 @@ package body FLTK.Tree_Items is
             New_Item : in Tree_Item)
         return Tree_Item
     is
-        Tree   : constant Storage.Integer_Address := fl_tree_item_tree (This.Void_Ptr);
+        Tree   : constant Storage.Integer_Address := fl_tree_item_tree (Live (This));
         Result : constant Tree_Item :=
-           (Void_Ptr => fl_tree_item_replace (This.Void_Ptr, New_Item.Void_Ptr));
+           (Void_Ptr => fl_tree_item_replace (Live (This), Live (New_Item)));
     begin
         if Tree /= Null_Pointer then
             FLTK.Tree_Icons.Drop_Unused (Tree);
@@ -714,7 +733,7 @@ package body FLTK.Tree_Items is
             W    : in out FLTK.Widgets.Widget'Class) is
     begin
         fl_tree_item_set_widget
-           (This.Void_Ptr,
+           (Live (This),
             Storage.To_Integer (FLTK.Widgets.Address_Of (W)));
     end Set_Widget;
 
@@ -723,7 +742,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item)
         return Boolean is
     begin
-        return fl_tree_item_get_widget (This.Void_Ptr) /= Null_Pointer;
+        return fl_tree_item_get_widget (Live (This)) /= Null_Pointer;
     end Has_Widget;
 
 
@@ -731,7 +750,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item)
         return access FLTK.Widgets.Widget'Class
     is
-        Raw : constant Storage.Integer_Address := fl_tree_item_get_widget (This.Void_Ptr);
+        Raw : constant Storage.Integer_Address := fl_tree_item_get_widget (Live (This));
     begin
         if Raw = Null_Pointer then
             return null;
@@ -752,7 +771,7 @@ package body FLTK.Tree_Items is
             Pic    : in FLTK.Images.Image'Class;
             Deicon : in Boolean)
     is
-        Tree : constant Storage.Integer_Address := fl_tree_item_tree (This.Void_Ptr);
+        Tree : constant Storage.Integer_Address := fl_tree_item_tree (Live (This));
         Ptr  : Storage.Integer_Address := Null_Pointer;
     begin
         if Tree = Null_Pointer then
@@ -760,12 +779,12 @@ package body FLTK.Tree_Items is
         end if;
         if Wrapper (Pic).Void_Ptr /= Null_Pointer then
             Ptr := FLTK.Tree_Icons.Hold
-               (Tree, Pic, Kept => fl_tree_item_in_tree (This.Void_Ptr) = 0);
+               (Tree, Pic, Kept => fl_tree_item_in_tree (Live (This)) = 0);
         end if;
         if Deicon then
-            fl_tree_item_set_userdeicon (This.Void_Ptr, Ptr);
+            fl_tree_item_set_userdeicon (Live (This), Ptr);
         else
-            fl_tree_item_set_usericon (This.Void_Ptr, Ptr);
+            fl_tree_item_set_usericon (Live (This), Ptr);
         end if;
         FLTK.Tree_Icons.Drop_Unused (Tree);
     end Set_Icon;
@@ -775,12 +794,12 @@ package body FLTK.Tree_Items is
            (This   : in Tree_Item;
             Deicon : in Boolean)
     is
-        Tree : constant Storage.Integer_Address := fl_tree_item_tree (This.Void_Ptr);
+        Tree : constant Storage.Integer_Address := fl_tree_item_tree (Live (This));
     begin
         if Deicon then
-            fl_tree_item_set_userdeicon (This.Void_Ptr, Null_Pointer);
+            fl_tree_item_set_userdeicon (Live (This), Null_Pointer);
         else
-            fl_tree_item_set_usericon (This.Void_Ptr, Null_Pointer);
+            fl_tree_item_set_usericon (Live (This), Null_Pointer);
         end if;
         if Tree /= Null_Pointer then
             FLTK.Tree_Icons.Drop_Unused (Tree);
@@ -800,7 +819,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item)
         return Boolean is
     begin
-        return fl_tree_item_get_usericon (This.Void_Ptr) /= Null_Pointer;
+        return fl_tree_item_get_usericon (Live (This)) /= Null_Pointer;
     end Has_User_Icon;
 
 
@@ -816,7 +835,7 @@ package body FLTK.Tree_Items is
         return access FLTK.Images.Image'Class is
     begin
         return FLTK.Tree_Icons.Find
-           (fl_tree_item_tree (This.Void_Ptr), fl_tree_item_get_usericon (This.Void_Ptr));
+           (fl_tree_item_tree (Live (This)), fl_tree_item_get_usericon (Live (This)));
     end Get_User_Icon;
 
 
@@ -832,7 +851,7 @@ package body FLTK.Tree_Items is
            (This : in Tree_Item)
         return Boolean is
     begin
-        return fl_tree_item_get_userdeicon (This.Void_Ptr) /= Null_Pointer;
+        return fl_tree_item_get_userdeicon (Live (This)) /= Null_Pointer;
     end Has_User_Deicon;
 
 
@@ -848,7 +867,7 @@ package body FLTK.Tree_Items is
         return access FLTK.Images.Image'Class is
     begin
         return FLTK.Tree_Icons.Find
-           (fl_tree_item_tree (This.Void_Ptr), fl_tree_item_get_userdeicon (This.Void_Ptr));
+           (fl_tree_item_tree (Live (This)), fl_tree_item_get_userdeicon (Live (This)));
     end Get_User_Deicon;
 
 

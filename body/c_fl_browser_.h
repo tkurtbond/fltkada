@@ -51,6 +51,8 @@ extern "C" void fl_abstract_browser_scrollbar_left(ABSTRACTBROWSER b);
 extern "C" void fl_abstract_browser_scrollbar_right(ABSTRACTBROWSER b);
 extern "C" int fl_abstract_browser_get_scrollbar_size(ABSTRACTBROWSER b);
 extern "C" void fl_abstract_browser_set_scrollbar_size(ABSTRACTBROWSER b, int s);
+extern "C" int fl_abstract_browser_get_linespacing(ABSTRACTBROWSER b);
+extern "C" void fl_abstract_browser_set_linespacing(ABSTRACTBROWSER b, int s);
 
 
 extern "C" unsigned int fl_abstract_browser_get_textcolor(ABSTRACTBROWSER b);

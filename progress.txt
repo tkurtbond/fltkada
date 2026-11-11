@@ -32,6 +32,7 @@ FLTK.Errors
 FLTK.Events
 FLTK.File_Choosers
 FLTK.Filenames
+FLTK.GLU (glu.h, in fltkada_glu.gpr, built where pkg-config finds glu)
 FLTK.GLUT
 FLTK.Help_Dialogs
 FLTK.Images
@@ -578,6 +579,21 @@ raises when FLTK couldn't make the directory (pofltk 157); Set_Tab_Mode can
 be set twice (FLTK-issues.md F35); Tooltips.Enter_Area waits for its
 window's expose on Wayland (pofltk 28)
 
+Phase 20 (PLAN.md), API that pofltk's ports needed: Buttons Is_Compact and
+Set_Compact; Windows Maximize, Un_Maximize, Is_Maximized, Free_Position,
+Has_Size_Range, Get_Size_Range, Get_Screen_Num and Set_Screen_Num; Widgets
+label margins and Label_Image_Spacing; Asks Text_Input and Password with a
+Max_Length; Static.Set_System_Scheme; Scrolls Get/Set_Scrollbar_Alignment;
+Built_Version, Built_API_Version and Built_ABI_Version; names.h as
+Event_Name, Font_Constant_Name and Reason_Name; Trees Select_Toggle,
+First/Last/Next/Prev_Selected, Is_Displayed and the Show_Item calls, and a
+null item raises (FLTKAda-BUGS.md 127); Inputs.Text cut/copy/paste menu
+texts; GL_Window Draw_Begin, Draw_Window and Draw_End; Browsers
+Get/Set_Line_Spacing, measuring again (pofltk 159); Terminals' ring and
+cells (Ring_Rows .. Display_End, Get_Style_Flags, Cell_Text ..
+Cell_Back_Color); GLUT's eighteen Solid_/Wire_ shapes, counts checked (F36); FLTK.GLU, an
+optional library (fltkada_glu.gpr) of GLU's view matrices and quadrics
+
 
 
 Incomplete APIs:
@@ -586,14 +602,16 @@ FLTK
 FLTK.Devices.Graphics
 FLTK.Static (Option lacks FNFC_Uses_Zenity, FNFC_Uses_Kdialog,
     Printer_Uses_GTK, Show_Scaling and Simple_Zoom_Shortcut)
-FLTK.GLUT (the geometric models glutWire*/glutSolid* are not bound, as
-    pofltk doesn't bind them; the glut_menu variable is Get_Menu/Set_Menu,
+FLTK.GLUT (the glut_menu variable is Get_Menu/Set_Menu,
     and glut_window is Glut_Window's Current_Window)
 FLTK.Images.Tiled (Tile returns a non-owning view of the tiled image)
 FLTK.Widgets.Groups.Terminals
     Nested helper classes Utf8Char, RingBuffer, CharStyle, Cursor, EscapeSeq,
     Margin and Selection are not bound.
-    Protected internals not bound: u8c_* row/char accessors, scroll,
+    The ring's numbers and its cells are read through Ring_Rows,
+    Ring_Columns, Ring_Offset, History_Start/End, Display_Start/End,
+    Get_Style_Flags and Cell_Text/Attributes/Fore_Color/Back_Color.
+    Protected internals not bound: the other u8c_* accessors, scroll,
     insert/delete rows/chars, clear_eol/clear_sod/etc,
     handle_unknown_char, draw_row*/draw_buff, walk_selection, select_word/line,
     handle_selection*, is_redraw_style. (The cursor moves cursor_up/down/

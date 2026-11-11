@@ -676,6 +676,13 @@ package FLTK.Static is
     procedure Set_Scheme
            (To : in String);
 
+    --  Fl::scheme (NULL): sets the scheme the environment asks for.  That
+    --  is the environment variable FLTK_SCHEME, then on X11 only the X
+    --  resource <class>.scheme (Fl_get_system_colors.cxx:196, pofltk 156).
+    --  Set_Scheme sets FLTK_SCHEME too, so call this before any Set_Scheme
+    --  to get what the user asked for.
+    procedure Set_System_Scheme;
+
     function Is_Scheme
            (Scheme : in String)
         return Boolean;
@@ -869,6 +876,7 @@ private
 
     pragma Inline (Get_Scheme);
     pragma Inline (Set_Scheme);
+    pragma Inline (Set_System_Scheme);
     pragma Inline (Is_Scheme);
     pragma Inline (Reload_Scheme);
 

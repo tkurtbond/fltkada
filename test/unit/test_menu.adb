@@ -63,6 +63,10 @@ procedure Test_Menu is
     Opened, Quitted, Bar_Calls, Cleared, Abouts : Natural := 0;
     Last : System.Address := System.Null_Address;
     Pick_Popup : Boolean;
+    Enter_Only : Boolean := False;
+    Grabbed    : Boolean := False;
+    GX, GY     : Integer := 0;
+    GW, GH     : Integer := 0;
     Ok : Boolean;
 
     File : constant Mnu.Index := 1;
@@ -103,7 +107,11 @@ procedure Test_Menu is
     --  Escape to close it.
     procedure Answer is
     begin
-        if Pick_Popup then
+        Prb.Get_Grab (Grabbed, GX, GY, GW, GH);
+        if Enter_Only then
+            Enter_Only := False;
+            Ok := Prb.Handle_Key (Window, Keydown, Enter_Key, Mod_None, (1 => ASCII.CR));
+        elsif Pick_Popup then
             Ok := Prb.Handle_Key (Window, Keydown, Down_Key);
             Ok := Prb.Handle_Key (Window, Keydown, Enter_Key, Mod_None, (1 => ASCII.CR));
         else
@@ -302,6 +310,33 @@ begin
             "Menu Popup returns the item, without its callback or toggling it");
         Pick (Toggler, I);
         Check (Opened = 4 and Is_On (Toggler, 1), "Picked then does both");
+
+        --  At a place, with a title, opened on an item, and pulled down
+        --  under a rectangle (pofltk's TestMenus).
+        Pick_Popup := True;
+        FLTK.Static.Add_Timeout (0.2, Answer'Unrestricted_Access);
+        I := Mnu.Menu (Button).Popup (40, 50);
+        Check (I = 1, "Popup at a place returns the item picked");
+        Check (Grabbed and GX = Window.Get_X + 40 and GY = Window.Get_Y + 50,
+            "at the place given, in the window's coordinates");
+        FLTK.Static.Add_Timeout (0.2, Answer'Unrestricted_Access);
+        I := Mnu.Menu (Button).Popup (40, 50, "Title");
+        Check (I = 1, "with a title");
+        Enter_Only := True;
+        FLTK.Static.Add_Timeout (0.2, Answer'Unrestricted_Access);
+        I := Mnu.Menu (Button).Popup (40, 50, Initial => 2);
+        Check (I = 2, "opened on an item");
+        Pick_Popup := False;
+        FLTK.Static.Add_Timeout (0.2, Answer'Unrestricted_Access);
+        Check (Mnu.Menu (Button).Popup (40, 50) = Mnu.No_Index, "or No_Index, closed");
+        Pick_Popup := True;
+        Grabbed := False;
+        FLTK.Static.Add_Timeout (0.2, Answer'Unrestricted_Access);
+        I := Mnu.Menu (Button).Pulldown (30, 60, 100, 20);
+        Check (I = 1, "Pulldown returns the item picked");
+        Check (Grabbed and GX = Window.Get_X + 30 and GY = Window.Get_Y + 80,
+            "below the rectangle given");
+        Check (Opened = 4, "neither calling the item's callback");
         Window.Hide;
     end if;
 

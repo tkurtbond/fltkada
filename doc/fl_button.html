@@ -111,6 +111,28 @@ int clear();
 
   <tr>
 <td><pre>
+uchar compact();
+</pre></td>
+<td><pre>
+function Is_Compact
+       (This : in Button)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void compact(uchar v);
+</pre></td>
+<td><pre>
+procedure Set_Compact
+       (This : in out Button;
+        To   : in     Boolean);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 Fl_Boxtype down_box() const;
 </pre></td>
 <td><pre>

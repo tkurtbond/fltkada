@@ -56,6 +56,10 @@ extern "C" void fl_tree_select(TREE t, TREEITEM item);
 extern "C" void fl_tree_deselect(TREE t, TREEITEM item);
 extern "C" int fl_tree_select_all(TREE t);
 extern "C" int fl_tree_deselect_all(TREE t);
+extern "C" void fl_tree_select_toggle(TREE t, TREEITEM item);
+extern "C" TREEITEM fl_tree_first_selected(TREE t);
+extern "C" TREEITEM fl_tree_last_selected(TREE t);
+extern "C" TREEITEM fl_tree_next_selected(TREE t, TREEITEM item, int up);
 
 
 extern "C" int fl_tree_selected_count(TREE t);
@@ -112,6 +116,12 @@ extern "C" int fl_tree_get_hposition(TREE t);
 extern "C" void fl_tree_set_hposition(TREE t, int pos);
 extern "C" int fl_tree_get_scrollbar_size(TREE t);
 extern "C" void fl_tree_set_scrollbar_size(TREE t, int size);
+extern "C" int fl_tree_displayed(TREE t, TREEITEM item);
+extern "C" void fl_tree_show_item(TREE t, TREEITEM item);
+extern "C" void fl_tree_show_item_offset(TREE t, TREEITEM item, int yoff);
+extern "C" void fl_tree_show_item_top(TREE t, TREEITEM item);
+extern "C" void fl_tree_show_item_middle(TREE t, TREEITEM item);
+extern "C" void fl_tree_show_item_bottom(TREE t, TREEITEM item);
 
 
 extern "C" void fl_tree_show_self(TREE t);

@@ -47,6 +47,11 @@
   </tr>
 
   <tr>
+    <td>Fl_Terminal::CharFlags (FG_XTERM, BG_XTERM)</td>
+    <td>Style_Flags</td>
+  </tr>
+
+  <tr>
     <td>Fl_Terminal::OutFlags</td>
     <td>Output_Translation</td>
   </tr>
@@ -1288,6 +1293,18 @@ function Get_Text_Size
 
   <tr>
 <td><pre>
+CharStyle&amp; current_style() const;
+//  its charflags()
+</pre></td>
+<td><pre>
+function Get_Style_Flags
+       (This : in Terminal)
+    return Style_Flags;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 void cursor_col(int col);
 </pre></td>
 <td><pre>
@@ -1310,6 +1327,28 @@ procedure Set_Cursor_Row
 
   <tr>
 <td><pre>
+int disp_erow() const;
+</pre></td>
+<td><pre>
+function Display_End
+       (This : in Terminal)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int disp_srow() const;
+</pre></td>
+<td><pre>
+function Display_Start
+       (This : in Terminal)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 bool get_selection(int &amp;srow, int &amp;scol, int &amp;erow, int &amp;ecol) const;
 </pre></td>
 <td><pre>
@@ -1320,6 +1359,113 @@ function Get_Selection
         End_Row      :    out Integer;
         End_Column   :    out Integer)
     return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int hist_erow() const;
+</pre></td>
+<td><pre>
+function History_End
+       (This : in Terminal)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int hist_srow() const;
+</pre></td>
+<td><pre>
+function History_Start
+       (This : in Terminal)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int offset() const;
+</pre></td>
+<td><pre>
+function Ring_Offset
+       (This : in Terminal)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int ring_cols() const;
+</pre></td>
+<td><pre>
+function Ring_Columns
+       (This : in Terminal)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int ring_rows() const;
+</pre></td>
+<td><pre>
+function Ring_Rows
+       (This : in Terminal)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const Utf8Char* u8c_ring_row(int grow) const;
+//  [col].text_utf8(), length()
+</pre></td>
+<td><pre>
+function Cell_Text
+       (This        : in Terminal;
+        Row, Column : in Natural)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const Utf8Char* u8c_ring_row(int grow) const;
+//  [col].attrib()
+</pre></td>
+<td><pre>
+function Cell_Attributes
+       (This        : in Terminal;
+        Row, Column : in Natural)
+    return Text_Attributes;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const Utf8Char* u8c_ring_row(int grow) const;
+//  [col].fgcolor()
+</pre></td>
+<td><pre>
+function Cell_Fore_Color
+       (This        : in Terminal;
+        Row, Column : in Natural)
+    return Color;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const Utf8Char* u8c_ring_row(int grow) const;
+//  [col].bgcolor()
+</pre></td>
+<td><pre>
+function Cell_Back_Color
+       (This        : in Terminal;
+        Row, Column : in Natural)
+    return Color;
 </pre></td>
   </tr>
 

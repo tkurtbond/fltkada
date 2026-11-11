@@ -85,6 +85,17 @@ package FLTK.Widgets.Buttons is
            (This : in out Button;
             To   : in     Box_Kind);
 
+    --  A compact button, a key in a keypad, is drawn with its parent's
+    --  box, clipped to the button, and a divider where it meets another
+    --  key (Fl_Button::compact).
+    function Is_Compact
+           (This : in Button)
+        return Boolean;
+
+    procedure Set_Compact
+           (This : in out Button;
+            To   : in     Boolean);
+
     function Get_Shortcut
            (This : in Button)
         return Key_Combo;
@@ -152,6 +163,8 @@ private
     pragma Inline (Set_Kind);
     pragma Inline (Get_Down_Box);
     pragma Inline (Set_Down_Box);
+    pragma Inline (Is_Compact);
+    pragma Inline (Set_Compact);
     pragma Inline (Get_Shortcut);
     pragma Inline (Set_Shortcut);
 

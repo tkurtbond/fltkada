@@ -277,6 +277,23 @@ int fl_tree_deselect_all(TREE t) {
     return static_cast<Fl_Tree*>(t)->deselect_all(0);
 }
 
+void fl_tree_select_toggle(TREE t, TREEITEM item) {
+    static_cast<Fl_Tree*>(t)->select_toggle(static_cast<Fl_Tree_Item*>(item));
+}
+
+TREEITEM fl_tree_first_selected(TREE t) {
+    return static_cast<Fl_Tree*>(t)->first_selected_item();
+}
+
+TREEITEM fl_tree_last_selected(TREE t) {
+    return static_cast<Fl_Tree*>(t)->last_selected_item();
+}
+
+TREEITEM fl_tree_next_selected(TREE t, TREEITEM item, int up) {
+    return static_cast<Fl_Tree*>(t)->next_selected_item
+        (static_cast<Fl_Tree_Item*>(item), up ? FL_Up : FL_Down);
+}
+
 
 
 
@@ -511,6 +528,30 @@ int fl_tree_get_scrollbar_size(TREE t) {
 
 void fl_tree_set_scrollbar_size(TREE t, int size) {
     static_cast<Fl_Tree*>(t)->scrollbar_size(size);
+}
+
+int fl_tree_displayed(TREE t, TREEITEM item) {
+    return static_cast<Fl_Tree*>(t)->displayed(static_cast<Fl_Tree_Item*>(item));
+}
+
+void fl_tree_show_item(TREE t, TREEITEM item) {
+    static_cast<Fl_Tree*>(t)->show_item(static_cast<Fl_Tree_Item*>(item));
+}
+
+void fl_tree_show_item_offset(TREE t, TREEITEM item, int yoff) {
+    static_cast<Fl_Tree*>(t)->show_item(static_cast<Fl_Tree_Item*>(item), yoff);
+}
+
+void fl_tree_show_item_top(TREE t, TREEITEM item) {
+    static_cast<Fl_Tree*>(t)->show_item_top(static_cast<Fl_Tree_Item*>(item));
+}
+
+void fl_tree_show_item_middle(TREE t, TREEITEM item) {
+    static_cast<Fl_Tree*>(t)->show_item_middle(static_cast<Fl_Tree_Item*>(item));
+}
+
+void fl_tree_show_item_bottom(TREE t, TREEITEM item) {
+    static_cast<Fl_Tree*>(t)->show_item_bottom(static_cast<Fl_Tree_Item*>(item));
 }
 
 

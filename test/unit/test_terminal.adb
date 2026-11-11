@@ -431,6 +431,110 @@ procedure Test_Terminal is
     end Test_Selection;
 
 
+    --  FLTK's ring:  the history and the screen, and their cells.
+    procedure Test_Ring is
+    begin
+        declare
+            Window : Win.Window := Win.Forge.Create (0, 0, 400, 300, "ring");
+            Term   : Trm.Terminal := Trm.Forge.Create (Window, 0, 0, 400, 300);
+            Rows, Off : Natural;
+            Raised    : Boolean := False;
+            Flags     : Trm.Style_Flags;
+        begin
+            Term.Set_History_Rows (5);
+            Rows := Term.Ring_Rows;
+            Check (Rows = Term.Get_History_Rows + Term.Get_Display_Rows,
+                "the ring is the history and the screen");
+            Check (Term.Ring_Columns = Term.Get_Display_Columns, "as wide as the screen");
+            Off := Term.Ring_Offset;
+            Check (Term.History_Start = Off, "the history starts at the offset");
+            Check (Term.History_End = (Off + 4) mod Rows, "and has its rows");
+            Check (Term.Display_Start = (Off + 5) mod Rows, "the screen follows it");
+            Check (Term.Display_End = (Off + Rows - 1) mod Rows, "to the ring's end");
+            Term.Set_Text_Fore_Color (Red_Color);
+            Term.Set_Text_Back_Color (Blue_Color);
+            Term.Set_Text_Attrib (Trm.Attrib_Bold);
+            Term.Append ("a");
+            Term.Set_Text_Attrib (Trm.Attrib_Normal);
+            Term.Set_Text_Fore_Color (Green_Color);
+            Term.Append (Character'Val (16#C3#) & Character'Val (16#A9#));
+            Check (Term.Cell_Text (Term.Display_Start, 0) = "a"
+                    and Term.Cell_Attributes (Term.Display_Start, 0) = Trm.Attrib_Bold
+                    and Term.Cell_Fore_Color (Term.Display_Start, 0) = Red_Color
+                    and Term.Cell_Back_Color (Term.Display_Start, 0) = Blue_Color,
+                "a cell's character, attributes and colors");
+            Check (Term.Cell_Text (Term.Display_Start, 1)
+                        = Character'Val (16#C3#) & Character'Val (16#A9#)
+                    and Term.Cell_Attributes (Term.Display_Start, 1) = Trm.Attrib_Normal
+                    and Term.Cell_Fore_Color (Term.Display_Start, 1) = Green_Color,
+                "a UTF-8 character");
+            Check (Term.Cell_Text (Term.Display_Start, 2) = " ", "an empty cell is a space");
+            Flags := Term.Get_Style_Flags;
+            Check (not Flags.Xterm_Fore and not Flags.Xterm_Back, "no xterm colors");
+            Term.Set_Text_Fore_Color_Xterm (1);
+            Flags := Term.Get_Style_Flags;
+            Check (Flags.Xterm_Fore and not Flags.Xterm_Back, "an xterm foreground");
+            Term.Set_Text_Back_Color_Xterm (2);
+            Flags := Term.Get_Style_Flags;
+            Check (Flags.Xterm_Fore and Flags.Xterm_Back, "and background");
+            for K in 1 .. Term.Get_Display_Rows loop
+                Term.Append ((1 => LF));
+            end loop;
+            Check (Term.Ring_Offset /= Off, "scrolling turns the ring");
+            Check (Term.History_Start = Term.Ring_Offset, "and the history moves with it");
+            begin
+                Ignore := Term.Cell_Text (Term.Ring_Rows, 0) = "";
+            exception
+            when Constraint_Error =>
+                Raised := True;
+            end;
+            Check (Raised, "a cell past the ring's last row raises (pofltk's HaltTerminalCell)");
+            Raised := False;
+            begin
+                Ignore := Term.Cell_Fore_Color (0, Term.Ring_Columns) = Red_Color;
+            exception
+            when Constraint_Error =>
+                Raised := True;
+            end;
+            Check (Raised, "and one past its last column");
+        end;
+
+        --  A selection in the history scrolled back to:  its rows count
+        --  back from the screen's top.
+        declare
+            Window : Win.Window := Win.Forge.Create (0, 0, 400, 300, "ring");
+            Term   : Trm.Terminal := Trm.Forge.Create (Window, 0, 0, 400, 300);
+            Row1, Col1, Row2, Col2 : Integer;
+            Selected : Boolean;
+            Count    : Natural := 0;
+        begin
+            Term.Set_Text_Font (Courier);
+            Term.Set_History_Rows (20);
+            --  lines until the screen starts at the ring's row 0, with history
+            loop
+                Term.Append ("line" & LF);
+                Count := Count + 1;
+                exit when Count > 1000
+                    or (Term.Get_History_Use >= 10 and Term.Display_Start = 0);
+            end loop;
+            Check (Term.Display_Start = 0, "the screen at the ring's start");
+            Ignore := Prb.Capture (Term);
+            Prb.Release;
+            Ignore := Prb.Wheel (Window, 100, 100, 0, -3);
+            Ignore := Prb.Capture (Term);
+            Prb.Release;
+            Ignore := Prb.Mouse (Window, Push, 8, 12);
+            Ignore := Prb.Mouse (Window, Drag, 20, 12);
+            Ignore := Prb.Mouse (Window, Drag, 30, 12);
+            Ignore := Prb.Mouse (Window, Release, 30, 12);
+            Selected := Term.Get_Selection (Row1, Col1, Row2, Col2);
+            Check (Selected and Row1 < Term.Display_Start and Row1 = Row2,
+                "a row of the history comes before the screen's:" & Row1'Image);
+            Check (Row1 < 0, "and may be below 0");
+        end;
+    end Test_Ring;
+
+
     --  A terminal that counts what is sent to it.
     type Counted is new Trm.Terminal with record
         Draws, Pushes, Resizes : Natural := 0;
@@ -522,6 +626,7 @@ begin
     Test_Sizes;
     Test_Drawing;
     Test_Selection;
+    Test_Ring;
     Test_Subclass;
     Test_Pending;
 

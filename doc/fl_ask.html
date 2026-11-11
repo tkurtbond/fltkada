@@ -329,6 +329,26 @@ function Text_Input
 
   <tr>
 <td><pre>
+const char * fl_input(int maxchar, const char *fmt,
+    const char *defstr, ...);
+</pre></td>
+<td><pre>
+function Text_Input
+       (Message    : in String;
+        Max_Length : in Positive;
+        Default    : in String := "")
+    return String;
+
+function Text_Input
+       (Message    : in     String;
+        Max_Length : in     Positive;
+        Answer     : in out Ada.Strings.Unbounded.Unbounded_String)
+    return Confirm_Result;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 void fl_message(const char *fmt, ...);
 </pre></td>
 <td><pre>
@@ -489,6 +509,26 @@ function Password
         Answer  : in out Ada.Strings.Unbounded.Unbounded_String)
     return Confirm_Result;
 </pre><p>As for Dir_Chooser.</p></td>
+  </tr>
+
+  <tr>
+<td><pre>
+const char * fl_password(int maxchar, const char *fmt,
+    const char *defstr, ...);
+</pre></td>
+<td><pre>
+function Password
+       (Message    : in String;
+        Max_Length : in Positive;
+        Default    : in String := "")
+    return String;
+
+function Password
+       (Message    : in     String;
+        Max_Length : in     Positive;
+        Answer     : in out Ada.Strings.Unbounded.Unbounded_String)
+    return Confirm_Result;
+</pre></td>
   </tr>
 
   <tr>

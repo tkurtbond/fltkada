@@ -308,6 +308,27 @@ begin
             & Path.Get_Value & "'");
     Window.Hide;
 
+    --  The right-button menu's texts, from pofltk's TestInputs.  FLTK keeps
+    --  the pointer, so the text must outlast the String it came from.
+    Check (Txt.Get_Cut_Menu_Text = "Cut" and Txt.Get_Copy_Menu_Text = "Copy"
+            and Txt.Get_Paste_Menu_Text = "Paste",
+        "the menu texts start as FLTK's");
+    declare
+        Cut   : constant String := "Ausschneiden";
+        Copy  : constant String := "Kopieren";
+        Paste : constant String := "Einfuegen";
+    begin
+        Txt.Set_Cut_Menu_Text (Cut);
+        Txt.Set_Copy_Menu_Text (Copy);
+        Txt.Set_Paste_Menu_Text (Paste);
+    end;
+    Check (Txt.Get_Cut_Menu_Text = "Ausschneiden" and Txt.Get_Copy_Menu_Text = "Kopieren"
+            and Txt.Get_Paste_Menu_Text = "Einfuegen",
+        "Set_Cut_Menu_Text and the others, kept as copies");
+    Txt.Set_Cut_Menu_Text ("Cut");
+    Txt.Set_Copy_Menu_Text ("Copy");
+    Txt.Set_Paste_Menu_Text ("Paste");
+
     Summary;
 
 exception

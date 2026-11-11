@@ -8,11 +8,16 @@
 --  before the window is on the screen, ends the program under Wayland as
 --  a menu does (pofltk 28): "Fatal error no 1 in Wayland protocol:
 --  xdg_surface".  Enter_Area here comes straight after Show, with no delay.
+--
+--  Phase 20, from pofltk's TestTooltips:  FLTK shows no tip in a window not
+--  shown (Fl_Tooltip.cxx's top_win_iconified_), and an empty text hides
+--  the tip.
 
 
 with
 
     Checks,
+    FLTK.Probe,
     FLTK.Tooltips,
     FLTK.Widgets.Boxes,
     FLTK.Widgets.Groups.Windows;
@@ -37,14 +42,23 @@ begin
     FLTK.Tooltips.Set_Enabled (True);
     FLTK.Tooltips.Set_Delay (0.0);
 
+    FLTK.Tooltips.Enter_Area (Item, 0, 0, 40, 40, "not shown");
+    Ignore := FLTK.Wait (0.02);
+    Check (FLTK.Probe.Shown_Windows = 0, "no tip in a window not shown");
+
     Window.Show;
     FLTK.Tooltips.Enter_Area (Item, 0, 0, 40, 40, "tip");
     for N in 1 .. 20 loop
         Ignore := FLTK.Wait (0.02);
     end loop;
     Check (Window.Is_Shown, "a tooltip straight after Show, and the program goes on");
+    Check (FLTK.Probe.Shown_Windows = 2, "the tip is shown:"
+        & Natural'Image (FLTK.Probe.Shown_Windows));
 
     FLTK.Tooltips.Enter_Area (Item, 0, 0, 0, 0, "");
+    Ignore := FLTK.Wait (0.02);
+    Check (FLTK.Probe.Shown_Windows = 1, "an empty text hides it:"
+        & Natural'Image (FLTK.Probe.Shown_Windows));
     Window.Hide;
     Summary;
 

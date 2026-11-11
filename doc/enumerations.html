@@ -197,6 +197,69 @@ function Color_Average
 
   <tr>
 <td><pre>
+FL_ABI_VERSION
+</pre></td>
+<td><pre>
+function Built_ABI_Version
+    return Version_Number;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+FL_API_VERSION
+</pre></td>
+<td><pre>
+function Built_API_Version
+    return Version_Number;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+FL_VERSION
+</pre></td>
+<td><pre>
+function Built_Version
+    return Long_Float;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+fl_eventnames[e]  // FL/names.h
+</pre></td>
+<td><pre>
+function Event_Name
+       (Event : in Event_Kind)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+fl_fontnames[f]  // FL/names.h
+</pre></td>
+<td><pre>
+function Font_Constant_Name
+       (Font : in Font_Kind)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+fl_callback_reason_names[r]  // FL/names.h
+</pre></td>
+<td><pre>
+function Reason_Name
+       (Reason : in Callback_Reason)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 Fl_Fontsize FL_NORMAL_SIZE;
 </pre></td>
 <td><pre>

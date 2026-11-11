@@ -1,0 +1,46 @@
+--  Programmed by T. Kurt Bond and Claude Opus 5.5
+--  Released into the public domain
+
+
+--  The GLU library's unit tests, in test/unit/glu, built only with that
+--  library (fltkada_glu.gpr), into bin/unit with the others.  They use
+--  Checks and FLTK.Probe from test/unit, compiled again here.
+
+
+with
+
+    "fltkada_glu",
+    "proj/common";
+
+
+project Tests_GLU is
+
+
+    for Languages use ("Ada", "C++");
+
+    for Source_Dirs use ("test/unit/glu", "test/unit");
+    for Object_Dir  use "obj/unit_glu";
+    for Exec_Dir    use "bin/unit";
+
+    for Main use
+       ("test_glu_constants.adb",
+        "test_glu.adb");
+
+    package Builder is
+        for Default_Switches ("Ada") use
+            Common.Builder'Default_Switches ("Ada");
+        for Global_Compilation_Switches ("Ada") use
+            Common.Builder'Global_Compilation_Switches ("Ada");
+    end Builder;
+
+    package Compiler is
+        for Default_Switches ("Ada") use
+            Common.Compiler'Default_Switches ("Ada") & "-gnata";
+    end Compiler;
+
+    package Binder         renames Common.Binder;
+    package Linker         renames Common.Linker;
+    package Pretty_Printer renames Common.Pretty_Printer;
+
+
+end Tests_GLU;

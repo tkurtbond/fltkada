@@ -109,6 +109,14 @@ extern "C" int fl_glut_stroke_length(int f, const char * s, int n);
 extern "C" float fl_glut_stroke_height(int f);
 
 
+extern "C" void fl_glut_sphere(int solid, double r, int slices, int stacks);
+extern "C" void fl_glut_cone(int solid, double base, double height, int slices, int stacks);
+extern "C" void fl_glut_torus(int solid, double inner, double outer, int sides, int rings);
+extern "C" void fl_glut_cube(int solid, double size);
+extern "C" void fl_glut_teapot(int solid, double size);
+extern "C" void fl_glut_polyhedron(int solid, int shape);
+
+
 #endif
 
 

@@ -7,6 +7,15 @@ come first in each list.
 
 ## Changes that can stop a program compiling
 
+- **`Widgets.Measure_Label` has a third parameter, `Wrap`, defaulting
+  to 0**, FLTK's wrap width. Calls compile as before, but an
+  `overriding` declaration of it, or an access to it, must add the
+  parameter.
+  [PLAN.md, Phase 20](PLAN.md#phase-20-api-that-pofltks-ports-needed-done-2026-11-11).
+- **`FLTK.Version` returns a `Long_Float`**, not a `Version_Number`. As
+  a `Version_Number` it was always 1 for FLTK 1.x; it is now 1.0405 for
+  FLTK 1.4.5. Use `API_Version` for a `Version_Number`.
+  [FLTKAda-BUGS.md 126](FLTKAda-BUGS.md#126-version-gave-1).
 - **`FLTK.Normal_Size` is gone.** It was a constant; FLTK's
   `FL_NORMAL_SIZE` is a variable. Use `Get_Normal_Size` and
   `Set_Normal_Size`.
@@ -81,6 +90,12 @@ come first in each list.
 
 ## Changes that can make a program behave differently
 
+- **A text editor's newest binding of a key wins**, and
+  `Remove_Key_Binding` of a key removes only that newest binding, as in
+  FLTK. Before, the oldest won, so a program's own binding of a key the
+  defaults bind (Ctrl+a, Ctrl+c, …) was never called, and the removal
+  took every binding of the key.
+  [FLTKAda-BUGS.md 128](FLTKAda-BUGS.md#128-a-text-editors-oldest-key-binding-won).
 - **`Tooltips.Enter_Area` with a text, tooltips enabled, waits for the
   widget's window to be exposed** if it is shown and not yet on the
   screen (on X11, mapped), running the event loop until then. Before,

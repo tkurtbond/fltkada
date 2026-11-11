@@ -8,6 +8,7 @@ with
 
     Interfaces.C.Strings,
     FLTK.Args_Marshal,
+    FLTK.Screen,
     FLTK.Hook_Exceptions;
 
 use type
@@ -109,6 +110,22 @@ package body FLTK.Widgets.Groups.Windows is
            (W : in Storage.Integer_Address);
     pragma Import (C, fl_window_fullscreen_off, "fl_window_fullscreen_off");
     pragma Inline (fl_window_fullscreen_off);
+
+    procedure fl_window_maximize
+           (W : in Storage.Integer_Address);
+    pragma Import (C, fl_window_maximize, "fl_window_maximize");
+    pragma Inline (fl_window_maximize);
+
+    procedure fl_window_un_maximize
+           (W : in Storage.Integer_Address);
+    pragma Import (C, fl_window_un_maximize, "fl_window_un_maximize");
+    pragma Inline (fl_window_un_maximize);
+
+    function fl_window_maximize_active
+           (W : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_window_maximize_active, "fl_window_maximize_active");
+    pragma Inline (fl_window_maximize_active);
 
     procedure fl_window_fullscreen_off2
            (N          : in Storage.Integer_Address;
@@ -284,6 +301,33 @@ package body FLTK.Widgets.Groups.Windows is
             LW, LH, HW, HH, DW, DH, A : in Interfaces.C.int);
     pragma Import (C, fl_window_size_range, "fl_window_size_range");
     pragma Inline (fl_window_size_range);
+
+    procedure fl_window_free_position
+           (N : in Storage.Integer_Address);
+    pragma Import (C, fl_window_free_position, "fl_window_free_position");
+    pragma Inline (fl_window_free_position);
+
+    type Size_Range_Values is array (0 .. 6) of Interfaces.C.int
+        with Convention => C;
+
+    function fl_window_get_size_range
+           (N : in     Storage.Integer_Address;
+            V :    out Size_Range_Values)
+        return Interfaces.C.int;
+    pragma Import (C, fl_window_get_size_range, "fl_window_get_size_range");
+    pragma Inline (fl_window_get_size_range);
+
+    function fl_window_get_screen_num
+           (N : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_window_get_screen_num, "fl_window_get_screen_num");
+    pragma Inline (fl_window_get_screen_num);
+
+    procedure fl_window_set_screen_num
+           (N : in Storage.Integer_Address;
+            S : in Interfaces.C.int);
+    pragma Import (C, fl_window_set_screen_num, "fl_window_set_screen_num");
+    pragma Inline (fl_window_set_screen_num);
 
     procedure fl_window_resize
            (N          : in Storage.Integer_Address;
@@ -633,6 +677,30 @@ package body FLTK.Widgets.Groups.Windows is
     begin
         fl_window_fullscreen_screens (This.Void_Ptr, -1, -1, -1, -1);
     end Fullscreen_Own_Screen;
+
+
+
+
+    procedure Maximize
+           (This : in out Window) is
+    begin
+        fl_window_maximize (This.Void_Ptr);
+    end Maximize;
+
+
+    procedure Un_Maximize
+           (This : in out Window) is
+    begin
+        fl_window_un_maximize (This.Void_Ptr);
+    end Un_Maximize;
+
+
+    function Is_Maximized
+           (This : in Window)
+        return Boolean is
+    begin
+        return fl_window_maximize_active (This.Void_Ptr) /= 0;
+    end Is_Maximized;
 
 
 
@@ -999,6 +1067,62 @@ package body FLTK.Widgets.Groups.Windows is
     begin
         fl_window_set_force_position (This.Void_Ptr, Boolean'Pos (State));
     end Force_Position;
+
+
+    procedure Free_Position
+           (This : in out Window) is
+    begin
+        fl_window_free_position (This.Void_Ptr);
+    end Free_Position;
+
+
+    function Has_Size_Range
+           (This : in Window)
+        return Boolean
+    is
+        V : Size_Range_Values;
+    begin
+        return fl_window_get_size_range (This.Void_Ptr, V) /= 0;
+    end Has_Size_Range;
+
+
+    procedure Get_Size_Range
+           (This                           : in     Window;
+            Min_W, Min_H                   :    out Integer;
+            Max_W, Max_H, Incre_W, Incre_H :    out Integer;
+            Keep_Aspect                    :    out Boolean)
+    is
+        V      : Size_Range_Values;
+        Ignore : constant Interfaces.C.int := fl_window_get_size_range (This.Void_Ptr, V);
+    begin
+        Min_W := Integer (V (0));
+        Min_H := Integer (V (1));
+        Max_W := Integer (V (2));
+        Max_H := Integer (V (3));
+        Incre_W := Integer (V (4));
+        Incre_H := Integer (V (5));
+        Keep_Aspect := V (6) /= 0;
+    end Get_Size_Range;
+
+
+    function Get_Screen_Num
+           (This : in Window)
+        return Positive is
+    begin
+        return Integer (fl_window_get_screen_num (This.Void_Ptr)) + 1;
+    end Get_Screen_Num;
+
+
+    procedure Set_Screen_Num
+           (This : in out Window;
+            To   : in     Positive) is
+    begin
+        if To > FLTK.Screen.Count then
+            raise Constraint_Error with "screen" & Integer'Image (To) & " of" &
+                Integer'Image (FLTK.Screen.Count);
+        end if;
+        fl_window_set_screen_num (This.Void_Ptr, Interfaces.C.int (To) - 1);
+    end Set_Screen_Num;
 
 
     function Get_X_Root

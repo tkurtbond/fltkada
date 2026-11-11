@@ -578,6 +578,10 @@ void fl_static_set_scheme(const char *n) {
     Fl::scheme(n);
 }
 
+void fl_static_set_system_scheme() {
+    Fl::scheme(NULL);
+}
+
 int fl_static_is_scheme(const char *n) {
     return Fl::is_scheme(n);
 }

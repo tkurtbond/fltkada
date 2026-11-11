@@ -4,6 +4,7 @@
 //  Released into the public domain
 
 
+#include <FL/Fl_Browser.H>
 #include <FL/Fl_Browser_.H>
 #include "c_fl_browser_.h"
 #include "c_fl_widget.h"
@@ -302,6 +303,54 @@ int fl_abstract_browser_get_scrollbar_size(ABSTRACTBROWSER b) {
 
 void fl_abstract_browser_set_scrollbar_size(ABSTRACTBROWSER b, int s) {
     static_cast<Fl_Browser_*>(b)->scrollbar_size(s);
+}
+
+int fl_abstract_browser_get_linespacing(ABSTRACTBROWSER b) {
+    return static_cast<Fl_Browser_*>(b)->linespacing();
+}
+
+//  Fl_Browser's private full_height_, reached through an explicit
+//  instantiation, which may name a private member ([temp.explicit]).
+template <class Tag, typename Tag::type M> struct Reach {
+    friend typename Tag::type member(Tag) {
+        return M;
+    }
+};
+
+struct Full_Height {
+    typedef int Fl_Browser::*type;
+    friend type member(Full_Height);
+};
+
+template struct Reach<Full_Height, &Fl_Browser::full_height_>;
+
+//  Fl_Browser counts its full height, each line with the spacing of the
+//  moment, as lines come and go, so a spacing changed after lines are
+//  added leaves it wrong, and negative once they go (pofltk 159).  This
+//  counts it again, as Fl_Browser::textsize does, reaching the protected
+//  members through a class derived from Fl_Browser (from pofltk's
+//  FlBrowsers.cpp).
+struct Remeasure : Fl_Browser {
+    static void run(Fl_Browser * b) {
+        int Fl_Browser::*full = member(Full_Height());
+        void *(Fl_Browser::*first)() const = &Remeasure::item_first;
+        void *(Fl_Browser::*next)(void *) const = &Remeasure::item_next;
+        int (Fl_Browser::*height)(void *) const = &Remeasure::item_height;
+        int h = 0;
+        for (void * i = (b->*first)(); i; i = (b->*next)(i)) {
+            h += (b->*height)(i) + b->linespacing();
+        }
+        b->*full = h;
+    }
+};
+
+void fl_abstract_browser_set_linespacing(ABSTRACTBROWSER b, int s) {
+    Fl_Browser_ * br = static_cast<Fl_Browser_*>(b);
+    br->linespacing(s);
+    if (Fl_Browser * l = dynamic_cast<Fl_Browser*>(br)) {
+        Remeasure::run(l);
+    }
+    br->redraw();
 }
 
 

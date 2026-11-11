@@ -186,6 +186,28 @@ procedure Scroll_To
 
   <tr>
 <td><pre>
+scrollbar.align();
+</pre></td>
+<td><pre>
+function Get_Scrollbar_Alignment
+       (This : in Scroll)
+    return Alignment;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+scrollbar.align(Fl_Align a);
+</pre></td>
+<td><pre>
+procedure Set_Scrollbar_Alignment
+       (This : in out Scroll;
+        To   : in     Alignment);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 int scrollbar_size() const;
 </pre></td>
 <td><pre>

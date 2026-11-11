@@ -7,11 +7,12 @@
 with
 
     FLTK.Hook_Exceptions,
-    Interfaces.C;
+    Interfaces.C.Strings;
 
 use type
 
     Interfaces.C.int,
+    Interfaces.C.Strings.chars_ptr,
     Interfaces.C.size_t,
     Interfaces.C.unsigned,
     Interfaces.C.unsigned_char;
@@ -176,6 +177,29 @@ package body FLTK is
 
 
 
+    --  names.h  --
+
+    function fl_names_event
+           (E : in Interfaces.C.int)
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_names_event, "fl_names_event");
+    pragma Inline (fl_names_event);
+
+    function fl_names_font
+           (F : in Interfaces.C.int)
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_names_font, "fl_names_font");
+    pragma Inline (fl_names_font);
+
+    function fl_names_reason
+           (R : in Interfaces.C.int)
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_names_reason, "fl_names_reason");
+    pragma Inline (fl_names_reason);
+
+
+
+
     --  Fl.H  --
 
     --  Versioning  --
@@ -200,6 +224,21 @@ package body FLTK is
         return Interfaces.C.double;
     pragma Import (C, fl_version, "fl_version");
     pragma Inline (fl_version);
+
+    function fl_built_version
+        return Interfaces.C.double;
+    pragma Import (C, fl_built_version, "fl_built_version");
+    pragma Inline (fl_built_version);
+
+    function fl_built_api_version
+        return Interfaces.C.int;
+    pragma Import (C, fl_built_api_version, "fl_built_api_version");
+    pragma Inline (fl_built_api_version);
+
+    function fl_built_abi_version
+        return Interfaces.C.int;
+    pragma Import (C, fl_built_abi_version, "fl_built_abi_version");
+    pragma Inline (fl_built_abi_version);
 
 
 
@@ -811,10 +850,71 @@ package body FLTK is
 
 
 
+    --  Names  --
+
+    function Name_Or_Empty
+           (Name : in Interfaces.C.Strings.chars_ptr)
+        return String is
+    begin
+        if Name = Interfaces.C.Strings.Null_Ptr then
+            return "";
+        else
+            return Interfaces.C.Strings.Value (Name);
+        end if;
+    end Name_Or_Empty;
+
+
+    function Event_Name
+           (Event : in Event_Kind)
+        return String is
+    begin
+        return Name_Or_Empty (fl_names_event (Event_Kind'Pos (Event)));
+    end Event_Name;
+
+
+    function Font_Constant_Name
+           (Font : in Font_Kind)
+        return String is
+    begin
+        return Name_Or_Empty (fl_names_font (Interfaces.C.int (Font)));
+    end Font_Constant_Name;
+
+
+    function Reason_Name
+           (Reason : in Callback_Reason)
+        return String is
+    begin
+        return Name_Or_Empty (fl_names_reason (Interfaces.C.int (Reason)));
+    end Reason_Name;
+
+
+
+
     --  Versioning  --
 
+    function Built_Version
+        return Long_Float is
+    begin
+        return Long_Float (fl_built_version);
+    end Built_Version;
+
+
+    function Built_API_Version
+        return Version_Number is
+    begin
+        return Version_Number (fl_built_api_version);
+    end Built_API_Version;
+
+
+    function Built_ABI_Version
+        return Version_Number is
+    begin
+        return Version_Number (fl_built_abi_version);
+    end Built_ABI_Version;
+
+
     function ABI_Check
-           (ABI_Ver : in Version_Number)
+           (ABI_Ver : in Version_Number := Built_ABI_Version)
         return Boolean is
     begin
         return fl_abi_check (Interfaces.C.int (ABI_Ver)) /= 0;
@@ -836,9 +936,9 @@ package body FLTK is
 
 
     function Version
-        return Version_Number is
+        return Long_Float is
     begin
-        return Version_Number (fl_version);
+        return Long_Float (fl_version);
     end Version;
 
 

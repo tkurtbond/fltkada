@@ -237,6 +237,24 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
     pragma Import (C, fl_gl_window_draw, "fl_gl_window_draw");
     pragma Inline (fl_gl_window_draw);
 
+    function fl_gl_window_draw_begin
+           (W : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_gl_window_draw_begin, "fl_gl_window_draw_begin");
+    pragma Inline (fl_gl_window_draw_begin);
+
+    function fl_gl_window_draw_window
+           (W : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_gl_window_draw_window, "fl_gl_window_draw_window");
+    pragma Inline (fl_gl_window_draw_window);
+
+    function fl_gl_window_draw_end
+           (W : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_gl_window_draw_end, "fl_gl_window_draw_end");
+    pragma Inline (fl_gl_window_draw_end);
+
     function fl_gl_window_handle
            (W : in Storage.Integer_Address;
             E : in Interfaces.C.int)
@@ -635,6 +653,33 @@ package body FLTK.Widgets.Groups.Windows.OpenGL is
     begin
         Window (This).Draw;
     end Draw;
+
+
+    procedure Draw_Begin
+           (This : in out GL_Window) is
+    begin
+        if fl_gl_window_draw_begin (This.Void_Ptr) = 0 then
+            raise Program_Error with "Draw_Begin outside the window's Draw, or after Draw_Begin";
+        end if;
+    end Draw_Begin;
+
+
+    procedure Draw_Window
+           (This : in out GL_Window) is
+    begin
+        if fl_gl_window_draw_window (This.Void_Ptr) = 0 then
+            raise Program_Error with "Draw_Window without Draw_Begin";
+        end if;
+    end Draw_Window;
+
+
+    procedure Draw_End
+           (This : in out GL_Window) is
+    begin
+        if fl_gl_window_draw_end (This.Void_Ptr) = 0 then
+            raise Program_Error with "Draw_End without Draw_Begin";
+        end if;
+    end Draw_End;
 
 
     procedure Draw_Overlay

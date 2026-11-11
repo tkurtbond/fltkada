@@ -8,7 +8,11 @@ with
 
     FLTK.Hook_Exceptions,
     FLTK.Widgets.Groups,
-    Interfaces.C;
+    Interfaces.C.Strings;
+
+use type
+
+    Interfaces.C.Strings.chars_ptr;
 
 
 package body FLTK.Widgets.Inputs.Text is
@@ -48,6 +52,23 @@ package body FLTK.Widgets.Inputs.Text is
         return Interfaces.C.int;
     pragma Import (C, fl_text_input_handle, "fl_text_input_handle");
     pragma Inline (fl_text_input_handle);
+
+
+
+
+    --  Menu Texts  --
+
+    function fl_text_input_get_menu_text
+           (Which : in Interfaces.C.int)
+        return Interfaces.C.Strings.chars_ptr;
+    pragma Import (C, fl_text_input_get_menu_text, "fl_text_input_get_menu_text");
+    pragma Inline (fl_text_input_get_menu_text);
+
+    procedure fl_text_input_set_menu_text
+           (Which : in Interfaces.C.int;
+            Text  : in Interfaces.C.char_array);
+    pragma Import (C, fl_text_input_set_menu_text, "fl_text_input_set_menu_text");
+    pragma Inline (fl_text_input_set_menu_text);
 
 
 
@@ -163,6 +184,65 @@ package body FLTK.Widgets.Inputs.Text is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Menu Texts  --
+
+    function Get_Text
+           (Which : in Interfaces.C.int)
+        return String
+    is
+        Ptr : constant Interfaces.C.Strings.chars_ptr := fl_text_input_get_menu_text (Which);
+    begin
+        if Ptr = Interfaces.C.Strings.Null_Ptr then
+            return "";
+        end if;
+        return Interfaces.C.Strings.Value (Ptr);
+    end Get_Text;
+
+
+    function Get_Cut_Menu_Text
+        return String is
+    begin
+        return Get_Text (0);
+    end Get_Cut_Menu_Text;
+
+
+    function Get_Copy_Menu_Text
+        return String is
+    begin
+        return Get_Text (1);
+    end Get_Copy_Menu_Text;
+
+
+    function Get_Paste_Menu_Text
+        return String is
+    begin
+        return Get_Text (2);
+    end Get_Paste_Menu_Text;
+
+
+    procedure Set_Cut_Menu_Text
+           (To : in String) is
+    begin
+        fl_text_input_set_menu_text (0, Interfaces.C.To_C (To));
+    end Set_Cut_Menu_Text;
+
+
+    procedure Set_Copy_Menu_Text
+           (To : in String) is
+    begin
+        fl_text_input_set_menu_text (1, Interfaces.C.To_C (To));
+    end Set_Copy_Menu_Text;
+
+
+    procedure Set_Paste_Menu_Text
+           (To : in String) is
+    begin
+        fl_text_input_set_menu_text (2, Interfaces.C.To_C (To));
+    end Set_Paste_Menu_Text;
+
+
+
 
     --  Drawing, Events  --
 

@@ -83,6 +83,18 @@ package body FLTK.Widgets.Buttons is
     pragma Import (C, fl_button_set_down_box, "fl_button_set_down_box");
     pragma Inline (fl_button_set_down_box);
 
+    function fl_button_get_compact
+           (B : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_button_get_compact, "fl_button_get_compact");
+    pragma Inline (fl_button_get_compact);
+
+    procedure fl_button_set_compact
+           (B : in Storage.Integer_Address;
+            V : in Interfaces.C.int);
+    pragma Import (C, fl_button_set_compact, "fl_button_set_compact");
+    pragma Inline (fl_button_set_compact);
+
     function fl_button_get_shortcut
            (B : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -310,6 +322,24 @@ package body FLTK.Widgets.Buttons is
     begin
         fl_button_set_down_box (This.Void_Ptr, Box_Kind'Pos (To));
     end Set_Down_Box;
+
+
+    function Is_Compact
+           (This : in Button)
+        return Boolean
+    is
+        use type Interfaces.C.int;
+    begin
+        return fl_button_get_compact (This.Void_Ptr) /= 0;
+    end Is_Compact;
+
+
+    procedure Set_Compact
+           (This : in out Button;
+            To   : in     Boolean) is
+    begin
+        fl_button_set_compact (This.Void_Ptr, Boolean'Pos (To));
+    end Set_Compact;
 
 
     function Get_Shortcut

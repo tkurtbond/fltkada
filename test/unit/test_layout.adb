@@ -187,7 +187,19 @@ begin
     --  A scroll: its scrollbars are children FLTK made
     declare
         Scroll  : Scr.Scroll := Scr.Forge.Create (Window, 300, 0, 100, 100);
-        Content : constant Bxs.Box := Bxs.Forge.Create (Scroll, 300, 0, 300, 300);
+        Content : Bxs.Box := Bxs.Forge.Create (Scroll, 300, 0, 300, 300);
+        Red     : constant Prb.RGB := Prb.To_RGB (255, 0, 0);
+        Ignore  : Boolean;
+
+        --  Red at the four points near the edges: left, right, bottom, top
+        function Reds
+            return String is
+        begin
+            return Boolean'Image (Prb.Pixel (3, 50) = Red)
+                & Boolean'Image (Prb.Pixel (96, 50) = Red)
+                & Boolean'Image (Prb.Pixel (50, 96) = Red)
+                & Boolean'Image (Prb.Pixel (50, 3) = Red);
+        end Reds;
     begin
         Scroll.End_Current;
         Check (Scroll.Number_Of_Children = 3 and Scroll.Get_Kind = Scr.Both,
@@ -197,6 +209,22 @@ begin
         Scroll.Scroll_To (20, 50);
         Check (Scroll.Get_Scroll_X = 20 and Scroll.Get_Scroll_Y = 50 and Content.Get_Y = -50,
             "Scroll_To moves the content");
+        Content.Set_Box (Flat_Box);
+        Content.Set_Background_Color (RGB_Red_Color);
+        Check (Scroll.Get_Scrollbar_Alignment = Align_Bottom,
+            "a scroll's scrollbars are right and bottom to start with, at a valuator's "
+            & "alignment, Align_Bottom");
+        Ignore := Prb.Capture (Scroll);
+        Check (Reds = "TRUEFALSEFALSETRUE",
+            "and are drawn there, over the content: " & Reds);
+        Prb.Release;
+        Scroll.Set_Scrollbar_Alignment (Align_Left + Align_Top);
+        Check (Scroll.Get_Scrollbar_Alignment = Align_Left + Align_Top,
+            "Set_Scrollbar_Alignment and Get_Scrollbar_Alignment agree");
+        Ignore := Prb.Capture (Scroll);
+        Check (Reds = "FALSETRUETRUEFALSE",
+            "Align_Left + Align_Top draws them left and top: " & Reds);
+        Prb.Release;
         Scroll.Set_Kind (Scr.Vertical);
         Check (Scroll.Get_Kind = Scr.Vertical, "Set_Kind and Get_Kind agree");
         Check (Prb.Capture (Scroll) and Scroll.V_Bar.Is_Visible and not Scroll.H_Bar.Is_Visible,

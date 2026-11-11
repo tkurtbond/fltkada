@@ -39,7 +39,7 @@ first, because every later fix is meant to start from a failing test.
 Where findings go:
 
 - **FLTKAda-BUGS.md**: bugs in FLTKAda's own code. 28 (in part), 41,
-  44 and 85 are open; every other section, 1 to 125, is fixed. (Until
+  44 and 85 are open; every other section, 1 to 127, is fixed. (Until
   2026-11-11 this listed 17–21, 23–26 and 29 as open too; they had been
   fixed in Phases 2 and 6, and the file now says so.)
 - **FLTK-issues.md**: FLTK issues pofltk's list doesn't have (F1, F2, …).
@@ -66,6 +66,8 @@ gprbuild fltkada_cairo.gpr        # the Cairo library (needs cairo; pass
                                   # in /usr/include/cairo)
 gprbuild tests_cairo.gpr          # its unit tests, into bin/unit/
 gprbuild tests_cairo_programs.gpr # its demo programs, into bin/
+gprbuild fltkada_glu.gpr          # the GLU library (needs glu)
+gprbuild tests_glu.gpr            # its unit tests, into bin/unit/
 ```
 
 Built test executables land in `bin/`, the unit tests in `bin/unit/`.
@@ -186,6 +188,8 @@ component of the Ada record.
 | `test/forms/`, `test/unit/forms/` | The Forms library's programs (`tests_forms_programs.gpr`) and unit tests (`tests_forms.gpr`), which the Makefile builds and runs only with that library |
 | `cairo/spec/`, `cairo/body/` | The Cairo library, `FLTK.Cairo` and `FLTK.Widgets.Groups.Windows.Double.Cairo_Drawn` and their shim (`fltkada_cairo.gpr`), built only where `pkg-config` finds cairo |
 | `test/cairo/`, `test/unit/cairo/` | The Cairo library's programs (`tests_cairo_programs.gpr`) and unit tests (`tests_cairo.gpr`), which the Makefile builds and runs only with cairo |
+| `glu/spec/`, `glu/body/` | The GLU library, `FLTK.GLU` and its shim (`fltkada_glu.gpr`), built only where `pkg-config` finds glu |
+| `test/unit/glu/` | The GLU library's unit tests (`tests_glu.gpr`), which the Makefile builds and runs only with glu |
 | `examples/` | Ada ports of every program in FLTK 1.4.5's `examples/` (built by `examples.gpr`, executables named after the C++ originals) |
 | `tool/` | `template.adb`, an unrelated text-substitution codegen helper — not a widget template |
 | `proj/common.gpr` | Shared `gprbuild` switches (style checks, warnings, `Pretty_Printer` config) for all the other `.gpr` files |

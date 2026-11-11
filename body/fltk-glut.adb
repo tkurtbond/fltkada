@@ -485,6 +485,44 @@ package body FLTK.GLUT is
     pragma Import (C, fl_glut_stroke_height, "fl_glut_stroke_height");
     pragma Inline (fl_glut_stroke_height);
 
+    procedure fl_glut_sphere
+           (Solid          : in Interfaces.C.int;
+            R              : in Interfaces.C.double;
+            Slices, Stacks : in Interfaces.C.int);
+    pragma Import (C, fl_glut_sphere, "fl_glut_sphere");
+    pragma Inline (fl_glut_sphere);
+
+    procedure fl_glut_cone
+           (Solid          : in Interfaces.C.int;
+            Base, Height   : in Interfaces.C.double;
+            Slices, Stacks : in Interfaces.C.int);
+    pragma Import (C, fl_glut_cone, "fl_glut_cone");
+    pragma Inline (fl_glut_cone);
+
+    procedure fl_glut_torus
+           (Solid        : in Interfaces.C.int;
+            Inner, Outer : in Interfaces.C.double;
+            Sides, Rings : in Interfaces.C.int);
+    pragma Import (C, fl_glut_torus, "fl_glut_torus");
+    pragma Inline (fl_glut_torus);
+
+    procedure fl_glut_cube
+           (Solid : in Interfaces.C.int;
+            Size  : in Interfaces.C.double);
+    pragma Import (C, fl_glut_cube, "fl_glut_cube");
+    pragma Inline (fl_glut_cube);
+
+    procedure fl_glut_teapot
+           (Solid : in Interfaces.C.int;
+            Size  : in Interfaces.C.double);
+    pragma Import (C, fl_glut_teapot, "fl_glut_teapot");
+    pragma Inline (fl_glut_teapot);
+
+    procedure fl_glut_polyhedron
+           (Solid, Shape : in Interfaces.C.int);
+    pragma Import (C, fl_glut_polyhedron, "fl_glut_polyhedron");
+    pragma Inline (fl_glut_polyhedron);
+
 
 
 
@@ -1722,6 +1760,195 @@ package body FLTK.GLUT is
     begin
         return Float (fl_glut_stroke_height (Font_Number (Font)));
     end Stroke_Height;
+
+
+
+
+    --------------
+    --  Shapes  --
+    --------------
+
+    type Polyhedron is (Tetrahedron, Octahedron, Dodecahedron, Icosahedron);
+
+    Wire  : constant Interfaces.C.int := 0;
+    Solid : constant Interfaces.C.int := 1;
+
+
+    procedure Sphere
+           (Style          : in Interfaces.C.int;
+            Name           : in String;
+            Radius         : in Long_Float;
+            Slices, Stacks : in Shape_Count) is
+    begin
+        Check_Ready (Name);
+        fl_glut_sphere
+           (Style, Interfaces.C.double (Radius),
+            Interfaces.C.int (Slices), Interfaces.C.int (Stacks));
+    end Sphere;
+
+
+    procedure Cone
+           (Style          : in Interfaces.C.int;
+            Name           : in String;
+            Base, Height   : in Long_Float;
+            Slices, Stacks : in Shape_Count) is
+    begin
+        Check_Ready (Name);
+        fl_glut_cone
+           (Style, Interfaces.C.double (Base), Interfaces.C.double (Height),
+            Interfaces.C.int (Slices), Interfaces.C.int (Stacks));
+    end Cone;
+
+
+    procedure Torus
+           (Style                      : in Interfaces.C.int;
+            Name                       : in String;
+            Inner_Radius, Outer_Radius : in Long_Float;
+            Sides, Rings               : in Shape_Count) is
+    begin
+        Check_Ready (Name);
+        fl_glut_torus
+           (Style, Interfaces.C.double (Inner_Radius), Interfaces.C.double (Outer_Radius),
+            Interfaces.C.int (Sides), Interfaces.C.int (Rings));
+    end Torus;
+
+
+    procedure Draw_Polyhedron
+           (Style : in Interfaces.C.int;
+            Name  : in String;
+            Shape : in Polyhedron) is
+    begin
+        Check_Ready (Name);
+        fl_glut_polyhedron (Style, Polyhedron'Pos (Shape));
+    end Draw_Polyhedron;
+
+
+    procedure Solid_Sphere
+           (Radius         : in Long_Float;
+            Slices, Stacks : in Shape_Count) is
+    begin
+        Sphere (Solid, "Solid_Sphere", Radius, Slices, Stacks);
+    end Solid_Sphere;
+
+
+    procedure Wire_Sphere
+           (Radius         : in Long_Float;
+            Slices, Stacks : in Shape_Count) is
+    begin
+        Sphere (Wire, "Wire_Sphere", Radius, Slices, Stacks);
+    end Wire_Sphere;
+
+
+    procedure Solid_Cone
+           (Base, Height   : in Long_Float;
+            Slices, Stacks : in Shape_Count) is
+    begin
+        Cone (Solid, "Solid_Cone", Base, Height, Slices, Stacks);
+    end Solid_Cone;
+
+
+    procedure Wire_Cone
+           (Base, Height   : in Long_Float;
+            Slices, Stacks : in Shape_Count) is
+    begin
+        Cone (Wire, "Wire_Cone", Base, Height, Slices, Stacks);
+    end Wire_Cone;
+
+
+    procedure Solid_Torus
+           (Inner_Radius, Outer_Radius : in Long_Float;
+            Sides, Rings               : in Shape_Count) is
+    begin
+        Torus (Solid, "Solid_Torus", Inner_Radius, Outer_Radius, Sides, Rings);
+    end Solid_Torus;
+
+
+    procedure Wire_Torus
+           (Inner_Radius, Outer_Radius : in Long_Float;
+            Sides, Rings               : in Shape_Count) is
+    begin
+        Torus (Wire, "Wire_Torus", Inner_Radius, Outer_Radius, Sides, Rings);
+    end Wire_Torus;
+
+
+    procedure Solid_Cube
+           (Size : in Long_Float) is
+    begin
+        Check_Ready ("Solid_Cube");
+        fl_glut_cube (Solid, Interfaces.C.double (Size));
+    end Solid_Cube;
+
+
+    procedure Wire_Cube
+           (Size : in Long_Float) is
+    begin
+        Check_Ready ("Wire_Cube");
+        fl_glut_cube (Wire, Interfaces.C.double (Size));
+    end Wire_Cube;
+
+
+    procedure Solid_Teapot
+           (Size : in Long_Float) is
+    begin
+        Check_Ready ("Solid_Teapot");
+        fl_glut_teapot (Solid, Interfaces.C.double (Size));
+    end Solid_Teapot;
+
+
+    procedure Wire_Teapot
+           (Size : in Long_Float) is
+    begin
+        Check_Ready ("Wire_Teapot");
+        fl_glut_teapot (Wire, Interfaces.C.double (Size));
+    end Wire_Teapot;
+
+
+    procedure Solid_Tetrahedron is
+    begin
+        Draw_Polyhedron (Solid, "Solid_Tetrahedron", Tetrahedron);
+    end Solid_Tetrahedron;
+
+
+    procedure Wire_Tetrahedron is
+    begin
+        Draw_Polyhedron (Wire, "Wire_Tetrahedron", Tetrahedron);
+    end Wire_Tetrahedron;
+
+
+    procedure Solid_Octahedron is
+    begin
+        Draw_Polyhedron (Solid, "Solid_Octahedron", Octahedron);
+    end Solid_Octahedron;
+
+
+    procedure Wire_Octahedron is
+    begin
+        Draw_Polyhedron (Wire, "Wire_Octahedron", Octahedron);
+    end Wire_Octahedron;
+
+
+    procedure Solid_Dodecahedron is
+    begin
+        Draw_Polyhedron (Solid, "Solid_Dodecahedron", Dodecahedron);
+    end Solid_Dodecahedron;
+
+
+    procedure Wire_Dodecahedron is
+    begin
+        Draw_Polyhedron (Wire, "Wire_Dodecahedron", Dodecahedron);
+    end Wire_Dodecahedron;
+
+
+    procedure Solid_Icosahedron is
+    begin
+        Draw_Polyhedron (Solid, "Solid_Icosahedron", Icosahedron);
+    end Solid_Icosahedron;
+
+
+    procedure Wire_Icosahedron is
+    begin
+        Draw_Polyhedron (Wire, "Wire_Icosahedron", Icosahedron);
+    end Wire_Icosahedron;
 
 
 

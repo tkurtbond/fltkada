@@ -160,6 +160,11 @@ begin
         "To_Lower of a lone byte, read as Latin-1");
     Check_Text (U.To_Lower ((1 => C (16#C3#))), C (16#C3#) & C (16#A3#),
         "To_Lower of a character cut short");
+    --  A bad byte is CP1252's from 80 to 9F and Latin-1's above, not
+    --  U+FFFD (pofltk 116); pofltk's TestUtf8.
+    Check_Text (U.To_Lower (C (16#9F#) & C (16#E9#) & C (16#81#)),
+        C (16#C3#) & C (16#BF#) & C (16#C3#) & C (16#A9#) & C (16#C2#) & C (16#81#),
+        "To_Lower of bad bytes: CP1252, Latin-1, and 81, which CP1252 leaves out");
     Check (U.Compare_No_Case ("ABC", "abc") = 0, "Compare_No_Case of the same");
     Check (U.Compare_No_Case ("ab", "abc") < 0, "Compare_No_Case, shorter");
     Check (U.Compare_No_Case ("abd", "ABC") > 0, "Compare_No_Case, after");

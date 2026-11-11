@@ -28,6 +28,9 @@ extern "C" int fl_window_make_current(WINDOW n);
 extern "C" unsigned int fl_window_fullscreen_active(WINDOW n);
 extern "C" void fl_window_fullscreen(WINDOW n);
 extern "C" void fl_window_fullscreen_off(WINDOW n);
+extern "C" void fl_window_maximize(WINDOW n);
+extern "C" void fl_window_un_maximize(WINDOW n);
+extern "C" int fl_window_maximize_active(WINDOW n);
 extern "C" void fl_window_fullscreen_off2(WINDOW n, int x, int y, int w, int h);
 extern "C" void fl_window_fullscreen_screens(WINDOW n, int t, int b, int l, int r);
 
@@ -66,6 +69,10 @@ extern "C" void fl_window_size_range(WINDOW n, int lw, int lh, int hw, int hh, i
 extern "C" void fl_window_resize(WINDOW n, int x, int y, int w, int h);
 extern "C" int fl_window_get_force_position(WINDOW n);
 extern "C" void fl_window_set_force_position(WINDOW n, int s);
+extern "C" void fl_window_free_position(WINDOW n);
+extern "C" int fl_window_get_size_range(WINDOW n, int * v);
+extern "C" int fl_window_get_screen_num(WINDOW n);
+extern "C" void fl_window_set_screen_num(WINDOW n, int s);
 extern "C" int fl_window_get_x_root(WINDOW n);
 extern "C" int fl_window_get_y_root(WINDOW n);
 extern "C" int fl_window_get_decorated_w(WINDOW n);

@@ -60,6 +60,11 @@ ifeq ($(HAVE_CAIRO),yes)
 UNITTESTS += $(call gpr-mains,tests_cairo.gpr)
 PROGRAMS  += $(call gpr-mains,tests_cairo_programs.gpr)
 endif
+#  GLU isn't FLTK's or GL's, and a system can have GL without it.
+HAVE_GLU := $(shell pkg-config --exists glu && echo yes)
+ifeq ($(HAVE_GLU),yes)
+UNITTESTS += $(call gpr-mains,tests_glu.gpr)
+endif
 EXAMPLES  := $(shell sed -n 's/.*for Executable ("[a-z_0-9]*\.adb") use "\([^"]*\)";.*/\1/p' examples.gpr)
 
 #  Programs in test/ that check their own results and set the exit status.
@@ -105,6 +110,12 @@ ifeq ($(HAVE_CAIRO),yes)
 	gprbuild -p -q $(CAIRO_FLAGS) tests_cairo_programs.gpr
 else
 	@echo "pkg-config finds no cairo: FLTKAda's Cairo isn't built or tested."
+endif
+ifeq ($(HAVE_GLU),yes)
+	gprbuild -p -q fltkada_glu.gpr
+	gprbuild -p -q tests_glu.gpr
+else
+	@echo "pkg-config finds no glu: FLTKAda's GLU isn't built or tested."
 endif
 
 #  Every FLTK program needs a display.

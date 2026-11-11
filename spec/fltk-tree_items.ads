@@ -25,6 +25,9 @@ package FLTK.Tree_Items is
 
     No_Tree_Item : constant Tree_Item;
 
+    --  Every subprogram below that takes an item, apart from Is_Null and
+    --  Address_Of, raises Constraint_Error if it is null, where FLTK would
+    --  crash (bug 127).
     function Is_Null
            (This : in Tree_Item)
         return Boolean;

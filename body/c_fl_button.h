@@ -25,6 +25,8 @@ extern "C" void fl_button_set_only(BUTTON b);
 
 extern "C" int fl_button_get_down_box(BUTTON b);
 extern "C" void fl_button_set_down_box(BUTTON b, int t);
+extern "C" int fl_button_get_compact(BUTTON b);
+extern "C" void fl_button_set_compact(BUTTON b, int v);
 extern "C" int fl_button_get_shortcut(BUTTON b);
 extern "C" void fl_button_set_shortcut(BUTTON b, int k);
 

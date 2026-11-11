@@ -770,3 +770,84 @@ float fl_glut_stroke_height(int f) {
 }
 
 
+
+
+
+
+//  GLUT's shapes, each drawn solid or as a wire frame.  Ada checks the
+//  counts and that there is a GL context.
+
+void fl_glut_sphere(int solid, double r, int slices, int stacks) {
+    if (solid) {
+        glutSolidSphere(r, slices, stacks);
+    } else {
+        glutWireSphere(r, slices, stacks);
+    }
+}
+
+void fl_glut_cone(int solid, double base, double height, int slices, int stacks) {
+    if (solid) {
+        glutSolidCone(base, height, slices, stacks);
+    } else {
+        glutWireCone(base, height, slices, stacks);
+    }
+}
+
+void fl_glut_torus(int solid, double inner, double outer, int sides, int rings) {
+    if (solid) {
+        glutSolidTorus(inner, outer, sides, rings);
+    } else {
+        glutWireTorus(inner, outer, sides, rings);
+    }
+}
+
+void fl_glut_cube(int solid, double size) {
+    if (solid) {
+        glutSolidCube(size);
+    } else {
+        glutWireCube(size);
+    }
+}
+
+void fl_glut_teapot(int solid, double size) {
+    if (solid) {
+        glutSolidTeapot(size);
+    } else {
+        glutWireTeapot(size);
+    }
+}
+
+//  0 a tetrahedron, 1 an octahedron, 2 a dodecahedron, 3 an icosahedron
+void fl_glut_polyhedron(int solid, int shape) {
+    switch (shape) {
+    case 0:
+        if (solid) {
+            glutSolidTetrahedron();
+        } else {
+            glutWireTetrahedron();
+        }
+        break;
+    case 1:
+        if (solid) {
+            glutSolidOctahedron();
+        } else {
+            glutWireOctahedron();
+        }
+        break;
+    case 2:
+        if (solid) {
+            glutSolidDodecahedron();
+        } else {
+            glutWireDodecahedron();
+        }
+        break;
+    default:
+        if (solid) {
+            glutSolidIcosahedron();
+        } else {
+            glutWireIcosahedron();
+        }
+        break;
+    }
+}
+

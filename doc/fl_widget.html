@@ -46,6 +46,16 @@
     <td>Widget_Callback</td>
   </tr>
 
+  <tr>
+    <td>&nbsp;</td>
+    <td>Label_Margin</td>
+  </tr>
+
+  <tr>
+    <td>&nbsp;</td>
+    <td>Label_Spacing</td>
+  </tr>
+
 </table>
 
 
@@ -585,6 +595,28 @@ function Handle
 
   <tr>
 <td><pre>
+int horizontal_label_margin();
+</pre></td>
+<td><pre>
+function Get_Horizontal_Label_Margin
+       (This : in Widget)
+    return Label_Margin;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void horizontal_label_margin(int px);
+</pre></td>
+<td><pre>
+procedure Set_Horizontal_Label_Margin
+       (This : in out Widget;
+        To   : in     Label_Margin);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 virtual void hide();
 </pre></td>
 <td><pre>
@@ -647,6 +679,28 @@ int is_label_copied() const;
 </pre></td>
 <td>Due to the marshalling between String and char * this
 would always return true, so left unbound.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int label_image_spacing();
+</pre></td>
+<td><pre>
+function Get_Label_Image_Spacing
+       (This : in Widget)
+    return Label_Spacing;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void label_image_spacing(int gap);
+</pre></td>
+<td><pre>
+procedure Set_Label_Image_Spacing
+       (This : in out Widget;
+        To   : in     Label_Spacing);
+</pre></td>
   </tr>
 
   <tr>
@@ -777,7 +831,8 @@ void measure_label(int &ww, int &hh) const;
 <td><pre>
 procedure Measure_Label
        (This : in     Widget;
-        W, H :    out Integer);
+        W, H :    out Integer;
+        Wrap : in     Natural := 0);
 </pre></td>
   </tr>
 
@@ -1056,6 +1111,28 @@ void * user_data() const;
 void user_data(void *v);
 </pre></td>
 <td>Used internally by the binding.</td>
+  </tr>
+
+  <tr>
+<td><pre>
+int vertical_label_margin();
+</pre></td>
+<td><pre>
+function Get_Vertical_Label_Margin
+       (This : in Widget)
+    return Label_Margin;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void vertical_label_margin(int px);
+</pre></td>
+<td><pre>
+procedure Set_Vertical_Label_Margin
+       (This : in out Widget;
+        To   : in     Label_Margin);
+</pre></td>
   </tr>
 
   <tr>

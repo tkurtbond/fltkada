@@ -33,10 +33,20 @@ public:
 
     friend void fl_gl_window_draw(GLWINDOW n);
     friend int fl_gl_window_handle(GLWINDOW n, int e);
+    friend int fl_gl_window_draw_begin(GLWINDOW n);
+    friend int fl_gl_window_draw_window(GLWINDOW n);
+    friend int fl_gl_window_draw_end(GLWINDOW n);
 
     void draw();
     void draw_overlay();
     int handle(int e);
+
+    //  Whether this window's draw() is running, and whether its Ada Draw
+    //  has called Draw_Begin without Draw_End.  A Draw that returns begun,
+    //  or raises, is ended here:  draw_begin() pushes GL's state and the
+    //  surface, which nothing else would pop (from pofltk's FlGl.cpp).
+    bool in_draw = false;
+    bool begun = false;
 };
 
 //  How many GL windows are drawing now.  mode() inside a draw replaces the
@@ -45,9 +55,17 @@ public:
 int gl_window_drawing = 0;
 
 void My_Gl_Window::draw() {
+    bool was = in_draw, had = begun;
+    in_draw = true;
+    begun = false;
     gl_window_drawing++;
     widget_draw_hook(this->user_data());
     gl_window_drawing--;
+    if (begun) {
+        draw_end();
+    }
+    in_draw = was;
+    begun = had;
 }
 
 //  Fl_Gl_Window::draw_overlay isn't pure, and does nothing, as the Ada
@@ -235,6 +253,38 @@ void fl_gl_window_set_swap_interval(GLWINDOW w, int f) {
 
 void fl_gl_window_draw(GLWINDOW n) {
     static_cast<My_Gl_Window*>(n)->Fl_Gl_Window::draw();
+}
+
+//  Each returns 0, doing nothing, out of order:  Draw_Begin only in the
+//  window's own draw() and not begun, the other two only once begun.
+
+int fl_gl_window_draw_begin(GLWINDOW n) {
+    My_Gl_Window * g = static_cast<My_Gl_Window*>(n);
+    if (!g->in_draw || g->begun) {
+        return 0;
+    }
+    g->begun = true;
+    g->draw_begin();
+    return 1;
+}
+
+int fl_gl_window_draw_window(GLWINDOW n) {
+    My_Gl_Window * g = static_cast<My_Gl_Window*>(n);
+    if (!g->in_draw || !g->begun) {
+        return 0;
+    }
+    g->Fl_Window::draw();
+    return 1;
+}
+
+int fl_gl_window_draw_end(GLWINDOW n) {
+    My_Gl_Window * g = static_cast<My_Gl_Window*>(n);
+    if (!g->in_draw || !g->begun) {
+        return 0;
+    }
+    g->begun = false;
+    g->draw_end();
+    return 1;
 }
 
 int fl_gl_window_handle(GLWINDOW n, int e) {

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>glu.h Binding Map</title>
+    <link href="map.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+
+<h2>glu.h Binding Map</h2>
+
+
+<a href="index.html">Back to Index</a>
+
+
+<p>Part of the separate library fltkada_glu (fltkada_glu.gpr), built only where pkg-config finds glu, after pofltk's FlGlu. FLTK.GLU binds the part of GLU, OpenGL's utility library, that FLTK's programs use: the view matrices and quadrics. FLTK's FL/glu.h only includes the system's GL/glu.h. The rest of GLU (tessellators, NURBS, mipmaps, project and unproject) is not bound.</p>
+
+
+<table class="package">
+  <tr><th colspan="2">Package name</th></tr>
+
+  <tr>
+    <td>glu.h</td>
+    <td>FLTK.GLU</td>
+  </tr>
+
+</table>
+
+<p><b>Note:</b><br /><br />
+Call these where a GL context is current: in a GL window's Draw, or between Draw_Begin and
+Draw_End. Outside one, they do nothing (test_glu checks this with Mesa). A Quadric is closed
+(gluDeleteQuadric) by Close or when it is finalized; any call on a closed one but Close and
+Is_Closed raises Program_Error. Create raises Storage_Error if gluNewQuadric returns null. The
+counts of slices, stacks and loops are Positive, as pofltk requires. The enumerations replace
+GLU's GLenum constants, so a value GLU hasn't can't be passed, and a Viewport_Area is a record,
+so it can't be short of four values.</p>
+
+
+
+<table class="type">
+  <tr><th colspan="2">Types</th></tr>
+
+  <tr>
+    <td>GLUquadric</td>
+    <td>Quadric</td>
+  </tr>
+  <tr>
+    <td>GLU_POINT, GLU_LINE, GLU_FILL, GLU_SILHOUETTE</td>
+    <td>Draw_Style</td>
+  </tr>
+  <tr>
+    <td>GLU_SMOOTH, GLU_FLAT, GLU_NONE</td>
+    <td>Normal_Kind</td>
+  </tr>
+  <tr>
+    <td>GLU_OUTSIDE, GLU_INSIDE</td>
+    <td>Orientation</td>
+  </tr>
+  <tr>
+    <td>GLint viewport[4]</td>
+    <td>Viewport_Area</td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Constructors</th></tr>
+
+  <tr>
+<td><pre>
+GLUquadric *gluNewQuadric();
+</pre></td>
+<td><pre>
+function Create
+    return Quadric;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<table class="function">
+  <tr><th colspan="2">Functions and Procedures</th></tr>
+
+  <tr>
+<td><pre>
+void gluPerspective(GLdouble fovy, GLdouble aspect,
+    GLdouble zNear, GLdouble zFar);
+</pre></td>
+<td><pre>
+procedure Perspective
+       (Field_Of_View_Y : in Long_Float;
+        Aspect          : in Long_Float;
+        Near, Far       : in Long_Float);
+</pre></td>
+  </tr>
+  <tr>
+<td><pre>
+void gluLookAt(GLdouble eyeX, GLdouble eyeY, GLdouble eyeZ,
+    GLdouble centerX, GLdouble centerY, GLdouble centerZ,
+    GLdouble upX, GLdouble upY, GLdouble upZ);
+</pre></td>
+<td><pre>
+procedure Look_At
+       (Eye_X, Eye_Y, Eye_Z          : in Long_Float;
+        Centre_X, Centre_Y, Centre_Z : in Long_Float;
+        Up_X, Up_Y, Up_Z             : in Long_Float);
+</pre></td>
+  </tr>
+  <tr>
+<td><pre>
+void gluOrtho2D(GLdouble left, GLdouble right,
+    GLdouble bottom, GLdouble top);
+</pre></td>
+<td><pre>
+procedure Ortho_2D
+       (Left, Right, Bottom, Top : in Long_Float);
+</pre></td>
+  </tr>
+  <tr>
+<td><pre>
+void gluPickMatrix(GLdouble x, GLdouble y,
+    GLdouble delX, GLdouble delY, GLint *viewport);
+</pre></td>
+<td><pre>
+procedure Pick_Matrix
+       (X, Y, W, H : in Long_Float;
+        Viewport   : in Viewport_Area);
+</pre></td>
+  </tr>
+  <tr>
+<td><pre>
+void gluQuadricDrawStyle(GLUquadric *quad, GLenum draw);
+</pre></td>
+<td><pre>
+procedure Set_Draw_Style
+       (This  : in out Quadric;
+        Style : in     Draw_Style);
+</pre></td>
+  </tr>
+  <tr>
+<td><pre>
+void gluQuadricNormals(GLUquadric *quad, GLenum normal);
+</pre></td>
+<td><pre>
+procedure Set_Normals
+       (This    : in out Quadric;
+        Normals : in     Normal_Kind);
+</pre></td>
+  </tr>
+  <tr>
+<td><pre>
+void gluQuadricOrientation(GLUquadric *quad, GLenum orientation);
+</pre></td>
+<td><pre>
+procedure Set_Orientation
+       (This : in out Quadric;
+        Way  : in     Orientation);
+</pre></td>
+  </tr>
+  <tr>
+<td><pre>
+void gluQuadricTexture(GLUquadric *quad, GLboolean texture);
+</pre></td>
+<td><pre>
+procedure Set_Texture
+       (This : in out Quadric;
+        To   : in     Boolean);
+</pre></td>
+  </tr>
+  <tr>
+<td><pre>
+void gluCylinder(GLUquadric *quad, GLdouble base, GLdouble top,
+    GLdouble height, GLint slices, GLint stacks);
+</pre></td>
+<td><pre>
+procedure Cylinder
+       (This           : in out Quadric;
+        Base, Top      : in     Long_Float;
+        Height         : in     Long_Float;
+        Slices, Stacks : in     Positive);
+</pre></td>
+  </tr>
+  <tr>
+<td><pre>
+void gluSphere(GLUquadric *quad, GLdouble radius,
+    GLint slices, GLint stacks);
+</pre></td>
+<td><pre>
+procedure Sphere
+       (This           : in out Quadric;
+        Radius         : in     Long_Float;
+        Slices, Stacks : in     Positive);
+</pre></td>
+  </tr>
+  <tr>
+<td><pre>
+void gluDisk(GLUquadric *quad, GLdouble inner, GLdouble outer,
+    GLint slices, GLint loops);
+</pre></td>
+<td><pre>
+procedure Disk
+       (This          : in out Quadric;
+        Inner, Outer  : in     Long_Float;
+        Slices, Loops : in     Positive);
+</pre></td>
+  </tr>
+  <tr>
+<td><pre>
+void gluPartialDisk(GLUquadric *quad, GLdouble inner, GLdouble outer,
+    GLint slices, GLint loops, GLdouble start, GLdouble sweep);
+</pre></td>
+<td><pre>
+procedure Partial_Disk
+       (This          : in out Quadric;
+        Inner, Outer  : in     Long_Float;
+        Slices, Loops : in     Positive;
+        Start, Sweep  : in     Long_Float);
+</pre></td>
+  </tr>
+  <tr>
+<td><pre>
+void gluDeleteQuadric(GLUquadric *quad);
+</pre></td>
+<td><pre>
+procedure Close
+       (This : in out Quadric);
+</pre></td>
+  </tr>
+  <tr>
+<td><pre>
+&nbsp;
+</pre></td>
+<td><pre>
+function Is_Closed
+       (This : in Quadric)
+    return Boolean;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+
+  </body>
+</html>

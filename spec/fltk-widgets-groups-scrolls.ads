@@ -116,6 +116,18 @@ package FLTK.Widgets.Groups.Scrolls is
            (This : in out Scroll;
             To   : in     Integer);
 
+    --  Fl_Scroll::scrollbar.align (): where the scrollbars go.  Align_Left
+    --  puts the vertical one at the left, Align_Top the horizontal one at
+    --  the top; otherwise they are right and bottom.  Starts as
+    --  Align_Bottom, a valuator's default (Fl_Scroll.cxx).
+    function Get_Scrollbar_Alignment
+           (This : in Scroll)
+        return Alignment;
+
+    procedure Set_Scrollbar_Alignment
+           (This : in out Scroll;
+            To   : in     Alignment);
+
     function Get_Kind
            (This : in Scroll)
         return Scroll_Kind;
@@ -185,6 +197,8 @@ private
 
     pragma Inline (Get_Scrollbar_Size);
     pragma Inline (Set_Scrollbar_Size);
+    pragma Inline (Get_Scrollbar_Alignment);
+    pragma Inline (Set_Scrollbar_Alignment);
     pragma Inline (Get_Kind);
     pragma Inline (Set_Kind);
 

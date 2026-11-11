@@ -8,6 +8,10 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Widget.H>
 #include <FL/platform.H>
+//  FL/names.h defines its tables in each file that includes it, so only
+//  this one does.
+#include <FL/names.h>
+#include <stddef.h>
 #include "c_fl.h"
 
 
@@ -213,7 +217,42 @@ int fl_api_version() {
 }
 
 double fl_version() {
-    return Fl::version();
+    return Fl::api_version() / 10000.0;
+}
+
+double fl_built_version() {
+    return FL_API_VERSION / 10000.0;
+}
+
+int fl_built_api_version() {
+    return FL_API_VERSION;
+}
+
+int fl_built_abi_version() {
+    return FL_ABI_VERSION;
+}
+
+
+
+
+//  names.h's tables.  A number outside a table, or one of the reasons'
+//  gaps, which are NULL, has no name.
+
+template <size_t N>
+static const char * name_in(const char * const (&table)[N], int i) {
+    return i >= 0 && size_t(i) < N ? table[i] : 0;
+}
+
+const char * fl_names_event(int e) {
+    return name_in(fl_eventnames, e);
+}
+
+const char * fl_names_font(int f) {
+    return name_in(fl_fontnames, f);
+}
+
+const char * fl_names_reason(int r) {
+    return name_in(fl_callback_reason_names, r);
 }
 
 

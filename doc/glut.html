@@ -231,6 +231,11 @@ Get (Window_Parent) is 0 when the parent isn't a GLUT window.</p>
     <td>Stroke_Font</td>
   </tr>
 
+  <tr>
+    <td>GLint (slices, stacks, sides, rings)</td>
+    <td>Shape_Count</td>
+  </tr>
+
 </table>
 
 
@@ -1192,6 +1197,200 @@ function Stroke_Height
 
 </table>
 
+<table class="function">
+  <tr><th colspan="2">Shapes</th></tr>
+
+  <tr>
+<td><pre>
+void glutWireSphere(GLdouble radius, GLint slices, GLint stacks);
+</pre></td>
+<td><pre>
+procedure Wire_Sphere
+       (Radius         : in Long_Float;
+        Slices, Stacks : in Shape_Count);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutSolidSphere(GLdouble radius, GLint slices, GLint stacks);
+</pre></td>
+<td><pre>
+procedure Solid_Sphere
+       (Radius         : in Long_Float;
+        Slices, Stacks : in Shape_Count);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutWireCone(GLdouble base, GLdouble height,
+    GLint slices, GLint stacks);
+</pre></td>
+<td><pre>
+procedure Wire_Cone
+       (Base, Height   : in Long_Float;
+        Slices, Stacks : in Shape_Count);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutSolidCone(GLdouble base, GLdouble height,
+    GLint slices, GLint stacks);
+</pre></td>
+<td><pre>
+procedure Solid_Cone
+       (Base, Height   : in Long_Float;
+        Slices, Stacks : in Shape_Count);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutWireTorus(GLdouble innerRadius, GLdouble outerRadius,
+    GLint sides, GLint rings);
+</pre></td>
+<td><pre>
+procedure Wire_Torus
+       (Inner_Radius, Outer_Radius : in Long_Float;
+        Sides, Rings               : in Shape_Count);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutSolidTorus(GLdouble innerRadius, GLdouble outerRadius,
+    GLint sides, GLint rings);
+</pre></td>
+<td><pre>
+procedure Solid_Torus
+       (Inner_Radius, Outer_Radius : in Long_Float;
+        Sides, Rings               : in Shape_Count);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutWireCube(GLdouble size);
+</pre></td>
+<td><pre>
+procedure Wire_Cube
+       (Size : in Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutSolidCube(GLdouble size);
+</pre></td>
+<td><pre>
+procedure Solid_Cube
+       (Size : in Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutWireTeapot(GLdouble size);
+</pre></td>
+<td><pre>
+procedure Wire_Teapot
+       (Size : in Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutSolidTeapot(GLdouble size);
+</pre></td>
+<td><pre>
+procedure Solid_Teapot
+       (Size : in Long_Float);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutWireTetrahedron();
+</pre></td>
+<td><pre>
+procedure Wire_Tetrahedron;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutSolidTetrahedron();
+</pre></td>
+<td><pre>
+procedure Solid_Tetrahedron;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutWireOctahedron();
+</pre></td>
+<td><pre>
+procedure Wire_Octahedron;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutSolidOctahedron();
+</pre></td>
+<td><pre>
+procedure Solid_Octahedron;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutWireDodecahedron();
+</pre></td>
+<td><pre>
+procedure Wire_Dodecahedron;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutSolidDodecahedron();
+</pre></td>
+<td><pre>
+procedure Solid_Dodecahedron;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutWireIcosahedron();
+</pre></td>
+<td><pre>
+procedure Wire_Icosahedron;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void glutSolidIcosahedron();
+</pre></td>
+<td><pre>
+procedure Solid_Icosahedron;
+</pre></td>
+  </tr>
+
+</table>
+
+
+
+<p><b>Note:</b><br /><br />
+The shapes raise Program_Error without a GL context, as the stroke fonts do,
+and Constraint_Error for a count outside Shape_Count, 1 to 65_536, since FLTK
+allocates tables of that size with no limit (F36).</p>
+
 <p><b>Note:</b><br /><br />
 The bitmap font subprograms, Stroke_Character and Stroke_String raise
 Program_Error without a GL context (pofltk 111). Bitmap_Character moves the
@@ -1204,15 +1403,6 @@ crashes (pofltk 134).</p>
 
 <table class="function">
   <tr><th colspan="2">Not Bound</th></tr>
-
-  <tr>
-<td><pre>
-void glutWireSphere(GLdouble radius, GLint slices, GLint stacks);
-void glutSolidSphere(GLdouble radius, GLint slices, GLint stacks);
-... and the other glutWire* and glutSolid* geometric models
-</pre></td>
-<td>Not bound.</td>
-  </tr>
 
   <tr>
 <td><pre>

@@ -59,6 +59,9 @@ extern "C" void fl_gl_window_set_swap_interval(GLWINDOW w, int f);
 
 
 extern "C" void fl_gl_window_draw(GLWINDOW n);
+extern "C" int fl_gl_window_draw_begin(GLWINDOW n);
+extern "C" int fl_gl_window_draw_window(GLWINDOW n);
+extern "C" int fl_gl_window_draw_end(GLWINDOW n);
 extern "C" int fl_gl_window_handle(GLWINDOW n, int e);
 
 

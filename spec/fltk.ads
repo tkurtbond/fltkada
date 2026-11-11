@@ -651,12 +651,49 @@ package FLTK is
 
 
 
+    --  Names  --
+
+    --  The names FL/names.h gives FLTK's constants, as in C++:  "FL_PUSH",
+    --  "FL_COURIER", "FL_REASON_ENTER_KEY".  A font or reason without
+    --  one, such as a font past Zapf_Dingbats or a reason between
+    --  Reason_Enter_Key and Reason_User, gives "".  Reasons from
+    --  Reason_User to Reason_User + 3 have names.
+    function Event_Name
+           (Event : in Event_Kind)
+        return String;
+
+    function Font_Constant_Name
+           (Font : in Font_Kind)
+        return String;
+
+    function Reason_Name
+           (Reason : in Callback_Reason)
+        return String;
+
+
+
+
     --  Versioning  --
 
     type Version_Number is new Natural;
 
+    --  FL_API_VERSION / 10000.0, FL_API_VERSION and FL_ABI_VERSION: the
+    --  versions of the FLTK headers FLTKAda's shim was compiled with.
+    --  Version, API_Version and ABI_Version give the library running,
+    --  which should match.
+    function Built_Version
+        return Long_Float;
+
+    function Built_API_Version
+        return Version_Number;
+
+    function Built_ABI_Version
+        return Version_Number;
+
+    --  Whether the library running has the ABI given, by default the one
+    --  FLTKAda's shim was compiled with.
     function ABI_Check
-           (ABI_Ver : in Version_Number)
+           (ABI_Ver : in Version_Number := Built_ABI_Version)
         return Boolean;
 
     function ABI_Version
@@ -665,8 +702,11 @@ package FLTK is
     function API_Version
         return Version_Number;
 
+    --  Fl::version: the version of the library running, as major +
+    --  minor / 100 + patch / 10000, so 1.0405 for FLTK 1.4.5.  It was a
+    --  Version_Number, and so 1 (FLTKAda-BUGS.md 126).
     function Version
-        return Version_Number;
+        return Long_Float;
 
 
 
@@ -1018,6 +1058,9 @@ private
     pragma Inline (Frame);
     pragma Inline (Down);
 
+    pragma Inline (Built_Version);
+    pragma Inline (Built_API_Version);
+    pragma Inline (Built_ABI_Version);
     pragma Inline (ABI_Check);
     pragma Inline (ABI_Version);
     pragma Inline (API_Version);

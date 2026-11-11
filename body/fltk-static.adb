@@ -530,6 +530,10 @@ package body FLTK.Static is
     pragma Import (C, fl_static_set_scheme, "fl_static_set_scheme");
     pragma Inline (fl_static_set_scheme);
 
+    procedure fl_static_set_system_scheme;
+    pragma Import (C, fl_static_set_system_scheme, "fl_static_set_system_scheme");
+    pragma Inline (fl_static_set_system_scheme);
+
     function fl_static_is_scheme
            (S : in Interfaces.C.char_array)
         return Interfaces.C.int;
@@ -1891,6 +1895,12 @@ package body FLTK.Static is
         --  A copy of the Scheme string is stored in FLTK
         fl_static_set_scheme (Interfaces.C.To_C (To));
     end Set_Scheme;
+
+
+    procedure Set_System_Scheme is
+    begin
+        fl_static_set_system_scheme;
+    end Set_System_Scheme;
 
 
     function Is_Scheme

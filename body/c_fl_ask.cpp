@@ -74,16 +74,18 @@ int fl_ask_choice_n(const char * m, const char * a, const char * b, const char *
     return fl_choice_n("%s", a, b, c, m);
 }
 
-const char * fl_ask_input(const char * m, const char * d) {
-    return fl_input("%s", d, m);
+//  X is the most characters the user may type, or 0 for no limit
+//  (fl_ask.cxx:330-381).  The text stays FLTK's until the next dialog.
+const char * fl_ask_input(int x, const char * m, const char * d) {
+    return fl_input(x, "%s", d, m);
 }
 
 void fl_ask_message(const char * m) {
     fl_message("%s", m);
 }
 
-const char * fl_ask_password(const char * m, const char * d) {
-    return fl_password("%s", d, m);
+const char * fl_ask_password(int x, const char * m, const char * d) {
+    return fl_password(x, "%s", d, m);
 }
 
 

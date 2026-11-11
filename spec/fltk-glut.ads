@@ -235,6 +235,14 @@ package FLTK.GLUT is
     type Stroke_Font is (Roman, Mono_Roman);
 
 
+    --  The slices, stacks, sides and rings of GLUT's round shapes.  FLTK's
+    --  GLUT allocates tables this big for each shape it draws and has no
+    --  limit of its own, so a shape of a million slices would allocate
+    --  memory without end, and one it cannot allocate it reads freed
+    --  memory for (F36).  The limit is pofltk's.
+    subtype Shape_Count is Integer range 1 .. 65_536;
+
+
 
 
     --  Initialisation  --
@@ -542,6 +550,67 @@ package FLTK.GLUT is
     function Stroke_Height
            (Font : in Stroke_Font)
         return Float;
+
+
+
+
+    --  Shapes  --
+
+    --  GLUT's shapes, drawn with GL about the origin of the modelview
+    --  matrix, solid or as a wire frame.  Like the stroke fonts, they need
+    --  a GL context and raise Program_Error without one.
+
+    procedure Solid_Sphere
+           (Radius         : in Long_Float;
+            Slices, Stacks : in Shape_Count);
+
+    procedure Wire_Sphere
+           (Radius         : in Long_Float;
+            Slices, Stacks : in Shape_Count);
+
+    procedure Solid_Cone
+           (Base, Height   : in Long_Float;
+            Slices, Stacks : in Shape_Count);
+
+    procedure Wire_Cone
+           (Base, Height   : in Long_Float;
+            Slices, Stacks : in Shape_Count);
+
+    procedure Solid_Torus
+           (Inner_Radius, Outer_Radius : in Long_Float;
+            Sides, Rings               : in Shape_Count);
+
+    procedure Wire_Torus
+           (Inner_Radius, Outer_Radius : in Long_Float;
+            Sides, Rings               : in Shape_Count);
+
+    procedure Solid_Cube
+           (Size : in Long_Float);
+
+    procedure Wire_Cube
+           (Size : in Long_Float);
+
+    procedure Solid_Teapot
+           (Size : in Long_Float);
+
+    procedure Wire_Teapot
+           (Size : in Long_Float);
+
+    procedure Solid_Tetrahedron;
+
+    procedure Wire_Tetrahedron;
+
+    procedure Solid_Octahedron;
+
+    procedure Wire_Octahedron;
+
+    procedure Solid_Dodecahedron;
+
+    procedure Wire_Dodecahedron;
+
+    procedure Solid_Icosahedron;
+
+    procedure Wire_Icosahedron;
 
 
 

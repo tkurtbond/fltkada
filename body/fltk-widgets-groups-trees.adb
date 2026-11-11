@@ -210,6 +210,32 @@ package body FLTK.Widgets.Groups.Trees is
     pragma Import (C, fl_tree_deselect_all, "fl_tree_deselect_all");
     pragma Inline (fl_tree_deselect_all);
 
+    procedure fl_tree_select_toggle
+           (T    : in Storage.Integer_Address;
+            Item : in Storage.Integer_Address);
+    pragma Import (C, fl_tree_select_toggle, "fl_tree_select_toggle");
+    pragma Inline (fl_tree_select_toggle);
+
+    function fl_tree_first_selected
+           (T : in Storage.Integer_Address)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_tree_first_selected, "fl_tree_first_selected");
+    pragma Inline (fl_tree_first_selected);
+
+    function fl_tree_last_selected
+           (T : in Storage.Integer_Address)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_tree_last_selected, "fl_tree_last_selected");
+    pragma Inline (fl_tree_last_selected);
+
+    function fl_tree_next_selected
+           (T    : in Storage.Integer_Address;
+            Item : in Storage.Integer_Address;
+            Up   : in Interfaces.C.int)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_tree_next_selected, "fl_tree_next_selected");
+    pragma Inline (fl_tree_next_selected);
+
     function fl_tree_selected_count
            (T : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -518,6 +544,44 @@ package body FLTK.Widgets.Groups.Trees is
     pragma Import (C, fl_tree_set_scrollbar_size, "fl_tree_set_scrollbar_size");
     pragma Inline (fl_tree_set_scrollbar_size);
 
+    function fl_tree_displayed
+           (T    : in Storage.Integer_Address;
+            Item : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_displayed, "fl_tree_displayed");
+    pragma Inline (fl_tree_displayed);
+
+    procedure fl_tree_show_item
+           (T    : in Storage.Integer_Address;
+            Item : in Storage.Integer_Address);
+    pragma Import (C, fl_tree_show_item, "fl_tree_show_item");
+    pragma Inline (fl_tree_show_item);
+
+    procedure fl_tree_show_item_top
+           (T    : in Storage.Integer_Address;
+            Item : in Storage.Integer_Address);
+    pragma Import (C, fl_tree_show_item_top, "fl_tree_show_item_top");
+    pragma Inline (fl_tree_show_item_top);
+
+    procedure fl_tree_show_item_middle
+           (T    : in Storage.Integer_Address;
+            Item : in Storage.Integer_Address);
+    pragma Import (C, fl_tree_show_item_middle, "fl_tree_show_item_middle");
+    pragma Inline (fl_tree_show_item_middle);
+
+    procedure fl_tree_show_item_bottom
+           (T    : in Storage.Integer_Address;
+            Item : in Storage.Integer_Address);
+    pragma Import (C, fl_tree_show_item_bottom, "fl_tree_show_item_bottom");
+    pragma Inline (fl_tree_show_item_bottom);
+
+    procedure fl_tree_show_item_offset
+           (T    : in Storage.Integer_Address;
+            Item : in Storage.Integer_Address;
+            Y    : in Interfaces.C.int);
+    pragma Import (C, fl_tree_show_item_offset, "fl_tree_show_item_offset");
+    pragma Inline (fl_tree_show_item_offset);
+
 
 
 
@@ -630,6 +694,25 @@ package body FLTK.Widgets.Groups.Trees is
 
 
     -----------------------
+    --  Item Validation  --
+    -----------------------
+
+    --  FLTK dereferences the item given to most Fl_Tree calls, so a null
+    --  one crashes it (Fl_Tree.cxx, e.g. 1463, 1520, 1728); bug 127.
+    function Item_Ptr
+           (Item : in FLTK.Tree_Items.Tree_Item)
+        return Storage.Integer_Address is
+    begin
+        if FLTK.Tree_Items.Is_Null (Item) then
+            raise Constraint_Error with "No_Tree_Item given to a tree";
+        end if;
+        return Storage.To_Integer (FLTK.Tree_Items.Address_Of (Item));
+    end Item_Ptr;
+
+
+
+
+    -----------------------
     --  API Subprograms  --
     -----------------------
 
@@ -671,7 +754,7 @@ package body FLTK.Widgets.Groups.Trees is
            (Storage.To_Address
               (fl_tree_insert
                  (This.Void_Ptr,
-                  Storage.To_Integer (FLTK.Tree_Items.Address_Of (Under)),
+                  Item_Ptr (Under),
                   Interfaces.C.To_C (Name),
                   Interfaces.C.int (Place))));
     end Insert;
@@ -687,7 +770,7 @@ package body FLTK.Widgets.Groups.Trees is
            (Storage.To_Address
               (fl_tree_insert_above
                  (This.Void_Ptr,
-                  Storage.To_Integer (FLTK.Tree_Items.Address_Of (Above)),
+                  Item_Ptr (Above),
                   Interfaces.C.To_C (Name))));
     end Insert_Above;
 
@@ -696,7 +779,7 @@ package body FLTK.Widgets.Groups.Trees is
            (This : in out Tree;
             Item : in     FLTK.Tree_Items.Tree_Item) is
     begin
-        fl_tree_remove (This.Void_Ptr, Storage.To_Integer (FLTK.Tree_Items.Address_Of (Item)));
+        fl_tree_remove (This.Void_Ptr, Item_Ptr (Item));
         FLTK.Tree_Icons.Drop_Unused (This.Void_Ptr);
     end Remove;
 
@@ -713,9 +796,7 @@ package body FLTK.Widgets.Groups.Trees is
            (This : in out Tree;
             Item : in     FLTK.Tree_Items.Tree_Item) is
     begin
-        fl_tree_clear_children
-           (This.Void_Ptr,
-            Storage.To_Integer (FLTK.Tree_Items.Address_Of (Item)));
+        fl_tree_clear_children (This.Void_Ptr, Item_Ptr (Item));
         FLTK.Tree_Icons.Drop_Unused (This.Void_Ptr);
     end Clear_Children;
 
@@ -833,7 +914,7 @@ package body FLTK.Widgets.Groups.Trees is
            (This : in out Tree;
             Item : in     FLTK.Tree_Items.Tree_Item) is
     begin
-        fl_tree_open (This.Void_Ptr, Storage.To_Integer (FLTK.Tree_Items.Address_Of (Item)));
+        fl_tree_open (This.Void_Ptr, Item_Ptr (Item));
     end Open;
 
 
@@ -841,7 +922,7 @@ package body FLTK.Widgets.Groups.Trees is
            (This : in out Tree;
             Item : in     FLTK.Tree_Items.Tree_Item) is
     begin
-        fl_tree_close (This.Void_Ptr, Storage.To_Integer (FLTK.Tree_Items.Address_Of (Item)));
+        fl_tree_close (This.Void_Ptr, Item_Ptr (Item));
     end Close;
 
 
@@ -849,7 +930,7 @@ package body FLTK.Widgets.Groups.Trees is
            (This : in out Tree;
             Item : in     FLTK.Tree_Items.Tree_Item) is
     begin
-        fl_tree_open_toggle (This.Void_Ptr, Storage.To_Integer (FLTK.Tree_Items.Address_Of (Item)));
+        fl_tree_open_toggle (This.Void_Ptr, Item_Ptr (Item));
     end Open_Toggle;
 
 
@@ -861,7 +942,7 @@ package body FLTK.Widgets.Groups.Trees is
            (This : in out Tree;
             Item : in     FLTK.Tree_Items.Tree_Item) is
     begin
-        fl_tree_select (This.Void_Ptr, Storage.To_Integer (FLTK.Tree_Items.Address_Of (Item)));
+        fl_tree_select (This.Void_Ptr, Item_Ptr (Item));
     end Select_Item;
 
 
@@ -869,7 +950,7 @@ package body FLTK.Widgets.Groups.Trees is
            (This : in out Tree;
             Item : in     FLTK.Tree_Items.Tree_Item) is
     begin
-        fl_tree_deselect (This.Void_Ptr, Storage.To_Integer (FLTK.Tree_Items.Address_Of (Item)));
+        fl_tree_deselect (This.Void_Ptr, Item_Ptr (Item));
     end Deselect;
 
 
@@ -887,6 +968,50 @@ package body FLTK.Widgets.Groups.Trees is
     begin
         return Natural (fl_tree_deselect_all (This.Void_Ptr));
     end Deselect_All;
+
+
+    procedure Select_Toggle
+           (This : in out Tree;
+            Item : in     FLTK.Tree_Items.Tree_Item) is
+    begin
+        fl_tree_select_toggle (This.Void_Ptr, Item_Ptr (Item));
+    end Select_Toggle;
+
+
+    function First_Selected
+           (This : in Tree)
+        return FLTK.Tree_Items.Tree_Item is
+    begin
+        return FLTK.Tree_Items.Cast (Storage.To_Address (fl_tree_first_selected (This.Void_Ptr)));
+    end First_Selected;
+
+
+    function Last_Selected
+           (This : in Tree)
+        return FLTK.Tree_Items.Tree_Item is
+    begin
+        return FLTK.Tree_Items.Cast (Storage.To_Address (fl_tree_last_selected (This.Void_Ptr)));
+    end Last_Selected;
+
+
+    function Next_Selected
+           (This : in Tree;
+            Item : in FLTK.Tree_Items.Tree_Item)
+        return FLTK.Tree_Items.Tree_Item is
+    begin
+        return FLTK.Tree_Items.Cast (Storage.To_Address (fl_tree_next_selected
+           (This.Void_Ptr, Storage.To_Integer (FLTK.Tree_Items.Address_Of (Item)), 0)));
+    end Next_Selected;
+
+
+    function Prev_Selected
+           (This : in Tree;
+            Item : in FLTK.Tree_Items.Tree_Item)
+        return FLTK.Tree_Items.Tree_Item is
+    begin
+        return FLTK.Tree_Items.Cast (Storage.To_Address (fl_tree_next_selected
+           (This.Void_Ptr, Storage.To_Integer (FLTK.Tree_Items.Address_Of (Item)), 1)));
+    end Prev_Selected;
 
 
     function Selected_Items
@@ -1443,6 +1568,64 @@ package body FLTK.Widgets.Groups.Trees is
     begin
         fl_tree_set_scrollbar_size (This.Void_Ptr, Interfaces.C.int (Value));
     end Set_Scrollbar_Size;
+
+
+    function Is_Displayed
+           (This : in Tree;
+            Item : in FLTK.Tree_Items.Tree_Item)
+        return Boolean is
+    begin
+        return fl_tree_displayed
+           (This.Void_Ptr, Storage.To_Integer (FLTK.Tree_Items.Address_Of (Item))) /= 0;
+    end Is_Displayed;
+
+
+    procedure Show_Item
+           (This : in out Tree;
+            Item : in     FLTK.Tree_Items.Tree_Item) is
+    begin
+        fl_tree_show_item
+           (This.Void_Ptr, Storage.To_Integer (FLTK.Tree_Items.Address_Of (Item)));
+    end Show_Item;
+
+
+    procedure Show_Item
+           (This   : in out Tree;
+            Item   : in     FLTK.Tree_Items.Tree_Item;
+            Offset : in     Integer) is
+    begin
+        fl_tree_show_item_offset
+           (This.Void_Ptr,
+            Storage.To_Integer (FLTK.Tree_Items.Address_Of (Item)),
+            Interfaces.C.int (Offset));
+    end Show_Item;
+
+
+    procedure Show_Item_Top
+           (This : in out Tree;
+            Item : in     FLTK.Tree_Items.Tree_Item) is
+    begin
+        fl_tree_show_item_top
+           (This.Void_Ptr, Storage.To_Integer (FLTK.Tree_Items.Address_Of (Item)));
+    end Show_Item_Top;
+
+
+    procedure Show_Item_Middle
+           (This : in out Tree;
+            Item : in     FLTK.Tree_Items.Tree_Item) is
+    begin
+        fl_tree_show_item_middle
+           (This.Void_Ptr, Storage.To_Integer (FLTK.Tree_Items.Address_Of (Item)));
+    end Show_Item_Middle;
+
+
+    procedure Show_Item_Bottom
+           (This : in out Tree;
+            Item : in     FLTK.Tree_Items.Tree_Item) is
+    begin
+        fl_tree_show_item_bottom
+           (This.Void_Ptr, Storage.To_Integer (FLTK.Tree_Items.Address_Of (Item)));
+    end Show_Item_Bottom;
 
 
 

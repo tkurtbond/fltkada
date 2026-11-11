@@ -408,6 +408,27 @@ void fl_widget_set_labelsize(WIDGET w, int s) {
     static_cast<Fl_Widget*>(w)->labelsize(static_cast<Fl_Fontsize>(s));
 }
 
+//  Which is 0 for the horizontal margin, 1 for the vertical and 2 for
+//  the image spacing.  FLTK casts each to a byte (Fl_Widget.H:700-725),
+//  so the Ada side checks the range.
+int fl_widget_get_label_margin(WIDGET w, int which) {
+    Fl_Widget * o = static_cast<Fl_Widget*>(w);
+    switch (which) {
+    case 0: return o->horizontal_label_margin();
+    case 1: return o->vertical_label_margin();
+    default: return o->label_image_spacing();
+    }
+}
+
+void fl_widget_set_label_margin(WIDGET w, int which, int px) {
+    Fl_Widget * o = static_cast<Fl_Widget*>(w);
+    switch (which) {
+    case 0: o->horizontal_label_margin(px); break;
+    case 1: o->vertical_label_margin(px); break;
+    default: o->label_image_spacing(px); break;
+    }
+}
+
 int fl_widget_get_labeltype(WIDGET w) {
     return static_cast<Fl_Widget*>(w)->labeltype();
 }

@@ -23,6 +23,10 @@ extern "C" void fl_text_input_draw(TEXTINPUT t);
 extern "C" int fl_text_input_handle(TEXTINPUT t, int e);
 
 
+extern "C" const char * fl_text_input_get_menu_text(int which);
+extern "C" void fl_text_input_set_menu_text(int which, const char * text);
+
+
 #endif
 
 

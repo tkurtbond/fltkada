@@ -45,6 +45,10 @@ package FLTK.Widgets.Groups.Trees is
 
     --  Item Creation and Removal  --
 
+    --  Every call here that takes an item, except Add, Item_Pathname and
+    --  those that say what a null item means, raises Constraint_Error if
+    --  it is null (No_Tree_Item), where FLTK would crash (bug 127).
+
     --  Path components are separated by '/', eg. "Flintstones/Fred" --
     --  any parent items named along the way that don't already exist
     --  are created automatically.
@@ -184,6 +188,35 @@ package FLTK.Widgets.Groups.Trees is
     function Deselect_All
            (This : in out Tree)
         return Natural;
+
+    --  Selects Item if it isn't selected, deselects it if it is, and calls
+    --  the callback with Reason Selected or Deselected.
+    procedure Select_Toggle
+           (This : in out Tree;
+            Item : in     FLTK.Tree_Items.Tree_Item);
+
+    --  The first or last selected item in the whole tree, open or not,
+    --  or null if none is selected.
+    function First_Selected
+           (This : in Tree)
+        return FLTK.Tree_Items.Tree_Item;
+
+    function Last_Selected
+           (This : in Tree)
+        return FLTK.Tree_Items.Tree_Item;
+
+    --  The next selected item after Item, or before it, or null if there
+    --  is none.  A null Item starts from the first or the last item, so
+    --  Next_Selected (T, No_Tree_Item) is First_Selected (T).
+    function Next_Selected
+           (This : in Tree;
+            Item : in FLTK.Tree_Items.Tree_Item)
+        return FLTK.Tree_Items.Tree_Item;
+
+    function Prev_Selected
+           (This : in Tree;
+            Item : in FLTK.Tree_Items.Tree_Item)
+        return FLTK.Tree_Items.Tree_Item;
 
     function Selected_Items
            (This : in Tree)
@@ -457,6 +490,39 @@ package FLTK.Widgets.Groups.Trees is
            (This  : in out Tree;
             Value : in     Integer);
 
+    --  Whether Item is wholly inside the tree's area.  Items get their
+    --  positions when the tree is drawn, so this, and the Show_Item calls
+    --  below, need a tree that has been drawn (Fl_Tree.cxx:2359-2433).
+    --  In all of them a null Item means First.
+    function Is_Displayed
+           (This : in Tree;
+            Item : in FLTK.Tree_Items.Tree_Item)
+        return Boolean;
+
+    --  Scrolls Item to the top, if it isn't displayed already.
+    procedure Show_Item
+           (This : in out Tree;
+            Item : in     FLTK.Tree_Items.Tree_Item);
+
+    --  Scrolls so that Item is Offset pixels below the top, as far as the
+    --  tree can scroll.
+    procedure Show_Item
+           (This   : in out Tree;
+            Item   : in     FLTK.Tree_Items.Tree_Item;
+            Offset : in     Integer);
+
+    procedure Show_Item_Top
+           (This : in out Tree;
+            Item : in     FLTK.Tree_Items.Tree_Item);
+
+    procedure Show_Item_Middle
+           (This : in out Tree;
+            Item : in     FLTK.Tree_Items.Tree_Item);
+
+    procedure Show_Item_Bottom
+           (This : in out Tree;
+            Item : in     FLTK.Tree_Items.Tree_Item);
+
 
 
 
@@ -527,6 +593,11 @@ private
     pragma Inline (Deselect);
     pragma Inline (Select_All);
     pragma Inline (Deselect_All);
+    pragma Inline (Select_Toggle);
+    pragma Inline (First_Selected);
+    pragma Inline (Last_Selected);
+    pragma Inline (Next_Selected);
+    pragma Inline (Prev_Selected);
 
     pragma Inline (Get_Show_Root);
     pragma Inline (Set_Show_Root);
@@ -582,6 +653,12 @@ private
     pragma Inline (Set_H_Position);
     pragma Inline (Get_Scrollbar_Size);
     pragma Inline (Set_Scrollbar_Size);
+
+    pragma Inline (Is_Displayed);
+    pragma Inline (Show_Item);
+    pragma Inline (Show_Item_Top);
+    pragma Inline (Show_Item_Middle);
+    pragma Inline (Show_Item_Bottom);
 
     pragma Inline (Show_Self);
 

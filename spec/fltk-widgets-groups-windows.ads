@@ -131,6 +131,28 @@ package FLTK.Widgets.Groups.Windows is
 
 
 
+    --  Maximize  --
+
+    --  Maximize fills the screen's work area with the window, and
+    --  Un_Maximize gives it back its size.  Each does nothing unless the
+    --  window is shown, at the top level, resizable and not full screen
+    --  (Fl_Window.cxx:1016-1033).  With no window manager, FLTK on X11
+    --  resizes the window itself; with one, and under Wayland, the window
+    --  manager or compositor does, later.
+    procedure Maximize
+           (This : in out Window);
+
+    procedure Un_Maximize
+           (This : in out Window);
+
+    --  From Maximize until Un_Maximize, or as the window manager says.
+    function Is_Maximized
+           (This : in Window)
+        return Boolean;
+
+
+
+
     --  Icons, Cursors  --
 
     --  The icon procedures do nothing on Wayland, whose window and screen
@@ -281,6 +303,39 @@ package FLTK.Widgets.Groups.Windows is
            (This  : in out Window;
             State : in     Boolean := True);
 
+    --  Lets the window manager place the window when it is next shown,
+    --  as Force_Position (This, False).
+    procedure Free_Position
+           (This : in out Window);
+
+    --  Whether Set_Size_Range has been called.  If not, FLTK decides a
+    --  size range as the window is shown, from its resizable widget, and
+    --  Get_Size_Range gives that, or zeros before.
+    function Has_Size_Range
+           (This : in Window)
+        return Boolean;
+
+    procedure Get_Size_Range
+           (This                           : in     Window;
+            Min_W, Min_H                   :    out Integer;
+            Max_W, Max_H, Incre_W, Incre_H :    out Integer;
+            Keep_Aspect                    :    out Boolean);
+
+    --  The screen the window is on, numbered 1 .. FLTK.Screen.Count as
+    --  FLTK.Screen numbers them.  A subwindow's is its top window's, and
+    --  a window never shown is on 1, unless set.
+    function Get_Screen_Num
+           (This : in Window)
+        return Positive;
+
+    --  The screen to show the window on.  Set it, and the window's place
+    --  on that screen, before Show:  a window shown keeps its screen.  A
+    --  screen outside 1 .. FLTK.Screen.Count raises Constraint_Error,
+    --  where FLTK would ignore it (pofltk's HaltScreenNum).
+    procedure Set_Screen_Num
+           (This : in out Window;
+            To   : in     Positive);
+
     function Get_X_Root
            (This : in Window)
         return Integer;
@@ -382,6 +437,10 @@ private
     pragma Inline (Fullscreen_Screens);
     pragma Inline (Fullscreen_Own_Screen);
 
+    pragma Inline (Maximize);
+    pragma Inline (Un_Maximize);
+    pragma Inline (Is_Maximized);
+
     pragma Inline (Set_Icon);
     pragma Inline (Set_Icons);
     pragma Inline (Reset_Icons);
@@ -416,6 +475,10 @@ private
     pragma Inline (Resize);
     pragma Inline (Is_Position_Forced);
     pragma Inline (Force_Position);
+    pragma Inline (Free_Position);
+    pragma Inline (Has_Size_Range);
+    pragma Inline (Get_Size_Range);
+    pragma Inline (Get_Screen_Num);
     pragma Inline (Get_X_Root);
     pragma Inline (Get_Y_Root);
     pragma Inline (Get_Decorated_W);

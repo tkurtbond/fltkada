@@ -31,6 +31,11 @@ package FLTK.Widgets is
     type Widget_Callback is access procedure
            (Item : in out Widget'Class);
 
+    --  FLTK keeps a label margin in a signed byte, and the spacing between
+    --  a label's image and its text in an unsigned one.
+    subtype Label_Margin is Integer range -128 .. 127;
+    subtype Label_Spacing is Integer range 0 .. 255;
+
 
 
 
@@ -306,6 +311,38 @@ package FLTK.Widgets is
            (This : in out Widget;
             Size : in     Font_Size);
 
+    --  The gap in pixels between the label and the widget's left and right
+    --  edges (horizontal) or top and bottom edges (vertical), on the sides
+    --  it is aligned to, both when centred (fl_labeltype.cxx:86-93).  It
+    --  can be negative.  A margin outside Label_Margin raises
+    --  Constraint_Error, where FLTK would wrap it (pofltk's
+    --  HaltLabelMargin).
+    function Get_Horizontal_Label_Margin
+           (This : in Widget)
+        return Label_Margin;
+
+    procedure Set_Horizontal_Label_Margin
+           (This : in out Widget;
+            To   : in     Label_Margin);
+
+    function Get_Vertical_Label_Margin
+           (This : in Widget)
+        return Label_Margin;
+
+    procedure Set_Vertical_Label_Margin
+           (This : in out Widget;
+            To   : in     Label_Margin);
+
+    --  The gap in pixels between the label's image and its text.  One
+    --  outside Label_Spacing raises Constraint_Error.
+    function Get_Label_Image_Spacing
+           (This : in Widget)
+        return Label_Spacing;
+
+    procedure Set_Label_Image_Spacing
+           (This : in out Widget;
+            To   : in     Label_Spacing);
+
     function Get_Label_Kind
            (This : in Widget)
         return Label_Kind;
@@ -314,9 +351,12 @@ package FLTK.Widgets is
            (This  : in out Widget;
             Label : in     Label_Kind);
 
+    --  The label's size, wrapped at Wrap pixels if Wrap is not 0, as
+    --  FLTK.Draw.Measure wraps.  0 and 0 for no label.
     procedure Measure_Label
            (This : in     Widget;
-            W, H :    out Integer);
+            W, H :    out Integer;
+            Wrap : in     Natural := 0);
 
 
 
@@ -661,6 +701,9 @@ private
     pragma Inline (Set_Label_Font);
     pragma Inline (Get_Label_Size);
     pragma Inline (Set_Label_Size);
+    pragma Inline (Get_Horizontal_Label_Margin);
+    pragma Inline (Get_Vertical_Label_Margin);
+    pragma Inline (Get_Label_Image_Spacing);
     pragma Inline (Get_Label_Kind);
     pragma Inline (Set_Label_Kind);
     pragma Inline (Measure_Label);

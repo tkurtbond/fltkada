@@ -151,6 +151,80 @@ procedure Test_GL is
     end Draws;
 
 
+    --  A window drawing with FLTK.Draw over its scene, between Draw_Begin
+    --  and Draw_End, and its widgets with Draw_Window.  With Unended, it
+    --  leaves Draw_End to FLTKAda.  It also tries the calls out of order.
+    type Mixed is new GL.GL_Window with record
+        Draws                    : Natural := 0;
+        Unended                  : Boolean := False;
+        Rect, Kid, Scene         : Pixel := (others => 0);
+        Error                    : C.unsigned := 1;
+        Early_End, Early_Window  : Boolean := False;   --  raised before Draw_Begin
+        Twice                    : Boolean := False;   --  raised at a second Draw_Begin
+    end record;
+
+    overriding procedure Draw
+           (This : in out Mixed);
+
+    --  The pixel at X, Y in This's units, from the top.
+    procedure Read_At
+           (This : in out Mixed;
+            X, Y : in     Integer;
+            P    :    out Pixel) is
+    begin
+        Read_Pixels (C.int (X * This.Pixel_W / This.Get_W),
+            C.int (This.Pixel_H - 1 - Y * This.Pixel_H / This.Get_H),
+            1, 1, GL_RGB, GL_Unsigned_Byte, P);
+    end Read_At;
+
+    overriding procedure Draw
+           (This : in out Mixed) is
+    begin
+        This.Draws := This.Draws + 1;
+        Viewport (0, 0, C.int (This.Pixel_W), C.int (This.Pixel_H));
+        Clear_Color (0.0, 0.0, 1.0, 1.0);
+        Clear (Color_Buffer_Bit);
+        begin
+            This.Draw_End;
+        exception
+        when Program_Error =>
+            This.Early_End := True;
+        end;
+        begin
+            This.Draw_Window;
+        exception
+        when Program_Error =>
+            This.Early_Window := True;
+        end;
+        This.Draw_Begin;
+        begin
+            This.Draw_Begin;
+        exception
+        when Program_Error =>
+            This.Twice := True;
+        end;
+        This.Draw_Window;
+        FLTK.Draw.Set_Color (Red_Color);
+        FLTK.Draw.Rect_Fill (0, 0, 10, 10);
+        if not This.Unended then
+            This.Draw_End;
+            Flush;
+            Read_At (This, 5, 5, This.Rect);
+            Read_At (This, 50, 5, This.Kid);
+            Read_At (This, 30, 30, This.Scene);
+            This.Error := Get_Error;
+        end if;
+    end Draw;
+
+    function RGB_Is
+           (P       : in Pixel;
+            R, G, B : in C.unsigned_char)
+        return Boolean is
+    begin
+        return P (1) = R and P (2) = G and P (3) = B;
+    end RGB_Is;
+
+
     --  A plain window, drawing with GL through Start.
     type Plain is new Win.Window with record
         Draws       : Natural := 0;
@@ -282,6 +356,63 @@ begin
         Window.Show;
         Draws (Window);
         Check (Window.R = 255, "a window after a finalized one draws");
+    end;
+
+    --  Draw_Begin, Draw_Window and Draw_End.
+    declare
+        Window : Mixed := (GL.Forge.Create (60, 40) with others => <>);
+        Green  : FLTK.Widgets.Boxes.Box := FLTK.Widgets.Boxes.Forge.Create (Window, 40, 0, 20, 20);
+        Raised : Boolean := False;
+    begin
+        Green.Set_Box (Flat_Box);
+        Green.Set_Background_Color (Green_Color);
+        begin
+            Window.Draw_Begin;
+        exception
+        when Program_Error =>
+            Raised := True;
+        end;
+        Check (Raised, "Draw_Begin outside the window's Draw raises (pofltk's HaltGlDrawBegin)");
+        Window.Show;
+        for K in 1 .. Limit loop
+            exit when Window.Draws > 0;
+            Ignore := Wait (0.02);
+        end loop;
+        Check (RGB_Is (Window.Rect, 255, 0, 0), "FLTK.Draw draws in a GL window, y down");
+        Check (RGB_Is (Window.Kid, 0, 255, 0), "Draw_Window draws its widgets");
+        Check (RGB_Is (Window.Scene, 0, 0, 255), "over the GL scene");
+        Check (Window.Error = GL_No_Error, "with no GL error");
+        Check (Window.Early_End and Window.Early_Window,
+            "Draw_End and Draw_Window before Draw_Begin raise");
+        Check (Window.Twice, "Draw_Begin after Draw_Begin raises");
+
+        Window.Unended := True;
+        Before := Window.Draws;
+        Window.Redraw;
+        for K in 1 .. Limit loop
+            exit when Window.Draws /= Before;
+            Ignore := Wait (0.02);
+        end loop;
+        Window.Unended := False;
+        Window.Error := 1;
+        Window.Rect := (others => 0);
+        Before := Window.Draws;
+        Window.Redraw;
+        for K in 1 .. Limit loop
+            exit when Window.Draws /= Before;
+            Ignore := Wait (0.02);
+        end loop;
+        Check (RGB_Is (Window.Rect, 255, 0, 0) and Window.Error = GL_No_Error,
+            "a Draw left begun is ended for it");
+        Raised := False;
+        begin
+            Window.Draw_End;
+        exception
+        when Program_Error =>
+            Raised := True;
+        end;
+        Check (Raised, "Draw_End outside the window's Draw raises");
+        Window.Hide;
     end;
 
     --  Start, in a plain window.

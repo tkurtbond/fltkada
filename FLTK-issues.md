@@ -796,3 +796,28 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
   fix, when the shim called `tab_nav` straight through, `Get_Tab_Mode`
   was still `Widget_Focus` and Tab typed nothing. After it, Tab types a
   tab.
+
+### F36. GLUT's round shapes have no limit on their counts
+
+- **What happens**: `glutSolidSphere (1.0, 268435456, 4)` tries to
+  allocate gigabytes. Found 2026-11-11, binding GLUT's shapes in
+  Phase 20.
+- **Cause**: `fghCircleTable` (src/freeglut_geometry.cxx:121-158)
+  `calloc`s two tables of `abs (n) + 1` doubles for each count, with
+  nothing to limit `n`, and the sphere asks for `stacks * 2`, which
+  can overflow an `int`. When `calloc` fails, it frees the table it
+  did get and returns, leaving both pointers as they were: the shape
+  that called it (`glutSolidSphere` at :181-200, and the others) then
+  reads through a null or freed pointer, and frees it again at the end.
+  A count of 0 or below makes a degenerate shape but no error.
+- **Effect on FLTKAda**: the counts of `FLTK.GLUT`'s spheres, cones and
+  tori are `Shape_Count`, 1 .. 65_536, as pofltk's `MaxCount` limits
+  them, so the tables stay small and a count out of range raises
+  `Constraint_Error`.
+- **Confirmed**: by reading the source, and a scratch C++ program under
+  Xvfb. Slices of 0 and of -3 drew with no GL error. Slices of
+  268,435,456 ran out of memory: under a 300 MB cgroup limit the kernel
+  killed it, and under a 1.5 GB `ulimit -v` it aborted with an uncaught
+  `std::bad_alloc`, from a part not traced. The failed-`calloc` path
+  itself is seen only in the source. test/unit/test_glut_shapes.adb
+  checks that counts of 0 and 65_537 raise.

@@ -568,6 +568,85 @@ package FLTK.Widgets.Groups.Terminals is
 
 
 
+    --  Ring  --
+
+    --  FLTK's ring, for a program that shows how the terminal works, as
+    --  FLTK's test/terminal does.  The history and the screen are rows of
+    --  one ring of Ring_Rows rows of Ring_Columns cells, numbered from 0:
+    --  the history's rows from History_Start to History_End, the screen's
+    --  from Display_Start to Display_End, each going on past the ring's
+    --  last row at its row 0.  The ring turns as the screen scrolls, and
+    --  Ring_Offset is the history's first row.  Get_Selection's rows are
+    --  the ring's, counted back from Display_Start into the history, so
+    --  they may be below 0; take them mod Ring_Rows for a cell.
+
+    function Ring_Rows
+           (This : in Terminal)
+        return Natural;
+
+    function Ring_Columns
+           (This : in Terminal)
+        return Natural;
+
+    function Ring_Offset
+           (This : in Terminal)
+        return Natural;
+
+    function History_Start
+           (This : in Terminal)
+        return Natural;
+
+    function History_End
+           (This : in Terminal)
+        return Natural;
+
+    function Display_Start
+           (This : in Terminal)
+        return Natural;
+
+    function Display_End
+           (This : in Terminal)
+        return Natural;
+
+    --  Which colours of the text written next are xterm colours, which
+    --  Bold and Dim change.
+    type Style_Flags is record
+        Xterm_Fore : Boolean := False;
+        Xterm_Back : Boolean := False;
+    end record;
+
+    function Get_Style_Flags
+           (This : in Terminal)
+        return Style_Flags;
+
+    --  A cell of the ring:  its character, as UTF-8, its attributes and
+    --  its colours.  An empty cell is a space.  Each raises
+    --  Constraint_Error for a row or column outside the ring, which FLTK
+    --  doesn't check (pofltk's HaltTerminalCell).
+
+    function Cell_Text
+           (This        : in Terminal;
+            Row, Column : in Natural)
+        return String;
+
+    function Cell_Attributes
+           (This        : in Terminal;
+            Row, Column : in Natural)
+        return Text_Attributes;
+
+    function Cell_Fore_Color
+           (This        : in Terminal;
+            Row, Column : in Natural)
+        return Color;
+
+    function Cell_Back_Color
+           (This        : in Terminal;
+            Row, Column : in Natural)
+        return Color;
+
+
+
+
     --  Drawing, Events  --
 
     procedure Draw
@@ -693,6 +772,14 @@ private
     pragma Inline (Set_Hscrollbar_Style);
 
     pragma Inline (Selection_Text_Length);
+
+    pragma Inline (Ring_Rows);
+    pragma Inline (Ring_Columns);
+    pragma Inline (Ring_Offset);
+    pragma Inline (History_Start);
+    pragma Inline (History_End);
+    pragma Inline (Display_Start);
+    pragma Inline (Display_End);
 
     pragma Inline (Draw);
     pragma Inline (Handle);

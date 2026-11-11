@@ -1,0 +1,34 @@
+--  Programmed by T. Kurt Bond and Claude Opus 5.5
+--  Released into the public domain
+
+
+--  FLTK.GLU, the part of OpenGL's utility library FLTK's programs use, as
+--  a library of its own beside fltkada, so that a program using only
+--  widgets isn't linked with libGLU (PLAN.md, Phase 20).  The Makefile
+--  checks for glu before building this.
+
+
+with
+
+    "fltkada",
+    "proj/common";
+
+
+library project FLTKAda_GLU is
+
+
+    for Languages use ("Ada", "C++");
+
+    for Source_Dirs  use ("glu/body", "glu/spec");
+    for Object_Dir   use "obj/glu";
+    for Library_Dir  use "lib/glu";
+    for Library_Name use "fltkada_glu";
+    for Library_Kind use FLTKAda.Kind;
+
+    package Builder        renames Common.Builder;
+    package Binder         renames Common.Binder;
+    package Compiler       renames Common.Compiler;
+    package Pretty_Printer renames Common.Pretty_Printer;
+
+
+end FLTKAda_GLU;

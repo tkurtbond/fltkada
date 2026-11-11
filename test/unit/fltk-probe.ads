@@ -126,6 +126,17 @@ package FLTK.Probe is
     function Grabbed
         return Boolean;
 
+    --  How many windows FLTK has shown, counting its own, such as a
+    --  tooltip's or a menu's.
+    function Shown_Windows
+        return Natural;
+
+    --  The screen rectangle of the window that has the grab (an open menu's),
+    --  with Found True, or Found False if none has.
+    procedure Get_Grab
+           (Found      :    out Boolean;
+            X, Y, W, H :    out Integer);
+
     --  The title of the modal window shown, or "".
     function Modal_Title
         return String;
@@ -186,6 +197,13 @@ package FLTK.Probe is
     function X11_Title
            (Item : in FLTK.Widgets.Groups.Windows.Window'Class)
         return String;
+
+    --  The number of 32-bit words in a shown window's _NET_WM_ICON property,
+    --  the icons FLTK gave the window manager:  for each, its width, its
+    --  height and its pixels.  -1 if not on X11 or the window isn't shown.
+    function Icon_Words
+           (Item : in FLTK.Widgets.Groups.Windows.Window'Class)
+        return Integer;
 
     --  Whether a Printer's Start_Job shows GTK's dialog (the default) or FLTK's
     --  own print panel.  Call it before the first Printer is made.

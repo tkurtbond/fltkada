@@ -143,6 +143,7 @@ extern "C" void * fl_static_readqueue();
 
 extern "C" const char * fl_static_get_scheme();
 extern "C" void fl_static_set_scheme(const char *n);
+extern "C" void fl_static_set_system_scheme();
 extern "C" int fl_static_is_scheme(const char *n);
 extern "C" void fl_static_reload_scheme();
 extern "C" int fl_static_scheme_count();

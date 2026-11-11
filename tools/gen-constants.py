@@ -407,6 +407,38 @@ CAIRO = Suite(
     [("Cairo", "FLTK.Cairo")])
 
 
-for suite in (MAIN, FORMS, CAIRO):
+#  The GLU library's constants, which the C++ side has as GLU_*.  Its
+#  enumerations have representation clauses, so the checks use 'Enum_Rep.
+#  Built only with that library (tests_glu.gpr).
+GLU_CHECKS = []
+CHECKS = GLU_CHECKS
+
+
+def enum_rep(typ, pairs):
+    for ada, c in pairs:
+        add(f"Long_Long_Integer ({typ}'Enum_Rep ({ada}))", c)
+
+
+section("Quadric draw styles (gluQuadricDrawStyle)")
+enum_rep("GLU.Draw_Style", [(f"GLU.{a}", f"GLU_{a.upper()}")
+                            for a in "Point Line Fill Silhouette".split()])
+
+section("Quadric normals (gluQuadricNormals)")
+enum_rep("GLU.Normal_Kind", [("GLU.Smooth_Normals", "GLU_SMOOTH"),
+                             ("GLU.Flat_Normals", "GLU_FLAT"),
+                             ("GLU.No_Normals", "GLU_NONE")])
+
+section("Quadric orientations (gluQuadricOrientation)")
+enum_rep("GLU.Orientation", [("GLU.Outside", "GLU_OUTSIDE"),
+                             ("GLU.Inside", "GLU_INSIDE")])
+
+GLU = Suite(
+    GLU_CHECKS, "test/unit/glu", "glu_", "FLTK.Test_GLU_Constants",
+    ["GL/glu.h"],
+    ["FLTK.GLU"],
+    [("GLU", "FLTK.GLU")])
+
+
+for suite in (MAIN, FORMS, CAIRO, GLU):
     cpp(suite)
     ada(suite)

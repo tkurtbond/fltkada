@@ -181,6 +181,17 @@ package FLTK.Widgets.Groups.Browsers is
            (This  : in out Browser;
             Value : in     Integer);
 
+    --  Pixels added below each line.  Set_Line_Spacing measures a
+    --  Textline_Browser's lines again, which FLTK's linespacing doesn't,
+    --  so the browser scrolls as far after it as before (pofltk 159).
+    function Get_Line_Spacing
+           (This : in Browser)
+        return Natural;
+
+    procedure Set_Line_Spacing
+           (This  : in out Browser;
+            Value : in     Natural);
+
 
 
 
@@ -427,6 +438,8 @@ private
     pragma Inline (Set_Vertical_Right);
     pragma Inline (Get_Scrollbar_Size);
     pragma Inline (Set_Scrollbar_Size);
+    pragma Inline (Get_Line_Spacing);
+    pragma Inline (Set_Line_Spacing);
 
     pragma Inline (Get_Text_Color);
     pragma Inline (Set_Text_Color);

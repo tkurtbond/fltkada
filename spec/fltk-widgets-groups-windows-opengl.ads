@@ -216,6 +216,25 @@ package FLTK.Widgets.Groups.Windows.OpenGL is
     procedure Draw
            (This : in out GL_Window);
 
+    --  FLTK's own drawing in a GL window's Draw, as GL_Window's Draw does
+    --  it:  from Draw_Begin to Draw_End, FLTK.Draw draws over the GL scene
+    --  in the window's coordinates, y down, and Draw_Window draws the
+    --  window's box and its widgets.  GL_Window's Draw is the three
+    --  together, so call these instead of it, not around it.  A Draw that
+    --  returns, or raises, without Draw_End is ended for it.  Each raises
+    --  Program_Error out of order:  outside This's own Draw, Draw_Begin
+    --  after Draw_Begin, and the others before it (pofltk's
+    --  HaltGlDrawBegin).  FLTK's draw_begin pushes GL's state, which only
+    --  draw_end pops (Fl_Gl_Window.cxx:382-431).
+    procedure Draw_Begin
+           (This : in out GL_Window);
+
+    procedure Draw_Window
+           (This : in out GL_Window);
+
+    procedure Draw_End
+           (This : in out GL_Window);
+
     --  Override this to draw the overlay, as Draw draws the window.  FLTK
     --  calls it after Redraw_Overlay, in the window's GL context, after
     --  Draw.  Without a hardware overlay, which is usual, FLTK draws it in
@@ -303,6 +322,9 @@ private
     pragma Inline (Get_Swap_Interval);
     pragma Inline (Set_Swap_Interval);
     pragma Inline (Draw);
+    pragma Inline (Draw_Begin);
+    pragma Inline (Draw_Window);
+    pragma Inline (Draw_End);
     pragma Inline (Handle);
 
 

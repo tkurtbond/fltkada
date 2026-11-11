@@ -90,6 +90,8 @@ extern "C" int fl_widget_get_labelfont(WIDGET w);
 extern "C" void fl_widget_set_labelfont(WIDGET w, int f);
 extern "C" int fl_widget_get_labelsize(WIDGET w);
 extern "C" void fl_widget_set_labelsize(WIDGET w, int s);
+extern "C" int fl_widget_get_label_margin(WIDGET w, int which);
+extern "C" void fl_widget_set_label_margin(WIDGET w, int which, int px);
 extern "C" int fl_widget_get_labeltype(WIDGET w);
 extern "C" void fl_widget_set_labeltype(WIDGET w, int l);
 extern "C" void fl_widget_measure_label(WIDGET w, int &d, int &h);

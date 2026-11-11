@@ -378,6 +378,19 @@ package body FLTK.Widgets is
     pragma Import (C, fl_widget_set_labelsize, "fl_widget_set_labelsize");
     pragma Inline (fl_widget_set_labelsize);
 
+    function fl_widget_get_label_margin
+           (W     : in Storage.Integer_Address;
+            Which : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_widget_get_label_margin, "fl_widget_get_label_margin");
+    pragma Inline (fl_widget_get_label_margin);
+
+    procedure fl_widget_set_label_margin
+           (W         : in Storage.Integer_Address;
+            Which, PX : in Interfaces.C.int);
+    pragma Import (C, fl_widget_set_label_margin, "fl_widget_set_label_margin");
+    pragma Inline (fl_widget_set_label_margin);
+
     function fl_widget_get_labeltype
            (W : in Storage.Integer_Address)
         return Interfaces.C.int;
@@ -1344,6 +1357,66 @@ package body FLTK.Widgets is
     end Set_Label_Size;
 
 
+    --  Explicit checks (PLAN.md, "Architecture decisions", 1):  'Valid
+    --  holds even where the caller was compiled with checks off.
+
+    function Get_Horizontal_Label_Margin
+           (This : in Widget)
+        return Label_Margin is
+    begin
+        return Label_Margin (fl_widget_get_label_margin (This.Void_Ptr, 0));
+    end Get_Horizontal_Label_Margin;
+
+
+    procedure Set_Horizontal_Label_Margin
+           (This : in out Widget;
+            To   : in     Label_Margin) is
+    begin
+        if not To'Valid then
+            raise Constraint_Error with "a label margin outside -128 .. 127";
+        end if;
+        fl_widget_set_label_margin (This.Void_Ptr, 0, Interfaces.C.int (To));
+    end Set_Horizontal_Label_Margin;
+
+
+    function Get_Vertical_Label_Margin
+           (This : in Widget)
+        return Label_Margin is
+    begin
+        return Label_Margin (fl_widget_get_label_margin (This.Void_Ptr, 1));
+    end Get_Vertical_Label_Margin;
+
+
+    procedure Set_Vertical_Label_Margin
+           (This : in out Widget;
+            To   : in     Label_Margin) is
+    begin
+        if not To'Valid then
+            raise Constraint_Error with "a label margin outside -128 .. 127";
+        end if;
+        fl_widget_set_label_margin (This.Void_Ptr, 1, Interfaces.C.int (To));
+    end Set_Vertical_Label_Margin;
+
+
+    function Get_Label_Image_Spacing
+           (This : in Widget)
+        return Label_Spacing is
+    begin
+        return Label_Spacing (fl_widget_get_label_margin (This.Void_Ptr, 2));
+    end Get_Label_Image_Spacing;
+
+
+    procedure Set_Label_Image_Spacing
+           (This : in out Widget;
+            To   : in     Label_Spacing) is
+    begin
+        if not To'Valid then
+            raise Constraint_Error with "a label image spacing outside 0 .. 255";
+        end if;
+        fl_widget_set_label_margin (This.Void_Ptr, 2, Interfaces.C.int (To));
+    end Set_Label_Image_Spacing;
+
+
     function Get_Label_Kind
            (This : in Widget)
         return Label_Kind
@@ -1370,9 +1443,11 @@ package body FLTK.Widgets is
     --  (fl_draw.cxx:520-521), so it is given 0, not what W held.
     procedure Measure_Label
            (This : in     Widget;
-            W, H :    out Integer)
+            W, H :    out Integer;
+            Wrap : in     Natural := 0)
     is
-        Result_W, Result_H : Interfaces.C.int := 0;
+        Result_W : Interfaces.C.int := Interfaces.C.int (Wrap);
+        Result_H : Interfaces.C.int := 0;
     begin
         fl_widget_measure_label (This.Void_Ptr, Result_W, Result_H);
         W := Integer (Result_W);

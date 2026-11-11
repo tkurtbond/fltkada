@@ -631,6 +631,28 @@ package body FLTK.Widgets.Groups.Terminals is
 
 
 
+    --  Ring  --
+
+    function fl_terminal_ring
+           (T    : in Storage.Integer_Address;
+            What : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_terminal_ring, "fl_terminal_ring");
+    pragma Inline (fl_terminal_ring);
+
+    function fl_terminal_cell
+           (T           : in     Storage.Integer_Address;
+            Row, Col    : in     Interfaces.C.int;
+            Buf         :    out Interfaces.C.char_array;
+            Len, Attrib :    out Interfaces.C.int;
+            Fore, Back  :    out Interfaces.C.unsigned)
+        return Interfaces.C.int;
+    pragma Import (C, fl_terminal_cell, "fl_terminal_cell");
+    pragma Inline (fl_terminal_cell);
+
+
+
+
     --  Drawing, Events  --
 
     procedure fl_terminal_draw
@@ -1806,6 +1828,149 @@ package body FLTK.Widgets.Groups.Terminals is
     begin
         return Take_String (fl_terminal_selection_text (This.Void_Ptr));
     end Selection_Text;
+
+
+
+
+    --  Ring  --
+
+    function Ring_Rows
+           (This : in Terminal)
+        return Natural is
+    begin
+        return Natural (fl_terminal_ring (This.Void_Ptr, 0));
+    end Ring_Rows;
+
+
+    function Ring_Columns
+           (This : in Terminal)
+        return Natural is
+    begin
+        return Natural (fl_terminal_ring (This.Void_Ptr, 1));
+    end Ring_Columns;
+
+
+    function Ring_Offset
+           (This : in Terminal)
+        return Natural is
+    begin
+        return Natural (fl_terminal_ring (This.Void_Ptr, 2));
+    end Ring_Offset;
+
+
+    function History_Start
+           (This : in Terminal)
+        return Natural is
+    begin
+        return Natural (fl_terminal_ring (This.Void_Ptr, 3));
+    end History_Start;
+
+
+    function History_End
+           (This : in Terminal)
+        return Natural is
+    begin
+        return Natural (fl_terminal_ring (This.Void_Ptr, 4));
+    end History_End;
+
+
+    function Display_Start
+           (This : in Terminal)
+        return Natural is
+    begin
+        return Natural (fl_terminal_ring (This.Void_Ptr, 5));
+    end Display_Start;
+
+
+    function Display_End
+           (This : in Terminal)
+        return Natural is
+    begin
+        return Natural (fl_terminal_ring (This.Void_Ptr, 6));
+    end Display_End;
+
+
+    --  Bit values from Fl_Terminal::CharFlags
+    function Get_Style_Flags
+           (This : in Terminal)
+        return Style_Flags
+    is
+        B : constant Bits := Bits (fl_terminal_ring (This.Void_Ptr, 7));
+    begin
+        return (Xterm_Fore => (B and 16#01#) /= 0, Xterm_Back => (B and 16#02#) /= 0);
+    end Get_Style_Flags;
+
+
+    type Cell_Data is record
+        Text       : String (1 .. 4);
+        Length     : Natural;
+        Attrib     : Text_Attributes;
+        Fore, Back : Color;
+    end record;
+
+    function Get_Cell
+           (This        : in Terminal;
+            Row, Column : in Natural)
+        return Cell_Data
+    is
+        Buf         : Interfaces.C.char_array (1 .. 4);
+        Len, Attrib : Interfaces.C.int;
+        Fore, Back  : Interfaces.C.unsigned;
+        Result      : Cell_Data;
+    begin
+        if fl_terminal_cell
+               (This.Void_Ptr, Interfaces.C.int (Row), Interfaces.C.int (Column),
+                Buf, Len, Attrib, Fore, Back) = 0
+        then
+            raise Constraint_Error with "a cell outside the terminal's ring";
+        end if;
+        Result.Length := Natural (Len);
+        for I in 1 .. Result.Length loop
+            Result.Text (I) := Interfaces.C.To_Ada (Buf (Interfaces.C.size_t (I)));
+        end loop;
+        Result.Attrib := To_Ada (Interfaces.C.unsigned_char (Attrib));
+        Result.Fore := Color (Fore);
+        Result.Back := Color (Back);
+        return Result;
+    end Get_Cell;
+
+
+    function Cell_Text
+           (This        : in Terminal;
+            Row, Column : in Natural)
+        return String
+    is
+        Cell : constant Cell_Data := Get_Cell (This, Row, Column);
+    begin
+        return Cell.Text (1 .. Cell.Length);
+    end Cell_Text;
+
+
+    function Cell_Attributes
+           (This        : in Terminal;
+            Row, Column : in Natural)
+        return Text_Attributes is
+    begin
+        return Get_Cell (This, Row, Column).Attrib;
+    end Cell_Attributes;
+
+
+    function Cell_Fore_Color
+           (This        : in Terminal;
+            Row, Column : in Natural)
+        return Color is
+    begin
+        return Get_Cell (This, Row, Column).Fore;
+    end Cell_Fore_Color;
+
+
+    function Cell_Back_Color
+           (This        : in Terminal;
+            Row, Column : in Natural)
+        return Color is
+    begin
+        return Get_Cell (This, Row, Column).Back;
+    end Cell_Back_Color;
 
 
 

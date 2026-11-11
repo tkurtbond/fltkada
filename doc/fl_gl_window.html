@@ -478,6 +478,36 @@ procedure Draw
 
   <tr>
 <td><pre>
+void draw_begin();
+</pre></td>
+<td><pre>
+procedure Draw_Begin
+       (This : in out GL_Window);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void draw_end();
+</pre></td>
+<td><pre>
+procedure Draw_End
+       (This : in out GL_Window);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Window::draw();
+</pre></td>
+<td><pre>
+procedure Draw_Window
+       (This : in out GL_Window);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 virtual void draw_overlay();
 </pre></td>
 <td><pre>

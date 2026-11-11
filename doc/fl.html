@@ -116,7 +116,7 @@ static int abi_check(const int val=FL_ABI_VERSION);
 </pre></td>
 <td><pre>
 function ABI_Check
-       (ABI_Ver : in Version_Number)
+       (ABI_Ver : in Version_Number := Built_ABI_Version)
     return Boolean;
 </pre></td>
   </tr>
@@ -272,7 +272,7 @@ static double version();
 </pre></td>
 <td><pre>
 function Version
-    return Version_Number;
+    return Long_Float;
 </pre></td>
   </tr>
 

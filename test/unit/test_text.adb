@@ -35,6 +35,8 @@ use
 use type
 
     System.Address,
+    FLTK.Alignment,
+    FLTK.Damage_Mask,
     FLTK.Widgets.Groups.Text_Displays.Text_Editors.Insert_Mode,
     FLTK.Widgets.Groups.Text_Displays.Text_Editors.Tab_Navigation;
 
@@ -274,8 +276,65 @@ begin
     end loop;
     Check (Disp.Wrapped_Row (99) = 99 and Disp.Wrapped_Column (99, 2) = 2,
         "a row off the screen is itself");
+    Disp.Clear_Damage;
+    Disp.Redisplay_Range (0, 3);
+    Disp.Redisplay_Range (5, 999);
+    Check (Disp.Get_Damage = Damage_Scroll and Prb.Capture (Disp),
+        "Redisplay_Range, also past the end, damages the display, which draws");
+    Prb.Release;
     Disp.Set_Text_Font (Helvetica);
     Disp.Set_Wrap_Mode (TD.None);
+
+    --  Line numbers' format and alignment.  FLTK draws line numbers only in
+    --  a window shown (visible_r), so this display has a window of its own.
+    declare
+        Numbers  : Win.Window := Win.Forge.Create (200, 100, "Test_Text numbers");
+        Numbered : TD.Text_Display := TD.Forge.Create (Numbers, 0, 0, 200, 100);
+        One      : TB.Text_Buffer := TB.Forge.Create;
+
+        --  Whether the last capture has a dark pixel in the line number
+        --  margin, 4 .. 36 by 4 .. 30.
+        function Inked
+            return Boolean is
+        begin
+            for Y in 4 .. 30 loop
+                for X in 4 .. 36 loop
+                    if Prb.Pixel (X, Y) in 0 .. Prb.To_RGB (95, 255, 255)
+                        and then Prb.Pixel (X, Y) mod 256 < 96
+                        and then Prb.Pixel (X, Y) / 256 mod 256 < 96
+                    then
+                        return True;
+                    end if;
+                end loop;
+            end loop;
+            return False;
+        end Inked;
+
+        Drawn : Boolean;
+    begin
+        One.Set_Entire_Text ("one");
+        Numbered.Set_Buffer (One);
+        Numbers.Show;
+        Numbers.Wait_For_Expose;
+        Numbered.Set_Linenumber_Width (40);
+        Check (Numbered.Get_Linenumber_Format = "%d"
+                and Numbered.Get_Linenumber_Alignment = Align_Right,
+            "line numbers are %d, on the right, to start with");
+        Drawn := Prb.Capture (Numbered) and then Inked;
+        Prb.Release;
+        Check (Drawn, "and drawn");
+        Numbered.Set_Linenumber_Format ("");
+        Drawn := Prb.Capture (Numbered) and then not Inked;
+        Prb.Release;
+        Check (Drawn, "a format with no number shows none");
+        Numbered.Set_Linenumber_Format ("%03x");
+        Numbered.Set_Linenumber_Alignment (Align_Left);
+        Drawn := Prb.Capture (Numbered) and then Inked;
+        Prb.Release;
+        Check (Numbered.Get_Linenumber_Alignment = Align_Left and Drawn,
+            "Set_Linenumber_Alignment");
+        Numbers.Hide;
+    end;
 
     --  Position_To_XY:  a line out of view.
     Buffer.Set_Entire_Text ("");

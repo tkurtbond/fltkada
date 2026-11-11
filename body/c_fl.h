@@ -97,6 +97,12 @@ extern "C" int fl_abi_check(int v);
 extern "C" int fl_abi_version();
 extern "C" int fl_api_version();
 extern "C" double fl_version();
+extern "C" double fl_built_version();
+extern "C" const char * fl_names_event(int e);
+extern "C" const char * fl_names_font(int f);
+extern "C" const char * fl_names_reason(int r);
+extern "C" int fl_built_api_version();
+extern "C" int fl_built_abi_version();
 
 
 extern "C" short fl_inside_callback;

@@ -135,6 +135,20 @@ void fl_window_fullscreen_off(WINDOW n) {
     static_cast<Fl_Window*>(n)->fullscreen_off();
 }
 
+//  Each does nothing unless the window is shown, at the top level,
+//  resizable and not full screen (Fl_Window.cxx:1016-1033).
+void fl_window_maximize(WINDOW n) {
+    static_cast<Fl_Window*>(n)->maximize();
+}
+
+void fl_window_un_maximize(WINDOW n) {
+    static_cast<Fl_Window*>(n)->un_maximize();
+}
+
+int fl_window_maximize_active(WINDOW n) {
+    return static_cast<Fl_Window*>(n)->maximize_active() ? 1 : 0;
+}
+
 void fl_window_fullscreen_off2(WINDOW n, int x, int y, int w, int h) {
     static_cast<Fl_Window*>(n)->fullscreen_off(x,y,w,h);
 }
@@ -338,6 +352,27 @@ int fl_window_get_force_position(WINDOW n) {
 void fl_window_set_force_position(WINDOW n, int s) {
     void (Fl_Window::*myforce)(int) = &Friend_Window::force_position;
     (static_cast<Fl_Window*>(n)->*myforce)(s);
+}
+
+void fl_window_free_position(WINDOW n) {
+    static_cast<Fl_Window*>(n)->free_position();
+}
+
+//  V has room for seven:  min w and h, max w and h, dw, dh and aspect.
+int fl_window_get_size_range(WINDOW n, int * v) {
+    return static_cast<Fl_Window*>(n)->get_size_range
+        (&v[0], &v[1], &v[2], &v[3], &v[4], &v[5], &v[6]);
+}
+
+//  A subwindow's screen is its top window's; a window never shown, unless
+//  set, gives 0 (Fl_Window_Driver.cxx:210).
+int fl_window_get_screen_num(WINDOW n) {
+    return static_cast<Fl_Window*>(n)->screen_num();
+}
+
+//  Ignored once the window is shown, or out of range (Fl_Window.cxx:931).
+void fl_window_set_screen_num(WINDOW n, int s) {
+    static_cast<Fl_Window*>(n)->screen_num(s);
 }
 
 int fl_window_get_x_root(WINDOW n) {

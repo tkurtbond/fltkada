@@ -3629,3 +3629,96 @@ as pofltk's `TestInputs` does, and "€" with both; it checks positions
 -1 and past the end, as `HaltInputIndex` does. Before the fix, under
 valgrind, `Index (-1)` read one byte before the text's buffer, and
 neither position raised.
+
+## 126. Version gave 1
+
+**Symptom.** `FLTK.Version` returned 1 under FLTK 1.4.5, where
+`Fl::version` gives 1.0405.
+
+**Cause.** `Version` returned a `Version_Number`, which is a new
+`Natural`, and converted `Fl::version`'s `double` to it. Ada's
+conversion rounds to the nearest integer, so any FLTK 1.x gave 1.
+
+**Found.** 2026-11-11, binding `FL_VERSION` beside `Version` (PLAN.md,
+Phase 20), by reading body/fltk.adb.
+
+**Fixed.** `Version` returns a `Long_Float`. The shim gives
+`Fl::api_version () / 10000.0`, the same number, since `Fl::version` is
+deprecated. test/unit/test_versions.adb checks that `Version` is at
+least 1.04 and agrees with `API_Version`, and that the new
+`Built_Version`, `Built_API_Version` and `Built_ABI_Version` match the
+library running.
+
+## 127. A null tree item crashed FLTK
+
+**Symptom.** Passing `FLTK.Tree_Items.No_Tree_Item` to `Insert`,
+`Insert_Above`, `Remove`, `Clear_Children`, `Open`, `Close`,
+`Open_Toggle`, `Select_Item` or `Deselect` of
+`FLTK.Widgets.Groups.Trees`, or to almost any subprogram of
+`FLTK.Tree_Items` (`Get_Label`, `Next`, `Parent`, `Is_Open`, …), crashed
+the program with a segmentation fault. A null item is easy to get:
+`Find` of a missing path, `Next` of the last item, `Parent` of the root,
+`Root` after `Clear`.
+
+**Cause.** The bodies passed the item's address to the shim unchecked,
+and FLTK dereferences it (Fl_Tree.cxx:1463, 1520, 1547, 1665, 1728,
+1757, 874, 907, 917-926, 945, and every `Fl_Tree_Item` method).
+
+**Found.** 2026-11-11, binding `Fl_Tree::select_toggle` (PLAN.md,
+Phase 20), by reading FLTK's source. A scratch C++ program run under
+Xvfb confirmed it: `Fl_Tree::open (0)`, `select_toggle (0)` and
+`Fl_Tree_Item::label` on a null item each ended in a segmentation
+fault.
+
+**Fixed.** Each of those calls now raises `Constraint_Error` for a null
+item. `Add`, `Item_Pathname`, the new `Next_Selected`, `Prev_Selected`,
+`Is_Displayed` and `Show_Item` calls, and `Tree_Items.Is_Null` and
+`Address_Of`, still take one, since FLTK gives it a meaning there.
+test/unit/test_tree.adb checks `Open`, `Select_Toggle`, `Remove`,
+`Insert`, `Tree_Items.Set_Label` and `Tree_Items.Next`.
+
+## 128. A text editor's oldest key binding won
+
+**Symptom.** A program that bound a key of a `Text_Editor` that the
+defaults already bind, such as Ctrl+a (select all) or Ctrl+c, never had
+its function called: the default ran instead. `Get_Bound_Key_Function`
+gave the default too. `Remove_Key_Binding` of a key removed every
+binding of it, not just the newest, so there was no binding left to
+fall back on.
+
+**Cause.** FLTKAda keeps the bindings in Ada, in a vector that
+`Add_Key_Binding` appends to. `Key_Func_Hook` and
+`Get_Bound_Key_Function` searched it from the front, so the oldest
+binding came first. FLTK prepends a new binding to its list and
+searches from the head (Fl_Text_Editor.cxx:212-220), and
+`remove_key_binding` removes the first match only (:195-203). Since
+`Forge.Create` adds `Default_Key_Bindings` first, they always won.
+
+**Found.** 2026-11-11, porting pofltk's TestKeys (PLAN.md, Phase 20).
+
+**Fixed.** Both search from the back, newest first, and
+`Remove_Key_Binding` of a key removes only the newest binding.
+`Global_Key_Bindings` still come before the editor's own.
+test/unit/test_key_bindings.adb checks a binding over the default
+Ctrl+a, `Get_Bound_Key_Function`, and a removal uncovering the binding
+before it.
+
+## 129. A key function that changed the bindings raised
+
+**Symptom.** A function bound to a key of a `Text_Editor` that added or
+removed a binding, of that editor or a global one, raised
+`Program_Error` ("attempt to tamper with cursors"). One that freed its
+editor raised "finalize/adjust raised exception".
+
+**Cause.** `Key_Func_Hook` called the bound function from inside a
+`for B of` loop over the vector of bindings, which locks the vector
+against changes until the loop ends.
+
+**Found.** 2026-11-11, porting pofltk's TestKeys (PLAN.md, Phase 20).
+
+**Fixed.** `Key_Func_Hook` finds the function first and calls it after
+the search, and doesn't touch the editor after the call. The default
+key function is copied out before it is called.
+test/unit/test_key_bindings.adb checks a binding that adds one binding
+and removes another, and an editor freed by its own binding, sent from
+inside FLTK's dispatch; valgrind finds no error.

@@ -138,6 +138,33 @@ package FLTK.Asks is
             Answer  : in out Ada.Strings.Unbounded.Unbounded_String)
         return Confirm_Result;
 
+    --  The four above, with the user able to type no more than Max_Length
+    --  characters, not bytes (fl_input and fl_password with maxchar).  A
+    --  longer Default is shown whole.
+    function Text_Input
+           (Message    : in String;
+            Max_Length : in Positive;
+            Default    : in String := "")
+        return String;
+
+    function Password
+           (Message    : in String;
+            Max_Length : in Positive;
+            Default    : in String := "")
+        return String;
+
+    function Text_Input
+           (Message    : in     String;
+            Max_Length : in     Positive;
+            Answer     : in out Ada.Strings.Unbounded.Unbounded_String)
+        return Confirm_Result;
+
+    function Password
+           (Message    : in     String;
+            Max_Length : in     Positive;
+            Answer     : in out Ada.Strings.Unbounded.Unbounded_String)
+        return Confirm_Result;
+
 
 
 

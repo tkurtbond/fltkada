@@ -110,7 +110,8 @@ package body FLTK.Asks is
     pragma Inline (fl_ask_choice_n);
 
     function fl_ask_input
-           (M, D : in Interfaces.C.char_array)
+           (X    : in Interfaces.C.int;
+            M, D : in Interfaces.C.char_array)
         return Interfaces.C.Strings.chars_ptr;
     pragma Import (C, fl_ask_input, "fl_ask_input");
     pragma Inline (fl_ask_input);
@@ -121,7 +122,8 @@ package body FLTK.Asks is
     pragma Inline (fl_ask_message);
 
     function fl_ask_password
-           (M, D : in Interfaces.C.char_array)
+           (X    : in Interfaces.C.int;
+            M, D : in Interfaces.C.char_array)
         return Interfaces.C.Strings.chars_ptr;
     pragma Import (C, fl_ask_password, "fl_ask_password");
     pragma Inline (fl_ask_password);
@@ -557,7 +559,8 @@ package body FLTK.Asks is
         return String
     is
         Result : constant Interfaces.C.Strings.chars_ptr := fl_ask_input
-               (Interfaces.C.To_C (Message),
+               (0,
+                Interfaces.C.To_C (Message),
                 Interfaces.C.To_C (Default));
     begin
         Hook_Exceptions.Reraise;
@@ -584,7 +587,8 @@ package body FLTK.Asks is
         return String
     is
         Result : constant Interfaces.C.Strings.chars_ptr := fl_ask_password
-               (Interfaces.C.To_C (Message),
+               (0,
+                Interfaces.C.To_C (Message),
                 Interfaces.C.To_C (Default));
     begin
         Hook_Exceptions.Reraise;
@@ -617,7 +621,8 @@ package body FLTK.Asks is
         return Confirm_Result
     is
         Result : constant Interfaces.C.Strings.chars_ptr := fl_ask_input
-               (Interfaces.C.To_C (Message),
+               (0,
+                Interfaces.C.To_C (Message),
                 Interfaces.C.To_C (Ada.Strings.Unbounded.To_String (Answer)));
     begin
         Hook_Exceptions.Reraise;
@@ -632,11 +637,84 @@ package body FLTK.Asks is
         return Confirm_Result
     is
         Result : constant Interfaces.C.Strings.chars_ptr := fl_ask_password
-               (Interfaces.C.To_C (Message),
+               (0,
+                Interfaces.C.To_C (Message),
                 Interfaces.C.To_C (Ada.Strings.Unbounded.To_String (Answer)));
     begin
         Hook_Exceptions.Reraise;
         --  Result does not need dealloc
+        return To_Answer (Result, Answer);
+    end Password;
+
+
+    function Text_Input
+           (Message    : in String;
+            Max_Length : in Positive;
+            Default    : in String := "")
+        return String
+    is
+        Result : constant Interfaces.C.Strings.chars_ptr := fl_ask_input
+               (Interfaces.C.int (Max_Length),
+                Interfaces.C.To_C (Message),
+                Interfaces.C.To_C (Default));
+    begin
+        Hook_Exceptions.Reraise;
+        if Result = Interfaces.C.Strings.Null_Ptr then
+            return "";
+        else
+            return Interfaces.C.Strings.Value (Result);
+        end if;
+    end Text_Input;
+
+
+    function Password
+           (Message    : in String;
+            Max_Length : in Positive;
+            Default    : in String := "")
+        return String
+    is
+        Result : constant Interfaces.C.Strings.chars_ptr := fl_ask_password
+               (Interfaces.C.int (Max_Length),
+                Interfaces.C.To_C (Message),
+                Interfaces.C.To_C (Default));
+    begin
+        Hook_Exceptions.Reraise;
+        if Result = Interfaces.C.Strings.Null_Ptr then
+            return "";
+        else
+            return Interfaces.C.Strings.Value (Result);
+        end if;
+    end Password;
+
+
+    function Text_Input
+           (Message    : in     String;
+            Max_Length : in     Positive;
+            Answer     : in out Ada.Strings.Unbounded.Unbounded_String)
+        return Confirm_Result
+    is
+        Result : constant Interfaces.C.Strings.chars_ptr := fl_ask_input
+               (Interfaces.C.int (Max_Length),
+                Interfaces.C.To_C (Message),
+                Interfaces.C.To_C (Ada.Strings.Unbounded.To_String (Answer)));
+    begin
+        Hook_Exceptions.Reraise;
+        return To_Answer (Result, Answer);
+    end Text_Input;
+
+
+    function Password
+           (Message    : in     String;
+            Max_Length : in     Positive;
+            Answer     : in out Ada.Strings.Unbounded.Unbounded_String)
+        return Confirm_Result
+    is
+        Result : constant Interfaces.C.Strings.chars_ptr := fl_ask_password
+               (Interfaces.C.int (Max_Length),
+                Interfaces.C.To_C (Message),
+                Interfaces.C.To_C (Ada.Strings.Unbounded.To_String (Answer)));
+    begin
+        Hook_Exceptions.Reraise;
         return To_Answer (Result, Answer);
     end Password;
 

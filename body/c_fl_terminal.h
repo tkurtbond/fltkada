@@ -119,6 +119,9 @@ extern "C" void fl_terminal_set_hscrollbar_style(TERMINAL t, int s);
 extern "C" int fl_terminal_get_selection(TERMINAL t, int * srow, int * scol,
     int * erow, int * ecol);
 extern "C" int fl_terminal_selection_text_len(TERMINAL t);
+extern "C" int fl_terminal_ring(TERMINAL t, int what);
+extern "C" int fl_terminal_cell(TERMINAL t, int row, int col, char * buf, int * len,
+    int * attrib, unsigned int * fg, unsigned int * bg);
 extern "C" char * fl_terminal_selection_text(TERMINAL t);
 extern "C" char * fl_terminal_text(TERMINAL t, int b);
 extern "C" void fl_terminal_free_text(char * s);

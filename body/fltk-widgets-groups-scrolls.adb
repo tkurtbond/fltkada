@@ -99,6 +99,18 @@ package body FLTK.Widgets.Groups.Scrolls is
     pragma Import (C, fl_scroll_set_size, "fl_scroll_set_size");
     pragma Inline (fl_scroll_set_size);
 
+    function fl_scroll_get_scrollbar_align
+           (S : in Storage.Integer_Address)
+        return Interfaces.C.unsigned;
+    pragma Import (C, fl_scroll_get_scrollbar_align, "fl_scroll_get_scrollbar_align");
+    pragma Inline (fl_scroll_get_scrollbar_align);
+
+    procedure fl_scroll_set_scrollbar_align
+           (S : in Storage.Integer_Address;
+            A : in Interfaces.C.unsigned);
+    pragma Import (C, fl_scroll_set_scrollbar_align, "fl_scroll_set_scrollbar_align");
+    pragma Inline (fl_scroll_set_scrollbar_align);
+
 
 
 
@@ -371,6 +383,22 @@ package body FLTK.Widgets.Groups.Scrolls is
     begin
         fl_scroll_set_size (This.Void_Ptr, Interfaces.C.int (To));
     end Set_Scrollbar_Size;
+
+
+    function Get_Scrollbar_Alignment
+           (This : in Scroll)
+        return Alignment is
+    begin
+        return Alignment (fl_scroll_get_scrollbar_align (This.Void_Ptr));
+    end Get_Scrollbar_Alignment;
+
+
+    procedure Set_Scrollbar_Alignment
+           (This : in out Scroll;
+            To   : in     Alignment) is
+    begin
+        fl_scroll_set_scrollbar_align (This.Void_Ptr, Interfaces.C.unsigned (To));
+    end Set_Scrollbar_Alignment;
 
 
     function Get_Kind

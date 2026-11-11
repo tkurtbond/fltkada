@@ -105,6 +105,14 @@ void fl_button_set_down_box(BUTTON b, int t) {
     static_cast<Fl_Button*>(b)->Fl_Button::down_box(static_cast<Fl_Boxtype>(t));
 }
 
+int fl_button_get_compact(BUTTON b) {
+    return static_cast<Fl_Button*>(b)->compact();
+}
+
+void fl_button_set_compact(BUTTON b, int v) {
+    static_cast<Fl_Button*>(b)->compact(static_cast<uchar>(v));
+}
+
 int fl_button_get_shortcut(BUTTON b) {
     return static_cast<Fl_Button*>(b)->Fl_Button::shortcut();
 }

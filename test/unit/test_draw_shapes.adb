@@ -4,7 +4,8 @@
 
 --  FLTK.Draw's calls added in PLAN.md Phase 8: rounded rectangles, check
 --  marks, radio buttons, arrows, focus frames, Frame2, the antialias and
---  scale overrides, and Load_Identity/Load_Matrix.  Each shape is drawn by
+--  scale overrides, Load_Identity/Load_Matrix, and (Phase 20, from
+--  pofltk's TestDraw) the three-point Line and the stepped lines.  Each shape is drawn by
 --  a box's Draw, captured, and checked pixel by pixel.  Get_Antialias,
 --  Set_Antialias, Override_Scale and Restore_Scale crash FLTK with nothing
 --  to draw on (pofltk 124; Override_Scale only when the scale isn't 1), so
@@ -37,7 +38,7 @@ procedure Test_Draw_Shapes is
 
     type Shape_Kind is
        (Rounded, Rounded_Fill, Check_Mark, Radio, Arrow_Right, Arrow_Left,
-        Focus, Frame_1, Frame_2, Box_Focus, Matrix, Settings);
+        Focus, Frame_1, Frame_2, Box_Focus, Matrix, Bent, Stairs, Settings);
 
     type Shape_Box is new Bx.Box with record
         Shape        : Shape_Kind := Rounded;
@@ -98,6 +99,16 @@ procedure Test_Draw_Shapes is
                 Drw.Vertex (Long_Float (X), Long_Float (Y + 30));
                 Drw.End_Polygon;
                 Drw.Pop_Matrix;
+            when Bent =>
+                --  A black L, from 5, 5 down to 5, 30 and across to 30, 30.
+                Drw.Line (X + 5, Y + 5, X + 5, Y + 30, X + 30, Y + 30);
+            when Stairs =>
+                --  The 3-coordinate stepped lines down the left, the
+                --  2-coordinate ones on the right.
+                Drw.Ecks_Why_Line (X + 2, Y + 5, X + 10, Y + 30, X + 18);
+                Drw.Why_Ecks_Line (X + 22, Y + 5, Y + 20, X + 30, Y + 35);
+                Drw.Ecks_Why_Line (X + 32, Y + 2, X + 38, Y + 8);
+                Drw.Why_Ecks_Line (X + 32, Y + 30, Y + 38, X + 38);
             when Settings =>
                 This.Settings_Ran := True;
                 begin
@@ -300,6 +311,35 @@ begin
         "Load_Matrix moves the polygon 20 right");
     Check (Prb.Pixel (5, 25) = Black and not Dark (25, 25),
         "Load_Identity puts the next polygon back");
+    Prb.Release;
+
+    --  Ported from pofltk's TestDraw: the three-point Line and the stepped
+    --  lines, by their pixels.
+    Draw_As (Bent);
+    Check (Prb.Pixel (5, 5) = Black and Prb.Pixel (5, 18) = Black
+            and Prb.Pixel (5, 30) = Black and Prb.Pixel (18, 30) = Black
+            and Prb.Pixel (30, 30) = Black and not Dark (18, 18)
+            and not Dark (18, 5) and not Dark (4, 18),
+        "the three-point Line draws both lines, through the middle point");
+    Prb.Release;
+
+    Draw_As (Stairs);
+    Check (Prb.Pixel (2, 5) = Black and Prb.Pixel (6, 5) = Black
+            and Prb.Pixel (10, 5) = Black and Prb.Pixel (10, 18) = Black
+            and Prb.Pixel (10, 30) = Black and Prb.Pixel (14, 30) = Black
+            and Prb.Pixel (18, 30) = Black and not Dark (6, 6)
+            and not Dark (14, 31) and not Dark (19, 30),
+        "Ecks_Why_Line with X3: across, down, across");
+    Check (Prb.Pixel (22, 5) = Black and Prb.Pixel (22, 20) = Black
+            and Prb.Pixel (26, 20) = Black and Prb.Pixel (30, 20) = Black
+            and Prb.Pixel (30, 28) = Black and Prb.Pixel (30, 35) = Black
+            and not Dark (23, 12) and not Dark (30, 36) and not Dark (26, 21),
+        "Why_Ecks_Line with Y3: down, across, down");
+    Check (Prb.Pixel (32, 2) = Black and Prb.Pixel (38, 2) = Black
+            and Prb.Pixel (38, 8) = Black and Prb.Pixel (32, 30) = Black
+            and Prb.Pixel (32, 38) = Black and Prb.Pixel (38, 38) = Black
+            and not Dark (35, 5) and not Dark (35, 35) and not Dark (38, 9),
+        "Ecks_Why_Line with Y2 and Why_Ecks_Line with X2: one corner each");
     Prb.Release;
 
     --  On a surface, and in a shown window's Draw  --

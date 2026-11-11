@@ -358,7 +358,9 @@ The triage as first written:
   program's own bindings live in Ada. ~~To be recorded as F35 once a
   test shows it.~~ Recorded as F35, 2026-11-11: `test_text` showed it.
 - **NOT BOUND:** 159 (`Fl_Browser_::linespacing`). It is bound in
-  Phase 20, with pofltk's remeasure.
+  Phase 20, with pofltk's remeasure. **FIXED** there, 2026-11-11:
+  `Set_Line_Spacing` (test_browser, whose two checks fail without the
+  remeasure: 320 against 520).
 - **Older entries pofltk changed since a6f5607:**
   - 75, 116 and 135 now agree with FLTKAda (F4, the U+FFFD correction,
     and F29). The sentence in Phase 9 that quotes pofltk's U+FFFD claim
@@ -2780,8 +2782,9 @@ Decisions and findings:
 - Fix the GLUT `Incomplete APIs` items: `glut_window`/`glut_menu`, Ada
   objects for windows from `Create_Window`, and leaked menu and title
   strings.
-- pofltk doesn't bind the `glutWire*`/`glutSolid*` models either. Leave
-  them out.
+- ~~pofltk doesn't bind the `glutWire*`/`glutSolid*` models either. Leave
+  them out.~~ pofltk binds them now (`FlGlut.Sphere` and the rest),
+  whether or not it did then; bound in Phase 20.
 
 What was done. Two new unit tests, `test_glut_fonts` (71 checks) and
 `test_glut_window_of` (19 checks), pass on Xvfb and on a headless sway,
@@ -4007,7 +4010,7 @@ Done, 2026-11-11:
   (156, checked in FLTKAda as above), `Forge.From_Scope` (158) and
   `Enter_Area`.
 
-#### Phase 20: API that pofltk's ports needed
+#### Phase 20: API that pofltk's ports needed [done, 2026-11-11]
 
 Each of these is unbound in FLTKAda, checked by grepping `spec/` and
 the shim on 2026-11-11. Bind each with its own unit test, ported from
@@ -4091,6 +4094,171 @@ grep, so look again in each file before writing):
 - `TestTerminal`: ring and cells.
 - `TestUtf8`: the CP1252 bad-byte checks.
 - `TestTooltips`: the empty text, and a window not shown.
+
+**Decisions and findings in Phase 20** (2026-11-11):
+
+- `Fl_Button::compact` is `Is_Compact` and `Set_Compact`
+  (test_button_compact).
+- `Fl_Window`: `Maximize`, `Un_Maximize`, `Is_Maximized` (for
+  `maximize_active`), `Free_Position`, `Has_Size_Range`,
+  `Get_Size_Range`, and `Get_Screen_Num` and `Set_Screen_Num`
+  (test_window_maximize). Screens are numbered from 1, as
+  `FLTK.Screen` numbers them, not from 0 as FLTK does, and
+  `Set_Screen_Num` raises past `Screen.Count`. `free_position` is not
+  deprecated in FLTK 1.4.5, so it is bound as it is. The maximize
+  checks are skipped under Wayland, as pofltk skips them.
+- The label margins use subtypes `Label_Margin` (`-128 .. 127`) and
+  `Label_Spacing` (`0 .. 255`), so Ada's range check is the explicit
+  check decision 1 asks for (test_label_margin).
+- `fl_input` and `fl_password` with a maximum length are overloads of
+  `Text_Input` and `Password` with a `Max_Length : Positive`, beside
+  the existing ones, rather than a defaulted parameter, so the
+  cancel-aware overloads keep their profiles (test_dialogs).
+- `Set_System_Scheme` is `Fl::scheme (NULL)`, checked in
+  test_scheme_choice.
+- `Get_Scrollbar_Alignment` and `Set_Scrollbar_Alignment` on `Scroll`,
+  checked by the scrollbars' pixels in test_layout. Through
+  `Scrollbar_Reference` the alignment had been untested, as this
+  phase said.
+- `Built_Version`, `Built_API_Version` and `Built_ABI_Version` give the
+  header versions; `ABI_Check` defaults to `Built_ABI_Version`
+  (test_versions). Binding them found FLTKAda-BUGS.md 126: `Version`
+  was always 1, so it now returns a `Long_Float`, which is an
+  incompatible change (INCOMPATIBLE-CHANGES.md).
+- `FL/names.h` is `Event_Name`, `Font_Constant_Name` and `Reason_Name`
+  in `FLTK`, giving `""` for a value with no name; `names.h` is
+  included only in body/c_fl.cpp (test_names).
+- `Fl_Tree`: `Select_Toggle`, `First_Selected`, `Last_Selected`,
+  `Next_Selected`, `Prev_Selected`, `Is_Displayed`, `Show_Item` (with
+  and without an offset), `Show_Item_Top`, `Show_Item_Middle` and
+  `Show_Item_Bottom` (test_tree, from pofltk's `TestTree`). FLTKAda had
+  none of `first_selected_item`, `show_item`, `show_item_top` or
+  `displayed` either. `Select_Toggle` calls back, as FLTK does by
+  default and as FLTKAda's `Select_Item` does; pofltk's doesn't. A null
+  item means first or last where FLTK gives it that meaning. Binding
+  `select_toggle` found FLTKAda-BUGS.md 127: a null item given to
+  most tree and item calls crashed FLTK; they now raise
+  `Constraint_Error`. The tree binding isn't in upstream FLTKAda, so
+  that isn't an incompatible change.
+- The menu texts are `Get_Cut_Menu_Text`, `Get_Copy_Menu_Text`,
+  `Get_Paste_Menu_Text` and their `Set_` forms in
+  `FLTK.Widgets.Inputs.Text` (test_input). FLTK keeps the pointer
+  (Fl_Input.cxx:48-52), so the shim keeps a `std::string` for each.
+  `Fl_Text_Display` uses `Fl_Input`'s texts too
+  (Fl_Text_Display.cxx:4177-4179), so one setting covers both.
+- `Draw_Begin`, `Draw_Window` (`Fl_Window::draw`) and `Draw_End` on
+  `GL_Window`, as pofltk's `FlGl` binds them: each raises
+  `Program_Error` out of order (outside the window's own Draw,
+  `Draw_Begin` twice, the others before it), and a Draw that returns
+  begun is ended by the shim, since `draw_begin` pushes GL state only
+  `draw_end` pops. test_gl ports pofltk's `TestGl` `Mix` and
+  `HaltGlDrawBegin`, checking FLTK.Draw's pixels over the GL scene
+  under Xvfb and sway.
+- `Get_Line_Spacing` and `Set_Line_Spacing` on the abstract `Browser`.
+  For a `Textline_Browser` (an `Fl_Browser`), the shim counts the full
+  height again after setting it, as pofltk's `Remeasure` does, reaching
+  the private `full_height_` through an explicit instantiation (pofltk
+  159). The count goes through the virtual `item_height`, so an Ada
+  override of `Item_Height` is used, as when lines are added. Checked
+  by pofltk's two `TestBrowsers` checks in test_browser, which fail
+  without the remeasure (`V_Position` 320, not 520).
+- `Fl_Terminal`'s ring: `Ring_Rows`, `Ring_Columns`, `Ring_Offset`,
+  `History_Start`, `History_End`, `Display_Start`, `Display_End`,
+  `Get_Style_Flags` (a record of `Xterm_Fore` and `Xterm_Back`, for
+  `FG_XTERM` and `BG_XTERM`), and a cell's `Cell_Text`,
+  `Cell_Attributes`, `Cell_Fore_Color` and `Cell_Back_Color`, rows and
+  columns from 0 as FLTK numbers them. FLTK's `u8c_ring_row` doesn't
+  check the row, so the shim does, and each cell call raises
+  `Constraint_Error` outside the ring (pofltk's `HaltTerminalCell`).
+  test_terminal's `Test_Ring` ports pofltk's `TestRing`, including the
+  selection in the history whose rows are below 0.
+- GLUT's shapes are `Solid_` and `Wire_` procedures in `FLTK.GLUT`,
+  one for each of glut.H's eighteen (`Solid_Sphere` is
+  `glutSolidSphere`), rather than pofltk's `solid` flag, so the names
+  follow GLUT's. The counts are `Shape_Count`, 1 .. 65_536, pofltk's
+  `MaxCount`, since FLTK has no limit (F36, new). Like the stroke
+  fonts, each raises `Program_Error` without a GL context.
+  test_glut_shapes (new) ports `TestGl` `Shapes` and `HaltGlutShape`,
+  reading the centre pixel back under Xvfb and sway. A scratch run of
+  FLTK's sphere with 268,435,456 slices to see F36 happen was
+  OOM-killed inside its 300 MB limit, and KDE told the user the system
+  was low on memory: F36 rests on the source for the failed-`calloc`
+  path.
+- GLU is `FLTK.GLU`, in `fltkada_glu.gpr` (`glu/spec`, `glu/body`),
+  built and tested only where `pkg-config` finds `glu`, as Cairo is;
+  its tests are `tests_glu.gpr`'s, and the Makefile adds them with
+  `HAVE_GLU`. It binds what pofltk's `FlGlu` binds: `Perspective`,
+  `Look_At`, `Ortho_2D`, `Pick_Matrix` and a `Quadric` with its
+  settings and four shapes. The settings are enumerations with
+  representation clauses (`Draw_Style`, `Normal_Kind`, `Orientation`),
+  which `tools/gen-constants.py`'s new GLU suite checks with
+  `'Enum_Rep` (test_glu_constants). A `Quadric` is limited and
+  controlled, like Cairo's `Pattern`: `Close` (repeatable) or
+  finalization deletes it, and anything else on a closed one raises
+  `Program_Error` (pofltk's `HaltGluClosed`); `Forge.Create` raises
+  `Storage_Error` if `gluNewQuadric` returns null. Counts are
+  `Positive`, as pofltk requires 1 or more. `Pick_Matrix` takes a
+  `Viewport_Area` record, so pofltk's `HaltGluPickMatrix`, a viewport
+  array shorter than four, can't happen and has no test. There is no
+  GL-context check, as in pofltk: test_glu checks that GLU outside a
+  context does nothing, with Mesa under Xvfb and sway. test_glu
+  ports `TestGlu`, reading the matrices back with `glGetFloatv` and
+  the quadrics pixel by pixel; it passes under Xvfb, sway and valgrind.
+- test_key_bindings (new) ports `TestKeys`. Since FLTKAda keeps the
+  bindings in Ada, pofltk's checks of FLTK's key functions become
+  checks of the `KF_` procedures. It found FLTKAda-BUGS.md 128, the
+  oldest binding of a key winning, so that a program couldn't rebind
+  Ctrl+a or any key the defaults bind, and `Remove_Key_Binding`
+  removing every binding of a key (an incompatible change, now newest
+  first, as in FLTK); and 129, a bound function that changed the
+  bindings or freed its editor raising. The freed-editor check sends
+  its key from a timeout, inside `Wait`, as a real key arrives, so the
+  shim defers the delete as it does in a callback
+  (`fl_inside_callback`); sent directly, the editor would be deleted
+  inside its own `handle`. Passes under Xvfb, sway and valgrind.
+- `Measure_Label` gains `Wrap`, defaulting to 0, as
+  `FLTK.Draw.Measure` has: FLTK's `measure_label` takes its width in
+  as the wrap width (`fl_measure`), and FLTKAda always passed 0
+  (INCOMPATIBLE-CHANGES.md, for an override). test_widget gains
+  `TestWidget`'s checks of `Set_Damage` of an area, `Measure_Label`
+  (plain, wrapped, no label), `Redraw_Label` inside and outside the box,
+  and pofltk's `Visibility` (a window added to another, set visible, is
+  shown with it). Full screen, maximize, iconify and the size range
+  were checked already (test_window_fullscreen, test_window_maximize).
+- test_window_icons (new) ports `TestImages`' icons: `Set_Icons`,
+  `Set_Icon`, `Reset_Icons`, `Set_Default_Icon` and
+  `Reset_Default_Icons`, read back on X11 as the length of the window's
+  `_NET_WM_ICON` property through the new `Probe.Icon_Words` (pofltk's
+  `IconWords`); the icons outlive the Ada images, since FLTK copies
+  them. On Wayland, whose drivers ignore icons (pofltk 44), the checks
+  are skipped and the calls only must not fail. pofltk's tiled-image
+  check has no counterpart: `Set_Icons` takes `RGB_Image`s only.
+- test_menu gains `TestMenus`' `Popup` at a place, with a title and
+  opened on an item, and `Pulldown`, with the menu's place read through
+  the new `Probe.Get_Grab` (pofltk's `Grab`). X11 only, as before
+  (pofltk 29).
+- test_text gains `TestText`'s `Redisplay_Range` (also past the end of
+  the buffer; the display is damaged with
+  `Damage_Scroll` and draws) and the line-number format and alignment:
+  numbers drawn with the default `%d`, none with an empty format, and
+  `%03x` drawn on the left. A display draws line numbers only in a
+  window shown, so these have a window of their own. `Wrapped_Row` was
+  checked already. pofltk's negative range has no counterpart: the
+  positions are `Natural`.
+- test_draw_shapes gains `TestDraw`'s three-point `Line` and the
+  stepped lines (`Ecks_Why_Line` and `Why_Ecks_Line` with 3 and 4
+  coordinates), checked pixel by pixel at pofltk's points.
+- test_utf8 gains `TestUtf8`'s mixed bad bytes: `To_Lower` reads 9F as
+  CP1252's Ÿ, E9 as Latin-1's é, and 81, which CP1252 leaves out, as
+  U+0081. The other bad-byte checks were there already. pofltk's
+  `Decode` checks have no counterpart: FLTKAda binds no decoder.
+- `TestTooltips`' empty text was checked already, by valgrind, in
+  test_kept_strings. test_tooltip_early now checks by value, through
+  the new `Probe.Shown_Windows` (Fl::first_window and next_window),
+  that a widget in a window not shown gets no tip, which
+  Fl_Tooltip.cxx's `top_win_iconified_` prevents, that a tip is shown
+  after Show, and that an empty text hides it. These pass on X11 and on
+  sway.
 
 #### Phases 21 to 28: FLTK's `test/` programs
 

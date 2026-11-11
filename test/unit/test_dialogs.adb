@@ -274,6 +274,32 @@ begin
         Check (C = Ask.Cancel and Answer = "pw", "cancelled, unchanged");
     end;
 
+    --  With a maximum length (PLAN.md, Phase 20).
+    Reply ("abcdef", Enter_Key, ASCII.CR);
+    Check (Ask.Text_Input ("Name:", 3) = "abc", "Text_Input with a Max_Length stops the typing");
+    Reply ("", Enter_Key, ASCII.CR);
+    Check (Ask.Text_Input ("Name:", 3, "abcdef") = "abcdef",
+        "a longer Default is shown whole (Fl_Message.cxx:471-474)");
+    Reply ("xy", Enter_Key, ASCII.CR);
+    Check (Ask.Text_Input ("Name:", 3, "ab") = "abx", "and typing after it stops at the limit");
+    Reply ("secret", Enter_Key, ASCII.CR);
+    Check (Ask.Password ("Password:", 4) = "secr", "Password with a Max_Length");
+    declare
+        Answer : SU.Unbounded_String := SU.Null_Unbounded_String;
+    begin
+        Reply ("abcdef", Enter_Key, ASCII.CR);
+        C := Ask.Text_Input ("Name:", 2, Answer);
+        Check (C = Ask.Confirm and Answer = "ab", "Text_Input with a Max_Length and an Answer");
+        Escape;
+        C := Ask.Text_Input ("Name:", 2, Answer);
+        Check (C = Ask.Cancel and Answer = "ab", "cancelled, Cancel, Answer unchanged");
+        Reply ("pqrs", Enter_Key, ASCII.CR);
+        C := Ask.Password ("Password:", 3, Answer);
+        Check (C = Ask.Confirm and Answer = "abp", "Password with a Max_Length and an Answer");
+    end;
+    Reply ("abcdef", Enter_Key, ASCII.CR);
+    Check (Ask.Text_Input ("Name:") = "abcdef", "the next dialog has no limit");
+
     Ask.Set_Message_Title ("Once");
     Enter;
     Ask.Message_Box ("titled");

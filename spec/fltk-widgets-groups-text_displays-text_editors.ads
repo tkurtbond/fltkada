@@ -377,6 +377,11 @@ package FLTK.Widgets.Groups.Text_Displays.Text_Editors is
     --  (Fl_Text_Editor.cxx:639, pofltk 147).  Function keys and keys with
     --  Ctrl, Alt or Meta can be bound.
 
+    --  As in FLTK, a key's newest binding wins, and the Global_Key_Bindings
+    --  come before an editor's own.  Remove_Key_Binding of a Key removes
+    --  only the newest binding of it, which uncovers the one before.  A
+    --  bound function may change the bindings, or free the editor.
+
     procedure Add_Key_Binding
            (This : in out Text_Editor;
             Key  : in     Key_Combo;

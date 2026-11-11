@@ -17,6 +17,7 @@
 with
 
     Checks,
+    FLTK.Probe,
     FLTK.Static,
     FLTK.Widgets.Groups.Windows,
     FLTK.Widgets.Menus.Choices.Schemes;
@@ -69,6 +70,24 @@ begin
     Choice.Switch_Scheme;
     Check (FLTK.Static.Get_Scheme = "gleam",
         "Switch_Scheme with nothing chosen does nothing (F28): " & FLTK.Static.Get_Scheme);
+
+    --  pofltk's TestWidget: Set_System_Scheme reads FLTK_SCHEME, which
+    --  Set_Scheme sets too (pofltk 156).
+    FLTK.Static.Set_Scheme ("gtk+");
+    FLTK.Static.Set_Scheme ("base");
+    Check (FLTK.Static.Get_Scheme = "", "base is no scheme");
+    FLTK.Probe.Set_Env ("FLTK_SCHEME", "Plastic");
+    FLTK.Static.Set_System_Scheme;
+    Check (FLTK.Static.Get_Scheme = "plastic",
+        "Set_System_Scheme takes FLTK_SCHEME: " & FLTK.Static.Get_Scheme);
+    FLTK.Static.Set_Scheme ("gtk+");
+    FLTK.Static.Set_System_Scheme;
+    Check (FLTK.Static.Get_Scheme = "gtk+",
+        "after Set_Scheme, Set_System_Scheme keeps it: " & FLTK.Static.Get_Scheme);
+    FLTK.Probe.Set_Env ("FLTK_SCHEME", "nonesuch");
+    FLTK.Static.Set_System_Scheme;
+    Check (FLTK.Static.Get_Scheme = "",
+        "an unknown FLTK_SCHEME is no scheme: " & FLTK.Static.Get_Scheme);
 
     Summary;
 

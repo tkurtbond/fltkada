@@ -4,6 +4,7 @@
 //  Released into the public domain
 
 
+#include <string>
 #include <FL/Fl_Input.H>
 #include "c_fl_input.h"
 #include "c_fl_widget.h"
@@ -78,6 +79,32 @@ void fl_text_input_draw(TEXTINPUT t) {
 
 int fl_text_input_handle(TEXTINPUT t, int e) {
     return static_cast<My_Text_Input*>(t)->Fl_Input::handle(e);
+}
+
+
+
+
+//  The menu an input or a text display pops up on the right button.
+//  FLTK keeps these pointers and labels the menu from them each time
+//  it opens it, so the texts are copied here and kept.
+
+static const char ** menu_text_ptr(int which) {
+    switch (which) {
+    case 0: return &Fl_Input::cut_menu_text;
+    case 1: return &Fl_Input::copy_menu_text;
+    default: return &Fl_Input::paste_menu_text;
+    }
+}
+
+const char * fl_text_input_get_menu_text(int which) {
+    return *menu_text_ptr(which);
+}
+
+void fl_text_input_set_menu_text(int which, const char * text) {
+    static std::string kept[3];
+    int i = which < 0 || which > 2 ? 2 : which;
+    kept[i] = text;
+    *menu_text_ptr(i) = kept[i].c_str();
 }
 
 

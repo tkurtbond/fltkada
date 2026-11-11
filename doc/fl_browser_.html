@@ -221,6 +221,28 @@ procedure Set_H_Position
 
   <tr>
 <td><pre>
+int linespacing() const;
+</pre></td>
+<td><pre>
+function Get_Line_Spacing
+       (This : in Browser)
+    return Natural;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void linespacing(int pixels);
+</pre></td>
+<td><pre>
+procedure Set_Line_Spacing
+       (This  : in out Browser;
+        Value : in     Natural);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 int position() const;
 </pre></td>
 <td><pre>

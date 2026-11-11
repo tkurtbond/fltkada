@@ -195,6 +195,29 @@ extern "C" int fl_probe_grabbed() {
     return Fl::grab() != 0;
 }
 
+//  How many windows FLTK has shown, its own (a tooltip's, a menu's) too.
+extern "C" int fl_probe_shown_windows() {
+    int n = 0;
+    for (Fl_Window *w = Fl::first_window(); w != 0; w = Fl::next_window(w)) {
+        n++;
+    }
+    return n;
+}
+
+//  The screen rectangle of the window FLTK grabs events to (an open menu)
+//  in r; 0 if there is none.  From pofltk's Probe.
+extern "C" int fl_probe_grab(int * r) {
+    Fl_Window *g = Fl::grab();
+    if (g == 0) {
+        return 0;
+    }
+    r[0] = g->x();
+    r[1] = g->y();
+    r[2] = g->w();
+    r[3] = g->h();
+    return 1;
+}
+
 extern "C" const char * fl_probe_modal_title() {
     Fl_Window *modal = Fl::modal();
     if (modal == 0 || modal->label() == 0) {
@@ -323,6 +346,44 @@ extern "C" int fl_probe_x11_title(void * w, char * buf, int n) {
     (void) w;
     (void) n;
     return 0;
+#endif
+}
+
+//  The number of 32-bit words in shown window w's _NET_WM_ICON property, the
+//  icons FLTK gave the window manager:  for each, its width, its height and
+//  its pixels.  -1 if not on X11 or not shown.  From pofltk's Probe.
+extern "C" int fl_probe_icon_words(void * w) {
+#if FLTK_USE_X11
+    Display *d = fl_x11_display();
+    Window x = d == 0 ? 0 : fl_x11_xid(static_cast<Fl_Window*>(w));
+    if (x == 0) {
+        return -1;
+    }
+    typedef Atom (*Intern)(Display *, const char *, Bool);
+    typedef int (*Get)(Display *, Window, Atom, long, long, Bool, Atom, Atom *,
+        int *, unsigned long *, unsigned long *, unsigned char **);
+    typedef int (*Free)(void *);
+    Intern intern = reinterpret_cast<Intern>(dlsym(RTLD_DEFAULT, "XInternAtom"));
+    Get get = reinterpret_cast<Get>(dlsym(RTLD_DEFAULT, "XGetWindowProperty"));
+    Free xfree = reinterpret_cast<Free>(dlsym(RTLD_DEFAULT, "XFree"));
+    if (intern == 0 || get == 0 || xfree == 0) {
+        return -1;
+    }
+    Atom type;
+    int format;
+    unsigned long n, after;
+    unsigned char *data = 0;
+    if (get(d, x, intern(d, "_NET_WM_ICON", False), 0, 1 << 20, False,
+            AnyPropertyType, &type, &format, &n, &after, &data) != Success) {
+        return -1;
+    }
+    if (data) {
+        xfree(data);
+    }
+    return static_cast<int>(n);
+#else
+    (void) w;
+    return -1;
 #endif
 }
 

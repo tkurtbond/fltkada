@@ -88,6 +88,9 @@ public:
     friend void fl_terminal_set_cursor_col(TERMINAL t, int c);
     friend int fl_terminal_get_selection(TERMINAL t, int * srow, int * scol,
         int * erow, int * ecol);
+    friend int fl_terminal_ring(TERMINAL t, int what);
+    friend int fl_terminal_cell(TERMINAL t, int row, int col, char * buf, int * len,
+        int * attrib, unsigned int * fg, unsigned int * bg);
 
     friend void fl_terminal_draw(TERMINAL n);
     friend int fl_terminal_handle(TERMINAL n, int e);
@@ -650,6 +653,50 @@ void fl_terminal_set_hscrollbar_style(TERMINAL t, int s) {
 
 int fl_terminal_get_selection(TERMINAL t, int * srow, int * scol, int * erow, int * ecol) {
     return static_cast<My_Terminal*>(t)->get_selection(*srow, *scol, *erow, *ecol);
+}
+
+
+//  FLTK's ring, which only a subclass sees (from pofltk's FlTerminal.cpp).
+//  what:  0 rows, 1 columns, 2 offset, 3 and 4 the history's first and
+//  last rows, 5 and 6 the screen's, 7 the current style's flags.
+int fl_terminal_ring(TERMINAL t, int what) {
+    My_Terminal * m = static_cast<My_Terminal*>(t);
+    switch (what) {
+    case 0: return m->ring_rows();
+    case 1: return m->ring_cols();
+    case 2: return m->offset();
+    case 3: return m->hist_srow();
+    case 4: return m->hist_erow();
+    case 5: return m->disp_srow();
+    case 6: return m->disp_erow();
+    case 7: return m->current_style().charflags();
+    default: return 0;
+    }
+}
+
+//  A cell of the ring:  its character into buf, of 4 bytes, not ended by
+//  a 0, its length, attributes and colours.  0, doing nothing, for a row
+//  or column outside the ring, which FLTK doesn't check.
+int fl_terminal_cell(TERMINAL t, int row, int col, char * buf, int * len,
+    int * attrib, unsigned int * fg, unsigned int * bg)
+{
+    My_Terminal * m = static_cast<My_Terminal*>(t);
+    if (row < 0 || row >= m->ring_rows() || col < 0 || col >= m->ring_cols()) {
+        return 0;
+    }
+    const auto * u = m->u8c_ring_row(row) + col;
+    int n = u->length();
+    if (n > 4) {
+        n = 4;
+    }
+    for (int i = 0; i < n; i++) {
+        buf[i] = u->text_utf8()[i];
+    }
+    *len = n;
+    *attrib = u->attrib();
+    *fg = u->fgcolor();
+    *bg = u->bgcolor();
+    return 1;
 }
 
 int fl_terminal_selection_text_len(TERMINAL t) {

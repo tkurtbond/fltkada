@@ -81,6 +81,45 @@ function Create
 
   <tr>
 <td><pre>
+static const char *cut_menu_text;
+</pre></td>
+<td><pre>
+function Get_Cut_Menu_Text
+    return String;
+
+procedure Set_Cut_Menu_Text
+       (To : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char *copy_menu_text;
+</pre></td>
+<td><pre>
+function Get_Copy_Menu_Text
+    return String;
+
+procedure Set_Copy_Menu_Text
+       (To : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+static const char *paste_menu_text;
+</pre></td>
+<td><pre>
+function Get_Paste_Menu_Text
+    return String;
+
+procedure Set_Paste_Menu_Text
+       (To : in String);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 int handle(int);
 </pre></td>
 <td><pre>

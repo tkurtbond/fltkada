@@ -44,6 +44,9 @@ project Tests_Unit is
         "test_callback_free.adb",
         "test_tree_margins.adb",
         "test_button.adb",
+        "test_button_compact.adb",
+        "test_versions.adb",
+        "test_names.adb",
         "test_widget.adb",
         "test_input.adb",
         "test_valuator.adb",
@@ -67,9 +70,12 @@ project Tests_Unit is
         "test_print.adb",
         "test_gl.adb",
         "test_glut.adb",
+        "test_glut_shapes.adb",
+        "test_key_bindings.adb",
         "test_grid_range.adb",
         "test_grid_cells.adb",
         "test_window_list.adb",
+        "test_window_maximize.adb",
         "test_scheme_choice.adb",
         "test_resize_hook.adb",
         "test_hook_exceptions.adb",
@@ -159,6 +165,7 @@ project Tests_Unit is
         "test_pref_groups.adb",
         "test_menu_item_labels.adb",
         "test_window_shape.adb",
+        "test_window_icons.adb",
         "test_image_data.adb",
         "test_write_png.adb",
         "test_shortcut_button.adb",
@@ -190,6 +197,7 @@ project Tests_Unit is
         "test_slider_box.adb",
         "test_screen_numbers.adb",
         "test_label_null.adb",
+        "test_label_margin.adb",
         "test_valuator_step.adb");
 
     package Builder is

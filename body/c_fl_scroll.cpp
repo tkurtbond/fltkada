@@ -118,6 +118,15 @@ void fl_scroll_set_size(SCROLL s, int t) {
     static_cast<Fl_Scroll*>(s)->scrollbar_size(t);
 }
 
+unsigned int fl_scroll_get_scrollbar_align(SCROLL s) {
+    return static_cast<Fl_Scroll*>(s)->scrollbar.align();
+}
+
+void fl_scroll_set_scrollbar_align(SCROLL s, unsigned int a) {
+    static_cast<Fl_Scroll*>(s)->scrollbar.align(a);
+    static_cast<Fl_Scroll*>(s)->redraw();
+}
+
 
 
 

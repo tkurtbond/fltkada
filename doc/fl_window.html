@@ -340,7 +340,10 @@ void default_cursor(Fl_Cursor c, Fl_Color, Fl_Color=FL_WHITE);
 <td><pre>
 void free_position();
 </pre></td>
-<td>Marked as deprecated.</td>
+<td><pre>
+procedure Free_Position
+       (This : in out Window);
+</pre></td>
   </tr>
 
   <tr>
@@ -397,6 +400,24 @@ procedure Fullscreen_Screens
 procedure Fullscreen_Own_Screen
        (This : in out Window);
 --  fullscreen_screens(-1, -1, -1, -1)
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+uchar get_size_range(int *minw, int *minh, int *maxw=NULL,
+    int *maxh=NULL, int *dw=NULL, int *dh=NULL, int *aspect=NULL);
+</pre></td>
+<td><pre>
+function Has_Size_Range
+       (This : in Window)
+    return Boolean;
+
+procedure Get_Size_Range
+       (This                           : in     Window;
+        Min_W, Min_H                   :    out Integer;
+        Max_W, Max_H, Incre_W, Incre_H :    out Integer;
+        Keep_Aspect                    :    out Boolean);
 </pre></td>
   </tr>
 
@@ -562,6 +583,27 @@ procedure Make_Current
 
   <tr>
 <td><pre>
+void maximize();
+</pre></td>
+<td><pre>
+procedure Maximize
+       (This : in out Window);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+unsigned int maximize_active() const;
+</pre></td>
+<td><pre>
+function Is_Maximized
+       (This : in Window)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 unsigned int menu_window() const;
 </pre></td>
 <td><pre>
@@ -621,6 +663,29 @@ virtual void resize(int X, int Y, int W, int H);
 procedure Resize
        (This       : in out Window;
         X, Y, W, H : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int screen_num();
+</pre></td>
+<td><pre>
+--  Numbered 1 .. FLTK.Screen.Count
+function Get_Screen_Num
+       (This : in Window)
+    return Positive;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void screen_num(int screen_num);
+</pre></td>
+<td><pre>
+procedure Set_Screen_Num
+       (This : in out Window;
+        To   : in     Positive);
 </pre></td>
   </tr>
 
@@ -745,6 +810,16 @@ unsigned int tooltip_window() const;
 function Is_Tooltip_Window
        (This : in Window)
     return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void un_maximize();
+</pre></td>
+<td><pre>
+procedure Un_Maximize
+       (This : in out Window);
 </pre></td>
   </tr>
 

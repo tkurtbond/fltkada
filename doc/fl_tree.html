@@ -462,6 +462,56 @@ function Deselect_All
   </tr>
 
   <tr>
+<td><pre>
+void select_toggle(Fl_Tree_Item *item, int docallback=1);
+</pre></td>
+<td><pre>
+procedure Select_Toggle
+       (This : in out Tree;
+        Item : in     FLTK.Tree_Items.Tree_Item);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Tree_Item *first_selected_item();
+</pre></td>
+<td><pre>
+function First_Selected
+       (This : in Tree)
+    return FLTK.Tree_Items.Tree_Item;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Tree_Item *last_selected_item();
+</pre></td>
+<td><pre>
+function Last_Selected
+       (This : in Tree)
+    return FLTK.Tree_Items.Tree_Item;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Tree_Item *next_selected_item(Fl_Tree_Item *item=0, int dir=FL_Down);
+</pre></td>
+<td><pre>
+function Next_Selected
+       (This : in Tree;
+        Item : in FLTK.Tree_Items.Tree_Item)
+    return FLTK.Tree_Items.Tree_Item;
+
+function Prev_Selected
+       (This : in Tree;
+        Item : in FLTK.Tree_Items.Tree_Item)
+    return FLTK.Tree_Items.Tree_Item;
+</pre></td>
+  </tr>
+
+  <tr>
 <td>Fl_Tree_Item_Array is marshalled as a plain Ada array -- see
 fl_tree_item.html.
 <pre>
@@ -816,6 +866,74 @@ void vposition(int pos);
 procedure Set_V_Position
        (This  : in out Tree;
         Value : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+int displayed(Fl_Tree_Item *item);
+</pre></td>
+<td><pre>
+function Is_Displayed
+       (This : in Tree;
+        Item : in FLTK.Tree_Items.Tree_Item)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void show_item(Fl_Tree_Item *item);
+</pre></td>
+<td><pre>
+procedure Show_Item
+       (This : in out Tree;
+        Item : in     FLTK.Tree_Items.Tree_Item);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void show_item(Fl_Tree_Item *item, int yoff);
+</pre></td>
+<td><pre>
+procedure Show_Item
+       (This   : in out Tree;
+        Item   : in     FLTK.Tree_Items.Tree_Item;
+        Offset : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void show_item_top(Fl_Tree_Item *item);
+</pre></td>
+<td><pre>
+procedure Show_Item_Top
+       (This : in out Tree;
+        Item : in     FLTK.Tree_Items.Tree_Item);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void show_item_middle(Fl_Tree_Item *item);
+</pre></td>
+<td><pre>
+procedure Show_Item_Middle
+       (This : in out Tree;
+        Item : in     FLTK.Tree_Items.Tree_Item);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void show_item_bottom(Fl_Tree_Item *item);
+</pre></td>
+<td><pre>
+procedure Show_Item_Bottom
+       (This : in out Tree;
+        Item : in     FLTK.Tree_Items.Tree_Item);
 </pre></td>
   </tr>
 

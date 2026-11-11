@@ -268,6 +268,76 @@ begin
     Check (Count = 6 and then Tree.Selected_Items'Length = 0,
         "Deselect_All, the root too, returns how many changed");
 
+    --  Select_Toggle and walking the selection, from pofltk's TestTree.
+    --  Unlike pofltk's ToggleSelect, Select_Toggle calls back, as
+    --  Fl_Tree::select_toggle does by default.
+    Calls := 0;
+    Tree.Select_Toggle (B);
+    Tree.Select_Toggle (D);
+    Check (TI.Is_Selected (B) and then TI.Is_Selected (D) and then Calls = 2 and then Last = D
+            and then Reason = Trs.Selected,
+        "Select_Toggle selects, and calls back");
+    Check (Tree.First_Selected = B and then Tree.Last_Selected = D
+            and then Tree.Next_Selected (B) = D and then TI.Is_Null (Tree.Next_Selected (D))
+            and then Tree.Prev_Selected (D) = B and then TI.Is_Null (Tree.Prev_Selected (B)),
+        "First_Selected, Last_Selected, Next_Selected, Prev_Selected");
+    Check (Tree.Next_Selected (TI.No_Tree_Item) = B
+            and then Tree.Prev_Selected (TI.No_Tree_Item) = D,
+        "Next_Selected and Prev_Selected of no item start from the first and the last");
+    Tree.Select_Toggle (B);
+    Check (not TI.Is_Selected (B) and then Tree.First_Selected = D and then Calls = 3
+            and then Last = B and then Reason = Trs.Deselected,
+        "Select_Toggle deselects, and calls back");
+    Count := Tree.Deselect_All;
+    Check (TI.Is_Null (Tree.First_Selected) and then TI.Is_Null (Tree.Last_Selected),
+        "First_Selected and Last_Selected with none selected");
+
+    --  FLTKAda-BUGS.md 127: FLTK dereferenced a null item.
+    declare
+        procedure Expect
+               (Label : in String;
+                What  : not null access procedure)
+        is
+        begin
+            What.all;
+            Check (False, Label & " of No_Tree_Item raises Constraint_Error");
+        exception
+        when Constraint_Error =>
+            Check (True, Label & " of No_Tree_Item raises Constraint_Error");
+        end Expect;
+        procedure Do_Open is
+        begin
+            Tree.Open (TI.No_Tree_Item);
+        end Do_Open;
+        procedure Do_Select is
+        begin
+            Tree.Select_Toggle (TI.No_Tree_Item);
+        end Do_Select;
+        procedure Do_Remove is
+        begin
+            Tree.Remove (TI.No_Tree_Item);
+        end Do_Remove;
+        procedure Do_Insert is
+        begin
+            Ignore_Item := Tree.Insert (TI.No_Tree_Item, "x", 0);
+        end Do_Insert;
+        procedure Do_Label is
+        begin
+            TI.Set_Label (TI.No_Tree_Item, "x");
+        end Do_Label;
+        procedure Do_Next is
+        begin
+            Ignore_Item := TI.Next (TI.No_Tree_Item);
+        end Do_Next;
+    begin
+        Expect ("Tree.Open", Do_Open'Access);
+        Expect ("Tree.Select_Toggle", Do_Select'Access);
+        Expect ("Tree.Remove", Do_Remove'Access);
+        Expect ("Tree.Insert", Do_Insert'Access);
+        Expect ("Tree_Items.Set_Label", Do_Label'Access);
+        Expect ("Tree_Items.Next", Do_Next'Access);
+    end;
+
     TI.Deactivate (B);
     Check (not TI.Is_Active (B), "Deactivate");
     TI.Activate (B);
@@ -345,6 +415,57 @@ begin
             "a click calls back with the program's item");
         Check (R.Draw_Background_Color = Tree.Get_Selection_Color,
             "Draw_Background_Color, selected: the tree's selection color");
+    end;
+
+    --  Scrolling to an item, from pofltk's TestTree: 40 more rows than
+    --  the tree shows.  A tree lays its items out as it draws.
+    declare
+        Top_Pos, Middle_Pos : Integer;
+    begin
+        for N in 0 .. 39 loop
+            Ignore_Item := Tree.Add ("many/" & Integer'Image (N) (2 .. Integer'Image (N)'Last));
+        end loop;
+        I := Tree.Find ("many/20");
+        Lay_Out;
+        Check (not Tree.Is_Displayed (I) and then Tree.Get_V_Position = 0,
+            "Is_Displayed of an item below the tree's area");
+        Tree.Show_Item (I);
+        Lay_Out;
+        Top_Pos := Tree.Get_V_Position;
+        Check (Tree.Is_Displayed (I) and then Top_Pos > 0, "Show_Item scrolls to it");
+        Tree.Show_Item (I);
+        Lay_Out;
+        Check (Tree.Get_V_Position = Top_Pos, "but not when it is displayed already");
+        Tree.Show_Item_Middle (I);
+        Lay_Out;
+        Middle_Pos := Tree.Get_V_Position;
+        Check (Tree.Is_Displayed (I) and then Top_Pos > Middle_Pos,
+            "Show_Item_Middle scrolls less far than Show_Item_Top");
+        Tree.Show_Item_Bottom (I);
+        Lay_Out;
+        Check (Tree.Is_Displayed (I) and then Middle_Pos > Tree.Get_V_Position
+                and then Tree.Get_V_Position > 0,
+            "Show_Item_Bottom less far still");
+        Tree.Show_Item_Top (I);
+        Lay_Out;
+        Check (Tree.Get_V_Position = Top_Pos, "Show_Item_Top");
+        Tree.Show_Item (I, 10);
+        Lay_Out;
+        Check (Tree.Get_V_Position = Top_Pos - 10, "Show_Item with an offset");
+        --  First is the hidden root, and showing it at the top doesn't
+        --  scroll back to 0 (it scrolled to 5 under Xvfb), so compare it
+        --  with Show_Item_Top (First).
+        Tree.Show_Item_Top (TI.No_Tree_Item);
+        Lay_Out;
+        Middle_Pos := Tree.Get_V_Position;
+        Tree.Show_Item_Bottom (I);
+        Lay_Out;
+        Tree.Show_Item_Top (Tree.First);
+        Lay_Out;
+        Check (Middle_Pos < Top_Pos and then Tree.Get_V_Position = Middle_Pos,
+            "Show_Item_Top of no item means the first");
+        Check (Tree.Is_Displayed (TI.No_Tree_Item) = Tree.Is_Displayed (Tree.First),
+            "and Is_Displayed");
     end;
 
     --  Clear
