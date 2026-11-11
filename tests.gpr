@@ -36,6 +36,7 @@ project Tests is
         "filename.adb",
         "fonts.adb",
         "gl_overlay.adb",
+        "glut_cube.adb",
         "glut_test.adb",
         "help_dialog.adb",
         "input_choice.adb",
@@ -96,6 +97,7 @@ project Tests is
         for Executable ("filename.adb")           use "filename";
         for Executable ("fonts.adb")              use "fonts";
         for Executable ("gl_overlay.adb")         use "gl_overlay";
+        for Executable ("glut_cube.adb")          use "glut_cube";
         for Executable ("glut_test.adb")          use "glut_test";
         for Executable ("help_dialog.adb")        use "help_dialog";
         for Executable ("input_choice.adb")       use "input_choice";

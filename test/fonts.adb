@@ -14,6 +14,13 @@
 --  pofltk's, asks a font's sizes when the font is chosen, which lists the
 --  same sizes.  The editor is made at the start, not on the first F1, and
 --  only shown on F1.
+--
+--  fonts.cxx stores a dot as 8 * column + row in a C string, so its top
+--  left dot, 0, ends the letter and is never recorded (FLTK-issues.md
+--  F30).  This one keeps each letter's strokes in a vector, so the dot is
+--  recorded and drawn, as in pofltk's fixed port.  The saved table is in
+--  FLTK's form, for its OpenGL driver's font_data, which has no way to
+--  write that dot: Save leaves it out, and says so.
 
 
 with
@@ -348,13 +355,7 @@ is
     procedure Add_Point_CB
            (Item : in out Wdg.Widget'Class) is
     begin
-        --  The saved table is a C string per letter, in which the top left
-        --  dot, 0, would end the string.  fonts.cxx can't record that dot
-        --  either: its 0 ends its table (FLTK-issues.md F30).  So it's left
-        --  out here too.
-        if Dot (Item).Where /= 0 then
-            Strokes (Current_Char).Append (Dot (Item).Where);
-        end if;
+        Strokes (Current_Char).Append (Dot (Item).Where);
         Letter.Redraw;
     end Add_Point_CB;
 
@@ -433,6 +434,7 @@ is
         use Ada.Text_IO;
         Name : constant String := FLTK.Asks.File_Chooser ("Save font as:", "", "");
         File : File_Type;
+        Lost : Natural := 0;
     begin
         if Name = "" then
             return;
@@ -457,7 +459,12 @@ is
             else
                 Put (File, '"');
                 for Cmd of Strokes (C) loop
-                    Put (File, "\" & Digits_Of (Cmd, 8));
+                    if Cmd = 0 then
+                        --  The top left dot, which would end the C string.
+                        Lost := Lost + 1;
+                    else
+                        Put (File, "\" & Digits_Of (Cmd, 8));
+                    end if;
                 end loop;
                 Put (File, '"');
             end if;
@@ -471,6 +478,10 @@ is
         Put_Line (File, "};");
         New_Line (File);
         Close (File);
+        if Lost > 0 then
+            FLTK.Asks.Alert
+               ("FLTK's table has no way to write the top left dot, so it was left out.");
+        end if;
     end Save_CB;
 
 

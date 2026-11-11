@@ -678,6 +678,15 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
   top left dot differed from the C++ by 951 pixels, the missing left
   edge, until the port left the dot out (AE 0). Begun at the next dot
   along, the two matched before the change.
+- **Fixed in FLTKAda's port** (2026-11-11, PLAN.md Phase 18, following
+  pofltk's fix): `test/fonts.adb` no longer copies the bug. It records
+  and draws the top left dot, and Save leaves the dot out of FLTK's
+  table and says so in an alert. So the port now differs from the C++
+  on purpose, by the stroke the C++ loses. Confirmed under Xvfb, driven
+  with xdotool: after clicking the top left dot and the one below it,
+  the pixel between them is blue (0,0,255); built from the previous
+  `fonts.adb`, it was the background grey (192,192,192). The effect
+  paragraph above describes the port before this fix.
 
 ### F31. `Fl_Help_View` lays a `WIDTH=100%` table out under its scrollbar
 

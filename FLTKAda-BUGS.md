@@ -1,17 +1,23 @@
 # FLTKAda bugs found while porting FLTK 1.4.5's examples
 
-Sections 1 to 14 are fixed bugs. Sections 15 to 30 are **open**: they
-were found on 2026-11-03 by reading FLTKAda's code against pofltk's
-`doc/fltk-issues.md` (see PLAN.md, "The issue triage"). They have not yet
-been confirmed by running anything. Sections 31 and 32 were found by
-`test_constants` (PLAN.md, Phase 0) and are fixed. Section 16 is fixed
-(PLAN.md, Phase 2). The kept-pointer audit found sections 33 to 38
-(PLAN.md, Phase 2), and all six are fixed. Sections 43 to 45 came from
-N12 (PLAN.md, Phase 2): 43 is fixed, 44 and 45 are open. Section 46
-was found by valgrind in Phase 2 and is fixed. When one is fixed,
-replace its "Status" with "Fix" and "Verified", as in sections 1 to
-14. When one turns out not to be a bug, say so in its section rather
-than deleting it.
+Sections 1 to 14 are fixed bugs. Sections 15 to 30 were found on
+2026-11-03 by reading FLTKAda's code against pofltk's
+`doc/fltk-issues.md` (see PLAN.md, "The issue triage"). Sections 31 and
+32 were found by `test_constants` (PLAN.md, Phase 0), the kept-pointer
+audit found 33 to 38, and 43 to 45 came from N12 (both PLAN.md,
+Phase 2). Later sections were found by the phases that name them.
+
+Four are still open: 28 (in part: the remaining `pragma Assert`s), 41,
+44 and 85. Every other section is fixed. Until 2026-11-11 this
+paragraph called 15 to 30 open and 45 open. Most of 15 to 30 were fixed
+in Phases 2 and 6 under PLAN.md's own numbers (N1 to N12 and pofltk's
+issue numbers), and some were recorded again as later sections (39, 40,
+42, 43 and 63). Each now says which.
+
+When one is fixed, replace its "Status" with "Fix" and "Verified", as
+in sections 1 to 14, and update the list above and AGENTS.md's. When
+one turns out not to be a bug, say so in its section rather than
+deleting it.
 Numbers like "pofltk 16" refer to `~/Repos/Oberon/pofltk/doc/fltk-issues.md`.
 Numbers like "F1" refer to `FLTK-issues.md` here.
 
@@ -444,7 +450,18 @@ checked). See F1. Separately, the hook maps `""` to NULL, and FLTK's
 does with a cache, freed in `Extra_Final`. Return `""`, not NULL, for an
 image (pofltk's `in_image` flag).
 
-**Status.** Open. PLAN.md Phase 2.
+**Fix.** PLAN.md Phase 2, "N4 and issue 90: done". The shim installs
+its own link function, keeps the answer about what to load until the
+next one, so that it outlives `free_data()`, and keeps each image's
+answer for the view's life. A refused image is answered `""`. `Hilda`
+is gone.
+
+**Verified.** `test_help_links`, the test PLAN.md names for the
+fix. Run again on 2026-11-11 from `test/unit`, as `make check` runs
+it, under Xvfb and on headless sway: all its checks pass.
+
+**Status.** Fixed. Until 2026-11-11 this section said "Open": PLAN.md
+recorded the fix under its own number, and this file wasn't updated.
 
 
 ## 18. Table: widgets added to cells are freed twice
@@ -462,7 +479,16 @@ overridden, so on a `Table` it removes one of the table's own parts
 **Planned fix.** Detach cell children in `Table.Extra_Final`, and override
 `Remove (Place)`. Test as `test/group_children.adb` does, under valgrind.
 
-**Status.** Open. PLAN.md Phase 2.
+**Fix.** The same bug as section 39, which records the fix: PLAN.md
+Phase 2, "N9 and issue 52: done". `Table.Extra_Final` detaches the Ada
+widgets in the inner `Scroll`, and `Table` overrides `Remove (Place)`.
+
+**Verified.** `test_table_children`, the test PLAN.md names for the
+fix. Run again on 2026-11-11 from `test/unit`, as `make check` runs
+it, under Xvfb and on headless sway: all its checks pass.
+
+**Status.** Fixed. Until 2026-11-11 this section said "Open": PLAN.md
+recorded the fix under its own number, and this file wasn't updated.
 
 
 ## 19. Text_Buffer: its callbacks outlive the Ada buffer
@@ -477,7 +503,16 @@ and survives (pofltk 34).
 
 **Planned fix.** Remove both callbacks in `Finalize`.
 
-**Status.** Open. PLAN.md Phase 2.
+**Fix.** The same bug as section 40, which records the fix: PLAN.md
+Phase 2, "N10 and issue 34: done". `Text_Buffer.Finalize` removes both
+hooks.
+
+**Verified.** `test_buffer_life`, the test PLAN.md names for the
+fix. Run again on 2026-11-11 from `test/unit`, as `make check` runs
+it, under Xvfb and on headless sway: all its checks pass.
+
+**Status.** Fixed. Until 2026-11-11 this section said "Open": PLAN.md
+recorded the fix under its own number, and this file wasn't updated.
 
 
 ## 20. Textline_Browser: icons aren't kept alive, and the icon list drifts
@@ -494,7 +529,17 @@ vector is never shifted by `Insert`, `Remove`, `Move`, `Swap`, `Clear` or
 **Planned fix.** Hold a reference to each icon image, and keep `Icons` in
 step with the lines, or look the icon up from FLTK's line.
 
-**Status.** Open. PLAN.md Phase 2.
+**Fix.** The same bug as section 42, which records the fix: PLAN.md
+Phase 2, "N11 and issue 56: done". `Set_Icon` gives FLTK a copy the
+browser owns, and `Get_Icon` and `Has_Icon` ask FLTK which image a line
+shows, so an icon follows its line.
+
+**Verified.** `test_browser_icons`, the test PLAN.md names for the
+fix. Run again on 2026-11-11 from `test/unit`, as `make check` runs
+it, under Xvfb and on headless sway: all its checks pass.
+
+**Status.** Fixed. Until 2026-11-11 this section said "Open": PLAN.md
+recorded the fix under its own number, and this file wasn't updated.
 
 
 ## 21. Font_Sizes reads the wrong entries
@@ -508,7 +553,15 @@ checked) returns `*(a+((i-1)*sizeof(int)))`. Pointer arithmetic on an
 
 **Planned fix.** `return a[i-1];`.
 
-**Status.** Open; checked. PLAN.md Phase 2.
+**Fix.** PLAN.md Phase 2, "N1, N2, N3 and issue 126: done". The shim
+reads `a[i-1]`.
+
+**Verified.** `test_font_sizes`, the test PLAN.md names for the
+fix. Run again on 2026-11-11 from `test/unit`, as `make check` runs
+it, under Xvfb and on headless sway: all its checks pass.
+
+**Status.** Fixed. Until 2026-11-11 this section said "Open": PLAN.md
+recorded the fix under its own number, and this file wasn't updated.
 
 
 ## 22. Draw_Image's line callback sees only part of the line
@@ -551,7 +604,16 @@ caller (pofltk 125).
 **Planned fix.** Have the shim allocate a buffer large enough
 (`strlen + 4` plus a margin) and pass its size as `maxbuf`.
 
-**Status.** Open; checked. PLAN.md Phase 2.
+**Fix.** PLAN.md Phase 2, "N1, N2, N3 and issue 126: done".
+`Expand_Text` passes a buffer of `8 * Length + 16` bytes, so the text
+is never cut short.
+
+**Verified.** `test_expand_text`, the test PLAN.md names for the
+fix. Run again on 2026-11-11 from `test/unit`, as `make check` runs
+it, under Xvfb and on headless sway: all its checks pass.
+
+**Status.** Fixed. Until 2026-11-11 this section said "Open": PLAN.md
+recorded the fix under its own number, and this file wasn't updated.
 
 
 ## 24. Local_To_Mac_Roman and Mac_Roman_To_Local write to NULL and over-read
@@ -567,7 +629,17 @@ FLTK's result isn't NUL-terminated. FLTK's own part is pofltk 126.
 **Planned fix.** As pofltk does: call with `n = 0` first, convert a byte
 at a time, and return `Value (ptr, len)`.
 
-**Status.** Open. PLAN.md Phase 2.
+**Fix.** PLAN.md Phase 2, "N1, N2, N3 and issue 126: done". A new
+shim function, `fl_draw_recode`, calls FLTK's conversion with `n = 0`
+first, then converts a byte at a time, and the text is passed both ways
+by length.
+
+**Verified.** `test_recode`, the test PLAN.md names for the
+fix. Run again on 2026-11-11 from `test/unit`, as `make check` runs
+it, under Xvfb and on headless sway: all its checks pass.
+
+**Status.** Fixed. Until 2026-11-11 this section said "Open": PLAN.md
+recorded the fix under its own number, and this file wasn't updated.
 
 
 ## 25. Shadow, engraved, embossed and round box and label types draw as plain
@@ -585,7 +657,17 @@ them. Only `c_fl_multi_label.cpp` defines its label type (pofltk 8).
 **Planned fix.** Call the `fl_define_FL_*` functions once in the shim
 before any box or label type is set. Test with `Probe.Capture`.
 
-**Status.** Open. PLAN.md Phase 6.
+**Fix.** PLAN.md Phase 6, "Issue 8". `fl_define_box_and_label_types`
+(`body/c_fl.cpp:62`) calls the 14 `fl_define_FL_*` functions, from
+`FLTK`'s elaboration (`body/fltk.adb:945`), not on first use as planned.
+Multi, Icon and Image labels are left undefined, on purpose.
+
+**Verified.** `test_defined_types`, the test PLAN.md names for the
+fix. Run again on 2026-11-11 from `test/unit`, as `make check` runs
+it, under Xvfb and on headless sway: all its checks pass.
+
+**Status.** Fixed. Until 2026-11-11 this section said "Open": PLAN.md
+recorded the fix under its own number, and this file wasn't updated.
 
 
 ## 26. Set_Label with a label kind doesn't dispatch
@@ -600,7 +682,16 @@ FLTKAda's override (pofltk 6).
 
 **Planned fix.** `Widget'Class (This).Set_Label (Text)`.
 
-**Status.** Open. PLAN.md Phase 6.
+**Fix.** The same bug as section 63, which records the fix: PLAN.md
+Phase 6, "N7, issue 6". `Set_Label (This, Kind, Text)` dispatches
+through `Widget'Class (This)`.
+
+**Verified.** `test_window_label`, the test PLAN.md names for the
+fix. Run again on 2026-11-11 from `test/unit`, as `make check` runs
+it, under Xvfb and on headless sway: all its checks pass.
+
+**Status.** Fixed. Until 2026-11-11 this section said "Open": PLAN.md
+recorded the fix under its own number, and this file wasn't updated.
 
 
 ## 27. Spinner and Color_Chooser: inherited operations reach the wrong widget
@@ -650,7 +741,11 @@ own `Pre` and `pragma Assert` are never checked in a release build.
 **Planned fix.** Write guards that prevent memory errors as explicit
 checks that raise (PLAN.md, "Architecture decisions", 1).
 
-**Status.** Open. Applies throughout the fix phases.
+**Status.** Open, in part. Since 2026-11-03 every new guard against a
+memory error is an explicit check that raises (PLAN.md, "Architecture
+decisions", 1), and the guards found since have been rewritten. What
+remains is the sorting described below. (Checked 2026-11-11: 79
+`pragma Assert`s in 27 bodies, as below.)
 
 Phase 12, 2026-11-04: the awake functions and `Draw_Pixmap` checked
 FLTK's result with `pragma Assert`, and now check it explicitly (84).
@@ -674,7 +769,16 @@ hooks called from C++ have no exception handler.
 **Planned fix.** Decide after an experiment, which PLAN.md Phase 0 runs
 (Open question 2, decided 2026-11-03). Phase 2 implements the choice.
 
-**Status.** Open.
+**Fix.** The same bug as section 43, which records the fix: PLAN.md
+Phase 2, "N12: done". Every hook FLTK calls catches the exception, and
+`FLTK.Hook_Exceptions` re-raises it once control is back in Ada.
+
+**Verified.** `test_exceptions` and `test_hook_exceptions`. Run again
+on 2026-11-11 from `test/unit`, as `make check` runs them, under Xvfb
+and on headless sway: all their checks pass.
+
+**Status.** Fixed. Until 2026-11-11 this section said "Open": PLAN.md
+recorded the fix under its own number, and this file wasn't updated.
 
 
 ## 30. GLUT: a Glut_Window with a parent that isn't a GLUT window

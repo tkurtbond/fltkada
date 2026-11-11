@@ -3825,7 +3825,7 @@ six headless and sway targets after the last change, plus PLAN.md,
 progress.txt, doc/*.html and INCOMPATIBLE-CHANGES.md kept in step. The
 next FLTKAda bug is 125 and the next FLTK issue is F35.
 
-#### Phase 18: Records
+#### Phase 18: Records [done, 2026-11-11]
 
 - **FLTKAda-BUGS.md 15 to 30.** Most were fixed in Phases 2 and 6
   under PLAN.md's N numbers, but their Status lines still say "Open",
@@ -3842,6 +3842,34 @@ next FLTKAda bug is 125 and the next FLTK issue is F35.
   in F30 that FLTKAda's port no longer copies the bug.
 - **GlutCube** (pofltk, 2026-10-31) was missed in Phase 14's list of
   pofltk's originals. Port it into `test/`.
+
+Done, 2026-11-11:
+
+- **The bug records.** 17, 18, 19, 20, 21, 23, 24, 25, 26 and 29 were
+  fixed. Each section now has Fix and Verified paragraphs naming the
+  PLAN.md entry or the duplicate section, and its unit test, run again
+  from `test/unit` under Xvfb and on headless sway. 28 is open in part:
+  the policy is in place, but 79 `pragma Assert`s remain in 27 bodies.
+  41, 44 and 85 are still open, checked in the code. The file's opening
+  paragraph and AGENTS.md's Status now list only those, and say what
+  they said before.
+- **F30.** `test/fonts.adb` records and draws the top left dot, and
+  Save leaves it out of FLTK's table with an alert. Checked under Xvfb
+  with xdotool: after clicking the top left dot and the one below it,
+  the pixel between them is blue, and built from the old `fonts.adb`
+  it is the background grey. The Save path, and its alert, weren't
+  driven. F30 in FLTK-issues.md says the port no longer copies the bug.
+- **`glut_cube`** (`test/glut_cube.adb`) ports GlutCube. It differs in
+  two ways. FLTKAda's `Make_Current` refuses a window not yet shown
+  (pofltk 111), so it uses `FLTK.GLUT.Set_Window` instead. And its GLUT
+  window is declared before any statement runs, but `Fl_Glut_Window`
+  reads `glut_mode` in its constructor (`glut_compatibility.cxx:182`),
+  so it sets the mode with `Set_Mode` instead of `Init_Display_Mode`.
+  Run beside pofltk's build under Xvfb: the cube, `w` (wire and the
+  check box), the right button's GLUT menu, and `q` (exit status 0)
+  behave the same. The timer turns the cube, so the GL area can't be
+  compared pixel for pixel; the widgets below it give AE 0. Valgrind
+  finds no memory errors and no FLTKAda leak. On sway it starts and runs.
 
 #### Phase 19: Fixes for pofltk 147 to 159
 
