@@ -19,6 +19,7 @@ with
     Ada.Directories,
     Ada.Exceptions,
     Ada.Strings.Fixed,
+    Ada.Text_IO,
     Checks,
     FLTK.Environment,
     Interfaces;
@@ -171,6 +172,26 @@ begin
             "Flush writes Directory/Application.prefs");
         Check (Ada.Strings.Fixed.Index (Userdata_Path (D), Where) = 1,
             "Userdata_Path is in the directory: " & Userdata_Path (D));
+        Check (Dir.Exists (Userdata_Path (D))
+                and then Dir."=" (Dir.Kind (Userdata_Path (D)), Dir.Directory),
+            "and FLTK made it");
+    end;
+
+    --  pofltk 157:  FLTK says it made the directory when it couldn't.  A
+    --  file where the directory would go stops it.
+    declare
+        D : constant Database := Forge.From_Filesystem (Where, "org.example", "blocked");
+        F : Ada.Text_IO.File_Type;
+        procedure Blocked is
+            Path : constant String := Userdata_Path (D);
+        begin
+            Check (False, "Userdata_Path gave " & Path);
+        end Blocked;
+    begin
+        Ada.Text_IO.Create (F, Ada.Text_IO.Out_File, Where & "/blocked");
+        Ada.Text_IO.Close (F);
+        Raises (Blocked'Access, Preference_Error'Identity,
+            "Userdata_Path raises Preference_Error when the directory can't be made");
     end;
     declare
         D : constant Database := Forge.From_Filesystem (Where, "org.example", "fltkada-test");

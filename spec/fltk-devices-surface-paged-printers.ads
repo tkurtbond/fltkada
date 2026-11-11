@@ -44,6 +44,12 @@ package FLTK.Devices.Surface.Paged.Printers is
 
     --  Static Attributes  --
 
+    --  FLTK's own print panel takes these texts as its labels when the
+    --  first dialog builds it, and keeps it (print_panel.cxx:249,
+    --  Fl_Posix_Printer_Driver.cxx:282):  a text set after that is never
+    --  shown, though FLTKAda keeps the old one valid (FLTKAda-BUGS.md 36,
+    --  pofltk 144).  GTK's dialog reads Dialog_Title each time.
+
     function Get_Dialog_Title
         return String;
 

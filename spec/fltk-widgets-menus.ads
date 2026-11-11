@@ -399,6 +399,12 @@ package FLTK.Widgets.Menus is
     --  Popup and Pulldown wait for the menu's window, or the first window if
     --  the menu is in none, to be exposed first: under Wayland, a menu popped
     --  up over a window not yet on the screen ends the program.
+    --
+    --  They return the item the user picked, or No_Index, and do no more:  as
+    --  in FLTK, they don't call the item's callback or change a toggle or
+    --  radio item.  Picked does that (pofltk 150).  They raise Program_Error
+    --  for a menu in no window when no window is shown, which leaves nothing
+    --  to pop up over; FLTK would crash.
     function Popup
            (This    : in Menu;
             X, Y    : in Integer;
@@ -453,6 +459,13 @@ package FLTK.Widgets.Menus is
 
 
 private
+
+
+    --  Raises Program_Error when a pop-up of This would have no window to
+    --  pop up over (pofltk 150).  Name names the call in the message.
+    procedure Check_Popup_Parent
+           (This : in Menu'Class;
+            Name : in String);
 
 
     --  I'm not very happy with using a Vector of dynamically allocated

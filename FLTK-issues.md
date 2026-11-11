@@ -776,3 +776,23 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
   three calls it tried, under Xvfb and on a headless sway.
   test/unit/test_draw_more.adb raised `Foreign_Exception` before the
   fix.
+
+### F35. `Fl_Text_Editor::tab_nav (1)` twice needs `tab_nav (0)` twice
+
+- **What happens**: each `tab_nav (1)` adds a Tab binding, and each
+  `tab_nav (0)` removes one. After two `tab_nav (1)` calls, one
+  `tab_nav (0)` leaves Tab moving the focus, and `tab_nav ()` still
+  gives 1. Found 2026-11-11 by reading the source, planning Phase 19.
+- **Cause**: `tab_nav (val)` is `add_key_binding (FL_Tab, 0, kf_ignore)`
+  or `remove_key_binding (FL_Tab, 0)` (src/Fl_Text_Editor.cxx:824-829).
+  `add_key_binding` always puts a new binding at the head of the list
+  (:212-220), and `remove_key_binding` removes the first one that
+  matches (:195-203). It is close to pofltk 148, which is about a
+  program's own bindings.
+- **Effect on FLTKAda**: `Set_Tab_Mode` calls `tab_nav (val)` only when
+  `tab_nav ()` differs, so it can be called any number of times.
+- **Confirmed**: test/unit/test_text.adb, on Xvfb: `Set_Tab_Mode
+  (Widget_Focus)` twice, then `Set_Tab_Mode (Insert_Char)`. Before the
+  fix, when the shim called `tab_nav` straight through, `Get_Tab_Mode`
+  was still `Widget_Focus` and Tab typed nothing. After it, Tab types a
+  tab.

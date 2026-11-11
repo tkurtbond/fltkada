@@ -3608,3 +3608,24 @@ Xvfb, raised `Constraint_Error` at `Length`.
 **Fixed.** `Get_Listing` raises `Ada.IO_Exceptions.Name_Error` when
 FLTK can't list the directory. test/unit/test_filenames.adb lists a
 missing directory and a file, and checks for `Name_Error`.
+
+## 125. Inputs.Index of a character past U+00FF
+
+**Symptom.** `Inputs.Index` at a character past U+00FF, such as "€",
+raised `Constraint_Error` from a range check, with no word of why.
+
+**Cause.** `Index` returned `Character'Val` of the code point
+`Fl_Input_::index` decodes, and had no way to give a larger one. It
+also passed any position to FLTK, which doesn't check it (pofltk 155).
+
+**Found.** 2026-11-11, triaging pofltk 155 against
+body/fltk-widgets-inputs.adb (PLAN.md, "Issues 139 to 159").
+
+**Fixed.** `Index` raises `Constraint_Error` saying so, and the new
+`Wide_Wide_Index` gives any character. Both raise `Constraint_Error`
+for a position outside `0 .. Size` (Open question 6 kept `Index`
+returning `Character`). test/unit/test_input.adb reads "aé" at 0 to 3,
+as pofltk's `TestInputs` does, and "€" with both; it checks positions
+-1 and past the end, as `HaltInputIndex` does. Before the fix, under
+valgrind, `Index (-1)` read one byte before the text's buffer, and
+neither position raised.

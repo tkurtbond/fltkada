@@ -393,6 +393,10 @@ void fullscreen_screens(int top, int bottom, int left, int right);
 procedure Fullscreen_Screens
        (This                     : in out Window;
         Top, Bottom, Left, Right : in     Natural);
+
+procedure Fullscreen_Own_Screen
+       (This : in out Window);
+--  fullscreen_screens(-1, -1, -1, -1)
 </pre></td>
   </tr>
 

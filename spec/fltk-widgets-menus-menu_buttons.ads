@@ -53,6 +53,9 @@ package FLTK.Widgets.Menus.Menu_Buttons is
 
     --  Waits for the button's window to be exposed first: under Wayland, a
     --  menu popped up over a window not yet on the screen ends the program.
+    --  Unlike Menus.Popup, it calls Picked on the item picked.  It raises
+    --  Program_Error for a button in no window when no window is shown,
+    --  which leaves nothing to pop up over; FLTK would crash (pofltk 150).
     function Popup
            (This : in out Menu_Button)
         return Extended_Index;

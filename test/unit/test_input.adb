@@ -159,6 +159,49 @@ begin
     Check (Line.Get_Value = " moon", "deletes the selection");
     Check (Line.Index (1) = 'm', "Index");
 
+    --  pofltk 155 and FLTKAda-BUGS 125, after TestInputs and HaltInputIndex.
+    --  Index decodes the UTF-8 character at a byte; a byte inside one is
+    --  read alone, as Latin-1.
+    declare
+        CE : constant Ada.Exceptions.Exception_Id := Constraint_Error'Identity;
+        C  : Character with Unreferenced;
+        W  : Wide_Wide_Character with Unreferenced;
+        procedure Before is
+        begin
+            C := Line.Index (-1);
+        end Before;
+        procedure Past is
+        begin
+            C := Line.Index (4);
+        end Past;
+        procedure Wide_Past is
+        begin
+            W := Line.Wide_Wide_Index (4);
+        end Wide_Past;
+        procedure Euro is
+        begin
+            C := Line.Index (0);
+        end Euro;
+    begin
+        Line.Set_Value ("a" & Character'Val (16#C3#) & Character'Val (16#A9#));
+        Check (Line.Index (0) = 'a' and Line.Index (1) = Character'Val (16#E9#)
+                and Line.Index (3) = Character'Val (0),
+            "Index is the character at a byte, NUL at the end");
+        Check (Line.Index (2) = Character'Val (16#A9#),
+            "and a byte that isn't a character's first is read as Latin-1");
+        Check (Line.Wide_Wide_Index (1) = Wide_Wide_Character'Val (16#E9#)
+                and Line.Wide_Wide_Index (3) = Wide_Wide_Character'Val (0),
+            "Wide_Wide_Index too");
+        Raises (Before'Access, CE, "Index before the text raises Constraint_Error");
+        Line.Set_Value ("ab");
+        Raises (Past'Access, CE, "Index past the text's end raises Constraint_Error");
+        Raises (Wide_Past'Access, CE, "so does Wide_Wide_Index");
+        Line.Set_Value (Character'Val (16#E2#) & Character'Val (16#82#) & Character'Val (16#AC#));
+        Check (Line.Wide_Wide_Index (0) = Wide_Wide_Character'Val (16#20AC#),
+            "Wide_Wide_Index gives a character past U+00FF");
+        Raises (Euro'Access, CE, "where Index raises Constraint_Error");
+    end;
+
     --  Numbers.
     Check (Whole.Take_Focus, "focus to the integer input");
     Type_Keys ("1x2-");

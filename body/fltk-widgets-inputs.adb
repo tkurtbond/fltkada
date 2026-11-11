@@ -789,12 +789,35 @@ package body FLTK.Widgets.Inputs is
 
     --  Text Field  --
 
+    --  Fl_Input_::index has no bounds check (Fl_Input_.cxx:1560, pofltk 155).
+    function Wide_Wide_Index
+           (This  : in Input;
+            Place : in Integer)
+        return Wide_Wide_Character is
+    begin
+        if Place not in 0 .. This.Size then
+            raise Constraint_Error with
+                "Index" & Integer'Image (Place) & " outside the input's text, 0 .." &
+                Integer'Image (This.Size);
+        end if;
+        return Wide_Wide_Character'Val (fl_input_index (This.Void_Ptr, Interfaces.C.int (Place)));
+    end Wide_Wide_Index;
+
+
     function Index
            (This  : in Input;
             Place : in Integer)
-        return Character is
+        return Character
+    is
+        Result : constant Wide_Wide_Character := This.Wide_Wide_Index (Place);
     begin
-        return Character'Val (fl_input_index (This.Void_Ptr, Interfaces.C.int (Place)));
+        if Wide_Wide_Character'Pos (Result) > Character'Pos (Character'Last) then
+            raise Constraint_Error with
+                "Index" & Integer'Image (Place) & " is code point" &
+                Integer'Image (Wide_Wide_Character'Pos (Result)) &
+                ", not a Character; use Wide_Wide_Index";
+        end if;
+        return Character'Val (Wide_Wide_Character'Pos (Result));
     end Index;
 
 

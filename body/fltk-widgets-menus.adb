@@ -369,6 +369,12 @@ package body FLTK.Widgets.Menus is
     pragma Import (C, fl_menu_popup, "fl_menu_popup");
     --  No inline
 
+    function fl_menu_has_popup_parent
+           (M : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_menu_has_popup_parent, "fl_menu_has_popup_parent");
+    --  No inline
+
     function fl_menu_pulldown
            (M          : in Storage.Integer_Address;
             X, Y, W, H : in Interfaces.C.int;
@@ -1443,6 +1449,17 @@ package body FLTK.Widgets.Menus is
 
     --  Menu Item Methods  --
 
+    procedure Check_Popup_Parent
+           (This : in Menu'Class;
+            Name : in String) is
+    begin
+        if fl_menu_has_popup_parent (This.Void_Ptr) = 0 then
+            raise Program_Error with Name &
+                " of a menu in no window, with no window shown (pofltk 150)";
+        end if;
+    end Check_Popup_Parent;
+
+
     function Popup
            (This    : in Menu;
             X, Y    : in Integer;
@@ -1451,7 +1468,10 @@ package body FLTK.Widgets.Menus is
         return Extended_Index
     is
         C_Title : aliased Interfaces.C.char_array := Interfaces.C.To_C (Title);
-        Ptr : constant Storage.Integer_Address := fl_menu_popup
+        Ptr : Storage.Integer_Address;
+    begin
+        Check_Popup_Parent (This, "Popup");
+        Ptr := fl_menu_popup
            (This.Void_Ptr,
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
@@ -1459,7 +1479,6 @@ package body FLTK.Widgets.Menus is
             then Interfaces.C.Strings.Null_Ptr
             else Interfaces.C.Strings.To_Chars_Ptr (C_Title'Unchecked_Access)),
             Interfaces.C.int (Initial) - 1);
-    begin
         Hook_Exceptions.Reraise;
         return Extended_Index (fl_menu_find_index2 (This.Void_Ptr, Ptr) + 1);
     end Popup;
@@ -1471,14 +1490,16 @@ package body FLTK.Widgets.Menus is
             Initial    : in Extended_Index := No_Index)
         return Extended_Index
     is
-        Ptr : constant Storage.Integer_Address := fl_menu_pulldown
+        Ptr : Storage.Integer_Address;
+    begin
+        Check_Popup_Parent (This, "Pulldown");
+        Ptr := fl_menu_pulldown
            (This.Void_Ptr,
             Interfaces.C.int (X),
             Interfaces.C.int (Y),
             Interfaces.C.int (W),
             Interfaces.C.int (H),
             Interfaces.C.int (Initial) - 1);
-    begin
         Hook_Exceptions.Reraise;
         return Extended_Index (fl_menu_find_index2 (This.Void_Ptr, Ptr) + 1);
     end Pulldown;

@@ -1973,10 +1973,85 @@ package body FLTK.Widgets.Groups.Text_Displays is
     end Get_Linenumber_Format;
 
 
+    --  Whether snprintf can take Format with the one int, the line number,
+    --  that draw_line_numbers gives it (Fl_Text_Display.cxx:3184-3214,
+    --  pofltk 153):  %% and at most one d, i, o, u, x or X, with flags and
+    --  at most 3 digits each of width and precision.
+    function Is_Safe_Linenumber_Format
+           (Format : in String)
+        return Boolean
+    is
+        Place : Natural := Format'First;
+        Conversions : Natural := 0;
+
+        --  Skips at most 3 digits, and says whether there were no more.
+        function Few_Digits
+            return Boolean
+        is
+            Count : Natural := 0;
+        begin
+            while Place <= Format'Last and then Format (Place) in '0' .. '9' loop
+                Count := Count + 1;
+                Place := Place + 1;
+            end loop;
+            return Count <= 3;
+        end Few_Digits;
+
+        function At_One_Of
+               (Set : in String)
+            return Boolean is
+        begin
+            for C of Set loop
+                if Place <= Format'Last and then Format (Place) = C then
+                    return True;
+                end if;
+            end loop;
+            return False;
+        end At_One_Of;
+    begin
+        while Place <= Format'Last loop
+            if Format (Place) = Character'Val (0) then
+                return False;
+            elsif Format (Place) /= '%' then
+                Place := Place + 1;
+            elsif Place < Format'Last and then Format (Place + 1) = '%' then
+                Place := Place + 2;
+            else
+                Conversions := Conversions + 1;
+                if Conversions > 1 then
+                    return False;
+                end if;
+                Place := Place + 1;
+                while At_One_Of ("-+ #0") loop
+                    Place := Place + 1;
+                end loop;
+                if not Few_Digits then
+                    return False;
+                end if;
+                if At_One_Of (".") then
+                    Place := Place + 1;
+                    if not Few_Digits then
+                        return False;
+                    end if;
+                end if;
+                if not At_One_Of ("diouxX") then
+                    return False;
+                end if;
+                Place := Place + 1;
+            end if;
+        end loop;
+        return True;
+    end Is_Safe_Linenumber_Format;
+
+
     procedure Set_Linenumber_Format
            (This  : in out Text_Display;
             Value : in     String) is
     begin
+        if not Is_Safe_Linenumber_Format (Value) then
+            raise Constraint_Error with
+                "line number format """ & Value & """ isn't one snprintf can take with an int";
+        end if;
         fl_text_display_set_linenumber_format (This.Void_Ptr, Interfaces.C.To_C (Value));
     end Set_Linenumber_Format;
 

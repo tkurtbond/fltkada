@@ -516,7 +516,9 @@ int fl_menu_measure(MENU m, int i, int *h) {
 //  (pofltk 28).  FLTK makes the pop-up against the menu widget's top window,
 //  or the first window if the widget is in none (Fl_Menu.cxx:987-996), and
 //  waits for the pop-up's own expose but not that one's.  This waits for it
-//  first, which returns at once once it is there, and on X11.
+//  first.  It returns at once once the window is there; on X11 too it waits
+//  until the window is mapped (Fl_Window_Driver.cxx:202, which X11 doesn't
+//  override), though nothing there needs it.
 static void wait_for_parent(Fl_Widget * w) {
     Fl_Window * parent = (w != 0 && w->window() != 0) ? w->top_window() : Fl::first_window();
     if (parent != 0 && parent->shown()) {
@@ -524,10 +526,22 @@ static void wait_for_parent(Fl_Widget * w) {
     }
 }
 
+//  A menu in no window, popped up when no window is shown, has no window to
+//  pop up over, and FLTK then calls screen_num() through a null pointer
+//  (Fl_Menu.cxx:986-1000, pofltk 150).  Popup, Pulldown and a Menu_Button's
+//  Popup ask this first, and the pop-ups below do nothing without one.
+int fl_menu_has_popup_parent(MENU m) {
+    Fl_Widget * w = static_cast<Fl_Menu_*>(m);
+    return (w->window() != 0 || Fl::first_window() != 0) ? 1 : 0;
+}
+
 const void * fl_menu_popup(MENU m, int x, int y, const char * t, int n) {
     //  method actually belongs to Fl_Menu_Item
     const Fl_Menu_Item * menuhead = static_cast<const Fl_Menu_Item*>(fl_menu_get_item(m, 0));
     const Fl_Menu_Item * initial  = n<0?0:static_cast<const Fl_Menu_Item*>(fl_menu_get_item(m, n));
+    if (!fl_menu_has_popup_parent(m)) {
+        return 0;
+    }
     wait_for_parent(static_cast<Fl_Menu_*>(m));
     return menuhead->popup(x, y, t, initial, static_cast<Fl_Menu_*>(m));
 }
@@ -536,6 +550,9 @@ const void * fl_menu_pulldown(MENU m, int x, int y, int w, int h, int n) {
     //  method actually belongs to Fl_Menu_Item
     const Fl_Menu_Item * menuhead = static_cast<const Fl_Menu_Item*>(fl_menu_get_item(m, 0));
     const Fl_Menu_Item * initial  = n<0?0:static_cast<const Fl_Menu_Item*>(fl_menu_get_item(m, n));
+    if (!fl_menu_has_popup_parent(m)) {
+        return 0;
+    }
     wait_for_parent(static_cast<Fl_Menu_*>(m));
     return menuhead->pulldown(x, y, w, h, initial, static_cast<Fl_Menu_*>(m));
 }

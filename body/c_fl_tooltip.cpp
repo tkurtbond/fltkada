@@ -8,6 +8,7 @@
 #include <cstring>
 #include <FL/Fl_Tooltip.H>
 #include <FL/Fl_Widget.H>
+#include <FL/Fl_Window.H>
 #include "c_fl_tooltip.h"
 
 
@@ -55,12 +56,28 @@ struct Kept_Tip {
 
 static Kept_Tip kept_tip = { 0 };
 
+//  A tooltip shown over a window not yet on the screen ends the program
+//  under Wayland, as a menu does: "Fatal error no 1 in Wayland protocol:
+//  xdg_surface" (pofltk 28).  The tip is a pop-up of the widget's top
+//  window.  This waits for that window's expose first, which returns at
+//  once once it is there (on X11 too it waits until the window is mapped,
+//  Fl_Window_Driver.cxx:202).
+static void wait_for_tip_parent(Fl_Widget * w) {
+    Fl_Window * parent = (w->window() != 0) ? w->top_window() : w->as_window();
+    if (parent != 0 && parent->shown()) {
+        parent->wait_for_expose();
+    }
+}
+
 void fl_tooltip_enter_area(void * i, int x, int y, int w, int h, const char * t) {
     char * & kept = kept_tip.text;
     Fl_Widget * wid = static_cast<Fl_Widget*>(i);
     if (wid == 0) {
         //  The Ada side always has a widget, and the test below needs one.
         return;
+    }
+    if (t != 0 && *t != '\0' && Fl_Tooltip::enabled()) {
+        wait_for_tip_parent(wid);
     }
     if (t == 0 || *t == '\0') {
         Fl_Tooltip::enter_area(wid, x, y, w, h, 0);

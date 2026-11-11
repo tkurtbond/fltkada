@@ -28,6 +28,9 @@ package FLTK.Tooltips is
 
     procedure Disable;
 
+    --  On Wayland a tooltip shown over a window not yet on the screen ends
+    --  the program, so Enter_Area waits for the widget's window to be
+    --  exposed first (pofltk 28).
     procedure Enter_Area
            (Item       : in FLTK.Widgets.Widget'Class;
             X, Y, W, H : in Integer;

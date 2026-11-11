@@ -82,7 +82,9 @@ void free_fl_menu_button(MENUBUTTON m) {
 //  (pofltk 28).  FLTK makes the pop-up against the menu widget's top window,
 //  or the first window if the widget is in none (Fl_Menu.cxx:987-996), and
 //  waits for the pop-up's own expose but not that one's.  This waits for it
-//  first, which returns at once once it is there, and on X11.
+//  first.  It returns at once once the window is there; on X11 too it waits
+//  until the window is mapped (Fl_Window_Driver.cxx:202, which X11 doesn't
+//  override), though nothing there needs it.
 static void wait_for_parent(Fl_Widget * w) {
     Fl_Window * parent = (w != 0 && w->window() != 0) ? w->top_window() : Fl::first_window();
     if (parent != 0 && parent->shown()) {
@@ -91,6 +93,11 @@ static void wait_for_parent(Fl_Widget * w) {
 }
 
 const void * fl_menu_button_popup(MENUBUTTON m) {
+    //  pofltk 150; see fl_menu_has_popup_parent in c_fl_menu.cpp.
+    Fl_Widget * w = static_cast<Fl_Menu_Button*>(m);
+    if (w->window() == 0 && Fl::first_window() == 0) {
+        return 0;
+    }
     wait_for_parent(static_cast<Fl_Menu_Button*>(m));
     return static_cast<Fl_Menu_Button*>(m)->popup();
 }

@@ -669,6 +669,10 @@ package FLTK.Static is
     function Get_Scheme
         return String;
 
+    --  Also sets the environment variable FLTK_SCHEME to the scheme
+    --  chosen, or to "" for none, which a program this one starts inherits
+    --  (Fl_get_system_colors.cxx:217, pofltk 156).  Names are
+    --  case-insensitive, and an unknown one is no scheme.
     procedure Set_Scheme
            (To : in String);
 

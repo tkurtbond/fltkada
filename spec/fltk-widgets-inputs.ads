@@ -202,10 +202,20 @@ package FLTK.Widgets.Inputs is
 
     --  Text Field  --
 
+    --  The character at byte Place of the text, decoded from UTF-8, or NUL
+    --  at the text's end.  A byte inside a character, not its first, is
+    --  read alone, as Latin-1, as FLTK does.  Both raise Constraint_Error
+    --  for a Place outside 0 .. Size (pofltk 155), and Index raises it for
+    --  a character past U+00FF, which Wide_Wide_Index gives.
     function Index
            (This  : in Input;
             Place : in Integer)
         return Character;
+
+    function Wide_Wide_Index
+           (This  : in Input;
+            Place : in Integer)
+        return Wide_Wide_Character;
 
     procedure Insert
            (This : in out Input;

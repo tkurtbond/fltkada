@@ -371,6 +371,12 @@ package FLTK.Widgets.Groups.Text_Displays.Text_Editors is
 
     --  Key Binding Modification  --
 
+    --  A key that types text, with no Ctrl, Alt or Meta, never reaches a
+    --  binding or the default key function:  Fl_Text_Editor::handle_key
+    --  gives it to Fl::compose first, which inserts it
+    --  (Fl_Text_Editor.cxx:639, pofltk 147).  Function keys and keys with
+    --  Ctrl, Alt or Meta can be bound.
+
     procedure Add_Key_Binding
            (This : in out Text_Editor;
             Key  : in     Key_Combo;
@@ -433,6 +439,8 @@ package FLTK.Widgets.Groups.Text_Displays.Text_Editors is
            (This : in Text_Editor)
         return Tab_Navigation;
 
+    --  Can be called any number of times:  one call to Insert_Char undoes
+    --  any number to Widget_Focus, which FLTK's own tab_nav doesn't (F35).
     procedure Set_Tab_Mode
            (This : in out Text_Editor;
             To   : in     Tab_Navigation);

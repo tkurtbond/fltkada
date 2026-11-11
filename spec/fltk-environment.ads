@@ -47,6 +47,11 @@ package FLTK.Environment is
                (Directory, Vendor, Application : in String)
             return Database;
 
+        --  On Unix, a User database is $XDG_CONFIG_HOME/Vendor/
+        --  Application.prefs (~/.config without it) only if that Vendor
+        --  directory exists.  If it doesn't and FLTK 1.3's ~/.fltk/Vendor
+        --  does, FLTK uses that, whatever XDG_CONFIG_HOME says
+        --  (Fl_Unix_System_Driver.cxx:568, pofltk 158).
         function From_Scope
                (Extent              : in Scope;
                 Vendor, Application : in String)
@@ -89,6 +94,9 @@ package FLTK.Environment is
     procedure Flush
            (This : in Database);
 
+    --  The directory for the application's own files, beside the database's
+    --  file, made if need be.  Raises Preference_Error when the directory
+    --  can't be made, though FLTK says it was (pofltk 157).
     function Userdata_Path
            (This : in Database)
         return String;

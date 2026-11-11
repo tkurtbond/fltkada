@@ -75,6 +75,18 @@ procedure Test_Text is
         Deleted := Del;
     end Modified;
 
+    --  Whether Set_Linenumber_Format refuses Format.
+    function Refused
+           (Format : in String)
+        return Boolean is
+    begin
+        Disp.Set_Linenumber_Format (Format);
+        return False;
+    exception
+    when Constraint_Error =>
+        return True;
+    end Refused;
+
     Ok         : Boolean;
     I, J       : TB.Position;
     X, Y       : Integer;
@@ -207,6 +219,20 @@ begin
     Check (Disp.Get_Linenumber_Width = 0
             and Disp.Get_Scrollbar_Width = FLTK.Static.Get_Default_Scrollbar_Size,
         "no line numbers, and Fl's scrollbar size, to start with");
+
+    --  FLTK passes the line number format to snprintf with one int (pofltk
+    --  153).  HaltLineNumberFormat's "%d %s" is the first.
+    Check (Refused ("%d %s") and Refused ("%s") and Refused ("%n") and Refused ("%d%d")
+            and Refused ("%ld") and Refused ("%f") and Refused ("%") and Refused ("%*d")
+            and Refused ("%1234d") and Refused ("a" & ASCII.NUL & "%d"),
+        "Set_Linenumber_Format refuses a format snprintf can't take with one int");
+    Check (Disp.Get_Linenumber_Format = "%d", "and leaves the format as it was");
+    Check (not Refused ("%%%-05d%%") and Disp.Get_Linenumber_Format = "%%%-05d%%"
+            and not Refused ("%+.3i") and not Refused ("%#o") and not Refused ("% x")
+            and not Refused ("%X:") and not Refused ("%u") and not Refused ("no number")
+            and not Refused (""),
+        "and takes %% and one d, i, o, u, x or X, with flags, width and precision");
+    Disp.Set_Linenumber_Format ("%d");
     Check (Editor.Get_Insert_Mode = TE.After and Editor.Get_Tab_Mode = TE.Insert_Char,
         "an editor inserts (After), and Tab is typed, to start with");
     Buffer.Set_Entire_Text ("hello" & LF & "world");
@@ -231,6 +257,24 @@ begin
     Disp.Set_Wrap_Mode (TD.Column, 3);
     Check (Prb.Capture (Disp) and Disp.Count_Lines (0, Buffer.Length) > 1, "wrapping");
     Prb.Release;
+    --  "heXXllo" wraps two to a row in Courier, so "world" is the fifth row.
+    --  A display lays out its rows only when it is drawn itself.
+    Disp.Set_Text_Font (Courier);
+    Ok := Prb.Capture (Disp);
+    Prb.Release;
+    Check (Disp.Wrapped_Row (0) = 0 and Disp.Wrapped_Row (3) = 0 and Disp.Wrapped_Row (4) = 1
+            and Disp.Wrapped_Column (0, 1) = 1 and Disp.Wrapped_Column (1, 1) = 3
+            and Disp.Wrapped_Column (3, 1) = 7 and Disp.Wrapped_Column (4, 1) = 1,
+        "Wrapped_Row and Wrapped_Column:  the buffer's line and column of a row's");
+    --  Every row, and past the last:  FLTK reads one past its rows' starts
+    --  (pofltk 151), which valgrind sees.
+    for R in 0 .. 20 loop
+        I := Disp.Wrapped_Row (R);
+        I := Disp.Wrapped_Column (R, 1);
+    end loop;
+    Check (Disp.Wrapped_Row (99) = 99 and Disp.Wrapped_Column (99, 2) = 2,
+        "a row off the screen is itself");
+    Disp.Set_Text_Font (Helvetica);
     Disp.Set_Wrap_Mode (TD.None);
 
     --  Position_To_XY:  a line out of view.
@@ -283,6 +327,14 @@ begin
     Check (Buffer.Get_Entire_Text = "zc", "typing over (Before)");
     Editor.Set_Tab_Mode (TE.Widget_Focus);
     Check (Editor.Get_Tab_Mode = TE.Widget_Focus, "Set_Tab_Mode");
+    --  F35:  FLTK adds a Tab binding each time, and takes one away.
+    Editor.Set_Tab_Mode (TE.Widget_Focus);
+    Editor.Set_Tab_Mode (TE.Insert_Char);
+    Check (Editor.Get_Tab_Mode = TE.Insert_Char,
+        "Set_Tab_Mode (Widget_Focus) twice, then Insert_Char once, inserts");
+    Editor.Set_Insert_Position (0);
+    Ok := Prb.Key (Keydown, Tab_Key, Mod_None, (1 => ASCII.HT));
+    Check (Buffer.Get_Entire_Text = ASCII.HT & "zc", "and Tab types a tab");
 
     Summary;
 

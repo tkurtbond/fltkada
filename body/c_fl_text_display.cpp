@@ -39,6 +39,8 @@ public:
     using Fl_Text_Display::wrap_uses_character;
     using Fl_Text_Display::wrapped_line_counter;
 
+    using Fl_Text_Display::mNVisibleLines;
+
     using Fl_Text_Display::calc_last_char;
     using Fl_Text_Display::calc_line_starts;
     using Fl_Text_Display::offset_line_starts;
@@ -303,11 +305,25 @@ void fl_text_display_wrap_mode(TEXTDISPLAY td, int w, int m) {
     static_cast<Fl_Text_Display*>(td)->wrap_mode(w, m);
 }
 
+//  FLTK tests row > mNVisibleLines, not >=, then reads mLineStarts[row],
+//  one past the end for row = mNVisibleLines (Fl_Text_Display.cxx:1217,
+//  :1245; pofltk 151).  Rows from there on are returned as FLTK returns
+//  rows outside:  the row, or the column, as given.
+static bool row_outside(TEXTDISPLAY td, int r) {
+    return r < 0 || r >= static_cast<Fl_Text_Display*>(td)->*(&Friend_Text_Display::mNVisibleLines);
+}
+
 int fl_text_display_wrapped_row(TEXTDISPLAY td, int r) {
+    if (row_outside(td, r)) {
+        return r;
+    }
     return static_cast<Fl_Text_Display*>(td)->wrapped_row(r);
 }
 
 int fl_text_display_wrapped_column(TEXTDISPLAY td, int r, int c) {
+    if (row_outside(td, r)) {
+        return c;
+    }
     return static_cast<Fl_Text_Display*>(td)->wrapped_column(r, c);
 }
 

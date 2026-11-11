@@ -568,6 +568,16 @@ Update_Menu_Button; Spinner's Get_Wrap and Set_Wrap; Browser Sort's
 Ignore_Case (FL_SORT_CASEINSENSITIVE); Buttons.Button_Kind, with Get_Kind
 and Set_Kind (Fl_Button's type ()).
 
+Phase 19 (PLAN.md), fixes for pofltk 147 to 159: Inputs.Wide_Wide_Index,
+and Index raises outside 0 .. Size and above U+00FF (pofltk 155,
+FLTKAda-BUGS.md 125); Windows.Fullscreen_Own_Screen (fullscreen_screens
+with -1, pofltk 149); popups with no window raise Program_Error (pofltk
+150); Wrapped_Row and Wrapped_Column past the last row (pofltk 151);
+Set_Linenumber_Format refuses an unsafe format (pofltk 153); Userdata_Path
+raises when FLTK couldn't make the directory (pofltk 157); Set_Tab_Mode can
+be set twice (FLTK-issues.md F35); Tooltips.Enter_Area waits for its
+window's expose on Wayland (pofltk 28)
+
 
 
 Incomplete APIs:

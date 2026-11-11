@@ -628,6 +628,13 @@ package body FLTK.Widgets.Groups.Windows is
     end Fullscreen_Screens;
 
 
+    procedure Fullscreen_Own_Screen
+           (This : in out Window) is
+    begin
+        fl_window_fullscreen_screens (This.Void_Ptr, -1, -1, -1, -1);
+    end Fullscreen_Own_Screen;
+
+
 
 
     --  Icons, Cursors  --

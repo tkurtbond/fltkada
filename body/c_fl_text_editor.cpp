@@ -366,8 +366,14 @@ int fl_text_editor_get_tab_nav(TEXTEDITOR te) {
     return static_cast<Fl_Text_Editor*>(te)->tab_nav();
 }
 
+//  tab_nav(1) adds a Tab binding each time, and tab_nav(0) removes one
+//  (Fl_Text_Editor.cxx:824), so it is called only to change the mode (F35).
 void fl_text_editor_set_tab_nav(TEXTEDITOR te, int t) {
-    static_cast<Fl_Text_Editor*>(te)->tab_nav(t);
+    Fl_Text_Editor * e = static_cast<Fl_Text_Editor*>(te);
+    if ((e->tab_nav() != 0) == (t != 0)) {
+        return;
+    }
+    e->tab_nav(t);
 }
 
 

@@ -380,6 +380,11 @@ package FLTK.Widgets.Groups.Text_Displays is
             Mode   : in     Wrap_Mode;
             Margin : in     Natural := 0);
 
+    --  The buffer's line, or column, of a row on the screen.  A display lays
+    --  out its rows only when it is drawn itself (not when its window is
+    --  drawn into an image surface), so these are right only after a draw
+    --  of the display.  A row past the last on the screen returns Row, or
+    --  Column, as given (pofltk 151).
     function Wrapped_Row
            (This : in Text_Display;
             Row  : in Natural)
@@ -554,6 +559,12 @@ package FLTK.Widgets.Groups.Text_Displays is
            (This : in Text_Display)
         return String;
 
+    --  FLTK formats each line number with snprintf and this format, so it
+    --  may have %% and at most one d, i, o, u, x or X conversion, with flags
+    --  and up to 3 digits each of width and precision.  Anything else raises
+    --  Constraint_Error (pofltk 153).  FLTK copies the format.  Line numbers
+    --  are drawn only in a shown window, not when a window never shown is
+    --  drawn into an image surface.
     procedure Set_Linenumber_Format
            (This  : in out Text_Display;
             Value : in     String);

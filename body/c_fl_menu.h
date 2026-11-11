@@ -73,6 +73,7 @@ extern "C" void fl_menu_global(MENU m);
 extern "C" int fl_menu_measure(MENU m, int i, int *h);
 
 
+extern "C" int fl_menu_has_popup_parent(MENU m);
 extern "C" const void * fl_menu_popup(MENU m, int x, int y, const char * t, int n);
 extern "C" const void * fl_menu_pulldown(MENU m, int x, int y, int w, int h, int n);
 extern "C" const void * fl_menu_picked(MENU m, const void * mi);

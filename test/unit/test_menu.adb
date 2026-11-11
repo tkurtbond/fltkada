@@ -58,6 +58,7 @@ procedure Test_Menu is
     Menu   : Bar.Menu_Bar := Bar.Forge.Create (Window, 0, 0, 300, 25);
     Choice : Chs.Choice := Chs.Forge.Create (Window, 50, 50, 100, 25, "Size");
     Button : MBt.Menu_Button := MBt.Forge.Create (Window, 50, 100, 100, 25, "Pop");
+    Toggler : MBt.Menu_Button := MBt.Forge.Create (Window, 50, 150, 100, 25, "Tog");
 
     Opened, Quitted, Bar_Calls, Cleared, Abouts : Natural := 0;
     Last : System.Address := System.Null_Address;
@@ -289,6 +290,18 @@ begin
         Pick_Popup := False;
         FLTK.Static.Add_Timeout (0.2, Answer'Unrestricted_Access);
         Check (Button.Popup = Mnu.No_Index and Opened = 3, "or No_Index, closed");
+
+        --  A Menu's Popup, unlike a Menu_Button's, only returns the item
+        --  picked:  as in FLTK, it neither calls the item's callback nor
+        --  changes a toggle.  Picked does both (pofltk 150).
+        Toggler.Add ("Toggle", Open_CB'Unrestricted_Access, Flags => Flag_Toggle);
+        Pick_Popup := True;
+        FLTK.Static.Add_Timeout (0.2, Answer'Unrestricted_Access);
+        I := Mnu.Menu (Toggler).Popup (60, 160);
+        Check (I = 1 and Opened = 3 and not Is_On (Toggler, 1),
+            "Menu Popup returns the item, without its callback or toggling it");
+        Pick (Toggler, I);
+        Check (Opened = 4 and Is_On (Toggler, 1), "Picked then does both");
         Window.Hide;
     end if;
 

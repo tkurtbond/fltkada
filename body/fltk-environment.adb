@@ -7,6 +7,7 @@
 with
 
     Ada.Assertions,
+    Ada.Directories,
     Interfaces.C.Strings;
 
 use type
@@ -588,7 +589,19 @@ package body FLTK.Environment is
         then
             raise Preference_Error;
         end if;
-        return Interfaces.C.To_Ada (Buffer);
+        declare
+            Path : constant String := Interfaces.C.To_Ada (Buffer);
+            use type Ada.Directories.File_Kind;
+        begin
+            --  FLTK says it made the directory whether it could or not
+            --  (fl_make_path ignores fl_mkdir, fl_utf8.cxx:618; pofltk 157).
+            if not Ada.Directories.Exists (Path)
+                or else Ada.Directories.Kind (Path) /= Ada.Directories.Directory
+            then
+                raise Preference_Error with "Userdata_Path:  FLTK couldn't make " & Path;
+            end if;
+            return Path;
+        end;
     end Userdata_Path;
 
 

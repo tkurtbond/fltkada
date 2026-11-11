@@ -81,6 +81,32 @@ come first in each list.
 
 ## Changes that can make a program behave differently
 
+- **`Tooltips.Enter_Area` with a text, tooltips enabled, waits for the
+  widget's window to be exposed** if it is shown and not yet on the
+  screen (on X11, mapped), running the event loop until then. Before,
+  a tooltip there ended the program on Wayland.
+  [PLAN.md, Phase 19](PLAN.md#phase-19-fixes-for-pofltk-147-to-159-done-2026-11-11).
+- **`Text_Editors.Set_Tab_Mode (Insert_Char)` always makes Tab type a
+  tab**, however many times `Widget_Focus` was set before. Before, it
+  undid only one of them.
+  [FLTK-issues.md F35](FLTK-issues.md#f35-fl_text_editortab_nav-1-twice-needs-tab_nav-0-twice).
+- **`Environment.Userdata_Path` raises `Preference_Error`** when the
+  directory couldn't be made. Before, it returned the name, as FLTK
+  does.
+  [PLAN.md, Phase 19](PLAN.md#phase-19-fixes-for-pofltk-147-to-159-done-2026-11-11).
+- **`Inputs.Index` raises `Constraint_Error`** for a position outside
+  `0 .. Size`, where FLTK read outside the text. Its `Constraint_Error`
+  for a character past U+00FF now says so; `Wide_Wide_Index` gives one.
+  [FLTKAda-BUGS.md 125](FLTKAda-BUGS.md#125-inputsindex-of-a-character-past-u00ff).
+- **`Text_Displays.Set_Linenumber_Format` raises `Constraint_Error`**
+  for a format other than `%%` and at most one `d i o u x X`
+  conversion (with flags, width and precision). FLTK passes it to
+  `snprintf` with one `int`.
+  [PLAN.md, Phase 19](PLAN.md#phase-19-fixes-for-pofltk-147-to-159-done-2026-11-11).
+- **`Menus.Popup`, `Menus.Pulldown` and `Menu_Buttons.Popup` raise
+  `Program_Error`** for a menu in no window when no window is shown.
+  Before, FLTK crashed there.
+  [PLAN.md, Phase 19](PLAN.md#phase-19-fixes-for-pofltk-147-to-159-done-2026-11-11).
 - **`Filenames.Get_Listing` raises `Ada.IO_Exceptions.Name_Error`** for
   a directory it can't list. Before, it returned a list whose `Length`
   raised `Constraint_Error`.

@@ -62,7 +62,10 @@ package FLTK.Widgets.Groups.Windows is
 
     --  Parses the program's arguments, if Parse_Args hasn't, and shows the
     --  window with them: -title is its label, and -geometry its place and
-    --  size.
+    --  size.  It also calls Fl::get_system_colors (Fl_arg.cxx:290), which
+    --  recomputes the grey ramp, so Dark3 and Dark1 come out a shade apart
+    --  from Show's, even at the default background (pofltk 154).  A port of
+    --  an FLTK program uses whichever of the two the program does.
     procedure Show_With_Args
            (This : in out Window);
 
@@ -76,6 +79,9 @@ package FLTK.Widgets.Groups.Windows is
     procedure Wait_For_Expose
            (This : in out Window);
 
+    --  Iconify of a window not yet shown shows it, minimized.  Of a shown
+    --  window, X11 asks the window manager, so with none (a bare Xvfb) it
+    --  does nothing (Fl_Window_iconize.cxx:20, pofltk 149).
     procedure Iconify
            (This : in out Window);
 
@@ -96,6 +102,10 @@ package FLTK.Widgets.Groups.Windows is
            (This : in Window)
         return Boolean;
 
+    --  A window shown with no resizable widget and no size range gets a
+    --  size range of its own size, for good (Fl_Window.cxx:797), and
+    --  Fullscreen_On then does nothing (Fl_Window_fullscreen.cxx:39):
+    --  give it a resizable widget or call Set_Size_Range first (pofltk 149).
     procedure Fullscreen_On
            (This : in out Window);
 
@@ -106,9 +116,17 @@ package FLTK.Widgets.Groups.Windows is
            (This       : in out Window;
             X, Y, W, H : in     Integer);
 
+    --  The screens whose top, bottom, left and right edges a full screen
+    --  window spans.  FLTK doesn't check the numbers.  Wayland ignores
+    --  them (pofltk 149).
     procedure Fullscreen_Screens
            (This                     : in out Window;
             Top, Bottom, Left, Right : in     Natural);
+
+    --  Undo Fullscreen_Screens:  full screen on the window's own screen,
+    --  FLTK's default (fullscreen_screens with -1).
+    procedure Fullscreen_Own_Screen
+           (This : in out Window);
 
 
 
@@ -362,6 +380,7 @@ private
     pragma Inline (Fullscreen_On);
     pragma Inline (Fullscreen_Off);
     pragma Inline (Fullscreen_Screens);
+    pragma Inline (Fullscreen_Own_Screen);
 
     pragma Inline (Set_Icon);
     pragma Inline (Set_Icons);

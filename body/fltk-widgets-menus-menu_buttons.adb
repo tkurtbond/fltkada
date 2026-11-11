@@ -230,8 +230,10 @@ package body FLTK.Widgets.Menus.Menu_Buttons is
         return Extended_Index
     is
         use type Interfaces.C.int;
-        Ptr : constant Storage.Integer_Address := fl_menu_button_popup (This.Void_Ptr);
+        Ptr : Storage.Integer_Address;
     begin
+        Check_Popup_Parent (This, "Popup");
+        Ptr := fl_menu_button_popup (This.Void_Ptr);
         Hook_Exceptions.Reraise;
         return Extended_Index (fl_menu_find_index2 (This.Void_Ptr, Ptr) + 1);
     end Popup;

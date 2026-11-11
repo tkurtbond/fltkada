@@ -298,6 +298,22 @@ reading code; the four AFFECTED verdicts were checked in FLTKAda's
 source as well. Each is to be confirmed by a failing test before it is
 fixed (Phase 19).
 
+Phase 19's verdicts, 2026-11-11, each with the test that showed it (see
+"Done" under Phase 19 for the details):
+
+- 150, 151, 153, 155 (with FLTKAda-BUGS 125) and 157: AFFECTED,
+  confirmed by a failing test, and fixed.
+- The tab-navigation quirk below: confirmed, recorded as F35, fixed.
+- 149: AFFECTED as well as doc only: `Fullscreen_Screens` couldn't be
+  given FLTK's -1. Fixed with a new `Fullscreen_Own_Screen`, and
+  commented.
+- 144, 147, 154, 156 and 158: doc only, and commented. 156 was checked
+  in FLTKAda: `Set_Scheme ("Gtk+")` set `FLTK_SCHEME` to "gtk+", and
+  `Set_Scheme ("nonesuch")` set it to "".
+- pofltk 28's tooltip note: AFFECTED, confirmed, fixed.
+
+The triage as first written:
+
 - **FLTKAda's own findings, re-recorded by pofltk:** 139 (F6), 140
   (F24), 141 (F26), 142 (F23), 143 (F5), 144 (FLTKAda-BUGS 36), 146
   (F30). Nothing to do, apart from F30 (Phase 18).
@@ -339,8 +355,8 @@ fixed (Phase 19).
   Two `Set_Tab_Mode (Widget_Focus)` calls then need two
   `Set_Tab_Mode (Insert_Char)` calls before Tab inserts again. It is
   close to pofltk 148, which doesn't affect FLTKAda as such, since a
-  program's own bindings live in Ada. To be recorded as F35 once a test
-  shows it.
+  program's own bindings live in Ada. ~~To be recorded as F35 once a
+  test shows it.~~ Recorded as F35, 2026-11-11: `test_text` showed it.
 - **NOT BOUND:** 159 (`Fl_Browser_::linespacing`). It is bound in
   Phase 20, with pofltk's remeasure.
 - **Older entries pofltk changed since a6f5607:**
@@ -986,13 +1002,17 @@ headless sway, each seen to fail before its fix:
   `Menu.Popup` and `Menu.Pulldown` first call `wait_for_expose` on the
   window FLTK puts the menu over: the menu widget's top window, or
   `Fl::first_window()` if the widget is in none (Fl_Menu.cxx:987-996).
-  `wait_for_expose` returns at once when that window is already there,
-  and on X11. `test_popup_early` pops up a menu straight after `Show`,
+  `wait_for_expose` returns at once when that window is already there.
+  ~~and on X11.~~ (Corrected 2026-11-11: on X11 it also waits until the
+  window is mapped, `Fl_Window_Driver.cxx:202`, which the X11 driver
+  doesn't override; seen in FLTK's source.) `test_popup_early` pops up a menu straight after `Show`,
   on each of two windows. Before the fix, it ended with "Fatal error no 1
   in Wayland protocol: xdg_surface" and exit 1 in three runs of three.
   After it, three of three passed. The three Ada bodies already call
   `Hook_Exceptions.Reraise` after the C call, which covers the event loop
   that `wait_for_expose` runs.
+  A tooltip does the same (pofltk's later note), and `Tooltips.Enter_Area`
+  now waits for its widget's window too: Phase 19, `test_tooltip_early`.
 - **Issue 109: AFFECTED, done.** `OpenGL.Start` raises
   `FLTK.Unsupported_Error` on Wayland, where `gl_start` uses
   `Fl_Gl_Window_Driver::global()` and `Fl_Window::current()` unchecked
@@ -3871,7 +3891,7 @@ Done, 2026-11-11:
   compared pixel for pixel; the widgets below it give AE 0. Valgrind
   finds no memory errors and no FLTKAda leak. On sway it starts and runs.
 
-#### Phase 19: Fixes for pofltk 147 to 159
+#### Phase 19: Fixes for pofltk 147 to 159 [done, 2026-11-11]
 
 Each fix starts from a failing unit test (Phase 0).
 
@@ -3917,6 +3937,75 @@ Each fix starts from a failing unit test (Phase 0).
   pofltk 28 Wayland tooltip check (above).
 - Record each verdict in "Issues 139 to 159", and anything new in
   FLTK-issues.md.
+
+Done, 2026-11-11:
+
+- **150:** `test/unit/test_popup_no_window.adb` ports `HaltPopup`. A
+  menu button in no window, with no window shown: before the fix, its
+  `Popup`, and `Menus.Popup` and `Menus.Pulldown` on it, each raised
+  `Storage_Error` (FLTK's SIGSEGV); now each raises `Program_Error`.
+  The shim's `fl_menu_has_popup_parent` makes FLTK's own test (the
+  widget's window, or else `Fl::first_window()`), and the pop-ups do
+  nothing without one. `test_menu` now checks, on X11, that
+  `Menus.Popup` returns the item without running its callback or
+  setting its toggle, and that `Picked` then does both; the spec says
+  so.
+- **151:** `test_text` ports `TestText`'s checks: rows and columns of a
+  wrapped display drawn in Courier, every row from 0 to 20, and row 99.
+  Under valgrind on Xvfb, before the fix, `wrapped_row` and
+  `wrapped_column` each read 4 bytes after a block of 20 (five rows'
+  starts); after it, there's no invalid read. The shim returns the row
+  or column given for `row >= mNVisibleLines`, reached through
+  `Friend_Text_Display`. FLTKAda's `Natural` rows already rule out a
+  negative one.
+- **153:** `test_text` checks that `Set_Linenumber_Format` refuses
+  `HaltLineNumberFormat`'s `"%d %s"` and nine more (`%s`, `%n`, two
+  conversions, `%ld`, `%f`, a lone `%`, `%*d`, a 4-digit width, a NUL),
+  keeping the old format, and takes `%%` with one of `d i o u x X`,
+  flags, width and precision. It failed before the fix. The check
+  raises `Constraint_Error`, as `Spinner.Set_Format`'s does. The spec
+  says line numbers are drawn only in a shown window, as FLTK's source
+  shows (`draw_line_numbers` returns first if `!visible_r()`).
+- **155 and FLTKAda-BUGS 125:** `test_input` ports `TestInputs`' "aé"
+  checks (0 to 3, the second byte of "é" read as Latin-1) and
+  `HaltInputIndex` (past the end of "ab"), adds -1, and reads "€" with
+  `Index` and the new `Wide_Wide_Index`. Before the fix, valgrind on
+  Xvfb showed `Index (-1)` reading a byte before the text, and -1 and
+  4 raised nothing. Both functions now raise `Constraint_Error` outside
+  `0 .. Size`.
+- **157:** `test_preferences` checks that `Userdata_Path`'s directory
+  exists, then puts a file where a second database's would go. Before
+  the fix, `Userdata_Path` returned `.../blocked/` for it; now it
+  raises `Preference_Error`. FLTKAda gives FLTK a buffer of
+  `FL_PATH_MAX + 1`, so the cut-short name pofltk found needs a path
+  FLTK couldn't use anyway; it isn't checked separately.
+- **F35, confirmed and recorded in FLTK-issues.md:** `test_text` sets
+  `Widget_Focus` twice, then `Insert_Char`, and types Tab. It failed
+  before the fix; the shim now calls `tab_nav` only to change the mode.
+- **149:** `test/unit/test_window_fullscreen.adb` ports `TestWidget`'s
+  checks. `Fullscreen_On` of a window shown with no resizable widget
+  does nothing; after `Set_Size_Range` and `Fullscreen_Screens (0, 0,
+  0, 0)` it goes full screen, and off again. `Iconify` of a window not
+  shown shows it. `Iconify` hiding a shown window is checked on sway
+  and skipped on Xvfb. `Fullscreen_Screens` keeps `Natural`, which
+  rules out numbers FLTK doesn't check; the new `Fullscreen_Own_Screen`
+  passes FLTK's -1. The test didn't compile before it was added. The
+  library can't read the screen numbers back (they are private to
+  `Fl_Window`), so the test checks only that the window stays full
+  screen. Comments on `Fullscreen_On`, `Fullscreen_Screens` and
+  `Iconify` say what pofltk 149 found.
+- **pofltk 28's tooltip note:** FLTKAda is affected.
+  `test/unit/test_tooltip_early.adb` calls `Tooltips.Enter_Area`, with
+  no delay, straight after `Show`. On headless sway it ended with "Fatal
+  error no 1 in Wayland protocol: xdg_surface" and exit 1, three runs of
+  three. The shim's `fl_tooltip_enter_area` now waits for the widget's
+  top window to be exposed before it gives FLTK a text, as the menus do,
+  and three of three passed. `test_kept_strings` waited for its window
+  to be drawn before its tooltips, so it never showed this.
+- **Doc comments:** printers' static attributes (144), the text
+  editor's key bindings (147), `Show_With_Args` (154), `Set_Scheme`
+  (156, checked in FLTKAda as above), `Forge.From_Scope` (158) and
+  `Enter_Area`.
 
 #### Phase 20: API that pofltk's ports needed
 
