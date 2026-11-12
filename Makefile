@@ -82,6 +82,11 @@ ARGS := dirlist=. filename=../test/images/anim.gif \
     animgifimage-resize=../test/images/anim.gif \
     animgifimage-simple=../test/images/anim.gif
 
+#  The tests' FLTK preferences go in obj/check/config, not the user's:
+#  check, valgrind and smoke set XDG_CONFIG_HOME there.  It must hold
+#  fltk.org/, or FLTK writes to ~/.fltk instead (pofltk 158; FLTKAda-BUGS.md
+#  137).
+
 #  The C++ plugins test_plugins loads.  They aren't linked with FLTK: they
 #  use the program's.
 PLUGINS := bin/unit/plugins/one.so bin/unit/plugins/two.so
@@ -132,7 +137,8 @@ display:
 
 #  Reports every test, and fails at the end if any failed.
 check: programs display
-	@status=0; skips=0; mkdir -p obj/check; \
+	@status=0; skips=0; mkdir -p obj/check; mkdir -p obj/check/config/fltk.org; \
+	export XDG_CONFIG_HOME=$(CURDIR)/obj/check/config; \
 	for t in $(UNITTESTS); do \
 	  echo "== $$t"; \
 	  (cd test/unit && timeout $(TIMEOUT) $(CURDIR)/bin/unit/$$t) > obj/check/$$t.out 2>&1; got=$$?; \
@@ -153,7 +159,8 @@ check: programs display
 #  FLTKAda allocated the memory (test/vg-check.sh): FLTK, fontconfig,
 #  Pango and libdecor leak by design.
 valgrind: programs display
-	@status=0; mkdir -p obj/check; \
+	@status=0; mkdir -p obj/check; mkdir -p obj/check/config/fltk.org; \
+	export XDG_CONFIG_HOME=$(CURDIR)/obj/check/config; \
 	for t in $(UNITTESTS:%=unit/%) $(SELFCHECK); do \
 	  n=$$(basename $$t); echo "== valgrind $$n"; \
 	  (cd $$(dirname test/$$t) && $(VALGRIND) --log-file=$(CURDIR)/obj/check/$$n.vg \
@@ -169,7 +176,8 @@ valgrind: programs display
 #  EXAMPLETIME seconds, when timeout ends it (status 124): it started,
 #  drew, and didn't crash.  One of ONCE must end by itself, with status 0.
 smoke: programs display
-	@status=0; mkdir -p obj/check; \
+	@status=0; mkdir -p obj/check; mkdir -p obj/check/config/fltk.org; \
+	export XDG_CONFIG_HOME=$(CURDIR)/obj/check/config; \
 	for p in $(PROGRAMS:%=test:%) $(EXAMPLES:%=examples:%); do \
 	  d=$${p%%:*}; n=$${p#*:}; \
 	  if [ $$d = test ]; then bin=$(CURDIR)/bin/$$n; else bin=$(CURDIR)/bin/examples/$$n; fi; \

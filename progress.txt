@@ -619,6 +619,9 @@ Phase 26 (PLAN.md), FLTK's OpenGL test programs (CubeView, fractals,
 fullscreen, glpuzzle, handle_events, shape) ported to test/ and test/glu/
 and compared with FLTK's own build; no API added
 
+Phase 27 (PLAN.md), FLTK's games (blocks, checkers, sudoku) ported to
+test/ and compared with FLTK's own build; no API added
+
 
 
 Incomplete APIs:

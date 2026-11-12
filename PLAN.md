@@ -4694,6 +4694,56 @@ one another. No FLTKAda bug and no FLTK issue was found.
   Its Quit button hides the window, ending the main loop, where the
   C++ calls `exit (0)`.
 
+#### Phase 27: games [done, 2026-11-12]
+
+Compared as Phase 26 was, each port and FLTK's build under the same
+private Xvfb, driven by xdotool, with `time ()` fixed by a preloaded
+shim, and with `XDG_CONFIG_HOME` a scratch directory holding
+`fltk.org/` (pofltk 158) for both builds. Every shot of the three
+ports is AE 0 against FLTK's build, the shots of each run differ from
+one another, and stdout and the prefs files the two builds write are
+the same. No binding change was needed. One FLTKAda bug was found,
+137, and one FLTK issue, F39.
+
+- FLTKAda-BUGS.md 137: the Makefile ran the programs with the user's
+  `XDG_CONFIG_HOME`, so the smoke run's `preferences` (Phase 25) wrote
+  to `~/.fltk/fltk.org`, and the games would have too. `check`,
+  `valgrind` and `smoke` now keep FLTK's preferences in
+  `obj/check/config`.
+- `blocks`: 13 shots, from the title screen and help through a game
+  (a blast, falling blocks, level 2, the frame rate, a bomb, pausing)
+  to Game Over; its high score is the same in both prefs files. The
+  shim held the game's timeout at a set tick for each shot. The block
+  pixmaps are FLTK's XPMs, in `test/blocks_pixmaps.ads`. Where the
+  C++ steps its column pointer back before the array after removing
+  the first column (`c--`), the port carries on at the same index,
+  which removes the same columns. FLTK here has no ALSA, so the C++'s
+  explosion sound is only its `Fl::check ()`, which the port keeps.
+- `checkers`: 16 shots in two runs: a dragged move and the reply, the
+  pop-up menu, legal moves, predict, move for me, undo, debug and
+  forced jumps, switching sides, the intelligence window and its
+  slider, the copyright window, a new game, and autoplay to the end of
+  a game. The debug output on stdout is the same, FLTK's `%dn` typo
+  included. The piece PNGs are in `test/checkers_pieces.ads`. The
+  C++'s bare menu arrays are two never-shown `Menu_Button`s, popped up
+  with `Popup` and `Picked`; its `short`, `unsigned char` and `int`
+  wrapping is reproduced, so the computer picks the same moves; and
+  `fullexpand`'s list of sons holds 128, not the C++'s 32. The busy
+  menu (a click while the computer thinks) isn't compared: where the
+  click lands in the search depends on timing.
+- `sudoku`: 28 shots in four runs, each but the first reading the game
+  the one before saved: a new game, values, marks, a double click,
+  check, undo and redo, restart, solve, every difficulty with its
+  alert and choice, mute, and Help's About. The prefs files are the
+  same byte for byte after each run. FLTK here has no ALSA, so the C++
+  plays its notes on the X bell; the port makes the same Xlib calls,
+  as a preloaded logger showed, and none under Wayland, as the C++.
+  F39 (new): `new_game` reads and writes the 27 bytes before its grid,
+  so which game it deals can depend on pointer bytes; the port keeps
+  27 bytes of its own there, as pofltk's does, and dealt the C++'s
+  games in all eight it was asked for. As in pofltk, no difficulty is
+  marked in the menu: the C++ marks the wrong item.
+
 ## Open questions
 
 All five were decided by the user on 2026-11-03.

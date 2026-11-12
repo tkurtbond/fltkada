@@ -873,3 +873,30 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
   steps, both showed the same partial table, AE 0. Builds of both
   that printed each draw and event drew every cell. The cause is from
   reading the source.
+
+### F39. `test/sudoku.cxx`'s `new_game` writes before `grid_values_`
+
+- **What happens**: when `new_game` can't place a number, it starts
+  again, but first goes on placing the rest of that box's numbers in
+  rows -3 to -1 of `grid_values_`, the 27 bytes before it. Found
+  2026-11-12, porting `sudoku` in Phase 27; pofltk's `Sudoku.Mod`
+  describes the same fault in its header comment, but pofltk's issue
+  list doesn't have it.
+- **Cause**: on `count == 20`, `new_game` sets `k = 9` and `j = -3`
+  (test/sudoku.cxx:1168-1172) to restart the outer loops, but the `t`
+  loop around it (:1143) carries on to 9 with `j` at -3, so `m = j +
+  (rand () % 3)` is -3 to -1, and `grid_values_[m][n]` is read and set
+  outside the array. Before it, in `Sudoku` (:174-177), are the end of
+  the `Fl_Double_Window` base, `menubar_`, `grid_` and `seed_`, so what
+  is read there, which decides how many random numbers are taken and
+  so which game is dealt, depends on the pointers' bytes. A number is
+  written only where the byte is 0, such as a pointer's high bytes, so
+  the writes can change `menubar_`, `grid_` and `seed_`. Most seeds reach the restart.
+- **Effect on FLTKAda**: only on `test/sudoku.adb`. To deal the C++'s
+  games, it keeps 27 bytes of its own in front of the grid, as they
+  are on x86-64 when no pointer byte is 1 to 9, as pofltk's port does.
+- **Confirmed**: the cause from reading the source. Under Xvfb, driven
+  with xdotool, the port dealt the same puzzles as FLTK's build in all
+  eight new games of three runs, including one after earlier games had
+  written into those bytes. That the C++ result can change with its
+  heap addresses is from the source; every C++ run here dealt the same.

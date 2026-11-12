@@ -3888,3 +3888,33 @@ test/unit/test_table_sizes.adb sets every row, every column, one row
 and one column to 0 and reads them back; before the fix it failed at
 its first call with `Constraint_Error`. The port of test/table now
 matches FLTK's at AE 0 in all 23 of its screenshots.
+
+## 137. The smoke run wrote preferences to the user's ~/.fltk
+
+**Symptom.** `make smoke` (and so `smoke-headless` and `smoke-sway`)
+left `~/.fltk/fltk.org/test/preferences.prefs` and an empty
+`~/.fltk/fltk.org/test/preferences/` in the user's home, written by the
+port of FLTK's test/preferences when Phase 25 added it.
+
+**Cause.** The Makefile ran the programs with the user's
+`XDG_CONFIG_HOME`. A program that opens user preferences, as
+`preferences`, `blocks` and `sudoku` do, writes under
+`$XDG_CONFIG_HOME/fltk.org`, or under `~/.fltk/fltk.org` when the first
+doesn't exist (pofltk 158; src/drivers/Unix/Fl_Unix_System_Driver.cxx:567),
+which is the case here.
+
+**Found.** 2026-11-12, adding the games of Phase 27, which keep their
+preferences the same way: the file's time was that of the Phase 25
+six-target run.
+
+**Fixed.** `check`, `valgrind` and `smoke` make
+`obj/check/config/fltk.org` and set `XDG_CONFIG_HOME` to
+`obj/check/config`. Confirmed under Xvfb with `bin/preferences` run as
+the smoke run runs it: with the old environment, strace shows it
+opening `~/.fltk/fltk.org/test/preferences.prefs`; with the new one,
+it writes `obj/check/config`'s copy, and the one in `~/.fltk` is left
+as it was. The stray file and its empty directories were removed.
+After the next six-target run, `obj/check/config/fltk.org` also held
+FLTK's own `fltk.prefs` and `filechooser.prefs`, so the runs had been
+writing those to `~/.fltk` as well. The user's copies were left alone:
+their times don't show which were the tests'.

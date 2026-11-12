@@ -134,7 +134,10 @@ project Tests is
         "cube_view.adb",
         "fullscreen.adb",
         "handle_events.adb",
-        "shape.adb");
+        "shape.adb",
+        "blocks.adb",
+        "checkers.adb",
+        "sudoku.adb");
 
     package Builder is
         for Executable ("adjuster.adb")           use "adjuster";
@@ -256,6 +259,9 @@ project Tests is
         for Executable ("fullscreen.adb")         use "fullscreen";
         for Executable ("handle_events.adb")      use "handle_events";
         for Executable ("shape.adb")              use "shape";
+        for Executable ("blocks.adb")             use "blocks";
+        for Executable ("checkers.adb")           use "checkers";
+        for Executable ("sudoku.adb")             use "sudoku";
 
         for Default_Switches ("Ada") use
             Common.Builder'Default_Switches ("Ada");
