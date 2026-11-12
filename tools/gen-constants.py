@@ -151,7 +151,7 @@ add("Long_Long_Integer (Align_All_Position)", "FL_ALIGN_POSITION_MASK")
 add("Long_Long_Integer (Align_All_Image)", "FL_ALIGN_IMAGE_MASK")
 
 section("Keys (Fl::event_key)")
-for a, c in [("Enter", "Enter"), ("Keypad_Enter", "KP_Enter"), ("Backspace", "BackSpace"),
+for a, c in ([("Enter", "Enter"), ("Keypad_Enter", "KP_Enter"), ("Backspace", "BackSpace"),
              ("Insert", "Insert"), ("Delete", "Delete"), ("Home", "Home"), ("End", "End"),
              ("Page_Down", "Page_Down"), ("Page_Up", "Page_Up"), ("Down", "Down"),
              ("Left", "Left"), ("Right", "Right"), ("Up", "Up"), ("Escape", "Escape"),
@@ -162,11 +162,25 @@ for a, c in [("Enter", "Enter"), ("Keypad_Enter", "KP_Enter"), ("Backspace", "Ba
              ("Left_Shift", "Shift_L"), ("Right_Shift", "Shift_R"),
              ("Left_Control", "Control_L"), ("Right_Control", "Control_R"),
              ("Caps_Lock", "Caps_Lock"), ("Left_Meta", "Meta_L"), ("Right_Meta", "Meta_R"),
-             ("Left_Alt", "Alt_L"), ("Right_Alt", "Alt_R")]:
+             ("Left_Alt", "Alt_L"), ("Right_Alt", "Alt_R"), ("Alt_Gr", "Alt_Gr")]
+            + [("Volume_Down", "Volume_Down"), ("Volume_Mute", "Volume_Mute"),
+               ("Volume_Up", "Volume_Up"), ("Media_Play", "Media_Play"),
+               ("Media_Stop", "Media_Stop"), ("Media_Previous", "Media_Prev"),
+               ("Media_Next", "Media_Next"), ("Home_Page", "Home_Page"), ("Mail", "Mail"),
+               ("Search", "Search"), ("Back", "Back"), ("Forward", "Forward"),
+               ("Stop", "Stop"), ("Refresh", "Refresh"), ("Sleep", "Sleep"),
+               ("Favorites", "Favorites")]):
     add(f"Long_Long_Integer (To_C ({a}_Key))", "FL_" + c)
 add("Long_Long_Integer (To_C (Function_Key (1)))", "FL_F + 1")
 add("Long_Long_Integer (To_C (Function_Key (12)))", "FL_F + 12")
 add("Long_Long_Integer (To_C (Function_Key (Function_Key_Number'Last)))", "FL_F_Last")
+
+section("Options (Fl::Fl_Option)")
+enum("Static.Option", [(f"Static.{a}", "Fl::OPTION_" + a.upper()) for a in
+                       """Arrow_Focus Visible_Focus DND_Text Show_Tooltips FNFC_Uses_GTK
+                       FNFC_Uses_Zenity FNFC_Uses_KDialog Printer_Uses_GTK Show_Scaling
+                       Simple_Zoom_Shortcut""".split()])
+add("Long_Long_Integer (Static.Option'Pos (Static.Option'Last) + 1)", "Fl::OPTION_LAST")
 
 section("Shift keys held (Fl::event_state); Mod_Command is Ctrl, or Meta on macOS")
 for a, c in [("None", "0"), ("Shift", "FL_SHIFT"), ("Caps_Lock", "FL_CAPS_LOCK"),
@@ -359,9 +373,9 @@ def ada(suite):
 
 MAIN = Suite(
     CHECKS, "test/unit", "", "FLTK.Test_Constants",
-    ["Enumerations.H", "Fl_Button.H", "Fl_Clock.H", "Fl_File_Icon.H", "Fl_Menu_Item.H",
+    ["Enumerations.H", "Fl.H", "Fl_Button.H", "Fl_Clock.H", "Fl_File_Icon.H", "Fl_Menu_Item.H",
      "Fl_Sys_Menu_Bar.H", "Fl_Tabs.H", "Fl_Roller.H", "Fl_Browser_.H", "Fl_Scroll.H"],
-    ["FLTK.Draw", "FLTK.Images.File_Icons", "FLTK.Screen", "FLTK.Widgets.Buttons",
+    ["FLTK.Draw", "FLTK.Images.File_Icons", "FLTK.Screen", "FLTK.Static", "FLTK.Widgets.Buttons",
      "FLTK.Widgets.Clocks", "FLTK.Widgets.Groups.Tabbed", "FLTK.Widgets.Menus.Menu_Bars.Systemwide",
      "FLTK.Widgets.Valuators.Rollers", "FLTK.Widgets.Groups.Browsers",
      "FLTK.Widgets.Groups.Scrolls"],

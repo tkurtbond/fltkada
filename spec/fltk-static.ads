@@ -103,7 +103,12 @@ package FLTK.Static is
         Visible_Focus,
         DND_Text,
         Show_Tooltips,
-        FNFC_Uses_GTK);
+        FNFC_Uses_GTK,
+        FNFC_Uses_Zenity,
+        FNFC_Uses_KDialog,
+        Printer_Uses_GTK,
+        Show_Scaling,
+        Simple_Zoom_Shortcut);
 
 
     --  According to docs this should be customisable,

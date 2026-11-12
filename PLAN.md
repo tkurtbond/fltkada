@@ -4529,6 +4529,38 @@ found.
   no initial value, in its button callback. The port starts from
   `Align_Center`.
 
+#### Phase 24: events and keys [done, 2026-11-12]
+
+Compared as Phases 21 to 23 were. Every shot of the three ports is AE
+0 against FLTK's build, and stdout is the same. One FLTKAda bug was
+found, 135. No FLTK issue was found.
+
+- API added for the ports: `Key_Number` (`Fl::event_key`'s int, which
+  `handle_keys` prints) and its inverse `Numbered_Key`; `Alt_Gr_Key`
+  (`FL_Alt_Gr`) and the sixteen media keys, `Volume_Down_Key` ..
+  `Favorites_Key`; and `Static.Option`'s five missing literals, of
+  which `handle_keys` reads `Simple_Zoom_Shortcut`. `test_constants`
+  checks them all against FLTK's values, including that `Option`
+  ends at `OPTION_LAST`.
+- `keyboard`: typed keys, F5, Shift+Control held, KP_Enter, AltGr, ä,
+  XF86MonBrightnessUp and XF86AudioLowerVolume, and the wheel over the
+  rollers. Its output showed `0xff02` for XF86MonBrightnessUp, where
+  FLTK's shows `0x1008ff02`: FLTKAda-BUGS.md 135, `Keypress` was 16
+  bits. The window's buttons are generated from FLTK's
+  `keyboard_ui.cxx` (122 of them) in its order. The "?" state
+  buttons, which FLTK tests with `Fl::event_state` bits that X11 never
+  sets, are never lit, as in FLTK. Each shot shows the key before the
+  one just sent, in both builds alike.
+- `handle_keys`: two runs, the first with only Keydown ticked (letters,
+  Ctrl+C, F5, KP_7, ä, the XF86 and AltGr keys, Escape, the zoom
+  shortcuts, Tab, BackSpace), the second with Keyup and Shortcut
+  ticked too, then Clear and GUI scaling. Copy isn't driven: it sets
+  the clipboard.
+- `subwindow`: the enter/exit boxes, the toggles, typing in both
+  windows and their inputs, the right-button pop-up, both menu
+  buttons, and the outer toggle's `&o` shortcut. The inner window's
+  hand cursor isn't in a screenshot; the code sets it as FLTK's does.
+
 ## Open questions
 
 All five were decided by the user on 2026-11-03.

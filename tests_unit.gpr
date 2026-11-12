@@ -87,6 +87,7 @@ project Tests_Unit is
         "test_free_font.adb",
         "test_font_numbers.adb",
         "test_function_keys.adb",
+        "test_key_numbers.adb",
         "test_character_keys.adb",
         "test_dashes.adb",
         "test_terminal_fit.adb",

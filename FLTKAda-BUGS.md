@@ -3829,3 +3829,40 @@ integer one.
 test/unit/test_color_chooser_values.adb checks that `Set_RGB` and
 `Set_HSV` give back what they were given, and the RGB that the HSV
 stands for; all six of its checks failed before the fix.
+
+
+## 135. Keys past 16#FFFF# came out as other keys
+
+**Symptom.** On X11, `Events.Last_Key` for XF86MonBrightnessUp gave
+the key numbered 16#FF02#, where FLTK's `Fl::event_key()` gives
+16#1008FF02#; XF86Launch1 gave 16#FF41#, not 16#1008FF41#. A program
+couldn't tell these keys apart from each other's low 16 bits, and the
+port of FLTK's test/keyboard showed `0xff02` where FLTK's shows
+`0x1008ff02`.
+
+**Cause.** `Keypress` was `new Interfaces.Unsigned_16`, and
+`To_Ada (unsigned) return Keypress` took the number `mod 65536`. That
+suits a shortcut, an `Fl_Shortcut`, which keeps its key in the low 16
+bits (`FL_KEY_MASK`) and modifiers above them, but not
+`Fl::event_key`, an int. FLTK's X11 driver (`src/Fl_x.cxx`) maps
+sixteen XF86 keysyms to `FL_Volume_Down` .. `FL_Favorites`
+(16#EF11# .. 16#EF30#) and passes every other keysym through
+unchanged.
+
+**Found.** 2026-11-12, porting FLTK's test/keyboard (PLAN.md,
+Phase 24). Confirmed with a scratch program and its C++ twin under
+Xvfb, each printing `Fl::event_key` for keys sent by `xdotool`: the
+two agreed for `a`, Escape, F5, KP_Enter, ISO_Level3_Shift and
+XF86AudioLowerVolume, and differed for XF86MonBrightnessUp
+(269025026 against 65282) and XF86Launch1.
+
+**Fixed.** `Keypress` is `new Interfaces.Unsigned_32`, and an event's
+key is taken whole. Decoding a shortcut masks the key with 16#FFFF#,
+and encoding one whose key is past 16#FFFF# raises `Constraint_Error`
+instead of setting modifier bits. New: `Key_Number` and its inverse
+`Numbered_Key`, to name such a key, and the sixteen media keys
+(`Volume_Down_Key` .. `Favorites_Key`), which `test_constants` checks.
+test/unit/test_key_numbers.adb checks a keysym past 16#FFFF# through
+`Probe.Set_Key` and `Last_Key`, shortcuts with modifiers and a mouse
+button, and the refusal; with the old `mod 65536` back, two of its
+twelve checks failed.

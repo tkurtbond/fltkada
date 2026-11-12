@@ -608,14 +608,19 @@ Phase 23 (PLAN.md), FLTK's drawing and image test programs ported to
 test/ and compared with FLTK's own build; Color_Chooser Set_RGB and
 Set_HSV pass doubles (FLTKAda-BUGS.md 134)
 
+Phase 24 (PLAN.md), FLTK's event and key test programs (handle_keys,
+keyboard, subwindow) ported to test/ and compared with FLTK's own build;
+Key_Number, Numbered_Key, Alt_Gr_Key and the media keys (FL_Volume_Down
+to FL_Favorites); Keypress holds 32 bits (FLTKAda-BUGS.md 135); Static
+Option's FNFC_Uses_Zenity, FNFC_Uses_KDialog, Printer_Uses_GTK,
+Show_Scaling and Simple_Zoom_Shortcut
+
 
 
 Incomplete APIs:
 
 FLTK
 FLTK.Devices.Graphics
-FLTK.Static (Option lacks FNFC_Uses_Zenity, FNFC_Uses_Kdialog,
-    Printer_Uses_GTK, Show_Scaling and Simple_Zoom_Shortcut)
 FLTK.GLUT (the glut_menu variable is Get_Menu/Set_Menu,
     and glut_window is Glut_Window's Current_Window)
 FLTK.Images.Tiled (Tile returns a non-owning view of the tiled image)

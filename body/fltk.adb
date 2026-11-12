@@ -505,6 +505,22 @@ package body FLTK is
     end Function_Number;
 
 
+    function Key_Number
+           (Key : in Keypress)
+        return Natural is
+    begin
+        return Natural (Key);
+    end Key_Number;
+
+
+    function Numbered_Key
+           (Number : in Natural)
+        return Keypress is
+    begin
+        return Keypress (Number);
+    end Numbered_Key;
+
+
     function Press
            (Key : Pressable_Key)
         return Key_Combo is
@@ -626,6 +642,12 @@ package body FLTK is
            (Key : in Key_Combo)
         return Interfaces.C.unsigned is
     begin
+        --  An Fl_Shortcut keeps the key in its low 16 bits, FL_KEY_MASK, and
+        --  the modifiers above them (FLTKAda-BUGS.md 135).
+        if Key.Keycode > 16#FFFF# then
+            raise Constraint_Error with "key" & Keypress'Image (Key.Keycode)
+                & " is past 16#FFFF#, the most a shortcut can hold";
+        end if;
         return To_C (Key.Modcode) + To_C (Key.Keycode) + To_C (Key.Mousecode);
     end To_C;
 
@@ -636,7 +658,8 @@ package body FLTK is
     begin
         return Result : Key_Combo do
             Result.Modcode := To_Ada (Key);
-            Result.Keycode := To_Ada (Key);
+            --  Only the key bits, FL_KEY_MASK (FLTKAda-BUGS.md 135).
+            Result.Keycode := To_Ada (Key and 16#FFFF#);
             --  Only the mouse button bits, FL_BUTTONS (FLTKAda-BUGS.md 72).
             Result.Mousecode := To_Ada (Key and 16#1F00_0000#);
         end return;
@@ -655,7 +678,7 @@ package body FLTK is
            (Key : in Interfaces.C.unsigned)
         return Keypress is
     begin
-        return Keypress (Key mod 65536);
+        return Keypress (Key);
     end To_Ada;
 
 

@@ -11,6 +11,7 @@
 
 
 #include <FL/Enumerations.H>
+#include <FL/Fl.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Clock.H>
 #include <FL/Fl_File_Icon.H>
@@ -285,9 +286,38 @@ extern "C" const long long c_constants[] =
     FL_Meta_R,
     FL_Alt_L,
     FL_Alt_R,
+    FL_Alt_Gr,
+    FL_Volume_Down,
+    FL_Volume_Mute,
+    FL_Volume_Up,
+    FL_Media_Play,
+    FL_Media_Stop,
+    FL_Media_Prev,
+    FL_Media_Next,
+    FL_Home_Page,
+    FL_Mail,
+    FL_Search,
+    FL_Back,
+    FL_Forward,
+    FL_Stop,
+    FL_Refresh,
+    FL_Sleep,
+    FL_Favorites,
     FL_F + 1,
     FL_F + 12,
     FL_F_Last,
+    //  Options (Fl::Fl_Option)
+    Fl::OPTION_ARROW_FOCUS,
+    Fl::OPTION_VISIBLE_FOCUS,
+    Fl::OPTION_DND_TEXT,
+    Fl::OPTION_SHOW_TOOLTIPS,
+    Fl::OPTION_FNFC_USES_GTK,
+    Fl::OPTION_FNFC_USES_ZENITY,
+    Fl::OPTION_FNFC_USES_KDIALOG,
+    Fl::OPTION_PRINTER_USES_GTK,
+    Fl::OPTION_SHOW_SCALING,
+    Fl::OPTION_SIMPLE_ZOOM_SHORTCUT,
+    Fl::OPTION_LAST,
     //  Shift keys held (Fl::event_state); Mod_Command is Ctrl, or Meta on macOS
     0,
     FL_SHIFT,

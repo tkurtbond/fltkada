@@ -7,6 +7,11 @@ come first in each list.
 
 ## Changes that can stop a program compiling
 
+- **`Static.Option` has five new literals at its end**:
+  `FNFC_Uses_Zenity`, `FNFC_Uses_KDialog`, `Printer_Uses_GTK`,
+  `Show_Scaling` and `Simple_Zoom_Shortcut`, FLTK 1.4's other options.
+  A `case` over `Option` without `others` needs the new arms.
+  [PLAN.md, Phase 24](PLAN.md#phase-24-events-and-keys-done-2026-11-12).
 - **`Scrolls.Scroll_Kind` begins with a new literal, `Neither`**, FLTK's
   type 0, so the other literals' `'Pos` is one more, and a `case` over
   `Scroll_Kind` without `others` needs the new arm.
@@ -99,6 +104,13 @@ come first in each list.
 
 ## Changes that can make a program behave differently
 
+- **`Events.Last_Key` and `Original_Last_Key` give a key past
+  16#FFFF# whole**, such as X11's XF86MonBrightnessUp, 16#1008FF02#.
+  Before, they gave its low 16 bits, which is another key. A shortcut
+  (`Set_Shortcut`, a menu item's) of such a key now raises
+  `Constraint_Error`, since `Fl_Shortcut` can't hold it; before, its
+  high bits became modifiers.
+  [FLTKAda-BUGS.md 135](FLTKAda-BUGS.md#135-keys-past-16ffff-came-out-as-other-keys).
 - **`Color_Choosers.Set_RGB` and `Set_HSV` set the color they are
   given.** Before, they set one made of whatever was in the integer
   registers.

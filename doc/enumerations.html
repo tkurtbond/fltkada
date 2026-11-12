@@ -517,13 +517,42 @@ function Function_Number (Key : in Keypress) return Function_Key_Number
 FL_Iso_Key  FL_Pause  FL_Scroll_Lock  FL_Kana  FL_Eisu  FL_Yen
 FL_JIS_Underscore  FL_Print  FL_Menu  FL_Help  FL_Num_Lock
 FL_Shift_L  FL_Shift_R  FL_Control_L  FL_Control_R  FL_Caps_Lock
-FL_Meta_L  FL_Meta_R  FL_Alt_L  FL_Alt_R
+FL_Meta_L  FL_Meta_R  FL_Alt_L  FL_Alt_R  FL_Alt_Gr
 </pre></td>
 <td><pre>
 ISO_Key  Pause_Key  Scroll_Lock_Key  Kana_Key  Eisu_Key  Yen_Key
 JIS_Underscore_Key  Print_Key  Menu_Key  Help_Key  Num_Lock_Key
 Left_Shift_Key  Right_Shift_Key  Left_Control_Key  Right_Control_Key
 Caps_Lock_Key  Left_Meta_Key  Right_Meta_Key  Left_Alt_Key  Right_Alt_Key
+Alt_Gr_Key
+</pre></td>
+  </tr>
+
+  <tr>
+<td>The media keys.
+<pre>
+FL_Volume_Down  FL_Volume_Mute  FL_Volume_Up  FL_Media_Play
+FL_Media_Stop  FL_Media_Prev  FL_Media_Next  FL_Home_Page  FL_Mail
+FL_Search  FL_Back  FL_Forward  FL_Stop  FL_Refresh  FL_Sleep
+FL_Favorites
+</pre></td>
+<td><pre>
+Volume_Down_Key  Volume_Mute_Key  Volume_Up_Key  Media_Play_Key
+Media_Stop_Key  Media_Previous_Key  Media_Next_Key  Home_Page_Key
+Mail_Key  Search_Key  Back_Key  Forward_Key  Stop_Key  Refresh_Key
+Sleep_Key  Favorites_Key
+</pre></td>
+  </tr>
+
+  <tr>
+<td>A key's number, Fl::event_key's int, which can be past 0xffff:
+X11 gives other XF86 keys as the keysym, such as 0x1008ff02.
+<pre>
+int key = Fl::event_key();
+</pre></td>
+<td><pre>
+function Key_Number (Key : in Keypress) return Natural;
+function Numbered_Key (Number : in Natural) return Keypress;
 </pre></td>
   </tr>
 

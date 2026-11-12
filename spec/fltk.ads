@@ -297,6 +297,27 @@ package FLTK is
     Right_Meta_Key     : constant Keypress;
     Left_Alt_Key       : constant Keypress;
     Right_Alt_Key      : constant Keypress;
+    Alt_Gr_Key         : constant Keypress;
+
+    --  The media keys, FL_Volume_Down to FL_Favorites, the numbers FLTK
+    --  gives sixteen of the XF86 keys on X11.  Other XF86 keys come as the
+    --  keysym itself, which Numbered_Key can name.
+    Volume_Down_Key    : constant Keypress;
+    Volume_Mute_Key    : constant Keypress;
+    Volume_Up_Key      : constant Keypress;
+    Media_Play_Key     : constant Keypress;
+    Media_Stop_Key     : constant Keypress;
+    Media_Previous_Key : constant Keypress;
+    Media_Next_Key     : constant Keypress;
+    Home_Page_Key      : constant Keypress;
+    Mail_Key           : constant Keypress;
+    Search_Key         : constant Keypress;
+    Back_Key           : constant Keypress;
+    Forward_Key        : constant Keypress;
+    Stop_Key           : constant Keypress;
+    Refresh_Key        : constant Keypress;
+    Sleep_Key          : constant Keypress;
+    Favorites_Key      : constant Keypress;
 
     --  The function keys, F1 to F35 (FL_F + n).
     subtype Function_Key_Number is Positive range 1 .. 35;
@@ -305,6 +326,15 @@ package FLTK is
     function Is_Function_Key (Key : in Keypress) return Boolean;
     function Function_Number (Key : in Keypress) return Function_Key_Number
         with Pre => Is_Function_Key (Key);
+
+    --  FLTK's number for Key, Fl::event_key's int: the character's code
+    --  point for a key that types one, or the FL_ constant's value, such as
+    --  16#ff1b# for Escape_Key.
+    function Key_Number (Key : in Keypress) return Natural;
+
+    --  The key FLTK numbers Number, Key_Number's inverse: for example
+    --  Numbered_Key (16#1008FF02#) is XF86MonBrightnessUp on X11.
+    function Numbered_Key (Number : in Natural) return Keypress;
 
 
     type Mouse_Button is
@@ -846,7 +876,9 @@ private
 
 
 
-    type Keypress is new Interfaces.Unsigned_16;
+    --  32 bits, as Fl::event_key's int is: X11 gives keysyms above 16#FFFF#,
+    --  such as 16#1008FF02# for XF86MonBrightnessUp (FLTKAda-BUGS.md 135).
+    type Keypress is new Interfaces.Unsigned_32;
     type Modifier is new Interfaces.Unsigned_16;
 
     type Key_Combo is record
@@ -860,6 +892,8 @@ private
            (Font : in Font_Kind)
         return Interfaces.C.int;
 
+    --  Raises Constraint_Error if Key's Keycode is past 16#FFFF#, which an
+    --  Fl_Shortcut can't hold (FL_KEY_MASK).
     function To_C
            (Key : in Key_Combo)
         return Interfaces.C.unsigned;
@@ -944,6 +978,24 @@ private
     Right_Meta_Key     : constant Keypress := 16#ffe8#;
     Left_Alt_Key       : constant Keypress := 16#ffe9#;
     Right_Alt_Key      : constant Keypress := 16#ffea#;
+    Alt_Gr_Key         : constant Keypress := 16#fe03#;
+
+    Volume_Down_Key    : constant Keypress := 16#ef11#;
+    Volume_Mute_Key    : constant Keypress := 16#ef12#;
+    Volume_Up_Key      : constant Keypress := 16#ef13#;
+    Media_Play_Key     : constant Keypress := 16#ef14#;
+    Media_Stop_Key     : constant Keypress := 16#ef15#;
+    Media_Previous_Key : constant Keypress := 16#ef16#;
+    Media_Next_Key     : constant Keypress := 16#ef17#;
+    Home_Page_Key      : constant Keypress := 16#ef18#;
+    Mail_Key           : constant Keypress := 16#ef19#;
+    Search_Key         : constant Keypress := 16#ef1b#;
+    Back_Key           : constant Keypress := 16#ef26#;
+    Forward_Key        : constant Keypress := 16#ef27#;
+    Stop_Key           : constant Keypress := 16#ef28#;
+    Refresh_Key        : constant Keypress := 16#ef29#;
+    Sleep_Key          : constant Keypress := 16#ef2f#;
+    Favorites_Key      : constant Keypress := 16#ef30#;
 
 
 

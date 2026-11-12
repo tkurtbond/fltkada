@@ -123,7 +123,10 @@ project Tests is
         "line_style.adb",
         "line_style_docs.adb",
         "rotated_text.adb",
-        "tiled_image.adb");
+        "tiled_image.adb",
+        "handle_keys.adb",
+        "keyboard.adb",
+        "subwindow.adb");
 
     package Builder is
         for Executable ("adjuster.adb")           use "adjuster";
@@ -234,6 +237,9 @@ project Tests is
         for Executable ("line_style_docs.adb")    use "line_style_docs";
         for Executable ("rotated_text.adb")       use "rotated_text";
         for Executable ("tiled_image.adb")        use "tiled_image";
+        for Executable ("handle_keys.adb")        use "handle_keys";
+        for Executable ("keyboard.adb")           use "keyboard";
+        for Executable ("subwindow.adb")          use "subwindow";
 
         for Default_Switches ("Ada") use
             Common.Builder'Default_Switches ("Ada");
