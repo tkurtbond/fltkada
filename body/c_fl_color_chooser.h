@@ -18,13 +18,13 @@ extern "C" void free_fl_color_chooser(COLORCHOOSER n);
 extern "C" double fl_color_chooser_r(COLORCHOOSER n);
 extern "C" double fl_color_chooser_g(COLORCHOOSER n);
 extern "C" double fl_color_chooser_b(COLORCHOOSER n);
-extern "C" int fl_color_chooser_rgb(COLORCHOOSER n, int r, int g, int b);
+extern "C" int fl_color_chooser_rgb(COLORCHOOSER n, double r, double g, double b);
 
 
 extern "C" double fl_color_chooser_hue(COLORCHOOSER n);
 extern "C" double fl_color_chooser_saturation(COLORCHOOSER n);
 extern "C" double fl_color_chooser_value(COLORCHOOSER n);
-extern "C" int fl_color_chooser_hsv(COLORCHOOSER n, int h, int s, int v);
+extern "C" int fl_color_chooser_hsv(COLORCHOOSER n, double h, double s, double v);
 
 
 extern "C" void fl_color_chooser_hsv2rgb

@@ -4487,6 +4487,48 @@ found.
   `tools/with-sway.sh`, where the port also printed "Unix/Linux
   (Wayland)". Its version lines are formatted as `%6.4f` and `%6d`.
 
+#### Phase 23: drawing and images [done, 2026-11-11]
+
+Compared as Phases 21 and 22 were, under one private Xvfb (1280x1024,
+no window manager), driven by `xdotool`. Every shot of all 14 ports is
+AE 0 against FLTK's build, and stdout is the same, except where noted
+below. `animated`, `arc`, `curve` and `pixmap` replace FLTKAda's
+earlier programs. One FLTKAda bug was found, 134. No FLTK issue was
+found.
+
+- `label` and `rotated_text`: the toggles, sliders and the label-type
+  choice driven. FLTKAda's group `Forge.Create` ends the group, so a
+  widget made without a parent belongs to none, and these ports pass
+  each widget its parent. Their first versions didn't, and showed only
+  the box and the choice. `Fl_Menu_::menu` selects the first item but
+  `Add` doesn't, so the ports call `Set_Chosen (1)`. The widgets are
+  made in the declarations, before the input's `Set_Value`, so `label`
+  sets the box's label from the input after it.
+- `contrast`: the sliders, a field, an algorithm and the colour chooser
+  driven. Its chooser showed 127500 where FLTK's showed 255. That was
+  FLTKAda-BUGS.md 134: the shim took `Fl_Color_Chooser::rgb` and `hsv`
+  as ints, while Ada passed doubles. A scan of every shim prototype
+  against its Ada import found no other mismatch between floating-point
+  and integer types. The RC button differs, as it must: FLTK's program
+  calls its callback once at start (black), so every click is random,
+  seeded by the time.
+- `clipboard`: text put on the clipboard with `xsel -b`, and pasted
+  both when the clipboard changes and by Refresh. Images were put there
+  by a scratch FLTK program, `Fl_Copy_Surface` (200x120, and 800x600,
+  which is scaled down). Save PNG isn't driven: it opens the native
+  file chooser.
+- `animated`: AE 0 once the animation has looped. The first shot
+  differs by the frame showing at that moment.
+- `arc` and `curve` (sliders), `image` and `pixmap` (toggles, and
+  `pixmap`'s stop and step), `line_style` (sliders, the style choice,
+  the line check button, the dash sliders), `coordinates` (mouse moves
+  and a click), `tiled_image` (resized to 600x500), `line_style_docs`.
+- `icon`: the window's `_NET_WM_ICON`, read with `xprop` at start and
+  after choosing two colours, is the same as FLTK's each time.
+- FLTKAda's earlier `pixmap.adb` read `New_Align`, an `Alignment` with
+  no initial value, in its button callback. The port starts from
+  `Align_Center`.
+
 ## Open questions
 
 All five were decided by the user on 2026-11-03.

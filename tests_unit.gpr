@@ -108,6 +108,7 @@ project Tests_Unit is
         "test_anim_copy.adb",
         "test_clock_time.adb",
         "test_clock_kind.adb",
+        "test_color_chooser_values.adb",
         "test_shared_reload.adb",
         "test_filename_relative.adb",
         "test_window_label.adb",

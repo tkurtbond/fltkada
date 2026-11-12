@@ -3802,3 +3802,30 @@ subtracted 1 to convert to and from FLTK's values, leaving 0 out.
 FLTK's values, which `test_constants` checks. test/unit/test_layout.adb
 checks that a scroll set to `Neither` gives `Neither` back and shows
 neither scrollbar.
+
+
+## 134. Color_Chooser's Set_RGB and Set_HSV set nonsense
+
+**Symptom.** After `Set_RGB (1.0, 1.0, 1.0)` a `Color_Chooser` gave
+`Get_Red` 4196832 and `Get_Value` 1591692832, and in byte mode its
+inputs showed 127500 and 180030 where FLTK's show 255. Its hue box was
+drawn as a pattern of noise. `Set_HSV` was the same.
+
+**Cause.** The shim declared `fl_color_chooser_rgb` and
+`fl_color_chooser_hsv` with `int` arguments, while the Ada imports pass
+`Interfaces.C.double`. On x86-64 the doubles go in the floating-point
+registers, so the shim read its three arguments from integer registers
+that held whatever was left there, and passed those to FLTK's `rgb` and
+`hsv`, which take doubles.
+
+**Found.** 2026-11-11, porting FLTK's test/contrast (PLAN.md, Phase 23),
+whose chooser differed from FLTK's build; a scratch program then showed
+the values above. A scan of every shim header's `extern "C"` prototype
+against the Ada imports (2921 of the 2974 imports matched by name) found
+no other place where a floating-point argument or result meets an
+integer one.
+
+**Fixed.** The two shim functions take `double`.
+test/unit/test_color_chooser_values.adb checks that `Set_RGB` and
+`Set_HSV` give back what they were given, and the RGB that the HSV
+stands for; all six of its checks failed before the fix.

@@ -99,6 +99,10 @@ come first in each list.
 
 ## Changes that can make a program behave differently
 
+- **`Color_Choosers.Set_RGB` and `Set_HSV` set the color they are
+  given.** Before, they set one made of whatever was in the integer
+  registers.
+  [FLTKAda-BUGS.md 134](FLTKAda-BUGS.md#134-color_choosers-set_rgb-and-set_hsv-set-nonsense).
 - **A text editor's newest binding of a key wins**, and
   `Remove_Key_Binding` of a key removes only that newest binding, as in
   FLTK. Before, the oldest won, so a program's own binding of a key the

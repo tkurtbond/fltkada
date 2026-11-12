@@ -41,7 +41,7 @@ is
         FDR.Set_Color (FLTK.Dark3_Color);
         FDR.Rect_Fill (This.Get_X, This.Get_Y, This.Get_W, This.Get_H);
         FDR.Push_Matrix;
-        if Arg_Values (6) > 0.001 then
+        if Arg_Values (6) /= 0.0 then
             FDR.Translate
                (Long_Float (This.Get_X) + Long_Float (This.Get_W) / 2.0,
                 Long_Float (This.Get_Y) + Long_Float (This.Get_H) / 2.0);
@@ -66,7 +66,7 @@ is
     end Draw;
 
 
-    The_Window : WD.Double_Window := WD.Forge.Create (300, 460, "Arc Testing");
+    The_Window : WD.Double_Window := WD.Forge.Create (300, 500);
 
     The_Drawing : Drawing_Widget :=
        (FLTK.Widgets.Forge.Create (The_Window, 10, 10, 280, 280)

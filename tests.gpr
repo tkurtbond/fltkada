@@ -113,7 +113,17 @@ project Tests is
         "grid_login.adb",
         "grid_dialog.adb",
         "grid_alignment.adb",
-        "fltk_versions.adb");
+        "fltk_versions.adb",
+        "clipboard.adb",
+        "contrast.adb",
+        "coordinates.adb",
+        "icon.adb",
+        "image.adb",
+        "label.adb",
+        "line_style.adb",
+        "line_style_docs.adb",
+        "rotated_text.adb",
+        "tiled_image.adb");
 
     package Builder is
         for Executable ("adjuster.adb")           use "adjuster";
@@ -214,6 +224,16 @@ project Tests is
         for Executable ("grid_dialog.adb")        use "grid_dialog";
         for Executable ("grid_alignment.adb")     use "grid_alignment";
         for Executable ("fltk_versions.adb")      use "fltk-versions";
+        for Executable ("clipboard.adb")          use "clipboard";
+        for Executable ("contrast.adb")           use "contrast";
+        for Executable ("coordinates.adb")        use "coordinates";
+        for Executable ("icon.adb")               use "icon";
+        for Executable ("image.adb")              use "image";
+        for Executable ("label.adb")              use "label";
+        for Executable ("line_style.adb")         use "line_style";
+        for Executable ("line_style_docs.adb")    use "line_style_docs";
+        for Executable ("rotated_text.adb")       use "rotated_text";
+        for Executable ("tiled_image.adb")        use "tiled_image";
 
         for Default_Switches ("Ada") use
             Common.Builder'Default_Switches ("Ada");

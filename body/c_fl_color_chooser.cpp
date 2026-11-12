@@ -74,7 +74,7 @@ double fl_color_chooser_b(COLORCHOOSER n) {
     return static_cast<Fl_Color_Chooser*>(n)->b();
 }
 
-int fl_color_chooser_rgb(COLORCHOOSER n, int r, int g, int b) {
+int fl_color_chooser_rgb(COLORCHOOSER n, double r, double g, double b) {
     return static_cast<Fl_Color_Chooser*>(n)->rgb(r,g,b);
 }
 
@@ -93,7 +93,7 @@ double fl_color_chooser_value(COLORCHOOSER n) {
     return static_cast<Fl_Color_Chooser*>(n)->value();
 }
 
-int fl_color_chooser_hsv(COLORCHOOSER n, int h, int s, int v) {
+int fl_color_chooser_hsv(COLORCHOOSER n, double h, double s, double v) {
     return static_cast<Fl_Color_Chooser*>(n)->hsv(h,s,v);
 }
 
