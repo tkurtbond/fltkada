@@ -7,8 +7,9 @@
 # test/demo.menu, naming FLTKAda's programs as FLTK's names FLTK's: the
 # same menus, items and commands, run from bin/ with test/ as the working
 # directory.  Where FLTK's name C++ sources, these name the Ada ones.
-# FLTKAda has no rgb.txt or valuators.fl: colbrowser looks for rgb.txt
-# here, and says it can't open it, and fluid starts with no file.
+# colbrowser reads test/rgb.txt, X.Org's colour database as FLTK ships
+# it (test/rgb.txt.COPYING).  FLTKAda has no valuators.fl, so fluid
+# starts with no file.
 #
 # Each line consists of three fields, separated by :
 #

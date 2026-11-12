@@ -4780,8 +4780,9 @@ too. Two FLTKAda bugs were found, 138 and 139, and no FLTK issue.
   `fluid_path` and `options_path` lines, which the port leaves out.
   stdout is the same. `test/demo.menu` is FLTK's, naming the ports:
   `browser.adb` and `editor.adb` for the `.cxx` files, and `fluid`
-  without `valuators.fl`. FLTKAda ships no `rgb.txt`, so colbrowser
-  says it can't open it. A leaf button runs the program as FLTK's
+  without `valuators.fl`. ~~FLTKAda ships no `rgb.txt`, so colbrowser
+  says it can't open it.~~ (It does now: see the note on `rgb.txt`
+  after this block.) A leaf button runs the program as FLTK's
   does, with `system` and `&`, in the menu's directory; `fluid` and
   `fltk-options` come from `PATH`, and `FLTK_DOCDIR` isn't set. Exit
   hides the form, where FLTK calls `exit (0)`. Without an argument
@@ -4813,6 +4814,18 @@ too. Two FLTKAda bugs were found, 138 and 139, and no FLTK issue.
   bound). `cursor` differed at three of four states and was rewritten.
   All five are AE 0 now, `color_chooser` over 8 states and `cursor`
   over 7, the custom cursor clean under valgrind.
+
+**`rgb.txt` (2026-11-12).** `test/rgb.txt` is FLTK 1.4.5's
+`test/rgb.txt`, copied unchanged, and demo's colbrowser now reads it.
+Nothing had decided to leave it out; it was missed. Unlike
+`help_dialog.html`, it isn't FLTK's own text but X.Org's colour
+database (its first line is its `$Xorg$` tag), under X.Org's
+MIT-style licence, which allows copying with the notice. The file
+carries no notice itself, so `test/rgb.txt.COPYING` says where it
+came from and has the COPYING of X.Org's `rgb` package (1.1.0, from
+Fedora 44's source package). pofltk ships the same file in
+`examples/`. X.Org's current `rgb.txt` is a later revision, 782 lines
+to FLTK's 753; FLTK's is the one colbrowser was compared against.
 
 ## Open questions
 

@@ -5,8 +5,9 @@
 
 
 --  FLTK's test/colbrowser.cxx: a hold browser of the colours in an X11
---  rgb.txt (by default ./rgb.txt), and red, green and blue sliders that
---  find the nearest colour in it.  Guided by pofltk's ColBrowser.Mod.
+--  rgb.txt (by default ./rgb.txt; test/rgb.txt is one), and red, green
+--  and blue sliders that find the nearest colour in it.  Guided by
+--  pofltk's ColBrowser.Mod.
 --
 --  Where FLTK's program would read past the end of its table (no file
 --  loaded, or a file loaded more than once, which adds to the browser
