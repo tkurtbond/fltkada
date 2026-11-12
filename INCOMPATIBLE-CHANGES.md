@@ -7,6 +7,20 @@ come first in each list.
 
 ## Changes that can stop a program compiling
 
+- **`Trees.Open`, `Close`, `Open_Toggle`, `Select_Item`, `Deselect`
+  and `Select_Toggle` have a new last parameter, `Do_Callback`,
+  defaulting to `True`**, FLTK's `docallback`, and **`Select_All` and
+  `Deselect_All` have two, `Item` and `Do_Callback`**, defaulting to
+  the whole tree and `True`. Calls compile as before, but an
+  `overriding` declaration of one, or an access to one, must add the
+  parameters.
+  [PLAN.md, Phase 25](PLAN.md#phase-25-large-programs-done-2026-11-12).
+- **A table's row heights and column widths are `Natural`**, not
+  `Positive`: `Get_Row_Height` and `Get_Column_Width` return it, and
+  the four setters take it. A caller that keeps a result in a
+  `Positive` still compiles, but raises `Constraint_Error` for a row
+  or column of size 0.
+  [FLTKAda-BUGS.md 136](FLTKAda-BUGS.md#136-a-tables-rows-and-columns-couldnt-be-0-high-or-wide).
 - **`Static.Option` has five new literals at its end**:
   `FNFC_Uses_Zenity`, `FNFC_Uses_KDialog`, `Printer_Uses_GTK`,
   `Show_Scaling` and `Simple_Zoom_Shortcut`, FLTK 1.4's other options.
@@ -104,6 +118,15 @@ come first in each list.
 
 ## Changes that can make a program behave differently
 
+- **Every preferences database is opened with FLTK's `C_LOCALE`
+  flag**, so floating point is written with a point and read the same
+  way whatever `LC_NUMERIC` says. A file written before by a program
+  with a decimal comma, such as one in a German locale, has its
+  floating point read up to the comma.
+  [PLAN.md, Phase 25](PLAN.md#phase-25-large-programs-done-2026-11-12).
+- **A text editor binds Ctrl+Shift+Z to the new `KF_Redo`**, as FLTK
+  does. Before, that key did nothing.
+  [PLAN.md, Phase 25](PLAN.md#phase-25-large-programs-done-2026-11-12).
 - **`Events.Last_Key` and `Original_Last_Key` give a key past
   16#FFFF# whole**, such as X11's XF86MonBrightnessUp, 16#1008FF02#.
   Before, they gave its low 16 bits, which is another key. A shortcut

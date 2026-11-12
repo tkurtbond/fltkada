@@ -63,6 +63,12 @@ package FLTK.Text_Buffers is
 
     --  Callbacks  --
 
+    --  A buffer's modify callbacks run in the order they were added, and
+    --  after those of every display the buffer is given to.  FLTK runs the
+    --  callback added last first (Fl_Text_Buffer.cxx:884-903), and the
+    --  buffer adds its own to FLTK when it is made, before any display
+    --  adds one, so in C++ a callback added after Set_Buffer would run
+    --  before the display's, but here it runs after (PLAN.md, Phase 25).
     procedure Add_Modify_Callback
            (This : in out Text_Buffer;
             Func : in     Modify_Callback);

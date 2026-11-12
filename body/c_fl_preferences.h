@@ -21,6 +21,7 @@ extern "C" const char * fl_preferences_new_uuid();
 
 
 extern "C" PREFS new_fl_pref_database_path(char * p, char * v, char * a);
+extern "C" PREFS new_fl_pref_database_file(char * f);
 extern "C" PREFS new_fl_pref_database_scope(int s, char * v, char * a);
 extern "C" void upref_fl_pref_database(PREFS e);
 extern "C" void free_fl_pref_database(PREFS e);
@@ -31,10 +32,13 @@ extern "C" PREFS new_fl_pref_group_name(PREFS e, char * n);
 extern "C" PREFS new_fl_pref_group_index(PREFS e, int i);
 extern "C" void free_fl_pref_group(PREFS e);
 extern "C" int fl_pref_group_exists(PREFS e);
+extern "C" int fl_preferences_load_tree(PREFS e, void * t);
 
 
 extern "C" int fl_preferences_flush(PREFS e);
 extern "C" int fl_preferences_getuserdatapath(PREFS e, char * p, int len);
+extern "C" void fl_preferences_filename(PREFS e, char * p, int len);
+extern "C" void fl_preferences_static_filename(char * p, int len, int s, const char * v, const char * a);
 
 
 extern "C" int fl_preferences_deleteentry(PREFS e, const char * k);

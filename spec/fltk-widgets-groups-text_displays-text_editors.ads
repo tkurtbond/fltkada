@@ -78,6 +78,9 @@ package FLTK.Widgets.Groups.Text_Displays.Text_Editors is
     procedure KF_Undo
            (This : in out Text_Editor'Class);
 
+    procedure KF_Redo
+           (This : in out Text_Editor'Class);
+
     procedure KF_Cut
            (This : in out Text_Editor'Class);
 
@@ -300,14 +303,15 @@ package FLTK.Widgets.Groups.Text_Displays.Text_Editors is
         (Mod_None + Insert_Key,       KF_Insert'Access),
         (Mod_None + Tab_Key,          KF_Tab'Access),
 
-        (Mod_None + Delete_Key, KF_Delete'Access),
-        (Mod_Command + 'c',     KF_Copy'Access),
-        (Mod_Command + 'v',     KF_Paste'Access),
-        (Mod_Command + 'x',     KF_Cut'Access),
-        (Mod_Command + 'z',     KF_Undo'Access),
-        (Mod_Command + 'a',     KF_Select_All'Access),
+        (Mod_None + Delete_Key,         KF_Delete'Access),
+        (Mod_Command + 'c',             KF_Copy'Access),
+        (Mod_Command + 'v',             KF_Paste'Access),
+        (Mod_Command + 'x',             KF_Cut'Access),
+        (Mod_Command + 'z',             KF_Undo'Access),
+        (Mod_Command + Mod_Shift + 'z', KF_Redo'Access),
+        (Mod_Command + 'a',             KF_Select_All'Access),
 
-        --  Ctrl+'/' Shift+Del Ctrl+Insert Shift+Insert all intentionally absent
+        --  Ctrl+'/' Ctrl+'?' Shift+Del Ctrl+Insert Shift+Insert all intentionally absent
 
         (Mod_None + Home_Key,      KF_Home'Access),
         (Mod_None + End_Key,       KF_End'Access),
@@ -504,6 +508,7 @@ private
     pragma Inline (KF_Default);
 
     pragma Inline (KF_Undo);
+    pragma Inline (KF_Redo);
     pragma Inline (KF_Cut);
     pragma Inline (KF_Copy);
     pragma Inline (KF_Paste);

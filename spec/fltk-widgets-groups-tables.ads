@@ -218,17 +218,17 @@ package FLTK.Widgets.Groups.Tables is
     function Get_Column_Width
            (This   : in Table;
             Column : in Positive)
-        return Positive;
+        return Natural;
 
     --  Raises Range_Error if Column is past Get_Columns.
     procedure Set_Column_Width
            (This   : in out Table;
             Column : in     Positive;
-            Value  : in     Positive);
+            Value  : in     Natural);
 
     procedure Set_All_Columns_Width
            (This  : in out Table;
-            Value : in     Positive);
+            Value : in     Natural);
 
     function Get_Columns
            (This : in Table)
@@ -300,17 +300,17 @@ package FLTK.Widgets.Groups.Tables is
     function Get_Row_Height
            (This : in Table;
             Row  : in Positive)
-        return Positive;
+        return Natural;
 
     --  Raises Range_Error if Row is past Get_Rows.
     procedure Set_Row_Height
            (This  : in out Table;
             Row   : in     Positive;
-            Value : in     Positive);
+            Value : in     Natural);
 
     procedure Set_All_Rows_Height
            (This  : in out Table;
-            Value : in     Positive);
+            Value : in     Natural);
 
     function Get_Rows
            (This : in Table)

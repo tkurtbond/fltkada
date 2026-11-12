@@ -41,10 +41,21 @@ package FLTK.Environment is
 
 
 
+    --  Every database is opened with FLTK's C_LOCALE flag, so floating
+    --  point values are written with a point and read the same way, whatever
+    --  LC_NUMERIC says (Fl_Preferences.cxx:773-836).
+
     package Forge is
 
+        --  The file Directory/Application.prefs.
         function From_Filesystem
                (Directory, Vendor, Application : in String)
+            return Database;
+
+        --  The file Name, whatever it is called (Fl_Preferences with no
+        --  application).
+        function From_File
+               (Name : in String)
             return Database;
 
         --  On Unix, a User database is $XDG_CONFIG_HOME/Vendor/
@@ -85,6 +96,13 @@ package FLTK.Environment is
     function New_UUID
         return String;
 
+    --  The name of the file a database From_Scope would use, or "" if
+    --  FLTK can't say.  The file needn't exist.
+    function File_Name
+           (Extent              : in Scope;
+            Vendor, Application : in String)
+        return String;
+
 
 
 
@@ -93,6 +111,11 @@ package FLTK.Environment is
     --  Raises Preference_Error if the file can't be written.
     procedure Flush
            (This : in Database);
+
+    --  The name of the database's file, or "" if FLTK can't say.
+    function File_Name
+           (This : in Database)
+        return String;
 
     --  The directory for the application's own files, beside the database's
     --  file, made if need be.  Raises Preference_Error when the directory

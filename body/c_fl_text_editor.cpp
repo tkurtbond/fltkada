@@ -85,6 +85,10 @@ void fl_text_editor_undo(TEXTEDITOR te) {
     Fl_Text_Editor::kf_undo(0, static_cast<Fl_Text_Editor*>(te));
 }
 
+void fl_text_editor_redo(TEXTEDITOR te) {
+    Fl_Text_Editor::kf_redo(0, static_cast<Fl_Text_Editor*>(te));
+}
+
 void fl_text_editor_cut(TEXTEDITOR te) {
     Fl_Text_Editor::kf_cut(0, static_cast<Fl_Text_Editor*>(te));
 }

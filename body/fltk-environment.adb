@@ -62,6 +62,12 @@ package body FLTK.Environment is
     pragma Import (C, new_fl_pref_database_path, "new_fl_pref_database_path");
     pragma Inline (new_fl_pref_database_path);
 
+    function new_fl_pref_database_file
+           (F : in Interfaces.C.char_array)
+        return Storage.Integer_Address;
+    pragma Import (C, new_fl_pref_database_file, "new_fl_pref_database_file");
+    pragma Inline (new_fl_pref_database_file);
+
     function new_fl_pref_database_scope
            (S    : in Interfaces.C.int;
             V, A : in Interfaces.C.char_array)
@@ -134,6 +140,21 @@ package body FLTK.Environment is
         return Interfaces.C.int;
     pragma Import (C, fl_preferences_getuserdatapath, "fl_preferences_getuserdatapath");
     pragma Inline (fl_preferences_getuserdatapath);
+
+    procedure fl_preferences_filename
+           (E : in     Storage.Integer_Address;
+            P :    out Interfaces.C.char_array;
+            L : in     Interfaces.C.int);
+    pragma Import (C, fl_preferences_filename, "fl_preferences_filename");
+    pragma Inline (fl_preferences_filename);
+
+    procedure fl_preferences_static_filename
+           (P    :    out Interfaces.C.char_array;
+            L    : in     Interfaces.C.int;
+            S    : in     Interfaces.C.int;
+            V, A : in     Interfaces.C.char_array);
+    pragma Import (C, fl_preferences_static_filename, "fl_preferences_static_filename");
+    pragma Inline (fl_preferences_static_filename);
 
 
 
@@ -480,6 +501,16 @@ package body FLTK.Environment is
         end From_Filesystem;
 
 
+        function From_File
+               (Name : in String)
+            return Database is
+        begin
+            return This : Database do
+                This.Void_Ptr := new_fl_pref_database_file (Interfaces.C.To_C (Name));
+            end return;
+        end From_File;
+
+
         function From_Scope
                (Extent              : in Scope;
                 Vendor, Application : in String)
@@ -560,6 +591,52 @@ package body FLTK.Environment is
     end New_UUID;
 
 
+    --  FLTK cuts a file's name to fit the buffer, so a name that fills it
+    --  is tried again with a longer one.
+    function Whole_Name
+           (Fill : not null access procedure
+                  (Buffer : out Interfaces.C.char_array;
+                   Length : in  Interfaces.C.int))
+        return String
+    is
+        Length : Natural := Natural (const_fl_path_max);
+    begin
+        loop
+            declare
+                Buffer : Interfaces.C.char_array (1 .. Interfaces.C.size_t (Length)) :=
+                    (others => Interfaces.C.nul);
+                Name   : String (1 .. Length);
+                Last   : Natural;
+            begin
+                Fill (Buffer, Interfaces.C.int (Length));
+                Interfaces.C.To_Ada (Buffer, Name, Last);
+                if Last < Length - 1 then
+                    return Name (1 .. Last);
+                end if;
+            end;
+            Length := Length * 2;
+        end loop;
+    end Whole_Name;
+
+
+    function File_Name
+           (Extent              : in Scope;
+            Vendor, Application : in String)
+        return String
+    is
+        procedure Fill
+               (Buffer : out Interfaces.C.char_array;
+                Length : in  Interfaces.C.int) is
+        begin
+            fl_preferences_static_filename
+               (Buffer, Length, To_Cint (Extent),
+                Interfaces.C.To_C (Vendor), Interfaces.C.To_C (Application));
+        end Fill;
+    begin
+        return Whole_Name (Fill'Access);
+    end File_Name;
+
+
 
 
     --  Disk Activity  --
@@ -573,6 +650,21 @@ package body FLTK.Environment is
             raise Preference_Error;
         end if;
     end Flush;
+
+
+    function File_Name
+           (This : in Database)
+        return String
+    is
+        procedure Fill
+               (Buffer : out Interfaces.C.char_array;
+                Length : in  Interfaces.C.int) is
+        begin
+            fl_preferences_filename (This.Void_Ptr, Buffer, Length);
+        end Fill;
+    begin
+        return Whole_Name (Fill'Access);
+    end File_Name;
 
 
     function Userdata_Path

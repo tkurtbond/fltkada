@@ -20,6 +20,9 @@ extern "C" void fl_tree_item_set_label(TREEITEM ti, const char * t);
 
 
 extern "C" int fl_tree_item_is_open(TREEITEM ti);
+extern "C" void fl_tree_item_open(TREEITEM ti);
+extern "C" void fl_tree_item_close(TREEITEM ti);
+extern "C" void fl_tree_item_show_self(TREEITEM ti);
 extern "C" int fl_tree_item_is_selected(TREEITEM ti);
 extern "C" int fl_tree_item_is_active(TREEITEM ti);
 extern "C" void fl_tree_item_activate(TREEITEM ti, int v);

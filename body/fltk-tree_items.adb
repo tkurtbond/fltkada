@@ -127,6 +127,21 @@ package body FLTK.Tree_Items is
     pragma Import (C, fl_tree_item_is_active, "fl_tree_item_is_active");
     pragma Inline (fl_tree_item_is_active);
 
+    procedure fl_tree_item_open
+           (TI : in Storage.Integer_Address);
+    pragma Import (C, fl_tree_item_open, "fl_tree_item_open");
+    pragma Inline (fl_tree_item_open);
+
+    procedure fl_tree_item_close
+           (TI : in Storage.Integer_Address);
+    pragma Import (C, fl_tree_item_close, "fl_tree_item_close");
+    pragma Inline (fl_tree_item_close);
+
+    procedure fl_tree_item_show_self
+           (TI : in Storage.Integer_Address);
+    pragma Import (C, fl_tree_item_show_self, "fl_tree_item_show_self");
+    pragma Inline (fl_tree_item_show_self);
+
     procedure fl_tree_item_activate
            (TI : in Storage.Integer_Address;
             V  : in Interfaces.C.int);
@@ -526,6 +541,20 @@ package body FLTK.Tree_Items is
     end Is_Active;
 
 
+    procedure Open
+           (This : in Tree_Item) is
+    begin
+        fl_tree_item_open (Live (This));
+    end Open;
+
+
+    procedure Close
+           (This : in Tree_Item) is
+    begin
+        fl_tree_item_close (Live (This));
+    end Close;
+
+
     procedure Activate
            (This : in Tree_Item) is
     begin
@@ -562,6 +591,13 @@ package body FLTK.Tree_Items is
     begin
         return fl_tree_item_is_root (Live (This)) /= 0;
     end Is_Root;
+
+
+    procedure Show_Self
+           (This : in Tree_Item) is
+    begin
+        fl_tree_item_show_self (Live (This));
+    end Show_Self;
 
 
 

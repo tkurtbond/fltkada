@@ -6,6 +6,7 @@
 
 with
 
+    FLTK.Environment,
     FLTK.Images,
     FLTK.Tree_Items;
 
@@ -65,6 +66,22 @@ package FLTK.Widgets.Groups.Trees is
             Path : in     String;
             Item : in     FLTK.Tree_Items.Tree_Item)
         return FLTK.Tree_Items.Tree_Item;
+
+    --  Appends a new child item named Name to Parent; Name is a label,
+    --  not a path (Fl_Tree::add (Fl_Tree_Item *, const char *)).
+    function Add
+           (This   : in out Tree;
+            Parent : in     FLTK.Tree_Items.Tree_Item;
+            Name   : in     String)
+        return FLTK.Tree_Items.Tree_Item;
+
+    --  Adds an item for each entry of From and its groups, as Fl_Tree::load
+    --  does: a group is an item, and an entry is an item labelled
+    --  "name = value".  Raises FLTK.Environment.Preference_Error if From's
+    --  group has been deleted.
+    procedure Load
+           (This : in out Tree;
+            From : in     FLTK.Environment.Pref_Group'Class);
 
     --  Adds a new child item named Name to Under at child position
     --  Place (0 = first), rather than appending it like Add does.
@@ -155,17 +172,37 @@ package FLTK.Widgets.Groups.Trees is
 
     --  Open and Close  --
 
+    --  Each of these calls the callback, with Reason Opened, Closed,
+    --  Selected or Deselected, if it changes the item and Do_Callback is
+    --  True.
+
     procedure Open
-           (This : in out Tree;
-            Item : in     FLTK.Tree_Items.Tree_Item);
+           (This        : in out Tree;
+            Item        : in     FLTK.Tree_Items.Tree_Item;
+            Do_Callback : in     Boolean := True);
 
     procedure Close
-           (This : in out Tree;
-            Item : in     FLTK.Tree_Items.Tree_Item);
+           (This        : in out Tree;
+            Item        : in     FLTK.Tree_Items.Tree_Item;
+            Do_Callback : in     Boolean := True);
 
     procedure Open_Toggle
-           (This : in out Tree;
-            Item : in     FLTK.Tree_Items.Tree_Item);
+           (This        : in out Tree;
+            Item        : in     FLTK.Tree_Items.Tree_Item;
+            Do_Callback : in     Boolean := True);
+
+    --  The item at Path, as Find gives it.  These path forms raise
+    --  Constraint_Error if there is no item there.
+
+    procedure Open
+           (This        : in out Tree;
+            Path        : in     String;
+            Do_Callback : in     Boolean := True);
+
+    procedure Close
+           (This        : in out Tree;
+            Path        : in     String;
+            Do_Callback : in     Boolean := True);
 
 
 
@@ -173,27 +210,47 @@ package FLTK.Widgets.Groups.Trees is
     --  Selection  --
 
     procedure Select_Item
-           (This : in out Tree;
-            Item : in     FLTK.Tree_Items.Tree_Item);
+           (This        : in out Tree;
+            Item        : in     FLTK.Tree_Items.Tree_Item;
+            Do_Callback : in     Boolean := True);
 
     procedure Deselect
-           (This : in out Tree;
-            Item : in     FLTK.Tree_Items.Tree_Item);
+           (This        : in out Tree;
+            Item        : in     FLTK.Tree_Items.Tree_Item;
+            Do_Callback : in     Boolean := True);
 
-    --  Returns how many items in the whole tree changed state.
+    procedure Select_Item
+           (This        : in out Tree;
+            Path        : in     String;
+            Do_Callback : in     Boolean := True);
+
+    procedure Deselect
+           (This        : in out Tree;
+            Path        : in     String;
+            Do_Callback : in     Boolean := True);
+
+    --  Selects or deselects Item and all its descendants, or with a null
+    --  Item the whole tree, calling the callback for each item changed if
+    --  Do_Callback is True.  Returns how many items changed state.
     function Select_All
-           (This : in out Tree)
+           (This        : in out Tree;
+            Item        : in     FLTK.Tree_Items.Tree_Item := FLTK.Tree_Items.No_Tree_Item;
+            Do_Callback : in     Boolean := True)
         return Natural;
 
     function Deselect_All
-           (This : in out Tree)
+           (This        : in out Tree;
+            Item        : in     FLTK.Tree_Items.Tree_Item := FLTK.Tree_Items.No_Tree_Item;
+            Do_Callback : in     Boolean := True)
         return Natural;
 
     --  Selects Item if it isn't selected, deselects it if it is, and calls
-    --  the callback with Reason Selected or Deselected.
+    --  the callback with Reason Selected or Deselected if Do_Callback is
+    --  True.
     procedure Select_Toggle
-           (This : in out Tree;
-            Item : in     FLTK.Tree_Items.Tree_Item);
+           (This        : in out Tree;
+            Item        : in     FLTK.Tree_Items.Tree_Item;
+            Do_Callback : in     Boolean := True);
 
     --  The first or last selected item in the whole tree, open or not,
     --  or null if none is selected.
@@ -253,6 +310,14 @@ package FLTK.Widgets.Groups.Trees is
     procedure Set_Select_Mode
            (This : in out Tree;
             Mode : in     FLTK.Tree_Items.Selection_Kind);
+
+    function Get_Item_Reselect_Mode
+           (This : in Tree)
+        return FLTK.Tree_Items.Reselect_Kind;
+
+    procedure Set_Item_Reselect_Mode
+           (This : in out Tree;
+            Mode : in     FLTK.Tree_Items.Reselect_Kind);
 
     function Get_Connector_Style
            (This : in Tree)

@@ -1237,7 +1237,7 @@ package body FLTK.Widgets.Groups.Tables is
     function Get_Column_Width
            (This   : in Table;
             Column : in Positive)
-        return Positive
+        return Natural
     is
     begin
         if Column > Integer (fl_table_get_cols (This.Void_Ptr)) then
@@ -1247,7 +1247,7 @@ package body FLTK.Widgets.Groups.Tables is
             Result : constant Interfaces.C.int := fl_table_get_col_width
                 (This.Void_Ptr, Interfaces.C.int (Column) - 1);
         begin
-            return Positive (Result);
+            return Natural (Result);
         exception
         when Constraint_Error => raise Internal_FLTK_Error with
             "Fl_Table::col_width returned unexpected int value of " &
@@ -1259,7 +1259,7 @@ package body FLTK.Widgets.Groups.Tables is
     procedure Set_Column_Width
            (This   : in out Table;
             Column : in     Positive;
-            Value  : in     Positive) is
+            Value  : in     Natural) is
     begin
         if Column > Integer (fl_table_get_cols (This.Void_Ptr)) then
             raise Range_Error with "Column = " & Positive'Image (Column);
@@ -1273,7 +1273,7 @@ package body FLTK.Widgets.Groups.Tables is
 
     procedure Set_All_Columns_Width
            (This  : in out Table;
-            Value : in     Positive) is
+            Value : in     Natural) is
     begin
         fl_table_col_width_all (This.Void_Ptr, Interfaces.C.int (Value));
     end Set_All_Columns_Width;
@@ -1433,7 +1433,7 @@ package body FLTK.Widgets.Groups.Tables is
     function Get_Row_Height
            (This : in Table;
             Row  : in Positive)
-        return Positive
+        return Natural
     is
     begin
         if Row > Integer (fl_table_get_rows (This.Void_Ptr)) then
@@ -1443,7 +1443,7 @@ package body FLTK.Widgets.Groups.Tables is
             Result : constant Interfaces.C.int := fl_table_get_row_height
                 (This.Void_Ptr, Interfaces.C.int (Row) - 1);
         begin
-            return Positive (Result);
+            return Natural (Result);
         exception
         when Constraint_Error => raise Internal_FLTK_Error with
             "Fl_Table::row_height returned unexpected int value of " &
@@ -1455,7 +1455,7 @@ package body FLTK.Widgets.Groups.Tables is
     procedure Set_Row_Height
            (This  : in out Table;
             Row   : in     Positive;
-            Value : in     Positive) is
+            Value : in     Natural) is
     begin
         if Row > Integer (fl_table_get_rows (This.Void_Ptr)) then
             raise Range_Error with "Row = " & Positive'Image (Row);
@@ -1469,7 +1469,7 @@ package body FLTK.Widgets.Groups.Tables is
 
     procedure Set_All_Rows_Height
            (This  : in out Table;
-            Value : in     Positive) is
+            Value : in     Natural) is
     begin
         fl_table_row_height_all (This.Void_Ptr, Interfaces.C.int (Value));
     end Set_All_Rows_Height;

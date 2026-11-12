@@ -690,7 +690,7 @@ bound (`FLTK.Tree_Items`, `FLTK.Widgets.Groups.Trees`), first on the
 `experimental/fl-tree-binding` branch and now on main, deliberately covering a pragmatic
 core of the API rather than full parity — see the "Incomplete APIs"
 note for `FLTK.Tree_Items` in `progress.txt` for exactly what was left
-out and why, and `test/tree.adb` for a working example. It's a useful
+out and why, and `test/tree_binding.adb` for a working example. It's a useful
 worked example of §6's recipes: `FLTK.Widgets.Groups.Trees` follows
 Recipe A: (`Fl_Tree` needs the full `Draw_Ptr`/`Handle_Ptr` machinery,
 being a real `Fl_Group` subclass), while `FLTK.Tree_Items` deliberately

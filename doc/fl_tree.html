@@ -126,6 +126,32 @@ function Add
   </tr>
 
   <tr>
+<td>Name is a label, not a path.
+<pre>
+Fl_Tree_Item *add(Fl_Tree_Item *parent_item, const char *name);
+</pre></td>
+<td><pre>
+function Add
+       (This   : in out Tree;
+        Parent : in     FLTK.Tree_Items.Tree_Item;
+        Name   : in     String)
+    return FLTK.Tree_Items.Tree_Item;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Raises FLTK.Environment.Preference_Error if From's group has been deleted.
+<pre>
+void load(class Fl_Preferences&);
+</pre></td>
+<td><pre>
+procedure Load
+       (This : in out Tree;
+        From : in     FLTK.Environment.Pref_Group'Class);
+</pre></td>
+  </tr>
+
+  <tr>
 <td>Place is 0-based, matching pos, and inserts rather than appending
 (compare Add above).
 <pre>
@@ -380,26 +406,52 @@ function Last
   </tr>
 
   <tr>
-<td>docallback is always 1 (the default); the path-string overload isn't bound.
-<pre>
+<td><pre>
 int open(Fl_Tree_Item *item, int docallback=1);
 </pre></td>
 <td><pre>
 procedure Open
-       (This : in out Tree;
-        Item : in     FLTK.Tree_Items.Tree_Item);
+       (This        : in out Tree;
+        Item        : in     FLTK.Tree_Items.Tree_Item;
+        Do_Callback : in     Boolean := True);
 </pre></td>
   </tr>
 
   <tr>
-<td>Same caveats as open() above.
+<td>Raises Constraint_Error if there is no item at Path.
 <pre>
+int open(const char *path, int docallback=1);
+</pre></td>
+<td><pre>
+procedure Open
+       (This        : in out Tree;
+        Path        : in     String;
+        Do_Callback : in     Boolean := True);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 int close(Fl_Tree_Item *item, int docallback=1);
 </pre></td>
 <td><pre>
 procedure Close
-       (This : in out Tree;
-        Item : in     FLTK.Tree_Items.Tree_Item);
+       (This        : in out Tree;
+        Item        : in     FLTK.Tree_Items.Tree_Item;
+        Do_Callback : in     Boolean := True);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Raises Constraint_Error if there is no item at Path.
+<pre>
+int close(const char *path, int docallback=1);
+</pre></td>
+<td><pre>
+procedure Close
+       (This        : in out Tree;
+        Path        : in     String;
+        Do_Callback : in     Boolean := True);
 </pre></td>
   </tr>
 
@@ -409,8 +461,9 @@ void open_toggle(Fl_Tree_Item *item, int docallback=1);
 </pre></td>
 <td><pre>
 procedure Open_Toggle
-       (This : in out Tree;
-        Item : in     FLTK.Tree_Items.Tree_Item);
+       (This        : in out Tree;
+        Item        : in     FLTK.Tree_Items.Tree_Item;
+        Do_Callback : in     Boolean := True);
 </pre></td>
   </tr>
 
@@ -421,8 +474,22 @@ int select(Fl_Tree_Item *item, int docallback=1);
 </pre></td>
 <td><pre>
 procedure Select_Item
-       (This : in out Tree;
-        Item : in     FLTK.Tree_Items.Tree_Item);
+       (This        : in out Tree;
+        Item        : in     FLTK.Tree_Items.Tree_Item;
+        Do_Callback : in     Boolean := True);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Raises Constraint_Error if there is no item at Path.
+<pre>
+int select(const char *path, int docallback=1);
+</pre></td>
+<td><pre>
+procedure Select_Item
+       (This        : in out Tree;
+        Path        : in     String;
+        Do_Callback : in     Boolean := True);
 </pre></td>
   </tr>
 
@@ -432,31 +499,49 @@ int deselect(Fl_Tree_Item *item, int docallback=1);
 </pre></td>
 <td><pre>
 procedure Deselect
-       (This : in out Tree;
-        Item : in     FLTK.Tree_Items.Tree_Item);
+       (This        : in out Tree;
+        Item        : in     FLTK.Tree_Items.Tree_Item;
+        Do_Callback : in     Boolean := True);
 </pre></td>
   </tr>
 
   <tr>
-<td>item is always 0 (the whole tree); returns count of items changed.
+<td>Raises Constraint_Error if there is no item at Path.
+<pre>
+int deselect(const char *path, int docallback=1);
+</pre></td>
+<td><pre>
+procedure Deselect
+       (This        : in out Tree;
+        Path        : in     String;
+        Do_Callback : in     Boolean := True);
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Returns how many items changed; a null Item means the whole tree.
 <pre>
 int select_all(Fl_Tree_Item *item=0, int docallback=1);
 </pre></td>
 <td><pre>
 function Select_All
-       (This : in out Tree)
+       (This        : in out Tree;
+        Item        : in     FLTK.Tree_Items.Tree_Item := FLTK.Tree_Items.No_Tree_Item;
+        Do_Callback : in     Boolean := True)
     return Natural;
 </pre></td>
   </tr>
 
   <tr>
-<td>Same caveats as select_all() above.
+<td>As select_all() above.
 <pre>
 int deselect_all(Fl_Tree_Item *item=0, int docallback=1);
 </pre></td>
 <td><pre>
 function Deselect_All
-       (This : in out Tree)
+       (This        : in out Tree;
+        Item        : in     FLTK.Tree_Items.Tree_Item := FLTK.Tree_Items.No_Tree_Item;
+        Do_Callback : in     Boolean := True)
     return Natural;
 </pre></td>
   </tr>
@@ -467,8 +552,9 @@ void select_toggle(Fl_Tree_Item *item, int docallback=1);
 </pre></td>
 <td><pre>
 procedure Select_Toggle
-       (This : in out Tree;
-        Item : in     FLTK.Tree_Items.Tree_Item);
+       (This        : in out Tree;
+        Item        : in     FLTK.Tree_Items.Tree_Item;
+        Do_Callback : in     Boolean := True);
 </pre></td>
   </tr>
 
@@ -591,6 +677,22 @@ function Get_Select_Mode
 procedure Set_Select_Mode
        (This : in out Tree;
         Mode : in     FLTK.Tree_Items.Selection_Kind);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+Fl_Tree_Item_Reselect_Mode item_reselect_mode() const;
+void item_reselect_mode(Fl_Tree_Item_Reselect_Mode mode);
+</pre></td>
+<td><pre>
+function Get_Item_Reselect_Mode
+       (This : in Tree)
+    return FLTK.Tree_Items.Reselect_Kind;
+
+procedure Set_Item_Reselect_Mode
+       (This : in out Tree;
+        Mode : in     FLTK.Tree_Items.Reselect_Kind);
 </pre></td>
   </tr>
 

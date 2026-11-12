@@ -112,7 +112,9 @@ RootNode * rootNode;
   <tr><th colspan="2">Constructors</th></tr>
 
   <tr>
-<td><pre>
+<td>Every database is opened with C_LOCALE added to its Root, so floating
+point is written and read with a point whatever LC_NUMERIC says.
+<pre>
 Fl_Preferences(Root root, const char *vendor, const char *application);
 </pre></td>
 <td><pre>
@@ -131,6 +133,19 @@ Fl_Preferences(const char *path, const char *vendor,
 <td><pre>
 function From_Filesystem
        (Directory, Vendor, Application : in String)
+    return Database;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>With a null application, path is the file's whole name.
+<pre>
+Fl_Preferences(const char *path, const char *vendor,
+    const char *application, Root flags);
+</pre></td>
+<td><pre>
+function From_File
+       (Name : in String)
     return Database;
 </pre></td>
   </tr>
@@ -446,6 +461,25 @@ char getUserdataPath(char *path, int pathlen);
 </pre></td>
 <td><pre>
 function Userdata_Path
+       (This : in Database)
+    return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Each returns "" where FLTK returns UNKNOWN_ROOT_TYPE.
+<pre>
+static Root filename(char *buffer, size_t buffer_size, Root root,
+    const char *vendor, const char *application);
+Root filename(char *buffer, size_t buffer_size);
+</pre></td>
+<td><pre>
+function File_Name
+       (Extent              : in Scope;
+        Vendor, Application : in String)
+    return String;
+
+function File_Name
        (This : in Database)
     return String;
 </pre></td>

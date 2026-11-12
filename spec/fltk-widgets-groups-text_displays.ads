@@ -188,6 +188,11 @@ package FLTK.Widgets.Groups.Text_Displays is
             Unfinished : in     Character;
             Callback   : in     Styles.Unfinished_Style_Callback);
 
+    --  Turns the styles off, and lets go of the style buffer and table
+    --  that Highlight_Data kept: highlight_data (NULL, NULL, 0, ...).
+    procedure Clear_Highlight_Data
+           (This : in out Text_Display);
+
     function Position_Style
            (This        : in Text_Display;
             Line_Start  : in Natural;
@@ -801,6 +806,7 @@ private
     pragma Inline (Buffer_Predelete_Callback);
 
     pragma Inline (Highlight_Data);
+    pragma Inline (Clear_Highlight_Data);
 
     pragma Inline (Col_To_X);
     pragma Inline (X_To_Col);

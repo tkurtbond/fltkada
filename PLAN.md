@@ -4561,6 +4561,101 @@ found, 135. No FLTK issue was found.
   buttons, and the outer toggle's `&o` shortcut. The inner window's
   hand cursor isn't in a screenshot; the code sets it as FLTK's does.
 
+#### Phase 25: large programs [done, 2026-11-12]
+
+Compared as Phases 21 to 24 were. FLTKAda's own `test/preferences` and
+`test/tree` are now `preferences_check` and `tree_binding`, as Open
+question 9 decided, and the Makefile's `SELFCHECK` and AGENTS.md
+changed with them. Every shot of `editor` (27), `preferences` (four
+runs) and `table` (23) is AE 0 against FLTK's build, and stdout is the
+same. `tree` is too, except where noted below. One FLTKAda bug was
+found, 136, and one FLTK issue, F38.
+
+- `editor`: syntax highlighting, line numbers, word wrap and the split
+  view switched on and off; typing an unclosed comment; undo and redo
+  by key and from the menu; copy, cut, paste and delete; Find, Find
+  Next, Replace and Replace Next; File/New with changes; saving, and
+  quitting with changes. API added: `Text_Displays.Clear_Highlight_Data`,
+  FLTK's `highlight_data (NULL, NULL, 0, ...)`, which turns the styles
+  off (checked in test_highlight_data), and `Text_Editors.KF_Redo`,
+  bound by default to Ctrl+Shift+Z as in FLTK's `default_key_bindings`
+  (Fl_Text_Editor.cxx:134-135; checked in test_key_bindings). No change
+  for these, decided 2026-11-12:
+  - `Text_Buffers.Undo` and `Redo` with `Cursor` give 0 when there is
+    nothing to undo, where FLTK leaves the int as it was. The function
+    then returns `False`, and the shim sets 0 so that `Cursor` isn't
+    left undefined. Not a bug.
+  - A buffer's Ada modify callbacks run after those of every display
+    it is given to, the reverse of C++ for a callback added after
+    `buffer ()`: FLTK runs the callback added last first
+    (Fl_Text_Buffer.cxx:884-903), and the buffer adds its own hook when
+    it is made. The port of FLTK's `style_update` doesn't depend on the
+    order, and a comment at `Add_Modify_Callback` now says it.
+  - `Set_Selection` takes `Position`, which is `Natural`, but FLTK's
+    `style_update` selects `(pos, pos + nInserted - nDeleted)`, which
+    can be negative. FLTK's `select` swaps an end before the start; the
+    port passes `Integer'Max (0, ...)`, which selects the same text.
+- `preferences`: the menus, every value changed, the language menu and
+  its restart message, then a second run reading what the first wrote,
+  in German, and two short runs, one starting with no prefs file. The prefs files the two builds write are the same. API
+  added, from three findings:
+  - every database is opened with FLTK's `C_LOCALE` flag, as FLTK
+    recommends and its own programs do (Fl_Preferences.cxx:412), so a
+    program that sets `LC_NUMERIC` to German still writes `1.5`, not
+    `1,5` (test/unit/test_pref_files.adb, which fails without the
+    flag);
+  - `Forge.From_File`, FLTK's constructor with no application, whose
+    path is the file's whole name;
+  - `File_Name` of a scope, vendor and application (the static
+    `Fl_Preferences::filename`), and of a database.
+- `table`: cells clicked and drag-selected, column and row resized by
+  their borders, keys, scrollbars and the wheel, then every input and
+  menu of the control panel, the box menus, the selection types, an
+  out-of-range row (its alert), and rows, row heights and column widths
+  of 0. FLTKAda's table took sizes of 1 and up, so the port could
+  only set 1, and the last shot differed: FLTKAda-BUGS.md 136, fixed.
+  FLTK problems found:
+  - F38 (new): with a filled table box, a redraw can leave the box
+    over cells it doesn't redraw. The comparison drives the drag that
+    shows it in steps, for which both builds draw alike.
+  - `Fl_Table::row_height` past the last row writing past its array is
+    F33, already recorded.
+  - Notes only, FLTK's behaviour in both builds: `row_height_all` and
+    `col_width_all` under `FL_WHEN_CHANGED` call back once for each row
+    or column; a click on a column header reports row 0.
+- `tree`: five runs, covering the items, opening, closing and
+  selecting, the property choosers, every test button, and loading a
+  prefs file. API added, all checked in test/unit/test_tree_calls.adb:
+  - the `docallback` argument of `open`, `close`, `open_toggle`,
+    `select`, `deselect`, `select_toggle`, `select_all` and
+    `deselect_all`, as `Do_Callback`, defaulting to `True`;
+  - the path forms of `open`, `close`, `select` and `deselect`, which
+    raise `Constraint_Error` where FLTK returns -1 for no item there;
+  - `select_all` and `deselect_all` from an item;
+  - `item_reselect_mode`, with `Tree_Items.Reselect_Kind`;
+  - `add (parent, name)`, and `load (Fl_Preferences&)` as `Trees.Load`,
+    which raises `Preference_Error` for a deleted group;
+  - `Fl_Tree_Item`'s own `open`, `close` and `show_self`.
+  `Fl_Tree::next (item)` isn't a gap: it is `item->next ()`
+  (Fl_Tree.cxx:1172), which `Tree_Items.Next` gives. `test_constants`
+  now checks the tree's five enumerations against FLTK's values.
+  Two shots differ, both expected:
+  - the colour chooser shows "0.000" where FLTK's shows "0", because
+    `Asks.Color_Chooser` always passes a mode: F37, the only part of
+    FLTK's program the port leaves out;
+  - the file chooser of "Load database" shows the directory each
+    build runs in, `cpp/` against `ada/`.
+  `Events.Get_Clicks` is FLTK's `event_clicks` plus one for a click,
+  and 0 otherwise, as its spec says; the port prints it as it is,
+  which is what tree.cxx prints.
+  `Tree_Item` is an untagged private type, so it has no prefix
+  notation (`TI.Open (Item)`, not `Item.Open`); noted only. FLTK's own
+  oddities, the same in both builds: tree.fl's When chooser has its
+  labels swapped; `Fl_Tree::load` cuts an entry to a buffer of the
+  path's length plus the key's plus 45, and replaces `/` in a key with
+  `\`; and it puts the items at the group's own path, the group's name
+  for a memory group and "." for a database's root.
+
 ## Open questions
 
 All five were decided by the user on 2026-11-03.
@@ -4616,7 +4711,10 @@ were decided by the user the same day.
    FLTKAda's `test/tree` and `test/preferences` are its own programs,
    and `preferences` is run by `make check`. Rename those two so the
    ports get FLTK's names, or give the ports other names?~~
-   **Decided:** rename FLTKAda's two programs.
+   **Decided:** rename FLTKAda's two programs. Done 2026-11-12, in
+   Phase 25: `test/preferences_check.adb` (still in `make check`'s
+   SELFCHECK) and `test/tree_binding.adb`. Earlier records, such as
+   FLTKAda-BUGS.md 9 and 12, keep the old names.
 10. ~~**F30 in `test/fonts.adb` (Phase 18).** Follow pofltk's fix, or
     leave the port as a faithful copy of FLTK's bug?~~ **Decided:**
     follow pofltk's fix.

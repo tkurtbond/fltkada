@@ -69,6 +69,12 @@ package FLTK.Tree_Items is
         Multi_Selection,
         Single_Draggable_Selection);
 
+    --  Whether clicking a selected item calls the tree's callback again,
+    --  with Reason Reselected (Fl_Tree_Item_Reselect_Mode).
+    type Reselect_Kind is
+       (Selectable_Once,
+        Selectable_Always);
+
     --  As a label's background colour, no colour of its own: an item's
     --  label is drawn on the tree's background (Fl_Tree_Item.H, labelbgcolor).
     Transparent_Background : constant Color := 16#FFFF_FFFF#;
@@ -178,6 +184,14 @@ package FLTK.Tree_Items is
     --  one, and FLTK doesn't call the tree's callback for a click on its
     --  label (FL/Fl_Tree_Item.H).  Its widget, if it has one, is activated
     --  or deactivated with it.  The tree isn't redrawn.
+    --  Fl_Tree_Item::open and close, which never call the tree's
+    --  callback and don't redraw it; Trees.Open and Close do both.
+    procedure Open
+           (This : in Tree_Item);
+
+    procedure Close
+           (This : in Tree_Item);
+
     procedure Activate
            (This : in Tree_Item);
 
@@ -200,6 +214,11 @@ package FLTK.Tree_Items is
     function Is_Root
            (This : in Tree_Item)
         return Boolean;
+
+    --  Prints the item and its descendants to standard output, for
+    --  debugging (Fl_Tree_Item::show_self).
+    procedure Show_Self
+           (This : in Tree_Item);
 
 
 
@@ -414,6 +433,8 @@ private
     pragma Inline (Is_Open);
     pragma Inline (Is_Selected);
     pragma Inline (Is_Active);
+    pragma Inline (Open);
+    pragma Inline (Close);
     pragma Inline (Activate);
     pragma Inline (Deactivate);
     pragma Inline (Is_Visible);

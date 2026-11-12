@@ -63,6 +63,11 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
     pragma Import (C, fl_text_editor_undo, "fl_text_editor_undo");
     pragma Inline (fl_text_editor_undo);
 
+    procedure fl_text_editor_redo
+           (TE : in Storage.Integer_Address);
+    pragma Import (C, fl_text_editor_redo, "fl_text_editor_redo");
+    pragma Inline (fl_text_editor_redo);
+
     procedure fl_text_editor_cut
            (TE : in Storage.Integer_Address);
     pragma Import (C, fl_text_editor_cut, "fl_text_editor_cut");
@@ -662,6 +667,13 @@ package body FLTK.Widgets.Groups.Text_Displays.Text_Editors is
     begin
         fl_text_editor_undo (This.Void_Ptr);
     end KF_Undo;
+
+
+    procedure KF_Redo
+           (This : in out Text_Editor'Class) is
+    begin
+        fl_text_editor_redo (This.Void_Ptr);
+    end KF_Redo;
 
 
     procedure KF_Cut

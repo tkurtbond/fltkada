@@ -24,6 +24,7 @@ extern "C" int fl_tree_handle(TREE n, int e);
 
 extern "C" TREEITEM fl_tree_add(TREE t, const char * path);
 extern "C" TREEITEM fl_tree_add_item(TREE t, const char * path, TREEITEM item);
+extern "C" TREEITEM fl_tree_add_child(TREE t, TREEITEM parent, const char * name);
 extern "C" TREEITEM fl_tree_insert(TREE t, TREEITEM under, const char * name, int pos);
 extern "C" TREEITEM fl_tree_insert_above(TREE t, TREEITEM above, const char * name);
 extern "C" void fl_tree_remove(TREE t, TREEITEM item);
@@ -47,16 +48,20 @@ extern "C" TREEITEM fl_tree_first(TREE t);
 extern "C" TREEITEM fl_tree_last(TREE t);
 
 
-extern "C" void fl_tree_open(TREE t, TREEITEM item);
-extern "C" void fl_tree_close(TREE t, TREEITEM item);
-extern "C" void fl_tree_open_toggle(TREE t, TREEITEM item);
+extern "C" void fl_tree_open(TREE t, TREEITEM item, int cb);
+extern "C" void fl_tree_close(TREE t, TREEITEM item, int cb);
+extern "C" void fl_tree_open_toggle(TREE t, TREEITEM item, int cb);
+extern "C" int fl_tree_open_path(TREE t, const char * path, int cb);
+extern "C" int fl_tree_close_path(TREE t, const char * path, int cb);
 
 
-extern "C" void fl_tree_select(TREE t, TREEITEM item);
-extern "C" void fl_tree_deselect(TREE t, TREEITEM item);
-extern "C" int fl_tree_select_all(TREE t);
-extern "C" int fl_tree_deselect_all(TREE t);
-extern "C" void fl_tree_select_toggle(TREE t, TREEITEM item);
+extern "C" void fl_tree_select(TREE t, TREEITEM item, int cb);
+extern "C" void fl_tree_deselect(TREE t, TREEITEM item, int cb);
+extern "C" int fl_tree_select_path(TREE t, const char * path, int cb);
+extern "C" int fl_tree_deselect_path(TREE t, const char * path, int cb);
+extern "C" int fl_tree_select_all(TREE t, TREEITEM item, int cb);
+extern "C" int fl_tree_deselect_all(TREE t, TREEITEM item, int cb);
+extern "C" void fl_tree_select_toggle(TREE t, TREEITEM item, int cb);
 extern "C" TREEITEM fl_tree_first_selected(TREE t);
 extern "C" TREEITEM fl_tree_last_selected(TREE t);
 extern "C" TREEITEM fl_tree_next_selected(TREE t, TREEITEM item, int up);
@@ -71,6 +76,8 @@ extern "C" void fl_tree_set_show_root(TREE t, int val);
 extern "C" int fl_tree_get_show_collapse(TREE t);
 extern "C" void fl_tree_set_show_collapse(TREE t, int val);
 extern "C" int fl_tree_get_select_mode(TREE t);
+extern "C" int fl_tree_get_item_reselect_mode(TREE t);
+extern "C" void fl_tree_set_item_reselect_mode(TREE t, int val);
 extern "C" void fl_tree_set_select_mode(TREE t, int val);
 extern "C" int fl_tree_get_connector_style(TREE t);
 extern "C" void fl_tree_set_connector_style(TREE t, int val);

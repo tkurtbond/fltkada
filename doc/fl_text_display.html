@@ -311,8 +311,12 @@ procedure Highlight_Data
        (This       : in out Text_Display;
         Buff       : in out FLTK.Text_Buffers.Text_Buffer;
         Table      : in     Styles.Style_Array;
-        Unfinished : in     Styles.Style_Index;
+        Unfinished : in     Character;
         Callback   : in     Styles.Unfinished_Style_Callback);
+
+--  highlight_data (NULL, NULL, 0, ...)
+procedure Clear_Highlight_Data
+       (This : in out Text_Display);
 </pre></td>
   </tr>
 

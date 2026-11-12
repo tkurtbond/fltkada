@@ -3866,3 +3866,25 @@ test/unit/test_key_numbers.adb checks a keysym past 16#FFFF# through
 `Probe.Set_Key` and `Last_Key`, shortcuts with modifiers and a mouse
 button, and the refusal; with the old `mod 65536` back, two of its
 twelve checks failed.
+
+
+## 136. A table's rows and columns couldn't be 0 high or wide
+
+**Symptom.** `Tables.Set_All_Rows_Height (0)` raised
+`Constraint_Error`, as did `Set_Row_Height`, `Set_All_Columns_Width`
+and `Set_Column_Width` with 0. FLTK's test/table sets Row Height and
+Col Width to 0 when they are asked for, which hides every row or
+column; the port of it could only set 1, and its last screenshot
+differed from FLTK's.
+
+**Cause.** The sizes were `Positive`, and so were the results of
+`Get_Row_Height` and `Get_Column_Width`. `Fl_Table` takes and gives
+any size from 0 up (src/Fl_Table.cxx:232-273).
+
+**Found.** 2026-11-12, porting FLTK's test/table (PLAN.md, Phase 25).
+
+**Fixed.** All six take and give `Natural`.
+test/unit/test_table_sizes.adb sets every row, every column, one row
+and one column to 0 and reads them back; before the fix it failed at
+its first call with `Constraint_Error`. The port of test/table now
+matches FLTK's at AE 0 in all 23 of its screenshots.

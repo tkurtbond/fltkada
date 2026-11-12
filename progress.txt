@@ -666,7 +666,7 @@ common ~60% of the Fl_Tree / Fl_Tree_Item API rather than full parity
     (Trees.Get/Set_Widget_Margin_Left) -- both needed to make an
     embedded widget lay out sensibly, following the same
     FL_TREE_ITEM_DRAW_LABEL_AND_WIDGET | FL_TREE_ITEM_HEIGHT_FROM_WIDGET
-    pattern as FLTK's own examples/tree-of-tables.cxx. test/tree.adb
+    pattern as FLTK's own examples/tree-of-tables.cxx. test/tree_binding.adb
     embeds a live FLTK.Widgets.Groups.Tables.Table this way.
   - per-item icons (usericon/userdeicon) ARE bound
     (Tree_Items.Set/Has/Clear/Get_User_Icon and the _Deicon equivalents).
@@ -683,21 +683,26 @@ common ~60% of the Fl_Tree / Fl_Tree_Item API rather than full parity
   - callback_item()/callback_reason() ARE bound (Trees.Callback_Item,
     Callback_Reason, Reason_Kind), as are item_pathname(), selectbox()
     (Trees.Get/Set_Select_Box) and show_self(). item_draw_callback() is not.
-  - the path-string overloads of open/close/select/is_open/is_selected,
-    and their docallback parameter (Tree-level Open/Close/Select_Item/
-    Deselect always behave as if docallback=1).
+  - the path-string overloads of is_open/is_selected (Find the item,
+    then ask it). The path overloads of open/close/select/deselect ARE
+    bound, as is the docallback parameter of open/close/open_toggle/
+    select/deselect/select_toggle/select_all/deselect_all (Do_Callback),
+    select_all/deselect_all from an item, item_reselect_mode
+    (Trees.Get/Set_Item_Reselect_Mode), add(parent, name), and
+    Fl_Tree_Item's own open/close/show_self (PLAN.md Phase 25).
   - Fl_Tree_Prefs as a standalone bindable object -- its settings are
     exposed only via Fl_Tree's own forwarding methods, matching what
     FLTK's own docs recommend using instead of Fl_Tree_Prefs directly.
-  - load() from Fl_Preferences. (vposition/hposition/scrollbar_size ARE
-    bound: Trees.Get/Set_V_Position, _H_Position, _Scrollbar_Size.)
+  - (load() from Fl_Preferences IS bound, Trees.Load; and vposition/
+    hposition/scrollbar_size: Trees.Get/Set_V_Position, _H_Position,
+    _Scrollbar_Size.)
   - every margin and the connector width ARE bound (Trees.Get/
     Set_Margin_Left, _Margin_Top, _Margin_Bottom,
     _Open_Child_Margin_Bottom, _User_Icon_Margin_Left,
     _Label_Margin_Left, _Widget_Margin_Left, _Connector_Width), as are
     an item's activate() and deactivate() (Tree_Items.Activate,
     Deactivate; FLTKAda-BUGS.md 105).
-See test/tree.adb and the examples/tree_*.adb ports for working examples
+See test/tree_binding.adb and the examples/tree_*.adb ports for working examples
 of what is bound.
 
 

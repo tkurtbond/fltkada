@@ -14,7 +14,9 @@
 --  first index.  The test changes and frees the table and the style
 --  buffer after Highlight_Data, and checks that the display still lays the
 --  text out with the styles it was given: its text is wider at size 40
---  than at 10.
+--  than at 10.  Also checks Clear_Highlight_Data, which turns the styles
+--  off, as highlight_data (NULL, NULL, 0, ...) does in FLTK's
+--  test/editor.cxx (PLAN.md, Phase 25).
 
 
 with
@@ -71,7 +73,7 @@ procedure Test_Highlight_Data is
     Table   : Table_Access := new TD.Styles.Style_Array'('A' => Sized (40));
     Small   : constant TD.Styles.Style_Array := ('A' => Sized (10));
 
-    Small_End, Large_End : Integer;
+    Plain_End, Small_End, Large_End : Integer;
 
     procedure Highlight_Empty is
     begin
@@ -93,6 +95,11 @@ begin
         exit when FLTK.Wait < 0;
     end loop;
 
+    --  The first layout, just after the window is shown, puts the end
+    --  further left than the next does (44 pixels against 49), in a C++
+    --  program doing the same as well.
+    Plain_End := Line_End;
+    Plain_End := Line_End;
     Disp.Highlight_Data (Styles.all, Small);
     Small_End := Line_End;
     Disp.Highlight_Data (Styles.all, Table.all);
@@ -117,6 +124,20 @@ begin
     --  The style buffer is kept.
     Free (Styles);
     Check (Line_End = Large_End, "the style buffer is kept after its Ada buffer goes");
+
+    --  Turning the styles off lays the text out as it was at first, and
+    --  they can be turned on again.
+    Disp.Clear_Highlight_Data;
+    Check (Line_End = Plain_End, "Clear_Highlight_Data turns the styles off");
+    Disp.Clear_Highlight_Data;
+    Check (Line_End = Plain_End, "and can be called again");
+    declare
+        Again : TB.Text_Buffer := TB.Forge.Create;
+    begin
+        Again.Set_Entire_Text ("AAAA" & ASCII.LF);
+        Disp.Highlight_Data (Again, ('A' => Sized (40)));
+        Check (Line_End = Large_End, "Highlight_Data after Clear_Highlight_Data styles the text");
+    end;
 
     Summary;
 

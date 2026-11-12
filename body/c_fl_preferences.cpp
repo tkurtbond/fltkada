@@ -5,6 +5,7 @@
 
 
 #include <FL/Fl_Preferences.H>
+#include <FL/Fl_Tree.H>
 #include <FL/filename.H>
 #include <cstdlib>
 #include <string>
@@ -37,13 +38,24 @@ class My_Preferences : public Fl_Preferences {
 
 
 
+//  Every database is opened with C_LOCALE, so that floating point is
+//  written with a point whatever LC_NUMERIC says, as FLTK recommends
+//  (Fl_Preferences.cxx:412, PLAN.md Phase 25).
+
 PREFS new_fl_pref_database_path(char * p, char * v, char * a) {
-    My_Preferences *e = new My_Preferences(p, v, a, (Fl_Preferences::Root)0);
+    My_Preferences *e = new My_Preferences(p, v, a, Fl_Preferences::C_LOCALE);
+    return e;
+}
+
+//  With no application, FLTK takes the path as the file's whole name.
+PREFS new_fl_pref_database_file(char * f) {
+    My_Preferences *e = new My_Preferences(f, 0, 0, Fl_Preferences::C_LOCALE);
     return e;
 }
 
 PREFS new_fl_pref_database_scope(int s, char * v, char * a) {
-    My_Preferences *e = new My_Preferences((Fl_Preferences::Root)s, v, a);
+    My_Preferences *e = new My_Preferences
+        ((Fl_Preferences::Root)(s | Fl_Preferences::C_LOCALE), v, a);
     return e;
 }
 
@@ -149,6 +161,16 @@ int fl_pref_group_exists(PREFS e) {
     return g->path.empty() || g->base->groupExists(g->path.c_str());
 }
 
+//  Fl_Tree::load of the group e into the tree t; 0 if the group was deleted.
+int fl_preferences_load_tree(PREFS e, void * t) {
+    if (!fl_pref_group_exists(e)) {
+        return 0;
+    }
+    Opened g(e);
+    static_cast<Fl_Tree*>(t)->load(*g.get());
+    return 1;
+}
+
 
 
 
@@ -158,6 +180,20 @@ int fl_preferences_flush(PREFS e) {
 
 int fl_preferences_getuserdatapath(PREFS e, char * p, int len) {
     return (int)static_cast<Fl_Preferences*>(e)->getUserdataPath(p, len);
+}
+
+//  The file's name, cut to len - 1 bytes; "" if FLTK gives none.
+void fl_preferences_filename(PREFS e, char * p, int len) {
+    p[0] = 0;
+    if (static_cast<Fl_Preferences*>(e)->filename(p, len) == Fl_Preferences::UNKNOWN_ROOT_TYPE) {
+        p[0] = 0;
+    }
+}
+
+void fl_preferences_static_filename(char * p, int len, int s, const char * v, const char * a) {
+    p[0] = 0;
+    Fl_Preferences::filename
+        (p, len, (Fl_Preferences::Root)(s | Fl_Preferences::C_LOCALE), v, a);
 }
 
 

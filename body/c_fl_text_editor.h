@@ -19,6 +19,7 @@ extern "C" void fl_text_editor_default(TEXTEDITOR te, int k);
 
 
 extern "C" void fl_text_editor_undo(TEXTEDITOR te);
+extern "C" void fl_text_editor_redo(TEXTEDITOR te);
 extern "C" void fl_text_editor_cut(TEXTEDITOR te);
 extern "C" void fl_text_editor_copy(TEXTEDITOR te);
 extern "C" void fl_text_editor_paste(TEXTEDITOR te);

@@ -163,6 +163,10 @@ TREEITEM fl_tree_add_item(TREE t, const char * path, TREEITEM item) {
     return static_cast<Fl_Tree*>(t)->add(path, static_cast<Fl_Tree_Item*>(item));
 }
 
+TREEITEM fl_tree_add_child(TREE t, TREEITEM parent, const char * name) {
+    return static_cast<Fl_Tree*>(t)->add(static_cast<Fl_Tree_Item*>(parent), name);
+}
+
 TREEITEM fl_tree_insert(TREE t, TREEITEM under, const char * name, int pos) {
     return static_cast<Fl_Tree*>(t)->insert(static_cast<Fl_Tree_Item*>(under), name, pos);
 }
@@ -246,39 +250,58 @@ TREEITEM fl_tree_last(TREE t) {
 
 
 
-void fl_tree_open(TREE t, TREEITEM item) {
-    static_cast<Fl_Tree*>(t)->open(static_cast<Fl_Tree_Item*>(item));
+void fl_tree_open(TREE t, TREEITEM item, int cb) {
+    static_cast<Fl_Tree*>(t)->open(static_cast<Fl_Tree_Item*>(item), cb);
 }
 
-void fl_tree_close(TREE t, TREEITEM item) {
-    static_cast<Fl_Tree*>(t)->close(static_cast<Fl_Tree_Item*>(item));
+void fl_tree_close(TREE t, TREEITEM item, int cb) {
+    static_cast<Fl_Tree*>(t)->close(static_cast<Fl_Tree_Item*>(item), cb);
 }
 
-void fl_tree_open_toggle(TREE t, TREEITEM item) {
-    static_cast<Fl_Tree*>(t)->open_toggle(static_cast<Fl_Tree_Item*>(item));
+void fl_tree_open_toggle(TREE t, TREEITEM item, int cb) {
+    static_cast<Fl_Tree*>(t)->open_toggle(static_cast<Fl_Tree_Item*>(item), cb);
+}
+
+//  The path forms give -1 if there is no item at the path.
+
+int fl_tree_open_path(TREE t, const char * path, int cb) {
+    return static_cast<Fl_Tree*>(t)->open(path, cb);
+}
+
+int fl_tree_close_path(TREE t, const char * path, int cb) {
+    return static_cast<Fl_Tree*>(t)->close(path, cb);
 }
 
 
 
 
-void fl_tree_select(TREE t, TREEITEM item) {
-    static_cast<Fl_Tree*>(t)->select(static_cast<Fl_Tree_Item*>(item));
+void fl_tree_select(TREE t, TREEITEM item, int cb) {
+    static_cast<Fl_Tree*>(t)->select(static_cast<Fl_Tree_Item*>(item), cb);
 }
 
-void fl_tree_deselect(TREE t, TREEITEM item) {
-    static_cast<Fl_Tree*>(t)->deselect(static_cast<Fl_Tree_Item*>(item));
+void fl_tree_deselect(TREE t, TREEITEM item, int cb) {
+    static_cast<Fl_Tree*>(t)->deselect(static_cast<Fl_Tree_Item*>(item), cb);
 }
 
-int fl_tree_select_all(TREE t) {
-    return static_cast<Fl_Tree*>(t)->select_all(0);
+int fl_tree_select_path(TREE t, const char * path, int cb) {
+    return static_cast<Fl_Tree*>(t)->select(path, cb);
 }
 
-int fl_tree_deselect_all(TREE t) {
-    return static_cast<Fl_Tree*>(t)->deselect_all(0);
+int fl_tree_deselect_path(TREE t, const char * path, int cb) {
+    return static_cast<Fl_Tree*>(t)->deselect(path, cb);
 }
 
-void fl_tree_select_toggle(TREE t, TREEITEM item) {
-    static_cast<Fl_Tree*>(t)->select_toggle(static_cast<Fl_Tree_Item*>(item));
+//  A null item is the whole tree.
+int fl_tree_select_all(TREE t, TREEITEM item, int cb) {
+    return static_cast<Fl_Tree*>(t)->select_all(static_cast<Fl_Tree_Item*>(item), cb);
+}
+
+int fl_tree_deselect_all(TREE t, TREEITEM item, int cb) {
+    return static_cast<Fl_Tree*>(t)->deselect_all(static_cast<Fl_Tree_Item*>(item), cb);
+}
+
+void fl_tree_select_toggle(TREE t, TREEITEM item, int cb) {
+    static_cast<Fl_Tree*>(t)->select_toggle(static_cast<Fl_Tree_Item*>(item), cb);
 }
 
 TREEITEM fl_tree_first_selected(TREE t) {
@@ -336,6 +359,14 @@ void fl_tree_set_show_collapse(TREE t, int val) {
 
 int fl_tree_get_select_mode(TREE t) {
     return static_cast<int>(static_cast<Fl_Tree*>(t)->selectmode());
+}
+
+int fl_tree_get_item_reselect_mode(TREE t) {
+    return static_cast<Fl_Tree*>(t)->item_reselect_mode();
+}
+
+void fl_tree_set_item_reselect_mode(TREE t, int val) {
+    static_cast<Fl_Tree*>(t)->item_reselect_mode(static_cast<Fl_Tree_Item_Reselect_Mode>(val));
 }
 
 void fl_tree_set_select_mode(TREE t, int val) {

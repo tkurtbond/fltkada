@@ -71,7 +71,7 @@ endif
 EXAMPLES  := $(shell sed -n 's/.*for Executable ("[a-z_0-9]*\.adb") use "\([^"]*\)";.*/\1/p' examples.gpr)
 
 #  Programs in test/ that check their own results and set the exit status.
-SELFCHECK := preferences group_children clear_image_chosen column_widths
+SELFCHECK := preferences_check group_children clear_image_chosen column_widths
 #  Programs that wait for no one and end by themselves, with status 0.
 ONCE := $(SELFCHECK) compare page_formats dirlist filename glut_test
 #  A program's command line in a smoke run, as name=argument, run in test/

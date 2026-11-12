@@ -9,8 +9,9 @@
 --  Ported from pofltk's TestPreferences: entries, groups, and a file
 --  written and read back.  Groups deleted while in use are
 --  test_pref_groups's (pofltk 51).  pofltk's Close and its count of open
---  databases have no counterpart, as Ada finalizes them; nor has its
---  FileName, so the file is found in the directory instead.
+--  databases have no counterpart, as Ada finalizes them.  Where pofltk
+--  asks FileName, this finds the file in the directory it made;
+--  test_pref_files checks File_Name (PLAN.md, Phase 25).
 
 
 with

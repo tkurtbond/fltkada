@@ -845,3 +845,31 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
   choosing selection_color: the G field was "0" in the C++ and "0.000"
   in the Ada. Built with `fl_color_chooser (0, r, g, b, 0)`, the C++
   matched the Ada at AE 0.
+
+### F38. `Fl_Table` with a filled table box paints over cells it doesn't redraw
+
+- **What happens**: a table whose `table_box` is a filled box, such
+  as `FL_UP_BOX`, and which has no child widgets, sometimes shows the
+  box over every cell except a few rows. Found 2026-11-12, porting
+  test/table.cxx in Phase 25: with Table Box set to Up Box and Type
+  to SelectSingle, a drag down the rows left only rows 12 to 17
+  drawn.
+- **Cause**: with no children, the table's inner `Fl_Scroll` is hidden
+  (src/Fl_Table.cxx:181, FL/Fl_Table.H:775-781). `Fl_Table::draw`
+  then draws `table->box()` over the whole table area whenever the
+  damage includes `FL_DAMAGE_CHILD` (src/Fl_Table.cxx:1327-1331), but
+  when it lacks `FL_DAMAGE_ALL` it redraws only the cells from
+  `_redraw_toprow` to `_redraw_botrow` and `_redraw_leftcol` to
+  `_redraw_rightcol` (:1336-1344). A frame box draws no fill and so
+  erases nothing. Which damage bits a redraw gets depends on how the
+  events and the redraws fall, so the same input can give either
+  picture.
+- **Effect on FLTKAda**: none in the binding. The port's comparison
+  drives that drag in separate down, move and up steps, for which
+  both builds draw the same partial table.
+- **Confirmed**: under Xvfb with `xdotool`, FLTK's test/table and the
+  Ada port. Driven by one `xdotool` drag command, the C++ build showed
+  only rows 12 to 17 and the Ada port every cell; driven in separate
+  steps, both showed the same partial table, AE 0. Builds of both
+  that printed each draw and event drew every cell. The cause is from
+  reading the source.

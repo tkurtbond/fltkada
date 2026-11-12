@@ -24,7 +24,9 @@ with
     FLTK.Widgets.Menus.Menu_Bars.Systemwide,
     FLTK.Widgets.Valuators.Rollers,
     FLTK.Widgets.Groups.Browsers,
-    FLTK.Widgets.Groups.Scrolls;
+    FLTK.Widgets.Groups.Scrolls,
+    FLTK.Tree_Items,
+    FLTK.Widgets.Groups.Trees;
 
 
 procedure FLTK.Test_Constants is
@@ -37,9 +39,10 @@ procedure FLTK.Test_Constants is
     package Rollers renames FLTK.Widgets.Valuators.Rollers;
     package Browsers renames FLTK.Widgets.Groups.Browsers;
     package Scrolls renames FLTK.Widgets.Groups.Scrolls;
+    package Trees renames FLTK.Widgets.Groups.Trees;
 
 
-    type Value_Array is array (1 .. 380) of Long_Long_Integer;
+    type Value_Array is array (1 .. 399) of Long_Long_Integer;
     pragma Convention (C, Value_Array);
 
     FLTK_Values : Value_Array;
@@ -1322,5 +1325,84 @@ begin
        (Long_Long_Integer (Buttons.Button_Kind'Enum_Rep (Buttons.Radio_Kind)),
         380,
         "Long_Long_Integer (Buttons.Button_Kind'Enum_Rep (Buttons.Radio_Kind)) = FL_RADIO_BUTTON");
+
+    --  Tree kinds (Fl_Tree_Prefs.H, Fl_Tree.H)
+    Same
+       (Tree_Items.Sort_Kind'Pos (Tree_Items.No_Sort),
+        381,
+        "Tree_Items.Sort_Kind'Pos (Tree_Items.No_Sort) = FL_TREE_SORT_NONE");
+    Same
+       (Tree_Items.Sort_Kind'Pos (Tree_Items.Ascending),
+        382,
+        "Tree_Items.Sort_Kind'Pos (Tree_Items.Ascending) = FL_TREE_SORT_ASCENDING");
+    Same
+       (Tree_Items.Sort_Kind'Pos (Tree_Items.Descending),
+        383,
+        "Tree_Items.Sort_Kind'Pos (Tree_Items.Descending) = FL_TREE_SORT_DESCENDING");
+    Same
+       (Tree_Items.Connector_Kind'Pos (Tree_Items.No_Connector),
+        384,
+        "Tree_Items.Connector_Kind'Pos (Tree_Items.No_Connector) = FL_TREE_CONNECTOR_NONE");
+    Same
+       (Tree_Items.Connector_Kind'Pos (Tree_Items.Dotted_Connector),
+        385,
+        "Tree_Items.Connector_Kind'Pos (Tree_Items.Dotted_Connector) = FL_TREE_CONNECTOR_DOTTED");
+    Same
+       (Tree_Items.Connector_Kind'Pos (Tree_Items.Solid_Connector),
+        386,
+        "Tree_Items.Connector_Kind'Pos (Tree_Items.Solid_Connector) = FL_TREE_CONNECTOR_SOLID");
+    Same
+       (Tree_Items.Selection_Kind'Pos (Tree_Items.No_Selection),
+        387,
+        "Tree_Items.Selection_Kind'Pos (Tree_Items.No_Selection) = FL_TREE_SELECT_NONE");
+    Same
+       (Tree_Items.Selection_Kind'Pos (Tree_Items.Single_Selection),
+        388,
+        "Tree_Items.Selection_Kind'Pos (Tree_Items.Single_Selection) = FL_TREE_SELECT_SINGLE");
+    Same
+       (Tree_Items.Selection_Kind'Pos (Tree_Items.Multi_Selection),
+        389,
+        "Tree_Items.Selection_Kind'Pos (Tree_Items.Multi_Selection) = FL_TREE_SELECT_MULTI");
+    Same
+       (Tree_Items.Selection_Kind'Pos (Tree_Items.Single_Draggable_Selection),
+        390,
+        "Tree_Items.Selection_Kind'Pos (Tree_Items.Single_Draggable_Selection)" &
+        " = FL_TREE_SELECT_SINGLE_DRAGGABLE");
+    Same
+       (Tree_Items.Reselect_Kind'Pos (Tree_Items.Selectable_Once),
+        391,
+        "Tree_Items.Reselect_Kind'Pos (Tree_Items.Selectable_Once) = FL_TREE_SELECTABLE_ONCE");
+    Same
+       (Tree_Items.Reselect_Kind'Pos (Tree_Items.Selectable_Always),
+        392,
+        "Tree_Items.Reselect_Kind'Pos (Tree_Items.Selectable_Always) = FL_TREE_SELECTABLE_ALWAYS");
+    Same
+       (Trees.Reason_Kind'Pos (Trees.No_Reason),
+        393,
+        "Trees.Reason_Kind'Pos (Trees.No_Reason) = FL_TREE_REASON_NONE");
+    Same
+       (Trees.Reason_Kind'Pos (Trees.Selected),
+        394,
+        "Trees.Reason_Kind'Pos (Trees.Selected) = FL_TREE_REASON_SELECTED");
+    Same
+       (Trees.Reason_Kind'Pos (Trees.Deselected),
+        395,
+        "Trees.Reason_Kind'Pos (Trees.Deselected) = FL_TREE_REASON_DESELECTED");
+    Same
+       (Trees.Reason_Kind'Pos (Trees.Reselected),
+        396,
+        "Trees.Reason_Kind'Pos (Trees.Reselected) = FL_TREE_REASON_RESELECTED");
+    Same
+       (Trees.Reason_Kind'Pos (Trees.Opened),
+        397,
+        "Trees.Reason_Kind'Pos (Trees.Opened) = FL_TREE_REASON_OPENED");
+    Same
+       (Trees.Reason_Kind'Pos (Trees.Closed),
+        398,
+        "Trees.Reason_Kind'Pos (Trees.Closed) = FL_TREE_REASON_CLOSED");
+    Same
+       (Trees.Reason_Kind'Pos (Trees.Dragged),
+        399,
+        "Trees.Reason_Kind'Pos (Trees.Dragged) = FL_TREE_REASON_DRAGGED");
 
 end FLTK.Test_Constants;

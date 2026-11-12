@@ -57,6 +57,20 @@ package body FLTK.Widgets.Groups.Trees is
     pragma Import (C, fl_tree_add_item, "fl_tree_add_item");
     pragma Inline (fl_tree_add_item);
 
+    function fl_tree_add_child
+           (T      : in Storage.Integer_Address;
+            Parent : in Storage.Integer_Address;
+            Name   : in Interfaces.C.char_array)
+        return Storage.Integer_Address;
+    pragma Import (C, fl_tree_add_child, "fl_tree_add_child");
+    pragma Inline (fl_tree_add_child);
+
+    function fl_preferences_load_tree
+           (P, T : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_preferences_load_tree, "fl_preferences_load_tree");
+    pragma Inline (fl_preferences_load_tree);
+
     function fl_tree_insert
            (T     : in Storage.Integer_Address;
             Under : in Storage.Integer_Address;
@@ -165,21 +179,40 @@ package body FLTK.Widgets.Groups.Trees is
 
     procedure fl_tree_open
            (T    : in Storage.Integer_Address;
-            Item : in Storage.Integer_Address);
+            Item : in Storage.Integer_Address;
+            CB   : in Interfaces.C.int);
     pragma Import (C, fl_tree_open, "fl_tree_open");
     pragma Inline (fl_tree_open);
 
     procedure fl_tree_close
            (T    : in Storage.Integer_Address;
-            Item : in Storage.Integer_Address);
+            Item : in Storage.Integer_Address;
+            CB   : in Interfaces.C.int);
     pragma Import (C, fl_tree_close, "fl_tree_close");
     pragma Inline (fl_tree_close);
 
     procedure fl_tree_open_toggle
            (T    : in Storage.Integer_Address;
-            Item : in Storage.Integer_Address);
+            Item : in Storage.Integer_Address;
+            CB   : in Interfaces.C.int);
     pragma Import (C, fl_tree_open_toggle, "fl_tree_open_toggle");
     pragma Inline (fl_tree_open_toggle);
+
+    function fl_tree_open_path
+           (T    : in Storage.Integer_Address;
+            Path : in Interfaces.C.char_array;
+            CB   : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_open_path, "fl_tree_open_path");
+    pragma Inline (fl_tree_open_path);
+
+    function fl_tree_close_path
+           (T    : in Storage.Integer_Address;
+            Path : in Interfaces.C.char_array;
+            CB   : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_close_path, "fl_tree_close_path");
+    pragma Inline (fl_tree_close_path);
 
 
 
@@ -188,31 +221,54 @@ package body FLTK.Widgets.Groups.Trees is
 
     procedure fl_tree_select
            (T    : in Storage.Integer_Address;
-            Item : in Storage.Integer_Address);
+            Item : in Storage.Integer_Address;
+            CB   : in Interfaces.C.int);
     pragma Import (C, fl_tree_select, "fl_tree_select");
     pragma Inline (fl_tree_select);
 
     procedure fl_tree_deselect
            (T    : in Storage.Integer_Address;
-            Item : in Storage.Integer_Address);
+            Item : in Storage.Integer_Address;
+            CB   : in Interfaces.C.int);
     pragma Import (C, fl_tree_deselect, "fl_tree_deselect");
     pragma Inline (fl_tree_deselect);
 
+    function fl_tree_select_path
+           (T    : in Storage.Integer_Address;
+            Path : in Interfaces.C.char_array;
+            CB   : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_select_path, "fl_tree_select_path");
+    pragma Inline (fl_tree_select_path);
+
+    function fl_tree_deselect_path
+           (T    : in Storage.Integer_Address;
+            Path : in Interfaces.C.char_array;
+            CB   : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_deselect_path, "fl_tree_deselect_path");
+    pragma Inline (fl_tree_deselect_path);
+
     function fl_tree_select_all
-           (T : in Storage.Integer_Address)
+           (T    : in Storage.Integer_Address;
+            Item : in Storage.Integer_Address;
+            CB   : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_tree_select_all, "fl_tree_select_all");
     pragma Inline (fl_tree_select_all);
 
     function fl_tree_deselect_all
-           (T : in Storage.Integer_Address)
+           (T    : in Storage.Integer_Address;
+            Item : in Storage.Integer_Address;
+            CB   : in Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_tree_deselect_all, "fl_tree_deselect_all");
     pragma Inline (fl_tree_deselect_all);
 
     procedure fl_tree_select_toggle
            (T    : in Storage.Integer_Address;
-            Item : in Storage.Integer_Address);
+            Item : in Storage.Integer_Address;
+            CB   : in Interfaces.C.int);
     pragma Import (C, fl_tree_select_toggle, "fl_tree_select_toggle");
     pragma Inline (fl_tree_select_toggle);
 
@@ -289,6 +345,18 @@ package body FLTK.Widgets.Groups.Trees is
             Val : in Interfaces.C.int);
     pragma Import (C, fl_tree_set_select_mode, "fl_tree_set_select_mode");
     pragma Inline (fl_tree_set_select_mode);
+
+    function fl_tree_get_item_reselect_mode
+           (T : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_tree_get_item_reselect_mode, "fl_tree_get_item_reselect_mode");
+    pragma Inline (fl_tree_get_item_reselect_mode);
+
+    procedure fl_tree_set_item_reselect_mode
+           (T : in Storage.Integer_Address;
+            V : in Interfaces.C.int);
+    pragma Import (C, fl_tree_set_item_reselect_mode, "fl_tree_set_item_reselect_mode");
+    pragma Inline (fl_tree_set_item_reselect_mode);
 
     function fl_tree_get_connector_style
            (T : in Storage.Integer_Address)
@@ -716,6 +784,19 @@ package body FLTK.Widgets.Groups.Trees is
     --  API Subprograms  --
     -----------------------
 
+    --  FLTK's path forms give -1 when there is no item at the path.
+    procedure Found
+           (Result : in Interfaces.C.int;
+            Path   : in String) is
+    begin
+        if Result < 0 then
+            raise Constraint_Error with "no tree item at " & Path;
+        end if;
+    end Found;
+
+
+
+
     --  Item Creation and Removal  --
 
     function Add
@@ -741,6 +822,28 @@ package body FLTK.Widgets.Groups.Trees is
                   Interfaces.C.To_C (Path),
                   Storage.To_Integer (FLTK.Tree_Items.Address_Of (Item)))));
     end Add;
+
+
+    function Add
+           (This   : in out Tree;
+            Parent : in     FLTK.Tree_Items.Tree_Item;
+            Name   : in     String)
+        return FLTK.Tree_Items.Tree_Item is
+    begin
+        return FLTK.Tree_Items.Cast
+           (Storage.To_Address
+              (fl_tree_add_child (This.Void_Ptr, Item_Ptr (Parent), Interfaces.C.To_C (Name))));
+    end Add;
+
+
+    procedure Load
+           (This : in out Tree;
+            From : in     FLTK.Environment.Pref_Group'Class) is
+    begin
+        if fl_preferences_load_tree (Wrapper (From).Void_Ptr, This.Void_Ptr) = 0 then
+            raise FLTK.Environment.Preference_Error with "the group has been deleted";
+        end if;
+    end Load;
 
 
     function Insert
@@ -911,27 +1014,54 @@ package body FLTK.Widgets.Groups.Trees is
     --  Open and Close  --
 
     procedure Open
-           (This : in out Tree;
-            Item : in     FLTK.Tree_Items.Tree_Item) is
+           (This        : in out Tree;
+            Item        : in     FLTK.Tree_Items.Tree_Item;
+            Do_Callback : in     Boolean := True) is
     begin
-        fl_tree_open (This.Void_Ptr, Item_Ptr (Item));
+        fl_tree_open (This.Void_Ptr, Item_Ptr (Item), Boolean'Pos (Do_Callback));
     end Open;
 
 
     procedure Close
-           (This : in out Tree;
-            Item : in     FLTK.Tree_Items.Tree_Item) is
+           (This        : in out Tree;
+            Item        : in     FLTK.Tree_Items.Tree_Item;
+            Do_Callback : in     Boolean := True) is
     begin
-        fl_tree_close (This.Void_Ptr, Item_Ptr (Item));
+        fl_tree_close (This.Void_Ptr, Item_Ptr (Item), Boolean'Pos (Do_Callback));
     end Close;
 
 
     procedure Open_Toggle
-           (This : in out Tree;
-            Item : in     FLTK.Tree_Items.Tree_Item) is
+           (This        : in out Tree;
+            Item        : in     FLTK.Tree_Items.Tree_Item;
+            Do_Callback : in     Boolean := True) is
     begin
-        fl_tree_open_toggle (This.Void_Ptr, Item_Ptr (Item));
+        fl_tree_open_toggle (This.Void_Ptr, Item_Ptr (Item), Boolean'Pos (Do_Callback));
     end Open_Toggle;
+
+
+    procedure Open
+           (This        : in out Tree;
+            Path        : in     String;
+            Do_Callback : in     Boolean := True) is
+    begin
+        Found
+           (fl_tree_open_path
+              (This.Void_Ptr, Interfaces.C.To_C (Path), Boolean'Pos (Do_Callback)),
+            Path);
+    end Open;
+
+
+    procedure Close
+           (This        : in out Tree;
+            Path        : in     String;
+            Do_Callback : in     Boolean := True) is
+    begin
+        Found
+           (fl_tree_close_path
+              (This.Void_Ptr, Interfaces.C.To_C (Path), Boolean'Pos (Do_Callback)),
+            Path);
+    end Close;
 
 
 
@@ -939,42 +1069,79 @@ package body FLTK.Widgets.Groups.Trees is
     --  Selection  --
 
     procedure Select_Item
-           (This : in out Tree;
-            Item : in     FLTK.Tree_Items.Tree_Item) is
+           (This        : in out Tree;
+            Item        : in     FLTK.Tree_Items.Tree_Item;
+            Do_Callback : in     Boolean := True) is
     begin
-        fl_tree_select (This.Void_Ptr, Item_Ptr (Item));
+        fl_tree_select (This.Void_Ptr, Item_Ptr (Item), Boolean'Pos (Do_Callback));
     end Select_Item;
 
 
     procedure Deselect
-           (This : in out Tree;
-            Item : in     FLTK.Tree_Items.Tree_Item) is
+           (This        : in out Tree;
+            Item        : in     FLTK.Tree_Items.Tree_Item;
+            Do_Callback : in     Boolean := True) is
     begin
-        fl_tree_deselect (This.Void_Ptr, Item_Ptr (Item));
+        fl_tree_deselect (This.Void_Ptr, Item_Ptr (Item), Boolean'Pos (Do_Callback));
+    end Deselect;
+
+
+    procedure Select_Item
+           (This        : in out Tree;
+            Path        : in     String;
+            Do_Callback : in     Boolean := True) is
+    begin
+        Found
+           (fl_tree_select_path
+              (This.Void_Ptr, Interfaces.C.To_C (Path), Boolean'Pos (Do_Callback)),
+            Path);
+    end Select_Item;
+
+
+    procedure Deselect
+           (This        : in out Tree;
+            Path        : in     String;
+            Do_Callback : in     Boolean := True) is
+    begin
+        Found
+           (fl_tree_deselect_path
+              (This.Void_Ptr, Interfaces.C.To_C (Path), Boolean'Pos (Do_Callback)),
+            Path);
     end Deselect;
 
 
     function Select_All
-           (This : in out Tree)
+           (This        : in out Tree;
+            Item        : in     FLTK.Tree_Items.Tree_Item := FLTK.Tree_Items.No_Tree_Item;
+            Do_Callback : in     Boolean := True)
         return Natural is
     begin
-        return Natural (fl_tree_select_all (This.Void_Ptr));
+        return Natural (fl_tree_select_all
+           (This.Void_Ptr,
+            Storage.To_Integer (FLTK.Tree_Items.Address_Of (Item)),
+            Boolean'Pos (Do_Callback)));
     end Select_All;
 
 
     function Deselect_All
-           (This : in out Tree)
+           (This        : in out Tree;
+            Item        : in     FLTK.Tree_Items.Tree_Item := FLTK.Tree_Items.No_Tree_Item;
+            Do_Callback : in     Boolean := True)
         return Natural is
     begin
-        return Natural (fl_tree_deselect_all (This.Void_Ptr));
+        return Natural (fl_tree_deselect_all
+           (This.Void_Ptr,
+            Storage.To_Integer (FLTK.Tree_Items.Address_Of (Item)),
+            Boolean'Pos (Do_Callback)));
     end Deselect_All;
 
 
     procedure Select_Toggle
-           (This : in out Tree;
-            Item : in     FLTK.Tree_Items.Tree_Item) is
+           (This        : in out Tree;
+            Item        : in     FLTK.Tree_Items.Tree_Item;
+            Do_Callback : in     Boolean := True) is
     begin
-        fl_tree_select_toggle (This.Void_Ptr, Item_Ptr (Item));
+        fl_tree_select_toggle (This.Void_Ptr, Item_Ptr (Item), Boolean'Pos (Do_Callback));
     end Select_Toggle;
 
 
@@ -1094,6 +1261,30 @@ package body FLTK.Widgets.Groups.Trees is
            (This.Void_Ptr,
             Interfaces.C.int (FLTK.Tree_Items.Selection_Kind'Pos (Mode)));
     end Set_Select_Mode;
+
+
+    function Get_Item_Reselect_Mode
+           (This : in Tree)
+        return FLTK.Tree_Items.Reselect_Kind
+    is
+        Result : constant Interfaces.C.int := fl_tree_get_item_reselect_mode (This.Void_Ptr);
+    begin
+        return FLTK.Tree_Items.Reselect_Kind'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Tree::item_reselect_mode returned unexpected value of" &
+        Interfaces.C.int'Image (Result);
+    end Get_Item_Reselect_Mode;
+
+
+    procedure Set_Item_Reselect_Mode
+           (This : in out Tree;
+            Mode : in     FLTK.Tree_Items.Reselect_Kind) is
+    begin
+        fl_tree_set_item_reselect_mode
+           (This.Void_Ptr,
+            Interfaces.C.int (FLTK.Tree_Items.Reselect_Kind'Pos (Mode)));
+    end Set_Item_Reselect_Mode;
 
 
     function Get_Connector_Style

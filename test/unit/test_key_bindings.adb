@@ -143,6 +143,21 @@ begin
         "the default binding of Backspace");
     Check (Editor.Get_Bound_Key_Function (Mod_Ctrl + 'j') = null, "a key bound to nothing");
 
+    --  Undo and redo, bound to Ctrl+z and Ctrl+Shift+z as in FLTK
+    --  (Fl_Text_Editor.cxx:134-135; KF_Redo, PLAN.md, Phase 25).
+    Editor.Set_Insert_Position (5);
+    Ignore := Prb.Key (Keydown, Press ('x'), Mod_None, "x");
+    Check (Buffer.Get_Entire_Text = "hellox", "x typed, to undo");
+    Ignore := Ctrl ('z');
+    Check (Buffer.Get_Entire_Text = "hello", "Ctrl+z undoes");
+    Ignore := Prb.Key (Keydown, Press ('z'), Mod_Ctrl + Mod_Shift, (1 => Character'Val (26)));
+    Check (Buffer.Get_Entire_Text = "hellox" and Editor.Get_Insert_Position = 6,
+        "Ctrl+Shift+z redoes");
+    Check (Editor.Get_Bound_Key_Function (Mod_Command + Mod_Shift + 'z') = TE.KF_Redo'Access,
+        "Ctrl+Shift+z is bound to KF_Redo");
+    Ignore := Ctrl ('z');
+    Check (Buffer.Get_Entire_Text = "hello", "and undone again");
+
     --  The default key function.
     Check (Editor.Get_Default_Key_Function = TE.KF_Default'Access,
         "the default key function is KF_Default");

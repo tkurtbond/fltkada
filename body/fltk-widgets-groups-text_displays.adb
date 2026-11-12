@@ -1097,6 +1097,16 @@ package body FLTK.Widgets.Groups.Text_Displays is
     end Highlight_Data;
 
 
+    procedure Clear_Highlight_Data
+           (This : in out Text_Display) is
+    begin
+        fl_text_display_highlight_data (This.Void_Ptr, Null_Pointer, Null_Pointer, 0);
+        This.Style_Callback := null;
+        Let_Go (This.Style_Table, This.Raw_Styles);
+        This.Raw_Styles := Null_Pointer;
+    end Clear_Highlight_Data;
+
+
     function Position_Style
            (This        : in Text_Display;
             Line_Start  : in Natural;

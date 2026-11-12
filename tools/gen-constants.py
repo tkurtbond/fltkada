@@ -371,19 +371,38 @@ def ada(suite):
     write(f"{suite.directory}/{suite.unit.lower().replace('.', '-')}.adb", "\n".join(out))
 
 
+section("Tree kinds (Fl_Tree_Prefs.H, Fl_Tree.H)")
+enum("Tree_Items.Sort_Kind", [(f"Tree_Items.{a}", f"FL_TREE_SORT_{c}") for a, c in
+                              [("No_Sort", "NONE"), ("Ascending", "ASCENDING"),
+                               ("Descending", "DESCENDING")]])
+enum("Tree_Items.Connector_Kind",
+     [(f"Tree_Items.{a}_Connector", f"FL_TREE_CONNECTOR_{'NONE' if a == 'No' else a.upper()}")
+      for a in "No Dotted Solid".split()])
+enum("Tree_Items.Selection_Kind",
+     [(f"Tree_Items.{a}_Selection", f"FL_TREE_SELECT_{'NONE' if a == 'No' else a.upper()}")
+      for a in "No Single Multi Single_Draggable".split()])
+enum("Tree_Items.Reselect_Kind", [("Tree_Items.Selectable_Once", "FL_TREE_SELECTABLE_ONCE"),
+                                  ("Tree_Items.Selectable_Always", "FL_TREE_SELECTABLE_ALWAYS")])
+enum("Trees.Reason_Kind", [(f"Trees.{a}", f"FL_TREE_REASON_{c}") for a, c in
+                           [("No_Reason", "NONE"), ("Selected", "SELECTED"),
+                            ("Deselected", "DESELECTED"), ("Reselected", "RESELECTED"),
+                            ("Opened", "OPENED"), ("Closed", "CLOSED"), ("Dragged", "DRAGGED")]])
+
+
 MAIN = Suite(
     CHECKS, "test/unit", "", "FLTK.Test_Constants",
     ["Enumerations.H", "Fl.H", "Fl_Button.H", "Fl_Clock.H", "Fl_File_Icon.H", "Fl_Menu_Item.H",
-     "Fl_Sys_Menu_Bar.H", "Fl_Tabs.H", "Fl_Roller.H", "Fl_Browser_.H", "Fl_Scroll.H"],
+     "Fl_Sys_Menu_Bar.H", "Fl_Tabs.H", "Fl_Roller.H", "Fl_Browser_.H", "Fl_Scroll.H",
+     "Fl_Tree.H"],
     ["FLTK.Draw", "FLTK.Images.File_Icons", "FLTK.Screen", "FLTK.Static", "FLTK.Widgets.Buttons",
      "FLTK.Widgets.Clocks", "FLTK.Widgets.Groups.Tabbed", "FLTK.Widgets.Menus.Menu_Bars.Systemwide",
      "FLTK.Widgets.Valuators.Rollers", "FLTK.Widgets.Groups.Browsers",
-     "FLTK.Widgets.Groups.Scrolls"],
+     "FLTK.Widgets.Groups.Scrolls", "FLTK.Tree_Items", "FLTK.Widgets.Groups.Trees"],
     [("Buttons", "FLTK.Widgets.Buttons"), ("Clocks", "FLTK.Widgets.Clocks"),
      ("Tabbed", "FLTK.Widgets.Groups.Tabbed"),
      ("Sys_Menu", "FLTK.Widgets.Menus.Menu_Bars.Systemwide"),
      ("Rollers", "FLTK.Widgets.Valuators.Rollers"), ("Browsers", "FLTK.Widgets.Groups.Browsers"),
-     ("Scrolls", "FLTK.Widgets.Groups.Scrolls")])
+     ("Scrolls", "FLTK.Widgets.Groups.Scrolls"), ("Trees", "FLTK.Widgets.Groups.Trees")])
 
 
 #  The Forms library's constants, checked by a test of their own, which is

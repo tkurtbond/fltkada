@@ -87,6 +87,13 @@ fl_tree.html and doc/binding_architecture.md).</p>
     <td>Selection_Kind</td>
   </tr>
 
+  <tr>
+    <td>enum Fl_Tree_Item_Reselect_Mode {<br />
+    FL_TREE_SELECTABLE_ONCE = 0,<br />
+    FL_TREE_SELECTABLE_ALWAYS }</td>
+    <td>Reselect_Kind</td>
+  </tr>
+
 </table>
 
 
@@ -333,6 +340,31 @@ int is_root() const;
 function Is_Root
        (This : in Tree_Item)
     return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>Neither calls the tree's callback nor redraws it; Trees.Open and Close do both.
+<pre>
+void open();
+void close();
+</pre></td>
+<td><pre>
+procedure Open
+       (This : in Tree_Item);
+
+procedure Close
+       (This : in Tree_Item);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void show_self(const char *indent = "") const;
+</pre></td>
+<td><pre>
+procedure Show_Self
+       (This : in Tree_Item);
 </pre></td>
   </tr>
 
