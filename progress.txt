@@ -615,6 +615,10 @@ to FL_Favorites); Keypress holds 32 bits (FLTKAda-BUGS.md 135); Static
 Option's FNFC_Uses_Zenity, FNFC_Uses_KDialog, Printer_Uses_GTK,
 Show_Scaling and Simple_Zoom_Shortcut
 
+Phase 26 (PLAN.md), FLTK's OpenGL test programs (CubeView, fractals,
+fullscreen, glpuzzle, handle_events, shape) ported to test/ and test/glu/
+and compared with FLTK's own build; no API added
+
 
 
 Incomplete APIs:

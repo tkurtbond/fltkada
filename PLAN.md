@@ -4656,6 +4656,44 @@ found, 136, and one FLTK issue, F38.
   `\`; and it puts the items at the group's own path, the group's name
   for a memory group and "." for a database's root.
 
+#### Phase 26: OpenGL [done, 2026-11-12]
+
+Compared as Phases 21 to 25 were, each port and FLTK's build under
+the same private Xvfb, driven by xdotool. Every shot of the six ports
+is AE 0 against FLTK's build, and the shots of each run differ from
+one another. No FLTKAda bug and no FLTK issue was found.
+
+- The animated programs were compared with a preloaded shim (in the
+  session's scratch directory, not kept), as the plan said: `time()`
+  returns a fixed value, and the program's own idle handlers and
+  timeouts, but not FLTK's, run at most a given number of times, so
+  that both builds stop at the same frame. `gettimeofday` didn't need
+  fixing: none of the six C++ programs calls it.
+- `fractals` and `glpuzzle` use GLU, so they are in `test/glu/` and
+  built by a new project, `tests_glu_programs.gpr`, into `bin/` with
+  the other programs. The Makefile builds it, and adds them to the
+  smoke run, only where it builds the GLU library, as it does for
+  `tests_glu.gpr`. `test/gl1.ads`, the OpenGL 1 calls the demos
+  import from libGL, has the calls and constants the six need, and
+  `tests_glu_programs.gpr` compiles it again from `test/`.
+- `shape`: the slider moved to five values.
+- `handle_events`: two shots, and the event log on stderr is the same.
+- `CubeView`: the rollers, the pan sliders and zoom, six shots.
+- `fullscreen`, under openbox: Border, FullScreen, Maximize and All
+  Screens switched, typing in the input, Update, and the `-2` and `-f`
+  options; nine shots. A bad option prints the same text and exits 1.
+- `glpuzzle`: dragging a piece, the `d`, `b` and `r` keys, the
+  right-button menu, solving stopped after 60 and after 300 frames, a
+  middle-button spin stopped after 25, and the `-s` and `-n` options.
+  The C++ calls `srandom (time (NULL))` but never `random`, so the port
+  leaves the call out.
+- `fractals`: the idle handler stopped after 30 frames; the Mountain,
+  Island and Tree fractals at levels 0, 2, 4, 6 and 8, New Fractal, a
+  drag and the menu: 18 shots. The port writes out glibc's `srand48`
+  and `drand48`, so that the scene is the C++ program's to the pixel.
+  Its Quit button hides the window, ending the main loop, where the
+  C++ calls `exit (0)`.
+
 ## Open questions
 
 All five were decided by the user on 2026-11-03.

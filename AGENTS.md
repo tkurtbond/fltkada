@@ -68,6 +68,7 @@ gprbuild tests_cairo.gpr          # its unit tests, into bin/unit/
 gprbuild tests_cairo_programs.gpr # its demo programs, into bin/
 gprbuild fltkada_glu.gpr          # the GLU library (needs glu)
 gprbuild tests_glu.gpr            # its unit tests, into bin/unit/
+gprbuild tests_glu_programs.gpr   # its programs (fractals, glpuzzle), into bin/
 ```
 
 Built test executables land in `bin/`, the unit tests in `bin/unit/`.
@@ -189,6 +190,7 @@ component of the Ada record.
 | `cairo/spec/`, `cairo/body/` | The Cairo library, `FLTK.Cairo` and `FLTK.Widgets.Groups.Windows.Double.Cairo_Drawn` and their shim (`fltkada_cairo.gpr`), built only where `pkg-config` finds cairo |
 | `test/cairo/`, `test/unit/cairo/` | The Cairo library's programs (`tests_cairo_programs.gpr`) and unit tests (`tests_cairo.gpr`), which the Makefile builds and runs only with cairo |
 | `glu/spec/`, `glu/body/` | The GLU library, `FLTK.GLU` and its shim (`fltkada_glu.gpr`), built only where `pkg-config` finds glu |
+| `test/glu/` | The ports of FLTK's programs that use GLU (`tests_glu_programs.gpr`), which the Makefile builds and runs only with glu |
 | `test/unit/glu/` | The GLU library's unit tests (`tests_glu.gpr`), which the Makefile builds and runs only with glu |
 | `examples/` | Ada ports of every program in FLTK 1.4.5's `examples/` (built by `examples.gpr`, executables named after the C++ originals) |
 | `tool/` | `template.adb`, an unrelated text-substitution codegen helper — not a widget template |

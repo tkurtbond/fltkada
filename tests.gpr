@@ -130,7 +130,11 @@ project Tests is
         "editor.adb",
         "preferences.adb",
         "table.adb",
-        "tree.adb");
+        "tree.adb",
+        "cube_view.adb",
+        "fullscreen.adb",
+        "handle_events.adb",
+        "shape.adb");
 
     package Builder is
         for Executable ("adjuster.adb")           use "adjuster";
@@ -248,6 +252,10 @@ project Tests is
         for Executable ("preferences.adb")        use "preferences";
         for Executable ("table.adb")              use "table";
         for Executable ("tree.adb")               use "tree";
+        for Executable ("cube_view.adb")          use "CubeView";
+        for Executable ("fullscreen.adb")         use "fullscreen";
+        for Executable ("handle_events.adb")      use "handle_events";
+        for Executable ("shape.adb")              use "shape";
 
         for Default_Switches ("Ada") use
             Common.Builder'Default_Switches ("Ada");

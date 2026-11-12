@@ -67,6 +67,7 @@ endif
 HAVE_GLU := $(shell pkg-config --exists glu && echo yes)
 ifeq ($(HAVE_GLU),yes)
 UNITTESTS += $(call gpr-mains,tests_glu.gpr)
+PROGRAMS  += $(call gpr-executables,tests_glu_programs.gpr)
 endif
 EXAMPLES  := $(shell sed -n 's/.*for Executable ("[a-z_0-9]*\.adb") use "\([^"]*\)";.*/\1/p' examples.gpr)
 
@@ -117,6 +118,7 @@ endif
 ifeq ($(HAVE_GLU),yes)
 	gprbuild -p -q fltkada_glu.gpr
 	gprbuild -p -q tests_glu.gpr
+	gprbuild -p -q tests_glu_programs.gpr
 else
 	@echo "pkg-config finds no glu: FLTKAda's GLU isn't built or tested."
 endif

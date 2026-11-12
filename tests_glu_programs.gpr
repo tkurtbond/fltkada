@@ -1,0 +1,49 @@
+
+
+
+--  Programmed by T. Kurt Bond and Claude Opus 5.5
+--  Released into the public domain
+
+
+--  The ports of FLTK's test programs that use GLU, in test/glu, built
+--  only with the GLU library (fltkada_glu.gpr), into bin with the other
+--  programs, where make smoke runs them.  They share GL1 with the
+--  programs in test/, compiled again here.
+
+
+with
+
+    "fltkada_glu",
+    "proj/common";
+
+
+project Tests_GLU_Programs is
+
+
+    for Languages use ("Ada");
+
+    for Source_Dirs use ("test/glu", "test");
+    for Object_Dir  use "obj/glu_programs";
+    for Exec_Dir    use "bin";
+
+    for Main use
+       ("fractals.adb",
+        "glpuzzle.adb");
+
+    package Builder is
+        for Executable ("fractals.adb") use "fractals";
+        for Executable ("glpuzzle.adb") use "glpuzzle";
+
+        for Default_Switches ("Ada") use
+            Common.Builder'Default_Switches ("Ada");
+        for Global_Compilation_Switches ("Ada") use
+            Common.Builder'Global_Compilation_Switches ("Ada");
+    end Builder;
+
+    package Compiler       renames Common.Compiler;
+    package Binder         renames Common.Binder;
+    package Linker         renames Common.Linker;
+    package Pretty_Printer renames Common.Pretty_Printer;
+
+
+end Tests_GLU_Programs;
