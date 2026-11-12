@@ -4744,6 +4744,76 @@ the same. No binding change was needed. One FLTKAda bug was found,
   games in all eight it was asked for. As in pofltk, no difficulty is
   marked in the menu: the C++ marks the wrong item.
 
+#### Phase 28: the unit tests, the terminal, the demo and threads [done, 2026-11-12]
+
+Compared as Phases 26 and 27 were: each port and FLTK's build under the
+same private Xvfb (1280x1024, no window manager), driven by xdotool,
+with `XDG_CONFIG_HOME` a scratch directory holding `fltk.org/`. The
+programs from upstream FLTKAda that no phase covered (†) were compared
+too. Two FLTKAda bugs were found, 138 and 139, and no FLTK issue.
+
+- FLTKAda-BUGS.md 138: `Filenames.Set_Extension` raised
+  `Constraint_Error` for every name, from upstream on. Found porting
+  `demo`; `test_filenames` checks it now.
+- FLTKAda-BUGS.md 139: a `Text_Display` had no scrollbar size of its
+  own; `Set_Scrollbar_Width` is FLTK's deprecated `scrollbar_width`,
+  which sets the global size. `Get_Scrollbar_Size` and
+  `Set_Scrollbar_Size` are bound now. Found porting `unittests`.
+- `unittests`: the 13 drawn pages are AE 0 against FLTK's build, the
+  Scrollbar Size page also with both sliders moved, and the Terminal
+  page with `time ()` fixed by a preloaded shim. `--core` passes and
+  exits 0, and with a check broken on purpose exits with the number of
+  failed tests, as the C++'s `RUN_ALL_TESTS` does; `make check` and
+  `make valgrind` run it so (`SELFCHECK_ARGS` in the Makefile), and
+  the smoke run runs it plain, as a program that waits. Its core suite
+  tests `fl_filename` (ext, setext, relative, absolute) where the C++
+  tests `Fl_String`, which FLTKAda doesn't bind, so the Core page and
+  `--core`'s output differ from the C++'s only in the tests' names.
+  The Images page reverses the rows itself for the C++'s negative line
+  step, which FLTKAda doesn't accept. A group's `Forge.Create` leaves
+  no group current, so every page calls `Begin_Current` where the C++
+  relies on its constructor's `begin ()`; doc/binding_architecture.md
+  §8.1 says so now. The C++ strings of ten pages were copied by a
+  script from FLTK's sources.
+- `demo`: 13 shots, AE 0 but for the last two, which show the
+  terminal and differ only in its text: the paths, and FLTK's
+  `fluid_path` and `options_path` lines, which the port leaves out.
+  stdout is the same. `test/demo.menu` is FLTK's, naming the ports:
+  `browser.adb` and `editor.adb` for the `.cxx` files, and `fluid`
+  without `valuators.fl`. FLTKAda ships no `rgb.txt`, so colbrowser
+  says it can't open it. A leaf button runs the program as FLTK's
+  does, with `system` and `&`, in the menu's directory; `fluid` and
+  `fltk-options` come from `PATH`, and `FLTK_DOCDIR` isn't set. Exit
+  hides the form, where FLTK calls `exit (0)`. Without an argument
+  the menu is `demo.menu` beside the program, or else `test/demo.menu`
+  beside `bin/`.
+- `terminal`: 50 states, AE 0, each different from the one before, and
+  the same stdout: the 11 escape-sequence tests and their wrap-around,
+  every Terminal Tests and Terminal Ops button, the colour, box, font
+  and scrollbar size, margin and colour inputs, the interactive
+  cursor, Show File (a file and a missing one), Command (a local
+  command: the default pings google.com), the Speed Test and Ring
+  Debug. The tests are in `test/terminal_tests.ads`, written from
+  FLTK's `terminal.cxx` by `tools/terminal_tests.py`. The C++'s
+  `append (NULL)` before a command's output is left out, and Ring
+  Debug's `charflags` shows only the bits `Get_Style_Flags` reports.
+- `threads`: both windows AE 0 at startup, with a preloaded shim
+  parking every thread but the main one at its first `Fl::lock`. Run
+  freely, both builds print consecutive primes and turn the label red
+  past 2,000,000, and Escape ends both at once with status 0. Ada
+  always has tasks, so the C++'s "threading not supported" branch is
+  gone; the C++ lets `exit` kill its threads, where the port's tasks
+  stop on a flag set when `Run` returns. Under valgrind a threaded
+  FLTK program, the C++ too, handles events only with
+  `--fair-sched=yes`; `make valgrind` doesn't run `threads`.
+- † `hello` was already AE 0. `bitmap` had a title the C++ lacks;
+  `clock` didn't end when one window closed; `color_chooser` rounded
+  its image's colours where the C++ truncates (AE 18.87), and ignored
+  its arguments (it can't choose an X visual by number: Xlib isn't
+  bound). `cursor` differed at three of four states and was rewritten.
+  All five are AE 0 now, `color_chooser` over 8 states and `cursor`
+  over 7, the custom cursor clean under valgrind.
+
 ## Open questions
 
 All five were decided by the user on 2026-11-03.

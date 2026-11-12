@@ -99,6 +99,15 @@ begin
     Raises (List_File'Access, Ada.IO_Exceptions.Name_Error'Identity,
         "Get_Listing of a file");
 
+    --  FLTKAda-BUGS.md 138: Set_Extension raised Constraint_Error for
+    --  every name.
+    Check (Fnm.Set_Extension ("/a/b.cxx", ".menu") = "/a/b.menu",
+        "Set_Extension replaces an extension: " & Fnm.Set_Extension ("/a/b.cxx", ".menu"));
+    Check (Fnm.Set_Extension ("/a.d/demo", ".menu") = "/a.d/demo.menu",
+        "Set_Extension adds one: " & Fnm.Set_Extension ("/a.d/demo", ".menu"));
+    Check (Fnm.Set_Extension ("b.tar.gz", "") = "b.tar",
+        "Set_Extension removes one: " & Fnm.Set_Extension ("b.tar.gz", ""));
+
     Summary;
 
 exception

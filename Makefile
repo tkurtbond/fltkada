@@ -72,9 +72,13 @@ endif
 EXAMPLES  := $(shell sed -n 's/.*for Executable ("[a-z_0-9]*\.adb") use "\([^"]*\)";.*/\1/p' examples.gpr)
 
 #  Programs in test/ that check their own results and set the exit status.
-SELFCHECK := preferences_check group_children clear_image_chosen column_widths
+SELFCHECK := preferences_check group_children clear_image_chosen column_widths unittests
+#  A self-checking program's command line in check and valgrind, as
+#  name=argument.  Without --core, unittests opens its window and waits.
+SELFCHECK_ARGS := unittests=--core
 #  Programs that wait for no one and end by themselves, with status 0.
-ONCE := $(SELFCHECK) compare page_formats dirlist filename glut_test
+#  (unittests checks itself only with --core: smoked plain, it keeps running.)
+ONCE := $(filter-out unittests,$(SELFCHECK)) compare page_formats dirlist filename glut_test
 #  A program's command line in a smoke run, as name=argument, run in test/
 #  or examples/.  anim.gif is pofltk's.
 ARGS := dirlist=. filename=../test/images/anim.gif \
@@ -148,7 +152,8 @@ check: programs display
 	done; \
 	for t in $(SELFCHECK); do \
 	  echo "== $$t (checks itself)"; \
-	  (cd test && timeout $(TIMEOUT) $(CURDIR)/bin/$$t) > obj/check/$$t.out 2>&1; got=$$?; \
+	  args=$$(for a in $(SELFCHECK_ARGS); do test "$${a%%=*}" = $$t && echo "$${a#*=}"; done); \
+	  (cd test && timeout $(TIMEOUT) $(CURDIR)/bin/$$t $$args) > obj/check/$$t.out 2>&1; got=$$?; \
 	  if [ $$got -eq 0 ]; then echo "ok   - $$t"; \
 	  else cat obj/check/$$t.out; echo "FAIL - $$t exited with $$got"; status=1; fi; \
 	done; \
@@ -163,8 +168,9 @@ valgrind: programs display
 	export XDG_CONFIG_HOME=$(CURDIR)/obj/check/config; \
 	for t in $(UNITTESTS:%=unit/%) $(SELFCHECK); do \
 	  n=$$(basename $$t); echo "== valgrind $$n"; \
+	  args=$$(for a in $(SELFCHECK_ARGS); do test "$${a%%=*}" = $$n && echo "$${a#*=}"; done); \
 	  (cd $$(dirname test/$$t) && $(VALGRIND) --log-file=$(CURDIR)/obj/check/$$n.vg \
-	    $(CURDIR)/bin/$$t) > obj/check/$$n.out 2>&1; got=$$?; \
+	    $(CURDIR)/bin/$$t $$args) > obj/check/$$n.out 2>&1; got=$$?; \
 	  if [ $$got -ne 0 ]; then echo "FAIL - $$n exited with $$got"; status=1; fi; \
 	  grep 'ERROR SUMMARY' obj/check/$$n.vg; \
 	  test/vg-check.sh obj/check/$$n.vg \

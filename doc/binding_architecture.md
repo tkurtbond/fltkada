@@ -870,6 +870,12 @@ PLAN.md has the details of each; FLTK-issues.md and pofltk's
   `Pre` or predicate guards nothing there.
 * **No C++ exception may escape the shim.** Wrap image loaders and any
   `new` sized from a file in `try`/`catch`, and return an error code.
+* **A group's `Forge.Create` leaves no group current.** `Extra_Init`
+  ends the group FLTK's constructor began, so widgets made afterwards
+  go to whatever group was current before. C++ code that relies on a
+  group's or window's constructor calling `begin()` needs an explicit
+  `Begin_Current` when ported, or a `Create` with a `Parent`; the
+  `unittests` port (PLAN.md, Phase 28) needed it for every page.
 * **Check the arithmetic at the boundary** (N1, N2, N3): an `int *`
   indexed in bytes, a line buffer `W` long where FLTK writes
   `W * abs (Depth)`, a `maxbuf` of 0. Test such a binding against the

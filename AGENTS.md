@@ -39,7 +39,7 @@ first, because every later fix is meant to start from a failing test.
 Where findings go:
 
 - **FLTKAda-BUGS.md**: bugs in FLTKAda's own code. 28 (in part), 41,
-  44 and 85 are open; every other section, 1 to 136, is fixed. (Until
+  44 and 85 are open; every other section, 1 to 139, is fixed. (Until
   2026-11-11 this listed 17–21, 23–26 and 29 as open too; they had been
   fixed in Phases 2 and 6, and the file now says so.)
 - **FLTK-issues.md**: FLTK issues pofltk's list doesn't have (F1, F2, …).
@@ -96,9 +96,10 @@ A unit test is a `test/unit/test_<area>.adb` using `Checks` and
 `FLTK.Probe` (see `test_probe.adb`), listed in `Main` in
 `tests_unit.gpr`; `make check` finds it there. A demo program goes in
 `test/`, in `Main` and `Builder` in `tests.gpr`, and the smoke run picks
-it up. Four of the existing programs check their own results and set
+it up. Five of the existing programs check their own results and set
 the exit status, and `make check` runs them: `preferences_check`,
-`group_children`, `clear_image_chosen` and `column_widths`. (This file
+`group_children`, `clear_image_chosen`, `column_widths`, and
+`unittests` with `--core` (`SELFCHECK_ARGS` in the Makefile). (This file
 first said eight, including `button`, `ask`, `dirlist` and `filename`.
 That was wrong: `button` and `ask` wait for the user, and `dirlist` and
 `filename` only print a result for their argument.)

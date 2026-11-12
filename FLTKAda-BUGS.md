@@ -3918,3 +3918,45 @@ After the next six-target run, `obj/check/config/fltk.org` also held
 FLTK's own `fltk.prefs` and `filechooser.prefs`, so the runs had been
 writing those to `~/.fltk` as well. The user's copies were left alone:
 their times don't show which were the tests'.
+
+## 138. Set_Extension raised Constraint_Error for every name
+
+**Symptom.** `FLTK.Filenames.Set_Extension ("/a/b.cxx", ".menu")`, or
+any other call, raised `Constraint_Error` (a length check at
+body/fltk-filenames.adb:559) instead of returning `"/a/b.menu"`.
+
+**Cause.** It copied `Interfaces.C.To_C (Name)` into
+`Data (1 .. Name'Length)`, but `To_C` adds the nul, so its result is
+one character longer than the slice. No test or program called it.
+
+**Found.** 2026-11-12, porting FLTK's test/demo.cxx (Phase 28), which
+makes its menu file's name with `fl_filename_setext`.
+
+**Fixed.** `Data` holds `Name`, `Suffix` and the nul, and `To_C (Name)`
+goes into `Data (1 .. Name'Length + 1)`, so FLTK never cuts the result
+short. test_filenames checks replacing, adding and removing an
+extension; it failed before the fix, under Xvfb, with the length check.
+
+## 139. A Text_Display had no scrollbar size of its own
+
+**Symptom.** A program couldn't give one `Text_Display` a different
+scrollbar size from the others. `Set_Scrollbar_Width` changed every
+widget's scrollbars, not only the display's.
+
+**Cause.** `Set_Scrollbar_Width` and `Get_Scrollbar_Width` bind
+`Fl_Text_Display::scrollbar_width`, which FLTK 1.4 deprecates: it calls
+`Fl::scrollbar_size (width)` (FL/Fl_Text_Display.H, line 269), the
+global size. FLTK's per-widget `scrollbar_size`, which Browser, Tree,
+Table and Terminal already bind, wasn't bound for `Fl_Text_Display`.
+
+**Found.** 2026-11-12, porting FLTK's test/unittest_scrollbarsize.cxx
+(Phase 28), whose "A: Scroll Size" slider sets Text Display A's own
+size.
+
+**Fixed.** `Get_Scrollbar_Size` and `Set_Scrollbar_Size` bind
+`Fl_Text_Display::scrollbar_size`, and the spec says what
+`Set_Scrollbar_Width` really does. test_text_scrollbar_size checks that
+the new call sets one display's size and not another's or the global
+one, and that `Set_Scrollbar_Width` sets the global one. With it, the
+`unittests` port's Scrollbar Size page is AE 0 against FLTK's build
+with both sliders moved.

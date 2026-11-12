@@ -101,7 +101,7 @@ is
      16#41#, 16#f0#, 16#ff#, 16#ff#, 16#ff#, 16#07#);
 
 
-    The_Window : WD.Double_Window := WD.Forge.Create (400, 400, "Sorcery of Bitmap Labels");
+    The_Window : WD.Double_Window := WD.Forge.Create (400, 400);
 
     The_Button : BTN.Button := BTN.Forge.Create (The_Window, 140, 160, 120, 120, "Bitmap");
 

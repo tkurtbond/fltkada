@@ -135,6 +135,8 @@ extern "C" unsigned int fl_text_display_get_scrollbar_align(TEXTDISPLAY td);
 extern "C" void fl_text_display_set_scrollbar_align(TEXTDISPLAY td, unsigned int a);
 extern "C" int fl_text_display_get_scrollbar_width(TEXTDISPLAY td);
 extern "C" void fl_text_display_set_scrollbar_width(TEXTDISPLAY td, int w);
+extern "C" int fl_text_display_get_scrollbar_size(TEXTDISPLAY td);
+extern "C" void fl_text_display_set_scrollbar_size(TEXTDISPLAY td, int s);
 extern "C" void fl_text_display_update_h_scrollbar(TEXTDISPLAY td);
 extern "C" void fl_text_display_update_v_scrollbar(TEXTDISPLAY td);
 

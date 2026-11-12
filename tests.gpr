@@ -137,7 +137,11 @@ project Tests is
         "shape.adb",
         "blocks.adb",
         "checkers.adb",
-        "sudoku.adb");
+        "sudoku.adb",
+        "demo.adb",
+        "threads.adb",
+        "terminal.adb",
+        "unittests.adb");
 
     package Builder is
         for Executable ("adjuster.adb")           use "adjuster";
@@ -262,6 +266,10 @@ project Tests is
         for Executable ("blocks.adb")             use "blocks";
         for Executable ("checkers.adb")           use "checkers";
         for Executable ("sudoku.adb")             use "sudoku";
+        for Executable ("demo.adb")               use "demo";
+        for Executable ("threads.adb")            use "threads";
+        for Executable ("terminal.adb")           use "terminal";
+        for Executable ("unittests.adb")          use "unittests";
 
         for Default_Switches ("Ada") use
             Common.Builder'Default_Switches ("Ada");

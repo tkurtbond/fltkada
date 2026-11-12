@@ -752,6 +752,28 @@ procedure Set_Scrollbar_Width
 
   <tr>
 <td><pre>
+int scrollbar_size() const;
+</pre></td>
+<td><pre>
+function Get_Scrollbar_Size
+       (This : in Text_Display)
+    return Integer;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
+void scrollbar_size(int newSize);
+</pre></td>
+<td><pre>
+procedure Set_Scrollbar_Size
+       (This  : in out Text_Display;
+        Value : in     Integer);
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 int shortcut() const;
 </pre></td>
 <td><pre>

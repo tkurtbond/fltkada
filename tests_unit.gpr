@@ -203,6 +203,7 @@ project Tests_Unit is
         "test_input_choice_item.adb",
         "test_menu_has_item.adb",
         "test_slider_box.adb",
+        "test_text_scrollbar_size.adb",
         "test_screen_numbers.adb",
         "test_label_null.adb",
         "test_label_margin.adb",

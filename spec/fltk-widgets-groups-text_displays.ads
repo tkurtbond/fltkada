@@ -654,6 +654,9 @@ package FLTK.Widgets.Groups.Text_Displays is
            (This  : in out Text_Display;
             Align : in     Alignment);
 
+    --  FLTK's scrollbar_width, which it deprecates: it gets and sets the
+    --  global Static.Get/Set_Default_Scrollbar_Size, for every widget.
+    --  Set_Scrollbar_Size sets this display's own (FLTKAda-BUGS.md 139).
     function Get_Scrollbar_Width
            (This : in Text_Display)
         return Natural;
@@ -661,6 +664,16 @@ package FLTK.Widgets.Groups.Text_Displays is
     procedure Set_Scrollbar_Width
            (This  : in out Text_Display;
             Width : in     Natural);
+
+    --  This display's scrollbar size in pixels; 0, the default, means
+    --  the global Static.Get_Default_Scrollbar_Size.
+    function Get_Scrollbar_Size
+           (This : in Text_Display)
+        return Integer;
+
+    procedure Set_Scrollbar_Size
+           (This  : in out Text_Display;
+            Value : in     Integer);
 
     procedure Update_Horizontal_Scrollbar
            (This : in out Text_Display);
@@ -897,6 +910,8 @@ private
     pragma Inline (Set_Scrollbar_Alignment);
     pragma Inline (Get_Scrollbar_Width);
     pragma Inline (Set_Scrollbar_Width);
+    pragma Inline (Get_Scrollbar_Size);
+    pragma Inline (Set_Scrollbar_Size);
     pragma Inline (Update_Horizontal_Scrollbar);
     pragma Inline (Update_Vertical_Scrollbar);
 

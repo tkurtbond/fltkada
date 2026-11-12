@@ -681,6 +681,18 @@ package body FLTK.Widgets.Groups.Text_Displays is
     pragma Import (C, fl_text_display_set_scrollbar_width, "fl_text_display_set_scrollbar_width");
     pragma Inline (fl_text_display_set_scrollbar_width);
 
+    function fl_text_display_get_scrollbar_size
+           (TD : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_text_display_get_scrollbar_size, "fl_text_display_get_scrollbar_size");
+    pragma Inline (fl_text_display_get_scrollbar_size);
+
+    procedure fl_text_display_set_scrollbar_size
+           (TD : in Storage.Integer_Address;
+            S  : in Interfaces.C.int);
+    pragma Import (C, fl_text_display_set_scrollbar_size, "fl_text_display_set_scrollbar_size");
+    pragma Inline (fl_text_display_set_scrollbar_size);
+
     procedure fl_text_display_update_h_scrollbar
            (TD : in Storage.Integer_Address);
     pragma Import (C, fl_text_display_update_h_scrollbar, "fl_text_display_update_h_scrollbar");
@@ -2297,6 +2309,24 @@ package body FLTK.Widgets.Groups.Text_Displays is
            (This.Void_Ptr,
             Interfaces.C.int (Width));
     end Set_Scrollbar_Width;
+
+
+    function Get_Scrollbar_Size
+           (This : in Text_Display)
+        return Integer is
+    begin
+        return Integer (fl_text_display_get_scrollbar_size (This.Void_Ptr));
+    end Get_Scrollbar_Size;
+
+
+    procedure Set_Scrollbar_Size
+           (This  : in out Text_Display;
+            Value : in     Integer) is
+    begin
+        fl_text_display_set_scrollbar_size
+           (This.Void_Ptr,
+            Interfaces.C.int (Value));
+    end Set_Scrollbar_Size;
 
 
     procedure Update_Horizontal_Scrollbar

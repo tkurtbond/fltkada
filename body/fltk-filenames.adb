@@ -552,11 +552,15 @@ package body FLTK.Filenames is
             Suffix : in String)
         return Path_String
     is
-        Data : Interfaces.C.char_array (1 .. Interfaces.C.size_t (Max_Path_Length)) :=
+        --  Room for Name, Suffix and the nul, so that FLTK never cuts the
+        --  result short.  To_C (Name) is Name'Length + 1 long (FLTKAda-BUGS.md
+        --  138).
+        Data : Interfaces.C.char_array
+            (1 .. Interfaces.C.size_t (Name'Length + Suffix'Length + 1)) :=
            (others => Interfaces.C.char'Val (0));
         Result : Interfaces.C.Strings.chars_ptr;
     begin
-        Data (1 .. Name'Length) := Interfaces.C.To_C (Name);
+        Data (1 .. Name'Length + 1) := Interfaces.C.To_C (Name);
         Result := filename_setext
            (Data,
             Data'Length,

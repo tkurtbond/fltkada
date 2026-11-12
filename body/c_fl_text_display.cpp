@@ -539,6 +539,14 @@ void fl_text_display_set_scrollbar_width(TEXTDISPLAY td, int w) {
     static_cast<Fl_Text_Display*>(td)->scrollbar_width(w);
 }
 
+int fl_text_display_get_scrollbar_size(TEXTDISPLAY td) {
+    return static_cast<Fl_Text_Display*>(td)->scrollbar_size();
+}
+
+void fl_text_display_set_scrollbar_size(TEXTDISPLAY td, int s) {
+    static_cast<Fl_Text_Display*>(td)->scrollbar_size(s);
+}
+
 void fl_text_display_update_h_scrollbar(TEXTDISPLAY td) {
     (static_cast<Fl_Text_Display*>(td)->*(&Friend_Text_Display::update_h_scrollbar))();
 }

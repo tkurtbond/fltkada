@@ -9,9 +9,12 @@
 
 with
 
+    Ada.Command_Line,
+    Ada.Text_IO,
     FLTK.Asks,
     FLTK.Draw,
     FLTK.Images.RGB,
+    FLTK.Screen,
     FLTK.Static,
     FLTK.Widgets.Boxes,
     FLTK.Widgets.Buttons,
@@ -53,12 +56,13 @@ is
                 for X in 0 .. W - 1 loop
                     X_Frac := Long_Float (X) / Long_Float (W - 1);
                     Offset := 3 * FLTK.Size_Type (Y * W + X);
-                    Data (Offset + 1) :=
-                        FLTK.Color_Component (255.0 * (1.0 - X_Frac) * (1.0 - Y_Frac));
-                    Data (Offset + 2) :=
-                        FLTK.Color_Component (255.0 * (1.0 - X_Frac) * Y_Frac);
-                    Data (Offset + 3) :=
-                        FLTK.Color_Component (255.0 * X_Frac * Y_Frac);
+                    --  Truncated, as C++'s uchar() does: a conversion rounds.
+                    Data (Offset + 1) := FLTK.Color_Component
+                        (Long_Float'Truncation (255.0 * ((1.0 - X_Frac) * (1.0 - Y_Frac))));
+                    Data (Offset + 2) := FLTK.Color_Component
+                        (Long_Float'Truncation (255.0 * ((1.0 - X_Frac) * Y_Frac)));
+                    Data (Offset + 3) := FLTK.Color_Component
+                        (Long_Float'Truncation (255.0 * (X_Frac * Y_Frac)));
                 end loop;
             end loop;
         end return;
@@ -108,6 +112,21 @@ is
 
     My_Color : FLTK.Color := FLTK.Background_Color;
 
+    Arg_Count : Natural;
+
+
+    function Usage
+        return Integer is
+    begin
+        Ada.Text_IO.Put_Line
+           ("usage: " & Ada.Command_Line.Command_Name & " <switches> visual-number");
+        Ada.Text_IO.Put_Line (" - : default visual");
+        Ada.Text_IO.Put_Line (" r : call Fl::visual(FL_RGB)");
+        Ada.Text_IO.Put_Line (" c : call Fl::own_colormap()");
+        Ada.Text_IO.Put_Line (Stc.Help_Message);
+        return 1;
+    end Usage;
+
 
     procedure Callback_One
            (Ignore : in out FLTK.Widgets.Widget'Class) is
@@ -153,6 +172,36 @@ begin
     Image_Box.Set_Image (The_Image);
 
     My_Pens.Set_Alignment (FLTK.Align_Top);
+
+    begin
+        Stc.Parse_Args (Arg_Count);
+    exception
+    when Stc.Argument_Error =>
+        return Usage;
+    end;
+    if Arg_Count < Ada.Command_Line.Argument_Count - 1 then
+        return Usage;
+    end if;
+
+    if Arg_Count /= Ada.Command_Line.Argument_Count then
+        declare
+            Visual : constant String := Ada.Command_Line.Argument (Arg_Count + 1);
+        begin
+            if Visual (Visual'First) = 'r' then
+                if not FLTK.Screen.Set_Visual_Mode (FLTK.Screen.RGB) then
+                    Ada.Text_IO.Put_Line ("Fl::visual(FL_RGB) returned false.");
+                end if;
+            elsif Visual (Visual'First) = 'c' then
+                Stc.Own_Colormap;
+            elsif Visual (Visual'First) /= '-' then
+                --  FLTK's test chooses an X visual by number, with Xlib,
+                --  which FLTKAda doesn't bind.
+                Ada.Text_IO.Put_Line
+                   (Ada.Text_IO.Standard_Error, "Visual id's not supported by this port.");
+                return 1;
+            end if;
+        end;
+    end if;
 
     The_Window.Show_With_Args;
 
