@@ -14,6 +14,9 @@ package FLTK.Widgets.Valuators.Rollers is
 
     type Roller is new Valuator with private;
 
+    --  FLTK's FL_VERTICAL and FL_HORIZONTAL.
+    type Roller_Kind is (Vertical_Roller, Horizontal_Roller);
+
     type Roller_Reference (Data : not null access Roller'Class) is
         limited null record with Implicit_Dereference => Data;
 
@@ -49,6 +52,19 @@ package FLTK.Widgets.Valuators.Rollers is
         return Event_Outcome;
 
 
+
+
+    --  Roller Type  --
+
+    function Get_Kind
+           (This : in Roller)
+        return Roller_Kind;
+
+    procedure Set_Kind
+           (This : in out Roller;
+            To   : in     Roller_Kind);
+
+
 private
 
 
@@ -73,6 +89,9 @@ private
 
     pragma Inline (Draw);
     pragma Inline (Handle);
+
+    pragma Inline (Get_Kind);
+    pragma Inline (Set_Kind);
 
 
 end FLTK.Widgets.Valuators.Rollers;

@@ -74,7 +74,29 @@ project Tests is
         "tree_simple.adb",
         "tree_as_container.adb",
         "tree_custom_sort.adb",
-        "tree_of_tables.adb");
+        "tree_of_tables.adb",
+        "fast_slow.adb",
+        "message.adb",
+        "minimum.adb",
+        "navigation.adb",
+        "twowin.adb",
+        "windowfocus.adb",
+        "wizard.adb",
+        "inactive.adb",
+        "radio.adb",
+        "resize.adb",
+        "tabs.adb",
+        "valuators.adb",
+        "browser.adb",
+        "colbrowser.adb",
+        "input.adb",
+        "output.adb",
+        "pack.adb",
+        "resizebox.adb",
+        "scroll.adb",
+        "tile.adb",
+        "iconize.adb",
+        "native_filechooser.adb");
 
     package Builder is
         for Executable ("adjuster.adb")           use "adjuster";
@@ -136,6 +158,28 @@ project Tests is
         for Executable ("tree_as_container.adb")  use "tree_as_container";
         for Executable ("tree_custom_sort.adb")   use "tree_custom_sort";
         for Executable ("tree_of_tables.adb")     use "tree_of_tables";
+        for Executable ("fast_slow.adb")          use "fast_slow";
+        for Executable ("message.adb")            use "message";
+        for Executable ("minimum.adb")            use "minimum";
+        for Executable ("navigation.adb")         use "navigation";
+        for Executable ("twowin.adb")             use "twowin";
+        for Executable ("windowfocus.adb")        use "windowfocus";
+        for Executable ("wizard.adb")             use "wizard";
+        for Executable ("inactive.adb")           use "inactive";
+        for Executable ("radio.adb")              use "radio";
+        for Executable ("resize.adb")             use "resize";
+        for Executable ("tabs.adb")               use "tabs";
+        for Executable ("valuators.adb")          use "valuators";
+        for Executable ("browser.adb")            use "browser";
+        for Executable ("colbrowser.adb")         use "colbrowser";
+        for Executable ("input.adb")              use "input";
+        for Executable ("output.adb")             use "output";
+        for Executable ("pack.adb")               use "pack";
+        for Executable ("resizebox.adb")          use "resizebox";
+        for Executable ("scroll.adb")             use "scroll";
+        for Executable ("tile.adb")               use "tile";
+        for Executable ("iconize.adb")            use "iconize";
+        for Executable ("native_filechooser.adb") use "native-filechooser";
 
         for Default_Switches ("Ada") use
             Common.Builder'Default_Switches ("Ada");

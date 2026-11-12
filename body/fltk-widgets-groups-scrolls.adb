@@ -407,7 +407,7 @@ package body FLTK.Widgets.Groups.Scrolls is
     is
         Result : constant Interfaces.C.unsigned_char := fl_widget_get_type (This.Void_Ptr);
     begin
-        return Scroll_Kind'Val (Result - 1);
+        return Scroll_Kind'Val (Result);
     exception
     when Constraint_Error => raise Internal_FLTK_Error with
         "Fl_Scroll::type returned unexpected unsigned char value of " &
@@ -419,7 +419,7 @@ package body FLTK.Widgets.Groups.Scrolls is
            (This : in out Scroll;
             Mode : in     Scroll_Kind) is
     begin
-        fl_widget_set_type (This.Void_Ptr, Scroll_Kind'Pos (Mode) + 1);
+        fl_widget_set_type (This.Void_Ptr, Scroll_Kind'Pos (Mode));
     end Set_Kind;
 
 

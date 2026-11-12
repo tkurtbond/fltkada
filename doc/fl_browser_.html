@@ -68,6 +68,12 @@ already extended from it.</p>
     <td>Sort_Order</td>
   </tr>
 
+  <tr>
+    <td>FL_NORMAL_BROWSER, FL_SELECT_BROWSER,<br />
+    FL_HOLD_BROWSER, FL_MULTI_BROWSER</td>
+    <td>Browser_Kind</td>
+  </tr>
+
 </table>
 
 
@@ -94,6 +100,24 @@ Fl_Scrollbar scrollbar;
 function V_Bar
        (This : in out Browser)
     return Valuators.Sliders.Scrollbars.Scrollbar_Reference;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>See type method for Fl_Widget.</td>
+<td><pre>
+function Get_Kind
+       (This : in Browser)
+    return Browser_Kind;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>See type method for Fl_Widget.</td>
+<td><pre>
+procedure Set_Kind
+       (This : in out Browser;
+        To   : in     Browser_Kind);
 </pre></td>
   </tr>
 

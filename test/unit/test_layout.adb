@@ -232,6 +232,13 @@ begin
         Prb.Release;
         Scroll.Set_Kind (Scr.Horizontal);
         Check (Scroll.Get_Kind = Scr.Horizontal, "Set_Kind (Horizontal)");
+        Scroll.Set_Kind (Scr.Neither);
+        Check (Scroll.Get_Kind = Scr.Neither, "Set_Kind (Neither), FLTK's type 0");
+        Check (Prb.Capture (Scroll) and not Scroll.V_Bar.Is_Visible
+                and not Scroll.H_Bar.Is_Visible,
+            "a scroll of kind Neither shows no scrollbars");
+        Prb.Release;
+        Scroll.Set_Kind (Scr.Horizontal);
         Scroll.Clear;
         Check (Scroll.Number_Of_Children = 2, "Clear removes the content, not the scrollbars");
         Check (Prb.Capture (Scroll), "and the scroll still draws");

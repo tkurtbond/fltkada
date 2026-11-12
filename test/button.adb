@@ -47,7 +47,7 @@ is
 
 
     Button_One   : Btn.Button := Btn.Forge.Create (The_Window,  20, 20, 80, 25, "&Beep");
-    Button_Two   : Btn.Button := Btn.Forge.Create (The_Window, 120, 20, 80, 25, "&No Op");
+    Button_Two   : Btn.Button := Btn.Forge.Create (The_Window, 120, 20, 80, 25, "&no op");
     Button_Three : Btn.Button := Btn.Forge.Create (The_Window, 220, 20, 80, 25, "E&xit");
 
 

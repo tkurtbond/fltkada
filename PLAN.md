@@ -4323,6 +4323,131 @@ never compared with FLTK's build: compare it, and rewrite it as a
 port if it differs. The same goes for `bitmap`, `clock`,
 `color_chooser`, `cursor` and `hello`, which are in no phase above.
 
+#### Phase 21: widgets and windows [done, 2026-11-11]
+
+Compared under one private Xvfb (1280x1024, no window manager), with
+the steps replayed by `xdotool` and a screenshot after each.
+
+- `adjuster`† matches FLTK's build: 6 shots, after drags both ways, a
+  right-click and a middle-button drag, all AE 0. Not rewritten.
+- `ask`† was an older version of FLTK's program, with other prompts, no
+  icon labels, no limit on the password, other pop-up text and a
+  window title FLTK's hasn't. Rewritten as a port (guided by pofltk's
+  `Ask.Mod`). Compared through both renames (the password stops at 20
+  characters), the 5-second pop-up and its Escape, and the quit dialog's
+  Dunno, centred over the window, and Quit: all AE 0.
+- `button`† differed only in a label: "&No Op" for FLTK's "&no op".
+  Corrected; AE 0.
+- `buttons`† was an older version, without the keypad of compact
+  buttons, the scheme choice, the tooltips naming each kind of button,
+  and the resizable window. Rewritten as a port. Compared through a
+  tooltip, the light, round and check buttons, a keypad press, and
+  changing the scheme to gtk+ from the choice's menu: all AE 0.
+- New ports, each AE 0 at every shot and with the same output as
+  FLTK's build:
+  - `fast_slow`, from the C++ that FLUID generates from `fast_slow.fl`:
+    dragging and releasing both sliders, a click, and dragging the
+    output-only slider, which doesn't move.
+  - `message`: every dialog in turn, answered by the keyboard, and again
+    with each cancelled; the printed results ("fl_choice returned N",
+    "fl_input returned ...", or NULL) are the same.
+  - `minimum`, whose title is the program's name.
+  - `navigation`, unseeded and with the seed 7: typing, Tab, the arrow
+    keys moving between the random inputs, and the Arrow Focus button.
+  - `twowin`: each window's button gives focus to the other window's
+    input, and typing goes there.
+  - `windowfocus`: the first key pops the second window up, and the
+    focus stays on the input.
+  - `wizard`: Next through the panels and Prev back.
+  - `inactive`, from `inactive.fl`: active and inactive in turn, with
+    the clock masked. FLTK's menu has five items all labelled "item";
+    `Add` would replace an item of the same name, so the port adds
+    "item1" to "item5" and relabels each with `Set_Label`.
+  - `radio`, from `radio.fl`: each kind of button and both radio
+    groups. FLTK prints `changed()`, which is the flag's bit, 128, where
+    FLTKAda's `Has_Changed` is a Boolean, so the port prints 128 for
+    True.
+  - `resize`, from `resize.fl`: each move and grow and shrink.
+  - `tabs`, from `tabs.fl`: selecting a tab, adding two tabs and then five, closing
+    one with its close button, the overflow choice set to pulldown, and
+    the wizard's buttons. Closable tabs needed FL_WHEN_CLOSED, which
+    FLTKAda lacked: FLTKAda-BUGS.md 130, tested by
+    `test/unit/test_closable_tab.adb`. FLUID fills the overflow choice
+    with `menu()`, which also makes the first item the value
+    (Fl_Menu_.cxx, `menu`); `Add` doesn't, so the port calls
+    `Set_Chosen (1)`, without which the choice showed blank.
+  - `valuators`, from `valuators.fl`: drags of the sliders, rollers,
+    dials, scrollbars and adjusters, and clicks on the counters and
+    spinners, with the terminal showing each callback's value. A
+    horizontal roller needed a kind, which FLTKAda's Roller lacked:
+    FLTKAda-BUGS.md 131, tested by `test/unit/test_roller_kind.adb`.
+    The values are printed with C's `snprintf` and `%g`, as FLTK's are,
+    and a generic callback takes the name FLTK passes as user data.
+  - `browser`, run on its own source: a click, a double click, Swap,
+    Sort, the line buttons with line 100, and the type and when
+    choices, with the terminal showing each callback. Changing the type
+    needed `Get_Kind` and `Set_Kind` on Browser, which FLTKAda lacked:
+    FLTKAda-BUGS.md 132, tested by `test/unit/test_browser_kind.adb`;
+    `test_constants` now checks both `Browser_Kind` and `Roller_Kind`.
+    `Get_Clicks` counts the first click and `Fl::event_clicks` doesn't,
+    so the port prints one less. As pofltk's does, it keeps FLTK's last
+    when value, 11 + 6 = 17, which is `FL_WHEN_CLOSED` and
+    `FL_WHEN_CHANGED` rather than the two flags it names.
+  - `colbrowser`, run on FLTK's `test/rgb.txt`: clicks on colours,
+    drags of the three sliders, arrow keys, and the database button's
+    dialog with a missing file and then `rgb.txt` again. Where FLTK's
+    program reads past the end of its table (no file loaded, or so many
+    reloads that the browser has more lines than the table) the port
+    stops at the end.
+  - `input`: typing in each field (with a letter the float field
+    refuses), each when button, print changed(), Tab Nav and Arrow
+    Nav, and the colour chooser, cancelled and confirmed. With
+    selection_color it differs from FLTK's, which calls
+    `fl_color_chooser` without a mode: FLTK then shows a component of 0
+    as "0", and `FLTK.Asks.Color_Chooser`, which always passes one,
+    shows "0.000" (FLTK-issues.md F37). Built with a mode, the C++
+    matched at AE 0.
+  - `output`: the font and size sliders, typing in the input, a
+    selection dragged in the multiline output, and a tooltip. FLTK's
+    `static_value` is `Set_Value`, which copies, and looks the same.
+  - `pack`, with FLTK's default settings (an `Fl_Pack` in an
+    `Fl_Scroll`): horizontal and vertical, the spacing slider, and both
+    scrollbars. The 24 buttons are allocated, and freed when `Run`
+    returns.
+  - `resizebox`: each direction and off, with the window resized by
+    `xdotool windowsize` (Xvfb has no window manager). FLTK's program
+    makes the buttons before the boxes it puts under them; the port
+    makes its boxes later, so it adds the buttons again to put them back
+    on top, in FLTK's order. `FL_FRAME_BOX` is `Engraved_Box`.
+  - `scroll`: the box button, type 0 and `BOTH_ALWAYS`, the scrollbars
+    moved to the left and top, a page scrolled by clicking the
+    scrollbar, and the window resized. Type 0, which shows no
+    scrollbars, had no `Scroll_Kind` literal (FLTKAda-BUGS.md 133).
+    FLTK's menu leaves out `ALWAYS_ON`, so the port maps its items
+    through a table. The drawing is a `Widget` extension overriding
+    `Draw`; the 80 buttons are allocated, and freed when `Run` returns.
+  - `tile`, FLTK's new `Fl_Tile` test: borders dragged between the
+    boxes and the child window, the 30x30 minimum holding against a drag
+    past it, and the window resized. `Init_Size_Range` must come before
+    the children are made, so the port makes them in a nested block.
+  - `iconize`, under openbox on Xvfb: hide, show, iconize (`Iconify`;
+    the main window's `WM_STATE` became Iconic, then Normal again on
+    show), show this, and closing the control window, after which both
+    exited with status 0. FLTK's `window_cb` calls `exit (0)`; the port
+    hides both windows instead, so `Run` returns and the windows are
+    finalized.
+  - `native-filechooser` (the executable keeps FLTK's name): the
+    window, typing in the filename input, a tooltip, and a file given
+    as the first argument with `-geometry` after it. The chooser itself
+    isn't driven, as a native dialog can reach the desktop. The port
+    takes the file as its own option through `Parse_Args`, as pofltk's
+    does, so FLTK's options after it still work. FLTK's `filename()`
+    gives "" rather than NULL with nothing chosen, so the program's
+    "(null)" branch is left out. `make smoke` listed the programs by
+    their sources' names, and so looked for `bin/native_filechooser`
+    and failed; the Makefile now lists them by executable
+    (`gpr-executables`), as it already listed the examples.
+
 ## Open questions
 
 All five were decided by the user on 2026-11-03.

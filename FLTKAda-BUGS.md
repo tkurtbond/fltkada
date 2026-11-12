@@ -3722,3 +3722,83 @@ key function is copied out before it is called.
 test/unit/test_key_bindings.adb checks a binding that adds one binding
 and removes another, and an editor freed by its own binding, sent from
 inside FLTK's dispatch; valgrind finds no error.
+
+## 130. No FL_WHEN_CLOSED, so no closable tab
+
+**Symptom.** No child of a `Tabbed_Group` could have a close button on
+its tab: `Callback_Flag` had no component for FLTK 1.4's
+`FL_WHEN_CLOSED` (16), and `Set_When` had no way to set it. FLTK's
+test/tabs makes four of its tabs closable.
+
+**Cause.** `Callback_Flag` was written for FLTK 1.3's flags, which stop
+at `FL_WHEN_ENTER_KEY` (8).
+
+**Found.** 2026-11-11, porting FLTK's test/tabs (PLAN.md, Phase 21).
+
+**Fixed.** `Callback_Flag` has a component `Closed`, bit 4, and there is
+a constant `When_Closed`, which `test_constants` checks against
+`FL_WHEN_CLOSED`. test/unit/test_closable_tab.adb checks that a click
+on a closable tab's close button calls its callback with
+`Reason_Closed`, that the callback can remove the tab, and that the
+same click on a tab without the flag doesn't.
+
+## 131. A Roller couldn't be made horizontal
+
+**Symptom.** Every `Roller` was vertical. FLTK's `Fl_Roller` works and
+draws horizontally when its `type()` is `FL_HORIZONTAL` (Fl_Roller.cxx,
+`handle` and `draw`), and FLTKAda bound no way to set it, nor a
+`Create` taking a kind, as it has for sliders and dials. FLTK's
+test/valuators has a horizontal roller.
+
+**Cause.** `FLTK.Widgets.Valuators.Rollers` bound only the constructor,
+`Draw` and `Handle`.
+
+**Found.** 2026-11-11, porting FLTK's test/valuators (PLAN.md,
+Phase 21).
+
+**Fixed.** `Rollers` has `Roller_Kind` (`Vertical_Roller`,
+`Horizontal_Roller`, which are `FL_VERTICAL` and `FL_HORIZONTAL`),
+`Get_Kind` and `Set_Kind`. test/unit/test_roller_kind.adb checks that
+a roller starts vertical, and that once horizontal a vertical drag
+leaves it alone and a drag of 20 pixels to the right moves it 20 steps
+(0.02: a roller's step is 1/1000). `test_constants` checks
+`Roller_Kind` against `FL_VERTICAL` and `FL_HORIZONTAL`.
+
+## 132. A browser's kind couldn't be changed
+
+**Symptom.** Whether a browser is normal, select, hold or multi was
+fixed by the type it was created as (`Textline_Browser`, `Hold_Browser`,
+`Multi_Browser`), and there was no way to ask it either. FLTK's
+`Fl_Browser_::type()` can change it at any time, and FLTK's
+test/browser does so from a choice. Only a multi browser keeps more
+than one line selected (Fl_Browser_.cxx, `select`).
+
+**Cause.** `FLTK.Widgets.Groups.Browsers` bound no `type()`.
+
+**Found.** 2026-11-11, porting FLTK's test/browser (PLAN.md, Phase 21).
+
+**Fixed.** `Browsers` has `Browser_Kind` (`Normal_Kind`, `Select_Kind`,
+`Hold_Kind`, `Multi_Kind`, FLTK's `FL_NORMAL_BROWSER` to
+`FL_MULTI_BROWSER`, which `test_constants` checks), `Get_Kind` and
+`Set_Kind`. The literals aren't `Hold_Browser` and `Multi_Browser`,
+which would clash under `use` with the types of those names.
+test/unit/test_browser_kind.adb checks each type's kind, and that a
+normal browser made `Multi_Kind` keeps two lines selected where before
+it kept one.
+
+## 133. A scroll couldn't be set to show no scrollbars
+
+**Symptom.** `Scroll_Kind` had no literal for FLTK's `Fl_Scroll` type
+0, which shows neither scrollbar, so `Set_Kind` couldn't ask for it, and
+`Get_Kind` of a scroll whose type was 0 raised `Internal_FLTK_Error`.
+FLTK's test/scroll offers type 0 in its choice.
+
+**Cause.** `Scroll_Kind` began at `Horizontal`, and the body added and
+subtracted 1 to convert to and from FLTK's values, leaving 0 out.
+
+**Found.** 2026-11-11, porting FLTK's test/scroll (PLAN.md, Phase 21).
+
+**Fixed.** `Scroll_Kind` begins with `Neither`, and its positions are
+FLTK's values, which `test_constants` checks. test/unit/test_layout.adb
+checks that a scroll set to `Neither` gives `Neither` back and shows
+neither scrollbar.

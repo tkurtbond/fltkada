@@ -7,6 +7,15 @@ come first in each list.
 
 ## Changes that can stop a program compiling
 
+- **`Scrolls.Scroll_Kind` begins with a new literal, `Neither`**, FLTK's
+  type 0, so the other literals' `'Pos` is one more, and a `case` over
+  `Scroll_Kind` without `others` needs the new arm.
+  [FLTKAda-BUGS.md 133](FLTKAda-BUGS.md#133-a-scroll-couldnt-be-set-to-show-no-scrollbars).
+- **`Callback_Flag` has a fifth component, `Closed`**, for FLTK's
+  `FL_WHEN_CLOSED`, with the constant `When_Closed`. An aggregate of the
+  record that names all four old components, or gives them by position,
+  no longer compiles; one with `others` does.
+  [FLTKAda-BUGS.md 130](FLTKAda-BUGS.md#130-no-fl_when_closed-so-no-closable-tab).
 - **`Widgets.Measure_Label` has a third parameter, `Wrap`, defaulting
   to 0**, FLTK's wrap width. Calls compile as before, but an
   `overriding` declaration of it, or an access to it, must add the

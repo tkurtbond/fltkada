@@ -42,23 +42,26 @@ XVFB := env -u WAYLAND_DISPLAY xvfb-run -a -s '-screen 0 1280x1024x24'
 
 #  The programs, from the project files, so the lists can't drift apart.
 gpr-mains = $(sort $(patsubst "%.adb",%,$(shell grep -o '"[a-z_0-9]*\.adb"' $(1))))
+#  A program's executable can be named otherwise (FLTK's
+#  native-filechooser), so the programs are listed by executable.
+gpr-executables = $(sort $(shell sed -n 's/.*for Executable ("[a-z_0-9]*\.adb") *use "\([^"]*\)";.*/\1/p' $(1)))
 UNITTESTS := $(call gpr-mains,tests_unit.gpr)
 
 #  The separate libraries (PLAN.md, Phase 16) are built and tested only
 #  where FLTK has what they bind.  Forms needs FLTK's fltk_forms library.
 HAVE_FORMS := $(shell echo 'int main () { return 0; }' \
     | $(CXX) -x c++ - $$(fltk-config --use-forms --ldflags) -o /dev/null 2>/dev/null && echo yes)
-PROGRAMS  := $(call gpr-mains,tests.gpr) $(call gpr-mains,tests_2022.gpr)
+PROGRAMS  := $(call gpr-executables,tests.gpr) $(call gpr-executables,tests_2022.gpr)
 ifeq ($(HAVE_FORMS),yes)
 UNITTESTS += $(call gpr-mains,tests_forms.gpr)
-PROGRAMS  += $(call gpr-mains,tests_forms_programs.gpr)
+PROGRAMS  += $(call gpr-executables,tests_forms_programs.gpr)
 endif
 #  Cairo needs cairo's headers and library, which pkg-config finds.
 HAVE_CAIRO := $(shell pkg-config --exists cairo && echo yes)
 CAIRO_FLAGS := -XCAIRO_INCLUDE=$(shell pkg-config --variable=includedir cairo 2>/dev/null)/cairo
 ifeq ($(HAVE_CAIRO),yes)
 UNITTESTS += $(call gpr-mains,tests_cairo.gpr)
-PROGRAMS  += $(call gpr-mains,tests_cairo_programs.gpr)
+PROGRAMS  += $(call gpr-executables,tests_cairo_programs.gpr)
 endif
 #  GLU isn't FLTK's or GL's, and a system can have GL without it.
 HAVE_GLU := $(shell pkg-config --exists glu && echo yes)

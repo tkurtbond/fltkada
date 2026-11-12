@@ -29,6 +29,12 @@ package FLTK.Widgets.Groups.Browsers is
 
     type Sort_Order is (Ascending, Descending);
 
+    --  FLTK's FL_NORMAL_BROWSER, FL_SELECT_BROWSER, FL_HOLD_BROWSER
+    --  and FL_MULTI_BROWSER.
+    --  (Not Hold_Browser and Multi_Browser, the types in Textline.Hold
+    --  and Textline.Multi.)
+    type Browser_Kind is (Normal_Kind, Select_Kind, Hold_Kind, Multi_Kind);
+
     type Scrollbar_Mode is record
         Horizontal : Boolean := True;
         Vertical   : Boolean := True;
@@ -65,6 +71,14 @@ package FLTK.Widgets.Groups.Browsers is
     function V_Bar
            (This : in out Browser)
         return Valuators.Sliders.Scrollbars.Scrollbar_Reference;
+
+    function Get_Kind
+           (This : in Browser)
+        return Browser_Kind;
+
+    procedure Set_Kind
+           (This : in out Browser;
+            To   : in     Browser_Kind);
 
 
 
@@ -421,6 +435,8 @@ private
 
     pragma Inline (H_Bar);
     pragma Inline (V_Bar);
+    pragma Inline (Get_Kind);
+    pragma Inline (Set_Kind);
 
     pragma Inline (Current_Selection);
     pragma Inline (Display);

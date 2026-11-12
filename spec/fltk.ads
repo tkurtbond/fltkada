@@ -571,6 +571,7 @@ package FLTK is
         Interact  : Boolean := False;
         Release   : Boolean := False;
         Enter_Key : Boolean := False;
+        Closed    : Boolean := False;
     end record;
 
     function "+" (Left, Right : in Callback_Flag) return Callback_Flag;
@@ -583,6 +584,12 @@ package FLTK is
     When_Release_Always   : constant Callback_Flag;
     When_Enter_Key        : constant Callback_Flag;
     When_Enter_Key_Always : constant Callback_Flag;
+
+    --  FL_WHEN_CLOSED: a child of a Tabbed_Group with this flag gets a
+    --  close button on its tab, and its callback runs, with the reason
+    --  Reason_Closed, when that is clicked.  FLTK doesn't remove the
+    --  child; the callback may (Fl_Tabs.cxx, handle).
+    When_Closed           : constant Callback_Flag;
 
 
 
@@ -946,6 +953,7 @@ private
         Interact  at 0 range 1 .. 1;
         Release   at 0 range 2 .. 2;
         Enter_Key at 0 range 3 .. 3;
+        Closed    at 0 range 4 .. 4;
     end record;
 
     for Callback_Flag'Size use Interfaces.C.unsigned_char'Size;
@@ -955,6 +963,7 @@ private
     When_Interact  : constant Callback_Flag := (Interact  => True, others => False);
     When_Release   : constant Callback_Flag := (Release   => True, others => False);
     When_Enter_Key : constant Callback_Flag := (Enter_Key => True, others => False);
+    When_Closed    : constant Callback_Flag := (Closed    => True, others => False);
 
     When_Release_Always   : constant Callback_Flag :=
         (Release   => True, Interact => True, others => False);

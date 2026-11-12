@@ -41,6 +41,11 @@
     <td>Roller_Reference</td>
   </tr>
 
+  <tr>
+    <td>FL_VERTICAL, FL_HORIZONTAL</td>
+    <td>Roller_Kind</td>
+  </tr>
+
 </table>
 
 
@@ -88,6 +93,24 @@ function Handle
        (This  : in out Roller;
         Event : in     Event_Kind)
     return Event_Outcome;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>See type method for Fl_Widget.</td>
+<td><pre>
+function Get_Kind
+       (This : in Roller)
+    return Roller_Kind;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>See type method for Fl_Widget.</td>
+<td><pre>
+procedure Set_Kind
+       (This : in out Roller;
+        To   : in     Roller_Kind);
 </pre></td>
   </tr>
 

@@ -71,6 +71,18 @@ package body FLTK.Widgets.Groups.Browsers is
     pragma Import (C, fl_abstract_browser_scrollbar, "fl_abstract_browser_scrollbar");
     pragma Inline (fl_abstract_browser_scrollbar);
 
+    function fl_widget_get_type
+           (B : in Storage.Integer_Address)
+        return Interfaces.C.unsigned_char;
+    pragma Import (C, fl_widget_get_type, "fl_widget_get_type");
+    pragma Inline (fl_widget_get_type);
+
+    procedure fl_widget_set_type
+           (B : in Storage.Integer_Address;
+            T : in Interfaces.C.unsigned_char);
+    pragma Import (C, fl_widget_set_type, "fl_widget_set_type");
+    pragma Inline (fl_widget_set_type);
+
 
 
 
@@ -879,6 +891,28 @@ package body FLTK.Widgets.Groups.Browsers is
     begin
         return (Data => This.Vertigo'Unchecked_Access);
     end V_Bar;
+
+
+    function Get_Kind
+           (This : in Browser)
+        return Browser_Kind
+    is
+        Result : constant Interfaces.C.unsigned_char := fl_widget_get_type (This.Void_Ptr);
+    begin
+        return Browser_Kind'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Browser_::type returned unexpected unsigned char value of " &
+        Interfaces.C.unsigned_char'Image (Result);
+    end Get_Kind;
+
+
+    procedure Set_Kind
+           (This : in out Browser;
+            To   : in     Browser_Kind) is
+    begin
+        fl_widget_set_type (This.Void_Ptr, Browser_Kind'Pos (To));
+    end Set_Kind;
 
 
 

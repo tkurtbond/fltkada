@@ -20,7 +20,10 @@ with
     FLTK.Widgets.Buttons,
     FLTK.Widgets.Clocks,
     FLTK.Widgets.Groups.Tabbed,
-    FLTK.Widgets.Menus.Menu_Bars.Systemwide;
+    FLTK.Widgets.Menus.Menu_Bars.Systemwide,
+    FLTK.Widgets.Valuators.Rollers,
+    FLTK.Widgets.Groups.Browsers,
+    FLTK.Widgets.Groups.Scrolls;
 
 
 procedure FLTK.Test_Constants is
@@ -30,9 +33,12 @@ procedure FLTK.Test_Constants is
     package Clocks renames FLTK.Widgets.Clocks;
     package Tabbed renames FLTK.Widgets.Groups.Tabbed;
     package Sys_Menu renames FLTK.Widgets.Menus.Menu_Bars.Systemwide;
+    package Rollers renames FLTK.Widgets.Valuators.Rollers;
+    package Browsers renames FLTK.Widgets.Groups.Browsers;
+    package Scrolls renames FLTK.Widgets.Groups.Scrolls;
 
 
-    type Value_Array is array (1 .. 337) of Long_Long_Integer;
+    type Value_Array is array (1 .. 352) of Long_Long_Integer;
     pragma Convention (C, Value_Array);
 
     FLTK_Values : Value_Array;
@@ -822,318 +828,384 @@ begin
        (Long_Long_Integer (Flag_To_UChar (When_Enter_Key_Always)),
         267,
         "Long_Long_Integer (Flag_To_UChar (When_Enter_Key_Always)) = FL_WHEN_ENTER_KEY_ALWAYS");
+    Same
+       (Long_Long_Integer (Flag_To_UChar (When_Closed)),
+        268,
+        "Long_Long_Integer (Flag_To_UChar (When_Closed)) = FL_WHEN_CLOSED");
 
     --  Menu item flags (Fl_Menu_Item::flags)
     Same
        (Long_Long_Integer (MFlag_To_Cint (Flag_Normal)),
-        268,
+        269,
         "Long_Long_Integer (MFlag_To_Cint (Flag_Normal)) = 0");
     Same
        (Long_Long_Integer (MFlag_To_Cint (Flag_Inactive)),
-        269,
+        270,
         "Long_Long_Integer (MFlag_To_Cint (Flag_Inactive)) = FL_MENU_INACTIVE");
     Same
        (Long_Long_Integer (MFlag_To_Cint (Flag_Toggle)),
-        270,
+        271,
         "Long_Long_Integer (MFlag_To_Cint (Flag_Toggle)) = FL_MENU_TOGGLE");
     Same
        (Long_Long_Integer (MFlag_To_Cint (Flag_Value)),
-        271,
+        272,
         "Long_Long_Integer (MFlag_To_Cint (Flag_Value)) = FL_MENU_VALUE");
     Same
        (Long_Long_Integer (MFlag_To_Cint (Flag_Radio)),
-        272,
+        273,
         "Long_Long_Integer (MFlag_To_Cint (Flag_Radio)) = FL_MENU_RADIO");
     Same
        (Long_Long_Integer (MFlag_To_Cint (Flag_Invisible)),
-        273,
+        274,
         "Long_Long_Integer (MFlag_To_Cint (Flag_Invisible)) = FL_MENU_INVISIBLE");
     Same
        (Long_Long_Integer (MFlag_To_Cint (Flag_Submenu)),
-        274,
+        275,
         "Long_Long_Integer (MFlag_To_Cint (Flag_Submenu)) = FL_SUBMENU");
     Same
        (Long_Long_Integer (MFlag_To_Cint (Flag_Divider)),
-        275,
+        276,
         "Long_Long_Integer (MFlag_To_Cint (Flag_Divider)) = FL_MENU_DIVIDER");
 
     --  What needs redrawing (Fl_Damage)
     Same
        (Long_Long_Integer (Mask_To_UChar (Damage_None)),
-        276,
+        277,
         "Long_Long_Integer (Mask_To_UChar (Damage_None)) = 0");
     Same
        (Long_Long_Integer (Mask_To_UChar (Damage_Child)),
-        277,
+        278,
         "Long_Long_Integer (Mask_To_UChar (Damage_Child)) = FL_DAMAGE_CHILD");
     Same
        (Long_Long_Integer (Mask_To_UChar (Damage_Expose)),
-        278,
+        279,
         "Long_Long_Integer (Mask_To_UChar (Damage_Expose)) = FL_DAMAGE_EXPOSE");
     Same
        (Long_Long_Integer (Mask_To_UChar (Damage_Scroll)),
-        279,
+        280,
         "Long_Long_Integer (Mask_To_UChar (Damage_Scroll)) = FL_DAMAGE_SCROLL");
     Same
        (Long_Long_Integer (Mask_To_UChar (Damage_Overlay)),
-        280,
+        281,
         "Long_Long_Integer (Mask_To_UChar (Damage_Overlay)) = FL_DAMAGE_OVERLAY");
     Same
        (Long_Long_Integer (Mask_To_UChar (Damage_User_1)),
-        281,
+        282,
         "Long_Long_Integer (Mask_To_UChar (Damage_User_1)) = FL_DAMAGE_USER1");
     Same
        (Long_Long_Integer (Mask_To_UChar (Damage_User_2)),
-        282,
+        283,
         "Long_Long_Integer (Mask_To_UChar (Damage_User_2)) = FL_DAMAGE_USER2");
     Same
        (Long_Long_Integer (Mask_To_UChar (Damage_Full)),
-        283,
+        284,
         "Long_Long_Integer (Mask_To_UChar (Damage_Full)) = FL_DAMAGE_ALL");
 
     --  Contrast modes (fl_contrast_mode)
     Same
        (Contrast_Mode'Pos (No_Contrast),
-        284,
+        285,
         "Contrast_Mode'Pos (No_Contrast) = FL_CONTRAST_NONE");
     Same
        (Contrast_Mode'Pos (Legacy_Contrast),
-        285,
+        286,
         "Contrast_Mode'Pos (Legacy_Contrast) = FL_CONTRAST_LEGACY");
     Same
        (Contrast_Mode'Pos (CIELAB_Contrast),
-        286,
+        287,
         "Contrast_Mode'Pos (CIELAB_Contrast) = FL_CONTRAST_CIELAB");
     Same
        (Contrast_Mode'Pos (Custom_Contrast),
-        287,
+        288,
         "Contrast_Mode'Pos (Custom_Contrast) = FL_CONTRAST_CUSTOM");
 
     --  Callback reasons (Fl_Callback_Reason)
     Same
        (Long_Long_Integer (Reason_Unknown),
-        288,
+        289,
         "Long_Long_Integer (Reason_Unknown) = FL_REASON_UNKNOWN");
     Same
        (Long_Long_Integer (Reason_Selected),
-        289,
+        290,
         "Long_Long_Integer (Reason_Selected) = FL_REASON_SELECTED");
     Same
        (Long_Long_Integer (Reason_Deselected),
-        290,
+        291,
         "Long_Long_Integer (Reason_Deselected) = FL_REASON_DESELECTED");
     Same
        (Long_Long_Integer (Reason_Reselected),
-        291,
+        292,
         "Long_Long_Integer (Reason_Reselected) = FL_REASON_RESELECTED");
     Same
        (Long_Long_Integer (Reason_Opened),
-        292,
+        293,
         "Long_Long_Integer (Reason_Opened) = FL_REASON_OPENED");
     Same
        (Long_Long_Integer (Reason_Closed),
-        293,
+        294,
         "Long_Long_Integer (Reason_Closed) = FL_REASON_CLOSED");
     Same
        (Long_Long_Integer (Reason_Dragged),
-        294,
+        295,
         "Long_Long_Integer (Reason_Dragged) = FL_REASON_DRAGGED");
     Same
        (Long_Long_Integer (Reason_Cancelled),
-        295,
+        296,
         "Long_Long_Integer (Reason_Cancelled) = FL_REASON_CANCELLED");
     Same
        (Long_Long_Integer (Reason_Changed),
-        296,
+        297,
         "Long_Long_Integer (Reason_Changed) = FL_REASON_CHANGED");
     Same
        (Long_Long_Integer (Reason_Got_Focus),
-        297,
+        298,
         "Long_Long_Integer (Reason_Got_Focus) = FL_REASON_GOT_FOCUS");
     Same
        (Long_Long_Integer (Reason_Lost_Focus),
-        298,
+        299,
         "Long_Long_Integer (Reason_Lost_Focus) = FL_REASON_LOST_FOCUS");
     Same
        (Long_Long_Integer (Reason_Released),
-        299,
+        300,
         "Long_Long_Integer (Reason_Released) = FL_REASON_RELEASED");
     Same
        (Long_Long_Integer (Reason_Enter_Key),
-        300,
+        301,
         "Long_Long_Integer (Reason_Enter_Key) = FL_REASON_ENTER_KEY");
     Same
        (Long_Long_Integer (Reason_User),
-        301,
+        302,
         "Long_Long_Integer (Reason_User) = FL_REASON_USER");
 
     --  Screen scaling support (Fl::screen_scaling_supported); FLTK's enum is
     --  private to Fl_Screen_Driver, so these are its values (Fl_Screen_Driver.H:228-231)
     Same
        (Screen.Scaling_Kind'Pos (Screen.No_Scaling),
-        302,
+        303,
         "Screen.Scaling_Kind'Pos (Screen.No_Scaling) = 0");
     Same
        (Screen.Scaling_Kind'Pos (Screen.Systemwide_Scaling),
-        303,
+        304,
         "Screen.Scaling_Kind'Pos (Screen.Systemwide_Scaling) = 1");
     Same
        (Screen.Scaling_Kind'Pos (Screen.Per_Screen_Scaling),
-        304,
+        305,
         "Screen.Scaling_Kind'Pos (Screen.Per_Screen_Scaling) = 2");
 
     --  Arrow types (Fl_Arrow_Type); FLTK.Draw passes Pos + 1
     Same
        (Long_Long_Integer (Draw.Arrow_Kind'Pos (Draw.Single_Arrow) + 1),
-        305,
+        306,
         "Long_Long_Integer (Draw.Arrow_Kind'Pos (Draw.Single_Arrow) + 1) = FL_ARROW_SINGLE");
     Same
        (Long_Long_Integer (Draw.Arrow_Kind'Pos (Draw.Double_Arrow) + 1),
-        306,
+        307,
         "Long_Long_Integer (Draw.Arrow_Kind'Pos (Draw.Double_Arrow) + 1) = FL_ARROW_DOUBLE");
     Same
        (Long_Long_Integer (Draw.Arrow_Kind'Pos (Draw.Choice_Arrow) + 1),
-        307,
+        308,
         "Long_Long_Integer (Draw.Arrow_Kind'Pos (Draw.Choice_Arrow) + 1) = FL_ARROW_CHOICE");
     Same
        (Long_Long_Integer (Draw.Arrow_Kind'Pos (Draw.Return_Arrow) + 1),
-        308,
+        309,
         "Long_Long_Integer (Draw.Arrow_Kind'Pos (Draw.Return_Arrow) + 1) = FL_ARROW_RETURN");
 
     --  Orientations (Fl_Orientation)
     Same
        (Draw.Orientation_Kind'Pos (Draw.Orient_Right),
-        309,
+        310,
         "Draw.Orientation_Kind'Pos (Draw.Orient_Right) = FL_ORIENT_RIGHT");
     Same
        (Draw.Orientation_Kind'Pos (Draw.Orient_NE),
-        310,
+        311,
         "Draw.Orientation_Kind'Pos (Draw.Orient_NE) = FL_ORIENT_NE");
     Same
        (Draw.Orientation_Kind'Pos (Draw.Orient_Up),
-        311,
+        312,
         "Draw.Orientation_Kind'Pos (Draw.Orient_Up) = FL_ORIENT_UP");
     Same
        (Draw.Orientation_Kind'Pos (Draw.Orient_NW),
-        312,
+        313,
         "Draw.Orientation_Kind'Pos (Draw.Orient_NW) = FL_ORIENT_NW");
     Same
        (Draw.Orientation_Kind'Pos (Draw.Orient_Left),
-        313,
+        314,
         "Draw.Orientation_Kind'Pos (Draw.Orient_Left) = FL_ORIENT_LEFT");
     Same
        (Draw.Orientation_Kind'Pos (Draw.Orient_SW),
-        314,
+        315,
         "Draw.Orientation_Kind'Pos (Draw.Orient_SW) = FL_ORIENT_SW");
     Same
        (Draw.Orientation_Kind'Pos (Draw.Orient_Down),
-        315,
+        316,
         "Draw.Orientation_Kind'Pos (Draw.Orient_Down) = FL_ORIENT_DOWN");
     Same
        (Draw.Orientation_Kind'Pos (Draw.Orient_SE),
-        316,
+        317,
         "Draw.Orientation_Kind'Pos (Draw.Orient_SE) = FL_ORIENT_SE");
 
     --  File icons (Fl_File_Icon)
     Same
        (Images.File_Icons.File_Kind'Pos (Images.File_Icons.Any_File),
-        317,
+        318,
         "Images.File_Icons.File_Kind'Pos (Images.File_Icons.Any_File) = Fl_File_Icon::ANY");
     Same
        (Images.File_Icons.File_Kind'Pos (Images.File_Icons.Plain_File),
-        318,
+        319,
         "Images.File_Icons.File_Kind'Pos (Images.File_Icons.Plain_File) = Fl_File_Icon::PLAIN");
     Same
        (Images.File_Icons.File_Kind'Pos (Images.File_Icons.Fifo_File),
-        319,
+        320,
         "Images.File_Icons.File_Kind'Pos (Images.File_Icons.Fifo_File) = Fl_File_Icon::FIFO");
     Same
        (Images.File_Icons.File_Kind'Pos (Images.File_Icons.Device_File),
-        320,
+        321,
         "Images.File_Icons.File_Kind'Pos (Images.File_Icons.Device_File) = Fl_File_Icon::DEVICE");
     Same
        (Images.File_Icons.File_Kind'Pos (Images.File_Icons.Link_File),
-        321,
+        322,
         "Images.File_Icons.File_Kind'Pos (Images.File_Icons.Link_File) = Fl_File_Icon::LINK");
     Same
        (Images.File_Icons.File_Kind'Pos (Images.File_Icons.Directory_File),
-        322,
+        323,
         "Images.File_Icons.File_Kind'Pos (Images.File_Icons.Directory_File)" &
         " = Fl_File_Icon::DIRECTORY");
     Same
        (Long_Long_Integer (Images.File_Icons.Icon_Color),
-        323,
+        324,
         "Long_Long_Integer (Images.File_Icons.Icon_Color) = FL_ICON_COLOR");
 
     --  Tab overflow (Fl_Tabs::handle_overflow)
     Same
        (Tabbed.Overflow_Kind'Pos (Tabbed.Compress_Overflow),
-        324,
+        325,
         "Tabbed.Overflow_Kind'Pos (Tabbed.Compress_Overflow) = Fl_Tabs::OVERFLOW_COMPRESS");
     Same
        (Tabbed.Overflow_Kind'Pos (Tabbed.Clip_Overflow),
-        325,
+        326,
         "Tabbed.Overflow_Kind'Pos (Tabbed.Clip_Overflow) = Fl_Tabs::OVERFLOW_CLIP");
     Same
        (Tabbed.Overflow_Kind'Pos (Tabbed.Pulldown_Overflow),
-        326,
+        327,
         "Tabbed.Overflow_Kind'Pos (Tabbed.Pulldown_Overflow) = Fl_Tabs::OVERFLOW_PULLDOWN");
     Same
        (Tabbed.Overflow_Kind'Pos (Tabbed.Drag_Overflow),
-        327,
+        328,
         "Tabbed.Overflow_Kind'Pos (Tabbed.Drag_Overflow) = Fl_Tabs::OVERFLOW_DRAG");
 
     --  Window menu styles (Fl_Sys_Menu_Bar::window_menu_style_enum)
     Same
        (Sys_Menu.Window_Menu_Style_Kind'Pos (Sys_Menu.No_Window_Menu),
-        328,
+        329,
         "Sys_Menu.Window_Menu_Style_Kind'Pos (Sys_Menu.No_Window_Menu)" &
         " = Fl_Sys_Menu_Bar::no_window_menu");
     Same
        (Sys_Menu.Window_Menu_Style_Kind'Pos (Sys_Menu.Tabbing_Mode_None),
-        329,
+        330,
         "Sys_Menu.Window_Menu_Style_Kind'Pos (Sys_Menu.Tabbing_Mode_None)" &
         " = Fl_Sys_Menu_Bar::tabbing_mode_none");
     Same
        (Sys_Menu.Window_Menu_Style_Kind'Pos (Sys_Menu.Tabbing_Mode_Automatic),
-        330,
+        331,
         "Sys_Menu.Window_Menu_Style_Kind'Pos (Sys_Menu.Tabbing_Mode_Automatic)" &
         " = Fl_Sys_Menu_Bar::tabbing_mode_automatic");
     Same
        (Sys_Menu.Window_Menu_Style_Kind'Pos (Sys_Menu.Tabbing_Mode_Preferred),
-        331,
+        332,
         "Sys_Menu.Window_Menu_Style_Kind'Pos (Sys_Menu.Tabbing_Mode_Preferred)" &
         " = Fl_Sys_Menu_Bar::tabbing_mode_preferred");
 
     --  Clock faces (Fl_Clock_Output::type)
     Same
        (Clocks.Clock_Kind'Pos (Clocks.Square_Face),
-        332,
+        333,
         "Clocks.Clock_Kind'Pos (Clocks.Square_Face) = FL_SQUARE_CLOCK");
     Same
        (Clocks.Clock_Kind'Pos (Clocks.Round_Face),
-        333,
+        334,
         "Clocks.Clock_Kind'Pos (Clocks.Round_Face) = FL_ROUND_CLOCK");
+
+    --  Roller kinds (Fl_Roller::type)
+    Same
+       (Rollers.Roller_Kind'Pos (Rollers.Vertical_Roller),
+        335,
+        "Rollers.Roller_Kind'Pos (Rollers.Vertical_Roller) = FL_VERTICAL");
+    Same
+       (Rollers.Roller_Kind'Pos (Rollers.Horizontal_Roller),
+        336,
+        "Rollers.Roller_Kind'Pos (Rollers.Horizontal_Roller) = FL_HORIZONTAL");
+
+    --  Browser kinds (Fl_Browser_::type)
+    Same
+       (Browsers.Browser_Kind'Pos (Browsers.Normal_Kind),
+        337,
+        "Browsers.Browser_Kind'Pos (Browsers.Normal_Kind) = FL_NORMAL_BROWSER");
+    Same
+       (Browsers.Browser_Kind'Pos (Browsers.Select_Kind),
+        338,
+        "Browsers.Browser_Kind'Pos (Browsers.Select_Kind) = FL_SELECT_BROWSER");
+    Same
+       (Browsers.Browser_Kind'Pos (Browsers.Hold_Kind),
+        339,
+        "Browsers.Browser_Kind'Pos (Browsers.Hold_Kind) = FL_HOLD_BROWSER");
+    Same
+       (Browsers.Browser_Kind'Pos (Browsers.Multi_Kind),
+        340,
+        "Browsers.Browser_Kind'Pos (Browsers.Multi_Kind) = FL_MULTI_BROWSER");
+
+    --  Scroll kinds (Fl_Scroll::type)
+    Same
+       (Scrolls.Scroll_Kind'Pos (Scrolls.Neither),
+        341,
+        "Scrolls.Scroll_Kind'Pos (Scrolls.Neither) = 0");
+    Same
+       (Scrolls.Scroll_Kind'Pos (Scrolls.Horizontal),
+        342,
+        "Scrolls.Scroll_Kind'Pos (Scrolls.Horizontal) = Fl_Scroll::HORIZONTAL");
+    Same
+       (Scrolls.Scroll_Kind'Pos (Scrolls.Vertical),
+        343,
+        "Scrolls.Scroll_Kind'Pos (Scrolls.Vertical) = Fl_Scroll::VERTICAL");
+    Same
+       (Scrolls.Scroll_Kind'Pos (Scrolls.Both),
+        344,
+        "Scrolls.Scroll_Kind'Pos (Scrolls.Both) = Fl_Scroll::BOTH");
+    Same
+       (Scrolls.Scroll_Kind'Pos (Scrolls.Always_On),
+        345,
+        "Scrolls.Scroll_Kind'Pos (Scrolls.Always_On) = Fl_Scroll::ALWAYS_ON");
+    Same
+       (Scrolls.Scroll_Kind'Pos (Scrolls.Horizontal_Always),
+        346,
+        "Scrolls.Scroll_Kind'Pos (Scrolls.Horizontal_Always) = Fl_Scroll::HORIZONTAL_ALWAYS");
+    Same
+       (Scrolls.Scroll_Kind'Pos (Scrolls.Vertical_Always),
+        347,
+        "Scrolls.Scroll_Kind'Pos (Scrolls.Vertical_Always) = Fl_Scroll::VERTICAL_ALWAYS");
+    Same
+       (Scrolls.Scroll_Kind'Pos (Scrolls.Both_Always),
+        348,
+        "Scrolls.Scroll_Kind'Pos (Scrolls.Both_Always) = Fl_Scroll::BOTH_ALWAYS");
 
     --  Button kinds (Fl_Button::type); a representation clause gives FLTK's values
     Same
        (Long_Long_Integer (Buttons.Button_Kind'Enum_Rep (Buttons.Normal_Kind)),
-        334,
+        349,
         "Long_Long_Integer (Buttons.Button_Kind'Enum_Rep (Buttons.Normal_Kind))" &
         " = FL_NORMAL_BUTTON");
     Same
        (Long_Long_Integer (Buttons.Button_Kind'Enum_Rep (Buttons.Toggle_Kind)),
-        335,
+        350,
         "Long_Long_Integer (Buttons.Button_Kind'Enum_Rep (Buttons.Toggle_Kind))" &
         " = FL_TOGGLE_BUTTON");
     Same
        (Long_Long_Integer (Buttons.Button_Kind'Enum_Rep (Buttons.Hidden_Kind)),
-        336,
+        351,
         "Long_Long_Integer (Buttons.Button_Kind'Enum_Rep (Buttons.Hidden_Kind))" &
         " = FL_HIDDEN_BUTTON");
     Same
        (Long_Long_Integer (Buttons.Button_Kind'Enum_Rep (Buttons.Radio_Kind)),
-        337,
+        352,
         "Long_Long_Integer (Buttons.Button_Kind'Enum_Rep (Buttons.Radio_Kind)) = FL_RADIO_BUTTON");
 
 end FLTK.Test_Constants;

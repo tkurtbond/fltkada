@@ -594,6 +594,11 @@ cells (Ring_Rows .. Display_End, Get_Style_Flags, Cell_Text ..
 Cell_Back_Color); GLUT's eighteen Solid_/Wire_ shapes, counts checked (F36); FLTK.GLU, an
 optional library (fltkada_glu.gpr) of GLU's view matrices and quadrics
 
+Phase 21 (PLAN.md), FLTK's widget and window test programs ported to test/
+and compared with FLTK's own build; When_Closed for closable tabs
+(FLTKAda-BUGS.md 130); Rollers Roller_Kind, Get_Kind and Set_Kind (131);
+Browsers Browser_Kind, Get_Kind and Set_Kind (132); Scrolls.Scroll_Kind Neither (133)
+
 
 
 Incomplete APIs:

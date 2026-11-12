@@ -821,3 +821,27 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
   `std::bad_alloc`, from a part not traced. The failed-`calloc` path
   itself is seen only in the source. test/unit/test_glut_shapes.adb
   checks that counts of 0 and 65_537 raise.
+
+### F37. `fl_color_chooser` shows a zero component as "0" unless given a mode
+
+- **What happens**: `fl_color_chooser` with no mode (cmode -1), for a
+  colour such as FL_SELECTION_COLOR (0, 0, 128), shows its R and G
+  fields as "0" and its B field as "0.502". Given a mode, even RGB,
+  all three have three decimals: "0.000". Found 2026-11-11, porting
+  test/input.cxx in Phase 21.
+- **Cause**: the `Fl_Color_Chooser` constructor calls `set_valuators`
+  (src/Fl_Color_Chooser.cxx:571) while every value is 0, so each
+  `Fl_Value_Input` keeps the text it was made with. `rgb (r, g, b)`
+  then calls `set_valuators` again (:143), which sets each step to
+  1/1000 and each value, but `Fl_Valuator::value` redraws the text only
+  when the value changes, so a component that is still 0 keeps "0".
+  `mode (m)` runs `mode_cb` (:451-458), which first sets every value to
+  -1 "to force them to redraw even if value is the same".
+- **Effect on FLTKAda**: `FLTK.Asks.Color_Chooser` always passes a
+  mode, RGB by default, so its fields always have three decimals. A
+  port of a C++ program that calls `fl_color_chooser` without a mode
+  differs from it there, and only there.
+- **Confirmed**: test/input.adb against FLTK's test/input, on Xvfb,
+  choosing selection_color: the G field was "0" in the C++ and "0.000"
+  in the Ada. Built with `fl_color_chooser (0, r, g, b, 0)`, the C++
+  matched the Ada at AE 0.

@@ -17,8 +17,11 @@ package FLTK.Widgets.Groups.Scrolls is
     type Scroll_Reference (Data : not null access Scroll'Class) is limited null record
         with Implicit_Dereference => Data;
 
+    --  FLTK's Fl_Scroll::type: Neither is 0, which shows no scrollbars,
+    --  and the rest are Fl_Scroll's HORIZONTAL to BOTH_ALWAYS.
     type Scroll_Kind is
-       (Horizontal,
+       (Neither,
+        Horizontal,
         Vertical,
         Both,
         Always_On,

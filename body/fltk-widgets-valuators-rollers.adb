@@ -50,6 +50,23 @@ package body FLTK.Widgets.Valuators.Rollers is
 
 
 
+    --  Roller Type  --
+
+    function fl_widget_get_type
+           (R : in Storage.Integer_Address)
+        return Interfaces.C.unsigned_char;
+    pragma Import (C, fl_widget_get_type, "fl_widget_get_type");
+    pragma Inline (fl_widget_get_type);
+
+    procedure fl_widget_set_type
+           (R : in Storage.Integer_Address;
+            T : in Interfaces.C.unsigned_char);
+    pragma Import (C, fl_widget_set_type, "fl_widget_set_type");
+    pragma Inline (fl_widget_set_type);
+
+
+
+
     -------------------
     --  Destructors  --
     -------------------
@@ -150,6 +167,32 @@ package body FLTK.Widgets.Valuators.Rollers is
     begin
         return Valuator (This).Handle (Event);
     end Handle;
+
+
+
+
+    --  Roller Type  --
+
+    function Get_Kind
+           (This : in Roller)
+        return Roller_Kind
+    is
+        Result : constant Interfaces.C.unsigned_char := fl_widget_get_type (This.Void_Ptr);
+    begin
+        return Roller_Kind'Val (Result);
+    exception
+    when Constraint_Error => raise Internal_FLTK_Error with
+        "Fl_Roller::type returned unexpected unsigned char value of " &
+        Interfaces.C.unsigned_char'Image (Result);
+    end Get_Kind;
+
+
+    procedure Set_Kind
+           (This : in out Roller;
+            To   : in     Roller_Kind) is
+    begin
+        fl_widget_set_type (This.Void_Ptr, Roller_Kind'Pos (To));
+    end Set_Kind;
 
 
 end FLTK.Widgets.Valuators.Rollers;

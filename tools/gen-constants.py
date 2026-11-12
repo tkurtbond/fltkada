@@ -178,7 +178,7 @@ section("When a widget calls back (Fl_When)")
 for a, c in [("Call_Never", "NEVER"), ("When_Changed", "CHANGED"),
              ("When_Interact", "NOT_CHANGED"), ("When_Release", "RELEASE"),
              ("When_Release_Always", "RELEASE_ALWAYS"), ("When_Enter_Key", "ENTER_KEY"),
-             ("When_Enter_Key_Always", "ENTER_KEY_ALWAYS")]:
+             ("When_Enter_Key_Always", "ENTER_KEY_ALWAYS"), ("When_Closed", "CLOSED")]:
     add(f"Long_Long_Integer (Flag_To_UChar ({a}))", "FL_WHEN_" + c)
 
 section("Menu item flags (Fl_Menu_Item::flags)")
@@ -238,6 +238,20 @@ enum("Sys_Menu.Window_Menu_Style_Kind",
 section("Clock faces (Fl_Clock_Output::type)")
 enum("Clocks.Clock_Kind", [("Clocks.Square_Face", "FL_SQUARE_CLOCK"),
                            ("Clocks.Round_Face", "FL_ROUND_CLOCK")])
+
+section("Roller kinds (Fl_Roller::type)")
+enum("Rollers.Roller_Kind", [("Rollers.Vertical_Roller", "FL_VERTICAL"),
+                             ("Rollers.Horizontal_Roller", "FL_HORIZONTAL")])
+
+section("Browser kinds (Fl_Browser_::type)")
+enum("Browsers.Browser_Kind", [(f"Browsers.{a}_Kind", f"FL_{a.upper()}_BROWSER")
+                               for a in "Normal Select Hold Multi".split()])
+
+section("Scroll kinds (Fl_Scroll::type)")
+enum("Scrolls.Scroll_Kind", [("Scrolls.Neither", "0")] +
+     [(f"Scrolls.{a}", f"Fl_Scroll::{a.upper()}")
+      for a in "Horizontal Vertical Both Always_On Horizontal_Always Vertical_Always "
+               "Both_Always".split()])
 
 section("Button kinds (Fl_Button::type); a representation clause gives FLTK's values")
 for a, c in [("Normal", "NORMAL"), ("Toggle", "TOGGLE"), ("Hidden", "HIDDEN"), ("Radio", "RADIO")]:
@@ -346,12 +360,16 @@ def ada(suite):
 MAIN = Suite(
     CHECKS, "test/unit", "", "FLTK.Test_Constants",
     ["Enumerations.H", "Fl_Button.H", "Fl_Clock.H", "Fl_File_Icon.H", "Fl_Menu_Item.H",
-     "Fl_Sys_Menu_Bar.H", "Fl_Tabs.H"],
+     "Fl_Sys_Menu_Bar.H", "Fl_Tabs.H", "Fl_Roller.H", "Fl_Browser_.H", "Fl_Scroll.H"],
     ["FLTK.Draw", "FLTK.Images.File_Icons", "FLTK.Screen", "FLTK.Widgets.Buttons",
-     "FLTK.Widgets.Clocks", "FLTK.Widgets.Groups.Tabbed", "FLTK.Widgets.Menus.Menu_Bars.Systemwide"],
+     "FLTK.Widgets.Clocks", "FLTK.Widgets.Groups.Tabbed", "FLTK.Widgets.Menus.Menu_Bars.Systemwide",
+     "FLTK.Widgets.Valuators.Rollers", "FLTK.Widgets.Groups.Browsers",
+     "FLTK.Widgets.Groups.Scrolls"],
     [("Buttons", "FLTK.Widgets.Buttons"), ("Clocks", "FLTK.Widgets.Clocks"),
      ("Tabbed", "FLTK.Widgets.Groups.Tabbed"),
-     ("Sys_Menu", "FLTK.Widgets.Menus.Menu_Bars.Systemwide")])
+     ("Sys_Menu", "FLTK.Widgets.Menus.Menu_Bars.Systemwide"),
+     ("Rollers", "FLTK.Widgets.Valuators.Rollers"), ("Browsers", "FLTK.Widgets.Groups.Browsers"),
+     ("Scrolls", "FLTK.Widgets.Groups.Scrolls")])
 
 
 #  The Forms library's constants, checked by a test of their own, which is

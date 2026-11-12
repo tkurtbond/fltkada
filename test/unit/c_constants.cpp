@@ -17,6 +17,9 @@
 #include <FL/Fl_Menu_Item.H>
 #include <FL/Fl_Sys_Menu_Bar.H>
 #include <FL/Fl_Tabs.H>
+#include <FL/Fl_Roller.H>
+#include <FL/Fl_Browser_.H>
+#include <FL/Fl_Scroll.H>
 
 
 extern "C" const long long c_constants[];
@@ -303,6 +306,7 @@ extern "C" const long long c_constants[] =
     FL_WHEN_RELEASE_ALWAYS,
     FL_WHEN_ENTER_KEY,
     FL_WHEN_ENTER_KEY_ALWAYS,
+    FL_WHEN_CLOSED,
     //  Menu item flags (Fl_Menu_Item::flags)
     0,
     FL_MENU_INACTIVE,
@@ -381,6 +385,23 @@ extern "C" const long long c_constants[] =
     //  Clock faces (Fl_Clock_Output::type)
     FL_SQUARE_CLOCK,
     FL_ROUND_CLOCK,
+    //  Roller kinds (Fl_Roller::type)
+    FL_VERTICAL,
+    FL_HORIZONTAL,
+    //  Browser kinds (Fl_Browser_::type)
+    FL_NORMAL_BROWSER,
+    FL_SELECT_BROWSER,
+    FL_HOLD_BROWSER,
+    FL_MULTI_BROWSER,
+    //  Scroll kinds (Fl_Scroll::type)
+    0,
+    Fl_Scroll::HORIZONTAL,
+    Fl_Scroll::VERTICAL,
+    Fl_Scroll::BOTH,
+    Fl_Scroll::ALWAYS_ON,
+    Fl_Scroll::HORIZONTAL_ALWAYS,
+    Fl_Scroll::VERTICAL_ALWAYS,
+    Fl_Scroll::BOTH_ALWAYS,
     //  Button kinds (Fl_Button::type); a representation clause gives FLTK's values
     FL_NORMAL_BUTTON,
     FL_TOGGLE_BUTTON,
