@@ -15,6 +15,7 @@ extern "C" const char * const fl_help_usage_string_ptr;
 
 
 extern "C" void fl_static_open_display();
+extern "C" int fl_static_display_platform();
 
 
 extern "C" int fl_static_get_program_should_quit();

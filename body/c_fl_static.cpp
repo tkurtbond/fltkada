@@ -32,6 +32,24 @@ void fl_static_open_display() {
     fl_open_display();
 }
 
+//  1 for X11, 2 for Wayland, 0 for neither, after opening the display, as
+//  FLTK's test/fltk-versions.cxx finds it.  An FLTK built without one of
+//  them has no function for it (pofltk's ofl_has).
+int fl_static_display_platform() {
+    fl_open_display();
+#if defined(FLTK_USE_X11)
+    if (fl_x11_display()) {
+        return 1;
+    }
+#endif
+#if defined(FLTK_USE_WAYLAND)
+    if (fl_wl_display()) {
+        return 2;
+    }
+#endif
+    return 0;
+}
+
 
 
 

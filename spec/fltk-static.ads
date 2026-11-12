@@ -130,6 +130,14 @@ package FLTK.Static is
     --  again does nothing.
     procedure Open_Display;
 
+    type Display_Platform is (Other_Platform, X11_Platform, Wayland_Platform);
+
+    --  Which system the display is:  X11's or Wayland's, as fl_x11_display
+    --  or fl_wl_display finds it, or Other_Platform.  Opens the display, as
+    --  Open_Display does.
+    function Get_Display_Platform
+        return Display_Platform;
+
 
 
 

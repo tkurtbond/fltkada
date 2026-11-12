@@ -96,7 +96,24 @@ project Tests is
         "scroll.adb",
         "tile.adb",
         "iconize.adb",
-        "native_filechooser.adb");
+        "native_filechooser.adb",
+        "resize_example1.adb",
+        "resize_example2.adb",
+        "resize_example3a.adb",
+        "resize_example3b.adb",
+        "resize_example3c.adb",
+        "resize_example4a.adb",
+        "resize_example4b.adb",
+        "resize_example5a.adb",
+        "resize_example5b.adb",
+        "resize_example5c.adb",
+        "flex_login.adb",
+        "flex_demo.adb",
+        "grid_buttons.adb",
+        "grid_login.adb",
+        "grid_dialog.adb",
+        "grid_alignment.adb",
+        "fltk_versions.adb");
 
     package Builder is
         for Executable ("adjuster.adb")           use "adjuster";
@@ -180,6 +197,23 @@ project Tests is
         for Executable ("tile.adb")               use "tile";
         for Executable ("iconize.adb")            use "iconize";
         for Executable ("native_filechooser.adb") use "native-filechooser";
+        for Executable ("resize_example1.adb")    use "resize-example1";
+        for Executable ("resize_example2.adb")    use "resize-example2";
+        for Executable ("resize_example3a.adb")   use "resize-example3a";
+        for Executable ("resize_example3b.adb")   use "resize-example3b";
+        for Executable ("resize_example3c.adb")   use "resize-example3c";
+        for Executable ("resize_example4a.adb")   use "resize-example4a";
+        for Executable ("resize_example4b.adb")   use "resize-example4b";
+        for Executable ("resize_example5a.adb")   use "resize-example5a";
+        for Executable ("resize_example5b.adb")   use "resize-example5b";
+        for Executable ("resize_example5c.adb")   use "resize-example5c";
+        for Executable ("flex_login.adb")         use "flex_login";
+        for Executable ("flex_demo.adb")          use "flex_demo";
+        for Executable ("grid_buttons.adb")       use "grid_buttons";
+        for Executable ("grid_login.adb")         use "grid_login";
+        for Executable ("grid_dialog.adb")        use "grid_dialog";
+        for Executable ("grid_alignment.adb")     use "grid_alignment";
+        for Executable ("fltk_versions.adb")      use "fltk-versions";
 
         for Default_Switches ("Ada") use
             Common.Builder'Default_Switches ("Ada");

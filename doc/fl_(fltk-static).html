@@ -930,6 +930,20 @@ procedure Open_Display;
 
   <tr>
 <td><pre>
+Display *fl_x11_display();
+struct wl_display *fl_wl_display();
+</pre></td>
+<td><pre>
+type Display_Platform is
+   (Other_Platform, X11_Platform, Wayland_Platform);
+
+function Get_Display_Platform
+    return Display_Platform;
+</pre></td>
+  </tr>
+
+  <tr>
+<td><pre>
 static void own_colormap();
 </pre></td>
 <td><pre>

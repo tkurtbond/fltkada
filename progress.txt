@@ -599,6 +599,11 @@ and compared with FLTK's own build; When_Closed for closable tabs
 (FLTKAda-BUGS.md 130); Rollers Roller_Kind, Get_Kind and Set_Kind (131);
 Browsers Browser_Kind, Get_Kind and Set_Kind (132); Scrolls.Scroll_Kind Neither (133)
 
+Phase 22 (PLAN.md), FLTK's layout test programs (resize-example*, flex_*,
+grid_*, fltk-versions) ported to test/ and compared with FLTK's own build;
+Static Display_Platform and Get_Display_Platform (fl_x11_display,
+fl_wl_display)
+
 
 
 Incomplete APIs:

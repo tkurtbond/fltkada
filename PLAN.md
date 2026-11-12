@@ -4448,6 +4448,45 @@ the steps replayed by `xdotool` and a screenshot after each.
     and failed; the Makefile now lists them by executable
     (`gpr-executables`), as it already listed the examples.
 
+#### Phase 22: layout [done, 2026-11-11]
+
+Compared under one private Xvfb (1280x1024, no window manager), as in
+Phase 21, with screenshots at the first size and after `xdotool`
+resized the window, and the steps below where a program has more to
+drive. Every shot of all 17 ports is AE 0 against
+FLTK's build, and stdout is the same. No FLTKAda bug or FLTK issue was
+found.
+
+- `resize-example1` to `5c` (10 programs, executables hyphenated as
+  FLTK's): `resize-arrows.cxx` is the package `Resize_Arrows`
+  (`Harrow`, `Varrow`). Each C++ class whose constructor makes its
+  children (`Resizebox`, `ResizeDialog` and the like) is a generic
+  package: its declarations make the children in the constructor's
+  order, and its body sets their properties. `resize-example4a` and
+  `4b` keep FLTK's title typo "Horizonally Resized".
+- `flex_login`, and `flex_demo` with its toggle pressed twice: it hides
+  and shows the OK button and box, and adds "Box3" to the first row and
+  deletes it. Box3 is allocated, inserted before `Col1`, and freed
+  (deleting the C++ widget, whose destructor removes it from the row);
+  one still allocated is freed when `Run` returns.
+- `grid_buttons`, `grid_login`, `grid_alignment`, and `grid_dialog`
+  with its buttons clicked (the label printed), its text copied to the
+  clipboard (checked with `xsel -o -b`), and Quit pressed after a
+  resize; both builds exit. FLTKAda's rows and columns count from 1, so
+  FLTK's (r, c) is (r + 1, c + 1). A `Cell::align` set after
+  `Fl_Grid::widget` is passed as `Set_Widget`'s `Align` instead.
+  `grid_alignment`'s 29 boxes are allocated in FLTK's order and freed
+  after `Clear_Layout`, before the window is finalized.
+- `fltk-versions`: needed the display's platform, which FLTKAda didn't
+  have. `FLTK.Static.Get_Display_Platform` gives `X11_Platform`,
+  `Wayland_Platform` or `Other_Platform`, from `fl_x11_display` and
+  `fl_wl_display` after opening the display, as FLTK's `get_platform`
+  does (pofltk's `Fl.Has (X11/Wayland)`). `test_versions` checks it
+  against the backend the environment chooses
+  (fl_wayland_platform_init.cxx:52-81): X11 on Xvfb, and Wayland on
+  `tools/with-sway.sh`, where the port also printed "Unix/Linux
+  (Wayland)". Its version lines are formatted as `%6.4f` and `%6d`.
+
 ## Open questions
 
 All five were decided by the user on 2026-11-03.

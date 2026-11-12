@@ -66,6 +66,16 @@ package body FLTK.Static is
     --  Functions From C  --
     ------------------------
 
+    --  Display  --
+
+    function fl_static_display_platform
+        return Interfaces.C.int;
+    pragma Import (C, fl_static_display_platform, "fl_static_display_platform");
+    pragma Inline (fl_static_display_platform);
+
+
+
+
     --  Command Line Arguments  --
 
     function fl_static_arg
@@ -1033,6 +1043,21 @@ package body FLTK.Static is
     -----------------------
     --  API Subprograms  --
     -----------------------
+
+    --  Display  --
+
+    function Get_Display_Platform
+        return Display_Platform is
+    begin
+        case fl_static_display_platform is
+            when 1 => return X11_Platform;
+            when 2 => return Wayland_Platform;
+            when others => return Other_Platform;
+        end case;
+    end Get_Display_Platform;
+
+
+
 
     --  Command Line Arguments  --
 
