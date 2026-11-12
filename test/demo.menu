@@ -8,8 +8,8 @@
 # same menus, items and commands, run from bin/ with test/ as the working
 # directory.  Where FLTK's name C++ sources, these name the Ada ones.
 # colbrowser reads test/rgb.txt, X.Org's colour database as FLTK ships
-# it (test/rgb.txt.COPYING).  FLTKAda has no valuators.fl, so fluid
-# starts with no file.
+# it (test/rgb.txt.COPYING), and fluid opens test/valuators.fl, FLTK's
+# (test/valuators.fl.COPYING).
 #
 # Each line consists of three fields, separated by :
 #
@@ -70,7 +70,7 @@
 	@u:inactive:inactive
 
 @main:Tools...:@t
-	@t:Fluid\n(UI design tool):fluid
+	@t:Fluid\n(UI design tool):fluid valuators.fl
 	@t:FLTK\nRuntime\nOptions:fltk-options
 
 @main:Cool\nDemos...:@e

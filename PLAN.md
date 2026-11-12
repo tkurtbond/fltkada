@@ -4779,10 +4779,10 @@ too. Two FLTKAda bugs were found, 138 and 139, and no FLTK issue.
   terminal and differ only in its text: the paths, and FLTK's
   `fluid_path` and `options_path` lines, which the port leaves out.
   stdout is the same. `test/demo.menu` is FLTK's, naming the ports:
-  `browser.adb` and `editor.adb` for the `.cxx` files, and `fluid`
-  without `valuators.fl`. ~~FLTKAda ships no `rgb.txt`, so colbrowser
-  says it can't open it.~~ (It does now: see the note on `rgb.txt`
-  after this block.) A leaf button runs the program as FLTK's
+  `browser.adb` and `editor.adb` for the `.cxx` files~~, and `fluid`
+  without `valuators.fl`~~. ~~FLTKAda ships no `rgb.txt`, so colbrowser
+  says it can't open it.~~ (It ships both now: see the notes on
+  `rgb.txt` and `valuators.fl` after this block.) A leaf button runs the program as FLTK's
   does, with `system` and `&`, in the menu's directory; `fluid` and
   `fltk-options` come from `PATH`, and `FLTK_DOCDIR` isn't set. Exit
   hides the form, where FLTK calls `exit (0)`. Without an argument
@@ -4826,6 +4826,21 @@ came from and has the COPYING of X.Org's `rgb` package (1.1.0, from
 Fedora 44's source package). pofltk ships the same file in
 `examples/`. X.Org's current `rgb.txt` is a later revision, 782 lines
 to FLTK's 753; FLTK's is the one colbrowser was compared against.
+
+**`valuators.fl` (2026-11-12).** `test/valuators.fl` is FLTK 1.4.5's
+`test/valuators.fl`, copied unchanged, and demo's Fluid item is
+`fluid valuators.fl` again, as in FLTK's menu. It is the first file of
+FLTK's own in FLTKAda, which departs from the rule `help_dialog`
+followed (Phase 14: FLTK's page is under FLTK's licence, so FLTKAda
+wrote its own). The difference is that a page can be rewritten and
+this file can't usefully be: it is the design fluid opens, and the
+point is to show FLTK's. The FLTK License allows copying it with the
+licence, so `test/valuators.fl.COPYING` has FLTK 1.4.5's COPYING;
+FLTKAda's own code stays public domain. pofltk ships it the same way.
+Under a private Xvfb, with a scratch `HOME` so fluid's preferences
+stay out of `~/.config`, Tools and Fluid start `fluid valuators.fl`,
+which shows the design and its window. No automated test covers it:
+fluid is a separate program.
 
 ## Open questions
 

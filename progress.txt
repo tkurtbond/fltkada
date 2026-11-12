@@ -630,6 +630,9 @@ works (FLTKAda-BUGS.md 138)
 test/rgb.txt, X.Org's colour database as FLTK ships it, for colbrowser
 and demo, with its licence in test/rgb.txt.COPYING
 
+test/valuators.fl, FLTK's, for demo's Fluid item, with FLTK's licence in
+test/valuators.fl.COPYING
+
 
 
 Incomplete APIs:
