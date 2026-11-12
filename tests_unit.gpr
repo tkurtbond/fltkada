@@ -7,9 +7,10 @@
 --  The unit tests in test/unit: each test_<area>.adb checks its own
 --  results, prints ok/FAIL/skip lines and sets the exit status.  make
 --  check runs them (PLAN.md, Phase 0).  FLTK.Probe and its C++ part are
---  compiled here, not in the library.  Assertions are always on (-gnata),
+--  compiled here, not in the library.  Assertions are on (-gnata),
 --  so predicates and Pre in the library's specs are checked in the test
---  code that calls them.
+--  code that calls them, except in the two tests of FLTKAda-BUGS.md 28's
+--  guards (Compiler, below).
 
 
 with
@@ -69,6 +70,8 @@ project Tests_Unit is
         "test_terminal.adb",
         "test_print.adb",
         "test_gl.adb",
+        "test_gl_draw_image.adb",
+        "test_index_guards.adb",
         "test_glut.adb",
         "test_glut_shapes.adb",
         "test_key_bindings.adb",
@@ -219,6 +222,13 @@ project Tests_Unit is
     package Compiler is
         for Default_Switches ("Ada") use
             Common.Compiler'Default_Switches ("Ada") & "-gnata";
+        --  These two check the explicit guards a release build relies on
+        --  (FLTKAda-BUGS.md 28).  The functions they call are Inline, so
+        --  with -gnata their Pre, inlined here, would raise first.
+        for Switches ("test_index_guards.adb") use
+            Common.Compiler'Default_Switches ("Ada");
+        for Switches ("test_gl_draw_image.adb") use
+            Common.Compiler'Default_Switches ("Ada");
         for Default_Switches ("C++") use
             Common.Compiler'Default_Switches ("C++");
     end Compiler;

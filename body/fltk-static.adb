@@ -1803,13 +1803,14 @@ package body FLTK.Static is
     procedure Default_Window_Close
            (Item : in out FLTK.Widgets.Widget'Class) is
     begin
-        pragma Assert (Wrapper (Item).Void_Ptr /= Null_Pointer);
+        --  Fl::default_atclose would hide a null widget (FLTKAda-BUGS.md 28).
+        if Wrapper (Item).Void_Ptr = Null_Pointer then
+            raise Program_Error with
+                "Default_Window_Close given a widget with no FLTK object";
+        end if;
         fl_static_default_atclose
            (Wrapper (Item).Void_Ptr,
             fl_widget_get_user_data (Wrapper (Item).Void_Ptr));
-    exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "Fl::default_atclose received uninitialised widget";
     end Default_Window_Close;
 
 

@@ -787,12 +787,7 @@ private
     function c_pointer_size
         return Interfaces.C.size_t;
     pragma Import (C, c_pointer_size, "c_pointer_size");
-
-    --  If this fails then we are on an architecture that for whatever reason
-    --  has significant problems interfacing between C and Ada
-    pragma Assert
-       (c_pointer_size * Interfaces.C.CHAR_BIT = Storage.Integer_Address'Size,
-        "Size of C void pointers and size of Ada address values do not match");
+    --  The body checks this at elaboration.
 
 
 

@@ -765,9 +765,15 @@ package body FLTK.Environment is
             Index : in Positive)
         return String
     is
-        Key : constant Interfaces.C.Strings.chars_ptr :=
-            fl_preferences_entry (Group_Ptr (This), Interfaces.C.int (Index) - 1);
+        Key : Interfaces.C.Strings.chars_ptr;
     begin
+        --  Fl_Preferences::Node::entry doesn't check the index
+        --  (FLTKAda-BUGS.md 28).
+        if Index > This.Number_Of_Entries then
+            raise Constraint_Error with "Entry_Key" & Positive'Image (Index)
+                & " past the last," & Natural'Image (This.Number_Of_Entries);
+        end if;
+        Key := fl_preferences_entry (Group_Ptr (This), Interfaces.C.int (Index) - 1);
         --  no need for dealloc?
         if Key = Interfaces.C.Strings.Null_Ptr then
             raise Preference_Error;
@@ -812,9 +818,15 @@ package body FLTK.Environment is
             Index : in Positive)
         return String
     is
-        Name : constant Interfaces.C.Strings.chars_ptr :=
-            fl_preferences_group (Group_Ptr (This), Interfaces.C.int (Index) - 1);
+        Name : Interfaces.C.Strings.chars_ptr;
     begin
+        --  Fl_Preferences::Node::childNode doesn't check the index
+        --  (FLTKAda-BUGS.md 28).
+        if Index > This.Number_Of_Groups then
+            raise Constraint_Error with "Group_Name" & Positive'Image (Index)
+                & " past the last," & Natural'Image (This.Number_Of_Groups);
+        end if;
+        Name := fl_preferences_group (Group_Ptr (This), Interfaces.C.int (Index) - 1);
         --  no need for dealloc?
         if Name = Interfaces.C.Strings.Null_Ptr then
             raise Preference_Error;

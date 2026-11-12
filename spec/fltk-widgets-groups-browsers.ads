@@ -407,8 +407,10 @@ private
            (This : in out Browser);
 
 
-    pragma Assert
-       (Item_Cursor'Size = Storage.Integer_Address'Size,
+    --  A pragma Assert until FLTKAda-BUGS.md 28, which release builds
+    --  didn't check.
+    pragma Compile_Time_Error
+       (Item_Cursor'Size /= Storage.Integer_Address'Size,
         "Size of Browser Item_Cursor does not match Ada address values");
 
     function Address_To_Cursor is

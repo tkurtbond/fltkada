@@ -7,8 +7,8 @@ Sections 1 to 14 are fixed bugs. Sections 15 to 30 were found on
 audit found 33 to 38, and 43 to 45 came from N12 (both PLAN.md,
 Phase 2). Later sections were found by the phases that name them.
 
-Four are still open: 28 (in part: the remaining `pragma Assert`s), 41,
-44 and 85. Every other section is fixed. Until 2026-11-11 this
+Three are still open: 41, 44 and 85. Every other section is fixed;
+28 was open in part until 2026-11-12. Until 2026-11-11 this
 paragraph called 15 to 30 open and 45 open. Most of 15 to 30 were fixed
 in Phases 2 and 6 under PLAN.md's own numbers (N1 to N12 and pofltk's
 issue numbers), and some were recorded again as later sections (39, 40,
@@ -741,7 +741,7 @@ own `Pre` and `pragma Assert` are never checked in a release build.
 **Planned fix.** Write guards that prevent memory errors as explicit
 checks that raise (PLAN.md, "Architecture decisions", 1).
 
-**Status.** Open, in part. Since 2026-11-03 every new guard against a
+**Status.** Fixed 2026-11-12 (below). Until then: open, in part. Since 2026-11-03 every new guard against a
 memory error is an explicit check that raises (PLAN.md, "Architecture
 decisions", 1), and the guards found since have been rewritten. What
 remains is the sorting described below. (Checked 2026-11-11: 79
@@ -755,6 +755,63 @@ They check that FLTK's result is one FLTK documents, such as
 `Result in -3 .. 2` in `fltk-asks.adb`, and they aren't checked in a
 release build. They haven't been sorted into the ones that guard memory
 and the ones that don't. `grep -n 'pragma Assert' body/*.adb` lists them.
+
+**Fixed** 2026-11-12. Every `Pre`, predicate and `pragma Assert` in
+`spec/` and `body/` was sorted. Those that keep FLTK from reading or
+writing outside its memory are now explicit checks as well, and keep
+their `Pre`, which documents them and is checked first in a debug
+build (decision 1). `test/unit/test_index_guards.adb` and
+`test/unit/test_gl_draw_image.adb` check them.
+
+- **`Filenames.Item`** past the list's end: `fl_filename_list`'s
+  `dirent **` is indexed unchecked. Now `Constraint_Error`.
+- **`Environment.Entry_Key` and `Group_Name`** past the last:
+  `Fl_Preferences::Node::entry` is `entry_[i]` (Fl_Preferences.H:381)
+  and `childNode` is `index_[ix]` (Fl_Preferences.cxx:1881), neither
+  checked. Now `Constraint_Error`.
+- **`Animated_GIF.Frame_Image`** past the last frame grew its vector of
+  frame wrappers to the frame's number, which could be `Integer'Last`,
+  and gave an image with no FLTK object. Now `Constraint_Error` first.
+- **`Draw.OpenGL.Draw_Image`**: the data's length was only a `Pre`, and
+  FLTK's `gl_draw_image` reads past the data even when it is long
+  enough, for depths 1 and 2 and rows not a multiple of 4 bytes
+  (FLTK-issues.md, F40). The shim now draws as `gl_draw_image` does,
+  with a format for each depth and unpadded rows, and the body raises
+  `Constraint_Error` for a `Depth` over 4, a `Line_Size` under
+  `W * Depth` or not a multiple of `Depth`, and short data. An image
+  with no width or height draws nothing; the length check divides
+  rather than multiplies, as `Size_Type` wraps.
+- **`Static.Default_Window_Close`** of a widget with no FLTK object
+  passed null to `Fl::default_atclose`, which hides it. The assert
+  became a check raising `Program_Error`, as for other misuse of state
+  (decision 2); a debug build raised `Internal_FLTK_Error` before.
+- **The two asserts in specs**, that a C pointer is the size of an
+  `Integer_Address` (`fltk.ads`) and that a browser's `Item_Cursor` is
+  too, are now a check at `FLTK`'s elaboration and a
+  `pragma Compile_Time_Error`.
+
+Not guards, and left as they are:
+
+- **The 17 asserts on user data** (in tooltips, tabbed groups,
+  wizards, groups, tables, static, file choosers, widgets and events)
+  check `fl_widget_get_user_data`'s result, which since 51 is 0 for a
+  widget FLTK made or one with no object, never a stray pointer. What
+  those calls should do with such a widget is 44's question.
+- **The other 61 body asserts** check that a result is in the range
+  FLTK documents. In a release build a value outside it raises
+  `Constraint_Error` at the conversion or `'Val` that follows, or is
+  ignored; none indexes memory. Two were checked closely: the menu
+  path buffers (`fltk-widgets-menus.adb`) have `Item_Path_Max + 1`
+  nul-filled elements and FLTK is given `Item_Path_Max`, so they stay
+  terminated; and `position_to_line` sets its result to 0 before it
+  can fail (`fltk-widgets-groups-text_displays.adb`).
+- **The other `Pre`s** were safe without them: Bitmap and RGB image
+  data are indexed through Ada arrays; FLTK checks the index of
+  `Native_File_Chooser.Get_Filename` in all three drivers and of
+  `Group.Child`; `File_Chooser.Get_Selected` and `Table.Child` already
+  check for null; `Path_String`'s limit no longer matters, as the
+  functions it guarded copy with a length (120, 121); and the RGB
+  `Max_Size` and pixmap checks were already explicit (77, 84).
 
 
 ## 29. Exceptions raised in callbacks cross FLTK's C++ frames

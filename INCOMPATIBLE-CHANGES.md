@@ -118,6 +118,25 @@ come first in each list.
 
 ## Changes that can make a program behave differently
 
+- **`Draw.OpenGL.Draw_Image` draws depth 1 as grey and depth 2 as grey
+  and alpha, and draws rows of any length straight**, where FLTK's
+  `gl_draw_image` drew depths 1 and 2 as RGB and rows not a multiple of
+  4 bytes askew, reading past the data either way. It raises
+  `Constraint_Error` for a `Depth` over 4, a `Line_Size` under
+  `W * Depth` or not a multiple of `Depth`, and data too short, and
+  draws nothing for an image with no width or height.
+  [FLTKAda-BUGS.md 28](FLTKAda-BUGS.md#28-guards-written-as-pre-or-predicates-are-off-in-release-builds),
+  [FLTK-issues.md F40](FLTK-issues.md#f40-gl_draw_image-reads-past-its-data).
+- **`Filenames.Item`, `Environment.Entry_Key` and `Group_Name`, and
+  `Animated_GIF.Frame_Image` raise `Constraint_Error` for an index past
+  the last** in a release build, as their `Pre` did in a debug build.
+  Before, a release build read outside FLTK's arrays, or for
+  `Frame_Image` gave an image with no FLTK object.
+  [FLTKAda-BUGS.md 28](FLTKAda-BUGS.md#28-guards-written-as-pre-or-predicates-are-off-in-release-builds).
+- **`Static.Default_Window_Close` of a widget with no FLTK object
+  raises `Program_Error`.** Before, a release build passed null to
+  FLTK, and a debug build raised `Internal_FLTK_Error`.
+  [FLTKAda-BUGS.md 28](FLTKAda-BUGS.md#28-guards-written-as-pre-or-predicates-are-off-in-release-builds).
 - **Every preferences database is opened with FLTK's `C_LOCALE`
   flag**, so floating point is written with a point and read the same
   way whatever `LC_NUMERIC` says. A file written before by a program

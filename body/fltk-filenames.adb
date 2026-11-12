@@ -370,6 +370,11 @@ package body FLTK.Filenames is
             Index : in Positive)
         return Path_String is
     begin
+        --  FLTK doesn't check the index (FLTKAda-BUGS.md 28).
+        if Index > This.Length then
+            raise Constraint_Error with "File_List Item" & Positive'Image (Index)
+                & " past the last," & Natural'Image (This.Length);
+        end if;
         return Interfaces.C.Strings.Value
             (filename_dname (This.Void_Ptr, Interfaces.C.int (Index) - 1));
     end Item;

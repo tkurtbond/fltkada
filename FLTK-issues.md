@@ -900,3 +900,30 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
   eight new games of three runs, including one after earlier games had
   written into those bytes. That the C++ result can change with its
   heap addresses is from the source; every C++ run here dealt the same.
+
+### F40. `gl_draw_image` reads past its data
+
+- **What happens**: `gl_draw_image` with depth 1 or 2, or with rows
+  whose length in bytes isn't a multiple of 4, reads past the end of
+  data that holds exactly `w * h * d` bytes, and draws the wrong
+  colours: grey is drawn as RGB, and such rows are drawn askew. FLTK's
+  manual says nothing of either. Found 2026-11-12, sorting
+  FLTKAda-BUGS.md 28. pofltk's list doesn't have it, and pofltk's
+  `FlGl.DrawImage` has the same fault: it checks
+  `w * h * d <= LEN(data)` and documents depth 1 as grey.
+- **Cause**: `gl_draw_image` (src/gl_draw.cxx:236-244) passes
+  `d < 4 ? GL_RGB : GL_RGBA` to `glDrawPixels`, so depths 1 and 2 are
+  read at three bytes a pixel. It sets `GL_UNPACK_ROW_LENGTH` but not
+  `GL_UNPACK_ALIGNMENT`, whose default of 4 makes GL take each row as
+  padded to a multiple of 4 bytes.
+- **Effect on FLTKAda**: `FLTK.Draw.OpenGL.Draw_Image`'s shim no
+  longer calls `gl_draw_image`. It does what it does with a format
+  for each depth (`GL_LUMINANCE`, `GL_LUMINANCE_ALPHA`, `GL_RGB`,
+  `GL_RGBA`) and an alignment of 1, and restores the unpack state it
+  changes.
+- **Confirmed**: a scratch C++ program drew a malloc'd `w * 10 * d`
+  bytes with `gl_draw_image` under Xvfb and valgrind. Depth 3 at width
+  8 and depth 4 at width 10 were clean; depths 1 and 2 at width 8 had
+  107 invalid reads each, and depth 3 at width 10 had 12, all in
+  Mesa's `glDrawPixels`. `test/unit/test_gl_draw_image.adb` reads back
+  what FLTKAda's `Draw_Image` draws for each case.

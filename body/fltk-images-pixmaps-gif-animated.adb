@@ -825,6 +825,11 @@ package body FLTK.Images.Pixmaps.GIF.Animated is
             Frame : in     Frame_Index)
         return FLTK.Images.RGB.RGB_Image_Reference is
     begin
+        --  Before the vector grows to Frame elements (FLTKAda-BUGS.md 28).
+        if Frame > This.Frames then
+            raise Constraint_Error with "Frame_Image" & Positive'Image (Frame)
+                & " past the last," & Natural'Image (This.Frames);
+        end if;
         while Natural (This.Frame_Wraps.Length) < Frame loop
             This.Frame_Wraps.Append (new FLTK.Images.RGB.RGB_Image);
         end loop;

@@ -4842,6 +4842,29 @@ stay out of `~/.config`, Tools and Fluid start `fluid valuators.fl`,
 which shows the design and its window. No automated test covers it:
 fluid is a separate program.
 
+**FLTKAda-BUGS.md 28 (2026-11-12).** The last of 28: every `Pre`,
+predicate and `pragma Assert` was sorted into guards against memory
+errors and the rest, and the guards are now explicit checks
+(decision 1), each keeping its `Pre`. The guards were `Filenames.Item`,
+`Environment.Entry_Key` and `Group_Name`, `Animated_GIF.Frame_Image`,
+`Draw.OpenGL.Draw_Image` and `Static.Default_Window_Close`, which
+raises `Program_Error` (decision 2); FLTKAda-BUGS.md 28 lists what was
+left, and why. `Draw_Image` showed a new FLTK issue, F40:
+`gl_draw_image` reads past its data for depths 1 and 2 and for rows not
+a multiple of 4 bytes, so the shim draws the image itself. pofltk has
+the same fault, and is unchanged here. The two asserts in specs are an
+elaboration check and a `pragma Compile_Time_Error`. Tests:
+`test_index_guards` and `test_gl_draw_image`. Those two are compiled
+without `-gnata` (per-file `Switches` in `tests_unit.gpr`): `Item`,
+`Entry_Key`, `Group_Name` and `Draw_Image` are `Inline`, so with
+`-gnata` their inlined `Pre` raised `Assertion_Error` before the
+explicit check could be reached, and the tests didn't test what a
+release build relies on. Checked: with the switches, all their checks
+pass under `check-headless` and `check-sway`. Run unguarded,
+`Frame_Image (Integer'Last)` appended a wrapper per frame until the
+kernel killed it at 28.5 GB, along with the session running it; the
+far-past-the-end case is now `Frames + 100_000`.
+
 ## Open questions
 
 All five were decided by the user on 2026-11-03.

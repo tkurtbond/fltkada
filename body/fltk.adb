@@ -1051,6 +1051,14 @@ package body FLTK is
 
 begin
 
+    --  If this fails then we are on an architecture that for whatever reason
+    --  has significant problems interfacing between C and Ada.  It was a
+    --  pragma Assert, which release builds don't check (FLTKAda-BUGS.md 28).
+    if c_pointer_size * Interfaces.C.CHAR_BIT /= Storage.Integer_Address'Size then
+        raise Program_Error with
+            "Size of C void pointers and size of Ada address values do not match";
+    end if;
+
     --  FLTK's loaders size an image's array as an int, w () * h () * d ()
     --  (Fl_PNG_Image.cxx:218, Fl_JPEG_Image.cxx:324, Fl_PNM_Image.cxx:139,
     --  Fl_BMP_Image.cxx:285), after checking the size against max_size, which

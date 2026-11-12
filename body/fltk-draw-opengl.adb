@@ -408,8 +408,35 @@ package body FLTK.Draw.OpenGL is
            (X, Y, W, H : in Integer;
             Data       : in Color_Component_Array;
             Depth      : in Positive := 3;
-            Line_Size  : in Natural := 0) is
+            Line_Size  : in Natural := 0)
+    is
+        Row : Size_Type;
     begin
+        --  The Pre's checks, which a release build doesn't make, guard
+        --  against reading past Data (FLTKAda-BUGS.md 28).  Dividing by H
+        --  keeps the product of the sizes from wrapping.
+        if Depth > 4 then
+            raise Constraint_Error with "Draw_Image's Depth is" & Positive'Image (Depth)
+                & ", over 4";
+        end if;
+        if W < 1 or H < 1 then
+            return;
+        end if;
+        if Line_Size = 0 then
+            Row := Size_Type (W) * Size_Type (Depth);
+        elsif Size_Type (Line_Size) < Size_Type (W) * Size_Type (Depth)
+            or Line_Size mod Depth /= 0
+        then
+            raise Constraint_Error with "Draw_Image's Line_Size" & Natural'Image (Line_Size)
+                & " is under W * Depth or not a multiple of Depth";
+        else
+            Row := Size_Type (Line_Size);
+        end if;
+        if Data'Length / Size_Type (H) < Row then
+            raise Constraint_Error with "Draw_Image's Data is too short:"
+                & Size_Type'Image (Data'Length) & " bytes for" & Natural'Image (H)
+                & " rows of" & Size_Type'Image (Row);
+        end if;
         fl_gl_draw_image
            ((if Data'Length > 0
              then Storage.To_Integer (Data (Data'First)'Address)

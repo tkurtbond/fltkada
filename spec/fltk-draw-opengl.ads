@@ -117,14 +117,25 @@ package FLTK.Draw.OpenGL is
 
     --  Images  --
 
+    --  Draws W by H pixels of Data at the raster position X, Y, its first
+    --  row at the bottom.  Depth is 1 for grey, 2 for grey and alpha, 3 for
+    --  RGB and 4 for RGBA, and Line_Size is the bytes from one row to the
+    --  next, 0 for W * Depth; any row length is drawn as given (FLTK's
+    --  gl_draw_image draws depths 1 and 2 as RGB and rows not a multiple of
+    --  4 bytes askew, reading past the data; FLTK-issues.md, F40).  Raises
+    --  Constraint_Error for a Depth over 4, a Line_Size under W * Depth or
+    --  not a multiple of Depth, or Data shorter than the rows.  An image
+    --  with no width or height draws nothing.
     procedure Draw_Image
            (X, Y, W, H : in Integer;
             Data       : in Color_Component_Array;
             Depth      : in Positive := 3;
             Line_Size  : in Natural := 0)
-    with Pre => (if Line_Size = 0
-        then Data'Length >= Size_Type (W) * Size_Type (H) * Size_Type (Depth)
-        else Data'Length >= Size_Type (Line_Size) * Size_Type (H));
+    with Pre => Depth <= 4 and
+       (W < 1 or H < 1 or
+           (if Line_Size = 0
+            then Data'Length >= Size_Type (W) * Size_Type (H) * Size_Type (Depth)
+            else Data'Length >= Size_Type (Line_Size) * Size_Type (H)));
 
 
 private

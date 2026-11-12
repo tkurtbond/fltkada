@@ -37,7 +37,12 @@ FLTK.Unsupported_Error, since FLTK 1.4.5's gl_start crashes there whatever is cu
 raises Program_Error with no Start before it. A Start in a hook FLTK calls (a Draw) that raises
 before Finish is finished as the exception leaves the hook, since gl_start leaves the display
 drawing at scale 1 until gl_finish. A Start_Guard calls Start as it is declared, and Finish as
-it is finalized.</p>
+it is finalized.<br /><br />
+Draw_Image doesn't call gl_draw_image, which draws depths 1 and 2 as RGB and rows not a
+multiple of 4 bytes askew, reading past the data (FLTK-issues.md, F40). It draws depth 1 as
+grey, 2 as grey and alpha, 3 as RGB and 4 as RGBA, rows of any length. It checks its Pre in
+every build, raising Constraint_Error, and draws nothing for an image with no width or
+height.</p>
 
 
 
@@ -268,9 +273,11 @@ procedure Draw_Image
         Data       : in Color_Component_Array;
         Depth      : in Positive := 3;
         Line_Size  : in Natural := 0)
-with Pre =&gt; (if Line_Size = 0
-    then Data'Length &gt;= Size_Type (W) * Size_Type (H) * Size_Type (Depth)
-    else Data'Length &gt;= Size_Type (Line_Size) * Size_Type (H));
+with Pre =&gt; Depth &lt;= 4 and
+   (W &lt; 1 or H &lt; 1 or
+       (if Line_Size = 0
+        then Data'Length &gt;= Size_Type (W) * Size_Type (H) * Size_Type (Depth)
+        else Data'Length &gt;= Size_Type (Line_Size) * Size_Type (H)));
 </pre></td>
   </tr>
 

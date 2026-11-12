@@ -176,8 +176,29 @@ void fl_gl_texture_reset() {
 
 
 
+//  FLTK's gl_draw_image draws depths 1 and 2 as GL_RGB, and leaves
+//  GL_UNPACK_ALIGNMENT at its default of 4, so rows not a multiple of 4
+//  bytes are taken as padded.  Either way it reads past the data
+//  (FLTK-issues.md, F40).  This draws as it does, with a format for each
+//  depth and the rows unpadded, restoring what it changes.  The Ada side
+//  checks d is 1 to 4, w and h are positive, and the data is long enough.
 void fl_gl_draw_image(void * data, int x, int y, int w, int h, int d, int l) {
-    gl_draw_image(static_cast<uchar*>(data), x, y, w, h, d, l);
+    static const GLenum formats[4] = {GL_LUMINANCE, GL_LUMINANCE_ALPHA, GL_RGB, GL_RGBA};
+    GLint row_length, alignment, skip_rows, skip_pixels;
+    glGetIntegerv(GL_UNPACK_ROW_LENGTH, &row_length);
+    glGetIntegerv(GL_UNPACK_ALIGNMENT, &alignment);
+    glGetIntegerv(GL_UNPACK_SKIP_ROWS, &skip_rows);
+    glGetIntegerv(GL_UNPACK_SKIP_PIXELS, &skip_pixels);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, l == 0 ? w : l / d);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
+    glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+    glRasterPos2i(x, y);
+    glDrawPixels(w, h, formats[d - 1], GL_UNSIGNED_BYTE, data);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, row_length);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
+    glPixelStorei(GL_UNPACK_SKIP_ROWS, skip_rows);
+    glPixelStorei(GL_UNPACK_SKIP_PIXELS, skip_pixels);
 }
 
 
