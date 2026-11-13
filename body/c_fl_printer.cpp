@@ -8,6 +8,7 @@
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Window.H>
 #include "c_fl_printer.h"
+#include <cstring>
 
 
 
@@ -191,12 +192,28 @@ void fl_printer_set_property_cancel(const char * v) {
 
 
 
-int fl_printer_start_job(PRINTER p, int c) {
-    return static_cast<Fl_Printer*>(p)->start_job(c, 0, 0);
+//  FLTK returns 1 if the user cancels, and 2 with a message, made by new[],
+//  if the job can't start (Fl_Posix_Printer_Driver.cxx:203-220, 366-372).
+//  The message is copied to msg, n bytes with the NUL, or msg is "" if FLTK
+//  gave none (FLTKAda-BUGS.md 85).
+static int start_job(PRINTER p, int c, int * f, int * t, char * msg, int n) {
+    char * err = 0;
+    int r = static_cast<Fl_Printer*>(p)->start_job(c, f, t, &err);
+    msg[0] = 0;
+    if (err != 0) {
+        strncpy(msg, err, n - 1);
+        msg[n - 1] = 0;
+        delete[] err;
+    }
+    return r;
 }
 
-int fl_printer_start_job2(PRINTER p, int c, int * f, int * t) {
-    return static_cast<Fl_Printer*>(p)->start_job(c, f, t);
+int fl_printer_start_job(PRINTER p, int c, char * msg, int n) {
+    return start_job(p, c, 0, 0, msg, n);
+}
+
+int fl_printer_start_job2(PRINTER p, int c, int * f, int * t, char * msg, int n) {
+    return start_job(p, c, f, t, msg, n);
 }
 
 void fl_printer_end_job(PRINTER p) {

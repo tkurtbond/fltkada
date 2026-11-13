@@ -701,7 +701,7 @@ is
             Printer.End_Job;
         exception
             --  Cancelled, or no printer.
-            when FLTK.Devices.Surface.Paged.Page_Error => null;
+            when Prn.User_Cancel_Error | FLTK.Devices.Surface.Paged.Page_Error => null;
         end;
     end Print_CB;
 

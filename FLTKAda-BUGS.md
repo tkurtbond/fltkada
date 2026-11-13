@@ -7,8 +7,8 @@ Sections 1 to 14 are fixed bugs. Sections 15 to 30 were found on
 audit found 33 to 38, and 43 to 45 came from N12 (both PLAN.md,
 Phase 2). Later sections were found by the phases that name them.
 
-Three are still open: 41, 44 and 85. Every other section is fixed;
-28 was open in part until 2026-11-12. Until 2026-11-11 this
+Two are still open: 41 and 44. Every other section is fixed;
+28 was open in part until 2026-11-12, and 85 was open until then too. Until 2026-11-11 this
 paragraph called 15 to 30 open and 45 open. Most of 15 to 30 were fixed
 in Phases 2 and 6 under PLAN.md's own numbers (N1 to N12 and pofltk's
 issue numbers), and some were recorded again as later sections (39, 40,
@@ -2582,15 +2582,31 @@ already tell the two apart, with `User_Cancel_Error` and
 `File_Open_Error` with FLTK's message.
 
 **Found.** Phase 14, 2026-11-04, porting `test/device.cxx`. Its Ada port,
-`test/device.adb`, ignores `Page_Error` for now, and says why. Found by
-reading FLTK's source; not yet shown by a test, which would need
-`FLTK.Probe.Modal` to answer the print dialog.
+`test/device.adb`, ignored `Page_Error`, and said why. Found by reading
+FLTK's source.
 
-**Fix.** Not yet. The shim should pass `perr_message`, copy it and free
-it with `delete[]`, and `Start_Job` should raise `User_Cancel_Error` for
-1 and `Page_Error` with the message otherwise.
+**Fix.** 2026-11-12. The shim passes `perr_message`, copies FLTK's
+message into a buffer the caller gives, and frees it with `delete[]`;
+FLTK makes it with `new[]` in both the Posix and the GTK driver
+(`Fl_Posix_Printer_Driver.cxx:203-220`, 366-372). Both `Start_Job`s
+raise the new `Printers.User_Cancel_Error` for 1, and `Page_Error` with
+FLTK's message for anything else, or "the print job could not start"
+if FLTK gave none. `test/device.adb` now shows the message in an alert,
+as FLTK's `device.cxx` does, and `cube`, `mandelbrot` and
+`pixmap_browser` ignore both exceptions, as before.
 
-**Status.** Open.
+**Verified.** `test_printer_errors`, under Xvfb, drives FLTK's own print
+panel (`FLTK.Probe.Set_Printer_Uses_GTK (False)`). A fake `lpstat` on
+`PATH` gives the panel a printer, and a fake `lp` copies the job to a
+file. New `FLTK.Probe` calls choose the printer and press Print.
+`Probe.Limit_Processes` sets `RLIMIT_NPROC` to 1 just before Print, so
+`popen` of `lp` fails. Before the fix, both cancels and the failure
+raised `Page_Error` with no message (4 failures). After it, both
+cancels raise `User_Cancel_Error`, and the failure raises `Page_Error`
+with "could not run command: lp -s -d fakejet -n 1 -t 'FLTK' -o
+media=A4". A job to the fake printer starts, gives pages 1 to 3 for a
+job of 3, and `lp` receives PostScript. `test_printer_labels` now
+expects `User_Cancel_Error`, as does the desktop test of GTK's dialog.
 
 
 ## 86. A File_Chooser's kind was an enumeration, not FLTK's bit mask
@@ -4017,3 +4033,30 @@ the new call sets one display's size and not another's or the global
 one, and that `Set_Scrollbar_Width` sets the global one. With it, the
 `unittests` port's Scrollbar Size page is AE 0 against FLTK's build
 with both sliders moved.
+
+## 140. Printer's Start_Job copied back page numbers FLTK never set
+
+**Symptom.** A cancelled or failed `Printers.Start_Job (Count, From,
+To)` could raise `Constraint_Error` instead of the job's exception,
+depending on what was on the stack. Valgrind reported two uses of
+uninitialised values in the caller.
+
+**Cause.** The body passed `Interfaces.C.int (From)` and
+`Interfaces.C.int (To)`, view conversions of the `out Positive`
+parameters, to the shim. For an `out` scalar, the C `int` temporary
+starts uninitialised (RM 6.4.1), and FLTK sets the page numbers
+only if the job starts (`Fl_Posix_Printer_Driver.cxx:293`, 338-339). The
+import returns normally either way, so the temporaries were converted
+back into `Positive`, with a range check on whatever they held.
+
+**Found.** 2026-11-12, reading the body while fixing 85.
+
+**Fix.** The body passes local `int`s set to 1, and assigns `From` and
+`To` only after `Start_Job` has checked that the job started.
+
+**Verified.** `test_printer_errors` cancels a job with a range. Under
+valgrind, under Xvfb, it gave two "Conditional jump or move depends on
+uninitialised value(s)" in the test, where `Start_Job` is inlined.
+After the fix, valgrind reports no errors. `Constraint_Error` itself
+didn't happen in that run, as the stack happened to hold positive
+numbers.

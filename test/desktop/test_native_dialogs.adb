@@ -26,7 +26,6 @@ use
 procedure Test_Native_Dialogs is
 
     package NFC renames FLTK.Native_File_Choosers;
-    package Pag renames FLTK.Devices.Surface.Paged;
     package Prn renames FLTK.Devices.Surface.Paged.Printers;
 
     use type NFC.Show_Result;
@@ -59,11 +58,11 @@ begin
     begin
         Say ("A print dialog opens.  Press Cancel.");
         Device.Start_Job (1);
-        Check (False, "Printer: a cancelled print dialog raises Page_Error, but it didn't");
+        Check (False, "Printer: a cancelled print dialog raises User_Cancel_Error, but it didn't");
         Device.End_Job;
     exception
-    when Pag.Page_Error =>
-        Check (True, "Printer: a cancelled print dialog raises Page_Error");
+    when Prn.User_Cancel_Error =>
+        Check (True, "Printer: a cancelled print dialog raises User_Cancel_Error");
     end;
 
     Summary;

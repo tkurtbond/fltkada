@@ -38,6 +38,7 @@ project Tests_Unit is
         "test_menu_labels.adb",
         "test_chooser_labels.adb",
         "test_printer_labels.adb",
+        "test_printer_errors.adb",
         "test_glut_strings.adb",
         "test_glut_live.adb",
         "test_glut_overlay.adb",

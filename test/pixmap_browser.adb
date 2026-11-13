@@ -170,7 +170,7 @@ is
         begin
             Printer.Start_Job (1);
         exception
-        when FLTK.Devices.Surface.Paged.Page_Error =>
+        when Prn.User_Cancel_Error | FLTK.Devices.Surface.Paged.Page_Error =>
             return;
         end;
         Printer.Start_Page;

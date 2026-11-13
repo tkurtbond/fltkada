@@ -148,6 +148,27 @@ package body FLTK.Probe is
         return C.int;
     pragma Import (C, fl_probe_has_label, "fl_probe_has_label");
 
+    function fl_probe_press_in_modal
+           (T : in C.char_array)
+        return C.int;
+    pragma Import (C, fl_probe_press_in_modal, "fl_probe_press_in_modal");
+
+    function fl_probe_choose_in_modal
+           (T : in C.char_array;
+            N : in C.int)
+        return C.int;
+    pragma Import (C, fl_probe_choose_in_modal, "fl_probe_choose_in_modal");
+
+    function fl_probe_chosen_in_modal
+           (T : in C.char_array)
+        return CS.chars_ptr;
+    pragma Import (C, fl_probe_chosen_in_modal, "fl_probe_chosen_in_modal");
+
+    function fl_probe_limit_processes
+           (On : in C.int)
+        return C.int;
+    pragma Import (C, fl_probe_limit_processes, "fl_probe_limit_processes");
+
     function fl_probe_x11_title
            (W   : in     Storage.Integer_Address;
             Buf :    out C.char_array;
@@ -567,6 +588,48 @@ package body FLTK.Probe is
     begin
         return fl_probe_has_label (C.To_C (Text)) /= 0;
     end Has_Label;
+
+
+    function Press_In_Modal
+           (Text : in String)
+        return Boolean
+    is
+        Result : Boolean;
+    begin
+        Result := fl_probe_press_in_modal (C.To_C (Text)) /= 0;
+        Hook_Exceptions.Reraise;
+        return Result;
+    end Press_In_Modal;
+
+
+    function Choose_In_Modal
+           (Text : in String;
+            Item : in Natural)
+        return Boolean
+    is
+        Result : Boolean;
+    begin
+        Result := fl_probe_choose_in_modal (C.To_C (Text), C.int (Item)) /= 0;
+        Hook_Exceptions.Reraise;
+        return Result;
+    end Choose_In_Modal;
+
+
+    function Chosen_In_Modal
+           (Text : in String)
+        return String is
+    begin
+        return CS.Value (fl_probe_chosen_in_modal (C.To_C (Text)));
+    end Chosen_In_Modal;
+
+
+    procedure Limit_Processes
+           (On : in Boolean) is
+    begin
+        if fl_probe_limit_processes (Boolean'Pos (On)) = 0 then
+            raise Probe_Error with "can't set RLIMIT_NPROC";
+        end if;
+    end Limit_Processes;
 
 
     function X11_Title

@@ -266,8 +266,10 @@ package body FLTK.Devices.Surface.Paged.Printers is
     --  Job Control  --
 
     function fl_printer_start_job
-           (D : in Storage.Integer_Address;
-            C : in Interfaces.C.int)
+           (D   : in     Storage.Integer_Address;
+            C   : in     Interfaces.C.int;
+            Msg :    out Interfaces.C.char_array;
+            N   : in     Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_printer_start_job, "fl_printer_start_job");
     pragma Inline (fl_printer_start_job);
@@ -275,7 +277,9 @@ package body FLTK.Devices.Surface.Paged.Printers is
     function fl_printer_start_job2
            (D    : in     Storage.Integer_Address;
             C    : in     Interfaces.C.int;
-            F, T :    out Interfaces.C.int)
+            F, T :    out Interfaces.C.int;
+            Msg  :    out Interfaces.C.char_array;
+            N    : in     Interfaces.C.int)
         return Interfaces.C.int;
     pragma Import (C, fl_printer_start_job2, "fl_printer_start_job2");
     pragma Inline (fl_printer_start_job2);
@@ -822,31 +826,57 @@ package body FLTK.Devices.Surface.Paged.Printers is
 
     --  Job Control  --
 
+    Message_Size : constant := 1024;
+
+    --  FLTK's begin_job returns 1 if the user cancels, and 2, with a
+    --  message or not, if the job can't start (FLTKAda-BUGS.md 85).
+    procedure Check_Started
+           (Result  : in Interfaces.C.int;
+            Message : in Interfaces.C.char_array)
+    is
+        use type Interfaces.C.char;
+    begin
+        if Result = 0 then
+            return;
+        elsif Result = 1 then
+            raise User_Cancel_Error;
+        elsif Message (Message'First) = Interfaces.C.nul then
+            raise Page_Error with "the print job could not start";
+        else
+            raise Page_Error with Interfaces.C.To_Ada (Message);
+        end if;
+    end Check_Started;
+
+
     procedure Start_Job
            (This  : in out Printer;
-            Count : in     Natural := 0) is
+            Count : in     Natural := 0)
+    is
+        Message : Interfaces.C.char_array (1 .. Message_Size);
     begin
-        if fl_printer_start_job
-            (This.Void_Ptr, Interfaces.C.int (Count)) /= 0
-        then
-            raise Page_Error;
-        end if;
+        Check_Started
+           (fl_printer_start_job
+               (This.Void_Ptr, Interfaces.C.int (Count), Message, Message_Size),
+            Message);
     end Start_Job;
 
 
+    --  FLTK sets the page numbers only if the job starts (FLTKAda-BUGS.md
+    --  140).
     procedure Start_Job
            (This     : in out Printer;
             Count    : in     Natural := 0;
-            From, To :    out Positive) is
+            From, To :    out Positive)
+    is
+        Message     : Interfaces.C.char_array (1 .. Message_Size);
+        First, Last : Interfaces.C.int := 1;
     begin
-        if fl_printer_start_job2
-           (This.Void_Ptr,
-            Interfaces.C.int (Count),
-            Interfaces.C.int (From),
-            Interfaces.C.int (To)) /= 0
-        then
-            raise Page_Error;
-        end if;
+        Check_Started
+           (fl_printer_start_job2
+               (This.Void_Ptr, Interfaces.C.int (Count), First, Last, Message, Message_Size),
+            Message);
+        From := Positive (First);
+        To := Positive (Last);
     end Start_Job;
 
 

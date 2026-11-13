@@ -4865,6 +4865,19 @@ pass under `check-headless` and `check-sway`. Run unguarded,
 kernel killed it at 28.5 GB, along with the session running it; the
 far-past-the-end case is now `Frames + 100_000`.
 
+**FLTKAda-BUGS.md 85 and 140 (2026-11-12).** `Printers.Start_Job` raises
+a new `User_Cancel_Error` for a cancel, as the PostScript and PDF devices
+do, and `Page_Error` with FLTK's `perr_message` for a failure. The shim
+copies the message and frees it with `delete[]`. Fixing it showed 140:
+the form with `From` and `To` copied back page numbers FLTK hadn't set,
+and now sets them only when the job starts. `test_printer_errors`
+tests both headless. It drives FLTK's own print panel with a fake
+`lpstat` and `lp` on `PATH` and three new `FLTK.Probe` calls:
+`Choose_In_Modal`, `Press_In_Modal` (which skips the window, whose
+title is also "Print") and `Limit_Processes` (`RLIMIT_NPROC` to 1, so
+`popen` fails). No FLTK issue was found. `test/device.adb` now alerts
+with FLTK's message, as `device.cxx` does.
+
 ## Open questions
 
 All five were decided by the user on 2026-11-03.

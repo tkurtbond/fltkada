@@ -15,6 +15,7 @@
 #include <FL/fl_config.h>
 #include <FL/platform.H>
 #include <FL/Fl_Group.H>
+#include <FL/Fl_Menu_.H>
 #include <FL/Fl_Image_Surface.H>
 #include <FL/Fl_RGB_Image.H>
 #include <FL/Fl_Shared_Image.H>
@@ -30,6 +31,7 @@
 #endif
 #include <stdlib.h>
 #include <string.h>
+#include <sys/resource.h>
 #include <unistd.h>
 
 
@@ -385,6 +387,98 @@ extern "C" int fl_probe_icon_words(void * w) {
     (void) w;
     return -1;
 #endif
+}
+
+static Fl_Widget * labelled(Fl_Widget * w, const char * t) {
+    if (w->label() != 0 && strcmp(w->label(), t) == 0) {
+        return w;
+    }
+    Fl_Group * g = w->as_group();
+    if (g != 0) {
+        for (int i = 0; i < g->children(); i++) {
+            Fl_Widget * found = labelled(g->child(i), t);
+            if (found != 0) {
+                return found;
+            }
+        }
+    }
+    return 0;
+}
+
+//  The widget labelled t in the modal window, not the window itself, whose
+//  title may be the same (FLTK's print panel and its Print button).
+static Fl_Widget * in_modal(const char * t) {
+    Fl_Window *modal = Fl::modal();
+    if (modal == 0) {
+        return 0;
+    }
+    for (int i = 0; i < modal->children(); i++) {
+        Fl_Widget * found = labelled(modal->child(i), t);
+        if (found != 0) {
+            return found;
+        }
+    }
+    return 0;
+}
+
+//  The widget labelled t in the modal window has its callback done, as a
+//  click on a button does; 0 if there is none.
+extern "C" int fl_probe_press_in_modal(const char * t) {
+    Fl_Widget *w = in_modal(t);
+    if (w == 0) {
+        return 0;
+    }
+    w->do_callback();
+    return 1;
+}
+
+//  The menu (a choice) labelled t in the modal window has item n, counted
+//  from 0, chosen and its callback done; 0 if there is no such menu or item.
+extern "C" int fl_probe_choose_in_modal(const char * t, int n) {
+    Fl_Menu_ *m = dynamic_cast<Fl_Menu_*>(in_modal(t));
+    if (m == 0 || n < 0 || n >= m->size() - 1) {
+        return 0;
+    }
+    m->value(n);
+    if (m->value() != n) {
+        return 0;
+    }
+    m->do_callback();
+    return 1;
+}
+
+//  The text of the item chosen in the menu labelled t in the modal window,
+//  or "" if there is none.
+extern "C" const char * fl_probe_chosen_in_modal(const char * t) {
+    Fl_Menu_ *m = dynamic_cast<Fl_Menu_*>(in_modal(t));
+    const char * text = m == 0 ? 0 : m->text();
+    return text == 0 ? "" : text;
+}
+
+//  With on, this process can start no other (RLIMIT_NPROC, which counts the
+//  user's processes), so fork and popen fail with EAGAIN; with on 0, it can
+//  again.  0 if the limit couldn't be set.
+extern "C" int fl_probe_limit_processes(int on) {
+    static struct rlimit saved;
+    static int limited = 0;
+    if (on != 0 && limited == 0) {
+        struct rlimit none;
+        if (getrlimit(RLIMIT_NPROC, &saved) != 0) {
+            return 0;
+        }
+        none.rlim_cur = 1;
+        none.rlim_max = saved.rlim_max;
+        if (setrlimit(RLIMIT_NPROC, &none) != 0) {
+            return 0;
+        }
+        limited = 1;
+    } else if (on == 0 && limited != 0) {
+        if (setrlimit(RLIMIT_NPROC, &saved) != 0) {
+            return 0;
+        }
+        limited = 0;
+    }
+    return 1;
 }
 
 //  Whether Fl_Printer uses GTK's dialog or FLTK's own print panel.  FLTKAda's

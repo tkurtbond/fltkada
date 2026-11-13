@@ -12,10 +12,8 @@
 --  an image surface, the clipboard, a printer or a file, captures it from
 --  the screen, or shows it through a mask.  A window that shows a copy is
 --  freed at the next GO, or when the program ends, after it is closed,
---  where FLTK deletes it from its callback.  FLTKAda's Printer raises
---  Page_Error whether the job failed or the user cancelled it, and doesn't
---  give FLTK's reason, so a failed print job isn't reported here, where
---  FLTK shows the reason in an alert (FLTKAda-BUGS.md 85).
+--  where FLTK deletes it from its callback.  A print job that fails shows
+--  FLTK's reason in an alert, as FLTK's does (FLTKAda-BUGS.md 85).
 
 
 with
@@ -894,18 +892,6 @@ is
     end To_Page;
 
 
-    procedure To_Printer is
-        Device : Prn.Printer := Prn.Forge.Create;
-    begin
-        Device.Start_Job (1);
-        To_Page (Device);
-    exception
-        when Pgd.Page_Error =>
-            --  Cancelled, or failed: FLTKAda can't tell which.
-            null;
-    end To_Printer;
-
-
     procedure Alert
            (Error : in Ada.Exceptions.Exception_Occurrence)
     is
@@ -915,6 +901,19 @@ is
             FLTK.Asks.Alert (Message);
         end if;
     end Alert;
+
+
+    procedure To_Printer is
+        Device : Prn.Printer := Prn.Forge.Create;
+    begin
+        Device.Start_Job (1);
+        To_Page (Device);
+    exception
+        when Prn.User_Cancel_Error =>
+            null;
+        when Error : Pgd.Page_Error =>
+            Alert (Error);
+    end To_Printer;
 
 
     procedure To_Postscript is

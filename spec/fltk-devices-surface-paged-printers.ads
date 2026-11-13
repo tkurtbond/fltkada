@@ -19,6 +19,9 @@ package FLTK.Devices.Surface.Paged.Printers is
 
     type Printer is new Paged_Device with private;
 
+    --  Raised by Start_Job when the user cancels the print dialog.
+    User_Cancel_Error : exception;
+
     type Printer_Reference (Data : not null access Printer'Class) is limited null record
         with Implicit_Dereference => Data;
 
@@ -187,6 +190,11 @@ package FLTK.Devices.Surface.Paged.Printers is
            (This     : in out Printer;
             Count    : in     Natural := 0;
             From, To :    out Positive);
+    --  Both show the print dialog.  They raise User_Cancel_Error if the user
+    --  cancels it, and Page_Error, with FLTK's message if it gives one, if
+    --  the job can't start, such as when the print command can't be run
+    --  (FLTKAda-BUGS.md 85).  From and To are the pages to print, set only
+    --  if the job starts (FLTKAda-BUGS.md 140).
 
     --  End_Job in a page ends the page first; if that raises Page_Error, the
     --  job is not ended (FLTKAda-BUGS.md 123).

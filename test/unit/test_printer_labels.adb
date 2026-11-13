@@ -32,7 +32,6 @@ use
 procedure Test_Printer_Labels is
 
     package Prb renames FLTK.Probe;
-    package Pgd renames FLTK.Devices.Surface.Paged;
     package Prn renames FLTK.Devices.Surface.Paged.Printers;
     package ICS renames Interfaces.C.Strings;
 
@@ -125,7 +124,7 @@ procedure Test_Printer_Labels is
         Check (False, Name & " is cancelled");
         This.End_Job;
     exception
-        when Pgd.Page_Error =>
+        when Prn.User_Cancel_Error =>
             Check (True, Name & " is cancelled");
     end Cancel_Job;
 

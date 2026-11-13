@@ -118,6 +118,11 @@ come first in each list.
 
 ## Changes that can make a program behave differently
 
+- **`Printers.Start_Job` raises the new `Printers.User_Cancel_Error`
+  when the user cancels the print dialog**, not `Page_Error`. A handler
+  for `Page_Error` alone no longer catches a cancel. `Page_Error` now
+  means the job couldn't start, and carries FLTK's message.
+  [FLTKAda-BUGS.md 85](FLTKAda-BUGS.md#85-a-printers-start_job-cant-tell-a-cancel-from-a-failure).
 - **`Draw.OpenGL.Draw_Image` draws depth 1 as grey and depth 2 as grey
   and alpha, and draws rows of any length straight**, where FLTK's
   `gl_draw_image` drew depths 1 and 2 as RGB and rows not a multiple of

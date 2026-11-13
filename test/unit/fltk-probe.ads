@@ -192,6 +192,32 @@ package FLTK.Probe is
            (Text : in String)
         return Boolean;
 
+    --  Does the callback of the widget labelled Text in the modal window, not
+    --  the window itself, as a click on a button does; False if there is none.
+    function Press_In_Modal
+           (Text : in String)
+        return Boolean;
+
+    --  Chooses Item, counted from 0 as FLTK does, in the menu labelled Text
+    --  in the modal window, such as a choice, and does its callback; False if
+    --  there is no such menu or item.
+    function Choose_In_Modal
+           (Text : in String;
+            Item : in Natural)
+        return Boolean;
+
+    --  The text of the item chosen in the menu labelled Text in the modal
+    --  window, or "" if there is none.
+    function Chosen_In_Modal
+           (Text : in String)
+        return String;
+
+    --  With On, this process can start no other (RLIMIT_NPROC), so popen
+    --  fails; with On False, it can again.  Raises Probe_Error if the limit
+    --  can't be set.
+    procedure Limit_Processes
+           (On : in Boolean);
+
     --  A shown window's title as the X server has it.  Raises Probe_Error
     --  if not on X11 or the window isn't shown.
     function X11_Title

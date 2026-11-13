@@ -45,6 +45,18 @@
 
 
 
+<table class="type">
+  <tr><th colspan="2">Errors</th></tr>
+
+  <tr>
+    <td>int</td>
+    <td>User_Cancel_Error</td>
+  </tr>
+
+</table>
+
+
+
 <table class="function">
   <tr><th colspan="2">Static Attributes</th></tr>
 
@@ -487,7 +499,8 @@ procedure Start_Job
        (This     : in out Printer;
         Count    : in     Natural := 0;
         From, To :    out Positive);
-</pre></td>
+</pre>
+<p>Raises User_Cancel_Error where start_job returns 1, the user cancelling the dialog, and Page_Error, with FLTK's error message if it gives one, where it returns 2 (FLTKAda-BUGS.md 85). From and To are set only if the job starts (FLTKAda-BUGS.md 140).</p></td>
   </tr>
 
   <tr>

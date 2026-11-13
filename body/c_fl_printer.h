@@ -55,8 +55,8 @@ extern "C" const char * fl_printer_get_property_cancel();
 extern "C" void fl_printer_set_property_cancel(const char * v);
 
 
-extern "C" int fl_printer_start_job(PRINTER p, int c);
-extern "C" int fl_printer_start_job2(PRINTER p, int c, int * f, int * t);
+extern "C" int fl_printer_start_job(PRINTER p, int c, char * msg, int n);
+extern "C" int fl_printer_start_job2(PRINTER p, int c, int * f, int * t, char * msg, int n);
 extern "C" void fl_printer_end_job(PRINTER p);
 extern "C" int fl_printer_start_page(PRINTER p);
 extern "C" int fl_printer_end_page(PRINTER p);
