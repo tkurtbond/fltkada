@@ -800,6 +800,20 @@ private
         Needs_Dealloc : Boolean                 := True;
     end record;
 
+    type Wrapper_Access is access all Wrapper'Class;
+
+    --  For objects that keep accesses to each other and must be told when
+    --  the other goes: a Text_Buffer and the displays it is given to
+    --  (FLTKAda-BUGS.md 41).  Attach says Other now keeps an access to
+    --  This, and Detach that it no longer does, or that Other is going.
+    procedure Attach
+           (This  : in out Wrapper;
+            Other : in     Wrapper_Access) is null;
+
+    procedure Detach
+           (This  : in out Wrapper;
+            Other : in     Wrapper_Access) is null;
+
 
 
 

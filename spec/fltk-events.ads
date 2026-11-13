@@ -95,8 +95,17 @@ package FLTK.Events is
 
     --  Receiving  --
 
+    --  Get_Grab, Get_Pushed, Get_Below_Mouse and Get_Focus give null for
+    --  a window or widget FLTK made itself, which has no Ada object: a
+    --  pop-up menu's window, say, or a part of a widget such as a
+    --  scrollbar.  Has_Grab, Has_Pushed, Has_Below_Mouse and Has_Focus say
+    --  whether there is one at all, whoever made it (FLTKAda-BUGS.md 44).
+
     function Get_Grab
         return access FLTK.Widgets.Groups.Windows.Window'Class;
+
+    function Has_Grab
+        return Boolean;
 
     --  Raises Program_Error if To is not shown (pofltk 129).  A window's
     --  grab is released when the window is finalized.
@@ -108,17 +117,26 @@ package FLTK.Events is
     function Get_Pushed
         return access FLTK.Widgets.Widget'Class;
 
+    function Has_Pushed
+        return Boolean;
+
     procedure Set_Pushed
            (To : in FLTK.Widgets.Widget'Class);
 
     function Get_Below_Mouse
         return access FLTK.Widgets.Widget'Class;
 
+    function Has_Below_Mouse
+        return Boolean;
+
     procedure Set_Below_Mouse
            (To : in FLTK.Widgets.Widget'Class);
 
     function Get_Focus
         return access FLTK.Widgets.Widget'Class;
+
+    function Has_Focus
+        return Boolean;
 
     procedure Set_Focus
            (To : in FLTK.Widgets.Widget'Class);
@@ -339,13 +357,17 @@ private
     pragma Inline (Handle);
 
     pragma Inline (Get_Grab);
+    pragma Inline (Has_Grab);
     pragma Inline (Set_Grab);
     pragma Inline (Release_Grab);
     pragma Inline (Get_Pushed);
+    pragma Inline (Has_Pushed);
     pragma Inline (Set_Pushed);
     pragma Inline (Get_Below_Mouse);
+    pragma Inline (Has_Below_Mouse);
     pragma Inline (Set_Below_Mouse);
     pragma Inline (Get_Focus);
+    pragma Inline (Has_Focus);
     pragma Inline (Set_Focus);
     pragma Inline (Clear_Focus);
     pragma Inline (Has_Visible_Focus);

@@ -14,6 +14,7 @@
 #include <FL/Fl.H>
 #include <FL/fl_config.h>
 #include <FL/platform.H>
+#include <FL/Fl_Button.H>
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Menu_.H>
 #include <FL/Fl_Image_Surface.H>
@@ -458,6 +459,45 @@ extern "C" const char * fl_probe_chosen_in_modal(const char * t) {
 //  With on, this process can start no other (RLIMIT_NPROC, which counts the
 //  user's processes), so fork and popen fail with EAGAIN; with on 0, it can
 //  again.  0 if the limit couldn't be set.
+//  A window, and a button in it, that FLTK made with no Ada object, for
+//  FLTK.Events' Get_ and Has_ functions to meet (FLTKAda-BUGS.md 44).
+//  What: 0 grab the window, 1 push the button, 2 put it below the mouse,
+//  3 focus it.
+static Fl_Window * foreign_window = 0;
+static Fl_Button * foreign_button = 0;
+
+extern "C" void fl_probe_foreign_show() {
+    if (foreign_window == 0) {
+        foreign_window = new Fl_Window(120, 60, "foreign");
+        foreign_button = new Fl_Button(10, 10, 100, 40, "foreign");
+        foreign_window->end();
+    }
+    foreign_window->show();
+    foreign_window->wait_for_expose();
+}
+
+extern "C" void fl_probe_foreign_take(int what) {
+    switch (what) {
+    case 0: Fl::grab(foreign_window); break;
+    case 1: Fl::pushed(foreign_button); break;
+    case 2: Fl::belowmouse(foreign_button); break;
+    case 3: Fl::focus(foreign_button); break;
+    }
+}
+
+extern "C" void fl_probe_foreign_release() {
+    Fl::grab(0);
+    Fl::pushed(0);
+    Fl::belowmouse(0);
+    Fl::focus(0);
+}
+
+extern "C" void fl_probe_foreign_delete() {
+    delete foreign_window;
+    foreign_window = 0;
+    foreign_button = 0;
+}
+
 extern "C" int fl_probe_limit_processes(int on) {
     static struct rlimit saved;
     static int limited = 0;

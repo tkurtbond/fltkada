@@ -164,6 +164,19 @@ package body FLTK.Probe is
         return CS.chars_ptr;
     pragma Import (C, fl_probe_chosen_in_modal, "fl_probe_chosen_in_modal");
 
+    procedure fl_probe_foreign_show;
+    pragma Import (C, fl_probe_foreign_show, "fl_probe_foreign_show");
+
+    procedure fl_probe_foreign_take
+           (What : in C.int);
+    pragma Import (C, fl_probe_foreign_take, "fl_probe_foreign_take");
+
+    procedure fl_probe_foreign_release;
+    pragma Import (C, fl_probe_foreign_release, "fl_probe_foreign_release");
+
+    procedure fl_probe_foreign_delete;
+    pragma Import (C, fl_probe_foreign_delete, "fl_probe_foreign_delete");
+
     function fl_probe_limit_processes
            (On : in C.int)
         return C.int;
@@ -621,6 +634,31 @@ package body FLTK.Probe is
     begin
         return CS.Value (fl_probe_chosen_in_modal (C.To_C (Text)));
     end Chosen_In_Modal;
+
+
+    procedure Show_Foreign is
+    begin
+        fl_probe_foreign_show;
+    end Show_Foreign;
+
+
+    procedure Take_Foreign
+           (What : in Foreign_Kind) is
+    begin
+        fl_probe_foreign_take (Foreign_Kind'Pos (What));
+    end Take_Foreign;
+
+
+    procedure Release_Foreign is
+    begin
+        fl_probe_foreign_release;
+    end Release_Foreign;
+
+
+    procedure Delete_Foreign is
+    begin
+        fl_probe_foreign_delete;
+    end Delete_Foreign;
 
 
     procedure Limit_Processes

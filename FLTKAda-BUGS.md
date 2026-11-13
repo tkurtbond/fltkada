@@ -7,8 +7,8 @@ Sections 1 to 14 are fixed bugs. Sections 15 to 30 were found on
 audit found 33 to 38, and 43 to 45 came from N12 (both PLAN.md,
 Phase 2). Later sections were found by the phases that name them.
 
-Two are still open: 41 and 44. Every other section is fixed;
-28 was open in part until 2026-11-12, and 85 was open until then too. Until 2026-11-11 this
+Every section is fixed. 28 was open in part until 2026-11-12, and 41,
+44 and 85 were open until then too. Until 2026-11-11 this
 paragraph called 15 to 30 open and 45 open. Most of 15 to 30 were fixed
 in Phases 2 and 6 under PLAN.md's own numbers (N1 to N12 and pofltk's
 issue numbers), and some were recorded again as later sections (39, 40,
@@ -1336,8 +1336,27 @@ when the buffer goes.
 **Found.** By reading, while fixing 40, 2026-11-03. Not yet shown by a
 test.
 
-**Status.** Open. A fix would have the buffer know its displays, or have
-`Get_Buffer` raise once the buffer is gone.
+**Status.** Open until 2026-11-12. A fix would have the buffer know its
+displays, or have `Get_Buffer` raise once the buffer is gone. The user
+chose the first.
+
+**Fix.** 2026-11-12. A `Text_Buffer` keeps a list of the displays it was
+given to, and a display keeps its buffer, through two private null
+primitives on `FLTK.Wrapper`, `Attach` and `Detach`, which
+`Text_Buffer` and `Text_Display` override. `Set_Buffer` detaches the
+display from its old buffer and attaches it to the new one, once
+however often the same buffer is given. As a buffer is finalized, each
+of its displays forgets it, so `Get_Buffer` gives a null reference, as
+for a display never given one. As a display is finalized (an editor's
+too, through `Extra_Final`), its buffer forgets it. The C++ buffer is
+reference counted, so the display still shows and edits it.
+
+**Verified.** `test_display_buffer`, under Xvfb, failed 3 checks before
+the fix: `Get_Buffer` still gave the freed buffer for a display, for the
+display left of two sharing one, and for an editor. After the fix all
+pass, and so do `test_buffer_life` and `test_text`. Under valgrind
+`test_display_buffer` and `test_buffer_life` show no errors; its
+buffers and displays are on the heap, and are freed in both orders.
 
 ## 42. Browser icons that dangle and don't follow their lines
 
@@ -1474,7 +1493,8 @@ Escape.
 `Has_Grab` function, or a `Get_Grab` that says "a window FLTKAda didn't
 make" instead of answering null. The same question applies to
 `Get_Pushed`, `Get_Focus` and `Get_Below_Mouse`, which can return parts
-of widgets FLTK made, and to `Dispatch_Hook`'s window.
+of widgets FLTK made, and to `Dispatch_Hook`'s window. (Open until
+2026-11-12; see Fix.)
 
 Since Phase 12 (51's fix), the shim knows which widgets have Ada
 objects, so these no longer misread a widget FLTK made whose user data
@@ -1491,6 +1511,23 @@ Since Phase 13, windows that FLTK.GLUT's `Create_Window` and
 `Window_Of` and `Current_Window` (`test_glut_window_of`). That answers the
 question for GLUT windows only, which a program names by number. A
 pop-up menu's window has no number, so it isn't covered.
+
+**Fix.** 2026-11-12, the user's choice of the first possibility.
+`FLTK.Events` has `Has_Grab`, `Has_Pushed`, `Has_Below_Mouse` and
+`Has_Focus`, which say whether FLTK has one, whoever made it. `Get_Grab`,
+`Get_Pushed`, `Get_Below_Mouse` and `Get_Focus` give null for one FLTK
+made in any build: the `pragma Assert` and the `Internal_FLTK_Error` are
+gone. The dispatch function's window is left as 82 made it.
+
+**Verified.** `test_foreign_widgets`, under Xvfb and on headless sway,
+with a window and button the probe makes in C++, so that their user data
+is 0: for each of grab, pushed, below-mouse and focus, the `Has_`
+function is true and the `Get_` function gives null without raising, and
+both say none once released. An Ada window's grab is still given back.
+On X11 it also opens a pop-up menu: `Has_Grab` is true and `Get_Grab`
+gives null. The test passes against a debug build (`-Xbuild=debug`) as
+well as the release build. That the old code raised in a debug build is
+still only from reading it; it was not run.
 
 
 ## 45. Hooks that relabel the user's exception as Internal_FLTK_Error

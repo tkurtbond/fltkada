@@ -830,7 +830,7 @@ Findings (2026-11-03):
   `Text_Buffer.Finalize` removes its modify and predelete hooks, through
   two new shim functions. Before the fix, an edit through a display after
   the Ada buffer was freed gave invalid reads in the predelete hook.
-  Reading the code found a neighbour, still open: `Text_Display.Get_Buffer`
+  Reading the code found a neighbour, open until 2026-11-12: `Text_Display.Get_Buffer`
   keeps an access to the Ada buffer, which then dangles
   (FLTKAda-BUGS.md 41).
 - **N11 and issue 56: done** (`test_browser_icons`; FLTKAda-BUGS.md 42).
@@ -860,7 +860,7 @@ Findings (2026-11-03):
   it raised once. Findings:
   - The pop-up menu's grab is FLTK's own `menuwindow`
     (Fl_Menu.cxx:1002), so `Events.Get_Grab` can't return it
-    (FLTKAda-BUGS.md 44, open). The test uses a new `Probe.Grabbed`.
+    (FLTKAda-BUGS.md 44, open until 2026-11-12). The test uses a new `Probe.Grabbed`.
   - Several hooks' handlers for the binding's own checks also cover
     the user's code, and relabel the user's exception as
     `Internal_FLTK_Error` (FLTKAda-BUGS.md 45, open, from the code).
@@ -2767,7 +2767,8 @@ Decisions and findings:
   `when others` handler around it that saves the occurrence. The
   dispatch hook keeps the window FLTK gave while the dispatch function
   runs, so `Handle (Event, null)` can pass the event on to a window FLTK
-  made. 44's API question, how to name such a window, stays open.
+  made. 44's API question, how to name such a window, stayed open
+  until 2026-11-12 (`Has_Grab` and the rest; see the end of Phase 28).
 - **Pixmap checks.** 77's checks moved from `Pixmaps.Forge.Create` to
   `Pixmap_Marshal.Marshal_Data`, so `Draw.Draw_Pixmap` makes them too
   (84). The `Pre` on `Draw_Pixmap` stays as documentation.
@@ -4877,6 +4878,21 @@ tests both headless. It drives FLTK's own print panel with a fake
 title is also "Print") and `Limit_Processes` (`RLIMIT_NPROC` to 1, so
 `popen` fails). No FLTK issue was found. `test/device.adb` now alerts
 with FLTK's message, as `device.cxx` does.
+
+**FLTKAda-BUGS.md 41 and 44 (2026-11-12).** The last two open bugs.
+For 41 the user chose to have the buffer know its displays, not a
+`Get_Buffer` that raises. `FLTK.Wrapper` has two private null
+primitives, `Attach` and `Detach`, for objects that keep accesses to
+each other; `Text_Buffer` and `Text_Display` override them. A buffer
+going makes each of its displays forget it, so `Get_Buffer` gives a null
+reference, and a display going (an editor too) makes its buffer forget
+it. Test: `test_display_buffer`, which failed 3 checks before. For 44
+the user chose `Has_Grab`, `Has_Pushed`, `Has_Below_Mouse` and
+`Has_Focus`, with the four `Get_` functions giving null for a window or
+widget FLTK made, in debug builds too, with no `Internal_FLTK_Error`.
+Test: `test_foreign_widgets`, with a window and button that new
+`FLTK.Probe` calls make in C++, and on X11 a real pop-up menu. Both
+tests pass against a debug build as well. No FLTK issue was found.
 
 ## Open questions
 

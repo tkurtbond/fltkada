@@ -122,7 +122,8 @@ package FLTK.Probe is
         return Boolean;
 
     --  True if a window has the grab (Fl::grab), even one FLTK made itself,
-    --  such as a pop-up menu's, which FLTK.Events.Get_Grab can't return.
+    --  such as a pop-up menu's, which FLTK.Events.Get_Grab gives as null.
+    --  (FLTK.Events.Has_Grab now does the same; FLTKAda-BUGS.md 44.)
     function Grabbed
         return Boolean;
 
@@ -211,6 +212,22 @@ package FLTK.Probe is
     function Chosen_In_Modal
            (Text : in String)
         return String;
+
+    --  A window, with a button in it, that FLTK made with no Ada object
+    --  (FLTKAda-BUGS.md 44).  Show_Foreign makes it, the first time, and
+    --  shows it.  Take_Foreign gives the window the grab, or the button
+    --  what What names; Release_Foreign takes them all away, and
+    --  Delete_Foreign deletes the window.
+    type Foreign_Kind is (Foreign_Grab, Foreign_Pushed, Foreign_Below_Mouse, Foreign_Focus);
+
+    procedure Show_Foreign;
+
+    procedure Take_Foreign
+           (What : in Foreign_Kind);
+
+    procedure Release_Foreign;
+
+    procedure Delete_Foreign;
 
     --  With On, this process can start no other (RLIMIT_NPROC), so popen
     --  fails; with On False, it can again.  Raises Probe_Error if the limit

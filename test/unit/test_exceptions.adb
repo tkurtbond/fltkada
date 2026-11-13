@@ -253,8 +253,8 @@ procedure Test_Exceptions is
     end Close_Dialog;
 
     --  Prb.Grabbed, not FLTK.Events.Get_Grab: the grab is the menu's own
-    --  window, which FLTK made, and Get_Grab gives null for it in a release
-    --  build (FLTKAda-BUGS.md 44).
+    --  window, which FLTK made, and Get_Grab gives null for it
+    --  (FLTKAda-BUGS.md 44; FLTK.Events.Has_Grab would do too).
     procedure Close_Menu is
         Ignore : Boolean;
     begin

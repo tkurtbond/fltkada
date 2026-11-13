@@ -683,11 +683,38 @@ package body FLTK.Text_Buffers is
                 Storage.To_Integer (Predelete_Callback_Hook'Address),
                 Storage.To_Integer (This'Address));
         end if;
+        --  And the displays given it must forget it (FLTKAda-BUGS.md 41).
+        for Display of This.Displays loop
+            Display.Detach (This'Unchecked_Access);
+        end loop;
+        This.Displays.Clear;
         if This.Void_Ptr /= Null_Pointer and This.Needs_Dealloc then
             free_fl_text_buffer (This.Void_Ptr);
             This.Void_Ptr := Null_Pointer;
         end if;
     end Finalize;
+
+
+    procedure Attach
+           (This  : in out Text_Buffer;
+            Other : in     Wrapper_Access) is
+    begin
+        if not This.Displays.Contains (Other) then
+            This.Displays.Append (Other);
+        end if;
+    end Attach;
+
+
+    procedure Detach
+           (This  : in out Text_Buffer;
+            Other : in     Wrapper_Access)
+    is
+        Place : constant Natural := This.Displays.Find_Index (Other);
+    begin
+        if Place /= Display_Vectors.No_Index then
+            This.Displays.Delete (Place);
+        end if;
+    end Detach;
 
 
 

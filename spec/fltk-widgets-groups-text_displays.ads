@@ -792,6 +792,11 @@ private
            (This : in out Text_Display)
     with Inline;
 
+    --  The buffer Other is going (FLTKAda-BUGS.md 41).
+    overriding procedure Detach
+           (This  : in out Text_Display;
+            Other : in     Wrapper_Access);
+
 
     package Text_Display_Convert is new System.Address_To_Access_Conversions (Text_Display'Class);
 

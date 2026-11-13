@@ -694,15 +694,21 @@ package body FLTK.Events is
         Actual_Grab : access FLTK.Widgets.Groups.Windows.Window'Class;
     begin
         if Grab_Ptr /= Null_Pointer then
+            --  0 for one FLTK made (FLTKAda-BUGS.md 44).
             Grab_Ptr := fl_widget_get_user_data (Grab_Ptr);
-            pragma Assert (Grab_Ptr /= Null_Pointer);
-            Actual_Grab := Window_Convert.To_Pointer (Storage.To_Address (Grab_Ptr));
+            if Grab_Ptr /= Null_Pointer then
+                Actual_Grab := Window_Convert.To_Pointer (Storage.To_Address (Grab_Ptr));
+            end if;
         end if;
         return Actual_Grab;
-    exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "Widget returned by Fl::grab did not have user_data reference back to Ada";
     end Get_Grab;
+
+
+    function Has_Grab
+        return Boolean is
+    begin
+        return fl_event_get_grab /= Null_Pointer;
+    end Has_Grab;
 
 
     procedure Set_Grab
@@ -729,15 +735,21 @@ package body FLTK.Events is
         Actual_Pushed : access FLTK.Widgets.Widget'Class;
     begin
         if Pushed_Ptr /= Null_Pointer then
+            --  0 for one FLTK made (FLTKAda-BUGS.md 44).
             Pushed_Ptr := fl_widget_get_user_data (Pushed_Ptr);
-            pragma Assert (Pushed_Ptr /= Null_Pointer);
-            Actual_Pushed := Widget_Convert.To_Pointer (Storage.To_Address (Pushed_Ptr));
+            if Pushed_Ptr /= Null_Pointer then
+                Actual_Pushed := Widget_Convert.To_Pointer (Storage.To_Address (Pushed_Ptr));
+            end if;
         end if;
         return Actual_Pushed;
-    exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "Widget returned by Fl::pushed did not have user_data reference back to Ada";
     end Get_Pushed;
+
+
+    function Has_Pushed
+        return Boolean is
+    begin
+        return fl_event_get_pushed /= Null_Pointer;
+    end Has_Pushed;
 
 
     procedure Set_Pushed
@@ -754,15 +766,21 @@ package body FLTK.Events is
         Actual_Below : access FLTK.Widgets.Widget'Class;
     begin
         if Below_Ptr /= Null_Pointer then
+            --  0 for one FLTK made (FLTKAda-BUGS.md 44).
             Below_Ptr := fl_widget_get_user_data (Below_Ptr);
-            pragma Assert (Below_Ptr /= Null_Pointer);
-            Actual_Below := Widget_Convert.To_Pointer (Storage.To_Address (Below_Ptr));
+            if Below_Ptr /= Null_Pointer then
+                Actual_Below := Widget_Convert.To_Pointer (Storage.To_Address (Below_Ptr));
+            end if;
         end if;
         return Actual_Below;
-    exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "Widget returned by Fl::belowmouse did not have user_data reference back to Ada";
     end Get_Below_Mouse;
+
+
+    function Has_Below_Mouse
+        return Boolean is
+    begin
+        return fl_event_get_belowmouse /= Null_Pointer;
+    end Has_Below_Mouse;
 
 
     procedure Set_Below_Mouse
@@ -779,15 +797,21 @@ package body FLTK.Events is
         Actual_Focus : access FLTK.Widgets.Widget'Class;
     begin
         if Focus_Ptr /= Null_Pointer then
+            --  0 for one FLTK made (FLTKAda-BUGS.md 44).
             Focus_Ptr := fl_widget_get_user_data (Focus_Ptr);
-            pragma Assert (Focus_Ptr /= Null_Pointer);
-            Actual_Focus := Widget_Convert.To_Pointer (Storage.To_Address (Focus_Ptr));
+            if Focus_Ptr /= Null_Pointer then
+                Actual_Focus := Widget_Convert.To_Pointer (Storage.To_Address (Focus_Ptr));
+            end if;
         end if;
         return Actual_Focus;
-    exception
-    when Chk.Assertion_Error => raise Internal_FLTK_Error with
-        "Widget returned by Fl::focus did not have user_data reference back to Ada";
     end Get_Focus;
+
+
+    function Has_Focus
+        return Boolean is
+    begin
+        return fl_event_get_focus /= Null_Pointer;
+    end Has_Focus;
 
 
     procedure Set_Focus

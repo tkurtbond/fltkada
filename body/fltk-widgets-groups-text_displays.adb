@@ -869,8 +869,24 @@ package body FLTK.Widgets.Groups.Text_Displays is
     procedure Extra_Final
            (This : in out Text_Display) is
     begin
+        --  The buffer must not tell a display that's gone to forget it
+        --  (FLTKAda-BUGS.md 41).
+        if This.Buffer /= null then
+            Wrapper'Class (This.Buffer.all).Detach (This'Unchecked_Access);
+            This.Buffer := null;
+        end if;
         Extra_Final (Group (This));
     end Extra_Final;
+
+
+    procedure Detach
+           (This  : in out Text_Display;
+            Other : in     Wrapper_Access) is
+    begin
+        if Wrapper_Access (This.Buffer) = Other then
+            This.Buffer := null;
+        end if;
+    end Detach;
 
 
     procedure Finalize
@@ -979,7 +995,15 @@ package body FLTK.Widgets.Groups.Text_Displays is
            (This : in out Text_Display;
             Buff : in out FLTK.Text_Buffers.Text_Buffer) is
     begin
-        This.Buffer := Buff'Unchecked_Access;
+        --  The buffer, as it goes, makes the display forget it
+        --  (FLTKAda-BUGS.md 41).
+        if Wrapper_Access (This.Buffer) /= Wrapper_Access'(Buff'Unchecked_Access) then
+            if This.Buffer /= null then
+                Wrapper'Class (This.Buffer.all).Detach (This'Unchecked_Access);
+            end if;
+            This.Buffer := Buff'Unchecked_Access;
+            Wrapper'Class (Buff).Attach (This'Unchecked_Access);
+        end if;
         fl_text_display_set_buffer (This.Void_Ptr, Wrapper (Buff).Void_Ptr);
         if This.Raw_Buffer /= Null_Pointer then
             free_fl_text_buffer (This.Raw_Buffer);

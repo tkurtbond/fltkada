@@ -242,8 +242,12 @@ a Constraint_Error or Assertion_Error raised in a dispatch function, event
 handler, table Draw_Cell or other hook now reaches the program as itself,
 not as Internal_FLTK_Error (FLTKAda-BUGS.md 45)
 
-Events.Get_Grab can't return a window FLTK made itself, such as a pop-up
-menu's: it gives null, or Internal_FLTK_Error under -gnata (FLTKAda-BUGS.md 44);
+Events.Get_Grab, Get_Pushed, Get_Below_Mouse and Get_Focus give null for
+a window or widget FLTK made itself, such as a pop-up menu's, in any build,
+and Has_Grab, Has_Pushed, Has_Below_Mouse and Has_Focus say whether there
+is one; under -gnata they raised Internal_FLTK_Error (FLTKAda-BUGS.md 44);
+Text_Display.Get_Buffer gives a null reference once its Text_Buffer is
+finalized, not a dangling one (FLTKAda-BUGS.md 41);
 a dispatch function given such a window as null can pass the event on to it
 with Handle (Event, null) (FLTKAda-BUGS.md 82)
 

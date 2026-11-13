@@ -123,7 +123,10 @@ static Fl_Widget * belowmouse();
 <td><pre>
 function Get_Below_Mouse
     return access FLTK.Widgets.Widget'Class;
-</pre></td>
+
+function Has_Below_Mouse
+    return Boolean;
+</pre><p>Null for one FLTK made itself, such as a pop-up menu's window; Has_Below_Mouse says whether there is one, whoever made it.</p></td>
   </tr>
 
   <tr>
@@ -523,7 +526,10 @@ static Fl_Widget * focus();
 <td><pre>
 function Get_Focus
     return access FLTK.Widgets.Widget'Class;
-</pre></td>
+
+function Has_Focus
+    return Boolean;
+</pre><p>Null for one FLTK made itself, such as a pop-up menu's window; Has_Focus says whether there is one, whoever made it.</p></td>
   </tr>
 
   <tr>
@@ -566,7 +572,10 @@ static Fl_Window * grab();
 <td><pre>
 function Get_Grab
     return access FLTK.Widgets.Groups.Windows.Window'Class;
-</pre></td>
+
+function Has_Grab
+    return Boolean;
+</pre><p>Null for one FLTK made itself, such as a pop-up menu's window; Has_Grab says whether there is one, whoever made it.</p></td>
   </tr>
 
   <tr>
@@ -640,7 +649,10 @@ static Fl_Widget * pushed();
 <td><pre>
 function Get_Pushed
     return access FLTK.Widgets.Widget'Class;
-</pre></td>
+
+function Has_Pushed
+    return Boolean;
+</pre><p>Null for one FLTK made itself, such as a pop-up menu's window; Has_Pushed says whether there is one, whoever made it.</p></td>
   </tr>
 
   <tr>

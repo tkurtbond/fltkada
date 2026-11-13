@@ -118,6 +118,17 @@ come first in each list.
 
 ## Changes that can make a program behave differently
 
+- **`Text_Display.Get_Buffer` gives a null reference once the
+  `Text_Buffer` last given to `Set_Buffer` has been finalized**, as for
+  a display never given one. Before, it gave a reference to the freed
+  record. The display still shows and edits FLTK's buffer.
+  [FLTKAda-BUGS.md 41](FLTKAda-BUGS.md#41-text_displayget_buffer-after-its-ada-buffer-is-gone).
+- **`Events.Get_Grab`, `Get_Pushed`, `Get_Below_Mouse` and `Get_Focus`
+  give null for a window or widget FLTK made itself in a debug build
+  too**, where they raised `Internal_FLTK_Error`. The new `Has_Grab`,
+  `Has_Pushed`, `Has_Below_Mouse` and `Has_Focus` say whether there is
+  one, such as a pop-up menu's grab.
+  [FLTKAda-BUGS.md 44](FLTKAda-BUGS.md#44-eventsget_grab-cant-return-a-window-fltk-made-itself).
 - **`Printers.Start_Job` raises the new `Printers.User_Cancel_Error`
   when the user cancels the print dialog**, not `Page_Error`. A handler
   for `Page_Error` alone no longer catches a cancel. `Page_Error` now

@@ -512,16 +512,32 @@ private
             Element_Type => Modify_Details_Callback);
 
 
+    package Display_Vectors is new Ada.Containers.Vectors
+           (Index_Type => Positive,
+            Element_Type => Wrapper_Access);
+
+
+    --  Displays are the displays given this buffer, which forget it when
+    --  it goes (FLTKAda-BUGS.md 41).
     type Text_Buffer is new Wrapper with
         record
             CB_Active          : Boolean := True;
             Modify_CBs         : Modify_Vectors.Vector;
             Predelete_CBs      : Predelete_Vectors.Vector;
             Modify_Details_CBs : Modify_Details_Vectors.Vector;
+            Displays           : Display_Vectors.Vector;
         end record;
 
     overriding procedure Finalize
            (This : in out Text_Buffer);
+
+    overriding procedure Attach
+           (This  : in out Text_Buffer;
+            Other : in     Wrapper_Access);
+
+    overriding procedure Detach
+           (This  : in out Text_Buffer;
+            Other : in     Wrapper_Access);
 
 
     procedure Modify_Callback_Hook

@@ -38,9 +38,8 @@ first, because every later fix is meant to start from a failing test.
 
 Where findings go:
 
-- **FLTKAda-BUGS.md**: bugs in FLTKAda's own code. 41 and 44 are
-  open; every other section, 1 to 140, is fixed (28 and 85 on
-  2026-11-12). (Until
+- **FLTKAda-BUGS.md**: bugs in FLTKAda's own code. Every section,
+  1 to 140, is fixed (28, 41, 44 and 85 on 2026-11-12). (Until
   2026-11-11 this listed 17–21, 23–26 and 29 as open too; they had been
   fixed in Phases 2 and 6, and the file now says so.)
 - **FLTK-issues.md**: FLTK issues pofltk's list doesn't have (F1, F2, …).
