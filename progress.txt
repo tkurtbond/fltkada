@@ -230,6 +230,26 @@ is now Add_Items: as Add, no call to it compiled (FLTKAda-BUGS.md 65)
 Sliders: the knob's box is Get_Slider_Box and Set_Slider_Box, FLTK's slider ();
 Get_Box and Set_Box are the frame's, as on any widget (FLTKAda-BUGS.md 94)
 
+Text_Buffer: Set_Entire_Text_Quietly sets the text without calling the
+buffer's callbacks (PLAN.md Phase 30, after pofltk)
+
+Native_File_Chooser: Add_Filter adds a named filter, working round
+FLTK-issues.md F41 (PLAN.md Phase 30, after pofltk)
+
+Static: Can_Open_Display tells whether FLTK could open a display, without
+ending the program; Textline browsers: Find_Line finds a line by its text;
+Spinners: Get_Integer_Value is the value rounded (PLAN.md Phase 30, after
+pofltk)
+
+Widgets: Set_Image_Fit fits a widget's images to its box as it is drawn;
+Scrolls: Set_Fit_Width stretches each child to the scroll's inside width
+(PLAN.md Phase 30, after pofltk)
+
+Menus: Add_Text, Insert_Text, Set_Item_Text and Get_Item_Text show a
+label as it is, with no '/', '_' or '\' meaning and '&' and '@' doubled
+(PLAN.md Phase 30, after pofltk); Is_Item_Active, Set_Item_Active,
+Is_Item_Checked and Set_Item_Checked change one flag of an item
+
 Menus: Has_Item is false for the terminators that end each submenu and the
 menu, and iteration steps over them; Number_Of_Items still counts them
 (FLTKAda-BUGS.md 93); reverse iteration no longer raises Constraint_Error

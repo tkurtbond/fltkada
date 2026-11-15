@@ -9,7 +9,9 @@
 #include <FL/Fl_Widget.H>
 #include <FL/Fl_Window.H>
 #include <FL/platform.H>
+#include <cstdlib>
 #include <cstring>
+#include <dlfcn.h>
 #include "c_fl_static.h"
 #include "c_fl_widget.h"
 
@@ -48,6 +50,74 @@ int fl_static_display_platform() {
     }
 #endif
     return 0;
+}
+
+//  True if the window system's open() of NULL gives a connection, which
+//  close() then ends:  libX11's or libwayland-client's, found as FLTK's own
+//  library loaded them, so FLTKAda links neither.  From pofltk.
+template <typename Close> static bool connects(const char * open, const char * close) {
+    void * o = dlsym(RTLD_DEFAULT, open);
+    void * c = dlsym(RTLD_DEFAULT, close);
+    if (!o || !c) {
+        return false;
+    }
+    void * d = reinterpret_cast<void*(*)(const char*)>(o)(nullptr);
+    if (!d) {
+        return false;
+    }
+    reinterpret_cast<Close(*)(void*)>(c)(d);
+    return true;
+}
+
+static bool x11_connects() {
+#if defined(FLTK_USE_X11)
+    return connects<int>("XOpenDisplay", "XCloseDisplay");
+#else
+    return false;
+#endif
+}
+
+//  1 if fl_open_display would succeed, decided as FLTK decides
+//  (attempt_wayland in fl_wayland_platform_init.cxx, and Fl_x.cxx's
+//  open_display), without its exit(1) or Fl::fatal when it can't.  From
+//  pofltk.
+int fl_static_can_open_display() {
+#if defined(FLTK_USE_WAYLAND)
+    if (fl_wl_display()) {
+        return 1;
+    }
+#endif
+#if defined(FLTK_USE_X11)
+    if (fl_x11_display()) {
+        return 1;
+    }
+#endif
+#if defined(FLTK_USE_WAYLAND)
+    bool * disable = static_cast<bool*>(dlsym(RTLD_DEFAULT, "fl_disable_wayland"));
+    const char * backend = getenv("FLTK_BACKEND");
+    bool wl = !(disable && *disable);
+#if defined(FLTK_USE_X11)
+    if (!wl) {
+        return x11_connects();
+    }
+    if (backend && strcmp(backend, "x11") == 0) {
+        return x11_connects();
+    }
+    if (backend && strcmp(backend, "wayland") != 0) {
+        return 0;
+    }
+    if (!backend && !getenv("XDG_RUNTIME_DIR")) {
+        return x11_connects();
+    }
+    return connects<void>("wl_display_connect", "wl_display_disconnect")
+        || (!backend && x11_connects());
+#else
+    (void)backend;
+    return wl && connects<void>("wl_display_connect", "wl_display_disconnect");
+#endif
+#else
+    return x11_connects();
+#endif
 }
 
 

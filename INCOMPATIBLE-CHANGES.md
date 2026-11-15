@@ -118,6 +118,12 @@ come first in each list.
 
 ## Changes that can make a program behave differently
 
+- **A browser's column width of -1 is a share of the browser's width**
+  left after the other widths, worked out again as it is resized and
+  drawn, and **a width below -1 raises `Constraint_Error`.** Before,
+  both were given to FLTK as they were. `Get_Column_Widths` still gives
+  the widths as set.
+  [PLAN.md, Phase 30](PLAN.md#phase-30-the-application-helpers-ova_cg_ada-needs-done-2026-11-15).
 - **`Menu.Add_Items` reads a shortcut such as `"^a"` after a tab, and
   keeps a long part as one item.** Before, only a number after the tab
   gave a shortcut, and a part longer than 1022 bytes became several

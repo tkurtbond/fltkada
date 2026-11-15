@@ -208,6 +208,18 @@ procedure Set_Filter
   </tr>
 
   <tr>
+<td>&nbsp;</td>
+<td><pre>
+--  Adds Name, a tab and Pattern as a line;
+--  raises on a tab or line feed in either
+procedure Add_Filter
+       (This    : in out Native_File_Chooser;
+        Name    : in     String;
+        Pattern : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
 <td><pre>
 void filter_value(int i);
 </pre></td>

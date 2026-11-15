@@ -129,6 +129,14 @@ package FLTK.Widgets.Groups.Spinners is
            (This : in Spinner)
         return Long_Float;
 
+    --  Get_Value rounded to the nearest whole number, a half up:  an
+    --  Int_Spin's value as an Integer.  Set_Value doesn't round what it is
+    --  given, even for an Int_Spin.  Raises Constraint_Error for a value
+    --  that, rounded, isn't an Integer.
+    function Get_Integer_Value
+           (This : in Spinner)
+        return Integer;
+
     procedure Set_Value
            (This : in out Spinner;
             To   : in     Long_Float);

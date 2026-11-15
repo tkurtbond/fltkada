@@ -194,6 +194,15 @@ package FLTK.Text_Buffers is
            (This : in out Text_Buffer;
             Text : in     String);
 
+    --  Set_Entire_Text without calling the buffer's modify, predelete and
+    --  modify details callbacks, as when a program fills a buffer with text
+    --  that isn't the user's change.  Displays given the buffer are still
+    --  told, and redrawn.  The callbacks are enabled or disabled after as
+    --  they were before.  After pofltk's SetTextQuietly.
+    procedure Set_Entire_Text_Quietly
+           (This : in out Text_Buffer;
+            Text : in     String);
+
     function Byte_At
            (This  : in Text_Buffer;
             Place : in Position)

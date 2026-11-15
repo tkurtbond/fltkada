@@ -14,6 +14,7 @@
 #include <FL/Fl.H>
 #include <FL/fl_config.h>
 #include <FL/platform.H>
+#include <FL/Fl_Browser.H>
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Group.H>
 #include <FL/Fl_Menu_.H>
@@ -574,6 +575,20 @@ extern "C" int fl_probe_shared_width(const char * name) {
     int w = s->w();
     s->release();
     return w;
+}
+
+//  The column widths FLTK has, up to the 0 that ends them, at most n of
+//  them written; how many there are.
+extern "C" int fl_probe_column_widths(void * b, int * out, int n) {
+    const int *w = static_cast<Fl_Browser*>(widget(b))->column_widths();
+    int count = 0;
+    while (w[count] != 0) {
+        if (count < n) {
+            out[count] = w[count];
+        }
+        count++;
+    }
+    return count;
 }
 
 extern "C" void fl_probe_clipboard_notice(int source) {

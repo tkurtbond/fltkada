@@ -519,6 +519,45 @@ void fl_widget_set_deimage(WIDGET w, void * img) {
     static_cast<Fl_Widget*>(w)->deimage(static_cast<Fl_Image*>(img));
 }
 
+//  For one draw of w, scales its image and inactive image to the inside of
+//  its box, in proportion, growing them only if expand (PLAN.md, Phase 30;
+//  pofltk's FitImages).  Each image scaled goes in imgs, and its size
+//  before in sizes, for fl_widget_unfit_images; an image not scaled is a
+//  null.  Fl_Image::scale changes no pixels, and a shared image is known
+//  in FLTK's pool by its data size, which scaling leaves alone.
+void fl_widget_fit_images(WIDGET w, int expand, void ** imgs, int * sizes) {
+    Fl_Widget * o = static_cast<Fl_Widget*>(w);
+    int bw = o->w() - Fl::box_dw(o->box());
+    int bh = o->h() - Fl::box_dh(o->box());
+    Fl_Image * m[2] = {o->image(), o->deimage()};
+    for (int i = 0; i < 2; i++) {
+        imgs[i] = nullptr;
+        if (m[i] == nullptr || bw <= 0 || bh <= 0) {
+            continue;
+        }
+        sizes[2 * i] = m[i]->w();
+        sizes[2 * i + 1] = m[i]->h();
+        imgs[i] = m[i];
+        try {
+            m[i]->scale(bw, bh, 1, expand);
+        } catch (...) {
+        }
+    }
+}
+
+//  Puts back the sizes fl_widget_fit_images changed, the inactive image's
+//  first, so that an image that is both ends at its own size.
+void fl_widget_unfit_images(void * const * imgs, const int * sizes) {
+    for (int i = 1; i >= 0; i--) {
+        if (imgs[i] != nullptr) {
+            try {
+                static_cast<Fl_Image*>(imgs[i])->scale(sizes[2 * i], sizes[2 * i + 1], 0, 1);
+            } catch (...) {
+            }
+        }
+    }
+}
+
 
 
 

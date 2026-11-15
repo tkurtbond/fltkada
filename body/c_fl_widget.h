@@ -114,6 +114,8 @@ extern "C" void fl_widget_position(WIDGET w, int x, int y);
 
 extern "C" void fl_widget_set_image(WIDGET w, void * img);
 extern "C" void fl_widget_set_deimage(WIDGET w, void * img);
+extern "C" void fl_widget_fit_images(WIDGET w, int expand, void ** imgs, int * sizes);
+extern "C" void fl_widget_unfit_images(void * const * imgs, const int * sizes);
 
 
 extern "C" unsigned char fl_widget_get_type(WIDGET w);

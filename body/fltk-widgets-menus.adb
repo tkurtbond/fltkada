@@ -784,6 +784,106 @@ package body FLTK.Widgets.Menus is
     end Insert;
 
 
+    --  Text with each '&' and '@' doubled, which FLTK draws as one.
+    function Literal
+           (Text : in String)
+        return String
+    is
+        Result : String (1 .. 2 * Text'Length);
+        Last   : Natural := 0;
+    begin
+        for C of Text loop
+            Last := Last + 1;
+            Result (Last) := C;
+            if C = '&' or C = '@' then
+                Last := Last + 1;
+                Result (Last) := C;
+            end if;
+        end loop;
+        return Result (1 .. Last);
+    end Literal;
+
+
+    --  A label no item has:  a run of SOH one longer than the longest run
+    --  any label starts with.  FLTK's add replaces an item with the same
+    --  label, so a new item is added under this one and then relabelled.
+    function Unused_Label
+           (This : in Menu'Class)
+        return String
+    is
+        Longest : Natural := 0;
+    begin
+        for Place in 1 .. This.Number_Of_Items loop
+            declare
+                Label : constant String := This.Get_Label (Place);
+                Run   : Natural := 0;
+            begin
+                while Run < Label'Length and then Label (Label'First + Run) = ASCII.SOH loop
+                    Run := Run + 1;
+                end loop;
+                Longest := Natural'Max (Longest, Run);
+            end;
+        end loop;
+        return (1 .. Longest + 1 => ASCII.SOH);
+    end Unused_Label;
+
+
+    procedure Add_Text
+           (This   : in out Menu;
+            Text   : in     String;
+            Action : in     Widget_Callback := null;
+            Flags  : in     Menu_Flag := Flag_Normal)
+    is
+        Ignore : constant Index := This.Add_Text (Text, Action, Flags);
+    begin
+        null;
+    end Add_Text;
+
+
+    function Add_Text
+           (This   : in out Menu;
+            Text   : in     String;
+            Action : in     Widget_Callback := null;
+            Flags  : in     Menu_Flag := Flag_Normal)
+        return Index
+    is
+        Place : constant Index := Menu'Class (This).Add
+            (Unused_Label (This), Action, No_Key, Flags);
+    begin
+        Menu'Class (This).Set_Label (Place, Literal (Text));
+        return Place;
+    end Add_Text;
+
+
+    procedure Insert_Text
+           (This   : in out Menu;
+            Place  : in     Index;
+            Text   : in     String;
+            Action : in     Widget_Callback := null;
+            Flags  : in     Menu_Flag := Flag_Normal)
+    is
+        Ignore : constant Index := This.Insert_Text (Place, Text, Action, Flags);
+    begin
+        null;
+    end Insert_Text;
+
+
+    function Insert_Text
+           (This   : in out Menu;
+            Place  : in     Index;
+            Text   : in     String;
+            Action : in     Widget_Callback := null;
+            Flags  : in     Menu_Flag := Flag_Normal)
+        return Index
+    is
+        Spot : constant Index := Menu'Class (This).Insert
+            (Place, Unused_Label (This), Action, No_Key, Flags);
+    begin
+        Menu'Class (This).Set_Label (Spot, Literal (Text));
+        return Spot;
+    end Insert_Text;
+
+
     procedure Set_Items
            (This  : in out Menu;
             Items : in     FLTK.Menu_Items.Menu_Item_Array)
@@ -1281,6 +1381,40 @@ package body FLTK.Widgets.Menus is
     end Set_Label;
 
 
+    function Get_Item_Text
+           (This  : in Menu;
+            Place : in Index)
+        return String
+    is
+        Label  : constant String := Menu'Class (This).Get_Label (Place);
+        Result : String (1 .. Label'Length);
+        Last   : Natural := 0;
+        Next   : Positive := Label'First;
+    begin
+        while Next <= Label'Last loop
+            Last := Last + 1;
+            Result (Last) := Label (Next);
+            if (Label (Next) = '&' or Label (Next) = '@') and then Next < Label'Last
+                and then Label (Next + 1) = Label (Next)
+            then
+                Next := Next + 2;
+            else
+                Next := Next + 1;
+            end if;
+        end loop;
+        return Result (1 .. Last);
+    end Get_Item_Text;
+
+
+    procedure Set_Item_Text
+           (This  : in out Menu;
+            Place : in     Index;
+            Text  : in     String) is
+    begin
+        Menu'Class (This).Set_Label (Place, Literal (Text));
+    end Set_Item_Text;
+
+
     procedure Set_Shortcut
            (This  : in out Menu;
             Place : in     Index;
@@ -1312,6 +1446,48 @@ package body FLTK.Widgets.Menus is
             Interfaces.C.int (Place) - 1,
             MFlag_To_Cint (Flags));
     end Set_Flags;
+
+
+    function Is_Item_Active
+           (This  : in Menu;
+            Place : in Index)
+        return Boolean is
+    begin
+        return not Menu'Class (This).Get_Flags (Place).Inactive;
+    end Is_Item_Active;
+
+
+    procedure Set_Item_Active
+           (This  : in out Menu;
+            Place : in     Index;
+            To    : in     Boolean)
+    is
+        Flags : Menu_Flag := Menu'Class (This).Get_Flags (Place);
+    begin
+        Flags.Inactive := not To;
+        Menu'Class (This).Set_Flags (Place, Flags);
+    end Set_Item_Active;
+
+
+    function Is_Item_Checked
+           (This  : in Menu;
+            Place : in Index)
+        return Boolean is
+    begin
+        return Menu'Class (This).Get_Flags (Place).Value;
+    end Is_Item_Checked;
+
+
+    procedure Set_Item_Checked
+           (This  : in out Menu;
+            Place : in     Index;
+            To    : in     Boolean)
+    is
+        Flags : Menu_Flag := Menu'Class (This).Get_Flags (Place);
+    begin
+        Flags.Value := To;
+        Menu'Class (This).Set_Flags (Place, Flags);
+    end Set_Item_Checked;
 
 
 

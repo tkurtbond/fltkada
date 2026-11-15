@@ -121,6 +121,14 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
     pragma Import (C, fl_browser_get_text, "fl_browser_get_text");
     pragma Inline (fl_browser_get_text);
 
+    function fl_browser_find_line
+           (B : in Storage.Integer_Address;
+            F : in Interfaces.C.int;
+            T : in Interfaces.C.char_array)
+        return Interfaces.C.int;
+    pragma Import (C, fl_browser_find_line, "fl_browser_find_line");
+    pragma Inline (fl_browser_find_line);
+
     procedure fl_browser_set_text
            (B : in Storage.Integer_Address;
             L : in Interfaces.C.int;
@@ -157,8 +165,10 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
     pragma Import (C, fl_browser_set_column_char, "fl_browser_set_column_char");
     pragma Inline (fl_browser_set_column_char);
 
-    procedure fl_browser_set_column_widths
-           (B, W : in Storage.Integer_Address);
+    function fl_browser_set_column_widths
+           (B, W : in Storage.Integer_Address;
+            N    : in Interfaces.C.int)
+        return Interfaces.C.int;
     pragma Import (C, fl_browser_set_column_widths, "fl_browser_set_column_widths");
     pragma Inline (fl_browser_set_column_widths);
 
@@ -690,6 +700,25 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
     end Get_Line_Text;
 
 
+    function Find_Line
+           (This : in Textline_Browser;
+            Text : in String;
+            From : in Positive := 1)
+        return Natural is
+    begin
+        --  No line's text has a NUL, and To_C would end it there.
+        for C of Text loop
+            if C = Character'Val (0) then
+                return 0;
+            end if;
+        end loop;
+        return Natural (fl_browser_find_line
+           (This.Void_Ptr,
+            Interfaces.C.int (From),
+            Interfaces.C.To_C (Text)));
+    end Find_Line;
+
+
     procedure Set_Line_Text
            (This : in out Textline_Browser;
             Line : in     Positive;
@@ -754,17 +783,32 @@ package body FLTK.Widgets.Groups.Browsers.Textline is
     end Get_Column_Widths;
 
 
+    --  The shim keeps FLTK's copy, with the -1s worked out, and the widths
+    --  as asked; This.Columns keeps them as asked too, for Get_Column_Widths.
     procedure Set_Column_Widths
            (This   : in out Textline_Browser;
-            Widths : in     Column_Widths) is
+            Widths : in     Column_Widths)
+    is
+        Asked  : C_Col_Widths (1 .. Widths'Length + 1);
+        Result : Interfaces.C.int;
     begin
-        Free (This.Columns);
-        This.Columns := new C_Col_Widths (1 .. Widths'Length + 1);
         for Index in Widths'Range loop
-            This.Columns (Index - Widths'First + 1) := Interfaces.C.int (Widths (Index));
+            if Widths (Index) < -1 then
+                raise Constraint_Error with
+                    "column width " & Integer'Image (Widths (Index)) & " is below -1";
+            end if;
+            Asked (Index - Widths'First + 1) := Interfaces.C.int (Widths (Index));
         end loop;
-        This.Columns (This.Columns'Last) := 0;
-        fl_browser_set_column_widths (This.Void_Ptr, Storage.To_Integer (This.Columns.all'Address));
+        Asked (Asked'Last) := 0;
+        Result := fl_browser_set_column_widths
+            (This.Void_Ptr, Storage.To_Integer (Asked'Address), Interfaces.C.int (Widths'Length));
+        if Result = 0 then
+            raise Storage_Error with "no memory for the column widths";
+        elsif Result < 0 then
+            raise Program_Error with "the browser was not made by FLTKAda";
+        end if;
+        Free (This.Columns);
+        This.Columns := new C_Col_Widths'(Asked);
     end Set_Column_Widths;
 
 

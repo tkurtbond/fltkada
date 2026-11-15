@@ -501,6 +501,19 @@ package body FLTK.Widgets.Groups.Spinners is
     end Get_Value;
 
 
+    function Get_Integer_Value
+           (This : in Spinner)
+        return Integer
+    is
+        Rounded : constant Long_Float := Long_Float'Floor (This.Get_Value + 0.5);
+    begin
+        if Rounded not in Long_Float (Integer'First) .. Long_Float (Integer'Last) then
+            raise Constraint_Error with "spinner value" & Rounded'Image & " isn't an Integer";
+        end if;
+        return Integer (Rounded);
+    end Get_Integer_Value;
+
+
     procedure Set_Value
            (This : in out Spinner;
             To   : in     Long_Float) is

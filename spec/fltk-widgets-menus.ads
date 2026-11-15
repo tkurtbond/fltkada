@@ -161,6 +161,40 @@ package FLTK.Widgets.Menus is
             Flags    : in     Menu_Flag := Flag_Normal)
         return Index;
 
+    --  Add_Text and Insert_Text add an item at the top level that shows
+    --  Text as it is:  no '/' submenus, no '_' divider, no '\' escapes, and
+    --  '&' and '@' doubled in the label, which FLTK draws as one.  The item
+    --  is added under a label no other item has, then given its text, so
+    --  an item with the same text is another item, not replaced.  There is
+    --  no shortcut.  After pofltk.
+    procedure Add_Text
+           (This   : in out Menu;
+            Text   : in     String;
+            Action : in     Widget_Callback := null;
+            Flags  : in     Menu_Flag := Flag_Normal);
+
+    function Add_Text
+           (This   : in out Menu;
+            Text   : in     String;
+            Action : in     Widget_Callback := null;
+            Flags  : in     Menu_Flag := Flag_Normal)
+        return Index;
+
+    procedure Insert_Text
+           (This   : in out Menu;
+            Place  : in     Index;
+            Text   : in     String;
+            Action : in     Widget_Callback := null;
+            Flags  : in     Menu_Flag := Flag_Normal);
+
+    function Insert_Text
+           (This   : in out Menu;
+            Place  : in     Index;
+            Text   : in     String;
+            Action : in     Widget_Callback := null;
+            Flags  : in     Menu_Flag := Flag_Normal)
+        return Index;
+
     procedure Set_Items
            (This  : in out Menu;
             Items : in     FLTK.Menu_Items.Menu_Item_Array);
@@ -316,6 +350,20 @@ package FLTK.Widgets.Menus is
             Place : in     Index;
             Text  : in     String);
 
+    --  The label with each "&&" and "@@" made one:  for an item given its
+    --  label by Add_Text, Insert_Text or Set_Item_Text, the text given.
+    function Get_Item_Text
+           (This  : in Menu;
+            Place : in Index)
+        return String;
+
+    --  Set_Label, with '&' and '@' doubled so that the item shows Text as
+    --  it is.
+    procedure Set_Item_Text
+           (This  : in out Menu;
+            Place : in     Index;
+            Text  : in     String);
+
     procedure Set_Shortcut
            (This  : in out Menu;
             Place : in     Index;
@@ -332,6 +380,30 @@ package FLTK.Widgets.Menus is
            (This  : in out Menu;
             Place : in     Index;
             Flags : in     Menu_Flag);
+
+    --  One flag of an item, Inactive or Value, through Get_Flags and
+    --  Set_Flags, leaving the others as they are.  Set_Item_Checked changes
+    --  only this item; Set_Only turns the rest of a radio group off.  After
+    --  pofltk.
+    function Is_Item_Active
+           (This  : in Menu;
+            Place : in Index)
+        return Boolean;
+
+    procedure Set_Item_Active
+           (This  : in out Menu;
+            Place : in     Index;
+            To    : in     Boolean);
+
+    function Is_Item_Checked
+           (This  : in Menu;
+            Place : in Index)
+        return Boolean;
+
+    procedure Set_Item_Checked
+           (This  : in out Menu;
+            Place : in     Index;
+            To    : in     Boolean);
 
 
 

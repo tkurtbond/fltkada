@@ -16,6 +16,7 @@
 
 with
 
+    FLTK.Widgets.Groups.Browsers.Textline,
     FLTK.Widgets.Groups.Windows;
 
 
@@ -283,6 +284,12 @@ package FLTK.Probe is
     function Shared_Width
            (Name : in String)
         return Natural;
+
+    --  The column widths FLTK has for Item, up to the 0 that ends them:
+    --  what Set_Column_Widths' -1s have been worked out as.
+    function Fitted_Widths
+           (Item : in FLTK.Widgets.Groups.Browsers.Textline.Textline_Browser'Class)
+        return FLTK.Widgets.Groups.Browsers.Textline.Column_Widths;
 
     --  As if the window system told FLTK of another program's copy.
     procedure Clipboard_Notice

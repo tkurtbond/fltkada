@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Multi_Browser.H>
 #include "c_fl_multi_browser.h"
+#include "c_fl_column_fitter.h"
 #include "c_fl_widget.h"
 #include "c_fl.h"
 
@@ -40,9 +41,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Multi_Browser : public Ada_Resizing<Fl_Multi_Browser> {
+class My_Multi_Browser : public Fitting_Columns<Fl_Multi_Browser> {
 public:
-    using Ada_Resizing<Fl_Multi_Browser>::Ada_Resizing;
+    using Fitting_Columns<Fl_Multi_Browser>::Fitting_Columns;
 
     friend int fl_multi_browser_item_width(MULTIBROWSER b, void * item);
     friend int fl_multi_browser_item_height(MULTIBROWSER b, void * item);
@@ -151,6 +152,7 @@ const char * My_Multi_Browser::item_text(void * item) const {
 }
 
 void My_Multi_Browser::item_draw(void * item, int x, int y, int w, int h) const {
+    this->fit(w);
     browser_item_draw_hook(this->user_data(), item, x, y, w, h);
 }
 

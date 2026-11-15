@@ -102,6 +102,14 @@ package FLTK.Widgets.Groups.Browsers.Textline is
             Line : in Positive)
         return String;
 
+    --  The first line, from line From on, whose text is Text, format
+    --  characters and all; 0 if none is.  From may be past the last line.
+    function Find_Line
+           (This : in Textline_Browser;
+            Text : in String;
+            From : in Positive := 1)
+        return Natural;
+
     procedure Set_Line_Text
            (This : in out Textline_Browser;
             Line : in     Positive;
@@ -132,7 +140,15 @@ package FLTK.Widgets.Groups.Browsers.Textline is
            (This : in Textline_Browser)
         return Column_Widths;
 
-    --  An internal copy is kept of Widths, unlike the C++ version
+    --  A copy is kept of Widths, which FLTK doesn't make.  A width of -1 is
+    --  a share of what the browser's inside leaves after the other widths,
+    --  shared equally, the last taking the remainder, and each at least 1;
+    --  it is worked out when the widths are set, when the browser is
+    --  resized, and as each line is drawn, so a vertical scrollbar coming
+    --  or going is allowed for (a File_Browser's lines aren't drawn through
+    --  FLTKAda, so it misses the last).  A 0 still ends the list.  A width
+    --  below -1 raises Constraint_Error.  Get_Column_Widths gives the
+    --  widths as set.  After pofltk.
     procedure Set_Column_Widths
            (This   : in out Textline_Browser;
             Widths : in     Column_Widths);

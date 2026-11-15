@@ -6,6 +6,7 @@
 
 #include <FL/Fl_Hold_Browser.H>
 #include "c_fl_hold_browser.h"
+#include "c_fl_column_fitter.h"
 #include "c_fl_widget.h"
 #include "c_fl.h"
 
@@ -40,9 +41,9 @@ extern "C" int widget_handle_hook(void * ud, int e);
 
 //  Attaching all relevant hooks and friends
 
-class My_Hold_Browser : public Ada_Resizing<Fl_Hold_Browser> {
+class My_Hold_Browser : public Fitting_Columns<Fl_Hold_Browser> {
 public:
-    using Ada_Resizing<Fl_Hold_Browser>::Ada_Resizing;
+    using Fitting_Columns<Fl_Hold_Browser>::Fitting_Columns;
 
     friend int fl_hold_browser_item_width(HOLDBROWSER b, void * item);
     friend int fl_hold_browser_item_height(HOLDBROWSER b, void * item);
@@ -151,6 +152,7 @@ const char * My_Hold_Browser::item_text(void * item) const {
 }
 
 void My_Hold_Browser::item_draw(void * item, int x, int y, int w, int h) const {
+    this->fit(w);
     browser_item_draw_hook(this->user_data(), item, x, y, w, h);
 }
 

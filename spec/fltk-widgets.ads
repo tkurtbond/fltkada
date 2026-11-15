@@ -450,6 +450,26 @@ package FLTK.Widgets is
            (This : in out Widget;
             Pic  : in out FLTK.Images.Image'Class);
 
+    --  Fits the image and inactive image to the inside of the widget's box
+    --  as FLTK draws the widget, Ada Draw overrides included:  each is
+    --  scaled in proportion, shrunk to fit, and grown to fit too if Expand
+    --  (PLAN.md, Phase 30).  Their own sizes are put back after each draw,
+    --  since an image can be shown by other widgets.  An image must not be
+    --  freed while the widget draws.  Redraws the widget.
+    procedure Set_Image_Fit
+           (This   : in out Widget;
+            Fit    : in     Boolean;
+            Expand : in     Boolean := False);
+
+    function Is_Image_Fitted
+           (This : in Widget)
+        return Boolean;
+
+    --  True if the images are fitted and grown to fit.
+    function Is_Image_Expanding
+           (This : in Widget)
+        return Boolean;
+
 
 
 
@@ -563,6 +583,8 @@ private
             Inactive_Image : access FLTK.Images.Image'Class;
             Draw_Ptr       : System.Address;
             Handle_Ptr     : System.Address;
+            Fit_Images     : Boolean := False;
+            Expand_Images  : Boolean := False;
         end record;
 
     overriding procedure Initialize

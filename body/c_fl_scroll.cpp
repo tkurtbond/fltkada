@@ -44,6 +44,13 @@ public:
 
 //  Attaching all relevant hooks and friends
 
+//  With fit_width set (Set_Fit_Width), each child other than the
+//  scrollbars is made as wide as reaches the right of the area bbox gives,
+//  inside the vertical scrollbar where that shows, after every resize and
+//  before every draw, as Fl_Pack sizes its children as it draws, since
+//  children added or grown can bring the scrollbar on.  Fl_Scroll::resize
+//  only moves its children.  Ported from pofltk's Sc (src/FlLayout.cpp).
+
 class My_Scroll : public Ada_Resizing<Fl_Scroll> {
 public:
     using Ada_Resizing<Fl_Scroll>::Ada_Resizing;
@@ -51,11 +58,49 @@ public:
     friend void fl_scroll_draw(SCROLL s);
     friend int fl_scroll_handle(SCROLL s, int e);
 
-    void draw();
-    int handle(int e);
+    void draw() override;
+    int handle(int e) override;
+
+    void base_resize(int x, int y, int w, int h) override {
+        Ada_Resizing<Fl_Scroll>::base_resize(x, y, w, h);
+        fit();
+    }
+
+    //  The area bbox gives depends on whether the children then need the
+    //  scrollbars; it is the same at the third pass at most (a narrowing
+    //  that drops the horizontal scrollbar can drop the vertical one,
+    //  which widens the area).
+    void fit() {
+        if (!fit_width) {
+            return;
+        }
+        for (int pass = 0; pass < 3; pass++) {
+            int X, Y, W, H;
+            bbox(X, Y, W, H);
+            bool changed = false;
+            for (int i = 0; i < children(); i++) {
+                Fl_Widget * o = child(i);
+                if (o == &scrollbar || o == &hscrollbar) {
+                    continue;
+                }
+                int ow = X + W - o->x();
+                if (ow > 0 && ow != o->w()) {
+                    o->resize(o->x(), o->y(), ow, o->h());
+                    changed = true;
+                }
+            }
+            if (!changed) {
+                return;
+            }
+            redraw();
+        }
+    }
+
+    bool fit_width = false;
 };
 
 void My_Scroll::draw() {
+    fit();
     widget_draw_hook(this->user_data());
 }
 
@@ -125,6 +170,26 @@ unsigned int fl_scroll_get_scrollbar_align(SCROLL s) {
 void fl_scroll_set_scrollbar_align(SCROLL s, unsigned int a) {
     static_cast<Fl_Scroll*>(s)->scrollbar.align(a);
     static_cast<Fl_Scroll*>(s)->redraw();
+}
+
+
+
+
+//  0 if s is FLTK's own scroll (a table's), which can't fit its children.
+int fl_scroll_set_fit_width(SCROLL s, int on) {
+    My_Scroll * m = dynamic_cast<My_Scroll*>(static_cast<Fl_Scroll*>(s));
+    if (m == nullptr) {
+        return 0;
+    }
+    m->fit_width = on != 0;
+    m->fit();
+    m->redraw();
+    return 1;
+}
+
+int fl_scroll_get_fit_width(SCROLL s) {
+    My_Scroll * m = dynamic_cast<My_Scroll*>(static_cast<Fl_Scroll*>(s));
+    return m != nullptr && m->fit_width;
 }
 
 

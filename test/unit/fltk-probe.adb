@@ -212,6 +212,15 @@ package body FLTK.Probe is
         return C.int;
     pragma Import (C, fl_probe_shared_width, "fl_probe_shared_width");
 
+    type Width_Array is array (Positive range <>) of C.int with Convention => C;
+
+    function fl_probe_column_widths
+           (B : in Storage.Integer_Address;
+            W : out Width_Array;
+            N : in C.int)
+        return C.int;
+    pragma Import (C, fl_probe_column_widths, "fl_probe_column_widths");
+
     procedure fl_probe_clipboard_notice
            (S : in C.int);
     pragma Import (C, fl_probe_clipboard_notice, "fl_probe_clipboard_notice");
@@ -726,6 +735,25 @@ package body FLTK.Probe is
     begin
         return Natural (fl_probe_shared_width (C.To_C (Name)));
     end Shared_Width;
+
+
+    function Fitted_Widths
+           (Item : in FLTK.Widgets.Groups.Browsers.Textline.Textline_Browser'Class)
+        return FLTK.Widgets.Groups.Browsers.Textline.Column_Widths
+    is
+        Buffer : Width_Array (1 .. 64);
+        Count  : constant Natural :=
+            Natural (fl_probe_column_widths (Ptr (Item), Buffer, Buffer'Length));
+    begin
+        if Count > Buffer'Length then
+            raise Probe_Error with "more than 64 column widths";
+        end if;
+        return Result : FLTK.Widgets.Groups.Browsers.Textline.Column_Widths (1 .. Count) do
+            for I in Result'Range loop
+                Result (I) := Integer (Buffer (I));
+            end loop;
+        end return;
+    end Fitted_Widths;
 
 
     procedure Clipboard_Notice

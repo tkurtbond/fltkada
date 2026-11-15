@@ -31,6 +31,8 @@ extern "C" int fl_scroll_get_size(SCROLL s);
 extern "C" void fl_scroll_set_size(SCROLL s, int t);
 extern "C" unsigned int fl_scroll_get_scrollbar_align(SCROLL s);
 extern "C" void fl_scroll_set_scrollbar_align(SCROLL s, unsigned int a);
+extern "C" int fl_scroll_set_fit_width(SCROLL s, int on);
+extern "C" int fl_scroll_get_fit_width(SCROLL s);
 
 
 extern "C" void fl_scroll_resize(SCROLL s, int x, int y, int w, int h);

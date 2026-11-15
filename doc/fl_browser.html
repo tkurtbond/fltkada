@@ -26,6 +26,13 @@
 
 </table>
 
+<p><b>Note:</b><br /><br />
+A copy is kept of the column widths, which FLTK doesn't make. A width of -1
+is a share of what the browser's inside leaves after the other widths,
+worked out again as the browser is resized and its lines drawn, as in
+pofltk. A width below -1 raises Constraint_Error. Get_Column_Widths gives
+the widths as set.</p>
+
 
 
 <table class="type">
@@ -471,6 +478,19 @@ function Get_Line_Text
        (This : in Textline_Browser;
         Line : in Positive)
     return String;
+</pre></td>
+  </tr>
+
+  <tr>
+<td>&nbsp;</td>
+<td><pre>
+--  The first line from From on whose
+--  text is Text, or 0
+function Find_Line
+       (This : in Textline_Browser;
+        Text : in String;
+        From : in Positive := 1)
+    return Natural;
 </pre></td>
   </tr>
 

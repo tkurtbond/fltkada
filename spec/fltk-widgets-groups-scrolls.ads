@@ -131,6 +131,19 @@ package FLTK.Widgets.Groups.Scrolls is
            (This : in out Scroll;
             To   : in     Alignment);
 
+    --  Whether each child other than the scrollbars is made as wide as
+    --  reaches the right of the scroll's inside, inside the vertical
+    --  scrollbar when that shows, after every resize and before every draw
+    --  (PLAN.md, Phase 30).  Turning it off leaves the children as they
+    --  are.  A table's own Scroll, made by FLTK, raises Program_Error.
+    procedure Set_Fit_Width
+           (This : in out Scroll;
+            To   : in     Boolean);
+
+    function Is_Fitting_Width
+           (This : in Scroll)
+        return Boolean;
+
     function Get_Kind
            (This : in Scroll)
         return Scroll_Kind;

@@ -998,6 +998,16 @@ procedure Set_Entire_Text
   </tr>
 
   <tr>
+<td>&nbsp;</td>
+<td><pre>
+--  Set_Entire_Text without the buffer's callbacks
+procedure Set_Entire_Text_Quietly
+       (This : in out Text_Buffer;
+        Text : in     String);
+</pre></td>
+  </tr>
+
+  <tr>
 <td><pre>
 char * text_range(int start, int end) const;
 </pre></td>

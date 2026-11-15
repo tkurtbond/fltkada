@@ -498,6 +498,26 @@ package body FLTK.Widgets is
     pragma Import (C, fl_widget_set_deimage, "fl_widget_set_deimage");
     pragma Inline (fl_widget_set_deimage);
 
+    type Fitted_Images is array (0 .. 1) of Storage.Integer_Address;
+    pragma Convention (C, Fitted_Images);
+
+    type Fitted_Sizes is array (0 .. 3) of Interfaces.C.int;
+    pragma Convention (C, Fitted_Sizes);
+
+    procedure fl_widget_fit_images
+           (W      : in     Storage.Integer_Address;
+            Expand : in     Interfaces.C.int;
+            Images :    out Fitted_Images;
+            Sizes  :    out Fitted_Sizes);
+    pragma Import (C, fl_widget_fit_images, "fl_widget_fit_images");
+    pragma Inline (fl_widget_fit_images);
+
+    procedure fl_widget_unfit_images
+           (Images : in Fitted_Images;
+            Sizes  : in Fitted_Sizes);
+    pragma Import (C, fl_widget_unfit_images, "fl_widget_unfit_images");
+    pragma Inline (fl_widget_unfit_images);
+
 
 
 
@@ -642,16 +662,33 @@ package body FLTK.Widgets is
     end Callback_Hook;
 
 
+    --  Fits the widget's images to its box around the draw, if asked
+    --  (Set_Image_Fit), and puts their sizes back after, also when Draw
+    --  raises.
     procedure Draw_Hook
            (U : in Storage.Integer_Address)
     is
         Mark       : constant Hook_Exceptions.Mark := Hook_Exceptions.Entry_Mark;
         Ada_Widget : constant access Widget'Class :=
             Widget_Convert.To_Pointer (Storage.To_Address (U));
+        Images     : Fitted_Images := (others => Null_Pointer);
+        Sizes      : Fitted_Sizes := (others => 0);
     begin
+        if Ada_Widget.Fit_Images then
+            fl_widget_fit_images
+                (Ada_Widget.Void_Ptr,
+                 Boolean'Pos (Ada_Widget.Expand_Images),
+                 Images, Sizes);
+        end if;
         Ada_Widget.Draw;
+        if Images /= (Images'Range => Null_Pointer) then
+            fl_widget_unfit_images (Images, Sizes);
+        end if;
     exception
     when Occurrence : others =>
+        if Images /= (Images'Range => Null_Pointer) then
+            fl_widget_unfit_images (Images, Sizes);
+        end if;
         Hook_Exceptions.Save (Occurrence, Mark);
     end Draw_Hook;
 
@@ -1641,6 +1678,33 @@ package body FLTK.Widgets is
            (This.Void_Ptr,
             Wrapper (Pic).Void_Ptr);
     end Set_Inactive_Image;
+
+
+    procedure Set_Image_Fit
+           (This   : in out Widget;
+            Fit    : in     Boolean;
+            Expand : in     Boolean := False) is
+    begin
+        This.Fit_Images := Fit;
+        This.Expand_Images := Fit and Expand;
+        This.Redraw;
+    end Set_Image_Fit;
+
+
+    function Is_Image_Fitted
+           (This : in Widget)
+        return Boolean is
+    begin
+        return This.Fit_Images;
+    end Is_Image_Fitted;
+
+
+    function Is_Image_Expanding
+           (This : in Widget)
+        return Boolean is
+    begin
+        return This.Expand_Images;
+    end Is_Image_Expanding;
 
 
 

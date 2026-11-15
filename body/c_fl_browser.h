@@ -26,6 +26,7 @@ extern "C" int fl_browser_size(BROWSER b);
 
 extern "C" int fl_browser_load(BROWSER b, const char * f);
 extern "C" const char * fl_browser_get_text(BROWSER b, int line);
+extern "C" int fl_browser_find_line(BROWSER b, int from, const char * text);
 extern "C" void fl_browser_set_text(BROWSER b, int line, const char * text);
 extern "C" int fl_browser_get_textsize(BROWSER b);
 extern "C" void fl_browser_set_textsize(BROWSER b, int size);
@@ -33,7 +34,8 @@ extern "C" void fl_browser_set_textsize(BROWSER b, int size);
 
 extern "C" char fl_browser_get_column_char(BROWSER b);
 extern "C" void fl_browser_set_column_char(BROWSER b, char c);
-extern "C" void fl_browser_set_column_widths(BROWSER b, void * w);
+//  1 if set, 0 if out of memory, -1 if the browser isn't one FLTKAda made.
+extern "C" int fl_browser_set_column_widths(BROWSER b, const int * w, int n);
 extern "C" char fl_browser_get_format_char(BROWSER b);
 extern "C" void fl_browser_set_format_char(BROWSER b, char c);
 

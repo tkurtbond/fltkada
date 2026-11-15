@@ -930,3 +930,32 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
   107 invalid reads each, and depth 3 at width 10 had 12, all in
   Mesa's `glDrawPixels`. `test/unit/test_gl_draw_image.adb` reads back
   what FLTKAda's `Draw_Image` draws for each case.
+
+### F41. `Fl_Native_File_Chooser` drops a filter with no name before one with a name
+
+- **What happens**: given the filter `"*.c\nHeaders\t*.h"`,
+  `filters()` is 1, and `*.c` isn't offered. A line with no name (no
+  tab) is lost whenever a later line has a name; in the other order,
+  `"Headers\t*.h\n*.c"`, both are kept. FLTK's manual gives both forms
+  and says nothing of their order. Found 2026-11-15, writing
+  `Add_Filter` (PLAN.md Phase 30). pofltk's list doesn't have it, and
+  pofltk's `AddFilter` adds a line with no name when the name is "", so
+  it has the same fault.
+- **Cause**: `Fl_Native_File_Chooser_FLTK_Driver::parse_filter`
+  (src/Fl_Native_File_Chooser_FLTK.cxx:243-245, 282) chooses between
+  reading a name and reading a pattern with `strchr(in, '\t')`, which
+  looks for a tab anywhere in the rest of the string, not in the
+  current line. So `*.c` is read as a name, the line feed ends it with
+  no pattern, and a filter with no pattern isn't added. The GTK,
+  Kdialog and Zenity drivers derive from this one, and GTK builds its
+  filters from `_parsedfilt` (src/Fl_Native_File_Chooser_GTK.cxx:713);
+  the Windows and macOS drivers have their own parsers, not checked.
+- **Effect on FLTKAda**: `Native_File_Chooser.Add_Filter` gives every
+  line a name, the pattern itself when there is none, including the
+  lines `Set_Filter` gave before it. `Set_Filter` passes its text to
+  FLTK as it is, so it still has the fault; its spec says so.
+- **Confirmed**: a scratch C++ program under Xvfb printed `filters()`
+  as 1 for `"*.c\nHeaders\t*.h"` and 2 for `"Headers\t*.h\n*.c"`,
+  `"*.c\n*.h"` and `"*.c\t*.c\nHeaders\t*.h"`.
+  `test/unit/test_native_chooser_filter.adb` failed with a count of 1
+  before `Add_Filter` named the lines, and checks for 3 now.

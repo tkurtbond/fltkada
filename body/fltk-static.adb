@@ -73,6 +73,11 @@ package body FLTK.Static is
     pragma Import (C, fl_static_display_platform, "fl_static_display_platform");
     pragma Inline (fl_static_display_platform);
 
+    function fl_static_can_open_display
+        return Interfaces.C.int;
+    pragma Import (C, fl_static_can_open_display, "fl_static_can_open_display");
+    pragma Inline (fl_static_can_open_display);
+
 
 
 
@@ -1055,6 +1060,13 @@ package body FLTK.Static is
             when others => return Other_Platform;
         end case;
     end Get_Display_Platform;
+
+
+    function Can_Open_Display
+        return Boolean is
+    begin
+        return fl_static_can_open_display /= 0;
+    end Can_Open_Display;
 
 
 

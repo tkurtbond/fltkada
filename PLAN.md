@@ -5023,6 +5023,246 @@ Checked after the last change: all six targets pass (`check`, `valgrind`
 and `smoke`, each `-headless` and `-sway`), with no valgrind errors and
 no FLTKAda leaks in the 197 programs on either back end.
 
+#### Phase 30: the application helpers ova_cg_ada needs [done, 2026-11-15]
+
+Planned 2026-11-15. Phase 29 left pofltk's application helpers (its
+`doc/api-review.md`, versions 0.2.0 to 0.7.0) for when a program needed
+them. ova_cg_ada (`~/Repos/RPG/Tools/ova_cg_ada`), written with FLTKAda,
+works around the lack of most of them, where its pofltk twin ova_cg_po
+uses pofltk's:
+
+- column widths worked out by hand from the browser's width
+  (`ova_cg-trait_panel.adb` `Fit`, `ova_cg-widgets.adb:268`,
+  `attack_dialog.adb:346`, `linked_dialog.adb:693,763`), redone from a
+  `Resize` override and a zero timeout (`ova_cg-window.adb:905-925`);
+- a menu item added as `"-"` and then relabelled with `&` doubled, so
+  that a character's name with `/`, `&` or `_` in it shows as written
+  (`ova_cg-window.adb:1036-1069`), and rule names added raw elsewhere
+  (`ova_cg-widgets.adb:161`, which a `/` or `&` would break);
+- an item's active and checked state set through `Get_Flags` and
+  `Set_Flags` (`ova_cg-window.adb:1017-1026,1050-1056`);
+- a native file chooser's filter written as `"X" & HT & pattern`
+  (four places);
+- a portrait scaled by hand to its box (`background.adb:176,197`);
+- a `Filling` flag so that setting a text buffer's text doesn't count
+  as an edit (`background.adb`);
+- a scroll's rows stretched to its width by hand (`ova_cg-window.adb:855-900`);
+- `DISPLAY` and `WAYLAND_DISPLAY` read to tell whether FLTK can start
+  (`main.adb:57`), which is wrong when `FLTK_BACKEND` is set or the
+  socket isn't there.
+
+Port these from pofltk, each from a failing test, in this order. The
+next FLTKAda bug is 141 and the next FLTK issue is F41.
+
+1. **A column width of -1** in every `Textline` browser. A -1 is a
+   share of what the browser's inside (`bbox`) leaves after the other
+   widths, shared equally, with the last taking the remainder and each
+   at least 1. The shim keeps the widths as asked beside FLTK's array
+   and works the -1s out when they are set, on every resize, and as
+   each line is drawn (from `item_draw`'s width, so that a scrollbar
+   coming or going is allowed for), as pofltk's `Keeps` does
+   (`src/FlBrowsers.cpp:30-90`). `Get_Column_Widths` returns the widths
+   as asked. A width below -1 raises. Incompatible: a -1 was passed to
+   FLTK before.
+2. **Literal menu labels.** `Add_Text`, `Insert_Text`, `Set_Item_Text`
+   and `Item_Text` on `Menu`: the label is shown as given, with no `/`
+   submenus, `&` shortcuts, `_` dividers or `\` escapes, and `Item_Text`
+   gives back what was set. pofltk adds an item with a label no other
+   has and then `replace`s its text (`ofl_menu_add_text`); port that.
+3. **An item's active and checked state** (`Item_Active`,
+   `Set_Item_Active`, `Item_Checked`, `Set_Item_Checked`), touching
+   only the one flag.
+4. **`Add_Filter`** for the native file chooser, taking a name and a
+   pattern and raising on a tab or newline in either.
+5. **`Set_Text_Quietly`** for `Text_Buffer`: sets the text without
+   calling the modify callbacks' "inserted"/"deleted" as an edit, as
+   pofltk's `SetTextQuietly` does. Check first what FLTK's `text()`
+   does and what pofltk's version suppresses.
+6. **An image fitted to its widget** (`Set_Image_Fit`), scaled to the
+   box's inside as it is drawn, in proportion, growing only when asked,
+   with the image's own size put back after; and **`Set_Fit_Width`** on
+   `Scroll`, stretching each child to the scroll's inside width.
+7. **Small ones:** `Can_Open_Display` (the test `attempt_wayland` and
+   `XOpenDisplay` make, without keeping a connection), a browser's
+   `Find` of a line's exact text, and a spinner's value rounded to an
+   integer.
+
+Not ported: pofltk's procedures that drop a result (Ada callers can
+ignore a function's result only by assigning it, which is fine), its
+unknown-length text calls (Ada strings know their length), and `Later`
+(an Ada program writes `Add_Timeout (0.0, ...)`). An installed
+`FLTK.Probe` with test helpers, like pofltk's `FlTest`, is left for the
+user to decide: ova_cg_ada's tests repeat `Settle`, `Line_With`, `Turn`,
+`Spin` and `Pick`, but installing a test package is a change to what
+FLTKAda ships.
+
+**Item 1, a column width of -1 (2026-11-15).** The new
+`test_browser_columns` failed 13 of its 17 checks first: FLTK was given
+the -1s as they were. Now `body/c_fl_column_fitter.h` has
+`Column_Fitter`, pofltk's `Keeps`, and `Fitting_Columns<B>`, an
+`Ada_Resizing<B>` whose `base_resize` refits from `bbox`. `My_Browser`,
+`My_Hold_Browser`, `My_Multi_Browser`, `My_Select_Browser` and
+`My_File_Browser` derive from it, and all but the last refit in
+`item_draw` from its width, before calling Ada's hook, so an Ada
+`Item_Draw` override doesn't skip it. `Fl_File_Browser::item_draw` is
+private, so a `File_Browser` refits only when set and resized, as in
+pofltk. Unlike pofltk, a -1 after a 0 is ignored, since FLTK stops at
+the 0. `Set_Column_Widths` raises `Constraint_Error` for a width below
+-1 and `Storage_Error` if the shim can't allocate, and redraws.
+`FLTK.Probe.Fitted_Widths` reads FLTK's array. The test checks the
+fitted widths against the browser's inside, sharing with a remainder,
+a resize both ways, a scrollbar appearing on drawing (the -1 narrows by
+`Get_Default_Scrollbar_Size`), the error, and every `Textline` browser.
+INCOMPATIBLE-CHANGES.md, the spec and `doc/fl_browser.html` say so.
+
+At the end of the phase `make check-sway` failed that scrollbar check:
+180 where 164 was wanted. The test had measured the inside, before
+adding lines, as 280 on sway against 296 under Xvfb. `Fl_Browser_`'s
+scrollbars are visible until its `draw` hides them
+(`Fl_Browser_.cxx:340-370`), and `bbox` allows for visible ones, so
+until the first draw a -1 is narrowed by a scrollbar that isn't there.
+Under Xvfb the test's `Settle` had drawn the browser by then; on Wayland
+a draw waits for the compositor's frame callback. A C++ `Fl_Browser`
+under both, printing `item_draw`'s width, gave 280 for 30 lines on each,
+so the drawing is the same. FLTKAda's fit is right once drawn, as
+pofltk's is, and the -1 is corrected as each line is drawn. The test now
+draws the browser with `FLTK.Probe.Capture` before measuring, as one more
+check, and its 18 checks pass on both.
+
+**Item 2, literal menu labels (2026-11-15).** The reader is
+`Get_Item_Text`, not `Item_Text` as planned above, to pair with
+`Get_Label`. The new `test_menu_text` didn't compile before, since none
+of the four existed; its 12 checks pass now. It's all Ada, in
+`body/fltk-widgets-menus.adb`, as pofltk's `ofl_menu_insert_text` but
+with no new shim: `Add_Text` and `Insert_Text` add the item with
+`Menu'Class (This).Add` or `Insert` under `Unused_Label`, a run of SOH
+one longer than any label starts with, then `Set_Label` it to the text
+with `&` and `@` doubled. The redispatch reaches `System_Menu_Bar`'s
+overrides, and the test checks a `System_Menu_Bar` too. `Set_Label`
+already copies the text (`fl_menu_replace`), so nothing dangles.
+`Get_Item_Text` makes each `&&` and `@@` one, so for a label set some
+other way it is only FLTK's drawing of those two. The test checks `/`,
+`&`, `@`, `\`, a leading and trailing `_` and a tab are kept; the same
+text twice making two items; an item already labelled SOH; `Insert_Text`
+with flags; and `Get_Item_Text` of `a&&&b@@@c`. Nothing is
+incompatible: the four are new. The spec, `doc/fl_menu_.html` and
+progress.txt say so.
+
+**Item 3, an item's active and checked state (2026-11-15).** Named
+`Is_Item_Active` and `Is_Item_Checked`, after `Menu_Item.Is_Active`,
+rather than `Item_Active` and `Item_Checked` as planned. The new
+`test_menu_item_state` didn't compile before; its 9 checks pass now.
+Each reads `Get_Flags`, changes the one component and calls
+`Set_Flags`, redispatching so that `System_Menu_Bar`'s overrides are
+used (the test checks one). `Menu.Item (Place).Activate` and
+`Set_State` were already there, but act on the item and not through
+the menu, so a `System_Menu_Bar` with a driver (macOS) wouldn't hear
+of the change: `Fl_Sys_Menu_Bar::mode` passes it to the driver
+(`Fl_Sys_Menu_Bar.cxx:86-89`, read, not run). The
+round trip through `Menu_Flag` keeps every flag but
+`FL_MENU_HORIZONTAL`, which FLTK reserves for its own use, and
+`fl_menu_set_mode` keeps `FL_SUBMENU` and `FL_SUBMENU_POINTER` (bug
+106). Nothing is incompatible.
+
+**Item 4, `Add_Filter` (2026-11-15).** In Ada, from `Get_Filter` and
+`Set_Filter`: FLTK keeps the text it was given and returns it from
+`filter()` (`Fl_Native_File_Chooser_FLTK.cxx:192-200`), so no shim is
+needed. A tab or line feed in the name or the pattern raises
+`Constraint_Error`, as `Set_Column_Widths` does for a bad width, rather
+than a new exception. The new `test_native_chooser_filter` didn't
+compile before, and then found FLTK-issues.md F41: a filter with no
+name before one with a name is dropped, so `Set_Filter ("*.c")` and
+`Add_Filter ("Headers", "*.h")` gave one filter. pofltk has the same
+fault. `Add_Filter` now names every line, by its pattern if it has no
+name, and the test's 10 checks pass. `Set_Filter` is unchanged, so
+`Get_Filter` still returns what it was given; its spec warns of F41.
+
+**Item 5, quiet text (2026-11-15).** Named `Set_Entire_Text_Quietly`,
+after `Set_Entire_Text`, not `Set_Text_Quietly`. FLTK's `text()`
+calls every predelete and modify callback (`Fl_Text_Buffer.cxx:273-310`); pofltk's
+version sets a flag its one dispatcher reads, so the program's
+`Modified` isn't called and the displays, whose callbacks are FLTK's
+own, still are. FLTKAda already had that flag, `CB_Active`, behind
+`Disable_Callbacks`, gating the modify, predelete and modify details
+hooks, so `Set_Entire_Text_Quietly` clears it around `Set_Entire_Text`
+and puts back what it was, also on an exception. The new
+`test_text_quietly` didn't compile before; its 7 checks pass now. A
+display's cursor at 11 is in the new two-character text afterwards
+(`insert_position()` is `mCursorPos`, which only the display's
+`buffer_modified_cb` moves), and callbacks disabled before stay
+disabled. Nothing is incompatible.
+
+**Item 6, fitted images and a scroll's fitted width (2026-11-15).**
+`Set_Image_Fit (This, Fit, Expand)`, `Is_Image_Fitted` and
+`Is_Image_Expanding` on `Widget`. Every shim class's `draw()` calls the
+one Ada `Draw_Hook`, so the fit is done there, once, rather than in 86
+classes as pofltk's `W<B>::draw` does: the hook calls the new
+`fl_widget_fit_images`, pofltk's `FitImages`, which scales `image()` and
+`deimage()` with `scale(bw, bh, 1, expand)` to the box's inside
+(`w() - Fl::box_dw(box())`), runs the Ada `Draw`, and
+`fl_widget_unfit_images` puts back the sizes with `scale(w, h, 0, 1)`,
+also when `Draw` raises. Unfitting goes inactive image first, so an image
+that is both ends at its own size. It restores the images it scaled, not
+whatever the widget shows after `Draw`, so a `Draw` that replaces the
+image leaves no image the wrong size; one that frees it would, and the
+spec says not to. An Ada `Draw` override sees the fitted size, and the
+test checks it. The fit flags are in the Ada record. The new
+`test_image_fit` didn't compile before; its 16 checks, after pofltk's
+TestImages, read pixels of a box drawn with `FLTK.Probe.Capture`: a 4x2
+image left alone unfitted and when fitted without `Expand`, grown in
+proportion with it, following a resize, a 40x20 image shrunk, the
+`Down_Box` frame allowed for, the inactive image fitted too, both sizes
+put back, and turning it off. On the inactive box the pixel above the
+image is `D4D4D4`, the white box greyed by FLTK, so that check asks
+only that it isn't red.
+
+`Set_Fit_Width` and `Is_Fitting_Width` on `Scroll`, pofltk's `Sc`
+(`src/FlLayout.cpp:25-64`): `My_Scroll` refits after `base_resize` and
+before calling the draw hook, up to three passes, since the area `bbox`
+gives depends on the scrollbars the children then need. The state is in
+the shim, which needs it. A table's own `Scroll` (`Playing_Area`) is
+FLTK's `Fl_Scroll`, not a `My_Scroll`, so `Set_Fit_Width` raises
+`Program_Error` for it, and `Is_Fitting_Width` is False; nothing public
+reaches that scroll, so no test does. The new `test_scroll_fit_width`
+didn't compile before; its 8 checks, after pofltk's TestLayout, pass: the
+children reach the right edge, then the vertical scrollbar a third child
+brings on drawing, follow a resize, widen again as the scrollbar goes,
+allow for one always shown, and stay as they are once it's off. Nothing
+in item 6 is incompatible.
+
+**Item 7, the small ones (2026-11-15).** `FLTK.Static.Can_Open_Display`
+is pofltk's `can_open_display` (`src/Fl.cpp`), checked against FLTK
+1.4.5's `attempt_wayland` (`fl_wayland_platform_init.cxx:38-87`):
+True if a display is open; otherwise, by `fl_disable_wayland`,
+`FLTK_BACKEND` and `XDG_RUNTIME_DIR` as FLTK decides, it makes the
+connection FLTK would, with `XOpenDisplay` or `wl_display_connect` found
+by `dlsym`, so the library links neither libX11 nor libwayland-client,
+and closes it again. `dlsym` is in glibc's libc since 2.34, and in the
+BSDs' libc, so no `-ldl` is added. The new `test_can_open_display` didn't
+compile before; its 6 checks, after pofltk's TestDisplay, pass under Xvfb
+and headless sway: True on the test's display, False with
+`FLTK_BACKEND=x11` and no server at `DISPLAY`, False for a backend FLTK
+doesn't know, True once the environment is put back, and True once a
+display is open whatever the environment says.
+
+`Find_Line (This, Text, From := 1)` on `Textline_Browser`, pofltk's
+`Browser.Find`: the first line from `From` on whose text is `Text`, format
+characters and all, or 0. Named `Find_Line` because `Group`'s `Find` of a
+child widget is already a primitive of every browser. A `Text` with a NUL
+gives 0, since no line's text has one and `To_C` would end it there; a
+`From` of 0 is `Positive`'s `Constraint_Error`. `test_browser_find`'s 11
+checks pass.
+
+`Get_Integer_Value` on `Spinner`, pofltk's `Spinner.IntValue`:
+`Get_Value` rounded to the nearest whole number, a half up (-2.5 gives
+-2, where Ada's `Integer (-2.5)` gives -3), raising `Constraint_Error`,
+explicitly, for a value that isn't then an `Integer` or is a NaN.
+`Fl_Spinner::value(double)` neither rounds nor clamps
+(`FL/Fl_Spinner.H:176`), so an `Int_Spin` can hold 2.5, which ova_cg_ada
+now floors itself. `test_spinner_integer`'s 9 checks pass, the NaN
+one with the NaN checked to have reached the spinner. Nothing in
+item 7 is incompatible.
+
 ## Open questions
 
 All five were decided by the user on 2026-11-03.

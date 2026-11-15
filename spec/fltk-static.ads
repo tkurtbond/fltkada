@@ -143,6 +143,18 @@ package FLTK.Static is
     function Get_Display_Platform
         return Display_Platform;
 
+    --  True if FLTK has a display open, or could open one:  what it would
+    --  choose, by FLTK_BACKEND, XDG_RUNTIME_DIR, WAYLAND_DISPLAY and DISPLAY,
+    --  answers, with a connection made and closed again.  Open_Display, and
+    --  everything that calls it, ends the program when there is none, so a
+    --  program that may run without one asks this first.  With
+    --  WAYLAND_DISPLAY unset FLTK still tries the socket wayland-0, as
+    --  libwayland does, so this is True with neither variable set where that
+    --  socket exists:  a program refusing to start with neither checks them
+    --  itself.
+    function Can_Open_Display
+        return Boolean;
+
 
 
 

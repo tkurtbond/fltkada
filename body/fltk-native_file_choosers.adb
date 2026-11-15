@@ -6,6 +6,7 @@
 
 with
 
+    Ada.Strings.Fixed,
     FLTK.Hook_Exceptions,
     Interfaces.C.Strings;
 
@@ -443,6 +444,50 @@ package body FLTK.Native_File_Choosers is
            (This  : in out Native_File_Chooser;
             Value : in     String)
         renames Set_Filter_Impl;
+
+
+    procedure Add_Filter
+           (This    : in out Native_File_Chooser;
+            Name    : in     String;
+            Pattern : in     String)
+    is
+        function Has_Break
+               (Text : in String)
+            return Boolean is
+        begin
+            return (for some C of Text => C = ASCII.HT or C = ASCII.LF);
+        end Has_Break;
+
+        --  FLTK reads a line as a name and a pattern if a tab comes anywhere
+        --  after the line's start, so a line with no name before one with a
+        --  name is dropped (FLTK-issues.md F41).  So every line is given a
+        --  name, the pattern if it has none.
+        function Named
+               (Lines : in String)
+            return String
+        is
+            Stop : constant Natural := Ada.Strings.Fixed.Index (Lines, (1 => ASCII.LF));
+            Line : constant String :=
+                (if Stop = 0 then Lines else Lines (Lines'First .. Stop - 1));
+            Rest : constant String :=
+                (if Stop = 0 then "" else ASCII.LF & Named (Lines (Stop + 1 .. Lines'Last)));
+        begin
+            if Line = "" or else Ada.Strings.Fixed.Index (Line, (1 => ASCII.HT)) /= 0 then
+                return Line & Rest;
+            else
+                return Line & ASCII.HT & Line & Rest;
+            end if;
+        end Named;
+
+        Old : constant String := This.Get_Filter;
+    begin
+        if Has_Break (Name) or Has_Break (Pattern) then
+            raise Constraint_Error with "a filter's name or pattern holds a tab or a line feed";
+        end if;
+        This.Set_Filter
+           ((if Old = "" then "" else Named (Old) & ASCII.LF) &
+            (if Name = "" then Pattern else Name) & ASCII.HT & Pattern);
+    end Add_Filter;
 
 
     function Filter_Count

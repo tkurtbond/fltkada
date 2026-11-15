@@ -835,6 +835,22 @@ package body FLTK.Text_Buffers is
     end Call_Predelete_Callbacks;
 
 
+    procedure Set_Entire_Text_Quietly
+           (This : in out Text_Buffer;
+            Text : in     String)
+    is
+        Was_Active : constant Boolean := This.CB_Active;
+    begin
+        This.CB_Active := False;
+        This.Set_Entire_Text (Text);
+        This.CB_Active := Was_Active;
+    exception
+    when others =>
+        This.CB_Active := Was_Active;
+        raise;
+    end Set_Entire_Text_Quietly;
+
+
     procedure Enable_Callbacks
            (This : in out Text_Buffer) is
     begin

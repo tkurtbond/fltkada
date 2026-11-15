@@ -208,6 +208,21 @@ procedure Set_Scrollbar_Alignment
   </tr>
 
   <tr>
+<td>&nbsp;</td>
+<td><pre>
+--  Makes each child reach the right of the
+--  scroll's inside, after a resize and as drawn
+procedure Set_Fit_Width
+       (This : in out Scroll;
+        To   : in     Boolean);
+
+function Is_Fitting_Width
+       (This : in Scroll)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
 <td><pre>
 int scrollbar_size() const;
 </pre></td>

@@ -526,6 +526,26 @@ procedure Set_Inactive_Image
   </tr>
 
   <tr>
+<td>&nbsp;</td>
+<td><pre>
+--  Fits the images to the box's inside as the
+--  widget is drawn, growing them only if Expand
+procedure Set_Image_Fit
+       (This   : in out Widget;
+        Fit    : in     Boolean;
+        Expand : in     Boolean := False);
+
+function Is_Image_Fitted
+       (This : in Widget)
+    return Boolean;
+
+function Is_Image_Expanding
+       (This : in Widget)
+    return Boolean;
+</pre></td>
+  </tr>
+
+  <tr>
 <td><pre>
 void do_callback();
 </pre></td>

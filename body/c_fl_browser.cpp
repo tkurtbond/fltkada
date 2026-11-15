@@ -6,8 +6,10 @@
 
 #include <FL/Fl_Browser.H>
 #include <FL/Fl_Image.H>
+#include <cstring>
 #include "c_fl_browser.h"
 #include "c_fl_browser_.h"
+#include "c_fl_column_fitter.h"
 #include "c_fl_widget.h"
 #include "c_fl.h"
 
@@ -52,9 +54,9 @@ public:
 
 //  Attaching all relevant hooks and friends
 
-class My_Browser : public Ada_Resizing<Fl_Browser> {
+class My_Browser : public Fitting_Columns<Fl_Browser> {
 public:
-    using Ada_Resizing<Fl_Browser>::Ada_Resizing;
+    using Fitting_Columns<Fl_Browser>::Fitting_Columns;
 
     friend int fl_browser_item_width(BROWSER b, void * item);
     friend int fl_browser_item_height(BROWSER b, void * item);
@@ -163,6 +165,7 @@ const char * My_Browser::item_text(void * item) const {
 }
 
 void My_Browser::item_draw(void * item, int x, int y, int w, int h) const {
+    this->fit(w);
     browser_item_draw_hook(this->user_data(), item, x, y, w, h);
 }
 
@@ -239,6 +242,19 @@ void fl_browser_set_text(BROWSER b, int line, const char * text) {
     static_cast<Fl_Browser*>(b)->text(line, text);
 }
 
+//  The first line from from on whose text is text, or 0.  From pofltk.
+//  find_line keeps the last line it found, so this is linear.
+int fl_browser_find_line(BROWSER b, int from, const char * text) {
+    Fl_Browser * br = static_cast<Fl_Browser*>(b);
+    for (int i = from; i <= br->size(); i++) {
+        const char * t = br->text(i);
+        if (t && std::strcmp(t, text) == 0) {
+            return i;
+        }
+    }
+    return 0;
+}
+
 int fl_browser_get_textsize(BROWSER b) {
     return static_cast<Fl_Browser*>(b)->textsize();
 }
@@ -258,8 +274,19 @@ void fl_browser_set_column_char(BROWSER b, char c) {
     static_cast<Fl_Browser*>(b)->column_char(c);
 }
 
-void fl_browser_set_column_widths(BROWSER b, void * w) {
-    static_cast<Fl_Browser*>(b)->column_widths(static_cast<const int *>(w));
+int fl_browser_set_column_widths(BROWSER b, const int * w, int n) {
+    Fl_Browser *br = static_cast<Fl_Browser*>(b);
+    Column_Fitter *f = dynamic_cast<Column_Fitter*>(br);
+    if (f == 0) {
+        return -1;
+    }
+    try {
+        br->column_widths(f->set_widths(w, n));
+    } catch (...) {
+        return 0;
+    }
+    br->redraw();
+    return 1;
 }
 
 char fl_browser_get_format_char(BROWSER b) {

@@ -111,6 +111,19 @@ package body FLTK.Widgets.Groups.Scrolls is
     pragma Import (C, fl_scroll_set_scrollbar_align, "fl_scroll_set_scrollbar_align");
     pragma Inline (fl_scroll_set_scrollbar_align);
 
+    function fl_scroll_set_fit_width
+           (S  : in Storage.Integer_Address;
+            On : in Interfaces.C.int)
+        return Interfaces.C.int;
+    pragma Import (C, fl_scroll_set_fit_width, "fl_scroll_set_fit_width");
+    pragma Inline (fl_scroll_set_fit_width);
+
+    function fl_scroll_get_fit_width
+           (S : in Storage.Integer_Address)
+        return Interfaces.C.int;
+    pragma Import (C, fl_scroll_get_fit_width, "fl_scroll_get_fit_width");
+    pragma Inline (fl_scroll_get_fit_width);
+
 
 
 
@@ -399,6 +412,24 @@ package body FLTK.Widgets.Groups.Scrolls is
     begin
         fl_scroll_set_scrollbar_align (This.Void_Ptr, Interfaces.C.unsigned (To));
     end Set_Scrollbar_Alignment;
+
+
+    procedure Set_Fit_Width
+           (This : in out Scroll;
+            To   : in     Boolean) is
+    begin
+        if fl_scroll_set_fit_width (This.Void_Ptr, Boolean'Pos (To)) = 0 then
+            raise Program_Error with "a table's own Scroll can't fit its children";
+        end if;
+    end Set_Fit_Width;
+
+
+    function Is_Fitting_Width
+           (This : in Scroll)
+        return Boolean is
+    begin
+        return fl_scroll_get_fit_width (This.Void_Ptr) /= 0;
+    end Is_Fitting_Width;
 
 
     function Get_Kind
