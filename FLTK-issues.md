@@ -938,9 +938,9 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
   tab) is lost whenever a later line has a name; in the other order,
   `"Headers\t*.h\n*.c"`, both are kept. FLTK's manual gives both forms
   and says nothing of their order. Found 2026-11-15, writing
-  `Add_Filter` (PLAN.md Phase 30). pofltk's list doesn't have it, and
+  `Add_Filter` (PLAN.md Phase 30). pofltk's list didn't have it, and
   pofltk's `AddFilter` adds a line with no name when the name is "", so
-  it has the same fault.
+  it has the same fault; recorded there as pofltk 178 on 2026-11-15.
 - **Cause**: `Fl_Native_File_Chooser_FLTK_Driver::parse_filter`
   (src/Fl_Native_File_Chooser_FLTK.cxx:243-245, 282) chooses between
   reading a name and reading a pattern with `strchr(in, '\t')`, which
