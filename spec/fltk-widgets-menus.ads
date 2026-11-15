@@ -76,11 +76,16 @@ package FLTK.Widgets.Menus is
     --  label adds a second item (Fl_Menu_add.cxx:79-91, 173-174, 189-190,
     --  203-206; pofltk 79).
 
-    --  Add_Items is FLTK's add (const char *): it splits Text at each '|'
-    --  and adds each part as an item with no callback, and returns the last
-    --  one's index.  A part is cut after 1022 bytes, the byte there is
-    --  dropped, and the rest is the next item (Fl_Menu_add.cxx:445-460;
-    --  FLTK-issues.md F11).
+    --  Add_Items splits Text at each '|' and adds each part as an item with
+    --  no callback, and returns the last one's index, as FLTK's
+    --  add (const char *) does.  A part's label ends at its first tab, and
+    --  its shortcut is what follows its last tab, in the form Add's
+    --  Shortcut takes ("^a", "#b", "+c", or a number).  FLTK's own splitting
+    --  reads only a number there (pofltk 173), and cuts a part after 1022
+    --  bytes into several items, dropping a byte at each cut
+    --  (FLTK-issues.md F11), so the binding splits the text itself.  Like
+    --  Add's, each part of a label between '/'s is cut to 1023 bytes, where
+    --  a UTF-8 character starts (pofltk 172).
     --  It was named Add, and no call to it could compile, since the Add
     --  below takes the same two parameters (FLTKAda-BUGS.md 65).
     procedure Add_Items

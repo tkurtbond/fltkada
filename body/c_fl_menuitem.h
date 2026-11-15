@@ -66,6 +66,7 @@ extern "C" int fl_menu_item_activevisible(MENUITEM mi);
 //  For the menu shims: the labels of items that show an image or a
 //  multi-label (pofltk 54, see c_fl_menuitem.cpp).  C++ linkage.
 
+#include <string>
 #include <vector>
 
 class Fl_Menu_;
@@ -78,6 +79,13 @@ void plain_menu(Fl_Menu_ * m);
 int item_after(const Fl_Menu_ * m, int i);
 bool copy_item_label(Fl_Menu_Item & copy);
 void free_item_label(Fl_Menu_Item & copy);
+std::string menu_path(const char * s);
+
+struct Menu_Part {
+    std::string label;
+    int shortcut;
+};
+std::vector<Menu_Part> menu_parts(const char * s);
 
 class Item_Names {
 public:

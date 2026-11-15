@@ -116,11 +116,18 @@ one whose widgets are never shown.
   2026-10-06, and it applies here. Windows on the real desktop can take
   the user's keystrokes and clicks, and the user's input can make a test
   fail.
-- **X11, headless:** `env -u WAYLAND_DISPLAY xvfb-run -a <program>`. A
-  plain `xvfb-run` in a Wayland session leaves `WAYLAND_DISPLAY` set, and
-  FLTK then prefers Wayland, which is the real desktop (pofltk 18). The
-  default screen is 640x480. Pass `-s '-screen 0 1280x1024x24'` for
-  larger windows.
+- **X11, headless:** `env -u WAYLAND_DISPLAY XDG_RUNTIME_DIR=$D xvfb-run
+  -a <program>`, where `$D` is a new, empty directory of your own (mode
+  700, under `/usr/local/sw/tmp`; remove it afterwards). A plain
+  `xvfb-run` in a Wayland session leaves `WAYLAND_DISPLAY` set, and FLTK
+  then prefers Wayland, which is the real desktop (pofltk 18). With it
+  unset, FLTK still tries the socket `wayland-0` in `XDG_RUNTIME_DIR`
+  (`fl_wayland_platform_init.cxx:66-80`). This desktop's is `wayland-1`,
+  but on a host whose desktop is `wayland-0` the program would open
+  there; checked 2026-11-15 with a stand-in `wayland-0`, which a unit
+  test connected to and hung on (PLAN.md Phase 29). The `-headless`
+  targets make such a directory themselves. The default screen is
+  640x480. Pass `-s '-screen 0 1280x1024x24'` for larger windows.
 - **Wayland, headless:** `tools/with-sway.sh <program>` (copied from
   pofltk). It runs the
   command on a headless sway with `DISPLAY` unset. Pop-up menus close
@@ -142,7 +149,8 @@ one whose widgets are never shown.
 ## Valgrind
 
 Run a test under valgrind with
-`env -u WAYLAND_DISPLAY xvfb-run -a valgrind --leak-check=full <program>`.
+`env -u WAYLAND_DISPLAY XDG_RUNTIME_DIR=$D xvfb-run -a valgrind --leak-check=full <program>`,
+with `$D` as above.
 FLTK, fontconfig, Pango and libdecor leak by design (PROBLEMS-OUTSTANDING.md
 lists FLTK's font caches; see also pofltk 19). A leak is FLTKAda's only
 if its allocator, the first frame after malloc or new, is in FLTKAda:

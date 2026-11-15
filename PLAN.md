@@ -369,6 +369,51 @@ The triage as first written:
     same way on Wayland. Check FLTKAda's tooltip tests for a `Show`
     with no wait for the expose.
 
+### Issues 160 to 177, added to pofltk after 2026-11-08
+
+Triaged 2026-11-15, against pofltk at c86903b (its version 0.7.0).
+
+- **FLTKAda's own findings, re-recorded by pofltk:** 160 (F7), 161
+  (F11), 162 (F12), 163 (F19), 164 (F21), 165 (F22), 166 (F28), 167
+  (F32), 168 (F37), 169 (F38), 170 (F40), 171 (FLTKAda-BUGS 44).
+  Nothing to do.
+- **AFFECTED, confirmed:**
+  - 172: `Menu.Add` with a 3000-byte label aborts with "stack smashing
+    detected" (a scratch program under Xvfb, 2026-11-15). `Insert`, and
+    `Sys_Menu_Bar`'s `Add` and `Insert`, reach the same
+    `Fl_Menu_Item::insert` (`body/c_fl_menu.cpp:117-145`,
+    `body/c_fl_sys_menu_bar.cpp:73-96`). pofltk cuts each part to 1023
+    bytes in the shim, counting a `\` escape as one byte, at a UTF-8
+    character's start, and keeps a part starting with `/` whole
+    (`ofl::menu_path`, `src/pofltk.h`). **FIXED** in Phase 29,
+    2026-11-15 (`menu_path` in `body/c_fl_menuitem.cpp`;
+    `test_menu_long_parts`).
+  - 173: `Add_Items ("A" & HT & "^a")` gives the item no shortcut,
+    while `"B" & HT & "0x62"` gives one (the same scratch run). pofltk
+    reads the shortcut with `fl_old_shortcut` from after the last tab
+    (`ofl_input_choice_add`, `src/FlMenus.cpp`). **FIXED** in Phase 29,
+    2026-11-15 (`menu_parts` in `body/c_fl_menuitem.cpp`;
+    `test_menu_add_items`).
+- **Doc only:**
+  - 174: `OpenGL3` (`spec/fltk-widgets-groups-windows-opengl.ads:42`,
+    and GLUT's mode) gives a compatibility context on X11 and Wayland.
+  - 175: `FLTK.GLUT.Get_Proc_Address` gives an address for any name
+    under GLVND; check `Extension_Supported` or the GL version first.
+  - 176: giving the focus, or a push on a button, shows a window never
+    shown, on X11 with no EWMH window manager (bare Xvfb). This can
+    matter to `FLTK.Probe` tests that check a window stays hidden.
+- **N/A while FLTKAda targets only 1.4.5:** 177 (X11's
+  `fl_read_image` of a double window before 1.4.5).
+- **The headless targets:** pofltk found (03f7fef) that with
+  `WAYLAND_DISPLAY` unset, FLTK still tries `wayland-0` in
+  `XDG_RUNTIME_DIR`, as libwayland does, so on a host whose desktop is
+  `wayland-0`, `env -u WAYLAND_DISPLAY xvfb-run` opens windows on the
+  desktop. This desktop's is `wayland-1`, so FLTKAda's runs so far were
+  headless. pofltk's `test-headless` now gives FLTK an
+  `XDG_RUNTIME_DIR` of its own; the Makefile's `XVFB` and AGENTS.md's
+  recipe should too. **FIXED** in Phase 29, 2026-11-15.
+- **Doc only, done** in Phase 29, 2026-11-15: comments for 174 to 176.
+
 ## Build and test (target state, built in Phase 0)
 
 ```sh
@@ -4893,6 +4938,90 @@ widget FLTK made, in debug builds too, with no `Internal_FLTK_Error`.
 Test: `test_foreign_widgets`, with a window and button that new
 `FLTK.Probe` calls make in C++, and on X11 a real pop-up menu. Both
 tests pass against a debug build as well. No FLTK issue was found.
+
+#### Phase 29: catching up with pofltk 0.7.0 [done, 2026-11-15]
+
+Planned 2026-11-15. Since Phase 18's comparison (pofltk f67277a,
+2026-11-08), pofltk has done the following, up to c86903b (its version
+0.7.0) on 2026-11-15:
+
+- re-recorded FLTKAda's findings as its issues 160 to 171, and fixed
+  most of them in its own code;
+- added issues 172 to 177 (triaged above, under "Issues 160 to 177");
+- given its headless runs an `XDG_RUNTIME_DIR` of their own (03f7fef);
+- added helpers that two applications written with it asked for
+  (`doc/api-review.md`), an installed test module (`FlTest`), a version
+  of its own, `GlutFonts`, and support for Debian's FLTK 1.4.3.
+
+The next FLTKAda bug is 141 and the next FLTK issue is F41. Each fix
+starts from a failing test, and the phase ends with the usual routine.
+
+- **The headless targets' runtime directory.** With `FLTK_BACKEND`
+  unset and `XDG_RUNTIME_DIR` set, FLTK calls `wl_display_connect(NULL)`
+  (`src/drivers/Wayland/fl_wayland_platform_init.cxx:66-80`), and
+  libwayland then tries `wayland-0`, so on a host whose desktop is
+  `wayland-0` the `-headless` targets would open their windows there.
+  Confirm it with a stand-in `wayland-0` in a scratch directory. Then
+  give the Makefile's `XVFB` a directory of its own, removed afterwards,
+  and fix AGENTS.md's two recipes and readme.md. A private directory
+  covers anything else that finds Wayland through libwayland too, such
+  as GTK, which `FLTK_BACKEND=x11` would not.
+- **pofltk 172.** Cut each part of a label that `Add` and `Insert` pass
+  to `Fl_Menu_Item::insert` to 1023 bytes, in the shim, as pofltk's
+  `ofl::menu_path` does: an escape counts as the byte it becomes, the
+  cut falls where a UTF-8 character starts, and a part starting with
+  `/` is kept whole. Test: a 3000-byte label gives an item of 1023
+  bytes, and a submenu's title is cut the same.
+- **pofltk 173.** `Add_Items` reads each part's shortcut after the
+  tab. Test: `"A" & HT & "^a"` gives Ctrl+A, and a number after the tab
+  still works.
+- **pofltk 174 to 176.** Comments in the specs (`OpenGL3`,
+  `Get_Proc_Address`, and `FLTK.Probe`'s push and focus calls).
+- **Not planned, pending a program that needs them:** pofltk's
+  application helpers (literal menu labels, per-item active and checked
+  state, a browser column width of -1, `Browser.Find`, a spinner's
+  integer value, `Add_Filter`, setting a text buffer quietly,
+  `Can_Open_Display`, a one-shot `Later`, a box's image fitted to it,
+  and a scroll's child fitted to its width), an installed
+  `FLTK.Probe`, a version of FLTKAda's own, and FLTK 1.4.3. `GlutFonts`
+  can be ported with the next batch of examples.
+
+**The runtime directory (2026-11-15).** Confirmed first: with a
+stand-in listening `wayland-0` in a scratch `XDG_RUNTIME_DIR`,
+`bin/unit/test_probe` under the old `XVFB` connected to it and hung
+until `timeout` killed it (exit 124). The `-headless` targets now run
+under a new, empty `XDG_RUNTIME_DIR` from `mktemp -d`, removed
+afterwards with the target's status kept. Checked: `make
+check-headless`, run with `XDG_RUNTIME_DIR` set to a directory holding
+a stand-in `wayland-0`, passed, and nothing connected to the stand-in.
+AGENTS.md's two recipes and readme.md say the same.
+
+**pofltk 172 and 173 (2026-11-15).** One fix in the shim for both,
+from pofltk's. `menu_path` (`body/c_fl_menuitem.cpp`) cuts each part of
+a label between `/`s to 1023 bytes, counting a `\` escape as the byte
+it becomes, at a UTF-8 character's start, and keeps a part starting
+with `/` whole; `Add` and `Insert` of `Menu` and `System_Menu_Bar` pass
+their label through it. `menu_parts` splits `Add_Items`' text at `|`s
+itself, ends each label at its first tab, reads the shortcut after the
+last tab with `fl_old_shortcut`, and passes each label through
+`menu_path`, so FLTK's `add (const char *)` is no longer called, and
+F11's lost byte is gone too. Tests: the new `test_menu_long_parts`,
+which aborted with "stack smashing detected" before, and
+`test_menu_add_items`, whose new checks failed 6 before (`^a`, `#b` and
+`+c` after a tab, and the 1030-byte part now one item of 1023 bytes).
+INCOMPATIBLE-CHANGES.md has both. No new FLTK issue: F11 is marked
+worked around.
+
+**pofltk 174 to 176 (2026-11-15).** Comments, citing pofltk's
+confirmation, not checked again here: `Mode_Mask`'s `OpenGL3` and
+`FLTK.GLUT.Display_Mode` (no core profile on X11 or Wayland),
+`FLTK.GLUT.Get_Proc_Address` (an address for any name under GLVND), and
+`FLTK.Probe`'s events (a push on a button shows a window never shown on
+bare Xvfb).
+
+Checked after the last change: all six targets pass (`check`, `valgrind`
+and `smoke`, each `-headless` and `-sway`), with no valgrind errors and
+no FLTKAda leaks in the 197 programs on either back end.
 
 ## Open questions
 

@@ -114,34 +114,39 @@ private:
 int fl_menu_add(MENU m, const char * t) {
     Keep_Chosen keep(static_cast<Fl_Menu_*>(m));
     Item_Names names(static_cast<Fl_Menu_*>(m));
-    return static_cast<Fl_Menu_*>(m)->add(t);
+    std::vector<Menu_Part> parts = menu_parts(t);
+    int r = 0;
+    for (size_t i = 0; i < parts.size(); i++) {
+        r = static_cast<Fl_Menu_*>(m)->add(parts[i].label.c_str(), parts[i].shortcut, 0, 0, 0);
+    }
+    return r;
 }
 
 int fl_menu_add2(MENU m, const char * t, unsigned long s, void * u, unsigned long f) {
     Keep_Chosen keep(static_cast<Fl_Menu_*>(m));
     Item_Names names(static_cast<Fl_Menu_*>(m));
-    return static_cast<Fl_Menu_*>(m)->add(t, s,
+    return static_cast<Fl_Menu_*>(m)->add(menu_path(t).c_str(), s,
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
 }
 
 int fl_menu_add3(MENU m, const char * t, const char * s, void * u, unsigned long f) {
     Keep_Chosen keep(static_cast<Fl_Menu_*>(m));
     Item_Names names(static_cast<Fl_Menu_*>(m));
-    return static_cast<Fl_Menu_*>(m)->add(t, s,
+    return static_cast<Fl_Menu_*>(m)->add(menu_path(t).c_str(), s,
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
 }
 
 int fl_menu_insert(MENU m, int p, const char * t, unsigned long s, void * u, unsigned long f) {
     Keep_Chosen keep(static_cast<Fl_Menu_*>(m));
     Item_Names names(static_cast<Fl_Menu_*>(m));
-    return static_cast<Fl_Menu_*>(m)->insert(p, t, s,
+    return static_cast<Fl_Menu_*>(m)->insert(p, menu_path(t).c_str(), s,
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
 }
 
 int fl_menu_insert2(MENU m, int p, const char * t, const char * s, void * u, unsigned long f) {
     Keep_Chosen keep(static_cast<Fl_Menu_*>(m));
     Item_Names names(static_cast<Fl_Menu_*>(m));
-    return static_cast<Fl_Menu_*>(m)->insert(p, t, s,
+    return static_cast<Fl_Menu_*>(m)->insert(p, menu_path(t).c_str(), s,
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
 }
 

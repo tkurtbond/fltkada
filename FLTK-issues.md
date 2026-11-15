@@ -318,7 +318,10 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
   after adding the item `if (*str) str++` skips the next byte as if it
   were a `|` (`Fl_Menu_add.cxx:451-457`).
 - **Effect on FLTKAda**: none it can fix short of splitting the text
-  itself. The spec of `Add_Items` says so.
+  itself. The spec of `Add_Items` says so. **Worked around** in Phase
+  29 (2026-11-15): the shim now splits the text itself (`menu_parts`,
+  `body/c_fl_menuitem.cpp`), for pofltk 173, and a long part is one item
+  cut to 1023 bytes, as for `Add` (pofltk 172).
 - **Confirmed**: `test_menu_add_items`, on X11 and on sway.
 
 ### F12. `FL_CONTRAST_CUSTOM` with no function uses CIELAB at level 0

@@ -62,6 +62,12 @@ package FLTK.Probe is
     --  Each sends an event as if from the window system, and returns True
     --  if a widget used it.  X and Y are in Win's coordinates.
 
+    --  A push on a button takes the focus, and on X11 with no window manager
+    --  that supports EWMH, such as bare Xvfb, giving the focus shows a window
+    --  never shown (Fl_X11_Window_Driver::take_focus; pofltk 176).  So a test
+    --  that checks a window stays hidden after a push should clear the
+    --  button's visible focus first.  Under Wayland it stays hidden.
+
     function Mouse
            (Win    : in FLTK.Widgets.Groups.Windows.Window'Class;
             Event  : in Event_Kind;

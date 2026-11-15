@@ -114,7 +114,7 @@ The Makefile builds them all and runs them:
 | `make check` | The unit tests in `test/unit`, and the programs in `test/` that check their own results. Fails if any fails. |
 | `make valgrind` | The same under valgrind. A memory error fails a test, and so does a leak of memory FLTKAda allocated (`test/vg-check.sh`); FLTK and the libraries under it leak some by design. |
 | `make smoke` | Starts every program in `bin/` and `bin/examples/`, and checks that it is still running a few seconds later, or ends by itself with status 0. |
-| `make check-headless`, `valgrind-headless`, `smoke-headless` | The same, on a virtual X server (`xvfb-run`, with the X11 back end). |
+| `make check-headless`, `valgrind-headless`, `smoke-headless` | The same, on a virtual X server (`xvfb-run`, with the X11 back end), with `WAYLAND_DISPLAY` unset and an empty `XDG_RUNTIME_DIR` of their own, since FLTK otherwise tries a `wayland-0` there. |
 | `make check-sway`, `valgrind-sway`, `smoke-sway` | The same, on a headless sway, a Wayland compositor with no screen (`tools/with-sway.sh`). |
 | `make check-desktop` | The few tests only a person can answer, such as the native file chooser and print dialog. They open on the desktop and wait. |
 

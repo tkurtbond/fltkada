@@ -209,8 +209,13 @@ check-desktop: display
 
 #  On a virtual X server (Xvfb), not the desktop.  WAYLAND_DISPLAY is unset
 #  because FLTK prefers Wayland when it is set, even under xvfb-run.
+#  XDG_RUNTIME_DIR is a new, empty directory, removed afterwards, because
+#  with WAYLAND_DISPLAY unset FLTK still tries the socket wayland-0 there
+#  (fl_wayland_platform_init.cxx:66-80), which is the desktop's on some
+#  hosts (PLAN.md Phase 29).
 check-headless valgrind-headless smoke-headless: programs
-	$(XVFB) $(MAKE) --no-print-directory $(@:-headless=)
+	d=$$(mktemp -d) && { env XDG_RUNTIME_DIR="$$d" $(XVFB) \
+	  $(MAKE) --no-print-directory $(@:-headless=); s=$$?; rm -rf "$$d"; exit $$s; }
 
 #  On a headless sway (tools/with-sway.sh), a compositor with no screen.
 check-sway valgrind-sway smoke-sway: programs

@@ -28,6 +28,12 @@ package FLTK.Widgets.Groups.Windows.OpenGL is
 
     --  RGB mode is achieved by Index being set to False
     --  Single buffer mode is achieved by Double being set to False
+
+    --  OpenGL3 changes nothing on X11 and Wayland: FLTK 1.4.5 reads it only
+    --  on macOS and Windows, and Mesa gives the same compatibility context
+    --  with it as without, so GL's legacy calls, FLTK's GL text and GLUT's
+    --  fonts keep working (pofltk 174, confirmed there on Xvfb and headless
+    --  sway).
     type Mode_Mask is record
         Index       : Boolean := False;
         Double      : Boolean := False;

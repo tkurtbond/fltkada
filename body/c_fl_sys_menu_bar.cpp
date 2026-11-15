@@ -70,30 +70,36 @@ void free_fl_sys_menu_bar(SYSMENUBAR m) {
 
 int fl_sys_menu_bar_add(SYSMENUBAR m, const char * t) {
     Item_Names names(static_cast<Fl_Menu_*>(m));
-    return static_cast<Fl_Sys_Menu_Bar*>(m)->add(t);
+    std::vector<Menu_Part> parts = menu_parts(t);
+    int r = 0;
+    for (size_t i = 0; i < parts.size(); i++) {
+        r = static_cast<Fl_Sys_Menu_Bar*>(m)->add(parts[i].label.c_str(), parts[i].shortcut,
+            0, 0, 0);
+    }
+    return r;
 }
 
 int fl_sys_menu_bar_add2(SYSMENUBAR m, const char * t, int s, void * u, int f) {
     Item_Names names(static_cast<Fl_Menu_*>(m));
-    return static_cast<Fl_Sys_Menu_Bar*>(m)->add(t, s,
+    return static_cast<Fl_Sys_Menu_Bar*>(m)->add(menu_path(t).c_str(), s,
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
 }
 
 int fl_sys_menu_bar_add3(SYSMENUBAR m, const char * t, const char * s, void * u, int f) {
     Item_Names names(static_cast<Fl_Menu_*>(m));
-    return static_cast<Fl_Sys_Menu_Bar*>(m)->add(t, s,
+    return static_cast<Fl_Sys_Menu_Bar*>(m)->add(menu_path(t).c_str(), s,
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
 }
 
 int fl_sys_menu_bar_insert(SYSMENUBAR m, int p, const char * t, int s, void * u, int f) {
     Item_Names names(static_cast<Fl_Menu_*>(m));
-    return static_cast<Fl_Sys_Menu_Bar*>(m)->insert(p, t, s,
+    return static_cast<Fl_Sys_Menu_Bar*>(m)->insert(p, menu_path(t).c_str(), s,
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
 }
 
 int fl_sys_menu_bar_insert2(SYSMENUBAR m, int p, const char * t, const char * s, void * u, int f) {
     Item_Names names(static_cast<Fl_Menu_*>(m));
-    return static_cast<Fl_Sys_Menu_Bar*>(m)->insert(p, t, s,
+    return static_cast<Fl_Sys_Menu_Bar*>(m)->insert(p, menu_path(t).c_str(), s,
         u==0?0:reinterpret_cast<Fl_Callback_p>(&menu_item_callback_hook), u, f);
 }
 

@@ -45,7 +45,8 @@ package FLTK.GLUT is
 
     --  GLUT_RGB, GLUT_RGBA and GLUT_SINGLE are all zero, so are the
     --  defaults here. GLUT_DOUBLE | GLUT_RGBA | FL_OPENGL3 is written
-    --  (Double => True, OpenGL3 => True, others => False).
+    --  (Double => True, OpenGL3 => True, others => False).  On X11 and
+    --  Wayland OpenGL3 gives no core profile; see Mode_Mask (pofltk 174).
     subtype Display_Mode is FLTK.Widgets.Groups.Windows.OpenGL.Mode_Mask;
 
 
@@ -638,6 +639,11 @@ package FLTK.GLUT is
            (Name : in String)
         return Boolean;
 
+    --  On Linux, with GLVND's libGL, this gives an address for any Name, even
+    --  one no library has, such as "xyzzy", and only a stub that does nothing
+    --  for one of GLUT's own functions (glXGetProcAddressARB; pofltk 175).
+    --  Check Extension_Supported, or the GL version, before calling what it
+    --  gives.
     function Get_Proc_Address
            (Name : in String)
         return System.Address;

@@ -135,6 +135,7 @@ project Tests_Unit is
         "test_menu_add_merge.adb",
         "test_gl_window_group.adb",
         "test_menu_add_items.adb",
+        "test_menu_long_parts.adb",
         "test_spinner_format.adb",
         "test_menu_items.adb",
         "test_clipboard_kinds.adb",

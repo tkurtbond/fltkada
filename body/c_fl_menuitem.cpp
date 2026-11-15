@@ -9,6 +9,7 @@
 #include <FL/Fl_Image.H>
 #include <FL/Fl_Menu_.H>
 #include <FL/Fl_Multi_Label.H>
+#include <FL/fl_draw.H>
 #include <cstdlib>
 #include <cstring>
 #include <new>
@@ -152,6 +153,83 @@ void free_item_label(Fl_Menu_Item & copy) {
         free(const_cast<char*>(copy.text));
     }
     copy.text = 0;
+}
+
+//  A label for Fl_Menu_Item::insert, each of its parts between '/'s cut to
+//  1023 bytes.  insert copies each part, its '\' escapes undone, into a
+//  1024-byte buffer on the stack with no bound (Fl_Menu_add.cxx:147,163;
+//  pofltk 172).  An escape counts as the one byte it becomes, and the cut
+//  falls where a UTF-8 character starts.  A part starting with '/' is the
+//  rest of the label, which insert takes whole without copying, so it is
+//  kept whole.  From pofltk's ofl::menu_path.
+std::string menu_path(const char * s) {
+    const size_t most = 1023;
+    std::string r;
+    for (;;) {
+        if (*s == '/') {
+            r += s;
+            break;
+        }
+        if (*s == '_') {
+            r += *s++;  //  a divider before the item, not copied
+        }
+        size_t n = 0;             //  the part's bytes, escapes undone
+        size_t start = r.size();  //  where the last character starts in r
+        while (*s && *s != '/') {
+            size_t w = s[0] == '\\' && s[1] ? 2 : 1;
+            unsigned char c = static_cast<unsigned char>(s[w - 1]);
+            bool lead = (c & 0xC0) != 0x80;
+            if (n == most) {
+                if (!lead) {
+                    r.resize(start);
+                }
+                while (*s && *s != '/') {
+                    s += s[0] == '\\' && s[1] ? 2 : 1;
+                }
+                break;
+            }
+            if (lead) {
+                start = r.size();
+            }
+            r.append(s, w);
+            s += w;
+            n++;
+        }
+        if (*s != '/') {
+            break;
+        }
+        r += *s++;
+    }
+    return r;
+}
+
+//  Fl_Menu_::add (const char *), split here.  FLTK's cuts a part between
+//  '|'s after 1022 bytes into several items, dropping the byte at each cut
+//  (FLTK-issues.md F11), and reads a shortcut from the tab before it, which
+//  strtol skips, so "^a" gives none (Fl_Menu_add.cxx:445-460; pofltk 173).
+//  Here each part is one item: its label ends at its first tab and is cut
+//  by menu_path, and its shortcut is what follows the last tab, read by
+//  fl_old_shortcut.  From pofltk's ofl_input_choice_add.
+std::vector<Menu_Part> menu_parts(const char * s) {
+    std::vector<Menu_Part> parts;
+    while (*s) {
+        size_t n = strcspn(s, "|");
+        std::string part(s, n);
+        Menu_Part p;
+        p.shortcut = 0;
+        size_t tab = part.find('\t');
+        if (tab != std::string::npos) {
+            p.shortcut = static_cast<int>(fl_old_shortcut(part.c_str() + part.rfind('\t') + 1));
+            part.resize(tab);
+        }
+        p.label = menu_path(part.c_str());
+        parts.push_back(p);
+        s += n;
+        if (*s) {
+            s++;
+        }
+    }
+    return parts;
 }
 
 Item_Names::Item_Names(Fl_Menu_ * m) : menu(m) {

@@ -118,6 +118,17 @@ come first in each list.
 
 ## Changes that can make a program behave differently
 
+- **`Menu.Add_Items` reads a shortcut such as `"^a"` after a tab, and
+  keeps a long part as one item.** Before, only a number after the tab
+  gave a shortcut, and a part longer than 1022 bytes became several
+  items, losing a byte at each cut. Now the part is one item, and each
+  piece of its label between `/`s is cut to 1023 bytes.
+  [PLAN.md, Phase 29](PLAN.md#phase-29-catching-up-with-pofltk-070-done-2026-11-15);
+  [FLTK-issues.md F11](FLTK-issues.md#f11-fl_menu_add-const-char--drops-a-byte-where-it-cuts-a-long-part).
+- **`Menu.Add` and `Insert`, and `System_Menu_Bar`'s, cut each piece
+  of a label between `/`s to 1023 bytes**, where FLTK's copy overran a
+  1024-byte buffer on the stack and the program aborted.
+  [PLAN.md, Phase 29](PLAN.md#phase-29-catching-up-with-pofltk-070-done-2026-11-15).
 - **`Text_Display.Get_Buffer` gives a null reference once the
   `Text_Buffer` last given to `Set_Buffer` has been finalized**, as for
   a display never given one. Before, it gave a reference to the freed
