@@ -940,7 +940,8 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
   and says nothing of their order. Found 2026-11-15, writing
   `Add_Filter` (PLAN.md Phase 30). pofltk's list didn't have it, and
   pofltk's `AddFilter` adds a line with no name when the name is "", so
-  it has the same fault; recorded there as pofltk 178 on 2026-11-15.
+  it had the same fault; recorded there as pofltk 178 on 2026-11-15,
+  and pofltk's `AddFilter` fixed the same day, as `Add_Filter` is.
 - **Cause**: `Fl_Native_File_Chooser_FLTK_Driver::parse_filter`
   (src/Fl_Native_File_Chooser_FLTK.cxx:243-245, 282) chooses between
   reading a name and reading a pattern with `strchr(in, '\t')`, which
