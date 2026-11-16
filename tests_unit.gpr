@@ -155,6 +155,7 @@ project Tests_Unit is
         "test_recode.adb",
         "test_part_callbacks.adb",
         "test_statics_core.adb",
+        "test_timeouts.adb",
         "test_fatal_handler.adb",
         "test_draw_shapes.adb",
         "test_widget_trackers.adb",

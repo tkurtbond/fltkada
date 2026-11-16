@@ -5096,6 +5096,32 @@ user to decide: ova_cg_ada's tests repeat `Settle`, `Line_With`, `Turn`,
 `Spin` and `Pick`, but installing a test package is a change to what
 FLTKAda ships.
 
+**Why `Later` isn't ported, checked (2026-11-15, 000-todo.org).** pofltk
+needs `Later` because its timers are objects: `AddTimeout` given a
+pending timer moves it instead of adding a second, so "call this once
+more" needs a new timer each time, which `Later` makes and hides.
+FLTKAda's `Add_Timeout` takes the procedure itself (FLTK's `data` is
+the access value), and `Fl_Timeout::add_timeout` (`Fl_Timeout.cxx:243`)
+adds an entry every call, so `Add_Timeout (0.0, P)` already calls `P`
+once for each call, just as `Later (P)` does. It also runs at the same
+point: `Fl_System_Driver::wait` (`Fl_System_Driver.cxx:354-361`) first
+deletes the widgets `delete_widget` listed, then runs the expired
+timeouts, then the checks and idle callbacks. Unlike `Later`'s, these
+timeouts can be found and cancelled: `Has_Timeout` coalesces repeated
+requests and `Remove_Timeout` drops every matching entry
+(`Fl_Timeout.cxx:291`). ova_cg_ada uses both (its dialogs' `Collect`, the
+window's `Rebuild_Action` and `Fit_Action`), which `Later` couldn't
+give. `Add_Check` isn't one-shot, and `Awake (Func)` is for threads.
+Checked headless by `test_timeouts`, and `Add_Timeout` and
+`Remove_Timeout` say so in `FLTK.Static`: two adds give two calls and
+`Has_Timeout` is then False; two adds and a `Remove_Timeout` give none;
+one re-added from inside its own call waits for the next `Check` (FLTK
+issue 450's skip); and one added in a callback runs inside that
+callback if the callback runs a nested loop (`Check`, or a modal
+dialog). That last caveat applies to pofltk's `Later` too, since it is
+a zero timeout; pofltk's comment on `Later` now says so. Decision:
+`Later` stays unported.
+
 **Item 1, a column width of -1 (2026-11-15).** The new
 `test_browser_columns` failed 13 of its 17 checks first: FLTK was given
 the -1s as they were. Now `body/c_fl_column_fitter.h` has

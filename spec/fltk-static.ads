@@ -277,6 +277,16 @@ package FLTK.Static is
 
     --  Timer Callbacks  --
 
+    --  Calls Func once, Seconds from now, from the event loop.  Each call
+    --  adds another call, even for a Func already pending, so a zero
+    --  timeout is how to run something once after the callback now
+    --  running returns, as pofltk's Later does:  the event loop deletes
+    --  the widgets FLTK's Fl::delete_widget listed, then runs the
+    --  timeouts due.  But
+    --  a callback that runs a nested loop (Check, Wait, a modal dialog)
+    --  runs the timeouts due inside itself.  A Func added from inside its
+    --  own call waits for the next pass.  Use Has_Timeout first to have
+    --  repeated requests call it once.
     procedure Add_Timeout
            (Seconds : in          Long_Float;
             Func    : in not null Timeout_Handler);
@@ -285,6 +295,7 @@ package FLTK.Static is
            (Func : in not null Timeout_Handler)
         return Boolean;
 
+    --  Drops every pending call of Func.
     procedure Remove_Timeout
            (Func : in not null Timeout_Handler);
 

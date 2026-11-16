@@ -10,7 +10,9 @@ without a documented reason, or (as already happened once with
 tree_of_tables.adb's resize/label-positioning bug) behaving subtly
 differently from the real widget despite looking right in a screenshot.
 
-* TODO Investigate why FLTKAda deliberately didn't port pofltk's Later.
+* DONE Investigate why FLTKAda deliberately didn't port pofltk's Later.
+Done 2026-11-15: the decision stands; PLAN.md, Phase 30, "Why `Later`
+isn't ported, checked".
 PLAN.md Phase 30 ("Not ported") says only "`Later` (an Ada program
 writes `Add_Timeout (0.0, ...)`)". pofltk's `Fl.Later(proc)` (src/Fl.Mod,
 around line 2407; doc/api-review.md around line 89) was added so a
