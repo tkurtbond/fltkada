@@ -9,3 +9,16 @@ line by line. Do that pass -- catch anything ported loosely, skipped
 without a documented reason, or (as already happened once with
 tree_of_tables.adb's resize/label-positioning bug) behaving subtly
 differently from the real widget despite looking right in a screenshot.
+
+* TODO Investigate why FLTKAda deliberately didn't port pofltk's Later.
+PLAN.md Phase 30 ("Not ported") says only "`Later` (an Ada program
+writes `Add_Timeout (0.0, ...)`)". pofltk's `Fl.Later(proc)` (src/Fl.Mod,
+around line 2407; doc/api-review.md around line 89) was added so a
+callback can free its own widget after the callback returns. Check
+whether a zero timeout really does the same in FLTKAda, whether
+`Add_Timeout` with the same callback twice is a problem (ova_cg_ada
+guards with `Has_Timeout`), and whether a one-shot `Later` (or FLTK's
+`Fl::add_check` or `Fl::awake` with a function) would be clearer for
+programs such as ova_cg_ada, whose window.adb, attack_dialog.adb,
+linked_dialog.adb and settings.adb all use `Add_Timeout (0.0, ...)`.
+Record what's decided in PLAN.md.
