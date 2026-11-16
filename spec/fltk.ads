@@ -1031,8 +1031,15 @@ private
     When_Enter_Key_Always : constant Callback_Flag :=
         (Enter_Key => True, Interact => True, others => False);
 
-    function Flag_To_UChar is new
+    function Flag_To_Raw is new
         Ada.Unchecked_Conversion (Callback_Flag, Interfaces.C.unsigned_char);
+
+    --  Only the bits the record names:  Ada needn't set the rest, its padding
+    --  (FLTKAda-BUGS.md 141).
+    function Flag_To_UChar
+           (Value : in Callback_Flag)
+        return Interfaces.C.unsigned_char is
+       (Interfaces.C."and" (Flag_To_Raw (Value), 2#1_1111#));
 
     function UChar_To_Flag is new
         Ada.Unchecked_Conversion (Interfaces.C.unsigned_char, Callback_Flag);
@@ -1063,8 +1070,16 @@ private
     Flag_Submenu   : constant Menu_Flag := (Submenu   => True, others => False);
     Flag_Divider   : constant Menu_Flag := (Divider   => True, others => False);
 
-    function MFlag_To_Cint is new
-        Ada.Unchecked_Conversion (Menu_Flag, Interfaces.C.int);
+    function MFlag_To_Raw is new
+        Ada.Unchecked_Conversion (Menu_Flag, Interfaces.C.unsigned);
+
+    --  Only the bits the record names:  Ada needn't set the rest, its padding
+    --  (FLTKAda-BUGS.md 141), in which FLTK would take bit 5 for
+    --  FL_SUBMENU_POINTER.
+    function MFlag_To_Cint
+           (Value : in Menu_Flag)
+        return Interfaces.C.int is
+       (Interfaces.C.int (Interfaces.C."and" (MFlag_To_Raw (Value), 2#1101_1111#)));
 
     function Cint_To_MFlag is new
         Ada.Unchecked_Conversion (Interfaces.C.int, Menu_Flag);
@@ -1094,8 +1109,15 @@ private
     Damage_User_2  : constant Damage_Mask := (User_2  => True, others => False);
     Damage_Full    : constant Damage_Mask := (Full    => True, others => False);
 
-    function Mask_To_UChar is new
+    function Mask_To_Raw is new
         Ada.Unchecked_Conversion (Damage_Mask, Interfaces.C.unsigned_char);
+
+    --  Only the bits the record names:  Ada needn't set the rest, its padding
+    --  (FLTKAda-BUGS.md 141).
+    function Mask_To_UChar
+           (Value : in Damage_Mask)
+        return Interfaces.C.unsigned_char is
+       (Interfaces.C."and" (Mask_To_Raw (Value), 2#1011_1111#));
 
     function UChar_To_Mask is new
         Ada.Unchecked_Conversion (Interfaces.C.unsigned_char, Damage_Mask);

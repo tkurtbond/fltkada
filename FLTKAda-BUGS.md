@@ -4097,3 +4097,39 @@ uninitialised value(s)" in the test, where `Start_Job` is inlined.
 After the fix, valgrind reports no errors. `Constraint_Error` itself
 didn't happen in that run, as the stack happened to hold positive
 numbers.
+
+## 141. Bit records reached FLTK with their padding
+
+**Symptom.** In ova_cg_ada, Ctrl+E in a text input crashed the program
+(`STORAGE_ERROR`, a segfault in `Fl_Menu_Item::test_shortcut`, from
+`Fl_Choice::handle`), but only with address-space randomisation on. The
+first item of a `Choice`, added with `Flags => (if ... then
+Flag_Divider else Flag_Normal)`, had FLTK flags `0x1492f720`: bit 5,
+`FL_SUBMENU_POINTER`, was set, so FLTK followed the item's null user
+data as a submenu.
+
+**Cause.** `Menu_Flag` names bits 0 to 4, 6 and 7 of a 32-bit
+`int`, and its `MFlag_To_Cint` was an `Unchecked_Conversion`. The other
+bits are padding, which Ada needn't set, and GNAT built that
+conditional expression's value without setting them, so they held
+whatever was on the stack. `Damage_Mask` (bit 6), `Callback_Flag`
+(bits 5 to 7), `File_Mode` (bit 1 and 4 to 31), the browsers'
+`Scrollbar_Mode` (3 to 7) and the text displays' `Style_Mask` (6 and
+7) were converted for FLTK the same way.
+
+**Found.** 2026-11-15, by ova_cg_ada's `test/quit.sh`. gdb showed the
+flags already wrong on return from `Add`, so nothing overwrote them
+later. Valgrind found no invalid write, only the read at address 0.
+
+**Fix.** Each conversion to C is now an `Unchecked_Conversion` to an
+unsigned type, masked to the bits the record names (`spec/fltk.ads`,
+`spec/fltk-static.ads`, `spec/fltk-widgets-groups-browsers.ads`,
+`body/fltk-widgets-groups-text_displays.adb`).
+
+**Verified.** `test_flag_padding` fills the padding of a `Menu_Flag`
+and a `Damage_Mask` by unchecked conversion. Before the fix, an item
+added, made or set with the menu flag was a submenu (seven checks
+failed), and a widget given the damage was damaged. After it, all pass.
+`File_Mode`, `Callback_Flag`, `Scrollbar_Mode` and `Style_Mask` have no
+such test, as no FLTKAda call shows what FLTK holds for them beyond the
+bits they name. They are masked the same way.

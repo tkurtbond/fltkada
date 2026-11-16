@@ -429,8 +429,15 @@ private
 
     for Scrollbar_Mode'Size use Interfaces.C.unsigned_char'Size;
 
-    function Mode_To_Uchar is
-        new Ada.Unchecked_Conversion (Scrollbar_Mode, Interfaces.C.unsigned_char);
+    function Mode_To_Raw is new
+        Ada.Unchecked_Conversion (Scrollbar_Mode, Interfaces.C.unsigned_char);
+
+    --  Only the bits the record names:  Ada needn't set the rest, its padding
+    --  (FLTKAda-BUGS.md 141).
+    function Mode_To_Uchar
+           (Value : in Scrollbar_Mode)
+        return Interfaces.C.unsigned_char is
+       (Interfaces.C."and" (Mode_To_Raw (Value), 2#111#));
     function Uchar_To_Mode is
         new Ada.Unchecked_Conversion (Interfaces.C.unsigned_char, Scrollbar_Mode);
 

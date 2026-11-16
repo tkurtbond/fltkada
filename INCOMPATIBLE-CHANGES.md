@@ -118,6 +118,13 @@ come first in each list.
 
 ## Changes that can make a program behave differently
 
+- **`Shared.Forge.Create (Filename, W, H)` raises `No_Image_Error`**
+  for a file that can't be read, isn't an image, or that FLTK's loader
+  took and couldn't load. Before, it returned a shared image with no
+  FLTK object, or an empty one, which a caller had to test with
+  `Is_Valid` or `Is_Empty`. (Made 2026-11-03, recorded here 2026-11-15,
+  when ova_cg_ada, which tested `Is_Valid`, met it.)
+  [PLAN.md, Phase 5](PLAN.md#phase-5-overruns-from-bad-input-done-2026-11-03).
 - **`Native_File_Chooser.Set_Filter` gives a line with no name its
   pattern as a name**, so `Get_Filter` returns `"*.c" & HT & "*.c"` for
   `"*.c"`. FLTK dropped such a line when a named one came after it.

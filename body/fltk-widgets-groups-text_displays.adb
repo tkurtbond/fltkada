@@ -823,8 +823,15 @@ package body FLTK.Widgets.Groups.Text_Displays is
     end Cint_To_Style_Info;
 
 
-    function Mask_To_UChar is new Ada.Unchecked_Conversion
-        (Styles.Style_Mask, Interfaces.C.unsigned_char);
+    function Mask_To_Raw is new
+        Ada.Unchecked_Conversion (Styles.Style_Mask, Interfaces.C.unsigned_char);
+
+    --  Only the bits the record names:  Ada needn't set the rest, its padding
+    --  (FLTKAda-BUGS.md 141).
+    function Mask_To_UChar
+           (Value : in Styles.Style_Mask)
+        return Interfaces.C.unsigned_char is
+       (Interfaces.C."and" (Mask_To_Raw (Value), 2#11_1111#));
 
     function Style_Info_To_Cint
            (Value : in Styles.Style_Info)

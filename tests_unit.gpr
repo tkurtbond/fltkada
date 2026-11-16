@@ -143,6 +143,7 @@ project Tests_Unit is
         "test_menu_add_items.adb",
         "test_menu_long_parts.adb",
         "test_menu_item_state.adb",
+        "test_flag_padding.adb",
         "test_menu_text.adb",
         "test_native_chooser_filter.adb",
         "test_spinner_format.adb",

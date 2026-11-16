@@ -787,8 +787,15 @@ private
     Write_Mode  : constant File_Mode := (Write  => True, others => False);
     Except_Mode : constant File_Mode := (Except => True, others => False);
 
-    function FMode_To_Cint is new
-        Ada.Unchecked_Conversion (File_Mode, Interfaces.C.int);
+    function FMode_To_Raw is new
+        Ada.Unchecked_Conversion (File_Mode, Interfaces.C.unsigned);
+
+    --  Only the bits the record names:  Ada needn't set the rest, its padding
+    --  (FLTKAda-BUGS.md 141).
+    function FMode_To_Cint
+           (Value : in File_Mode)
+        return Interfaces.C.int is
+       (Interfaces.C.int (Interfaces.C."and" (FMode_To_Raw (Value), 2#1101#)));
 
 
     help_usage_string_ptr : Interfaces.C.Strings.chars_ptr;
