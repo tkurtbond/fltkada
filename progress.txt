@@ -176,14 +176,19 @@ Fl_Quartz_Graphics_Driver
 Fl_Xlib_Graphics_Driver
 
 
-Doesn't need an internal Graphics_Driver:
+Note, not To-Do:  the surfaces below are all bound (see Done, under
+FLTK.Devices.Surface).  This records how each gets its graphics driver,
+which FLTK makes or supplies, so the drivers above needn't be bound for
+them.
+
+Given a driver, or starting with none:
 
 Fl_Surface_Device (is supplied a driver by constructor)
 Fl_Display_Device (is supplied a driver by constructor)
 Fl_Image_Surface (doesn't start with a driver)
 Fl_Paged_Device (doesn't start with a driver)
 
-Needs an internal Graphics_Driver'Class:
+Making a Graphics_Driver'Class inside:
 
 Fl_Copy_Surface (via internal Quartz/GDI/Xlib surface)
 Fl_Printer (via internal Fl_System_Printer (win/mac) or Fl_PostScript_Printer (linux))
