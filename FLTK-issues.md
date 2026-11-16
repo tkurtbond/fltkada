@@ -941,7 +941,8 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
   `Add_Filter` (PLAN.md Phase 30). pofltk's list didn't have it, and
   pofltk's `AddFilter` adds a line with no name when the name is "", so
   it had the same fault; recorded there as pofltk 178 on 2026-11-15,
-  and pofltk's `AddFilter` fixed the same day, as `Add_Filter` is.
+  and pofltk's `SetFilter` and `AddFilter` fixed the same day, as
+  `Set_Filter` and `Add_Filter` are.
 - **Cause**: `Fl_Native_File_Chooser_FLTK_Driver::parse_filter`
   (src/Fl_Native_File_Chooser_FLTK.cxx:243-245, 282) chooses between
   reading a name and reading a pattern with `strchr(in, '\t')`, which
@@ -951,12 +952,15 @@ Unless an entry says otherwise, the version is FLTK 1.4.5 (sources in
   Kdialog and Zenity drivers derive from this one, and GTK builds its
   filters from `_parsedfilt` (src/Fl_Native_File_Chooser_GTK.cxx:713);
   the Windows and macOS drivers have their own parsers, not checked.
-- **Effect on FLTKAda**: `Native_File_Chooser.Add_Filter` gives every
-  line a name, the pattern itself when there is none, including the
-  lines `Set_Filter` gave before it. `Set_Filter` passes its text to
-  FLTK as it is, so it still has the fault; its spec says so.
+- **Effect on FLTKAda**: `Native_File_Chooser.Set_Filter` and
+  `Add_Filter` give every line a name, the pattern itself when there is
+  none, so `Get_Filter` shows the names. At first, earlier on
+  2026-11-15, `Set_Filter` passed its text to FLTK as it was, and only
+  `Add_Filter` named the lines, including those `Set_Filter` gave.
 - **Confirmed**: a scratch C++ program under Xvfb printed `filters()`
   as 1 for `"*.c\nHeaders\t*.h"` and 2 for `"Headers\t*.h\n*.c"`,
   `"*.c\n*.h"` and `"*.c\t*.c\nHeaders\t*.h"`.
   `test/unit/test_native_chooser_filter.adb` failed with a count of 1
-  before `Add_Filter` named the lines, and checks for 3 now.
+  before `Add_Filter` named the lines, and checks for 3 now. Its check
+  of `Set_Filter ("*.c" & LF & "Headers" & HT & "*.h" & LF & LF &
+  "*.cc")` found 2 filters until `Set_Filter` named its lines, then 3.

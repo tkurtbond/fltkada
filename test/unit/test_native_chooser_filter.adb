@@ -6,7 +6,8 @@
 
 --  Native_File_Chooser's Add_Filter (PLAN.md, Phase 30):  a name and a
 --  pattern added after the filters already given, with a tab or a line feed
---  in either refused.  The chooser is never shown.  After pofltk's
+--  in either refused.  And Set_Filter's lines named, so that FLTK keeps
+--  them all (F41).  The chooser is never shown.  After pofltk's
 --  TestDialogs.Mod.
 
 
@@ -60,7 +61,14 @@ begin
     Refused ("A", HT & "*.a", "a tab in the pattern");
 
     --  FLTK drops a filter with no name before one with a name (F41), so
-    --  Add_Filter names Set_Filter's.
+    --  Set_Filter names its lines.
+    Chooser.Set_Filter ("*.c" & LF & "Headers" & HT & "*.h" & LF & LF & "*.cc");
+    Check (Chooser.Get_Filter = "*.c" & HT & "*.c" & LF & "Headers" & HT & "*.h" & LF & LF &
+            "*.cc" & HT & "*.cc"
+            and then Chooser.Filter_Count = 3,
+        "Set_Filter names a line with no name: " & Chooser.Get_Filter &
+        Chooser.Filter_Count'Image);
+
     Chooser.Set_Filter ("*.c" & LF & "*.cc");
     Check (Chooser.Filter_Count = 2, "two filters with no names are two");
     Chooser.Add_Filter ("Headers", "*.h");

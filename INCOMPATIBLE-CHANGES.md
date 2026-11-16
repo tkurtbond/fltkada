@@ -118,6 +118,11 @@ come first in each list.
 
 ## Changes that can make a program behave differently
 
+- **`Native_File_Chooser.Set_Filter` gives a line with no name its
+  pattern as a name**, so `Get_Filter` returns `"*.c" & HT & "*.c"` for
+  `"*.c"`. FLTK dropped such a line when a named one came after it.
+  [FLTK-issues.md F41](FLTK-issues.md#f41-fl_native_file_chooser-drops-a-filter-with-no-name-before-one-with-a-name),
+  [PLAN.md, Phase 30](PLAN.md#phase-30-the-application-helpers-ova_cg_ada-needs-done-2026-11-15).
 - **A browser's column width of -1 is a share of the browser's width**
   left after the other widths, worked out again as it is resized and
   drawn, and **a width below -1 raises `Constraint_Error`.** Before,

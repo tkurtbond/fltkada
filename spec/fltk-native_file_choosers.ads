@@ -114,17 +114,17 @@ package FLTK.Native_File_Choosers is
         return String;
 
     --  Patterns, one a line ("*.txt"), or a name, a tab and a pattern
-    --  ("Text" & HT & "*.{txt,md}"), the lines separated by LF.  FLTK drops a
-    --  line with no name if a line with a name comes after it (FLTK-issues.md
-    --  F41); Add_Filter doesn't.
+    --  ("Text" & HT & "*.{txt,md}"), the lines separated by LF.  A pattern
+    --  alone is given itself as a name, as Get_Filter then shows, since FLTK
+    --  drops a line with no name if a line with a name comes after it
+    --  (FLTK-issues.md F41).
     procedure Set_Filter
            (This  : in out Native_File_Chooser;
             Value : in     String);
 
     --  Adds a filter after those Set_Filter gave or Add_Filter added:  files
     --  matching Pattern ("*.{yaml,yml}"), offered as Name ("YAML"), or as the
-    --  pattern if Name is "".  Every line of the filter is given a name, the
-    --  pattern if it has none, since FLTK drops a line with no name before
+    --  pattern if Name is "", since FLTK drops a line with no name before
     --  one with a name (FLTK-issues.md F41).  Raises Constraint_Error if
     --  Name or Pattern holds a tab or a line feed, which Set_Filter's text
     --  uses to separate them.  After pofltk.

@@ -5176,6 +5176,10 @@ name before one with a name is dropped, so `Set_Filter ("*.c")` and
 fault. `Add_Filter` now names every line, by its pattern if it has no
 name, and the test's 10 checks pass. `Set_Filter` is unchanged, so
 `Get_Filter` still returns what it was given; its spec warns of F41.
+Later the same day, at the user's request, `Set_Filter` names its lines
+too, as pofltk's `SetFilter` now does (pofltk 178), and `Get_Filter`
+shows the names; a new check failed with 2 filters for 3 before it, and
+INCOMPATIBLE-CHANGES.md has the change.
 
 **Item 5, quiet text (2026-11-15).** Named `Set_Entire_Text_Quietly`,
 after `Set_Entire_Text`, not `Set_Text_Quietly`. FLTK's `text()`
