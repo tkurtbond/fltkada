@@ -63,29 +63,21 @@ library instead, add `-Xlibrary_type=static` (the default is `dynamic`):
 
 `gprbuild -Xlibrary_type=static fltkada.gpr`
 
+Each kind builds into its own `obj/KIND` and `lib/KIND`, so both can be
+built (`make build` does both).
+
 To install the binding, use
 
-`gprinstall -p -m fltkada.gpr`
+`make install PREFIX=DIR`
 
-This installs whichever library kind was last built. To install both the
-static and dynamic libraries side by side, build and install each with a
-distinct `--build-name`, sharing `library_type` as the installed project's
-build-selection variable via `--build-var`:
-
-```
-gprbuild -p -Xlibrary_type=dynamic fltkada.gpr
-gprinstall -p -m -Xlibrary_type=dynamic fltkada.gpr \
-    --build-name=dynamic --build-var=library_type
-
-gprbuild -p -Xlibrary_type=static fltkada.gpr
-gprinstall -p -m -Xlibrary_type=static fltkada.gpr \
-    --build-name=static --build-var=library_type
-```
-
-The Makefile's `install-dynamic` and `install-static` targets do each
-pair, passing `-f` so a reinstall replaces the files already installed;
-`GPRINSTALL` gives the installer and its options
-(`make install-dynamic GPRINSTALL="gprinstall --prefix=DIR"`).
+which builds both kinds and installs them side by side, each with its
+own `--build-name`, sharing `library_type` as the installed project's
+build-selection variable (`--build-var`), which defaults to `dynamic`.
+Without `PREFIX`, gprinstall installs under its own default, the
+compiler's prefix; `GPRINSTALL` names the installer. It first
+uninstalls what is installed, since gprinstall won't install over an
+install made from a `fltkada.gpr` that has since changed
+(FLTKAda-BUGS.md, section 142). `make uninstall PREFIX=DIR` removes it.
 
 A project that depends on the installed binding can then select which
 library to link against with the same `-Xlibrary_type=static` or

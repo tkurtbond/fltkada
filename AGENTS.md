@@ -54,7 +54,7 @@ Where findings go:
 ```sh
 gprbuild fltkada.gpr              # build the library (release by default)
 gprbuild fltkada.gpr -Xbuild=debug   # debug build: -O0 -gnata -gnato -g
-gprinstall -p -m fltkada.gpr      # install
+make install PREFIX=DIR           # build and install both kinds (readme.md)
 gprbuild tests.gpr                # build the test/example programs
 gprbuild tests_2022.gpr           # build the Ada-2022-only test/example programs
 gprbuild examples.gpr             # build the ports of FLTK 1.4.5's examples/ (bin/examples/)

@@ -20,8 +20,9 @@ library project FLTKAda_GLU is
     for Languages use ("Ada", "C++");
 
     for Source_Dirs  use ("glu/body", "glu/spec");
-    for Object_Dir   use "obj/glu";
-    for Library_Dir  use "lib/glu";
+    --  One of each for each kind, as fltkada.gpr's.
+    for Object_Dir   use "obj/glu/" & FLTKAda.Kind;
+    for Library_Dir  use "lib/glu/" & FLTKAda.Kind;
     for Library_Name use "fltkada_glu";
     for Library_Kind use FLTKAda.Kind;
 

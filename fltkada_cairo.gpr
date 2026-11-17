@@ -26,8 +26,9 @@ library project FLTKAda_Cairo is
     for Languages use ("Ada", "C++");
 
     for Source_Dirs  use ("cairo/body", "cairo/spec");
-    for Object_Dir   use "obj/cairo";
-    for Library_Dir  use "lib/cairo";
+    --  One of each for each kind, as fltkada.gpr's.
+    for Object_Dir   use "obj/cairo/" & FLTKAda.Kind;
+    for Library_Dir  use "lib/cairo/" & FLTKAda.Kind;
     for Library_Name use "fltkada_cairo";
     for Library_Kind use FLTKAda.Kind;
 

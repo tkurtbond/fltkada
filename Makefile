@@ -1,6 +1,14 @@
+#  PREFIX, if set, is where `make install` installs (gprinstall's
+#  --prefix); unset, gprinstall's own default (the compiler's prefix).
 GPRINSTALL ?= gprinstall
+PREFIX ?=
+GPRINSTALL_FLAGS := $(if $(PREFIX),--prefix=$(PREFIX))
 
-.PHONY: build-dynamic build-static install-dynamic install-static
+.PHONY: build build-dynamic build-static install uninstall
+
+#  Each kind has its own obj/KIND and lib/KIND (fltkada.gpr), so the two
+#  build one after the other.
+build: build-dynamic build-static
 
 build-dynamic:
 	gprbuild -p -Xlibrary_type=dynamic fltkada.gpr
@@ -8,13 +16,22 @@ build-dynamic:
 build-static:
 	gprbuild -p -Xlibrary_type=static fltkada.gpr
 
-install-dynamic: build-dynamic
-	$(GPRINSTALL) -f -p -m -Xlibrary_type=dynamic fltkada.gpr \
+#  Both kinds, side by side, the installed project choosing between them by
+#  library_type.  What is installed is uninstalled first: gprinstall, even
+#  with -f, refuses to install over an install made from a fltkada.gpr
+#  that has since changed ("Project already installed").  The uninstall
+#  fails when nothing is installed, which is ignored.  Dynamic goes first:
+#  the installed project's library_type defaults to the kind installed
+#  first.
+install: build
+	-$(GPRINSTALL) $(GPRINSTALL_FLAGS) --uninstall -f fltkada.gpr
+	$(GPRINSTALL) $(GPRINSTALL_FLAGS) -p -m -Xlibrary_type=dynamic fltkada.gpr \
 	    --build-name=dynamic --build-var=library_type
-
-install-static: build-static
-	$(GPRINSTALL) -f -p -m -Xlibrary_type=static fltkada.gpr \
+	$(GPRINSTALL) $(GPRINSTALL_FLAGS) -p -m -Xlibrary_type=static fltkada.gpr \
 	    --build-name=static --build-var=library_type
+
+uninstall:
+	$(GPRINSTALL) $(GPRINSTALL_FLAGS) --uninstall -f fltkada.gpr
 
 
 #  Tests (PLAN.md, Phase 0).  An agent uses only the -headless and -sway

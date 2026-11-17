@@ -4133,3 +4133,50 @@ failed), and a widget given the damage was damaged. After it, all pass.
 `File_Mode`, `Callback_Flag`, `Scrollbar_Mode` and `Style_Mask` have no
 such test, as no FLTKAda call shows what FLTK holds for them beyond the
 bits they name. They are masked the same way.
+
+
+## 142. Installing both kinds failed, and the install lacked FLTK
+
+**Symptom.** Four things, found together:
+
+1. A program withing the installed `fltkada.gpr` but nothing that withs
+   `FLTK` failed to link: the FLTK libraries were named only by
+   `spec/fltk.ads`'s `pragma Linker_Options`, which reach only a
+   program whose closure includes it, and `libfltkada.so` didn't record
+   them (no `NEEDED` for them).
+2. `make build-dynamic` after `make build-static` failed:
+   `fltk-args_marshal.o: relocation R_X86_64_32 against '.rodata' can
+   not be used when making a shared object; recompile with -fPIC`.
+3. `make install-static` (or `install-dynamic`) over an existing
+   install failed, even with `-f`: "Project already installed, either:
+   uninstall first ...".
+4. Installed static first, the installed project's `library_type`
+   defaulted to `static`.
+
+**Cause.** 1: no project attribute named the libraries. 2: both kinds
+used `obj/` and `lib/`, so the dynamic build took the static build's
+objects, which aren't position-independent. 3: gprinstall records a
+signature of the project file in the manifest (`S ...`), and refuses
+to install over an install made from a `fltkada.gpr` that has since
+changed; a reinstall from an unchanged one works. 4: gprinstall makes
+the installed variable's default the kind installed first.
+
+**Found.** 2026-11-17, using the installed fltkada from ova_cg_ada.
+
+**Fix.** `fltkada.gpr` gives the libraries as `Linker_Options`, which
+gprinstall copies into the installed project, and, for the dynamic
+kind, as `Library_Options`, so `libfltkada.so` records them. Each kind
+builds into `obj/KIND` and `lib/KIND`, as `fltkada_cairo.gpr`,
+`fltkada_forms.gpr` and `fltkada_glu.gpr` do into `obj/NAME/KIND` and
+`lib/NAME/KIND`. The Makefile's `install` builds both kinds,
+uninstalls what is installed (ignoring the failure when nothing is),
+and installs dynamic, then static; `install-dynamic` and
+`install-static` are gone, and `PREFIX` gives gprinstall's `--prefix`.
+
+**Verified.** `make build-static build-dynamic` builds both without
+`-f`. Into a scratch prefix, `make install` installed both, defaulting
+to `dynamic`, then again after a change to `fltkada.gpr` (which made a
+plain reinstall fail), and `make uninstall` removed it all. The
+installed `libfltkada.so` lists `libfltk.so.1.4`, `libfltk_images` and
+`libfltk_gl` as `NEEDED`, and ova_cg_ada's test programs that don't
+with `FLTK` link from the installed project alone.
